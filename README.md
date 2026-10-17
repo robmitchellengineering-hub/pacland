@@ -49,6 +49,8 @@ through the oracle-callable interface in `learnability.sampler`.
 - [`docs/encoding.md`](docs/encoding.md) — the genotype encoding and mutation operators
 - [`docs/open-questions.md`](docs/open-questions.md) — limits, the measure problem, and the learnability conjecture
 - [`docs/tooling.md`](docs/tooling.md) — prior art and tooling: CYTools, cymetric, cohomCalg, and the ML-for-the-landscape literature
+- [`docs/toolchain.md`](docs/toolchain.md) — how to install CYTools (Linux path + macOS alternative)
+- [`scripts/install_cytools.sh`](scripts/install_cytools.sh) — reproducible CYTools install + quintic verification
 - [`src/pacland/`](src/pacland/) — certificate, error model, measure, oracle seam, learnability rig (builds #1 & #4)
 - [`tests/`](tests/) — stdlib `unittest` suite
 
