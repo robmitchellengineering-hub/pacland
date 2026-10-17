@@ -81,7 +81,8 @@ Persist verified partial results — vacuum classes ruled in or out, constraint 
 structure in the map — and *educate* each new search generation with them instead of
 blind mutation. This is Valiant's 2024 **educability** notion applied literally:
 accumulation of verified knowledge across the search is what separates an ecorithm from
-a search.
+a search. The full formalization — knowledge units, the assimilation rule, and the
+revision problem — is in [`educability.md`](educability.md).
 
 ## L6 — Measure layer (selection — the physics hole)
 

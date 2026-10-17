@@ -37,6 +37,7 @@ design; implementation is a later, separable phase.
 - [`docs/verification.md`](docs/verification.md) — the Valiant certificate and the two-level error bound (conceptual)
 - [`docs/verification-formal.md`](docs/verification-formal.md) — the rigorous bound, cost model, and formal learnability conjecture
 - [`docs/evolvability.md`](docs/evolvability.md) — L4 formalization: Valiant's evolvability model over the landscape
+- [`docs/educability.md`](docs/educability.md) — L5 formalization: verified knowledge transfer and revision
 - [`docs/encoding.md`](docs/encoding.md) — the genotype encoding and mutation operators
 - [`docs/open-questions.md`](docs/open-questions.md) — limits, the measure problem, and the learnability conjecture
 
