@@ -1,0 +1,17 @@
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Python (likely future oracle/tooling)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node (possible future tooling)
+node_modules/
+
+# Local env / secrets
+.env
+.env.*
+!.env.example
