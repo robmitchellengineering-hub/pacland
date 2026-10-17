@@ -31,27 +31,35 @@ class CyToolsAdapter:
     """
 
     DOCS = "https://github.com/LiamMcAllisterGroup/cytools"
+    LICENSE = "GPL-3.0 (copyleft — see docs/tooling.md)"
 
     def topology(self, polytope_points):
-        """Return {h11, h21, intersection_numbers} for a polytope.
+        """Return {h11, h21, intersection_numbers} for a CY hypersurface.
 
-        Illustrative; confirm method names against the CYTools docs.
+        Confirmed against the CYTools README quick example:
+        ``Polytope(points).triangulate().get_cy()`` → ``cy.h11()``, ``cy.h21()``.
         """
         cytools = require_package("cytools", "cytools", self.DOCS)
-        poly = cytools.Polytope(polytope_points)
-        tri = poly.get_triangulation()
+        cy = cytools.Polytope(polytope_points).triangulate().get_cy()
         return {
-            "h11": tri.h11(),
-            "h21": tri.h21(),
-            "intersection_numbers": tri.intersection_numbers(),
+            "h11": cy.h11(),
+            "h21": cy.h21(),
+            "intersection_numbers": cy.intersection_numbers(),
         }
 
-    def flux_vacua(self, polytope_points, **kwargs):
-        """Enumerate flux vacua of a triangulation. Illustrative; confirm API."""
+    def fetch_polytopes(self, **kwargs):
+        """Fetch reflexive polytopes from the Kreuzer-Skarke database."""
         cytools = require_package("cytools", "cytools", self.DOCS)
-        poly = cytools.Polytope(polytope_points)
-        tri = poly.get_triangulation()
-        return tri.get_flux_vacua(**kwargs)
+        return cytools.fetch_polytopes(**kwargs)
+
+    def flux_vacua(self, polytope_points, **kwargs):
+        """Enumerate flux vacua of a CY hypersurface.
+
+        Method name to be confirmed against cy.tools after install.
+        """
+        cytools = require_package("cytools", "cytools", self.DOCS)
+        cy = cytools.Polytope(polytope_points).triangulate().get_cy()
+        return cy.get_flux_vacua(**kwargs)
 
 
 class CymetricAdapter:

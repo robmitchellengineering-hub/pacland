@@ -18,6 +18,8 @@ not code to import). URLs are the ones verified in research on 2026-10-18.
 - **Maps to:** L1 encoding (topology data) and L2 stages 2–4 (cohomology, flux
   enumeration). This is the single highest-value integration — it provides the
   *discrete* half of the genotype almost for free.
+- **License:** GPL-3.0 (copyleft). Fine for *generating data*; imposes GPL
+  obligations only if PACLAND itself is distributed *linked against* CYTools.
 - **Adapter:** `src/pacland/oracle/adapters.py::CyToolsAdapter`
 
 ### cymetric — neural Calabi-Yau metrics
