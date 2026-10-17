@@ -22,8 +22,10 @@ The system is built on three ideas from Leslie Valiant:
 
 ## Status
 
-**Spec phase.** No physics code yet. The documents under `docs/` are the authoritative
-design; implementation is a later, separable phase.
+**Spec + verification tooling.** The design lives in `docs/`. Builds #1 (certificate
+library) and #4 (learnability rig) are implemented in `src/pacland/` with a passing
+test suite. The physics oracle (L2, build #3) is **not** implemented yet — it plugs in
+through the oracle-callable interface in `learnability.sampler`.
 
 ## What this is NOT
 
@@ -46,6 +48,27 @@ design; implementation is a later, separable phase.
 - [`docs/oracle.md`](docs/oracle.md) — L2 spec: the oracle interface, error model, and calibration protocol
 - [`docs/encoding.md`](docs/encoding.md) — the genotype encoding and mutation operators
 - [`docs/open-questions.md`](docs/open-questions.md) — limits, the measure problem, and the learnability conjecture
+- [`src/pacland/`](src/pacland/) — certificate, error model, measure, learnability rig (builds #1 & #4)
+- [`tests/`](tests/) — stdlib `unittest` suite (25 tests)
+
+## Code
+
+Pure-Python, stdlib-only (no dependencies). Builds #1 and #4:
+
+- `src/pacland/certificate.py` — the two-level Valiant certificate (Theorem 2) and the finite-`D` certificate
+- `src/pacland/error_model.py` — per-observable error model + calibration protocol
+- `src/pacland/measure.py` — the finite, log-space observable measure `D`
+- `src/pacland/learnability/vc.py` — shattering test, VC lower bound, sample complexity
+- `src/pacland/learnability/sampler.py` — flux-vacuum sampler + oracle-callable seam
+
+Run the tests:
+
+```sh
+python3 -m unittest discover -s tests -v
+```
+
+The physics oracle (build #3) is the next build; until then the learnability rig is
+exercised against synthetic concept classes with known VC dimension.
 
 ## Non-goals (so the project stays honest)
 
