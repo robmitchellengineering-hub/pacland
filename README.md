@@ -2,6 +2,9 @@
 
 **Probably Approximately Correct Landscape** — a Valiant-verification system for the string landscape.
 
+> **Start with [`ROADMAP.md`](ROADMAP.md)** — the whole argument in paper form: abstract,
+> section-by-section, and a ledger of what's proven vs conjectured vs open.
+
 ## Thesis
 
 Replace the impossible goal of string-theory unification — *prove that one vacuum is our
@@ -33,6 +36,7 @@ design; implementation is a later, separable phase.
 
 ## Repo map
 
+- [`ROADMAP.md`](ROADMAP.md) — the linear argument as a paper outline (start here)
 - [`docs/architecture.md`](docs/architecture.md) — the six layers (L1–L6)
 - [`docs/verification.md`](docs/verification.md) — the Valiant certificate and the two-level error bound (conceptual)
 - [`docs/verification-formal.md`](docs/verification-formal.md) — the rigorous bound, cost model, and formal learnability conjecture
