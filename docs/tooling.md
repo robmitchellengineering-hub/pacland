@@ -9,15 +9,19 @@ not code to import). URLs are the ones verified in research on 2026-10-18.
 
 ## Directly integrable software (the oracle stack, L1 + L2)
 
-### CYTools — Calabi-Yau topology, cohomology, flux vacua
+### CYTools — Calabi-Yau topology
 - **Repo:** https://github.com/LiamMcAllisterGroup/cytools
 - **Paper:** [CYTools: A Software Package for Analyzing Calabi-Yau Manifolds](https://arxiv.org/abs/2211.03823)
 - **What it does:** builds a polytope → triangulation pipeline; computes Hodge
-  numbers `h^{1,1}`, `h^{2,1}`, triple intersection numbers, line-bundle
-  cohomology, and searches for flux vacua.
-- **Maps to:** L1 encoding (topology data) and L2 stages 2–4 (cohomology, flux
-  enumeration). This is the single highest-value integration — it provides the
-  *discrete* half of the genotype almost for free.
+  numbers `h^{1,1}`, `h^{2,1}`, triple intersection numbers, the second Chern
+  class, Kähler/Mori cones, divisor/CY volumes, and Gopakumar–Vafa invariants.
+  **Verified live on `studio-linux` (CYTools 1.4.12, 2026-10-18):** the quintic
+  returns `(h11, h21) = (1, 101)` and `c2 = [-250, 50, 50, 50, 50, 50]`.
+- **Not included (1.4.12):** flux-vacua search — it is not on the CY or
+  Triangulation namespaces; flux enumeration needs a different tool.
+- **Maps to:** L1 encoding (topology data) and L2 stage 2 (cohomology/topology).
+  This is the single highest-value integration — it provides the *discrete* half
+  of the genotype almost for free.
 - **License:** GPL-3.0 (copyleft). Fine for *generating data*; imposes GPL
   obligations only if PACLAND itself is distributed *linked against* CYTools.
 - **Adapter:** `src/pacland/oracle/adapters.py::CyToolsAdapter`

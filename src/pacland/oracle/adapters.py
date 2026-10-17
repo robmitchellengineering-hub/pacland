@@ -23,21 +23,27 @@ def require_package(module_name: str, pip_name: str, docs_url: str):
 
 
 class CyToolsAdapter:
-    """CYTools — Calabi-Yau topology, cohomology, and flux vacua.
+    """CYTools — Calabi-Yau topology (Hodge numbers, intersection numbers, c2).
 
     https://github.com/LiamMcAllisterGroup/cytools  (paper: arXiv:2211.03823)
-    Maps to L1 encoding and L2 stages 2-4 (``docs/architecture.md``): polytope ->
-    triangulation -> Hodge numbers, intersection numbers, flux vacua.
+    Maps to L1 encoding and L2 stage 2 (``docs/architecture.md``): polytope ->
+    triangulation -> Hodge numbers, triple intersection numbers, second Chern class.
+
+    Verified live on the harness-mesh `studio-linux` VM (CYTools 1.4.12), 2026-10-18:
+    the quintic returns h11=1, h21=101 and c2 = [-250, 50, 50, 50, 50, 50].
+    Flux-vacua search is NOT in CYTools 1.4.12 (checked the CY and Triangulation
+    namespaces); it would need a different tool — see docs/tooling.md.
     """
 
     DOCS = "https://github.com/LiamMcAllisterGroup/cytools"
     LICENSE = "GPL-3.0 (copyleft — see docs/tooling.md)"
 
     def topology(self, polytope_points):
-        """Return {h11, h21, intersection_numbers} for a CY hypersurface.
+        """Return {h11, h21, intersection_numbers, second_chern_class}.
 
-        Confirmed against the CYTools README quick example:
-        ``Polytope(points).triangulate().get_cy()`` → ``cy.h11()``, ``cy.h21()``.
+        Confirmed against CYTools 1.4.12: ``cy.h11()``, ``cy.h21()`` and
+        ``cy.intersection_numbers()`` are methods; ``cy.second_chern_class`` is a
+        property.
         """
         cytools = require_package("cytools", "cytools", self.DOCS)
         cy = cytools.Polytope(polytope_points).triangulate().get_cy()
@@ -45,21 +51,13 @@ class CyToolsAdapter:
             "h11": cy.h11(),
             "h21": cy.h21(),
             "intersection_numbers": cy.intersection_numbers(),
+            "second_chern_class": cy.second_chern_class,
         }
 
     def fetch_polytopes(self, **kwargs):
         """Fetch reflexive polytopes from the Kreuzer-Skarke database."""
         cytools = require_package("cytools", "cytools", self.DOCS)
         return cytools.fetch_polytopes(**kwargs)
-
-    def flux_vacua(self, polytope_points, **kwargs):
-        """Enumerate flux vacua of a CY hypersurface.
-
-        Method name to be confirmed against cy.tools after install.
-        """
-        cytools = require_package("cytools", "cytools", self.DOCS)
-        cy = cytools.Polytope(polytope_points).triangulate().get_cy()
-        return cy.get_flux_vacua(**kwargs)
 
 
 class CymetricAdapter:

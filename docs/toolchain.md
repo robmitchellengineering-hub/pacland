@@ -3,7 +3,20 @@
 The adapters are written; this is only about getting the dependencies onto a
 suitable node. Status as of 2026-10-18.
 
-## What was attempted on this machine
+## VERIFIED — Linux install works
+
+On the harness-mesh `studio-linux` VM (Ubuntu 24.04, via `scripts/install_cytools.sh`
+equivalent), CYTools **1.4.12** installed cleanly after `apt install libgmp-dev
+libgmpxx4ldbl`, and the quintic Calabi-Yau threefold returned the correct results:
+
+- `h11 = 1`, `h21 = 101` (the known Hodge numbers of the quintic)
+- `second Chern class = [-250, 50, 50, 50, 50, 50]`
+- triple intersection numbers including the degree-5 entries
+
+The route is `mac → win-2 (100.86.50.6) → studio-linux (192.168.28.128)`, login
+`rob`, NOPASSWD sudo. The Mac-only blockers below do **not** apply to Linux.
+
+## What was attempted on this machine (the Mac — no Linux, no Homebrew)
 
 `pip install cytools` on this Mac (x86_64 Python 3.12, **no Homebrew**) failed on
 two independent walls:
