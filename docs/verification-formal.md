@@ -201,6 +201,10 @@ corner without ever touching 10⁵⁰⁰.
 
 ## 8. Worked example (toy numbers)
 
+*(The finite-`D` version that supersedes the illustrative `n` below is in
+[`observable-measure.md`](observable-measure.md) §5–§7 — for a finite observable set the
+sampling term vanishes and the oracle-validation term dominates.)*
+
 Goal: a certificate at total confidence 95%, tolerance `ε = 0.01`, split point
 `β = 0.002`, split the confidence budget evenly `δ_s = δ_e = 0.025`.
 
