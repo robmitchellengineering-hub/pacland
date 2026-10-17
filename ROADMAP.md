@@ -175,7 +175,7 @@ hard second, and no amount of the first buys the second.
 | Evolvability with imperfect performance oracle | **open** — the most publishable generalization |
 | The landscape measure (selection) | **open** — physics, not ours to solve |
 
-## References (standard, not yet gathered into a bibliography)
+## References (standard; tools with URLs are in `docs/tooling.md`)
 
 - Valiant, *A Theory of the Learnable*, CACM 27(11), 1984.
 - Kearns, *Efficient noise-tolerant learning from statistical queries*, J. ACM 45(6), 1998.
@@ -188,11 +188,13 @@ hard second, and no amount of the first buys the second.
 - Susskind, *The anthropic landscape of string theory*, 2003.
 - Ooguri & Vafa, *On the geometry of the string landscape and the swampland*, 2007.
 - He, *Deep learning the geometry of Calabi-Yau…*, 2017 (and the subsequent neural-metric line).
+- **Tools and prior art with verified URLs:** [`docs/tooling.md`](docs/tooling.md) — CYTools, cymetric, cohomCalg, the Kreuzer–Skarke census, and the ML-for-the-landscape literature.
 
 ## Next steps
 
-1. **L2 oracle-error spec** — the per-observable error model that feeds `p̂_e`; the
-   bridge from spec to code.
-2. **Empirical attack on the conjecture** — measure (or bound) the SQ dimension on a
-   tiny flux subclass.
-3. **Host/move** — still local-only in `/Users/mac/Documents/DeepSeek`.
+1. **Make the CYTools adapter real** — install `cytools`, confirm the API in
+   `CyToolsAdapter`, generate the discrete half of the genotype (`docs/tooling.md`).
+2. **Exact-background benchmark** — run the certificate loop on `exact_toric_oracle`
+   (build #2 seed) end to end before trusting any approximate oracle.
+3. **Empirical attack on the conjecture** — measure (or bound) the SQ dimension on a
+   tiny flux subclass, once CYTools supplies real flux-vacua samples.

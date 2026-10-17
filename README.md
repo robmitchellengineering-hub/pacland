@@ -48,8 +48,9 @@ through the oracle-callable interface in `learnability.sampler`.
 - [`docs/oracle.md`](docs/oracle.md) — L2 spec: the oracle interface, error model, and calibration protocol
 - [`docs/encoding.md`](docs/encoding.md) — the genotype encoding and mutation operators
 - [`docs/open-questions.md`](docs/open-questions.md) — limits, the measure problem, and the learnability conjecture
-- [`src/pacland/`](src/pacland/) — certificate, error model, measure, learnability rig (builds #1 & #4)
-- [`tests/`](tests/) — stdlib `unittest` suite (25 tests)
+- [`docs/tooling.md`](docs/tooling.md) — prior art and tooling: CYTools, cymetric, cohomCalg, and the ML-for-the-landscape literature
+- [`src/pacland/`](src/pacland/) — certificate, error model, measure, oracle seam, learnability rig (builds #1 & #4)
+- [`tests/`](tests/) — stdlib `unittest` suite
 
 ## Code
 
@@ -60,6 +61,7 @@ Pure-Python, stdlib-only (no dependencies). Builds #1 and #4:
 - `src/pacland/measure.py` — the finite, log-space observable measure `D`
 - `src/pacland/learnability/vc.py` — shattering test, VC lower bound, sample complexity
 - `src/pacland/learnability/sampler.py` — flux-vacuum sampler + oracle-callable seam
+- `src/pacland/oracle/` — the `Oracle` protocol, adapters to CYTools/cymetric, and an exact-toric toy oracle (build #2 seed)
 
 Run the tests:
 
@@ -68,7 +70,8 @@ python3 -m unittest discover -s tests -v
 ```
 
 The physics oracle (build #3) is the next build; until then the learnability rig is
-exercised against synthetic concept classes with known VC dimension.
+exercised against synthetic concept classes with known VC dimension, and the oracle
+seam is exercised against the exact-toric toy oracle.
 
 ## Non-goals (so the project stays honest)
 
