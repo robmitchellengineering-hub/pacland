@@ -43,6 +43,7 @@ design; implementation is a later, separable phase.
 - [`docs/evolvability.md`](docs/evolvability.md) — L4 formalization: Valiant's evolvability model over the landscape
 - [`docs/educability.md`](docs/educability.md) — L5 formalization: verified knowledge transfer and revision
 - [`docs/observable-measure.md`](docs/observable-measure.md) — the toy observable measure `D`, and what it reveals about the certificate
+- [`docs/oracle.md`](docs/oracle.md) — L2 spec: the oracle interface, error model, and calibration protocol
 - [`docs/encoding.md`](docs/encoding.md) — the genotype encoding and mutation operators
 - [`docs/open-questions.md`](docs/open-questions.md) — limits, the measure problem, and the learnability conjecture
 

@@ -42,7 +42,8 @@ stabilization.
   checkers, EFT extraction.
 - **Load-bearing requirement:** every output is a vector of observables **plus a
   per-observable error model** (bias bound and noise). Without this, L3's bounds are
-  fiction.
+  fiction. The full contract — schema, calibration protocol, and the validated-vs-
+  extrapolated rule — is in [`oracle.md`](oracle.md).
 
 ## L3 — Valiant verifier (the core)
 
