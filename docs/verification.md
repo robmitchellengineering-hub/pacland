@@ -4,6 +4,9 @@ This document is the intellectual core of PACLAND. It defines what "verified" me
 a regime where (a) exact verification is physically and computationally impossible, and
 (b) the labeler is itself approximate.
 
+**The rigorous version** — the two-level bound, the cost model, and the formal
+learnability conjecture — is in [`verification-formal.md`](verification-formal.md).
+
 ## 1. Objects
 
 | Symbol | Meaning |

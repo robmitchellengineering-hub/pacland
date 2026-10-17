@@ -34,7 +34,8 @@ design; implementation is a later, separable phase.
 ## Repo map
 
 - [`docs/architecture.md`](docs/architecture.md) — the six layers (L1–L6)
-- [`docs/verification.md`](docs/verification.md) — the Valiant certificate and the two-level error bound
+- [`docs/verification.md`](docs/verification.md) — the Valiant certificate and the two-level error bound (conceptual)
+- [`docs/verification-formal.md`](docs/verification-formal.md) — the rigorous bound, cost model, and formal learnability conjecture
 - [`docs/encoding.md`](docs/encoding.md) — the genotype encoding and mutation operators
 - [`docs/open-questions.md`](docs/open-questions.md) — limits, the measure problem, and the learnability conjecture
 
