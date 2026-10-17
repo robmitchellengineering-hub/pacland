@@ -72,7 +72,8 @@ Run it **per Valiant's evolvability model**, not as a raw genetic algorithm. His
 — *any evolvable concept class is efficiently learnable* — then yields the complexity
 ceiling: **selection can only find our vacuum if the `compactification → observables`
 map is efficiently learnable in Valiant's sense.** That is the single governing question
-for the whole system.
+for the whole system. The full formalization — component mapping, the statistical-query
+restriction, the tightened SQ conjecture — is in [`evolvability.md`](evolvability.md).
 
 ## L5 — Educability loop (knowledge transfer)
 
