@@ -11,5 +11,8 @@ requires-python = ">=3.9"
 license = { text = "All Rights Reserved" }
 authors = [{ name = "Rob Mitchell" }]
 
+[project.scripts]
+pacland = "pacland.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
