@@ -87,12 +87,56 @@ pacland constrain data.json    # constraint elimination + uniformity
 pacland verify candidate.json  # run guards + falsify against the SM</code></pre>
     <p class="muted">Full docs: <code>docs/usage.md</code>. The paper: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/PACLAND-preprint.pdf">PACLAND-preprint.pdf</a>.</p>
 
+    <h2 id="try">Try the two verification acts</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>① The certificate (two-level bound)</h3>
+        <p class="muted">Bound a candidate's true error even when the verifier is approximate: <code>bound = p̂_g + p̂_e + √(ln 1/δ_s / 2n) + √(ln 1/δ_e / 2m)</code>.</p>
+        <label>p̂_g (candidate–oracle disagreement) <input id="pg" type="number" value="0.10" step="0.01"></label><br>
+        <label>p̂_e (oracle exceedance) <input id="pe" type="number" value="0.05" step="0.01"></label><br>
+        <label>n (candidate samples) <input id="n" type="number" value="1000"></label><br>
+        <label>m (validation points) <input id="m" type="number" value="19"></label><br>
+        <label>δ_s <input id="ds" type="number" value="0.025" step="0.005"></label>
+        <label>δ_e <input id="de" type="number" value="0.025" step="0.005"></label>
+        <p><strong>bound = <span id="bound"></span></strong> · confidence <span id="conf"></span></p>
+        <p class="muted">Try m = 0 (no validated oracles) and watch the radius go infinite — that's the total deficit.</p>
+      </div>
+      <div class="card">
+        <h3>② Falsify a candidate</h3>
+        <p class="muted">Reality guard α_s(M_Z): target ln = −2.14, tolerance 0.01. A candidate is ruled out iff its prediction is computable <em>and</em> outside tolerance.</p>
+        <label>predicted ln α_s <input id="as" type="number" value="-2.10" step="0.01"></label>
+        <p><strong>verdict: <span id="falsify"></span></strong></p>
+        <p class="muted">Non-computable observables rule nothing out — they sit in the prediction zone and are falsifiable later, not now.</p>
+      </div>
+    </div>
+
   </div>
 </main>
 
 <footer>
   PACLAND · github.com/robmitchellengineering-hub/pacland · a verification discipline, not a physics solver
 </footer>
+
+<script>
+function hoeffding(n, delta) { return Math.sqrt(Math.log(1/delta) / (2*n)); }
+function update() {
+  var pg = parseFloat(document.getElementById('pg').value);
+  var pe = parseFloat(document.getElementById('pe').value);
+  var n = parseFloat(document.getElementById('n').value);
+  var m = parseFloat(document.getElementById('m').value);
+  var ds = parseFloat(document.getElementById('ds').value);
+  var de = parseFloat(document.getElementById('de').value);
+  var rs = (n > 0) ? hoeffding(n, ds) : Infinity;
+  var re = (m > 0) ? hoeffding(m, de) : Infinity;
+  document.getElementById('bound').textContent = (isFinite(pg + pe + rs + re) ? (pg + pe + rs + re).toFixed(4) : '∞ (vacuous)');
+  document.getElementById('conf').textContent = ((1 - ds - de) * 100).toFixed(1) + '%';
+  var as = parseFloat(document.getElementById('as').value);
+  var delta = Math.abs(as - (-2.14));
+  document.getElementById('falsify').textContent = (delta > 0.01) ? ('ruled out (Δ = ' + delta.toFixed(3) + ' > 0.01)') : ('survives (Δ = ' + delta.toFixed(3) + ')');
+}
+document.querySelectorAll('input').forEach(function(i){ i.addEventListener('input', update); });
+update();
+</script>
 
 </body>
 </html>
