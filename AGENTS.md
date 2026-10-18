@@ -79,5 +79,10 @@ source, not a textbook formula:**
   live at arXiv:2306.06160 (h12_5..h12_25).
 - `pacland climb` runs the deficit climber on the mesh (studio-linux via
   `mac → win-2 → studio-linux`); `data/cy_corpus.json` is the answer key.
+- **Swampland connection (2026-10-19):** `src/pacland/swampland.py` +
+  `scripts/test_swampland.py` turn the constraint-first conjecture into per-conjecture
+  tests. WGC scale g·M_pl is uniform in flux (r < 0.25, confirmed); charge gcd = 1
+  (no forced discrete global symmetry); distance proxy unresolved (needs the bigger
+  machine). Extends the *prediction* surface, NOT the deficit (m stays 5).
 - Live site: https://pacland.netlify.app (Netlify) + GitHub Pages mirror.
 - The four-wall map is `src/pacland/limits.py` and `docs/boundary-map.md`.
