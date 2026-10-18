@@ -18,6 +18,14 @@ from scipy.optimize import root  # noqa: E402
 import jaxvacua as jvc  # noqa: E402
 
 
+def _flux_to_list(f):
+    """Serialize a flux vector (numpy, possibly complex) to JSON-safe form."""
+    a = np.asarray(f).flatten()
+    if np.iscomplexobj(a):
+        return [[float(x.real), float(x.imag)] for x in a]
+    return [int(x) for x in a]
+
+
 def run(model_args: dict, N: int, seed: int):
     model = jvc.FluxVacuaFinder(**model_args)
     sampler = jvc.data_sampler(
@@ -31,7 +39,7 @@ def run(model_args: dict, N: int, seed: int):
     z0, tau0, fluxes0 = sampler.initial_guesses(
         N=N, filter_moduli=True, include_fluxes=True
     )
-    log_W0, log_gs = [], []
+    log_W0, log_gs, fluxes = [], [], []
     for i in range(len(z0)):
         x0 = model._convert_complex_to_real(
             z0[i], jnp.conj(z0[i]), tau0[i], jnp.conj(tau0[i])
@@ -48,7 +56,8 @@ def run(model_args: dict, N: int, seed: int):
                 )))
                 log_W0.append(float(np.log(W0)))
                 log_gs.append(float(np.log(1.0 / np.imag(t))))
-    return {"n": len(log_W0), "log_W0": log_W0, "log_gs": log_gs}
+                fluxes.append(_flux_to_list(fluxes0[i]))
+    return {"n": len(log_W0), "log_W0": log_W0, "log_gs": log_gs, "flux": fluxes}
 
 
 def main() -> None:

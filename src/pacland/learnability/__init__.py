@@ -7,13 +7,22 @@ interface; until then, tests use synthetic concept classes with known VC dimensi
 from __future__ import annotations
 
 from .sampler import Vacuum, sample_flux_vacua
-from .vc import finite_class_radius, sample_complexity, shatters, vc_lower_bound
+from .vc import (
+    finite_class_radius,
+    pseudo_dim_lower_bound,
+    pseudo_shatters,
+    sample_complexity,
+    shatters,
+    vc_lower_bound,
+)
 
 __all__ = [
     "shatters",
     "vc_lower_bound",
     "sample_complexity",
     "finite_class_radius",
+    "pseudo_shatters",
+    "pseudo_dim_lower_bound",
     "Vacuum",
     "sample_flux_vacua",
 ]

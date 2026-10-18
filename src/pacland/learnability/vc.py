@@ -10,7 +10,7 @@ continuous flux data is a later, heavier step.
 """
 from __future__ import annotations
 
-from itertools import combinations
+from itertools import combinations, product
 from math import log, sqrt
 
 
@@ -75,3 +75,55 @@ def finite_class_radius(class_size: int, n: int, delta: float) -> float:
     if class_size <= 0:
         raise ValueError("class_size must be positive")
     return sqrt(log(class_size / delta) / (2.0 * n))
+
+
+def pseudo_shatters(functions, points) -> bool:
+    """Do the real-valued functions *pseudo-shatter* the points (Pollard)?
+
+    ``functions``: iterable of callables, each point -> real.
+    ``points``: iterable of point objects.
+
+    Points ``x_1..x_k`` are pseudo-shattered iff there exist thresholds
+    ``t_1..t_k`` such that every one of the ``2^k`` sign patterns
+    ``{sign(f(x_i) - t_i)}`` is realized by some ``f``. Brute force over the
+    finitely many relevant thresholds — toy ``k`` only.
+    """
+    functions = list(functions)
+    points = list(points)
+    k = len(points)
+    if k == 0:
+        return False
+    # candidate thresholds per point: the gaps between distinct sorted values,
+    # plus one below the minimum and one above the maximum.
+    cols = []
+    for j in range(k):
+        vals = sorted({float(f(points[j])) for f in functions})
+        ts = [vals[0] - 1.0]
+        for a, b in zip(vals, vals[1:]):
+            ts.append((a + b) / 2.0)
+        ts.append(vals[-1] + 1.0)
+        cols.append(ts)
+    for t in product(*cols):
+        patterns = {
+            tuple(1 if f(points[j]) >= t[j] else 0 for j in range(k))
+            for f in functions
+        }
+        if len(patterns) == 2 ** k:
+            return True
+    return False
+
+
+def pseudo_dim_lower_bound(functions, points) -> int:
+    """Largest ``k`` such that some ``k``-subset of ``points`` is pseudo-shattered.
+
+    Pseudo-shattering is downward-closed, so the same monotone early-exit as
+    ``vc_lower_bound`` applies. Exponential in ``len(points)``; toy sizes only.
+    """
+    functions = list(functions)
+    points = list(points)
+    n = len(points)
+    for k in range(1, n + 1):
+        if any(pseudo_shatters(functions, subset) for subset in combinations(points, k)):
+            continue
+        return k - 1
+    return n
