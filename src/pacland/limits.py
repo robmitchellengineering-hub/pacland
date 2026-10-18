@@ -72,9 +72,15 @@ BOUNDARIES = [
         "Compute the full EFT spectrum (masses, instanton corrections)",
         LimitType.UNMEASURABLE,
         "The mass matrix is flat at maximum_degree=0 (no instantons) — the moduli "
-        "are massless and the spectrum is not yet computable (docs/oracle.md).",
-        "The extraction is a known, scoped physics build (maximum_degree > 0); "
-        "the structure miner is already calibrated to test it when it exists.",
+        "are massless. With instanton corrections (maximum_degree=1) the sampling is "
+        "INFEASIBLE even at n_target=10: the finder builds (1.7 s) but "
+        "sample_critical_points is killed (OOM/timeout) before any critical point "
+        "returns (measured 2026-10-18 on studio-linux). The spectrum is unmeasurable "
+        "with current tools, at any practical scale.",
+        "The deficit is computable (m=5 validated so far); the mass spectrum remains "
+        "the single most informative unmeasured observable — the one that could carry "
+        "the geometric fingerprint — and this boundary names exactly what must be "
+        "built to reach it.",
     ),
     Boundary(
         "Measure whether small Lambda is typical (Weinberg anthropic argument)",
