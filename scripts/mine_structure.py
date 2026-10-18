@@ -16,7 +16,11 @@ sys.path.insert(
     0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src")
 )
 
-from pacland.structure import classify_observable, cv_predictability  # noqa: E402
+from pacland.structure import (  # noqa: E402
+    classify_observable,
+    cv_predictability,
+    ridge_cv_predictability,
+)
 
 DATA = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -29,10 +33,11 @@ def _report(name, fluxes, y):
     flux_cols = [[f[i] for f in fluxes] for i in range(dim)]
     r = classify_observable(flux_cols, y)
     cv = cv_predictability(fluxes, y)
+    rcv = ridge_cv_predictability(fluxes, y)
     print(
         f"{name:12s} -> {r['verdict']:10s} "
         f"(max MI {r['max_mi']:.3f} bits, z {r['max_z']:.2f}, coord {r['coord']:2d})"
-        f"  |  CV learnability r = {cv:+.3f}"
+        f"  |  KNN r = {cv:+.3f}  |  ridge(quad) r = {rcv:+.3f}"
     )
 
 

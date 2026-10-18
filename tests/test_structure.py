@@ -11,6 +11,7 @@ from pacland.structure import (
     cv_predictability,
     mi_significance,
     mutual_information,
+    ridge_cv_predictability,
 )
 
 
@@ -71,6 +72,22 @@ class TestCVPredictability(unittest.TestCase):
         fluxes = [[rng.uniform(-3, 3), rng.uniform(-3, 3)] for _ in range(n)]
         y = [rng.gauss(0, 1) for _ in range(n)]  # random
         self.assertLess(cv_predictability(fluxes, y), 0.2)
+
+
+class TestRidgeCV(unittest.TestCase):
+    def test_deterministic_quadratic_is_captured(self):
+        rng = random.Random(6)
+        n = 150
+        fluxes = [[rng.uniform(-2, 2) for _ in range(5)] for _ in range(n)]
+        y = [f[0] * f[1] + 2 * f[2] ** 2 - f[3] * f[4] for f in fluxes]
+        self.assertGreater(ridge_cv_predictability(fluxes, y), 0.9)
+
+    def test_independent_noise_is_low(self):
+        rng = random.Random(7)
+        n = 150
+        fluxes = [[rng.uniform(-2, 2) for _ in range(5)] for _ in range(n)]
+        y = [rng.gauss(0, 1) for _ in range(n)]
+        self.assertLess(ridge_cv_predictability(fluxes, y), 0.3)
 
 
 if __name__ == "__main__":

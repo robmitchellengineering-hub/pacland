@@ -30,7 +30,13 @@ from .deficit import DeficitObservable, DeficitReport, deficit_report
 from .error_model import CalibrationVerdict, ErrorModel, Kind, calibrate
 from .measure import Measure, Observable
 from .selection import TypicalityVerdict, ks_uniformity, quantile, typicality_test
-from .structure import classify_observable, mi_significance, mutual_information
+from .structure import (
+    classify_observable,
+    cv_predictability,
+    mi_significance,
+    mutual_information,
+    ridge_cv_predictability,
+)
 
 __all__ = [
     "Certificate",
@@ -54,4 +60,6 @@ __all__ = [
     "classify_observable",
     "mi_significance",
     "mutual_information",
+    "cv_predictability",
+    "ridge_cv_predictability",
 ]

@@ -139,3 +139,90 @@ def cv_predictability(fluxes, y, k: int = 5, n_folds: int = 5, seed: int = 0) ->
         for j, i in enumerate(fold):
             preds[i] = p[j]
     return _pearson(preds, y)
+
+
+def _poly_features(f, degree: int = 2):
+    """[1, f_i, f_i^2, f_i f_j] — the degree-2 monomial basis."""
+    feats = [1.0]
+    n = len(f)
+    for i in range(n):
+        feats.append(float(f[i]))
+    if degree >= 2:
+        for i in range(n):
+            feats.append(float(f[i]) * float(f[i]))
+        for i in range(n):
+            for j in range(i + 1, n):
+                feats.append(float(f[i]) * float(f[j]))
+    return feats
+
+
+def _gauss_solve(A, b):
+    """Solve A x = b by Gaussian elimination with partial pivoting (stdlib)."""
+    n = len(A)
+    M = [list(row) + [b[i]] for i, row in enumerate(A)]
+    for c in range(n):
+        piv = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[piv][c]) < 1e-12:
+            continue
+        M[c], M[piv] = M[piv], M[c]
+        pv = M[c][c]
+        for r in range(c + 1, n):
+            factor = M[r][c] / pv
+            for cc in range(c, n + 1):
+                M[r][cc] -= factor * M[c][cc]
+    x = [0.0] * n
+    for r in range(n - 1, -1, -1):
+        if abs(M[r][r]) < 1e-12:
+            x[r] = 0.0
+            continue
+        s = M[r][n] - sum(M[r][cc] * x[cc] for cc in range(r + 1, n))
+        x[r] = s / M[r][r]
+    return x
+
+
+def _ridge_predict(train_x, train_y, test_x, lam: float = 1.0):
+    """Ridge regression on degree-2 monomial features; predict test_x."""
+    X = [_poly_features(f) for f in train_x]
+    d = len(X[0])
+    XtX = [[0.0] * d for _ in range(d)]
+    Xty = [0.0] * d
+    for xi, yi in zip(X, train_y):
+        for a in range(d):
+            Xty[a] += xi[a] * yi
+            for b in range(d):
+                XtX[a][b] += xi[a] * xi[b]
+    for a in range(d):
+        XtX[a][a] += lam
+    beta = _gauss_solve(XtX, Xty)
+    out = []
+    for tf in test_x:
+        feats = _poly_features(tf)
+        out.append(sum(beta[k] * feats[k] for k in range(d)))
+    return out
+
+
+def ridge_cv_predictability(
+    fluxes, y, lam: float = 1.0, n_folds: int = 5, seed: int = 0
+) -> float:
+    """Joint learnability: cross-validated ridge regression on quadratic features.
+
+    The per-coordinate miner is blind to multi-coordinate structure (a quadratic
+    form has weak per-coordinate dependence). This is the stronger test: it can
+    fit any degree-2 function of the whole flux vector. Returns the CV Pearson r
+    between predictions and truth — near 1 for deterministic quadratic structure
+    (the tadpole control), near 0 for random observables.
+    """
+    rng = random.Random(seed)
+    idx = list(range(len(fluxes)))
+    rng.shuffle(idx)
+    folds = [idx[i::n_folds] for i in range(n_folds)]
+    preds = [0.0] * len(fluxes)
+    for fold in folds:
+        train = [i for i in idx if i not in set(fold)]
+        train_x = [fluxes[i] for i in train]
+        train_y = [y[i] for i in train]
+        test_x = [fluxes[i] for i in fold]
+        p = _ridge_predict(train_x, train_y, test_x, lam)
+        for j, i in enumerate(fold):
+            preds[i] = p[j]
+    return _pearson(preds, y)
