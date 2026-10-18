@@ -37,6 +37,8 @@ def run(model_args: dict, N: int, seed: int):
     )
     rows = []
     for i in range(len(z0)):
+        if i % 50 == 0:
+            print(f"  vac {i}/{len(z0)}", flush=True)
         x0 = model._convert_complex_to_real(
             z0[i], jnp.conj(z0[i]), tau0[i], jnp.conj(tau0[i])
         )
@@ -50,6 +52,7 @@ def run(model_args: dict, N: int, seed: int):
                     jnp.array(m), complex(t), jnp.array(fluxes0[i])
                 )))
                 row = {
+                    "flux": [int(x) for x in fluxes0[i]],
                     "log_W0": float(np.log(W0)),
                     "log_gs": float(np.log(1.0 / np.imag(t))),
                     "tadpole": float(model.tadpole(jnp.array(fluxes0[i]))),
@@ -86,11 +89,14 @@ def run(model_args: dict, N: int, seed: int):
 def main() -> None:
     data = {}
     for mid in (1, 2):
+        print(f"model {mid} starting", flush=True)
         data[f"h12_2_model{mid}"] = run(
             {"h12": 2, "model_ID": mid, "model_type": "KS", "maximum_degree": 0},
             N=200, seed=42 + mid,
         )
-    print(json.dumps(data))
+    with open("/home/rob/flux_observables.json", "w") as f:
+        json.dump(data, f)
+    print("FLUX_OBSERVABLES_DONE", flush=True)
 
 
 if __name__ == "__main__":
