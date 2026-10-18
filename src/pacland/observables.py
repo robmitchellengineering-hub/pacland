@@ -50,4 +50,18 @@ TOPOLOGY_OBSERVABLES: tuple[DeficitObservable, ...] = (
     DeficitObservable("kappa (quintic)", True, True, True),
 )
 
-__all__ = ["STANDARD_OBSERVABLES", "TOPOLOGY_OBSERVABLES"]
+# The flux-vacua oracle (JAXVacua) sector. The D3 tadpole N_flux is EXACTLY the
+# symplectic pairing F^T J H — recovered at machine precision (r=1.0, residual
+# ~1e-14) from data/vacua_observables.json, with J = [0 I; -I 0] the standard
+# symplectic form (scripts/validate_tadpole.py). That is the first validated rung
+# of the flux sector (m=1); W0, g_s, gauge couplings and the mass spectrum remain
+# unvalidated — and the mass spectrum is uncomputable (the documented boundary).
+FLUX_OBSERVABLES: tuple[DeficitObservable, ...] = (
+    DeficitObservable("N_flux (tadpole)", True, True, True),
+    DeficitObservable("log W0", True, True, False),
+    DeficitObservable("log g_s", True, True, False),
+    DeficitObservable("gauge coupling", True, True, False),
+    DeficitObservable("mass spectrum", True, False, False),
+)
+
+__all__ = ["STANDARD_OBSERVABLES", "TOPOLOGY_OBSERVABLES", "FLUX_OBSERVABLES"]

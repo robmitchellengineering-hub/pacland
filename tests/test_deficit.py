@@ -8,7 +8,7 @@ from math import inf
 
 from pacland.certificate import hoeffding_radius
 from pacland.deficit import DeficitObservable, deficit_report
-from pacland.observables import STANDARD_OBSERVABLES, TOPOLOGY_OBSERVABLES
+from pacland.observables import FLUX_OBSERVABLES, STANDARD_OBSERVABLES, TOPOLOGY_OBSERVABLES
 
 # Canonical ten-observable set (docs/observable-measure.md §3), classified for
 # the deficit report. Source of truth: pacland.observables.STANDARD_OBSERVABLES.
@@ -56,6 +56,16 @@ class TestDeficit(unittest.TestCase):
         self.assertEqual(r.n_validation, 4)
         self.assertFalse(r.vacuous)
         self.assertAlmostEqual(r.radius, hoeffding_radius(4, 0.025))
+
+    def test_flux_sector_tadpole_is_validated(self):
+        # The tadpole is the exact symplectic pairing (validated); the other flux
+        # observables (W0, g_s, gauge, masses) are not, so flux m = 1.
+        r = deficit_report(FLUX_OBSERVABLES)
+        self.assertEqual(r.n_observables, 5)
+        self.assertEqual(r.n_validation, 1)
+        self.assertFalse(r.vacuous)
+        names = [o.name for o in FLUX_OBSERVABLES if o.validated]
+        self.assertEqual(names, ["N_flux (tadpole)"])
 
     def test_pinned_radii(self):
         # Guard the numbers: m=19 -> ~31%, m=10 -> ~43%.
