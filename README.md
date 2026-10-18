@@ -39,6 +39,7 @@ through the oracle-callable interface in `learnability.sampler`.
 ## Repo map
 
 - [`ROADMAP.md`](ROADMAP.md) — the linear argument as a paper outline (start here)
+- [`paper/preprint.md`](paper/preprint.md) — the certificate framework written up as a preprint (+ `paper/PACLAND-preprint.pdf`)
 - [`docs/architecture.md`](docs/architecture.md) — the six layers (L1–L6)
 - [`docs/verification.md`](docs/verification.md) — the Valiant certificate and the two-level error bound (conceptual)
 - [`docs/verification-formal.md`](docs/verification-formal.md) — the rigorous bound, cost model, and formal learnability conjecture
