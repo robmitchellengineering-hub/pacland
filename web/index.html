@@ -112,6 +112,20 @@
     </table>
     <p class="muted">None of these is <em>undecidable</em> — the landscape problem is an epistemic and underdetermination limit, not a Turing limit. That's itself a finding: the path forward is "build the missing oracles" and "compute the invariants of the underdetermined set," not "invent a faster computer."</p>
 
+    <h2 id="swampland">The swampland connection — the constraint, measured</h2>
+    <p>The constraint-first theorem <em>is</em> the swampland program as a measurement: every swampland conjecture says "consistency <strong>forbids</strong> X" — the structure lives in the constraints, not in what the theory produces. So each conjecture becomes a falsifiable prediction on our samples:</p>
+    <table>
+      <thead><tr><th>conjecture</th><th>quantity</th><th>ridge r</th><th>verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Weak Gravity (electric)</td><td>g_min = lightest coupling</td><td>−0.13</td><td><span class="tag">uniform</span></td></tr>
+        <tr><td>Weak Gravity (electric)</td><td>g_mean</td><td>−0.16</td><td><span class="tag">uniform</span></td></tr>
+        <tr><td>No global symmetries</td><td>charge gcd</td><td>—</td><td><span class="tag">consistent (gcd = 1)</span></td></tr>
+        <tr><td>Distance (proxy)</td><td>log m_light vs flux</td><td>+0.21</td><td><span class="tag">unresolved</span></td></tr>
+        <tr><td>Gravity / tadpole (anchor)</td><td>N_flux</td><td>+0.98</td><td><span class="tag">structured</span></td></tr>
+      </tbody>
+    </table>
+    <p>The Weak-Gravity scale Λ = g·M_pl depends on g_s through the stabilized moduli → uniform in flux (r &lt; 0.25), exactly as constraint-first predicts. The distance-conjecture proxy is reported, not claimed — it needs the full Kähler sector (the bigger-machine chase). Run it with <code>scripts/test_swampland.py</code>; 126 tests green.</p>
+
     <h2 id="use">Use it</h2>
     <p>The whole discipline is a pip-installable, pure-stdlib Python library with a CLI:</p>
     <pre style="background:#f0f2f7;padding:1rem;border-radius:8px;overflow-x:auto;"><code>pip install -e git+https://github.com/robmitchellengineering-hub/pacland.git#egg=pacland
