@@ -48,6 +48,7 @@ through the oracle-callable interface in `learnability.sampler`.
 - [`docs/oracle.md`](docs/oracle.md) — L2 spec: the oracle interface, error model, and calibration protocol
 - [`docs/encoding.md`](docs/encoding.md) — the genotype encoding and mutation operators
 - [`docs/open-questions.md`](docs/open-questions.md) — limits, the measure problem, and the learnability conjecture
+- [`docs/selection.md`](docs/selection.md) — L6: the measure-verifier (what's buildable for selection)
 - [`docs/tooling.md`](docs/tooling.md) — prior art and tooling: CYTools, cymetric, cohomCalg, and the ML-for-the-landscape literature
 - [`docs/toolchain.md`](docs/toolchain.md) — how to install CYTools (Linux path + macOS alternative)
 - [`scripts/install_cytools.sh`](scripts/install_cytools.sh) — reproducible CYTools install + quintic verification

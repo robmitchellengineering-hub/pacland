@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""Generate the PACLAND explainer PDF.
+"""Generate the PACLAND explainer PDF (repo root).
 
 Requires fpdf2:  python3 -m pip install --user fpdf2
-Outputs ../PACLAND-explainer.pdf (one level above the repo).
 """
+import os
+
 from fpdf import FPDF
 
 FONT = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
-OUT = "/Users/mac/Documents/DeepSeek/PACLAND-explainer.pdf"
+_OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                    "PACLAND-explainer.pdf")
 
 # (kind, text)  — kinds: title, subtitle, h (section), p (paragraph), b (bullet), table
 C = [
@@ -108,8 +110,8 @@ def build() -> None:
             _table(pdf)
 
     _footer(pdf)
-    pdf.output(OUT)
-    print(f"wrote {OUT}  ({pdf.pages_count} pages)")
+    pdf.output(_OUT)
+    print(f"wrote {_OUT}  ({pdf.pages_count} pages)")
 
 
 def _table(pdf: FPDF) -> None:
