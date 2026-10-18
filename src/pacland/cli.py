@@ -135,7 +135,7 @@ def _cmd_verify(args) -> None:
 def _cmd_deficit(args) -> None:
     """Compute the Mitchell Verification Deficit: m = validated oracle outputs."""
     from .deficit import DeficitObservable, deficit_report
-    from .observables import STANDARD_OBSERVABLES
+    from .observables import STANDARD_OBSERVABLES, TOPOLOGY_OBSERVABLES
 
     obs = list(STANDARD_OBSERVABLES)
     if args.observables:
@@ -143,7 +143,7 @@ def _cmd_deficit(args) -> None:
             obs = [DeficitObservable(**o) for o in json.load(f)]
 
     r = deficit_report(obs, delta_e=args.delta)
-    print("Mitchell Verification Deficit")
+    print("Mitchell Verification Deficit — SM physics sector")
     print(f"  observables: {r.n_observables}")
     print(f"  measured:    {r.n_measured}   (target c* known)")
     print(f"  computable:  {r.n_computable}   (oracle can evaluate)")
@@ -153,6 +153,14 @@ def _cmd_deficit(args) -> None:
     radius = "INFINITE (vacuous)" if r.vacuous else f"{r.radius:.4f}"
     print(f"  certificate radius sqrt(ln(1/delta_e)/2m): {radius}")
     print(f"  verdict: {'deficit TOTAL — no error-bounded certificate exists' if r.vacuous else 'bounded'}")
+
+    # The first validated oracle (CYTools topology) — the deficit-closing mechanism.
+    t = deficit_report(list(TOPOLOGY_OBSERVABLES), delta_e=args.delta)
+    print("\nMitchell Verification Deficit — topology sector (CYTools, quintic)")
+    print(f"  observables: {t.n_observables}  measured: {t.n_measured}  "
+          f"computable: {t.n_computable}  VALIDATED: {t.n_validation}  <- m")
+    print(f"  certificate radius: {t.radius:.4f}  verdict: {'bounded' if not t.vacuous else 'vacuous'}")
+    print("\n  -> the deficit closes one validated oracle at a time; topology is the first rung.")
 
 
 def main(argv=None) -> None:

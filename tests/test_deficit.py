@@ -8,7 +8,7 @@ from math import inf
 
 from pacland.certificate import hoeffding_radius
 from pacland.deficit import DeficitObservable, deficit_report
-from pacland.observables import STANDARD_OBSERVABLES
+from pacland.observables import STANDARD_OBSERVABLES, TOPOLOGY_OBSERVABLES
 
 # Canonical ten-observable set (docs/observable-measure.md §3), classified for
 # the deficit report. Source of truth: pacland.observables.STANDARD_OBSERVABLES.
@@ -46,6 +46,15 @@ class TestDeficit(unittest.TestCase):
         r = deficit_report(obs)
         self.assertEqual(r.n_prediction_zone, 1)
         self.assertEqual(r.n_validation, 0)
+
+    def test_topology_sector_is_first_validated_oracle(self):
+        # CYTools reproduces the quintic's h11=1, h21=101 exactly, so topology is
+        # the first sector with a calibrated error model: m=2, bounded (not vacuous).
+        r = deficit_report(TOPOLOGY_OBSERVABLES)
+        self.assertEqual(r.n_observables, 2)
+        self.assertEqual(r.n_validation, 2)
+        self.assertFalse(r.vacuous)
+        self.assertAlmostEqual(r.radius, hoeffding_radius(2, 0.025))
 
     def test_pinned_radii(self):
         # Guard the numbers: m=19 -> ~31%, m=10 -> ~43%.

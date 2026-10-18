@@ -31,4 +31,14 @@ STANDARD_OBSERVABLES: tuple[DeficitObservable, ...] = (
     DeficitObservable("Lambda_MPl4",     True, False, False),  # hardest — not computable
 )
 
-__all__ = ["STANDARD_OBSERVABLES"]
+# The first validated oracle output: CYTools topology. The quintic's h11=1, h21=101
+# are known exactly, and CYTools reproduces them (docs/toolchain.md, VERIFIED on
+# studio-linux). So the oracle IS validated for topology — m=2 in that sector — even
+# though the SM-observable deficit above is still total. The honest picture is two
+# sectors: topology closed, SM physics open.
+TOPOLOGY_OBSERVABLES: tuple[DeficitObservable, ...] = (
+    DeficitObservable("h11 (quintic)", True, True, True),
+    DeficitObservable("h21 (quintic)", True, True, True),
+)
+
+__all__ = ["STANDARD_OBSERVABLES", "TOPOLOGY_OBSERVABLES"]
