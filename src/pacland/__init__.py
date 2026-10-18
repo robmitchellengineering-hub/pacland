@@ -26,6 +26,7 @@ from .certificate import (
     hoeffding_radius,
     two_level_certificate,
 )
+from .constraints import elimination_certificate, elimination_fraction
 from .deficit import DeficitObservable, DeficitReport, deficit_report
 from .error_model import CalibrationVerdict, ErrorModel, Kind, calibrate
 from .measure import Measure, Observable
@@ -44,6 +45,8 @@ __all__ = [
     "finite_d_certificate",
     "hoeffding_radius",
     "two_level_certificate",
+    "elimination_certificate",
+    "elimination_fraction",
     "CalibrationVerdict",
     "DeficitObservable",
     "DeficitReport",
