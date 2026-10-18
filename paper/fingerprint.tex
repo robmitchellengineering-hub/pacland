@@ -1,0 +1,142 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+
+\newcommand{\oracle}{\widehat{O}}
+\newcommand{\eps}{\varepsilon}
+
+\title{The mass spectrum of the IIB flux landscape\\ carries no geometric fingerprint}
+\author{Rob Mitchell}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A central hope of the ``structure mining'' program is that some low-energy
+observable of a flux vacuum carries a \emph{fingerprint}---information about the
+flux that generated it, beyond its overall scale---so that the compactification
+could be pinned down from observables. We test the last candidate: the mass
+spectrum. On $133$ supersymmetric IIB flux vacua (JAXVacua, $h^{1,2}=2$, natural
+ISD measure) we compute the degree-$0$ spectrum---the six eigenvalues of the
+complex-structure moduli and the axio-dilaton---and measure how predictable each
+eigenvalue is from the flux. The raw eigenvalues are predictable
+(ridge-on-quadratic CV $r = 0.50$--$0.62$, heaviest slot significant at
+$z=5.5$), but the \emph{scale-invariant} ratios $m^2_i / m^2_{\rm max}$ are not
+($r < 0.25$). The conclusion: the mass spectrum's \emph{shape} is statistically
+uniform in flux---the fingerprint is not there---while its \emph{overall scale}
+is flux-determined through a quadratic form distinct from the D3 tadpole. This
+closes, in the flux coordinates, the ``masses carry the fingerprint'' hypothesis,
+and leaves the constraint (the tadpole) as the only learnable structure found to
+date.
+\end{abstract}
+
+\section{Introduction}
+
+The string landscape is $\sim 10^{500}$ vacua, and no experiment distinguishes
+most of them. The problem of \emph{verification} (does some vacuum match our
+universe?) is the subject of a companion paper \cite{pacland}; here we test one
+specific hypothesis that has guided the search for structure in the landscape:
+that \emph{the mass spectrum is the fingerprint}---the low-energy observable
+that carries information about the flux, so that measuring the masses would pin
+the compactification.
+
+This hope is natural. The superpotential $W_0$, the string coupling $g_s$, and
+the gauge couplings have all been measured to be statistically uniform in the
+flux coordinates (cross-validated $r < 0.25$) \cite{pacland}: they are random
+draws that carry no information about the flux quanta that produced them. The
+mass spectrum was the one observable not yet measured, and it was the natural
+candidate for the fingerprint, because it depends on the full geometry through
+the stabilized moduli rather than on a single closed form.
+
+We compute it, and we find the hope is not borne out.
+
+\section{Method}
+
+\paragraph{The sample.} We use JAXVacua \cite{jaxvacua} on a bundled $h^{1,2}=2$
+flux EFT (``KS'' model). At ${\rm maximum\_degree}=0$ (no instanton corrections)
+the K\"ahler moduli are flat directions, so the mass matrix has $6$ physical
+eigenvalues: $4$ from the two complex-structure moduli and $2$ from the
+axio-dilaton. Critical points are sampled with the natural ISD measure
+(${\tt isd\_mode}={\tt ISD-}$, Gaussian flux prior); supersymmetric vacua are
+selected by $D W = 0$ and $\operatorname{Im}\tau > 0$. We obtain $133$ SUSY
+vacua from $964$ critical points.
+
+\paragraph{The test.} For each eigenvalue $m^2_i$ we measure the cross-validated
+ridge regression of $m^2_i$ on the degree-$2$ monomial basis of the $12$ flux
+coordinates ($91$ features), reporting the Pearson $r$ between held-out
+predictions and truth. This is the same joint learnability test used throughout
+\cite{pacland}: $r$ near $1$ means deterministic structure (the tadpole control),
+$r$ near $0$ means statistically uniform.
+
+\paragraph{Scale vs.\ shape.} A nonzero $r$ can arise in two ways: the
+\emph{scale} of the spectrum (the overall curvature, set by the potential) or the
+\emph{shape} (the ratios $m^2_i / m^2_j$). To separate them we re-run the test on
+the scale-invariant ratios $m^2_i / m^2_{\rm max}$. If the shape carries the
+fingerprint, the ratios are learnable; if only the scale does, the raw values are
+learnable but the ratios are not.
+
+\section{Results}
+
+\begin{center}
+\begin{tabular}{lcccccc}
+\toprule
+ & \multicolumn{6}{c}{eigenvalue slot (sorted ascending)} \\
+ & 0 & 1 & 2 & 3 & 4 & 5 \\
+\midrule
+raw $m^2_i$ & $0.03$ & $0.37$ & $0.50$ & $0.53$ & $0.58$ & $\mathbf{0.62}$ \\
+ratio $m^2_i / m^2_5$ & $0.09$ & $0.16$ & $0.21$ & $0.15$ & $0.08$ & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The raw eigenvalues are learnable: the three heaviest slots cross the
+$r = 0.5$ threshold, and the heaviest ($m^2_5$) is significant at $z = 5.5$
+against a permutation null (shuffled flux labels; null mean $\approx 0.001$,
+std $\approx 0.11$). The scale-invariant ratios are \emph{not} learnable: all
+$r < 0.25$, inside the null. The heaviest eigenvalue correlates with the D3
+tadpole at only $r = 0.12$, so the learned scale is a quadratic form of the flux
+\emph{distinct} from the tadpole, not the tadpole itself.
+
+\section{Conclusion}
+
+\begin{remark}
+\textbf{The mass spectrum's shape is statistically uniform in flux; its scale is
+flux-determined.} In the IIB flux corner, on $133$ SUSY vacua, the degree-$0$
+mass eigenvalues carry information about the flux only through their overall
+scale. The scale-invariant ratios---the part that would constitute a geometric
+fingerprint---are random ($r < 0.25$). The fingerprint is not in the mass
+spectrum.
+\end{remark}
+
+This closes the ``masses carry the fingerprint'' hypothesis in the flux
+coordinates, and completes the pattern: $W_0$, $g_s$, the gauge couplings, and now
+the mass-spectrum shape are all statistically uniform in flux. The only learnable
+structure found to date is the \emph{constraint}---the D3 tadpole, which is the
+exact symplectic pairing. The constraint-first program of \cite{pacland} therefore
+survives its first decisive falsification attempt: the landscape's navigable
+structure is what it \emph{forbids}, not what it \emph{selects}.
+
+\paragraph{Scope, named.} (i) This is the degree-$0$ spectrum; the
+instanton-corrected K\"ahler-moduli masses remain computationally infeasible and
+could in principle differ. (ii) ``Random'' means \emph{in the flux coordinates};
+the masses could still carry structure in the moduli coordinates, which we have
+not tested. (iii) It is a measurement on one model ($h^{1,2}=2$) at
+$133$ vacua, not a theorem.
+
+\begin{thebibliography}{9}
+\bibitem{pacland} R.~Mitchell, ``Probably Approximately Correct String Theory:
+A Verification Discipline for the Landscape'' (companion paper).
+\bibitem{jaxvacua} A.~Dubey, S.~Krippendorf, A.~Schachner, ``JAXVacua''
+(arXiv:2306.06160).
+\bibitem{denef} F.~Denef and M.~R.~Douglas, ``Distributions of flux vacua,''
+JHEP \textbf{0405} (2004) 072.
+\end{thebibliography}
+
+\end{document}

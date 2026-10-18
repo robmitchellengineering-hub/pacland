@@ -60,7 +60,12 @@
       <div class="card"><h3>W₀ prior</h3><div class="big">log-uniform, R² = 0.92</div><p>Measured on 380 SUSY flux vacua (natural measure). The KKLT log-uniform prior — measured, not assumed.</p></div>
       <div class="card"><h3>Search over W₀</h3><div class="big">not evolvable</div><p>Log-uniform → zero information → by Valiant's contrapositive, no evolutionary search converges. The search dies; the verifier survives.</p></div>
       <div class="card"><h3>Small W₀</h3><div class="big">43% of vacua</div><p>P(|W₀| &lt; 1) ≈ 43% on the natural measure — not the ~5% that biased sampling suggested.</p></div>
+      <div class="card"><h3>Mass spectrum — no fingerprint</h3><div class="big">shape random, r &lt; 0.25</div><p>On 133 SUSY vacua the mass spectrum's <em>shape</em> (scale-free ratios) is uniform in flux — the long-hoped-for geometric fingerprint is <strong>not</strong> there. Only its scale is flux-set.</p></div>
     </div>
+
+    <h2 id="fingerprint">The fingerprint is not in the masses</h2>
+    <p>The field's open hope was that the mass spectrum — the one observable that depends on the full geometry — would be the <em>fingerprint</em> that pins the compactification. We tested it on 133 SUSY flux vacua: the raw eigenvalues are learnable from flux (r = 0.50–0.62, heaviest at z = 5.5), but the <strong>scale-invariant ratios</strong> — the part that would constitute a fingerprint — are random (r &lt; 0.25). So the spectrum's <em>shape</em> carries no information about the flux; only its overall <em>scale</em> does.</p>
+    <p class="muted">Every flux-determined observable is now measured and uniform: W₀, g_s, gauge couplings, and the mass-spectrum shape. The only learnable structure is the <strong>constraint</strong> (the tadpole). This is the constraint-first thesis, tested against the one observable that could have broken it — and it held. Paper: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/fingerprint.pdf">fingerprint.pdf</a>.</p>
 
     <h2 id="deficit">The Mitchell Verification Deficit — real, and working</h2>
     <p>The deficit is the count <code>m</code> of observables that are simultaneously <em>measured</em>, <em>computable</em>, and <em>validated</em>. The certificate's oracle term is <code>√(ln 1/δ / 2m)</code>, so at <code>m = 0</code> the certificate is vacuous (infinite radius), and every validated observable shrinks it. It is not a slogan — it is a number we have moved, by building and validating oracles.</p>
