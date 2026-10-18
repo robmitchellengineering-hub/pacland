@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 import random
 import unittest
 
-from pacland.learnability_guards import guard_no_linear_structure
+from pacland.learnability_guards import guard_no_linear_structure, guard_no_quadratic_structure
 
 
 def make_features(n, dim, seed=0):
@@ -36,6 +36,22 @@ class TestNoLinearStructureGuard(unittest.TestCase):
         passed, msg = guard_no_linear_structure(feats, targets)
         self.assertFalse(passed)  # the guard must catch linear structure
         self.assertIn("R2", msg)
+
+
+class TestNoQuadraticStructureGuard(unittest.TestCase):
+    def test_passes_on_random_target(self):
+        rng = random.Random(3)
+        feats = make_features(100, 6)
+        targets = [rng.gauss(0, 1) for _ in feats]
+        self.assertTrue(guard_no_quadratic_structure(feats, targets)[0])
+
+    def test_fails_on_quadratic_target(self):
+        # mutation: a target that IS a pairwise quadratic function (f0*f1)
+        feats = make_features(100, 6, seed=4)
+        targets = [f[0] * f[1] for f in feats]
+        passed, msg = guard_no_quadratic_structure(feats, targets)
+        self.assertFalse(passed)  # the guard must catch quadratic structure
+        self.assertIn("max_cross", msg)
 
 
 if __name__ == "__main__":

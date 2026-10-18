@@ -67,4 +67,41 @@ def guard_no_linear_structure(features, targets, r2_threshold: float = 0.3):
     return ok, f"R2={r2:.3f} F={f:.2f} (threshold {r2_threshold})"
 
 
-__all__ = ["linreg", "guard_no_linear_structure"]
+def _pearson(xs, ys):
+    n = len(xs)
+    mx, my = sum(xs) / n, sum(ys) / n
+    sx = sum((x - mx) ** 2 for x in xs) ** 0.5
+    sy = sum((y - my) ** 2 for y in ys) ** 0.5
+    if sx == 0 or sy == 0:
+        return 0.0
+    return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / (sx * sy)
+
+
+def max_cross_correlation(features, targets):
+    """Largest |correlation| between a pairwise product f_i*f_j and the target."""
+    dim = len(features[0])
+    best = 0.0
+    for i in range(dim):
+        for j in range(i + 1, dim):
+            r = abs(_pearson([f[i] * f[j] for f in features], targets))
+            best = max(best, r)
+    return best
+
+
+def guard_no_quadratic_structure(features, targets, r_threshold: float = 0.3):
+    """Assert no pairwise-quadratic structure: max cross-term |corr| < threshold.
+
+    Separates "random" (passes) from "nonlinear/quadratic" (fails) — e.g. the D3
+    tadpole is quadratic in the flux and must FAIL this guard, while W0 passes.
+    """
+    m = max_cross_correlation(features, targets)
+    ok = m < r_threshold
+    return ok, f"max_cross|r|={m:.3f} (threshold {r_threshold})"
+
+
+__all__ = [
+    "linreg",
+    "max_cross_correlation",
+    "guard_no_linear_structure",
+    "guard_no_quadratic_structure",
+]
