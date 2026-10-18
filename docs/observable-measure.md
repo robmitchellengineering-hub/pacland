@@ -127,8 +127,8 @@ A **43%** confidence radius. The certificate is effectively vacuous — and the 
 *tells us so, with a number*. The honest conclusion of the toy case:
 
 > To drive the oracle-error radius below 1% at 97.5% confidence, you need
-> `m ≈ 18,000` *measured* points of the true theory — four orders of magnitude more than
-> the ~19–25 free parameters the Standard Model actually gives us to measure.
+> `m ≈ 18,000` *measured* points of the true theory — three orders of magnitude (≈10³) more
+> than the ~19–25 free parameters the Standard Model actually gives us to measure.
 
 This is the quantitative statement of the deficit that has been implicit since the first
 message: **the framework's value is not that it solves unification, but that it turns
@@ -149,7 +149,7 @@ bounded by *measurable physics*, not by compute.
    written) is what feeds `p̂_e`.
 4. **Finite ≠ complete.** Ten observables are a toy. The real list is longer but still
    finite and still small (~tens), so the finite-set conclusion (§5) is robust — it is
-   the *smallness of `m`*, not the toy, that drives the 43%.
+   the *smallness of `m`*, not the toy, that drives the tens-of-percent radius.
 
 ## 9. Open items
 
@@ -169,4 +169,4 @@ bounded by *measurable physics*, not by compute.
 `D` is a finite, log-space, weighted list of dimensionless observables; making it finite
 collapses the sampling term and reveals that verification is bounded by the number of
 *measurable* points of the true theory — which today is ~19, and therefore the current
-certificate radius is ~43%, not ~1%.
+certificate radius is ~31%, not ~1% (43% on the ten-observable toy set).

@@ -24,6 +24,7 @@ from .certificate import (
     hoeffding_radius,
     two_level_certificate,
 )
+from .deficit import DeficitObservable, DeficitReport, deficit_report
 from .error_model import CalibrationVerdict, ErrorModel, Kind, calibrate
 from .measure import Measure, Observable
 from .selection import TypicalityVerdict, ks_uniformity, quantile, typicality_test
@@ -35,6 +36,9 @@ __all__ = [
     "hoeffding_radius",
     "two_level_certificate",
     "CalibrationVerdict",
+    "DeficitObservable",
+    "DeficitReport",
+    "deficit_report",
     "ErrorModel",
     "Kind",
     "calibrate",

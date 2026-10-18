@@ -37,7 +37,7 @@ yielding one necessary-condition conjecture: the compactification→observables 
 SQ-learnable. Finally, making the observable measure finite collapses the sampling term
 and exposes the binding constraint — verification is bounded by the number of
 *measurable* points of the true theory, ~19 for the Standard Model, which today gives a
-certificate radius of ~43%, not ~1%. The framework's product is not a solution to
+certificate radius of ~31% (43% on the ten-observable toy set), not ~1%. The framework's product is not a solution to
 unification but a **quantitative statement of the verification deficit** — and a precise
 sense in which string theory is, today, barely verifiable.
 
@@ -116,12 +116,13 @@ you compute the exact weighted disagreement, no `n`. What remains is the oracle-
 term, bounded by `m`, the number of *measured* points of the true theory. With `m ~ 19`:
 
 ```
-radius  =  sqrt( ln(1/δ_e) / (2m) )  ≈  0.43   (at δ_e = 0.025)
+radius  =  sqrt( ln(1/δ_e) / (2m) )  ≈  0.31   (at δ_e = 0.025, m = 19)
 ```
 
-This is the paper's headline number: **string theory is today verifiable only to ~43%
-tolerance in the observables that matter, and the bottleneck is measurable physics, not
-compute.** A 1% certificate needs `m ≈ 18,000` — four orders of magnitude more than we
+This is the paper's headline number: **string theory is today verifiable only to ~31%
+tolerance in the observables that matter (43% on the ten-observable toy set), and the
+bottleneck is measurable physics, not compute.** A 1% certificate needs `m ≈ 18,000` —
+three orders of magnitude more than we
 have.
 
 *Doc:* [`docs/observable-measure.md`](docs/observable-measure.md) §5–§7.
@@ -132,7 +133,7 @@ Three claims the framework actually delivers, in increasing order of substance:
 
 1. **A certificate is computable** from quantities we can measure (`p̂_g`, `p̂_e`) plus
    declared budgets (`ε, β, δ_s, δ_e`). Verification stops being a vibe.
-2. **The verification deficit is quantified.** ~43% today, ~1% only with ~18k measured
+2. **The verification deficit is quantified.** ~31% today (~43% on the toy set), ~1% only with ~18k measured
    points. "We can't verify string theory" becomes a number with a denominator.
 3. **A falsifiable structural claim.** The learnability conjecture, attackable on small
    classes, whose false branch is a genuine negative result about landscape search.
@@ -170,7 +171,7 @@ hard second, and no amount of the first buys the second.
 | Search needs uniform convergence / VC·SQ dimension | **imported** (standard learning theory) |
 | Evolvable ⇒ learnable | **imported** (Valiant 2009; Feldman 2008/09) |
 | `SQdim(C) = O(poly(p))` | **conjecture** — the governing question |
-| Measurable-physics bound (~43% today) | **derived** (given the finite-`D` and `m ~ 19` inputs) |
+| Measurable-physics bound (~31% at `m ~ 19`; 43% at `m = 10`) | **derived** (given the finite-`D` and `m ~ 19` inputs) |
 | Educability instantiation (assimilation rule) | **defined** (PACLAND's formalization of Valiant's concept) |
 | Evolvability with imperfect performance oracle | **open** — the most publishable generalization |
 | The landscape measure (selection) | **open** — physics, not ours to solve |
