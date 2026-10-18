@@ -68,6 +68,15 @@ source, not a textbook formula:**
   simultaneously measured + computable + validated. Today **m = 5**: topology
   (CYTools: h11, h21, c2, κ) = 4, flux (JAXVacua: tadpole = exact symplectic
   pairing FᵀJH) = 1. SM physics = 0 (the real frontier).
+- **Every JAXVacua model is a truncation.** `h12` = number of CS moduli KEPT. The
+  bundled `h12=2` keeps 2 of 272 (its polytope has h¹¹=2, h²¹=272). All measured
+  results (structure map, fingerprint, no-scale) are inside this 2-moduli slice.
+- **TO-DO (bigger systems, Rob 2026-10-19): chase the full model on a big machine.**
+  h12=25 (25 of 245) BUILDS in 54s but `sample_critical_points` OOMs at ~96 GB even
+  at n_target=2; h12=272 (full) crashes JAXVacua with `M_cap_generators` unbound.
+  To go further needs ~100 GB+ RAM, a memory-smarter flux sampler, or a JAXVacua
+  patch for the Mori-cone generators at large h¹¹. The paper's ancillary polytopes
+  live at arXiv:2306.06160 (h12_5..h12_25).
 - `pacland climb` runs the deficit climber on the mesh (studio-linux via
   `mac → win-2 → studio-linux`); `data/cy_corpus.json` is the answer key.
 - Live site: https://pacland.netlify.app (Netlify) + GitHub Pages mirror.
