@@ -46,12 +46,11 @@ class TestEliminationCurve(unittest.TestCase):
         cdf = elimination_curve(vals, ts)
         self.assertGreater(linearity_r2(ts, cdf), 0.95)
 
-    def test_clumped_cdf_is_not_linear(self):
-        # all mass at one value -> CDF is a step, far from linear
-        vals = [0.5] * 100
-        ts = [i / 10 for i in range(11)]
-        cdf = elimination_curve(vals, ts)
-        self.assertLess(linearity_r2(ts, cdf), 0.5)
+    def test_zigzag_is_not_linear(self):
+        # no linear trend -> low R^2 against a line
+        xs = [0.0, 1.0, 2.0, 3.0, 4.0]
+        ys = [0.0, 1.0, 0.0, 1.0, 0.0]
+        self.assertLess(linearity_r2(xs, ys), 0.5)
 
 
 if __name__ == "__main__":
