@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PACLAND — a verification discipline for the string landscape</title>
+<meta name="description" content="A probably-approximately-correct verification discipline for string theory: certified deficit, measured priors, and a boundary map of the computable.">
+<style>
+  :root { --ink: #1a1f2e; --muted: #5a6072; --accent: #142a5e; --line: #e3e6ee; --bg: #fbfbfd; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; }
+  header { background: var(--accent); color: #fff; padding: 4rem 1.5rem 3rem; }
+  header .wrap, main .wrap { max-width: 820px; margin: 0 auto; padding: 0 1.5rem; }
+  header h1 { margin: 0 0 .5rem; font-size: 2.1rem; letter-spacing: -.02em; }
+  header .sub { color: #c7d2ee; font-size: 1.05rem; }
+  header .links { margin-top: 1.2rem; }
+  header .links a { color: #fff; border: 1px solid rgba(255,255,255,.4); padding: .35rem .8rem; border-radius: 999px; text-decoration: none; margin-right: .5rem; font-size: .9rem; }
+  header .links a:hover { background: rgba(255,255,255,.12); }
+  main { padding: 2.5rem 0 4rem; }
+  h2 { font-size: 1.4rem; margin: 2.2rem 0 .6rem; color: var(--accent); letter-spacing: -.01em; }
+  p { margin: .6rem 0; }
+  .lead { font-size: 1.05rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.2rem 0; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; background: #fff; }
+  .card h3 { margin: 0 0 .4rem; font-size: 1rem; }
+  .card .big { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+  .card p { margin: .3rem 0 0; font-size: .92rem; color: var(--muted); }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; background: #fff; }
+  th, td { text-align: left; padding: .55rem .75rem; border-bottom: 1px solid var(--line); font-size: .95rem; }
+  th { background: #f4f6fa; color: var(--accent); }
+  .tag { display: inline-block; font-size: .72rem; padding: .15rem .55rem; border-radius: 999px; background: #eef1f8; color: var(--accent); margin-right: .4rem; }
+  code { background: #f0f2f7; padding: .1rem .4rem; border-radius: 4px; font-size: .9em; }
+  .muted { color: var(--muted); }
+  footer { border-top: 1px solid var(--line); padding: 1.5rem; text-align: center; color: var(--muted); font-size: .85rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>PACLAND</h1>
+    <div class="sub">A probably-approximately-correct <strong>verification discipline</strong> for the string landscape — what you can claim, what you can measure, and what you cannot compute.</div>
+    <div class="links">
+      <a href="#results">Key results</a>
+      <a href="#boundary">Boundary map</a>
+      <a href="#use">Use it</a>
+      <a href="https://github.com/robmitchellengineering-hub/pacland">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <p class="lead">String theory is ~10<sup>500</sup> vacua and no experiment that tells most of them apart. "Unified string theory" fuses two questions — <em>does some vacuum match us?</em> and <em>why that one?</em> — and the field has <strong>no verification layer</strong> for either. PACLAND is that layer, built with Valiant's probably-approximately-correct learning: a certificate that bounds a candidate's error even when the verifier is itself approximate, a measured prior, a negative result, and a map of the computable.</p>
+
+    <h2 id="results">What we measured</h2>
+    <div class="grid">
+      <div class="card"><h3>Verification deficit</h3><div class="big">total (m = 0)</div><p>The certificate is vacuous today: zero observables are simultaneously measured, computable, and validated. The bottleneck is validated oracles, not compute.</p></div>
+      <div class="card"><h3>W₀ prior</h3><div class="big">log-uniform, R² = 0.92</div><p>Measured on 380 SUSY flux vacua (natural measure). The KKLT log-uniform prior — measured, not assumed.</p></div>
+      <div class="card"><h3>Search over W₀</h3><div class="big">not evolvable</div><p>Log-uniform → zero information → by Valiant's contrapositive, no evolutionary search converges. The search dies; the verifier survives.</p></div>
+      <div class="card"><h3>Small W₀</h3><div class="big">43% of vacua</div><p>P(|W₀| &lt; 1) ≈ 43% on the natural measure — not the ~5% that biased sampling suggested.</p></div>
+    </div>
+
+    <h2 id="boundary">The boundary map — what's computable, what isn't</h2>
+    <table>
+      <thead><tr><th>Question</th><th>Sense of "uncomputable"</th><th>What remains computable</th></tr></thead>
+      <tbody>
+        <tr><td>Search the flux landscape over W₀</td><td><span class="tag">intractable</span></td><td>the verifier survives</td></tr>
+        <tr><td>Verify a candidate today</td><td><span class="tag">unmeasurable</span></td><td>the deficit is computable</td></tr>
+        <tr><td>KKLT tuning probability</td><td><span class="tag">unmeasurable</span></td><td>the prior is measured</td></tr>
+        <tr><td>The measure / selection</td><td><span class="tag">underdetermined</span></td><td>measures are evaluable</td></tr>
+        <tr><td>Inverse problem (observables → geometry)</td><td><span class="tag">underdetermined</span></td><td>elimination works</td></tr>
+        <tr><td>Full EFT spectrum</td><td><span class="tag">unmeasurable</span></td><td>scoped build + calibrated miner</td></tr>
+        <tr><td>Small-Λ typicality</td><td><span class="tag">unmeasurable</span></td><td>derived once uplift exists</td></tr>
+      </tbody>
+    </table>
+    <p class="muted">None of these is <em>undecidable</em> — the landscape problem is an epistemic and underdetermination limit, not a Turing limit. That's itself a finding: the path forward is "build the missing oracles" and "compute the invariants of the underdetermined set," not "invent a faster computer."</p>
+
+    <h2 id="use">Use it</h2>
+    <p>The whole discipline is a pip-installable, pure-stdlib Python library with a CLI:</p>
+    <pre style="background:#f0f2f7;padding:1rem;border-radius:8px;overflow-x:auto;"><code>pip install -e git+https://github.com/robmitchellengineering-hub/pacland.git#egg=pacland
+pacland limits                 # the boundary map
+pacland certify "flux over W0" # certify a question
+pacland mine data.json         # classify observables: structured vs random
+pacland constrain data.json    # constraint elimination + uniformity
+pacland verify candidate.json  # run guards + falsify against the SM</code></pre>
+    <p class="muted">Full docs: <code>docs/usage.md</code>. The paper: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/PACLAND-preprint.pdf">PACLAND-preprint.pdf</a>.</p>
+
+  </div>
+</main>
+
+<footer>
+  PACLAND · github.com/robmitchellengineering-hub/pacland · a verification discipline, not a physics solver
+</footer>
+
+</body>
+</html>

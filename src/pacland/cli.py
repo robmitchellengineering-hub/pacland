@@ -98,6 +98,40 @@ def _cmd_certify(args) -> None:
     print(f"    positive: {b.positive}")
 
 
+def _cmd_verify(args) -> None:
+    """Run a candidate through the physics guards (Vault) + reality guards."""
+    from .guards import guard_hodge_numbers, guard_integer_flux, guard_tadpole
+    from .reality_guards import STANDARD_REALITY_GUARDS, falsify_all, ruled_out
+
+    with open(args.candidate) as f:
+        cand = json.load(f)
+
+    flux = cand.get("flux", [])
+    predictions = cand.get("predictions", {})
+    bound = cand.get("tadpole_bound", 100)
+
+    physics = [
+        ("integer_flux", guard_integer_flux(flux)),
+        ("tadpole", guard_tadpole(flux, bound)),
+    ]
+    if "h11" in cand and "h21" in cand:
+        physics.append(("hodge_numbers", guard_hodge_numbers(cand["h11"], cand["h21"])))
+
+    print("Vault — physics guards:")
+    for name, (ok, msg) in physics:
+        print(f"  {'PASS' if ok else 'FAIL'}  {name}: {msg}")
+    admitted = all(ok for _, (ok, _) in physics)
+    print(f"  -> {'ADMITTED' if admitted else 'REFUSED'} "
+          f"({'certificate may be minted' if admitted else 'no certificate'})")
+
+    verdicts = falsify_all(STANDARD_REALITY_GUARDS, predictions)
+    ro = ruled_out(verdicts)
+    pz = [g.name for g in STANDARD_REALITY_GUARDS if verdicts[g.name].in_prediction_zone]
+    print("Reality — falsification vs the Standard Model:")
+    print(f"  ruled out by: {ro if ro else 'none'}")
+    print(f"  prediction zone (not computable): {pz if pz else 'none'}")
+
+
 def main(argv=None) -> None:
     p = argparse.ArgumentParser(
         prog="pacland",
@@ -112,6 +146,10 @@ def main(argv=None) -> None:
     c = sub.add_parser("constrain", help="measure constraint elimination")
     c.add_argument("data", help="JSON file of flux-vacua data")
     c.set_defaults(func=_cmd_constrain)
+
+    v = sub.add_parser("verify", help="run a candidate through guards + falsification")
+    v.add_argument("candidate", help="JSON: {flux, predictions, tadpole_bound?, h11?, h21?}")
+    v.set_defaults(func=_cmd_verify)
 
     l = sub.add_parser("limits", help="print the boundary map")
     l.set_defaults(func=_cmd_limits)
