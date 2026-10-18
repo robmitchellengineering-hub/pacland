@@ -31,14 +31,23 @@ STANDARD_OBSERVABLES: tuple[DeficitObservable, ...] = (
     DeficitObservable("Lambda_MPl4",     True, False, False),  # hardest — not computable
 )
 
-# The first validated oracle output: CYTools topology. The quintic's h11=1, h21=101
-# are known exactly, and CYTools reproduces them (docs/toolchain.md, VERIFIED on
-# studio-linux). So the oracle IS validated for topology — m=2 in that sector — even
-# though the SM-observable deficit above is still total. The honest picture is two
-# sectors: topology closed, SM physics open.
+# The validated oracle outputs: CYTools topology, grown by climbing the rung.
+#
+# First rung (verified earlier, docs/toolchain.md): h11=1, h21=101. Second rung
+# (verified 2026-10-18 on studio-linux, CYTools 1.4.12, quintic):
+#   h11 = 1, h21 = 101, chi = -200, c2 = [-250, 50, 50, 50, 50, 50].
+#
+# Only the *independent* invariants count toward m: h11, h21, and the second Chern
+# class c2 (m=3). chi is NOT counted as a rung — chi = 2(h11 - h21) is *derived*
+# from h11/h21, so it is a consistency check (the oracle is internally coherent),
+# not a new independent validation point. The triple intersection number is
+# basis-dependent in CYTools' toric basis ([-625, -25, 5, 125]); its Kähler-basis
+# value kappa=5 needs a basis projection, so it is also NOT counted. The honest
+# count is m=3, not 5.
 TOPOLOGY_OBSERVABLES: tuple[DeficitObservable, ...] = (
     DeficitObservable("h11 (quintic)", True, True, True),
     DeficitObservable("h21 (quintic)", True, True, True),
+    DeficitObservable("c2 (quintic)", True, True, True),
 )
 
 __all__ = ["STANDARD_OBSERVABLES", "TOPOLOGY_OBSERVABLES"]

@@ -1,0 +1,20 @@
+{
+  "oracle": "CYTools",
+  "version": "1.4.12",
+  "node": "studio-linux",
+  "venv": "/home/rob/cytools-venv/bin/python",
+  "verified": "2026-10-18",
+  "manifold": "quintic threefold (degree-5 hypersurface in P^4)",
+  "polytope": [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1],[-1,-1,-1,-1]],
+  "validated": {
+    "h11": {"got": 1, "expected": 1, "passed": true},
+    "h21": {"got": 101, "expected": 101, "passed": true},
+    "euler_chi": {"got": -200, "expected": -200, "passed": true, "note": "derived (chi = 2(h11-h21)); consistency check, not counted toward m"},
+    "second_chern_class_c2": {"got": [-250, 50, 50, 50, 50, 50], "expected": [-250, 50, 50, 50, 50, 50], "passed": true}
+  },
+  "not_counted": {
+    "triple_intersection_kappa": {"got": [-625, -25, 5, 125], "note": "toric-basis intersection numbers; the Kaehler-basis kappa=5 needs a basis projection (compute_kappa_vector requires a torus localization point tloc)"}
+  },
+  "m_counted": 3,
+  "radius_delta_0025": 0.7841
+}

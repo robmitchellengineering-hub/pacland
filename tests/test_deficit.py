@@ -48,13 +48,14 @@ class TestDeficit(unittest.TestCase):
         self.assertEqual(r.n_validation, 0)
 
     def test_topology_sector_is_first_validated_oracle(self):
-        # CYTools reproduces the quintic's h11=1, h21=101 exactly, so topology is
-        # the first sector with a calibrated error model: m=2, bounded (not vacuous).
+        # CYTools reproduces the quintic's h11, h21 and c2 exactly, so topology is
+        # the first sector with a calibrated error model: m=3, bounded (not vacuous).
+        # chi (derived) and kappa (basis-dependent) are deliberately NOT counted.
         r = deficit_report(TOPOLOGY_OBSERVABLES)
-        self.assertEqual(r.n_observables, 2)
-        self.assertEqual(r.n_validation, 2)
+        self.assertEqual(r.n_observables, 3)
+        self.assertEqual(r.n_validation, 3)
         self.assertFalse(r.vacuous)
-        self.assertAlmostEqual(r.radius, hoeffding_radius(2, 0.025))
+        self.assertAlmostEqual(r.radius, hoeffding_radius(3, 0.025))
 
     def test_pinned_radii(self):
         # Guard the numbers: m=19 -> ~31%, m=10 -> ~43%.
