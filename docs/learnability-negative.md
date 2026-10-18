@@ -55,7 +55,7 @@ quadratic structure. The contrapositive therefore does **not** apply as original
 claimed: the "not evolvable" conclusion is **not established by the learnability
 route**.
 
-## 4. Conclusion — corrected
+## 4. Conclusion — corrected, then re-derived
 
 The robust part and the flawed part must now be separated:
 
@@ -65,14 +65,23 @@ The robust part and the flawed part must now be separated:
 >
 > **Corrected (was wrong):** `flux → W0` is not zero-information; it is weakly
 > learnable (r ≈ 0.6) through multi-coordinate quadratic structure. The Valiant
-> contrapositive therefore does not prove "not evolvable." Any future statement of
-> this result must drop the learnability argument and rest on rarity alone.
+> contrapositive therefore does not prove "not evolvable."
 
-This does **not** rescue search: rarity is a measure fact and remains. It corrects
-the *argument*, not the physics. The honest status of "W0 not evolvable" is now
-**open** (needs a rarity-based or a proper joint-MI argument), and this doc should
-be read as a measurement of log-uniformity plus an explicit retraction of the
-zero-information premise.
+**The re-derivation (2026-10-19): search is still hopeless, by extrapolation.**
+The weak learnability does *not* rescue search. On 174 SUSY vacua, log|W0| has
+std = 0.63 nats, the quadratic model reaches r = 0.62, so its prediction error is
+σ_pred = 0.50 nats. The KKLT target log|W0| = −9.2 sits **9.9 nats below the mean,
+i.e. ~20 σ_pred** — far outside the observed range. A model fit on the data cannot
+guide a search to a point 20 σ_pred away; that is a meaningless extrapolation, not a
+gradient. So the corrected conclusion is:
+
+> **Search over W0 is hopeless by rarity *plus* extrapolation.** W0 is weakly
+> learnable within the observed range (r = 0.62), but the tuning target is ~20
+> prediction-errors outside it, so no search guided by the data can reach it. The
+> conclusion survives; the argument is rarity + extrapolation, not zero-information.
+
+This corrects the *argument*, not the physics: search is still dead, for a reason
+that is now measured rather than assumed.
 
 ## 5. What it means (the honest payoff)
 
