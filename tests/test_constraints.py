@@ -68,7 +68,7 @@ class TestJointElimination(unittest.TestCase):
         self.assertAlmostEqual(j["per"][1]["eliminated"], 0.5)
 
     def test_identical_constraints_are_redundant(self):
-        # both constraints are the same -> joint == single, redundancy < 0
+        # both constraints are the same -> joint == single, interaction < 0
         sample = list(range(100))
         named = [
             ("c1", lambda v: v < 50),
@@ -76,7 +76,22 @@ class TestJointElimination(unittest.TestCase):
         ]
         j = joint_elimination(sample, named)
         self.assertAlmostEqual(j["joint"], 0.5)
-        self.assertLess(j["redundancy"], 0.0)
+        self.assertLess(j["interaction"], 0.0)
+        self.assertEqual(j["interaction_verdict"], "redundant")
+
+    def test_independent_constraints_are_flagged(self):
+        # failure sets independent by construction -> verdict "independent"
+        import random
+        rng = random.Random(0)
+        n = 400
+        sample = list(range(n))
+        named = [
+            ("c1", lambda v: rng.random() < 0.5),
+            ("c2", lambda v: rng.random() < 0.5),
+        ]
+        j = joint_elimination(sample, named, permutations=200)
+        self.assertEqual(j["interaction_verdict"], "independent")
+        self.assertLess(abs(j["interaction_z"]), 2.0)
 
     def test_independent_benchmark(self):
         # half fail c1, half fail c2, failure sets disjoint -> joint = 1.0,

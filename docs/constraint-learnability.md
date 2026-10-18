@@ -61,9 +61,7 @@ for W₀ but for the whole observable sector; the only thing the landscape lets 
 
 The second pillar (verified constraint elimination) composes the same way. On the
 same 107 vacua, the two phenomenological constraints combine to eliminate
-**99.1%** of the landscape, against an independence-product benchmark of 98.2% —
-redundancy **+0.8%**, i.e. the constraints are nearly *independent* (they bite
-different subsets), so elimination compounds multiplicatively:
+**99.1%** of the landscape, against an independence-product benchmark of 98.2%:
 
 | constraint | eliminates |
 |---|---|
@@ -72,15 +70,23 @@ different subsets), so elimination compounds multiplicatively:
 | **intersection** | **99.1%** |
 | certified interval (δ=0.05) | [87.2%, 100.0%] |
 
+The interaction (joint − independent) is **+0.8%** — and it is **not significant**.
+A permutation test over the 2×2 survival table gives **z = +0.74**, i.e. the
+departure from independence is a *single vacuum*: under independence you expect
+1.90 vacua to survive both constraints, and exactly **1** does. The constraints are
+consistent with **perfect independence**, so the elimination compounds
+multiplicatively and the composition adds no hidden overlap penalty.
+
 `src/pacland/constraints.py::joint_elimination` computes the joint fraction, the
-independence benchmark, the redundancy, and a Hoeffding interval on the joint
-fraction. Run it with `pacland constrain data/vacua_observables.json`.
+independence benchmark, the signed interaction, its permutation z-score and verdict
+(`independent` / `redundant` / `complementary`), and a Hoeffding interval on the
+joint fraction. Run it with `pacland constrain data/vacua_observables.json`.
 
 The loop is now closed end-to-end: **Q1** says the learnable structure is the
-constraint (tadpole r=0.99, observables random); **Q2** says the constraints
-compose to eliminate ~99% with a certificate. Constraint-first is no longer a
-preference — it is the only learnable structure *and* the only thing that narrows
-the landscape.
+constraint (tadpole r=0.99, observables random); **Q2** says the constraints are
+independent and compose to eliminate ~99% with a certificate. Constraint-first is
+no longer a preference — it is the only learnable structure *and* the only thing
+that narrows the landscape.
 
 ## Limits (named)
 

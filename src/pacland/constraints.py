@@ -7,6 +7,8 @@ verified constraints is what narrows the landscape by elimination, without searc
 """
 from __future__ import annotations
 
+import random
+
 from .certificate import hoeffding_radius
 
 
@@ -53,25 +55,36 @@ def elimination_curve(values, thresholds) -> list:
     return [sum(1 for v in values if v <= t) / len(values) for t in thresholds]
 
 
-def joint_elimination(sample, constraints, delta: float = 0.05) -> dict:
+def joint_elimination(sample, constraints, delta: float = 0.05,
+                      permutations: int = 500, seed: int = 0) -> dict:
     """Compose constraints: the fraction eliminated by *at least one*.
 
     ``constraints`` is an iterable of ``(name, keep)`` pairs. This is the
     "intersection of verified constraints" of ``docs/new-approach.md`` — the
     mechanism that narrows the landscape by elimination, measured as one object:
 
-      - ``per``            — per-constraint elimination fractions, in order;
-      - ``joint``          — fraction failing at least one constraint;
-      - ``independent``    — what ``joint`` would be if the constraints failed
+      - ``per``             — per-constraint elimination fractions, in order;
+      - ``joint``           — fraction failing at least one constraint;
+      - ``independent``     — what ``joint`` would be if the constraints failed
         independently (``1 - prod(1 - p_i)``);
-      - ``redundancy``     — ``joint - independent``: negative = the constraints
-        overlap (one already implies much of another), positive = they bite
-        complementary subsets of the landscape;
-      - ``certificate``    — the Hoeffding interval on ``joint``.
+      - ``interaction``     — ``joint - independent``, the signed departure from
+        independence: **negative = redundant** (constraints overlap, so ``joint``
+        is *below* the independent-product benchmark), **positive = complementary**
+        (they bite disjoint subsets, so ``joint`` is *above* it);
+      - ``interaction_z``   — permutation z-score of ``interaction`` against the
+        null "the constraints are independent" (each constraint's keep-labels are
+        shuffled, preserving the marginals while destroying association);
+      - ``interaction_verdict`` — ``independent`` / ``redundant`` / ``complementary``
+        at ``|z| >= 2``;
+      - ``n_survive_all``   — the raw count of vacua passing every constraint
+        (the number whose single-vacuum resolution sets the noise floor);
+      - ``certificate``     — the Hoeffding interval on ``joint``.
 
     The joint fraction is itself a Bernoulli parameter over the sample, so it gets
     the same one-sided Hoeffding radius as a single constraint — the composition
-    loses nothing in confidence, only in the breadth of what it rules out.
+    loses nothing in confidence, only in the breadth of what it rules out. The
+    permutation test answers the question the single number cannot: whether an
+    apparent non-zero ``interaction`` is structure or one-vacuum noise.
     """
     sample = list(sample)
     if not sample:
@@ -79,19 +92,43 @@ def joint_elimination(sample, constraints, delta: float = 0.05) -> dict:
     named = [(n, k) for n, k in constraints]
     n = len(sample)
     per = []
-    passes_all = [True] * n
+    keepers = []
     for name, keep in named:
-        p = sum(1 for v in sample if not keep(v)) / n
+        ks = [keep(v) for v in sample]
+        p = sum(1 for k in ks if not k) / n
         per.append({"name": name, "eliminated": p})
-        passes_all = [s and keep(v) for s, v in zip(passes_all, sample)]
-    joint = 1.0 - sum(passes_all) / n
+        keepers.append(ks)
+    passes_all = [all(ks[i] for ks in keepers) for i in range(n)]
+    n_survive_all = sum(passes_all)
+    joint = 1.0 - n_survive_all / n
     independent = 1.0 - _prod(1.0 - p["eliminated"] for p in per)
+    interaction = joint - independent
+
+    # Permutation null on the interaction: shuffle each constraint's keep-labels
+    # independently, recompute joint -> interaction. Marginals are preserved,
+    # association is destroyed, so this is exactly the independence null.
+    rng = random.Random(seed)
+    null = []
+    for _ in range(permutations):
+        shuffled = [rng.sample(ks, len(ks)) for ks in keepers]
+        passes = [all(ss[i] for ss in shuffled) for i in range(n)]
+        j = 1.0 - sum(passes) / n
+        null.append(j - independent)
+    mean = sum(null) / len(null)
+    var = sum((x - mean) ** 2 for x in null) / len(null)
+    std = var ** 0.5
+    z = (interaction - mean) / std if std > 0 else 0.0
+    verdict = "independent" if abs(z) < 2.0 else ("complementary" if z > 0 else "redundant")
+
     radius = hoeffding_radius(n, delta)
     return {
         "per": per,
         "joint": joint,
         "independent": independent,
-        "redundancy": joint - independent,
+        "interaction": interaction,
+        "interaction_z": z,
+        "interaction_verdict": verdict,
+        "n_survive_all": n_survive_all,
         "n": n,
         "certificate": {
             "eliminated": joint,

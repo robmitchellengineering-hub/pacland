@@ -72,7 +72,11 @@ def _cmd_constrain(args) -> None:
     print()
     print(f"{'INTERSECTION (both constraints)':26s} eliminates {j['joint'] * 100:5.1f}%")
     print(f"{'  independent-product benchmark':26s} {j['independent'] * 100:5.1f}%")
-    print(f"{'  redundancy (joint - independent)':26s} {j['redundancy'] * 100:+.1f}%")
+    print(f"{'  interaction (joint - indep)':26s} {j['interaction'] * 100:+.1f}%")
+    print(
+        f"{'  independence test':26s} z = {j['interaction_z']:+.2f} -> "
+        f"{j['interaction_verdict']}  ({j['n_survive_all']} vacua survive both)"
+    )
     c = j["certificate"]
     print(
         f"{'  certified interval':26s} [{c['lower'] * 100:.1f}%, {c['upper'] * 100:.1f}%]"
