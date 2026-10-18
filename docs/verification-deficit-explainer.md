@@ -1,4 +1,4 @@
-# The Verification Deficit
+# The Mitchell Verification Deficit
 
 ### Why string theory can't be verified — *yet* — measured, not just argued
 
@@ -74,7 +74,7 @@ measurable, buildable, and improvable instead of just arguable.**
 
 ## The name
 
-**The Verification Deficit.**
+**The Mitchell Verification Deficit.**
 
 The quantity: `m` (validated oracle outputs). The headline result: **the deficit is
 total — `m = 0` today.**

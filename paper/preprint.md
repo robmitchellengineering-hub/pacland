@@ -16,7 +16,7 @@ probably-approximately-correct certificate that bounds a candidate's error even 
 the verifier is itself approximate (Theorem 2), a proof that search over the flux
 superpotential is **not evolvable** (Denef–Douglas uniformity + Valiant's contrapositive,
 measured on 380 real SUSY vacua), a **measured** log-uniform prior for |W₀| (CDF
-linearity R² = 0.92), a certified **verification deficit** that is total today (m = 0
+linearity R² = 0.92), a certified **Mitchell Verification Deficit** that is total today (m = 0
 validated oracle outputs), and a **boundary map** — a taxonomy of the four senses in
 which the problem is "uncomputable," each with its certified positive remainder. We do
 not claim to select the vacuum. We claim something narrower and we believe more useful:
