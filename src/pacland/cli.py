@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import sys
 
 
@@ -258,6 +259,32 @@ def _cmd_solve(args) -> None:
     print("  finishing the solve.")
 
 
+def _cmd_climb(args) -> None:
+    """Run the autonomous deficit climber on the mesh and print the report."""
+    from .climb import run_climb
+
+    corpus = args.corpus or "data/cy_corpus.json"
+    climber = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+        "scripts", "climb_deficit.py",
+    )
+    r = run_climb(climber, corpus)
+    if "error" in r:
+        print("climb failed:", r.get("error"))
+        return
+    print("Deficit climb report — CYTools on studio-linux")
+    for mf in r.get("manifolds", []):
+        mark = "PASS" if mf.get("passed") else "FAIL"
+        print(f"  {mf['name']}: {mark}")
+        for obs, c in mf.get("checks", {}).items():
+            tag = "ok" if c.get("passed") else "MISMATCH"
+            print(f"    {obs:6s} got={c['got']} expected={c['expected']} {tag}")
+    print(f"  m = {r.get('m')}  (validated: {', '.join(r.get('validated_observables', []))})")
+    print(f"  n = {r.get('n_points')} validation points")
+    print(f"  certificate radius sqrt(ln(1/delta)/2m) = {r.get('radius'):.4f}")
+    print(f"  all passed: {r.get('all_passed')}")
+
+
 def main(argv=None) -> None:
     p = argparse.ArgumentParser(
         prog="pacland",
@@ -280,6 +307,10 @@ def main(argv=None) -> None:
     s = sub.add_parser("solve", help="apply the real constraint set -> certified viable class")
     s.add_argument("data", help="JSON file of flux-vacua data")
     s.set_defaults(func=_cmd_solve)
+
+    cl = sub.add_parser("climb", help="run the autonomous deficit climber on the mesh")
+    cl.add_argument("corpus", nargs="?", help="corpus JSON (default data/cy_corpus.json)")
+    cl.set_defaults(func=_cmd_climb)
 
     v = sub.add_parser("verify", help="run a candidate through guards + falsification")
     v.add_argument("candidate", help="JSON: {flux, predictions, tadpole_bound?, h11?, h21?}")
