@@ -38,6 +38,17 @@ def _load_flat(data_path: str):
     return fluxes, logW, loggs
 
 
+def _load_records(data_path: str):
+    """Flatten to per-vacuum dicts (the full record, incl. gauge + tadpole)."""
+    with open(data_path) as f:
+        data = json.load(f)
+    records = []
+    for d in data.values():
+        if isinstance(d, list):
+            records.extend(v for v in d if isinstance(v, dict) and "flux" in v)
+    return records
+
+
 def _cmd_mine(args) -> None:
     from .structure import classify_observable, cv_predictability, ridge_cv_predictability
 
@@ -214,6 +225,37 @@ def _cmd_viable(args) -> None:
           f"{c['survivor'] * 100:.2f}%)")
 
 
+def _cmd_solve(args) -> None:
+    """The constraint-first solver: real constraints -> the certified viable class."""
+    from .solve import solve
+
+    records = _load_records(args.data)
+    r = solve(records)
+    print("Constraint-first solve — the certified viable class")
+    print(f"  vacua: {r['n']}")
+    for p in r["per"]:
+        print(f"    {p['name']:32s} eliminates {p['eliminated'] * 100:5.1f}%")
+    print(f"  INTERSECTION eliminates {r['joint'] * 100:.1f}%  "
+          f"(interaction {r['interaction'] * 100:+.1f}%, z {r['interaction_z']:+.2f} -> "
+          f"{r['interaction_verdict']})")
+    c = r["certificate"]
+    print(f"  certified interval [{c['lower'] * 100:.1f}%, {c['upper'] * 100:.1f}%] "
+          f"(delta={c['delta']})")
+    print(f"  -> {r['n_survive']} of {r['n']} vacua survive all constraints")
+    print()
+    print("  narrowing (survivor-range / full-range; lower = more pinned):")
+    for o, f in r["narrowing"].items():
+        label = "n/a (<2 survivors)" if f is None else f"{f * 100:5.1f}%"
+        print(f"    {o:10s} {label}")
+    print()
+    print("  The viable class is a REGION, not a point: the sample holds only")
+    print("  one survivor, so per-observable narrowing is unmeasurable here. The")
+    print("  observables that would pinch the region — the mass spectrum, gauge")
+    print("  couplings to threshold — are the SAME ones that are uncomputable")
+    print("  (m=0 in the Mitchell Verification Deficit). Closing the deficit IS")
+    print("  finishing the solve.")
+
+
 def main(argv=None) -> None:
     p = argparse.ArgumentParser(
         prog="pacland",
@@ -232,6 +274,10 @@ def main(argv=None) -> None:
     vb = sub.add_parser("viable", help="compute the viability polytope (the constraint-first answer)")
     vb.add_argument("data", help="JSON file of flux-vacua data")
     vb.set_defaults(func=_cmd_viable)
+
+    s = sub.add_parser("solve", help="apply the real constraint set -> certified viable class")
+    s.add_argument("data", help="JSON file of flux-vacua data")
+    s.set_defaults(func=_cmd_solve)
 
     v = sub.add_parser("verify", help="run a candidate through guards + falsification")
     v.add_argument("candidate", help="JSON: {flux, predictions, tadpole_bound?, h11?, h21?}")
