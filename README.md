@@ -57,24 +57,26 @@ through the oracle-callable interface in `learnability.sampler`.
 
 ## Code
 
-Pure-Python, stdlib-only (no dependencies). Builds #1 and #4:
+Pure-Python, stdlib-only (no dependencies). Builds #1, #4, and the L6 measure-verifier:
 
 - `src/pacland/certificate.py` — the two-level Valiant certificate (Theorem 2) and the finite-`D` certificate
 - `src/pacland/error_model.py` — per-observable error model + calibration protocol
 - `src/pacland/measure.py` — the finite, log-space observable measure `D`
+- `src/pacland/selection.py` — the measure-verifier: typicality test + KS uniformity (L6)
 - `src/pacland/learnability/vc.py` — shattering test, VC lower bound, sample complexity
 - `src/pacland/learnability/sampler.py` — flux-vacuum sampler + oracle-callable seam
-- `src/pacland/oracle/` — the `Oracle` protocol, adapters to CYTools/cymetric, and an exact-toric toy oracle (build #2 seed)
+- `src/pacland/oracle/` — the `Oracle` protocol, adapters to CYTools/JAXVacua/cymetric, and an exact-toric toy oracle (build #2 seed)
+
+Real data and analysis:
+
+- `data/vacua_sample.json` — 163 real SUSY flux vacua (two bundled KS models), sampled via JAXVacua
+- `scripts/sample_vacua.py`, `scripts/measure_learnability.py` — generate and analyse that sample
 
 Run the tests:
 
 ```sh
 python3 -m unittest discover -s tests -v
 ```
-
-The physics oracle (build #3) is the next build; until then the learnability rig is
-exercised against synthetic concept classes with known VC dimension, and the oracle
-seam is exercised against the exact-toric toy oracle.
 
 ## Non-goals (so the project stays honest)
 
