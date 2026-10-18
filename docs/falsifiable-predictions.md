@@ -97,17 +97,21 @@ charge matrix exposed from the model.
 ## 7. The tower mass falls with field distance on the full Kähler sector
 
 **Claim.** On the untruncated model (Kähler moduli included), the lightest tower mass
-falls with field distance (the distance conjecture), and the tower itself is uniform
-in flux (constraint-first). Our 2-moduli proxy already points the right way
-(Pearson(log m, log distance) = −0.58), but it runs on the CS moduli, where the
-distance conjecture does not even apply.
+falls with field distance (the distance conjecture). Our 2-moduli proxy already shows
+the direction, and it is a *real signal*, not an artifact: the lightest mass falls
+with the (CS) moduli distance from the sample centroid at Pearson r = −0.68
+(z = −9.2), rank-Spearman r = −0.46 (z = −6.3), and it **survives flux control**
+(residual r = −0.63 after removing the flux prediction). The honest bound: it runs on
+the CS moduli, where the distance conjecture does not apply — the clean test needs the
+Kähler moduli and a geodesic distance.
 
 **Falsification.** The full-model test, which requires the h12=25/272 chase on a
-~100 GB machine. If the tower mass does *not* fall with distance there, the proxy
-signal was an artifact.
+~100 GB machine. If the tower mass does *not* fall with (Kähler) field distance there,
+the proxy signal is a CS-moduli effect, not the distance conjecture.
 
-**Status — unresolved, queued behind the bigger machine.** Not claimed; the −0.58 is
-a single-test hint on the wrong slice.
+**Status — real signal, directionally consistent, clean test queued behind the bigger
+machine.** Measured once on 174 SUSY vacua (`pacland.swampland.distance_conjecture_test`);
+not yet reproduced on a second sample.
 
 ## What this is for
 

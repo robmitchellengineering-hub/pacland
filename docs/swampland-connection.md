@@ -27,7 +27,7 @@ A swampland quantity that falls in neither bucket would be a *new kind of struct
 | Weak Gravity (electric) | g_min = lightest coupling | −0.13 | −1.29 | 0.55 | **random** |
 | Weak Gravity (electric) | g_mean | −0.16 | −1.46 | 0.84 | **random** |
 | No global symmetries | charge gcd | — | — | — | **consistent (gcd = 1)** |
-| Distance (proxy) | log m_light vs flux | +0.21 | +2.68 | +4.88 | **unresolved** |
+| Distance (proxy) | log m_light vs distance | −0.68 | −9.21 | (Spearman −0.46, z −6.33) | **real signal** |
 | Gravity/tadpole (anchor) | N_flux | +0.98 | +9.12 | +1.18 | **structured** |
 
 ### What each line means
@@ -49,13 +49,17 @@ A swampland quantity that falls in neither bucket would be a *new kind of struct
   quantity not yet exposed → **NEEDS-MODEL-INTERNALS** (a sibling of
   NEEDS-BIGGER-MACHINE), not a small follow-up.
 
-- **Distance.** The proxy is the interesting one, and it is reported *honestly*,
-  not claimed. The lightest mass has **single-coordinate** structure (MI z = +4.88)
-  but only **weak joint** structure (ridge r = +0.21) — so the Rule of Three says
-  *unresolved*, not "random" and not "structured". The naive distance signal
-  (Pearson(log m, log distance) = −0.58, lighter farther out) points the right way,
-  but it is a **single test on the CS moduli**, where the distance conjecture does
-  not even run (it runs on Kähler moduli, flat at degree-0). → **NEEDS-BIGGER-MACHINE**.
+- **Distance.** The proxy turns out to be a **real signal, not an artifact** — but
+  it is *directionally* consistent with the distance conjecture, not a test of it.
+  The lightest mass falls with the (CS) moduli distance from the sample centroid:
+  Pearson r = −0.68 (z = −9.2) and rank-Spearman r = −0.46 (z = −6.3) — both far past
+  the permutation null. The trend **survives flux control** (residual r = −0.63 after
+  removing the ridge-quadratic flux prediction of the mass), so it is not just the
+  already-known flux→mass-scale structure. The two honest bounds: it runs on the CS
+  moduli, where the conjecture does *not* live (it lives on the Kähler moduli, flat at
+  degree-0), and the distance is centroid-Euclidean, not a field-space geodesic.
+  → **NEEDS-BIGGER-MACHINE** for the clean test; the proxy itself is real and
+  reproducible (`pacland.swampland.distance_conjecture_test`).
 
 - **Tadpole anchor.** r = 0.98 with ridge z = 9.1 — the exact constraint is
   recovered by the joint quadratic fit. Note **MI z = 1.18**: single-coordinate MI is
@@ -67,10 +71,11 @@ A swampland quantity that falls in neither bucket would be a *new kind of struct
 1. **New prediction (confirmed once):** the WGC scale Λ = g·M_pl is statistically
    uniform in flux. Refutation = a future sample where g carries flux structure at
    cross-validated r > 0.5.
-2. **New prediction (to run on the bigger machine):** on the full Kähler sector, the
-   lightest tower mass should fall with field distance (the −0.58 proxy trend) — and
-   the tower itself should be uniform in flux by the constraint-first frame. The
-   h12=25/272 chase is exactly where this becomes testable.
+2. **New prediction (to run on the bigger machine):** the lightest tower mass already
+   falls with field distance on the CS slice (Pearson −0.68, z −9.2, flux-controlled
+   residual −0.63) — directionally what the distance conjecture predicts. The clean
+   test needs the full Kähler sector and a geodesic distance; the h12=25/272 chase is
+   exactly where this becomes testable.
 
 ## The Mitchell deficit does not change here — and that is the honest point
 
@@ -85,7 +90,7 @@ validated oracle rung.
 
 ```
 python3 scripts/test_swampland.py
-python3 -m unittest discover -s tests -q   # 126 tests
+python3 -m unittest discover -s tests -q   # 127 tests
 ```
 
 The module cross-checks its numpy ridge against the canonical stdlib

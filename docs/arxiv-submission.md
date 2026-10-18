@@ -137,6 +137,6 @@ compiled PDFs are also in `paper/` as a fallback.
 ## Verification before submitting
 
 ```
-python3 -m unittest discover -s tests -q    # 126 tests green
+python3 -m unittest discover -s tests -q    # 127 tests green
 python3 scripts/test_swampland.py           # the numbers cited in paper 1
 ```

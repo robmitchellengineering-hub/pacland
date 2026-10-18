@@ -230,15 +230,9 @@ def swampland_report(vacua, rich_points):
         "consistent": charge_gcd(vacua) == 1,
     }
 
-    # 3 — Distance: proxy on the SUSY slice
-    f2, log_m, log_d = distance_proxy(rich_points)
-    dc = {"status": "NEEDS-BIGGER-MACHINE (full tower + Kaehler moduli)"}
-    if f2:
-        dc["mass_vs_flux"] = rule_of_three(f2, log_m)
-        dc["mass_vs_distance_pearson"] = _pearson(log_m, log_d) if log_d else float("nan")
-    else:
-        dc["mass_vs_flux"] = {"verdict": "unresolved", "n": 0}
-        dc["mass_vs_distance_pearson"] = float("nan")
+    # 3 — Distance: full Rule-of-Three on the SUSY slice
+    dc = distance_conjecture_test(rich_points)
+    dc["status"] = "NEEDS-BIGGER-MACHINE (clean test: Kaehler moduli + geodesic distance)"
     report["conjectures"]["distance"] = dc
 
     # 4 — Gravity/tadpole consistency (the anchor, exact constraint)
@@ -262,10 +256,88 @@ def _pearson(xs, ys):
     return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / (sx * sy)
 
 
+def _rank(xs):
+    order = sorted(range(len(xs)), key=lambda i: xs[i])
+    r = [0.0] * len(xs)
+    for pos, i in enumerate(order):
+        r[i] = float(pos + 1)
+    return r
+
+
+def _spearman(xs, ys):
+    return _pearson(_rank(xs), _rank(ys))
+
+
+def _perm_z(xs, ys, fn, permutations: int = 1000, seed: int = 1) -> dict:
+    rng = random.Random(seed)
+    true = fn(xs, ys)
+    yy = list(ys)
+    null = []
+    for _ in range(permutations):
+        rng.shuffle(yy)
+        null.append(fn(xs, yy))
+    mean = sum(null) / len(null)
+    var = sum((v - mean) ** 2 for v in null) / len(null)
+    std = var ** 0.5
+    return {"r": true, "z": (true - mean) / std if std > 0 else 0.0,
+            "null_mean": mean}
+
+
+def distance_conjecture_test(points):
+    """Full Rule-of-Three on the distance-conjecture proxy (CS-moduli slice).
+
+    The distance conjecture predicts a tower of states whose mass falls
+    exponentially with field distance, i.e. log(m) decreasing with distance. We
+    measure that direction on the SUSY slice: log of the lightest mass eigenvalue
+    against the Euclidean distance of the (CS) moduli VEV from the sample centroid.
+    Two independent correlation estimators (Pearson and rank Spearman), each with a
+    permutation null, plus a flux-controlled residual to check the signal is not
+    just the already-known flux->mass-scale structure. Honest caveat: this runs on
+    the CS moduli, not the Kaehler moduli where the conjecture actually lives, and
+    the distance is centroid-Euclidean, not a field-space geodesic.
+    """
+    susy = [p for p in points if p.get("is_susy") and p.get("eigs")]
+    n = len(susy)
+    if n < 3:
+        return {"verdict": "insufficient", "n": n}
+    coords = [[float(x) for x in (list(p["moduli_re"]) + list(p["moduli_im"]))]
+              for p in susy]
+    fluxes = [[float(x) for x in p["flux"]] for p in susy]
+    m = len(coords[0])
+    centroid = [sum(c[i] for c in coords) / n for i in range(m)]
+    log_m, dist = [], []
+    for p, c in zip(susy, coords):
+        eig0 = max(float(p["eigs"][0]), 1e-300)
+        log_m.append(0.5 * math.log(eig0))
+        dist.append(math.sqrt(sum((c[i] - centroid[i]) ** 2 for i in range(m))))
+
+    pearson = _perm_z(dist, log_m, _pearson)
+    spearman = _perm_z(dist, log_m, _spearman)
+
+    # flux-controlled residual: remove the ridge-quadratic flux prediction of log_m
+    X = np.array([_poly_features(list(f)) for f in fluxes], dtype=float)
+    Y = np.array(log_m, dtype=float)
+    A = X.T @ X + 1.0 * np.eye(X.shape[1])
+    beta = np.linalg.solve(A, X.T @ Y)
+    resid = (Y - X @ beta).tolist()
+    residual_r = _pearson(resid, dist)
+
+    strong = abs(pearson["z"]) >= 3.0 and abs(spearman["z"]) >= 3.0
+    return {
+        "verdict": "real-signal" if strong else "unresolved",
+        "n": n,
+        "pearson_logm_dist": pearson,
+        "spearman_logm_dist": spearman,
+        "flux_ridge_cv_r": ridge_cv_predictability(fluxes, log_m),
+        "residual_vs_distance_pearson": residual_r,
+    }
+
+
 __all__ = [
     "rule_of_three",
     "wgc_scales",
     "charge_gcd",
     "distance_proxy",
+    "distance_conjecture_test",
     "swampland_report",
 ]

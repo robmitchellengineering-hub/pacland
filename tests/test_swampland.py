@@ -8,6 +8,7 @@ import unittest
 
 from pacland.swampland import (
     charge_gcd,
+    distance_conjecture_test,
     rule_of_three,
     swampland_report,
     wgc_scales,
@@ -85,6 +86,22 @@ class TestSwamplandReport(unittest.TestCase):
         self.assertEqual(rep["conjectures"]["no_global_symmetries"]["consistent"], True)
         self.assertEqual(rep["conjectures"]["gravity_tadpole"]["rule_of_three"]["verdict"],
                          "structured")
+        self.assertEqual(rep["conjectures"]["distance"]["verdict"], "real-signal")
+
+
+class TestDistanceConjecture(unittest.TestCase):
+    def test_real_signal_and_survives_flux_control(self):
+        with open(ROOT / "data" / "rich_sample.json") as fh:
+            rich = json.load(fh)["points"]
+        r = distance_conjecture_test(rich)
+        self.assertEqual(r["verdict"], "real-signal")
+        # lightest mass falls with distance (negative), significant on both estimators
+        self.assertLess(r["pearson_logm_dist"]["r"], 0.0)
+        self.assertLess(r["spearman_logm_dist"]["r"], 0.0)
+        self.assertGreater(abs(r["pearson_logm_dist"]["z"]), 3.0)
+        self.assertGreater(abs(r["spearman_logm_dist"]["z"]), 3.0)
+        # survives flux control (the mass-vs-distance trend is not just flux->scale)
+        self.assertLess(r["residual_vs_distance_pearson"], 0.0)
 
 
 if __name__ == "__main__":
