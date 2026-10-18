@@ -63,9 +63,25 @@
       <div class="card"><h3>Mass spectrum — no fingerprint</h3><div class="big">shape random, r &lt; 0.25</div><p>On 133 SUSY vacua the mass spectrum's <em>shape</em> (scale-free ratios) is uniform in flux — the long-hoped-for geometric fingerprint is <strong>not</strong> there. Only its scale is flux-set.</p></div>
     </div>
 
-    <h2 id="fingerprint">The fingerprint is not in the masses</h2>
-    <p>The field's open hope was that the mass spectrum — the one observable that depends on the full geometry — would be the <em>fingerprint</em> that pins the compactification. We tested it on 133 SUSY flux vacua: the raw eigenvalues are learnable from flux (r = 0.50–0.62, heaviest at z = 5.5), but the <strong>scale-invariant ratios</strong> — the part that would constitute a fingerprint — are random (r &lt; 0.25). So the spectrum's <em>shape</em> carries no information about the flux; only its overall <em>scale</em> does.</p>
-    <p class="muted">Every flux-determined observable is now measured and uniform: W₀, g_s, gauge couplings, and the mass-spectrum shape. The only learnable structure is the <strong>constraint</strong> (the tadpole). This is the constraint-first thesis, tested against the one observable that could have broken it — and it held. Paper: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/fingerprint.pdf">fingerprint.pdf</a>.</p>
+    <h2 id="theorem">The constraint-first theorem</h2>
+    <p>Every flux-determined observable is now classified by a joint learnability test, gated by a positive control (the tadpole must come back r = 1.0). The <strong>structure map</strong>:</p>
+    <table>
+      <thead><tr><th>observable</th><th>r (wide flux)</th><th>verdict</th></tr></thead>
+      <tbody>
+        <tr><td><strong>tadpole N_flux</strong></td><td><strong>1.00</strong></td><td><strong>exact</strong> — the symplectic pairing FᵀJH</td></tr>
+        <tr><td>W₀</td><td>0.62</td><td>weakly learnable (scale via the tadpole)</td></tr>
+        <tr><td>saxions (sizes)</td><td>0.30–0.42</td><td>weakly learnable (stabilization)</td></tr>
+        <tr><td>g_s</td><td>0.12</td><td>uniform</td></tr>
+        <tr><td>gauge couplings</td><td>0.02–0.12</td><td>uniform</td></tr>
+        <tr><td>mass-spectrum shape</td><td>&lt; 0.25</td><td>uniform</td></tr>
+        <tr><td>axions, dilaton, AdS V</td><td>≤ 0.15</td><td>uniform</td></tr>
+      </tbody>
+    </table>
+    <p><strong>The landscape's only exact structure is what it <em>forbids</em> — the constraint. Everything it produces is noise plus a weak scale; the geometric fingerprint is absent everywhere except the constraint.</strong> So no search can find our vacuum in observables; the only navigable move is elimination by verified constraint. Paper: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/structure-map.pdf">structure-map.pdf</a>.</p>
+
+    <h2 id="method">The Rule of Three — no result from one test</h2>
+    <p>No "structured vs. random" claim is made from a single measurement. Every such claim needs three independent confirmations that <em>agree</em>: single-coordinate mutual information, the joint ridge-quadratic test, and a permutation null. The tadpole (r = 1.0 on all three) is the positive control proving the tests work. This rule is what caught and corrected our own W₀ over-reach — "zero-information" was a single-coordinate artifact; the joint test gives r = 0.62.</p>
+    <p class="muted">Also confirmed from data: the <strong>no-scale theorem</strong> — SUSY flux vacua sit at V = 0 to machine precision (10⁻³¹), before Kähler-moduli stabilization. The honest wall chain: SUSY (86.8%) × stability (4.6%) = 87.2% of critical points ruled out.</p>
 
     <h2 id="deficit">The Mitchell Verification Deficit — real, and working</h2>
     <p>The deficit is the count <code>m</code> of observables that are simultaneously <em>measured</em>, <em>computable</em>, and <em>validated</em>. The certificate's oracle term is <code>√(ln 1/δ / 2m)</code>, so at <code>m = 0</code> the certificate is vacuous (infinite radius), and every validated observable shrinks it. It is not a slogan — it is a number we have moved, by building and validating oracles.</p>
