@@ -41,6 +41,15 @@ the sense of limit, the justification, and what *remains* computable:
 4. **The measure / selection** — *underdetermined*. Justification: verification ≠
    selection; the measure is a principle, not a computation. Positive: candidate
    measures are evaluable.
+5. **The inverse problem (observables → compactification)** — *underdetermined*.
+   Justification: no strong fingerprint in W₀, g_s, or the gauge couplings. Positive:
+   constraints eliminate fast; answerable-by-elimination once richer observables exist.
+6. **The full EFT spectrum** — *unmeasurable*. Justification: massless moduli at
+   maximum_degree=0. Positive: a scoped build (instanton corrections), and the miner
+   is calibrated to test it.
+7. **Small-Λ typicality** — *unmeasurable*. Justification: SUSY V is AdS; Λ needs the
+   de Sitter uplift, which is contentious. Positive: the log-uniform prior is measured;
+   the Λ distribution follows once an uplift model exists.
 
 ## The reframe that makes this a program, not a resignation
 

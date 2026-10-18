@@ -9,8 +9,8 @@ from pacland.limits import Boundary, LimitType, boundary_map, certify
 
 
 class TestLimits(unittest.TestCase):
-    def test_map_has_four_boundaries(self):
-        self.assertEqual(len(boundary_map()), 4)
+    def test_map_has_seven_boundaries(self):
+        self.assertEqual(len(boundary_map()), 7)
 
     def test_certify_search_is_intractable(self):
         b = certify("flux landscape over W0")

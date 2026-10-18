@@ -59,6 +59,31 @@ BOUNDARIES = [
         "Candidate measures are evaluable: the measure-verifier certifies "
         "typicality and elimination without deriving the measure.",
     ),
+    Boundary(
+        "Reconstruct the compactification from observables (inverse problem)",
+        LimitType.UNDERDETERMINED,
+        "The self-validated structure miner finds no strong fingerprint in W0, gs, "
+        "or the gauge couplings (docs/new-approach.md) — these observables do not "
+        "determine the geometry.",
+        "Constraints eliminate fast (small-W0 removes ~57%); the inverse problem "
+        "is answerable-by-elimination once richer observables exist.",
+    ),
+    Boundary(
+        "Compute the full EFT spectrum (masses, instanton corrections)",
+        LimitType.UNMEASURABLE,
+        "The mass matrix is flat at maximum_degree=0 (no instantons) — the moduli "
+        "are massless and the spectrum is not yet computable (docs/oracle.md).",
+        "The extraction is a known, scoped physics build (maximum_degree > 0); "
+        "the structure miner is already calibrated to test it when it exists.",
+    ),
+    Boundary(
+        "Measure whether small Lambda is typical (Weinberg anthropic argument)",
+        LimitType.UNMEASURABLE,
+        "SUSY V is AdS (-3 e^K |W|^2); the cosmological constant needs the de Sitter "
+        "uplift, which is contentious and not in the basic FluxEFT.",
+        "The log-uniform W0 prior is measured; the Lambda distribution is a derived "
+        "question once an uplift model exists.",
+    ),
 ]
 
 
