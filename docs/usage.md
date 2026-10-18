@@ -49,6 +49,15 @@ self-validated quadratic learnability test.
 pacland mine data/vacua_sample.json
 ```
 
+### `pacland deficit` — the Mitchell Verification Deficit
+
+Computes `m` (validated oracle outputs) and the resulting certificate radius.
+
+```sh
+pacland deficit
+pacland deficit --observables my-observables.json --delta 0.025
+```
+
 ### `pacland constrain <data.json>` — constraint elimination
 
 Measures what fraction of vacua each physically-motivated constraint eliminates, and

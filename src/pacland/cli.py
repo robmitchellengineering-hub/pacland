@@ -132,6 +132,29 @@ def _cmd_verify(args) -> None:
     print(f"  prediction zone (not computable): {pz if pz else 'none'}")
 
 
+def _cmd_deficit(args) -> None:
+    """Compute the Mitchell Verification Deficit: m = validated oracle outputs."""
+    from .deficit import DeficitObservable, deficit_report
+    from .observables import STANDARD_OBSERVABLES
+
+    obs = list(STANDARD_OBSERVABLES)
+    if args.observables:
+        with open(args.observables) as f:
+            obs = [DeficitObservable(**o) for o in json.load(f)]
+
+    r = deficit_report(obs, delta_e=args.delta)
+    print("Mitchell Verification Deficit")
+    print(f"  observables: {r.n_observables}")
+    print(f"  measured:    {r.n_measured}   (target c* known)")
+    print(f"  computable:  {r.n_computable}   (oracle can evaluate)")
+    print(f"  VALIDATED:   {r.n_validation}   (calibrated error model)  <- m")
+    print(f"  prediction zone (computable, not measured): {r.n_prediction_zone}")
+    print(f"  unverifiable (measured, not computable):   {r.n_unverifiable}")
+    radius = "INFINITE (vacuous)" if r.vacuous else f"{r.radius:.4f}"
+    print(f"  certificate radius sqrt(ln(1/delta_e)/2m): {radius}")
+    print(f"  verdict: {'deficit TOTAL — no error-bounded certificate exists' if r.vacuous else 'bounded'}")
+
+
 def main(argv=None) -> None:
     p = argparse.ArgumentParser(
         prog="pacland",
@@ -150,6 +173,11 @@ def main(argv=None) -> None:
     v = sub.add_parser("verify", help="run a candidate through guards + falsification")
     v.add_argument("candidate", help="JSON: {flux, predictions, tadpole_bound?, h11?, h21?}")
     v.set_defaults(func=_cmd_verify)
+
+    d = sub.add_parser("deficit", help="compute the Mitchell Verification Deficit")
+    d.add_argument("--observables", help="optional JSON: [ {name, measured, computable, validated}, ... ]")
+    d.add_argument("--delta", type=float, default=0.025, help="confidence budget delta_e")
+    d.set_defaults(func=_cmd_deficit)
 
     l = sub.add_parser("limits", help="print the boundary map")
     l.set_defaults(func=_cmd_limits)
