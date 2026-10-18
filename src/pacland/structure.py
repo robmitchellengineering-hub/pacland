@@ -93,3 +93,49 @@ def classify_observable(
         "max_z": best["z"],
         "coord": best["coord"],
     }
+
+
+def _pearson(xs, ys) -> float:
+    mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
+    sx = sum((x - mx) ** 2 for x in xs) ** 0.5
+    sy = sum((y - my) ** 2 for y in ys) ** 0.5
+    if sx == 0 or sy == 0:
+        return 0.0
+    return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / (sx * sy)
+
+
+def _knn_predict(train_x, train_y, test_x, k: int):
+    preds = []
+    for tx in test_x:
+        near = sorted(
+            range(len(train_x)),
+            key=lambda i: sum((a - b) ** 2 for a, b in zip(train_x[i], tx)),
+        )[:k]
+        preds.append(sum(train_y[i] for i in near) / k)
+    return preds
+
+
+def cv_predictability(fluxes, y, k: int = 5, n_folds: int = 5, seed: int = 0) -> float:
+    """Cross-validated learnability: can flux predict the observable?
+
+    K-nearest-neighbour regression, 5-fold CV, reporting the Pearson correlation
+    between held-out predictions and the true values. ``> 0`` (well above the null)
+    means the map ``flux -> y`` is *learnable* (predictable), not random — the
+    "structured" branch confirmed by prediction, not just dependence.
+
+    ``fluxes``: list of equal-length numeric vectors; ``y``: list of the same length.
+    """
+    rng = random.Random(seed)
+    idx = list(range(len(fluxes)))
+    rng.shuffle(idx)
+    folds = [idx[i::n_folds] for i in range(n_folds)]
+    preds = [0.0] * len(fluxes)
+    for fold in folds:
+        train = [i for i in idx if i not in set(fold)]
+        train_x = [fluxes[i] for i in train]
+        train_y = [y[i] for i in train]
+        test_x = [fluxes[i] for i in fold]
+        p = _knn_predict(train_x, train_y, test_x, k)
+        for j, i in enumerate(fold):
+            preds[i] = p[j]
+    return _pearson(preds, y)

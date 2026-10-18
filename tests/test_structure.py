@@ -8,6 +8,7 @@ import unittest
 
 from pacland.structure import (
     classify_observable,
+    cv_predictability,
     mi_significance,
     mutual_information,
 )
@@ -54,6 +55,22 @@ class TestMISignificance(unittest.TestCase):
         r = mi_significance(xs, y, permutations=100)
         self.assertIn("mi", r)
         self.assertIn("z", r)
+
+
+class TestCVPredictability(unittest.TestCase):
+    def test_linear_map_is_predictable(self):
+        rng = random.Random(4)
+        n = 300
+        fluxes = [[rng.uniform(-3, 3), rng.uniform(-3, 3)] for _ in range(n)]
+        y = [2.0 * f[0] - f[1] + rng.gauss(0, 0.2) for f in fluxes]  # learnable
+        self.assertGreater(cv_predictability(fluxes, y), 0.5)
+
+    def test_independent_noise_is_not_predictable(self):
+        rng = random.Random(5)
+        n = 300
+        fluxes = [[rng.uniform(-3, 3), rng.uniform(-3, 3)] for _ in range(n)]
+        y = [rng.gauss(0, 1) for _ in range(n)]  # random
+        self.assertLess(cv_predictability(fluxes, y), 0.2)
 
 
 if __name__ == "__main__":

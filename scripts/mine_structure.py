@@ -14,7 +14,7 @@ sys.path.insert(
     0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src")
 )
 
-from pacland.structure import classify_observable  # noqa: E402
+from pacland.structure import classify_observable, cv_predictability  # noqa: E402
 
 DATA = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -38,9 +38,11 @@ def main() -> int:
     print(f"flux vacua: {len(fluxes)}  flux dim: {dim}")
     for name, y in [("log_W0", logW), ("log_gs", loggs)]:
         r = classify_observable(flux_cols, y)
+        cv = cv_predictability(fluxes, y)
         print(
             f"{name:8s} -> {r['verdict']:10s} "
             f"(max MI {r['max_mi']:.3f} bits, z {r['max_z']:.2f}, coord {r['coord']})"
+            f"  |  CV learnability r = {cv:+.3f}"
         )
     return 0
 
