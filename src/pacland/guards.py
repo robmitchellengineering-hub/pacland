@@ -25,6 +25,23 @@ def guard_hodge_numbers(h11: int, h21: int, expected: tuple[int, int] = (1, 101)
     return ok, f"h11={h11} h21={h21} (expected {expected})"
 
 
+def guard_mirror_symmetry(h11, h21, chi, h11_m, h21_m, chi_m) -> tuple[bool, str]:
+    """HARD RULE: mirror symmetry swaps Hodge numbers and flips the Euler number.
+
+    For a Calabi-Yau threefold and its mirror,
+        h11_m = h21,   h21_m = h11,   chi_m = -chi   (since chi = 2(h11-h21)).
+    This is an always-true theorem (Batyrev/Greene-Plesser mirror construction),
+    so it is a *free* known-answer target: any CY's mirror gives an exact value
+    to validate the oracle against, with no external database. Verified on the
+    quintic / mirror-quintic pair (1,101) <-> (101,1), chi -200 <-> +200.
+    """
+    ok = (h11_m == h21) and (h21_m == h11) and (chi_m == -chi)
+    return ok, (
+        f"mirror h11={h11_m} h21={h21_m} chi={chi_m} "
+        f"(expected {h21}, {h11}, {-chi})"
+    )
+
+
 def guard_tadpole(flux, bound: int) -> tuple[bool, str]:
     """Invariant guard: the D3 tadpole sum(f^2) must not exceed the bound.
 
@@ -80,6 +97,7 @@ def guard_ricci_flat(sigma: float, tol: float = 1e-2) -> tuple[bool, str]:
 
 __all__ = [
     "guard_hodge_numbers",
+    "guard_mirror_symmetry",
     "guard_tadpole",
     "guard_integer_flux",
     "guard_no_sl2z_redundancy",

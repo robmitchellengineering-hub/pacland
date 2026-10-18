@@ -62,7 +62,10 @@ def main(argv) -> int:
         polytope = m["polytope"]
         known = m.get("known", {})
         counted = m.get("counted", list(known.keys()))
-        cy = Polytope(polytope).triangulate().get_cy()
+        poly = Polytope(polytope)
+        if m.get("dual"):
+            poly = poly.dual()  # mirror: h11 <-> h21, chi -> -chi (hard rule)
+        cy = poly.triangulate().get_cy()
         got = compute_invariants(cy)
         checks = {}
         ok = True

@@ -22,6 +22,20 @@ class TestHodgeNumbers(unittest.TestCase):
         self.assertFalse(guards.guard_hodge_numbers(1, 100)[0])
 
 
+class TestMirrorSymmetry(unittest.TestCase):
+    def test_passes_on_quintic_mirror_pair(self):
+        # quintic (1,101,chi=-200) <-> mirror (101,1,chi=+200)
+        self.assertTrue(guards.guard_mirror_symmetry(1, 101, -200, 101, 1, 200)[0])
+
+    def test_fails_if_mirror_does_not_swap(self):
+        # seeded fault: a mirror computation returning the SAME Hodge numbers
+        self.assertFalse(guards.guard_mirror_symmetry(1, 101, -200, 1, 101, -200)[0])
+
+    def test_fails_if_chi_does_not_flip(self):
+        # seeded fault: correct swap but wrong Euler sign
+        self.assertFalse(guards.guard_mirror_symmetry(1, 101, -200, 101, 1, -200)[0])
+
+
 class TestTadpole(unittest.TestCase):
     def test_passes_within_bound(self):
         self.assertTrue(guards.guard_tadpole((1, 2, 2), 10)[0])
