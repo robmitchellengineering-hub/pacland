@@ -57,6 +57,31 @@ This is the empirical foundation of "constraint-first": search is dead not merel
 for W₀ but for the whole observable sector; the only thing the landscape lets you
 *learn* is what it *forbids*.
 
+## Q2 closes the loop: the constraints *compose*
+
+The second pillar (verified constraint elimination) composes the same way. On the
+same 107 vacua, the two phenomenological constraints combine to eliminate
+**99.1%** of the landscape, against an independence-product benchmark of 98.2% —
+redundancy **+0.8%**, i.e. the constraints are nearly *independent* (they bite
+different subsets), so elimination compounds multiplicatively:
+
+| constraint | eliminates |
+|---|---|
+| weak coupling (g_s < 1) | 72.9% |
+| small \|W₀\| < 1 | 93.5% |
+| **intersection** | **99.1%** |
+| certified interval (δ=0.05) | [87.2%, 100.0%] |
+
+`src/pacland/constraints.py::joint_elimination` computes the joint fraction, the
+independence benchmark, the redundancy, and a Hoeffding interval on the joint
+fraction. Run it with `pacland constrain data/vacua_observables.json`.
+
+The loop is now closed end-to-end: **Q1** says the learnable structure is the
+constraint (tadpole r=0.99, observables random); **Q2** says the constraints
+compose to eliminate ~99% with a certificate. Constraint-first is no longer a
+preference — it is the only learnable structure *and* the only thing that narrows
+the landscape.
+
 ## Limits (named)
 
 - Scoped to the IIB flux corner, 107 vacua, two h¹²=2 models, 12 flux coordinates.
@@ -71,4 +96,5 @@ for W₀ but for the whole observable sector; the only thing the landscape lets 
 - `scripts/measure_constraint_learnability.py` — the measurement.
 - `src/pacland/structure.py` — `ridge_cv_predictability` (the joint learnability test).
 - `src/pacland/learnability/vc.py` — `sample_complexity` (the PAC bridge).
+- `src/pacland/constraints.py` — `joint_elimination` (the Q2 composition).
 - `docs/new-approach.md` — the fork this resolves.

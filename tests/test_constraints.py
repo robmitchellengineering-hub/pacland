@@ -9,6 +9,7 @@ from pacland.constraints import (
     elimination_certificate,
     elimination_curve,
     elimination_fraction,
+    joint_elimination,
     linearity_r2,
 )
 
@@ -51,6 +52,46 @@ class TestEliminationCurve(unittest.TestCase):
         xs = [0.0, 1.0, 2.0, 3.0, 4.0]
         ys = [0.0, 1.0, 0.0, 1.0, 0.0]
         self.assertLess(linearity_r2(xs, ys), 0.5)
+
+
+class TestJointElimination(unittest.TestCase):
+    def test_disjoint_constraints_compose(self):
+        # c1 keeps first half, c2 keeps second half -> every point fails one
+        sample = list(range(100))
+        named = [
+            ("c1", lambda v: v < 50),
+            ("c2", lambda v: v >= 50),
+        ]
+        j = joint_elimination(sample, named)
+        self.assertAlmostEqual(j["joint"], 1.0)
+        self.assertAlmostEqual(j["per"][0]["eliminated"], 0.5)
+        self.assertAlmostEqual(j["per"][1]["eliminated"], 0.5)
+
+    def test_identical_constraints_are_redundant(self):
+        # both constraints are the same -> joint == single, redundancy < 0
+        sample = list(range(100))
+        named = [
+            ("c1", lambda v: v < 50),
+            ("c2", lambda v: v < 50),
+        ]
+        j = joint_elimination(sample, named)
+        self.assertAlmostEqual(j["joint"], 0.5)
+        self.assertLess(j["redundancy"], 0.0)
+
+    def test_independent_benchmark(self):
+        # half fail c1, half fail c2, failure sets disjoint -> joint = 1.0,
+        # independent benchmark = 1 - (1-.5)(1-.5) = 0.75
+        sample = list(range(100))
+        named = [
+            ("c1", lambda v: v < 50),
+            ("c2", lambda v: v % 2 == 0),
+        ]
+        j = joint_elimination(sample, named)
+        self.assertAlmostEqual(j["independent"], 0.75, places=6)
+
+    def test_empty_raises(self):
+        with self.assertRaises(ValueError):
+            joint_elimination([], [("c", lambda v: True)])
 
 
 if __name__ == "__main__":

@@ -53,6 +53,62 @@ def elimination_curve(values, thresholds) -> list:
     return [sum(1 for v in values if v <= t) / len(values) for t in thresholds]
 
 
+def joint_elimination(sample, constraints, delta: float = 0.05) -> dict:
+    """Compose constraints: the fraction eliminated by *at least one*.
+
+    ``constraints`` is an iterable of ``(name, keep)`` pairs. This is the
+    "intersection of verified constraints" of ``docs/new-approach.md`` — the
+    mechanism that narrows the landscape by elimination, measured as one object:
+
+      - ``per``            — per-constraint elimination fractions, in order;
+      - ``joint``          — fraction failing at least one constraint;
+      - ``independent``    — what ``joint`` would be if the constraints failed
+        independently (``1 - prod(1 - p_i)``);
+      - ``redundancy``     — ``joint - independent``: negative = the constraints
+        overlap (one already implies much of another), positive = they bite
+        complementary subsets of the landscape;
+      - ``certificate``    — the Hoeffding interval on ``joint``.
+
+    The joint fraction is itself a Bernoulli parameter over the sample, so it gets
+    the same one-sided Hoeffding radius as a single constraint — the composition
+    loses nothing in confidence, only in the breadth of what it rules out.
+    """
+    sample = list(sample)
+    if not sample:
+        raise ValueError("sample must be non-empty")
+    named = [(n, k) for n, k in constraints]
+    n = len(sample)
+    per = []
+    passes_all = [True] * n
+    for name, keep in named:
+        p = sum(1 for v in sample if not keep(v)) / n
+        per.append({"name": name, "eliminated": p})
+        passes_all = [s and keep(v) for s, v in zip(passes_all, sample)]
+    joint = 1.0 - sum(passes_all) / n
+    independent = 1.0 - _prod(1.0 - p["eliminated"] for p in per)
+    radius = hoeffding_radius(n, delta)
+    return {
+        "per": per,
+        "joint": joint,
+        "independent": independent,
+        "redundancy": joint - independent,
+        "n": n,
+        "certificate": {
+            "eliminated": joint,
+            "lower": max(0.0, joint - radius),
+            "upper": min(1.0, joint + radius),
+            "delta": delta,
+        },
+    }
+
+
+def _prod(xs) -> float:
+    out = 1.0
+    for x in xs:
+        out *= x
+    return out
+
+
 def linearity_r2(xs, ys) -> float:
     """R^2 of ys against the best-fit line — 1.0 means perfectly linear."""
     n = len(xs)

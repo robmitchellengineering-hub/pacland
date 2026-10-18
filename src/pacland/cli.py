@@ -56,16 +56,28 @@ def _cmd_mine(args) -> None:
 
 
 def _cmd_constrain(args) -> None:
-    from .constraints import elimination_certificate
+    from .constraints import elimination_certificate, joint_elimination
 
     _, logW, loggs = _load_flat(args.data)
     vacua = [{"log_W0": w, "log_gs": g} for w, g in zip(logW, loggs)]
-    for name, keep in [
+    named = [
         ("weak coupling (gs < 1)", lambda v: v["log_gs"] < 0.0),
         ("small W0 (|W0| < 1)", lambda v: v["log_W0"] < 0.0),
-    ]:
+    ]
+    for name, keep in named:
         c = elimination_certificate(vacua, keep)
         print(f"{name:26s} eliminates {c['eliminated'] * 100:5.1f}%")
+
+    j = joint_elimination(vacua, named)
+    print()
+    print(f"{'INTERSECTION (both constraints)':26s} eliminates {j['joint'] * 100:5.1f}%")
+    print(f"{'  independent-product benchmark':26s} {j['independent'] * 100:5.1f}%")
+    print(f"{'  redundancy (joint - independent)':26s} {j['redundancy'] * 100:+.1f}%")
+    c = j["certificate"]
+    print(
+        f"{'  certified interval':26s} [{c['lower'] * 100:.1f}%, {c['upper'] * 100:.1f}%]"
+        f"  (delta={c['delta']})"
+    )
 
     # log-uniform check
     from .constraints import elimination_curve, linearity_r2
