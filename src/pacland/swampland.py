@@ -153,9 +153,11 @@ def charge_gcd(vacua) -> int:
 
     If gcd > 1, every charge is a multiple of d and the theory carries a forced
     Z_d discrete global symmetry — which the no-global-symmetries conjecture forbids.
-    gcd == 1 is the consistent (necessary-condition) result. This is a proxy for the
-    full statement; unimodularity of the charge lattice (Smith normal form over the
-    intersection form) is the complete check.
+    gcd == 1 is the consistent (necessary-condition) result. The *complete* statement
+    is not an SNF over the flux sample (the flux lattice is Z^{2b3} by quantization,
+    so unimodular tautologically); it is the unimodularity of the *gauge* charge
+    lattice, fixed by the intersection-form charge matrix inside the model — a
+    model-internal quantity, classified NEEDS-MODEL-INTERNALS.
     """
     g = 0
     for p in vacua:
@@ -223,7 +225,7 @@ def swampland_report(vacua, rich_points):
 
     # 2 — No global symmetries: common charge divisor
     report["conjectures"]["no_global_symmetries"] = {
-        "status": "TESTABLE-NOW (necessary-condition proxy)",
+        "status": "TESTABLE-NOW (gcd necessary condition); NEEDS-MODEL-INTERNALS (gauge lattice)",
         "charge_gcd": charge_gcd(vacua),
         "consistent": charge_gcd(vacua) == 1,
     }

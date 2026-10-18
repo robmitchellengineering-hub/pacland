@@ -40,8 +40,14 @@ A swampland quantity that falls in neither bucket would be a *new kind of struct
 
 - **No global symmetries.** The necessary condition — the flux charges must not all
   share a divisor d, or the theory carries a forced Z_d global symmetry — is
-  satisfied (gcd = 1). Full unimodularity of the charge lattice (Smith normal form)
-  is the complete check and is a small follow-up.
+  satisfied (gcd = 1). The *stronger* statement splits honestly in two: (i) the
+  flux lattice is Z^{2b3} by the flux-quantization theorem, so it is unimodular
+  *tautologically* — an SNF over the flux sample would measure the sample, not the
+  theory; (ii) the object that actually carries a global-symmetry statement is the
+  *gauge* charge lattice of the low-energy U(1)s, and its unimodularity is fixed by
+  the intersection-form charge matrix inside the model. That is a model-internal
+  quantity not yet exposed → **NEEDS-MODEL-INTERNALS** (a sibling of
+  NEEDS-BIGGER-MACHINE), not a small follow-up.
 
 - **Distance.** The proxy is the interesting one, and it is reported *honestly*,
   not claimed. The lightest mass has **single-coordinate** structure (MI z = +4.88)

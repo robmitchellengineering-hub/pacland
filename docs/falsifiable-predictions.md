@@ -64,9 +64,57 @@ independence (|z| > 2) would refute it.
 
 **Status.** Measured on 107 vacua; the "+0.8% interaction" is one vacuum of noise.
 
+## 5. The Weak-Gravity scale Λ = g·M_pl is statistically uniform in flux
+
+**Claim.** The electric-WGC magnetic scale (the lightest gauge coupling g_min, and
+the geometric-mean coupling) carries no flux structure: cross-validated r < 0.25,
+because it depends on g_s through the stabilized moduli — the same Denef–Douglas
+uniformity as W₀ and the gauge couplings themselves. This is the *swampland* reading
+of the constraint-first conjecture: the WGC scale is "what the landscape produces",
+so it is noise plus a weak scale.
+
+**Falsification.** A future flux-vacua sample where g_min is predictable from flux
+at cross-validated ridge-quad r > 0.5 refutes it (and would be a *new kind of
+structure* — exactly what the conjecture says does not exist).
+
+**Status — confirmed once (2026-10-19).** On 101 real vacua (both h12=2 models),
+g_min r = −0.13, g_mean r = −0.16, both MI z < 1 — uniform. Reproducible, not yet
+reproduced on a third sample.
+
+## 6. The charge lattice carries no forced global symmetry
+
+**Claim.** No common divisor across the flux charges (gcd = 1): there is no forced
+Z_d discrete global symmetry, as the no-global-symmetries conjecture demands. The
+complete statement — unimodularity of the low-energy *gauge* charge lattice — is a
+model-internal quantity (the intersection-form charge matrix).
+
+**Falsification.** A single flux-vacua sample whose flux integers all share a
+divisor d > 1 refutes the necessary condition. The gauge-lattice statement needs the
+charge matrix exposed from the model.
+
+**Status — consistent (2026-10-19).** gcd = 1 on the 101-vacua sample.
+
+## 7. The tower mass falls with field distance on the full Kähler sector
+
+**Claim.** On the untruncated model (Kähler moduli included), the lightest tower mass
+falls with field distance (the distance conjecture), and the tower itself is uniform
+in flux (constraint-first). Our 2-moduli proxy already points the right way
+(Pearson(log m, log distance) = −0.58), but it runs on the CS moduli, where the
+distance conjecture does not even apply.
+
+**Falsification.** The full-model test, which requires the h12=25/272 chase on a
+~100 GB machine. If the tower mass does *not* fall with distance there, the proxy
+signal was an artifact.
+
+**Status — unresolved, queued behind the bigger machine.** Not claimed; the −0.58 is
+a single-test hint on the wrong slice.
+
 ## What this is for
 
 The whole program — the deficit, the boundary map, the constraint-first solver —
-terminates in these four checkable claims. Claim 1 is the frontier: it is the single
+terminates in these checkable claims. Claim 1 is the frontier: it is the single
 prediction whose test requires building the one oracle we do not yet have (the mass
-spectrum). That is the definition of "closing the deficit IS finishing the solve."
+spectrum). Claims 5–7 are the **swampland connection**
+(`docs/swampland-connection.md`): the constraint-first conjecture restated as
+per-conjecture falsifiable tests. That is the definition of "closing the deficit IS
+finishing the solve."
