@@ -1,88 +1,87 @@
 # PACLAND
 
-**Probably Approximately Correct Landscape** — a Valiant-verification system for the string landscape.
+**Probably Approximately Correct Landscape** — a Valiant-verification system for the
+string landscape. Live: [pacland.netlify.app](https://pacland.netlify.app) ·
+`pip install pacland`
 
-> **Start with [`ROADMAP.md`](ROADMAP.md)** — the whole argument in paper form: abstract,
-> section-by-section, and a ledger of what's proven vs conjectured vs open.
+## The result, in one sentence
 
-## Thesis
+> **The landscape's only exact structure is what it *forbids* — the constraint.**
+> Everything it produces (couplings, masses, phases, the cosmological constant) is
+> noise plus a weak scale; no observable carries the geometric fingerprint a search
+> would need. So no search can find our vacuum in observables — the only navigable
+> move is elimination by verified constraint.
 
-Replace the impossible goal of string-theory unification — *prove that one vacuum is our
-universe* — with the achievable goal: **characterize the learnability structure of the
-`compactification → low-energy physics` map, and certify candidate vacua as
-observationally indistinguishable within an explicit (ε, δ) tolerance.**
+That is the **constraint-first theorem**, established by measurement on real
+supersymmetric flux vacua and stated as a paper:
+[`paper/structure-map.pdf`](paper/structure-map.pdf).
 
-The system is built on three ideas from Leslie Valiant:
+## What is measured (the structure map)
 
-| Idea | Role here |
-|---|---|
-| **PAC learning** (1984) | The verification semantics — "with probability ≥ 1−δ, error ≤ ε" |
-| **Evolvability** (2008, *Probably Approximately Correct*) | The search engine, bounded by the theorem that any evolvable class is efficiently learnable |
-| **Ecorithm / educability** (2013, 2024) | The meta-loop — verified knowledge transfers across search generations |
+Every flux-determined observable, classified by a joint learnability test gated by a
+positive control (the tadpole must come back r = 1.0):
 
-## Status
+| observable | r | verdict |
+|---|---|---|
+| **tadpole N_flux** | **1.00** | **exact** — the symplectic pairing FᵀJH |
+| W₀ | 0.62 | weakly learnable (scale via the tadpole) |
+| saxions | 0.30–0.42 | weakly learnable (stabilization) |
+| g_s, gauge couplings, mass-shape, axions, dilaton, AdS V | < 0.25 | uniform |
 
-**Spec + verification tooling.** The design lives in `docs/`. Builds #1 (certificate
-library) and #4 (learnability rig) are implemented in `src/pacland/` with a passing
-test suite. The physics oracle (L2, build #3) is **not** implemented yet — it plugs in
-through the oracle-callable interface in `learnability.sampler`.
+## The headline results
 
-## What this is NOT
+- **The Mitchell Verification Deficit** — the count `m` of observables simultaneously
+  measured + computable + validated. It read ∞ (vacuous) and has been **climbed to
+  m = 5**: CYTools topology (h11, h21, c2, κ) = 4, JAXVacua tadpole = 1. The SM-physics
+  sector is the open frontier (m = 0).
+- **Search over W₀ is hopeless** — by *rarity + extrapolation*: the KKLT target sits
+  ~20 prediction-errors outside the observed range.
+- **The mass spectrum carries no fingerprint** — its shape is uniform in flux
+  ([`paper/fingerprint.pdf`](paper/fingerprint.pdf)).
+- **The no-scale theorem confirmed** — SUSY vacua sit at V = 0 to machine precision.
 
-- It does **not** find "the" vacuum — ~10⁵⁰⁰ defeats any search.
-- It does **not** unify by itself: **verification ≠ selection**. The landscape *measure*
-  (a dynamical/cosmological reason *this* vacuum, not *that* one) is a separate, open
-  physics problem.
-- The physics oracle is an **approximate simulator, not ground truth** — verification
-  must bound oracle error, not assume it away.
+## The methodology (this is the point)
 
-## Repo map
+- **The Rule of Three** — no "structured vs. random" claim from one test. Three
+  independent confirmations must agree (single-coordinate MI, joint ridge-quadratic
+  CV r, permutation null). This rule caught and corrected our own W₀ over-reach.
+- **Use the wall, don't hit it** — "uncomputable" is four walls (intractable /
+  unmeasurable / underdetermined / undecidable), each with a way around; the way
+  around *is* the result.
+- **Mirror symmetry** is a free validation target (h11 ↔ h21, χ → −χ).
 
-- [`ROADMAP.md`](ROADMAP.md) — the linear argument as a paper outline (start here)
-- [`paper/preprint.md`](paper/preprint.md) — the certificate framework written up as a preprint
-- [`paper/preprint.tex`](paper/preprint.tex) — LaTeX source (compiles cleanly, 5 pages) + [`paper/PACLAND-preprint.pdf`](paper/PACLAND-preprint.pdf)
-- [`docs/architecture.md`](docs/architecture.md) — the six layers (L1–L6)
-- [`docs/verification.md`](docs/verification.md) — the Valiant certificate and the two-level error bound (conceptual)
-- [`docs/verification-formal.md`](docs/verification-formal.md) — the rigorous bound, cost model, and formal learnability conjecture
-- [`docs/evolvability.md`](docs/evolvability.md) — L4 formalization: Valiant's evolvability model over the landscape
-- [`docs/educability.md`](docs/educability.md) — L5 formalization: verified knowledge transfer and revision
-- [`docs/observable-measure.md`](docs/observable-measure.md) — the toy observable measure `D`, and what it reveals about the certificate
-- [`docs/oracle.md`](docs/oracle.md) — L2 spec: the oracle interface, error model, and calibration protocol
-- [`docs/encoding.md`](docs/encoding.md) — the genotype encoding and mutation operators
-- [`docs/open-questions.md`](docs/open-questions.md) — limits, the measure problem, and the learnability conjecture
-- [`docs/selection.md`](docs/selection.md) — L6: the measure-verifier (what's buildable for selection)
-- [`docs/tooling.md`](docs/tooling.md) — prior art and tooling: CYTools, cymetric, cohomCalg, and the ML-for-the-landscape literature
-- [`docs/toolchain.md`](docs/toolchain.md) — how to install CYTools (Linux path + macOS alternative)
-- [`scripts/install_cytools.sh`](scripts/install_cytools.sh) — reproducible CYTools install + quintic verification
-- [`src/pacland/`](src/pacland/) — certificate, error model, measure, oracle seam, learnability rig (builds #1 & #4)
-- [`tests/`](tests/) — stdlib `unittest` suite
+Every headline number is reproducible: `python3 scripts/verify_results.py`
+regenerates and asserts all of them from committed data.
 
-## Code
+## Papers
 
-Pure-Python, stdlib-only (no dependencies). Builds #1, #4, and the L6 measure-verifier:
+- [`paper/PACLAND-preprint.pdf`](paper/PACLAND-preprint.pdf) — the verification discipline
+- [`paper/fingerprint.pdf`](paper/fingerprint.pdf) — the mass spectrum carries no fingerprint
+- [`paper/structure-map.pdf`](paper/structure-map.pdf) — the constraint-first theorem
 
-- `src/pacland/certificate.py` — the two-level Valiant certificate (Theorem 2) and the finite-`D` certificate
-- `src/pacland/error_model.py` — per-observable error model + calibration protocol
-- `src/pacland/measure.py` — the finite, log-space observable measure `D`
-- `src/pacland/selection.py` — the measure-verifier: typicality test + KS uniformity (L6)
-- `src/pacland/learnability/vc.py` — shattering test, VC lower bound, sample complexity
-- `src/pacland/learnability/sampler.py` — flux-vacuum sampler + oracle-callable seam
-- `src/pacland/oracle/` — the `Oracle` protocol, adapters to CYTools/JAXVacua/cymetric, and an exact-toric toy oracle (build #2 seed)
-
-Real data and analysis:
-
-- `data/vacua_sample.json` — 163 real SUSY flux vacua (two bundled KS models), sampled via JAXVacua
-- `scripts/sample_vacua.py`, `scripts/measure_learnability.py` — generate and analyse that sample
-
-Run the tests:
+## CLI
 
 ```sh
-python3 -m unittest discover -s tests -v
+pip install pacland
+pacland limits            # the boundary map (four walls)
+pacland deficit           # the Mitchell Verification Deficit (m = 5)
+pacland mine data.json    # classify observables: structured vs random
+pacland constrain data.json
+pacland solve data.json   # constraint-first: the certified viable class
+pacland viable data.json  # the viability polytope
+pacland climb             # run the deficit climber on the mesh
 ```
 
-## Non-goals (so the project stays honest)
+## Tests
 
-- No claim of a unique prediction. A verified vacuum class is a *necessary*, not
-  *sufficient*, step toward unification.
-- No black-box ML. The statistical guarantees are the product; a learned surrogate that
-  cannot emit a certificate is out of scope.
+```sh
+python3 -m unittest discover -s tests   # 119 tests
+```
+
+## Honest frontier
+
+The next `m` requires the **Kähler-moduli mass spectrum**, which needs instanton
+corrections — diagnosed as an XLA autodiff hang (not physics, not data), with the
+shortcut specified (finite-difference the Kähler metric + the 2-term instanton
+superpotential) and the conifold limit as the alternative geometry. See
+`docs/boundary-map.md` and `docs/structure-map.md`.
