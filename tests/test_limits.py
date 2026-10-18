@@ -13,7 +13,7 @@ class TestLimits(unittest.TestCase):
         self.assertEqual(len(boundary_map()), 4)
 
     def test_certify_search_is_intractable(self):
-        b = certify("search the flux landscape over W0")
+        b = certify("flux landscape over W0")
         self.assertIsNotNone(b)
         self.assertEqual(b.limit, LimitType.INTRACTABLE)
 
