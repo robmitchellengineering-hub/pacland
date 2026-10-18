@@ -70,18 +70,16 @@ BOUNDARIES = [
     ),
     Boundary(
         "Compute the full EFT spectrum (masses, instanton corrections)",
-        LimitType.UNMEASURABLE,
-        "Correction to the earlier all-or-nothing reading: the DEGREE-0 spectrum "
-        "(complex-structure moduli + axio-dilaton masses, 6 eigenvalues per vacuum) "
-        "IS computable — measured 2026-10-18 on studio-linux: 322 critical points "
-        "(34 SUSY) in 128 s. What remains infeasible is the INSTANTON-CORRECTED "
-        "spectrum (maximum_degree=1), which lifts the Kähler moduli: sampling is "
-        "killed (OOM/timeout) even at n_target=10. So the mass spectrum is "
-        "PARTIALLY measurable — the CS+dilaton half is in hand, the Kähler-moduli "
-        "half is the unmeasurable remainder.",
-        "The CS+dilaton spectrum is now a real input to the structure miner (claim 1 "
-        "of docs/falsifiable-predictions.md); the Kähler-moduli masses remain the "
-        "named gap that a faster instanton computation would close.",
+        LimitType.INTRACTABLE,
+        "The DEGREE-0 spectrum (complex-structure + axio-dilaton, 6 eigenvalues) IS "
+        "computable — measured 2026-10-18 (322 critical points, 34 SUSY, 128 s). The "
+        "INSTANTON-CORRECTED spectrum (maximum_degree=1, the Kähler-moduli masses) is "
+        "INTRACTABLE, not unmeasurable: FluxEFT accepts maximum_degree (the computation "
+        "EXISTS), but building it and evaluating mass_matrix at a SINGLE vacuum times "
+        "out at 300 s (measured 2026-10-19 on studio-linux). No feasible computation.",
+        "The way around an intractable wall is to find structure that shortcuts it: a "
+        "leading-instanton approximation, the LCS limit, or a single-Kähler-modulus "
+        "model. The CS+dilaton half is already the structure miner's input.",
     ),
     Boundary(
         "Measure whether small Lambda is typical (Weinberg anthropic argument)",
