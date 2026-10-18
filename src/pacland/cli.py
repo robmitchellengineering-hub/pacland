@@ -188,9 +188,9 @@ def _cmd_deficit(args) -> None:
     print(f"  observables: {t.n_observables}  measured: {t.n_measured}  "
           f"computable: {t.n_computable}  VALIDATED: {t.n_validation}  <- m")
     print(f"  certificate radius: {t.radius:.4f}  verdict: {'bounded' if not t.vacuous else 'vacuous'}")
-    print("\n  -> m climbed 0 -> 3 (h11, h21, c2) by CYTools on studio-linux;")
-    print("     chi=-200 is a derived consistency check, kappa needs a basis")
-    print("     projection, so neither is counted. The deficit closes one rung at a time.")
+    print("\n  -> m climbed 0 -> 4 (h11, h21, c2, kappa) by CYTools on studio-linux;")
+    print("     chi=-200 is a derived consistency check and is not counted. The")
+    print("     deficit closes one independent invariant at a time.")
 
 
 def _cmd_viable(args) -> None:

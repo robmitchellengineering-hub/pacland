@@ -27,13 +27,17 @@ def hoefding(m, delta):
     return math.sqrt(math.log(1.0 / delta) / (2.0 * m))
 
 
-def compute_quintic(cy):
-    """CYTools -> (h11, h21, chi, c2) for a CY object."""
-    h11 = int(cy.h11())
-    h21 = int(cy.h21())
-    chi = int(cy.chi())
-    c2 = [int(x) for x in cy.second_chern_class()]
-    return h11, h21, chi, c2
+def compute_invariants(cy):
+    """CYTools -> the topological invariants as a comparable dict."""
+    return {
+        "h11": int(cy.h11()),
+        "h21": int(cy.h21()),
+        "chi": int(cy.chi()),
+        "c2": [int(x) for x in cy.second_chern_class()],
+        # Kaehler-basis triple intersection numbers (kappa). For h11=1 the single
+        # entry is the quintic's kappa=5; in_basis=True gives the independent basis.
+        "kappa": sorted({int(v) for v in cy.intersection_numbers(in_basis=True).values()}),
+    }
 
 
 def main(argv) -> int:
@@ -59,12 +63,7 @@ def main(argv) -> int:
         known = m.get("known", {})
         counted = m.get("counted", list(known.keys()))
         cy = Polytope(polytope).triangulate().get_cy()
-        got = {
-            "h11": int(cy.h11()),
-            "h21": int(cy.h21()),
-            "chi": int(cy.chi()),
-            "c2": [int(x) for x in cy.second_chern_class()],
-        }
+        got = compute_invariants(cy)
         checks = {}
         ok = True
         for obs in known:

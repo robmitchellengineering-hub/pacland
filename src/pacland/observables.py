@@ -33,21 +33,21 @@ STANDARD_OBSERVABLES: tuple[DeficitObservable, ...] = (
 
 # The validated oracle outputs: CYTools topology, grown by climbing the rung.
 #
-# First rung (verified earlier, docs/toolchain.md): h11=1, h21=101. Second rung
-# (verified 2026-10-18 on studio-linux, CYTools 1.4.12, quintic):
-#   h11 = 1, h21 = 101, chi = -200, c2 = [-250, 50, 50, 50, 50, 50].
+# Verified 2026-10-18 on studio-linux (CYTools 1.4.12, quintic):
+#   h11 = 1, h21 = 101, chi = -200, c2 = [-250, 50, 50, 50, 50, 50],
+#   kappa = 5  (Kähler-basis triple intersection, intersection_numbers(in_basis=True)).
 #
-# Only the *independent* invariants count toward m: h11, h21, and the second Chern
-# class c2 (m=3). chi is NOT counted as a rung — chi = 2(h11 - h21) is *derived*
-# from h11/h21, so it is a consistency check (the oracle is internally coherent),
-# not a new independent validation point. The triple intersection number is
-# basis-dependent in CYTools' toric basis ([-625, -25, 5, 125]); its Kähler-basis
-# value kappa=5 needs a basis projection, so it is also NOT counted. The honest
-# count is m=3, not 5.
+# Only the *independent* invariants count toward m: h11, h21, c2, kappa (m=4).
+# chi is NOT counted — chi = 2(h11 - h21) is *derived*, a consistency check (the
+# oracle is internally coherent), not a new independent validation point. The
+# toric-basis intersection numbers ([-625, -25, 5, 125]) are basis-dependent;
+# only the Kähler-basis kappa=5 is the physical triple intersection. Honest count:
+# m=4.
 TOPOLOGY_OBSERVABLES: tuple[DeficitObservable, ...] = (
     DeficitObservable("h11 (quintic)", True, True, True),
     DeficitObservable("h21 (quintic)", True, True, True),
     DeficitObservable("c2 (quintic)", True, True, True),
+    DeficitObservable("kappa (quintic)", True, True, True),
 )
 
 __all__ = ["STANDARD_OBSERVABLES", "TOPOLOGY_OBSERVABLES"]

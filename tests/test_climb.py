@@ -33,8 +33,9 @@ class TestClimbCorpus(unittest.TestCase):
         self.assertEqual(quintic["known"]["h11"], 1)
         self.assertEqual(quintic["known"]["h21"], 101)
         self.assertEqual(quintic["known"]["c2"], [-250, 50, 50, 50, 50, 50])
+        self.assertEqual(quintic["known"]["kappa"], [5])
         # only the independent invariants count toward m
-        self.assertEqual(quintic["counted"], ["h11", "h21", "c2"])
+        self.assertEqual(quintic["counted"], ["h11", "h21", "c2", "kappa"])
 
     def test_corpus_matches_validated_observables(self):
         with open(CORPUS) as f:
@@ -42,15 +43,15 @@ class TestClimbCorpus(unittest.TestCase):
         counted = set()
         for m in corpus["manifolds"]:
             counted.update(m["counted"])
-        # the deficit's topology sector (m=3) and the corpus agree
-        self.assertEqual(counted, {"h11", "h21", "c2"})
+        # the deficit's topology sector (m=4) and the corpus agree
+        self.assertEqual(counted, {"h11", "h21", "c2", "kappa"})
         r = deficit_report(TOPOLOGY_OBSERVABLES)
         self.assertEqual(r.n_validation, len(counted))
 
     def test_climber_radius_matches_deficit(self):
         climber = _load_climber()
         delta = 0.025
-        self.assertAlmostEqual(climber.hoefding(3, delta), 0.7841, places=4)
+        self.assertAlmostEqual(climber.hoefding(4, delta), 0.6791, places=4)
         self.assertEqual(climber.hoefding(0, delta), float("inf"))
 
 

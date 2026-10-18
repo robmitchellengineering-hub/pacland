@@ -12,14 +12,14 @@ libgmpxx4ldbl`, and the quintic Calabi-Yau threefold returned the correct result
 - `h11 = 1`, `h21 = 101` (the known Hodge numbers of the quintic)
 - `Euler number chi = -200` (= 2(h11-h21), a derived consistency check)
 - `second Chern class = [-250, 50, 50, 50, 50, 50]`
-- triple intersection numbers (toric basis) `[-625, -25, 5, 125]` — the Kähler-basis
-  `kappa=5` needs a basis projection (`compute_kappa_vector` takes a `tloc` point)
+- triple intersection `kappa = 5` (Kähler basis, `intersection_numbers(in_basis=True)`;
+  the toric basis `[-625, -25, 5, 125]` is basis-dependent)
 
-**Deficit impact (2026-10-18):** these climb the topology rung to **m = 3**
-(`h11`, `h21`, `c2` — the independent invariants). `chi` is derived and `kappa` is
-basis-dependent, so neither is counted. Full result in
-`data/cytools_quintic_validation.json`; the certificate radius drops from
-`sqrt(ln(1/delta)/4)` (m=2) to `sqrt(ln(1/delta)/6)` = **0.784** at delta=0.025.
+**Deficit impact (2026-10-18):** these climb the topology rung to **m = 4**
+(`h11`, `h21`, `c2`, `kappa` — the independent invariants). `chi` is derived, so it
+is not counted. Full result in `data/cytools_quintic_validation.json`; the
+certificate radius drops from `sqrt(ln(1/delta)/4)` (m=2) to
+`sqrt(ln(1/delta)/8)` = **0.679** at delta=0.025.
 
 The route is `mac → win-2 (100.86.50.6) → studio-linux (192.168.28.128)`, login
 `rob`, NOPASSWD sudo. The Mac-only blockers below do **not** apply to Linux.
