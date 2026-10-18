@@ -1,5 +1,20 @@
 # PACLAND — operating rules (read before working in this repo)
 
+## The Rule of Three — no result from one test (Rob: "we need at least 3")
+
+Never claim "structured" or "random" from a single measurement. Every such claim
+needs **at least three independent confirmations**, and they must *agree*:
+
+1. **Single-coordinate MI** (information-theoretic — catches single-coordinate structure).
+2. **Joint ridge-quadratic CV r** (catches multi-coordinate structure — the strong test).
+3. **Permutation null z** (catches spurious correlation — separates signal from finite-sample bias).
+
+The canonical failure: W0 was called "random" on test 1 alone (MI z≈1.95), but test
+2 disagreed (ridge r≈0.62 on the natural measure), so the claim was **retracted**.
+If all three had been required, the error would never have shipped. The tadpole
+(r=1.0 on all three) is the positive control proving the tests work; a claim whose
+three tests disagree is *unresolved*, never "one test says X so X."
+
 ## The one rule that matters: USE the wall, don't hit it
 
 "Uncomputable" is **four different walls**, each with a *way around*. A wall is
