@@ -179,6 +179,41 @@ def _cmd_deficit(args) -> None:
     print("\n  -> the deficit closes one validated oracle at a time; topology is the first rung.")
 
 
+def _cmd_viable(args) -> None:
+    """The viability polytope: the constraint-first answer, computed."""
+    from .viability import elimination_compression, viable_polytope
+
+    _, logW, loggs = _load_flat(args.data)
+    xmin, xmax = min(loggs), max(loggs)
+    ymin, ymax = min(logW), max(logW)
+    # pad the box a touch so the polytope edges don't sit exactly on the sample
+    pad = 0.05 * max(xmax - xmin, ymax - ymin, 1e-6)
+    box = (xmin - pad, xmax + pad, ymin - pad, ymax + pad)
+
+    half_planes = [
+        (1.0, 0.0, 0.0, "weak coupling  gs < 1  (log gs < 0)"),
+        (0.0, 1.0, 0.0, "small W0  |W0| < 1  (log W0 < 0)"),
+        (1.0, 1.0, math.log(0.1), "combined  gs * |W0| < 0.1  (illustrative)"),
+    ]
+    v = viable_polytope(half_planes, box)
+    print("Viability polytope — the constraint-first answer")
+    print(f"  box (sampled range): log gs [{xmin:.2f}, {xmax:.2f}], log W0 [{ymin:.2f}, {ymax:.2f}]")
+    print(f"  viable fraction of box: {v['area_fraction'] * 100:.2f}%")
+    print(f"  active constraints ({len(v['active_constraints'])}/{v['n_constraints']}):")
+    for name in v["active_constraints"]:
+        print(f"    - {name}")
+    print(f"  vertices ({len(v['vertices'])}):")
+    for x, y in v["vertices"]:
+        print(f"    ({x:+.3f}, {y:+.3f})")
+
+    c = elimination_compression([1.0 - v["area_fraction"]])
+    print()
+    print("  The answer is not a point; it is this polygon. Each verified constraint")
+    print("  is one half-space; their intersection IS the viable compactification class.")
+    print(f"  ({c['n_constraints']} constraints -> survivor fraction "
+          f"{c['survivor'] * 100:.2f}%)")
+
+
 def main(argv=None) -> None:
     p = argparse.ArgumentParser(
         prog="pacland",
@@ -193,6 +228,10 @@ def main(argv=None) -> None:
     c = sub.add_parser("constrain", help="measure constraint elimination")
     c.add_argument("data", help="JSON file of flux-vacua data")
     c.set_defaults(func=_cmd_constrain)
+
+    vb = sub.add_parser("viable", help="compute the viability polytope (the constraint-first answer)")
+    vb.add_argument("data", help="JSON file of flux-vacua data")
+    vb.set_defaults(func=_cmd_viable)
 
     v = sub.add_parser("verify", help="run a candidate through guards + falsification")
     v.add_argument("candidate", help="JSON: {flux, predictions, tadpole_bound?, h11?, h21?}")
