@@ -1,10 +1,12 @@
-"""Mine the real flux-vacua data for structured (geometry-informative) observables.
+"""Mine every flux-paired observable for structure + learnability.
 
-Runs the non-linear structure miner (``src/pacland/structure.py``) over every
-flux coordinate and the observables we have paired with flux: log|W0| and log(gs).
-The fork: if any observable is ``structured``, that's a positive result (a fingerprint
-that pins the geometry); if all are ``random``, that strengthens the negative result
-(the map is information-theoretically empty in these coordinates).
+Reads data/vacua_observables.json (flux + log_W0, log_gs, tadpole, gauge couplings)
+and reports, per observable: the MI classification (structured/random) and the
+cross-validated learnability r.
+
+The tadpole is a positive control: it is a deterministic function of flux (the
+flux-induced D3 charge), so the miner must call it strongly structured — which
+validates the tool. W0 is the negative control (known-random).
 """
 import json
 import os
@@ -18,32 +20,43 @@ from pacland.structure import classify_observable, cv_predictability  # noqa: E4
 
 DATA = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "data", "vacua_sample.json",
+    "data", "vacua_observables.json",
 )
+
+
+def _report(name, fluxes, y):
+    dim = len(fluxes[0])
+    flux_cols = [[f[i] for f in fluxes] for i in range(dim)]
+    r = classify_observable(flux_cols, y)
+    cv = cv_predictability(fluxes, y)
+    print(
+        f"{name:12s} -> {r['verdict']:10s} "
+        f"(max MI {r['max_mi']:.3f} bits, z {r['max_z']:.2f}, coord {r['coord']:2d})"
+        f"  |  CV learnability r = {cv:+.3f}"
+    )
 
 
 def main() -> int:
     with open(DATA) as f:
         data = json.load(f)
 
-    fluxes, logW, loggs = [], [], []
+    records = []
     for d in data.values():
-        fluxes.extend(d["flux"])
-        logW.extend(d["log_W0"])
-        loggs.extend(d["log_gs"])
+        records.extend(d)
+    fluxes = [r["flux"] for r in records]
+    print(f"flux vacua: {len(fluxes)}  flux dim: {len(fluxes[0])}")
 
-    dim = len(fluxes[0])
-    flux_cols = [[f[i] for f in fluxes] for i in range(dim)]
+    for name in ["log_W0", "log_gs", "tadpole"]:
+        _report(name, fluxes, [r[name] for r in records])
 
-    print(f"flux vacua: {len(fluxes)}  flux dim: {dim}")
-    for name, y in [("log_W0", logW), ("log_gs", loggs)]:
-        r = classify_observable(flux_cols, y)
-        cv = cv_predictability(fluxes, y)
-        print(
-            f"{name:8s} -> {r['verdict']:10s} "
-            f"(max MI {r['max_mi']:.3f} bits, z {r['max_z']:.2f}, coord {r['coord']})"
-            f"  |  CV learnability r = {cv:+.3f}"
-        )
+    for slot in range(3):
+        idx = [i for i, r in enumerate(records) if len(r["log_g2_inv"]) > slot]
+        if len(idx) < 10:
+            continue
+        sub_fluxes = [fluxes[i] for i in idx]
+        y = [records[i]["log_g2_inv"][slot] for i in idx]
+        _report(f"gauge_{slot}", sub_fluxes, y)
+
     return 0
 
 
