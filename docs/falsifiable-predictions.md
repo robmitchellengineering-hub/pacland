@@ -24,16 +24,18 @@ gives **r > 0.5**, the prediction is falsified — the mass spectrum *does* carr
 fingerprint, and the structure miner's target is real. If all eigenvalues give
 r < 0.25, the prediction is confirmed and the "fingerprint" search is closed.
 
-**Status — first run, inconclusive.** The degree-0 spectrum (complex-structure
-moduli + axio-dilaton, 6 eigenvalues) IS computable: 322 critical points (34 SUSY)
-sampled on studio-linux in 128 s (`data/mass_degree0.json`). The test on 34 SUSY
-vacua gives, per eigenvalue slot, ridge-quad CV r = [−0.11, +0.25, +0.26, +0.68,
-+0.38, +0.45]. One slot (eig[3]) crosses the 0.5 threshold (r = 0.68) — *suggestive*,
-but 34 points with 91 quadratic features is too small to rule out overfitting, and
-eig[3] correlates with the tadpole at only +0.43 (part of the signal is the mass
-*scale*, which the tadpole sets exactly). **Verdict: inconclusive — needs ~100 SUSY
-vacua for a decisive r<0.25 vs r>0.5 call.** The instanton-corrected (Kähler-moduli)
-half remains unmeasurable.
+**Status — decided (refined), 2026-10-18.** On 133 SUSY vacua (`data/mass_degree0_large.json`),
+the raw eigenvalues ARE learnable from flux — eig[0..5] ridge-quad CV r =
+[+0.03, +0.37, +0.50, +0.53, +0.58, +0.62], with the heaviest slot significant at
+**z = +5.54** (permutation null). The naive claim (all r < 0.25) is **falsified**.
+But the learnability is the *scale*, not the *fingerprint*: the scale-invariant
+ratios eig[j]/eig[5] give r = [+0.09, +0.16, +0.21, +0.15, +0.08] — all random
+(r < 0.25), and the heaviest eigenvalue correlates with the tadpole at only +0.12.
+So the mass spectrum's **shape is statistically uniform in flux** (the fingerprint
+is NOT there), while its **overall scale is flux-determined** through a quadratic
+form distinct from the tadpole. **Claim 1, refined: confirmed for the shape,
+falsified for the scale — the fingerprint lives in the constraints, not the
+spectrum.** The instanton-corrected (Kähler-moduli) half remains unmeasured.
 
 ## 2. New flux-vacua samples will reproduce log-uniform W₀ (R² ≈ 0.92)
 
