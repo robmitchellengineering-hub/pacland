@@ -61,6 +61,14 @@ source, not a textbook formula:**
 3. **The "Kähler cone" on the CS moduli is a mislabel.** The Kähler cone is a
    condition on the *Kähler* moduli (flat at degree-0), not the complex-structure
    moduli. A positivity cut on `moduli_re` is not the Kähler cone.
+4. **`kahler_metric` is the CS+dilaton field-space metric, NOT the Kähler moduli.**
+   JAXVacua's `FluxVacuaFinder.kahler_metric` / `christoffel_symbols` compute the
+   Kähler metric g_{i j̄}=∂∂̄K on the *complex-structure moduli + axio-dilaton* field
+   space (K = −log(i∫Ω∧Ω̄)) — the fields the degree-0 model actually stabilizes. The
+   *Kähler moduli* (volume T_i) are FLAT at degree-0 and do not appear. A geodesic
+   from `kahler_metric` therefore lives in the CS sector, where the distance
+   conjecture does NOT run (its tower is in the Kähler-moduli direction). Do not
+   present a CS-sector geodesic distance as a distance-conjecture test.
 
 ## State (durable facts)
 
@@ -82,7 +90,7 @@ source, not a textbook formula:**
 - **Swampland connection (2026-10-19):** `src/pacland/swampland.py` +
   `scripts/test_swampland.py` turn the constraint-first conjecture into per-conjecture
   tests. WGC scale g·M_pl is uniform in flux (r < 0.25, confirmed); charge gcd = 1
-  (no forced discrete global symmetry); distance proxy unresolved (needs the bigger
+  (no forced discrete global symmetry); distance proxy real signal (CS-sector; clean DC test needs the bigger
   machine). Extends the *prediction* surface, NOT the deficit (m stays 5).
 - Live site: https://pacland.netlify.app (Netlify) + GitHub Pages mirror.
 - The four-wall map is `src/pacland/limits.py` and `docs/boundary-map.md`.
