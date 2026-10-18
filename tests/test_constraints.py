@@ -5,7 +5,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 import unittest
 
-from pacland.constraints import elimination_certificate, elimination_fraction
+from pacland.constraints import (
+    elimination_certificate,
+    elimination_curve,
+    elimination_fraction,
+    linearity_r2,
+)
 
 
 class TestEliminationFraction(unittest.TestCase):
@@ -29,6 +34,24 @@ class TestEliminationCertificate(unittest.TestCase):
     def test_all_eliminated(self):
         c = elimination_certificate([1, 2, 3], lambda v: False)
         self.assertEqual(c["eliminated"], 1.0)
+
+
+class TestEliminationCurve(unittest.TestCase):
+    def test_uniform_cdf_is_linear(self):
+        # a uniform sample has an (approximately) linear empirical CDF
+        import random
+        rng = random.Random(0)
+        vals = [rng.uniform(0, 1) for _ in range(500)]
+        ts = [i / 20 for i in range(21)]
+        cdf = elimination_curve(vals, ts)
+        self.assertGreater(linearity_r2(ts, cdf), 0.95)
+
+    def test_clumped_cdf_is_not_linear(self):
+        # all mass at one value -> CDF is a step, far from linear
+        vals = [0.5] * 100
+        ts = [i / 10 for i in range(11)]
+        cdf = elimination_curve(vals, ts)
+        self.assertLess(linearity_r2(ts, cdf), 0.5)
 
 
 if __name__ == "__main__":

@@ -38,3 +38,34 @@ def elimination_certificate(sample, keep, delta: float = 0.05) -> dict:
         "n": len(sample),
         "delta": delta,
     }
+
+
+def elimination_curve(values, thresholds) -> list:
+    """Empirical CDF: for each threshold t, the fraction of values <= t.
+
+    For a constraint "observable <= t", this is the *survivor* fraction as t
+    varies — the elimination curve. Its shape is the distribution's signature:
+    linear in |W0|^2 would confirm Denef-Douglas uniform-area distribution.
+    """
+    values = list(values)
+    if not values:
+        raise ValueError("values must be non-empty")
+    return [sum(1 for v in values if v <= t) / len(values) for t in thresholds]
+
+
+def linearity_r2(xs, ys) -> float:
+    """R^2 of ys against the best-fit line — 1.0 means perfectly linear."""
+    n = len(xs)
+    if n < 2 or len(xs) != len(ys):
+        raise ValueError("need equal-length inputs of length >= 2")
+    mx = sum(xs) / n
+    my = sum(ys) / n
+    sxx = sum((x - mx) ** 2 for x in xs)
+    sxy = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+    if sxx == 0:
+        return 0.0
+    slope = sxy / sxx
+    intercept = my - slope * mx
+    ss_res = sum((y - (slope * x + intercept)) ** 2 for x, y in zip(xs, ys))
+    ss_tot = sum((y - my) ** 2 for y in ys)
+    return 1.0 - ss_res / ss_tot if ss_tot > 0 else 0.0
