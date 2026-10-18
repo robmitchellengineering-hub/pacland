@@ -51,7 +51,12 @@ def linreg(features, targets):
     r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else 0.0
     r2 = max(0.0, min(1.0, r2))
     df_res = n - k
-    f = (r2 / p) / ((1.0 - r2) / df_res) if (0.0 < r2 < 1.0 and df_res > 0) else 0.0
+    if r2 >= 1.0 - 1e-9:
+        f = float("inf")  # perfect fit
+    elif r2 <= 0.0 or df_res <= 0:
+        f = 0.0
+    else:
+        f = (r2 / p) / ((1.0 - r2) / df_res)
     return r2, f
 
 
