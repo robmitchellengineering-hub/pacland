@@ -24,10 +24,16 @@ gives **r > 0.5**, the prediction is falsified — the mass spectrum *does* carr
 fingerprint, and the structure miner's target is real. If all eigenvalues give
 r < 0.25, the prediction is confirmed and the "fingerprint" search is closed.
 
-**Status.** Untestable today — the mass spectrum computation is killed even at
-n = 10 (the unmeasurable wall, `docs/boundary-map.md` #6). This is exactly where
-"use the wall" applies: the unmeasurability is *not* a dead end, it is the
-**specification of the falsification test** that will decide claim 1.
+**Status — first run, inconclusive.** The degree-0 spectrum (complex-structure
+moduli + axio-dilaton, 6 eigenvalues) IS computable: 322 critical points (34 SUSY)
+sampled on studio-linux in 128 s (`data/mass_degree0.json`). The test on 34 SUSY
+vacua gives, per eigenvalue slot, ridge-quad CV r = [−0.11, +0.25, +0.26, +0.68,
++0.38, +0.45]. One slot (eig[3]) crosses the 0.5 threshold (r = 0.68) — *suggestive*,
+but 34 points with 91 quadratic features is too small to rule out overfitting, and
+eig[3] correlates with the tadpole at only +0.43 (part of the signal is the mass
+*scale*, which the tadpole sets exactly). **Verdict: inconclusive — needs ~100 SUSY
+vacua for a decisive r<0.25 vs r>0.5 call.** The instanton-corrected (Kähler-moduli)
+half remains unmeasurable.
 
 ## 2. New flux-vacua samples will reproduce log-uniform W₀ (R² ≈ 0.92)
 

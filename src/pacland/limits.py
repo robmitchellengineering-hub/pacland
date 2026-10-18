@@ -71,16 +71,17 @@ BOUNDARIES = [
     Boundary(
         "Compute the full EFT spectrum (masses, instanton corrections)",
         LimitType.UNMEASURABLE,
-        "The mass matrix is flat at maximum_degree=0 (no instantons) — the moduli "
-        "are massless. With instanton corrections (maximum_degree=1) the sampling is "
-        "INFEASIBLE even at n_target=10: the finder builds (1.7 s) but "
-        "sample_critical_points is killed (OOM/timeout) before any critical point "
-        "returns (measured 2026-10-18 on studio-linux). The spectrum is unmeasurable "
-        "with current tools, at any practical scale.",
-        "The deficit is computable (m=5 validated so far); the mass spectrum remains "
-        "the single most informative unmeasured observable — the one that could carry "
-        "the geometric fingerprint — and this boundary names exactly what must be "
-        "built to reach it.",
+        "Correction to the earlier all-or-nothing reading: the DEGREE-0 spectrum "
+        "(complex-structure moduli + axio-dilaton masses, 6 eigenvalues per vacuum) "
+        "IS computable — measured 2026-10-18 on studio-linux: 322 critical points "
+        "(34 SUSY) in 128 s. What remains infeasible is the INSTANTON-CORRECTED "
+        "spectrum (maximum_degree=1), which lifts the Kähler moduli: sampling is "
+        "killed (OOM/timeout) even at n_target=10. So the mass spectrum is "
+        "PARTIALLY measurable — the CS+dilaton half is in hand, the Kähler-moduli "
+        "half is the unmeasurable remainder.",
+        "The CS+dilaton spectrum is now a real input to the structure miner (claim 1 "
+        "of docs/falsifiable-predictions.md); the Kähler-moduli masses remain the "
+        "named gap that a faster instanton computation would close.",
     ),
     Boundary(
         "Measure whether small Lambda is typical (Weinberg anthropic argument)",
