@@ -86,10 +86,13 @@ BOUNDARIES = [
     Boundary(
         "Measure whether small Lambda is typical (Weinberg anthropic argument)",
         LimitType.UNMEASURABLE,
-        "SUSY V is AdS (-3 e^K |W|^2); the cosmological constant needs the de Sitter "
-        "uplift, which is contentious and not in the basic FluxEFT.",
-        "The log-uniform W0 prior is measured; the Lambda distribution is a derived "
-        "question once an uplift model exists.",
+        "Measured 2026-10-19: at the no-scale SUSY point V = 0 (machine precision, "
+        "10^-31..10^-26) — Minkowski, not AdS. The AdS value -3 e^K |W|^2 arises only "
+        "AFTER Kaehler-moduli stabilization (KKLT), and the de Sitter uplift after "
+        "that; both are beyond the degree-0 FluxEFT.",
+        "The no-scale theorem is CONFIRMED from data (V = 0 at SUSY); the log-uniform "
+        "W0 prior is measured; the Lambda distribution is a derived question once the "
+        "uplift chain exists.",
     ),
     Boundary(
         "Is there an algorithm to decide whether a flux configuration admits a "
