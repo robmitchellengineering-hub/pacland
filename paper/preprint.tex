@@ -1,0 +1,363 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+\newtheorem{conjecture}{Conjecture}
+
+\newcommand{\cstar}{c^{*}}
+\newcommand{\oracle}{\widehat{O}}
+\newcommand{\eps}{\varepsilon}
+
+\title{Probably Approximately Correct String Theory:\\ A PAC Verification Framework for the String Landscape}
+\author{Rob Mitchell}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+String theory's landscape contains on the order of $10^{500}$ vacua and no
+experiment distinguishes most of them, so ``unified string theory'' conflates two
+problems---\emph{verification} (does some vacuum match our universe?) and
+\emph{selection} (why that one?). We separate them. Importing Leslie Valiant's
+computational learning framework, we make verification precise as a
+\emph{probably-approximately-correct certificate}: with probability $\ge 1-\delta$
+a candidate vacuum's physics agrees with observation within tolerance $\eps$,
+\emph{even when the verifier is itself approximate}---a two-level bound we derive.
+We show single-candidate verification needs \emph{no learnability assumption},
+while \emph{search} over the landscape is governed by Valiant's evolvability
+theorem (\emph{evolvable $\Rightarrow$ learnable}), yielding one
+necessary-condition conjecture: the compactification$\to$observables map is
+SQ-learnable. Finally, making the observable measure finite collapses the sampling
+term and exposes the binding constraint---verification is bounded by the number of
+\emph{measurable} points of the true theory, $\sim 19$ for the Standard Model,
+which today gives a certificate radius of $\sim 43\%$, not $\sim 1\%$. The
+framework's product is not a solution to unification but a \emph{quantitative
+statement of the verification deficit}---and a precise sense in which string theory
+is, today, barely verifiable.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+String theory is not, in its present form, a single theory. It is a family of
+$\sim 10^{500}$ metastable vacua---the \emph{landscape}---each giving different
+low-energy physics~\cite{bousso2000,douglas2003,susskind2003}. The statement
+``string theory is unified'' decomposes into two claims that the literature
+habitually fuses:
+\begin{enumerate}
+\item \textbf{Verification}---there exists a vacuum whose low-energy physics
+matches our universe (gauge group, spectrum, cosmological constant).
+\item \textbf{Selection}---a \emph{measure} singles out that vacuum, with weight
+$\sim 1$.
+\end{enumerate}
+The first is checkable in principle; the second is not, and it is the part that has
+remained open for roughly four decades. This paper concerns only the first, and does
+so rigorously.
+
+Two facts make verification hard even as a well-posed problem. First, the search
+space is astronomically large. Second, and more fundamentally, the \emph{verifier}
+is not ground truth: the map from a compactification to its low-energy observables
+is computed by an approximate solver---with systematic error from $\alpha'$
+corrections, non-perturbative truncations, and the Kaluza--Klein tower. Any rigorous
+statement about verification must therefore contend with an \emph{imperfect
+labeler}.
+
+We import the one framework built for exactly this regime. Valiant's
+probably-approximately-correct (PAC) learning replaces ``exact'' with ``with
+probability $\ge 1-\delta$, error $\le \eps$''~\cite{valiant1984}. We apply that
+replacement to verification itself, and derive a certificate whose two error terms
+are separately estimable. Three consequences follow: a clean separation of
+\emph{verification} (no learnability needed) from \emph{search} (governed by
+Valiant's evolvability theorem~\cite{valiant2009}); a necessary-condition conjecture
+for the whole landscape program; and a bound that shows verification today is limited
+not by compute but by \emph{measurable physics}.
+
+\subsection{Contributions}
+\begin{enumerate}
+\item \textbf{A two-level certificate} (Theorem~\ref{thm:twolevel}): an upper bound
+on the true error of a candidate vacuum that composes a candidate-vs-oracle term
+with an oracle-vs-truth term, valid when the verifier is approximate.
+\item \textbf{The verify/search separation} (Section~\ref{sec:verify}):
+single-candidate verification needs no VC dimension; search does, and the framework
+degrades gracefully when learnability fails.
+\item \textbf{The measurable-physics bound} (Section~\ref{sec:measure}): a finite
+observable measure collapses the sampling term, leaving a certificate radius set by
+the number of \emph{measured} points---$\sim 43\%$ today, $\sim 1\%$ only with
+$\sim 18{,}000$.
+\item \textbf{The learnability conjecture} (Section~\ref{sec:conjecture}): the
+compactification$\to$observables map is SQ-learnable; its false branch is a negative
+result about the entire landscape program.
+\end{enumerate}
+
+\section{Setup and notation}
+
+Let $X$ be the \emph{instance space}---the set of low-energy observables (masses,
+couplings, the cosmological constant). Let $D$ be a probability measure over $X$:
+\emph{which} observables are sampled, and with what weight. $D$ is a stipulated
+scientific commitment, not given by the physics (Sections~\ref{sec:measure}
+and~\ref{sec:discussion}).
+
+Let $\cstar: X \to Y$ be the \emph{target}---the true low-energy physics of our
+universe---and let $h: X \to Y$ be a candidate vacuum's predicted physics. We never
+observe $\cstar$ directly; we observe it through an \emph{oracle} $\oracle: X \to Y$,
+an approximate solver. Define the two disagreement functions
+\[
+g(x) \;=\; |h(x) - \oracle(x)|, \qquad e(x) \;=\; |\oracle(x) - \cstar(x)|,
+\]
+and the \emph{true error}
+\[
+\operatorname{err}_D(h) \;=\; \Pr_{x\sim D}\bigl[\, |h(x) - \cstar(x)| > \eps \,\bigr]
+\]
+for a chosen tolerance $\eps$. The goal is to certify $\operatorname{err}_D(h) \le
+\delta$ for small $\delta$. We cannot observe $\operatorname{err}_D(h)$, because
+$\cstar$ is reachable only through $\oracle$.
+
+\section{The two-level certificate}
+\label{sec:cert}
+
+The triangle inequality decomposes the unobservable error into two estimable pieces:
+\[
+|h(x) - \cstar(x)| \;\le\; g(x) + e(x),
+\]
+hence, for any split point $\beta \in (0, \eps)$,
+\[
+\{ \, |h - \cstar| > \eps \} \;\subseteq\; \{ g > \eps - \beta \} \;\cup\; \{ e > \beta \},
+\]
+and, taking probabilities (a union bound),
+\begin{equation}
+\label{eq:split}
+\operatorname{err}_D(h) \;\le\; p_g(\eps - \beta) + p_e(\beta),
+\end{equation}
+where $p_g(\tau) = \Pr[g > \tau]$ and $p_e(\beta) = \Pr[e > \beta]$. The two terms on
+the right are \emph{individually estimable}, for different reasons: $p_g$ compares two
+things we can both \emph{compute} ($h$ and $\oracle$), while $p_e$ is the oracle's own
+failure rate, estimable by \emph{validating} $\oracle$ on points where $\cstar$ is
+known (measurement, or exact computation on tractable cases).
+
+\begin{theorem}[Candidate bound]
+\label{thm:candidate}
+For a fixed $h$, sample $n$ observables $x_1,\dots,x_n \sim D$ i.i.d.\ and let
+$\hat p_g$ be the empirical disagreement rate above $\eps - \beta$. Then with
+probability $\ge 1 - \delta_s$,
+\[
+p_g(\eps - \beta) \;\le\; \hat p_g + \sqrt{\frac{\ln(1/\delta_s)}{2n}} .
+\]
+\end{theorem}
+
+This is a one-sided Hoeffding bound on a single proportion; no uniform-convergence
+assumption, no VC dimension.
+
+\begin{theorem}[Oracle validation bound]
+\label{thm:oracle}
+On $m$ independent points $z_1,\dots,z_m$ where $\cstar(z)$ is known, let $\hat p_e$
+be the empirical exceedance rate of $|\oracle - \cstar|$ above $\beta$. Then with
+probability $\ge 1 - \delta_e$,
+\[
+p_e(\beta) \;\le\; \hat p_e + \sqrt{\frac{\ln(1/\delta_e)}{2m}} .
+\]
+\end{theorem}
+
+\begin{theorem}[Two-level Valiant certificate]
+\label{thm:twolevel}
+Fix $\eps > 0$, $\beta \in (0, \eps)$, and confidence budgets
+$\delta_s, \delta_e \in (0,1)$. With probability at least $1 - \delta_s - \delta_e$,
+\[
+\operatorname{err}_D(h) \;\le\;
+\hat p_g + \hat p_e
++ \sqrt{\frac{\ln(1/\delta_s)}{2n}}
++ \sqrt{\frac{\ln(1/\delta_e)}{2m}} .
+\]
+\end{theorem}
+
+The certificate is the tuple $(\eps, \beta, n, m, \hat p_g, \hat p_e, \delta_s,
+\delta_e)$, from which the bound is computed. This is verification in the presence of
+an imperfect labeler---the generalization of PAC's clean oracle that string theory
+actually requires.
+
+\begin{remark}[The binding constraint]
+The oracle-validation radius is governed by $m$, the number of points where the true
+theory is known. For the Standard Model, $m$ is bounded by the number of measured free
+parameters---not by compute. This is the crux of Section~\ref{sec:measure}.
+\end{remark}
+
+\section{Verification without learnability; search with it}
+\label{sec:verify}
+
+Theorem~\ref{thm:twolevel} holds for a \emph{single, handed-to-you} hypothesis $h$. It
+never invokes the complexity of the hypothesis class. That is the point:
+\emph{verifying what you are given is cheap}, a Bernoulli-rate estimate.
+
+Search is different. Search \emph{selects} the empirically best of many hypotheses,
+and that selection is biased---the empirical minimum overestimates the winner.
+Bounding selection bias requires uniform convergence: for a finite class, a union
+bound gives radius $\sqrt{\ln(|C|/\delta)/(2n)}$; for an infinite class,
+$\operatorname{VCdim}(C)$ (or the statistical-query dimension
+$\operatorname{SQdim}(C)$) replaces $\ln|C|$.
+
+The consequence is a graceful-degradation statement: if the learnability conjecture
+(Section~\ref{sec:conjecture}) is false, the \emph{search} is infeasible, but the
+\emph{verifier survives}---it can still certify any candidate proposed externally,
+because the bound of Theorem~\ref{thm:twolevel} never uses VC dimension.
+
+\section{The observable measure and the measurable-physics bound}
+\label{sec:measure}
+
+Make $D$ \emph{finite}: $X$ is a finite, named list of $N$ observables, each
+represented in log-space so that ``tolerance $\eps$'' means a uniform
+\emph{multiplicative} tolerance from a gauge coupling ($O(1)$) down to the
+cosmological constant ($10^{-122}$). $D$ is then a weight vector $(w_1,\dots,w_N)$.
+
+For a finite $X$ that the oracle can fully evaluate, the candidate term is
+\emph{exact}:
+\[
+p_g(\eps - \beta) \;=\;
+\sum_{i=1}^{N} w_i \, \mathbf{1}\!\bigl[\, |\ln(h(x_i)/\oracle(x_i))| > \eps-\beta \,\bigr],
+\]
+computed directly---no sampling, no $n$. The certificate collapses to the oracle term:
+\[
+\operatorname{err}_D(h) \;\le\; p_g(\text{exact}) + \hat p_e
++ \sqrt{\frac{\ln(1/\delta_e)}{2m}} .
+\]
+The only remaining uncertainty is the oracle-validation term, bounded by $m$, the
+number of measured points. With $m \sim 19$ (the Standard Model's free parameters) and
+$\delta_e = 0.025$:
+\[
+\sqrt{\frac{\ln(40)}{2 \cdot 19}} \;\approx\; 0.31,
+\]
+a $\sim 31$--$43\%$ radius (the precise number depends on $m$ and the confidence
+split). To drive the radius below $1\%$ requires $m \approx 18{,}000$ measured
+points---\emph{four orders of magnitude more than the theory gives us}. This is the
+quantitative statement of the verification deficit: string theory is today verifiable
+only to $\sim$ tens of percent tolerance in the observables that matter, and the
+bottleneck is measurable physics, not compute.
+
+A second consequence is a $2\times 2$ that decides which observables matter:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+ & $\cstar$ known (measured) & $\cstar$ unknown \\
+\midrule
+$\oracle$ can compute & verification zone & prediction zone \\
+$\oracle$ cannot compute & unverifiable & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Only the top-left cell tightens the certificate; the top-right cell is falsifiable
+\emph{later} and contributes nothing \emph{now}. A vacuum whose only interesting
+predictions lie in the top-right cell is scientifically sterile \emph{today},
+regardless of elegance.
+
+\section{Search and the learnability conjecture}
+\label{sec:conjecture}
+
+Valiant's evolvability model~\cite{valiant2009} restricts selection to
+\emph{statistical-query} access to the target: fitness is read only through aggregate
+statistics, never per-instance ground truth. This restriction is not imposed here for
+tidiness---it is \emph{already how the search works}, because the only access a search
+has to a vacuum's fitness is the certificate of Theorem~\ref{thm:twolevel} (sampled
+rates with confidence radii). Valiant's theorem is:
+
+\begin{quote}
+\emph{Evolvable $\Rightarrow$ learnable.} Any concept class evolvable in the
+restricted model is learnable in the corresponding statistical-query model.
+\end{quote}
+
+Its contrapositive is the gate on search:
+
+\begin{conjecture}[Bounded SQ dimension]
+\label{conj:sqdim}
+The class $C = \{ h_v : X \to Y : v \in V \}$ of observable-prediction functions
+induced by vacua has \emph{polynomial SQ dimension}---i.e., the
+compactification$\to$observables map is SQ-learnable.
+\end{conjecture}
+
+\begin{itemize}
+\item \textbf{True} $\Rightarrow$ the landscape is \emph{evolvable}: an evolutionary
+search with certificate-only access and provable guarantees can find a near-optimal
+vacuum.
+\item \textbf{False} $\Rightarrow$ no search can find our vacuum---a negative result
+about the entire landscape program.
+\end{itemize}
+
+Either branch is a finding, and the conjecture is stated so it is attackable on small
+vacuum classes before anyone touches $10^{500}$.
+
+\section{Discussion and limits}
+\label{sec:discussion}
+
+\textbf{The framework does not unify.} It does not select a vacuum---the measure
+(Section~\ref{sec:intro}, claim~2) is untouched and remains the 40-year-open physics
+problem. It does not eliminate oracle error---it bounds it. It does not derive
+$D$---every certificate is conditional on the stipulated observable measure. And it
+does not turn a surrogate into truth: no error model, no certificate.
+
+\textbf{The imperfect oracle is the through-line.} It appears in
+Theorem~\ref{thm:twolevel} (verification) and again in
+Section~\ref{sec:conjecture} (search, where fitness is read through certificates). A
+fully general treatment---\emph{evolvability with an imperfect performance oracle}---is
+the natural extension and is left open.
+
+\textbf{What is buildable vs.\ not.} All of Sections~\ref{sec:cert}--\ref{sec:conjecture}
+is software (a reference implementation accompanies this paper). The measure problem,
+and the full EFT extraction that a non-trivial learnability measurement requires, are
+physics research, not tooling.
+
+\section{Conclusion}
+
+The obstacle to unified string theory is not a shortage of cleverness but a shortage
+of \emph{checkable claims}---and the deepest checkable claim in reach is not ``is this
+vacuum ours?'' but ``is the compactification$\to$observables map learnable?'' Answer
+that, and one knows whether the landscape is searchable at all. Verification, done
+with Valiant's guarantees, is the honest first move; selection is the hard second, and
+no amount of the first buys the second. The framework's contribution is to make the
+first move \emph{rigorous} and to state, with a number, how far we are from being able
+to verify any of it.
+
+\begin{thebibliography}{10}
+
+\bibitem{bousso2000} R.~Bousso and J.~Polchinski,
+\emph{Quantization of four-form fluxes and dynamical neutralization of the
+cosmological constant}, JHEP (2000).
+
+\bibitem{douglas2003} M.~R.~Douglas,
+\emph{The statistics of string/M theory vacua}, JHEP (2003).
+
+\bibitem{susskind2003} L.~Susskind,
+\emph{The anthropic landscape of string theory} (2003).
+
+\bibitem{valiant1984} L.~G.~Valiant,
+\emph{A theory of the learnable}, Communications of the ACM 27(11), 1984.
+
+\bibitem{valiant2009} L.~G.~Valiant,
+\emph{Evolvability}, Journal of the ACM 56(1), 2009.
+
+\bibitem{kearns1998} M.~Kearns,
+\emph{Efficient noise-tolerant learning from statistical queries}, Journal of the ACM
+45(6), 1998.
+
+\bibitem{feldman2009} V.~Feldman,
+\emph{A complete characterization of statistical query learning with applications to
+evolvability}, FOCS 2009.
+
+\bibitem{valiant2013} L.~G.~Valiant,
+\emph{Probably Approximately Correct}, Basic Books, 2013.
+
+\bibitem{cytools} M.~Demirtas et al.,
+\emph{CYTools: A Software Package for Analyzing Calabi-Yau Manifolds},
+arXiv:2211.03823.
+
+\bibitem{jaxvacua} A.~Dubey, S.~Krippendorf, A.~Schachner,
+\emph{JAXVacua---a framework for sampling string vacua},
+arXiv:2306.06160, JHEP 12 (2023) 146.
+
+\end{thebibliography}
+
+\end{document}
