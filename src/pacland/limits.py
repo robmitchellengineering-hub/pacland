@@ -71,15 +71,18 @@ BOUNDARIES = [
     Boundary(
         "Compute the full EFT spectrum (masses, instanton corrections)",
         LimitType.INTRACTABLE,
-        "The DEGREE-0 spectrum (complex-structure + axio-dilaton, 6 eigenvalues) IS "
-        "computable — measured 2026-10-18 (322 critical points, 34 SUSY, 128 s). The "
-        "INSTANTON-CORRECTED spectrum (maximum_degree=1, the Kähler-moduli masses) is "
-        "INTRACTABLE, not unmeasurable: FluxEFT accepts maximum_degree (the computation "
-        "EXISTS), but building it and evaluating mass_matrix at a SINGLE vacuum times "
-        "out at 300 s (measured 2026-10-19 on studio-linux). No feasible computation.",
-        "The way around an intractable wall is to find structure that shortcuts it: a "
-        "leading-instanton approximation, the LCS limit, or a single-Kähler-modulus "
-        "model. The CS+dilaton half is already the structure miner's input.",
+        "DEGREE-0 spectrum (CS + axio-dilaton, 6 eigenvalues) IS computable (322 "
+        "critical points, 34 SUSY, 128 s). The INSTANTON-CORRECTED spectrum "
+        "(maximum_degree=1) is INTRACTABLE, and now precisely located: the build is "
+        "FAST (1.6 s), the instanton sum is TINY (2 GV charges [[1,0],[0,1]]), and the "
+        "prepotential F_LCS evaluates instantly (instanton correction ~0.004) — but "
+        "BOTH hessian and mass_matrix hang >200 s. The bottleneck is XLA/JAX autodiff "
+        "of the instanton-corrected second derivatives, not the physics and not the data.",
+        "The shortcut is specified: finite-difference the Kähler metric "
+        "g_ab = d2K/dT dT* from kahler_potential / mirror_volume (both callable), then "
+        "assemble the Kähler-moduli mass matrix from the 2-term instanton superpotential "
+        "— a hand-written computation that sidesteps autodiff. Remaining blocker: the "
+        "CS-vs-Kähler (mirror) moduli convention, to be read from arXiv:2306.06160.",
     ),
     Boundary(
         "Measure whether small Lambda is typical (Weinberg anthropic argument)",
