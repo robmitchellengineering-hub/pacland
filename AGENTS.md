@@ -45,6 +45,23 @@ validate the oracle against, for free** — no external database needed. Encoded
 quintic (1,101,−200) ↔ mirror quintic (101,1,+200). Use it whenever the corpus needs
 more known-answer manifolds.
 
+## Gotchas that already cost retractions (check before claiming a wall)
+
+Three "walls" turned out not to be walls, each caught by a source/control check.
+**Before claiming any elimination, verify the number against the model's own
+source, not a textbook formula:**
+
+1. **Orientifold charge is `model.Q()`, not χ/24.** `FluxEFT(...).Q()` returns the
+   D3 tadpole bound (276 for the h12=2 KS model). χ/24 ≈ 22 is the O3-only piece and
+   is *wrong* for the full O3/O7 orientifold. With L=276 the tadpole bound is
+   pre-satisfied (max N_flux ≈ 265), so it eliminates 0% — not 74%.
+2. **Weak coupling is a sampler artifact.** The ISD sampler only produces g_s < 1, so
+   "gs<1" eliminates 0% of both SUSY and non-SUSY points. Check the *distribution* of
+   the pre-imposed condition before calling it a wall.
+3. **The "Kähler cone" on the CS moduli is a mislabel.** The Kähler cone is a
+   condition on the *Kähler* moduli (flat at degree-0), not the complex-structure
+   moduli. A positivity cut on `moduli_re` is not the Kähler cone.
+
 ## State (durable facts)
 
 - The **Mitchell Verification Deficit** is the count `m` of observables that are
