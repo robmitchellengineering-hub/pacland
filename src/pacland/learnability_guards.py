@@ -67,6 +67,17 @@ def guard_no_linear_structure(features, targets, r2_threshold: float = 0.3):
     return ok, f"R2={r2:.3f} F={f:.2f} (threshold {r2_threshold})"
 
 
+def guard_linear_structure(features, targets, f_threshold: float = 4.0):
+    """Assert significant linear structure: F > threshold — the observable IS
+    linearly learnable from these features. Complement of guard_no_linear_structure.
+
+    A synthetic target that is pure noise MUST make this guard fail (required-to-fail).
+    """
+    r2, f = linreg(features, targets)
+    ok = f > f_threshold
+    return ok, f"R2={r2:.3f} F={f:.2f} (threshold {f_threshold})"
+
+
 def _pearson(xs, ys):
     n = len(xs)
     mx, my = sum(xs) / n, sum(ys) / n
@@ -104,4 +115,5 @@ __all__ = [
     "max_cross_correlation",
     "guard_no_linear_structure",
     "guard_no_quadratic_structure",
+    "guard_linear_structure",
 ]
