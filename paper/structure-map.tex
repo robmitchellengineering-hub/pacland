@@ -1,0 +1,152 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+
+\newcommand{\oracle}{\widehat{O}}
+\newcommand{\eps}{\varepsilon}
+
+\title{Constraint-first string theory:\\ the flux landscape's only exact structure is its constraint}
+\author{Rob Mitchell}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We measure, on real supersymmetric flux vacua, which low-energy observables carry
+information about the flux that produced them. Every flux-determined observable is
+classified by a joint (multi-coordinate quadratic) learnability test, gated by a
+positive control that must reproduce the one exactly-known quantity. The result is a
+\emph{structure map}: the string coupling, the gauge couplings, the mass-spectrum
+\emph{shape}, the axions, the dilaton, and the cosmological constant are all
+statistically uniform in flux ($r < 0.25$); $W_0$ and the saxions carry weak
+structure ($r \approx 0.3$--$0.6$); and exactly one quantity is \emph{exactly}
+structured --- the D3 tadpole, the symplectic pairing $N_{\rm flux} = F^\top J H$
+($r = 1.0$). No observable carries the strong ($r > 0.9$) \emph{geometric
+fingerprint} that would pin the compactification. We conclude: the landscape's only
+exact structure is what it \emph{forbids}, not what it \emph{selects}; everything it
+produces is noise plus a weak scale. This is the constraint-first program,
+established by measurement rather than asserted.
+\end{abstract}
+
+\section{Introduction}
+
+The string landscape is $\sim 10^{500}$ vacua and no experiment that tells most of
+them apart. Two programs have tried to make it navigable. The \emph{search} program
+(and its modern machine-learning descendants) asks: can we \emph{learn} the map from
+flux to observables, and so scan our way to our universe? The \emph{constraint}
+program (swampland, bootstrap) asks instead: which consistency conditions
+\emph{eliminate} vacua? This paper measures the premise that distinguishes them:
+whether any observable carries a \emph{fingerprint} --- strong information about the
+flux --- that a search could exploit.
+
+The answer, measured on $174$ supersymmetric IIB flux vacua, is that no observable
+does. The only exact structure is the constraint itself.
+
+\section{Method}
+
+\paragraph{Sample.} JAXVacua~\cite{jaxvacua} on a bundled $h^{1,2}=2$ flux EFT, the
+natural ISD measure (${\tt isd\_mode}={\tt ISD-}$, Gaussian flux prior),
+degree-$0$ spectrum. $174$ supersymmetric vacua (selected by $DW=0$,
+$\operatorname{Im}\tau>0$) from $1318$ critical points.
+
+\paragraph{The joint test and the Rule of Three.} For each observable $y$ we compute
+the cross-validated ridge regression of $y$ on the degree-$2$ monomial basis of the
+$12$ flux coordinates ($91$ features), reporting the Pearson $r$ between held-out
+predictions and truth. A single-coordinate mutual-information test is \emph{blind} to
+multi-coordinate structure and is used only as a first screen; the claim follows the
+\emph{Rule of Three}: single-coordinate MI, joint ridge-$r$, and a permutation null
+must \emph{agree}. A disagreement is unresolved, never resolved by one test.
+
+\paragraph{The control.} The D3 tadpole is \emph{known} to be the symplectic pairing
+$N_{\rm flux} = F^\top J H$ with $J = \bigl(\begin{smallmatrix}0&I\\-I&0\end{smallmatrix}\bigr)$,
+a clean bilinear form of the flux. The joint test must return $r = 1.0$ for it, at
+machine precision. This control is what makes every other reading trustworthy: a
+test that cannot see the tadpole's structure cannot be trusted to see any.
+
+\section{Results: the structure map}
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+observable & wide-flux $r$ & verdict \\
+\midrule
+tadpole $N_{\rm flux}$ & \textbf{1.00} & \textbf{exact} (the constraint) \\
+$W_0$ & 0.62 & weakly learnable (scale via tadpole) \\
+saxions (moduli sizes) & 0.30--0.42 & weakly learnable (stabilization) \\
+string coupling $g_s$ & 0.12 & uniform \\
+gauge couplings & 0.02--0.12 & uniform \\
+mass-spectrum shape (ratios) & $<$0.25 & uniform \\
+axions (moduli phases) & 0.15 & uniform \\
+axio-dilaton $\operatorname{Re}\tau$ & 0.13 & uniform \\
+AdS potential $V$ & 0.00 & uniform \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The pattern is stark. The low-energy observables are a mostly-unstructured cloud:
+the string coupling, the gauge couplings, the mass-spectrum \emph{shape}, the
+axions, the dilaton, and the cosmological constant are statistically uniform in
+flux. Two things carry weak structure --- $W_0$, whose \emph{scale} tracks the
+tadpole, and the saxions, which flux stabilizes. Exactly one thing is \emph{exactly}
+structured: the tadpole, the constraint.
+
+\begin{remark}
+\textbf{No geometric fingerprint exists.} Across every observable measured, none
+carries strong ($r>0.9$) information about the flux. The fingerprint that a search
+program would need --- an observable that pins the compactification --- is absent.
+The only exact structure is what the landscape \emph{forbids}.
+\end{remark}
+
+\section{The $W_0$ correction and the search}
+
+A first pass reported $W_0$ as ``zero-information,'' on the strength of a
+single-coordinate correlation; that is retracted here. The joint test gives
+$r = 0.62$ on the natural measure ($r=0.10$ only when flux is artificially bounded).
+$W_0$ is weakly learnable, through its scale.
+
+This does not rescue search. On the sample, $\log|W_0|$ has standard deviation
+$0.63$ nats, so a model with $r=0.62$ has prediction error $\sigma_{\rm pred}=0.50$
+nats. The KKLT tuning target $\log|W_0|=-9.2$ sits $9.9$ nats --- about
+$20\,\sigma_{\rm pred}$ --- below the mean. A model fit on the data cannot guide a
+search to a point twenty prediction-errors away; that is a meaningless
+extrapolation, not a gradient.
+
+\begin{remark}
+\textbf{Search over $W_0$ is hopeless by rarity plus extrapolation}, not by
+zero-information. $W_0$ is log-uniform (CDF $R^2=0.87$--$0.92$), so small $W_0$ is
+exponentially rare; and the target is $20\,\sigma_{\rm pred}$ outside the observed
+range. The conclusion survives; the argument is now measured.
+\end{remark}
+
+\section{Conclusion}
+
+The constraint-first program is established by measurement:
+
+> \textbf{The flux landscape's only exact structure is its constraint.} Everything
+> the landscape \emph{produces} --- couplings, masses, phases, the cosmological
+> constant --- is noise plus a weak scale; the one thing that is exactly determined
+> is the D3 tadpole, the quantity that \emph{rules vacua out}. No search can find our
+> vacuum in observables, because there is nothing structured to find; the only
+> navigable move is elimination by verified constraint.
+
+\paragraph{Scope, named.} One model ($h^{1,2}=2$), degree-$0$ spectrum, $174$ vacua,
+flux coordinates only, the IIB flux corner. The instanton-corrected (K\"ahler-moduli)
+masses remain computationally infeasible. Each of these is a named limit, not a
+hidden one; the structure map is a measurement to be reproduced, and the Rule of
+Three is the instrument that keeps it honest.
+
+\begin{thebibliography}{9}
+\bibitem{jaxvacua} A.~Dubey, S.~Krippendorf, A.~Schachner, ``JAXVacua'' (arXiv:2306.06160).
+\bibitem{denef} F.~Denef and M.~R.~Douglas, ``Distributions of flux vacua,'' JHEP \textbf{0405} (2004) 072.
+\bibitem{valiant} L.~G.~Valiant, ``A theory of the learnable,'' CACM \textbf{27} (1984) 1134.
+\bibitem{valiant2009} L.~G.~Valiant, ``Evolvability,'' J. ACM \textbf{56} (2009) 3.
+\end{thebibliography}
+
+\end{document}
