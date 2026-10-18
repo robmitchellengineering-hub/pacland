@@ -12,7 +12,7 @@ import sys
 from fpdf import FPDF
 
 FONT = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
-BOLD = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+BOLD = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"  # full glyph coverage (no bold, but no missing glyphs)
 
 
 def _clean_inline(s: str) -> str:
