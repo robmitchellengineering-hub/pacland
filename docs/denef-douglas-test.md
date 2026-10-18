@@ -34,8 +34,29 @@ larger SUSY ISD sample (`n_target ~ 1000+`), which is the natural next compute s
 Until then the honest statement is: *the negative result's uniformity basis is
 theoretical; our data is consistent with it but does not yet confirm it.*
 
+## Larger sample (380 SUSY vacua) — the precise statement
+
+A bigger ISD run (`n_target=2000`) yielded 380 SUSY vacua. Testing *both* candidate
+uniformities:
+
+| variable | CDF linearity R² |
+|---|---|
+| \|W₀\|² (area-uniform) | 0.450 |
+| **log\|W₀\| (log-uniform)** | **0.923** |
+
+**Finding:** |W₀| is **log-uniform**, not area-uniform. The log\|W₀\| CDF is nearly
+linear (R² = 0.92), while the |W₀|² CDF is not (R² = 0.45). This is the **standard
+KKLT log-uniform prior** — the assumption that W₀ is tuned uniformly in log — now
+measured directly on the SUSY subset, rather than assumed.
+
+**Correction to the negative result's wording:** the earlier "W₀ uniform" was
+imprecise. The data says "log\|W₀\| uniform," which is the physically-relevant
+statement (and the one that makes the KKLT tuning probability a clean
+log-range fraction).
+
 ## Where this lives
 
 - `scripts/sample_uniformity.py` — uniform-in-a-box at two bound widths.
 - `scripts/sample_isd.py` — ISD critical-point sampling + W₀ extraction.
+- `scripts/sample_isd_large.py` — the n_target=2000 run; output in `data/isd_susy.json`.
 - `src/pacland/constraints.py` — `elimination_curve` + `linearity_r2`.
