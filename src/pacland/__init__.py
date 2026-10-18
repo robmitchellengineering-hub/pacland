@@ -12,6 +12,8 @@ The math these modules implement is specified in ``docs/``:
 - ``measure``      -> ``docs/observable-measure.md`` (log-space, weighted, finite)
 - ``learnability`` -> ``docs/evolvability.md`` §5-§6 (SQ/VC conjecture)
 - ``selection``    -> ``docs/selection.md`` (the measure-verifier / typicality test)
+- ``structure``    -> ``docs/new-approach.md`` (structure mining: which observables
+  carry geometric information)
 """
 from __future__ import annotations
 
@@ -28,6 +30,7 @@ from .deficit import DeficitObservable, DeficitReport, deficit_report
 from .error_model import CalibrationVerdict, ErrorModel, Kind, calibrate
 from .measure import Measure, Observable
 from .selection import TypicalityVerdict, ks_uniformity, quantile, typicality_test
+from .structure import classify_observable, mi_significance, mutual_information
 
 __all__ = [
     "Certificate",
@@ -48,4 +51,7 @@ __all__ = [
     "ks_uniformity",
     "quantile",
     "typicality_test",
+    "classify_observable",
+    "mi_significance",
+    "mutual_information",
 ]
