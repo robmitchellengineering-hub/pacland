@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-from .adapters import CyToolsAdapter, CymetricAdapter, require_package
+from .adapters import CyToolsAdapter, CymetricAdapter, JaxVacuaAdapter, require_package
 from .exact_toric import ToricBackground, exact_toric_oracle, zero_error_model
 
 
@@ -31,5 +31,6 @@ __all__ = [
     "zero_error_model",
     "CyToolsAdapter",
     "CymetricAdapter",
+    "JaxVacuaAdapter",
     "require_package",
 ]

@@ -60,6 +60,33 @@ class CyToolsAdapter:
         return cytools.fetch_polytopes(**kwargs)
 
 
+class JaxVacuaAdapter:
+    """JAXVacua — flux vacua and the scalar potential (L2 stages 3-4).
+
+    https://github.com/StringJAX/jaxvacua  (paper: arXiv:2306.06160)
+    This is the flux-vacua search CYTools 1.4.12 lacks, and therefore the piece
+    the learnability attack (build #4) actually samples. Verified live on
+    `studio-linux` (2026-10-18): ``FluxEFT(h12=2, model_ID=1)`` loads with
+    ``scalar_potential``, ``superpotential``, ``W0``, ``tadpole``, ``n_fluxes``,
+    ``hessian`` and ``mass_matrix``.
+    """
+
+    DOCS = "https://jaxvacua.readthedocs.io"
+    LICENSE = "GPL-3.0"
+
+    def flux_eft(self, h12=None, model_ID=None, cytools_cy=None):
+        """Build a flux-EFT: from a bundled model, or from a CYTools CY object.
+
+        ``cytools_cy`` is a ``cytools.CalabiYau``; when given, the topological
+        data is extracted via ``jvc.lcs_tree.from_cytools(cy)``.
+        """
+        jvc = require_package("jaxvacua", "jaxvacua", self.DOCS)
+        if cytools_cy is not None:
+            tree = jvc.lcs_tree.from_cytools(cytools_cy, maximum_degree=1)
+            return jvc.FluxEFT(lcs_tree=tree)
+        return jvc.FluxEFT(h12=h12, model_ID=model_ID)
+
+
 class CymetricAdapter:
     """cymetric — neural Calabi-Yau metrics.
 

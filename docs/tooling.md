@@ -17,14 +17,42 @@ not code to import). URLs are the ones verified in research on 2026-10-18.
   class, Kähler/Mori cones, divisor/CY volumes, and Gopakumar–Vafa invariants.
   **Verified live on `studio-linux` (CYTools 1.4.12, 2026-10-18):** the quintic
   returns `(h11, h21) = (1, 101)` and `c2 = [-250, 50, 50, 50, 50, 50]`.
-- **Not included (1.4.12):** flux-vacua search — it is not on the CY or
-  Triangulation namespaces; flux enumeration needs a different tool.
 - **Maps to:** L1 encoding (topology data) and L2 stage 2 (cohomology/topology).
   This is the single highest-value integration — it provides the *discrete* half
   of the genotype almost for free.
 - **License:** GPL-3.0 (copyleft). Fine for *generating data*; imposes GPL
   obligations only if PACLAND itself is distributed *linked against* CYTools.
 - **Adapter:** `src/pacland/oracle/adapters.py::CyToolsAdapter`
+- **Known issue (1.4.12):** `fetch_polytopes` (Kreuzer–Skarke online query) fails —
+  the KS server redirects to a malformed URL (`quark.itp.tuwien.ac.atcgi-bin`,
+  missing the `/`). Manual polytope lists or JAXVacua's bundled models are the
+  workaround.
+
+### JAXVacua — flux vacua (the missing piece)
+- **Repo:** https://github.com/StringJAX/jaxvacua · **Docs:** https://jaxvacua.readthedocs.io
+- **Paper:** Dubey, Krippendorf, Schachner, *JAXVacua — a framework for sampling
+  string vacua*, [arXiv:2306.06160](https://arxiv.org/abs/2306.06160), JHEP 12 (2023) 146.
+- **What it does:** JAX-accelerated analysis of the supergravity scalar potential;
+  `FluxVacuaFinder` (Newton solver + vacuum sampling), `bounded_fluxes` (flux
+  enumeration), and the EFT (`superpotential`, F-terms, Hessian). **This is the
+  flux-vacua search CYTools 1.4.12 lacks**, and therefore the piece the learnability
+  attack (build #4) actually runs on.
+- **Interfaces directly with CYTools:** `jvc.lcs_tree.from_cytools(cy)` builds the
+  topological data from a `cytools.CalabiYau` — so the CYTools work above carries
+  straight over.
+- **Bundled models:** ships KS and CICY models locally (`jvc.FluxEFT(h12=…, model_ID=…)`),
+  so no online KS database is needed.
+- **License:** GPL-3.0. Requires Python ≥ 3.12.
+
+### stringforge — CY database + vacua vault
+- **Repo:** https://github.com/StringJAX/stringforge
+- **What it does:** `TDFDatabase`/`CICYDatabase`/`LCSDatabase` over the
+  [cy-database](https://huggingface.co/datasets/aschachner/cy-database) HuggingFace
+  dataset (millions of precomputed CY geometries), plus the community
+  [vacua_vault](https://huggingface.co/datasets/aschachner/vacua_vault). Provides
+  ready-to-use `FluxVacuaFinder` instances and an offline/HPC mode.
+- **Maps to:** L4/L5 — a shared, versioned store of vacua, which is the "verified
+  knowledge base" substrate in `docs/educability.md`.
 
 ### cymetric — neural Calabi-Yau metrics
 - **Repo:** https://github.com/kitft/cymetric

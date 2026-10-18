@@ -16,6 +16,16 @@ libgmpxx4ldbl`, and the quintic Calabi-Yau threefold returned the correct result
 The route is `mac → win-2 (100.86.50.6) → studio-linux (192.168.28.128)`, login
 `rob`, NOPASSWD sudo. The Mac-only blockers below do **not** apply to Linux.
 
+Also verified on the same VM, 2026-10-18:
+
+- **JAXVacua** installed from PyPI and loads a bundled flux-EFT
+  (`jvc.FluxEFT(h12=2, model_ID=1)`), exposing `scalar_potential`, `superpotential`,
+  `W0`, `tadpole`, `n_fluxes`, `hessian`, `mass_matrix`. This is the flux-vacua
+  engine — see `docs/tooling.md`.
+- **`cytools.fetch_polytopes`** (Kreuzer–Skarke online query) fails on 1.4.12: the
+  server redirects to a malformed URL. Workaround: JAXVacua's bundled models, or
+  manual polytope lists.
+
 ## What was attempted on this machine (the Mac — no Linux, no Homebrew)
 
 `pip install cytools` on this Mac (x86_64 Python 3.12, **no Homebrew**) failed on
