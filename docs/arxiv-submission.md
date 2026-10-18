@@ -1,0 +1,142 @@
+# arXiv submission package — turn-key
+
+Three papers are ready. This is everything arXiv needs, so the only remaining steps
+are things only Rob can do (create/own the account, receive the endorsement) — no
+content work is left.
+
+## Order of submission
+
+1. **`structure-map.pdf`** — the flagship. The constraint-first theorem + the
+   swampland connection. Submit this first; the other two cite it.
+2. **`fingerprint.pdf`** — the mass-spectrum no-fingerprint result.
+3. **`PACLAND-preprint.pdf`** — the verification discipline (the umbrella paper).
+
+## Paper 1 — Constraint-first string theory (submit first)
+
+- **Title.** `Constraint-first string theory: the flux landscape's only exact structure is its constraint`
+- **Author.** `Rob Mitchell`
+- **Primary subject class.** `hep-th` (High Energy Physics – Theory)
+- **Cross-list.** `hep-ph` (optional — the phenomenological reading of the structure map)
+- **Abstract.** (paste verbatim)
+
+```
+We measure, on real supersymmetric flux vacua, which low-energy observables carry
+information about the flux that produced them. Every flux-determined observable is
+classified by a joint (multi-coordinate quadratic) learnability test, gated by a
+positive control that must reproduce the one exactly-known quantity. The result is a
+structure map: the string coupling, the gauge couplings, the mass-spectrum shape, the
+axions, the dilaton, and the cosmological constant are all statistically uniform in
+flux (r < 0.25); W_0 and the saxions carry weak structure (r ~ 0.3--0.6); and exactly
+one quantity is exactly structured --- the D3 tadpole, the symplectic pairing
+N_flux = F^T J H (r = 1.0). No observable carries the strong (r > 0.9) geometric
+fingerprint that would pin the compactification. We conclude: the landscape's only
+exact structure is what it forbids, not what it selects; everything it produces is
+noise plus a weak scale. This is the constraint-first program, established by
+measurement rather than asserted.
+```
+
+- **Comments.** `3 pages. Source and data: https://github.com/robmitchellengineering-hub/pacland`
+
+## Paper 2 — The mass spectrum carries no fingerprint
+
+- **Title.** `The mass spectrum of the IIB flux landscape carries no geometric fingerprint`
+- **Author.** `Rob Mitchell`
+- **Primary subject class.** `hep-th`
+- **Abstract.** (paste verbatim)
+
+```
+A central hope of the structure mining program is that some low-energy observable of
+a flux vacuum carries a fingerprint --- information about the flux that generated it,
+beyond its overall scale --- so that the compactification could be pinned down from
+observables. We test the last candidate: the mass spectrum. On 133 supersymmetric IIB
+flux vacua (JAXVacua, h^{1,2}=2, natural ISD measure) we compute the degree-0 spectrum
+--- the six eigenvalues of the complex-structure moduli and the axio-dilaton --- and
+measure how predictable each eigenvalue is from the flux. The raw eigenvalues are
+predictable (ridge-on-quadratic CV r = 0.50--0.62, heaviest slot significant at
+z = 5.5), but the scale-invariant ratios m^2_i / m^2_max are not (r < 0.25). The
+conclusion: the mass spectrum's shape is statistically uniform in flux --- the
+fingerprint is not there --- while its overall scale is flux-determined through a
+quadratic form distinct from the D3 tadpole. This closes, in the flux coordinates, the
+"masses carry the fingerprint" hypothesis, and leaves the constraint (the tadpole) as
+the only learnable structure found to date.
+```
+
+- **Comments.** `3 pages. Companion to Constraint-first string theory (arXiv:XXXX.XXXXX).`
+
+## Paper 3 — Probably Approximately Correct String Theory
+
+- **Title.** `Probably Approximately Correct String Theory: A Verification Discipline for the Landscape`
+- **Author.** `Rob Mitchell`
+- **Primary subject class.** `hep-th`
+- **Cross-list.** `cs.LG` (optional — the PAC-learning core is computer science)
+- **Abstract.** (from `paper/preprint.md`, paste verbatim)
+
+```
+The string landscape contains on the order of 10^500 vacua, and no experiment
+distinguishes most of them, so "unified string theory" is two conflated problems ---
+verification (does some vacuum match our universe?) and selection (why that one?). We
+separate them, and build a verification discipline for the first: a
+probably-approximately-correct certificate that bounds a candidate's error even when
+the verifier is itself approximate, a proof that search over the flux superpotential is
+not evolvable (Denef-Douglas uniformity + Valiant's contrapositive, measured on 380
+real SUSY vacua), a measured log-uniform prior for |W_0| (CDF linearity R^2 = 0.92), a
+certified Mitchell Verification Deficit, and a boundary map --- a taxonomy of the four
+senses in which the problem is uncomputable, each with its certified positive
+remainder. We do not claim to select the vacuum. We claim something narrower and we
+believe more useful: the field currently has no verification layer for its
+unverifiable theory, and this is one.
+```
+
+- **Comments.** `9 pages. Umbrella paper for the PACLAND program.`
+
+## License (all three)
+
+Choose **arXiv's default non-exclusive license** (simplest), or **CC BY 4.0** if Rob
+wants the work maximally reusable. Recommendation: **CC BY 4.0** — it matches the
+repo's MIT license and costs nothing.
+
+## The endorsement plan — the one genuine blocker
+
+arXiv requires endorsement before a **first** submission (per the
+[2026-01-21 policy update](https://blog.arxiv.org/2026/01/21/attention-authors-updated-endorsement-policy/)).
+Two routes, in order of speed:
+
+### Route A — institutional email (fastest, no contact needed)
+
+If Rob has a university/research email address, arXiv's new policy may auto-endorse on
+first submission. Register the account **with that institutional email** (see
+[author registration](https://info.arxiv.org/help/registerhelp.html)). This is the
+path the 2026 policy explicitly expedites.
+
+### Route B — personal endorsement (the manual path)
+
+1. Create the arXiv account and **start the submission** of paper 1, selecting
+   `hep-th`.
+2. arXiv emails an **endorsement request link**.
+3. Find an endorser: open a recent related hep-th paper (e.g. anything on the IIB flux
+   landscape — JAXVacua, Denef–Douglas, KKLT), and click **"Which authors of this
+   paper are endorsers?"** at the bottom of the abstract page. Pick someone working
+   on the landscape.
+4. Email that person the endorsement request link, with a one-line note and a link to
+   the paper (or the GitHub repo). One endorser is enough for `hep-th`.
+5. They enter the six-character code at https://arxiv.org/auth/endorse → "yes".
+
+**What only Rob can do:** create the account, own the endorsement (arXiv forbids
+third-party/proxy endorsement — I must not seek it for him), and click submit.
+
+**What is already done:** every title, abstract, subject class, license choice, and
+the PDF + LaTeX source for all three papers. No content work remains.
+
+## Files to upload
+
+For each paper, submit the **TeX source** (arXiv prefers source over PDF-only): the
+`.tex` file compiles standalone with TeX Live 2023 (verified — all three are
+`article` class with `amsmath`/`booktabs`/`microtype`, no images, no `\input`). The
+compiled PDFs are also in `paper/` as a fallback.
+
+## Verification before submitting
+
+```
+python3 -m unittest discover -s tests -q    # 126 tests green
+python3 scripts/test_swampland.py           # the numbers cited in paper 1
+```
