@@ -1,0 +1,4 @@
+# Netlify deploy config for the PACLAND static site.
+# Publish the web/ directory as a standalone static site.
+[build]
+  publish = "web/"
