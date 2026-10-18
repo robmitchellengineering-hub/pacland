@@ -90,6 +90,20 @@ BOUNDARIES = [
         "The log-uniform W0 prior is measured; the Lambda distribution is a derived "
         "question once an uplift model exists.",
     ),
+    Boundary(
+        "Is there an algorithm to decide whether a flux configuration admits a "
+        "supersymmetric vacuum?",
+        LimitType.UNDECIDABLE,
+        "The vacuum conditions are Diophantine: flux quanta are integers and the "
+        "F-term equations are polynomial in the moduli with flux-dependent "
+        "coefficients. Deciding solvability of Diophantine equations is undecidable "
+        "in general (Matiyasevich's resolution of Hilbert's 10th problem), so the "
+        "landscape's decidability cannot be assumed — though no specific reduction "
+        "of a landscape question to an undecidable Diophantine problem is proven yet.",
+        "The fourth wall is now named, not left empty: the honest move here is to "
+        "prove-or-name a reduction (an impossibility certificate), not to search. "
+        "The boundary map covers all four senses.",
+    ),
 ]
 
 

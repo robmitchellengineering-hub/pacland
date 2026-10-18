@@ -9,8 +9,16 @@ from pacland.limits import Boundary, LimitType, boundary_map, certify
 
 
 class TestLimits(unittest.TestCase):
-    def test_map_has_seven_boundaries(self):
-        self.assertEqual(len(boundary_map()), 7)
+    def test_map_has_eight_boundaries(self):
+        self.assertEqual(len(boundary_map()), 8)
+
+    def test_all_four_walls_are_covered(self):
+        types = {b.limit for b in boundary_map()}
+        self.assertEqual(
+            types,
+            {LimitType.INTRACTABLE, LimitType.UNMEASURABLE,
+             LimitType.UNDERDETERMINED, LimitType.UNDECIDABLE},
+        )
 
     def test_certify_search_is_intractable(self):
         b = certify("flux landscape over W0")
@@ -21,6 +29,11 @@ class TestLimits(unittest.TestCase):
         b = certify("Why this vacuum")
         self.assertIsNotNone(b)
         self.assertEqual(b.limit, LimitType.UNDERDETERMINED)
+
+    def test_certify_vacuum_decidability_is_undecidable(self):
+        b = certify("decide whether a flux configuration admits")
+        self.assertIsNotNone(b)
+        self.assertEqual(b.limit, LimitType.UNDECIDABLE)
 
     def test_certify_unknown_returns_none(self):
         self.assertIsNone(certify("an unrelated question"))

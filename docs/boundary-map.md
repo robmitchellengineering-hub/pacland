@@ -12,7 +12,7 @@ climbing them without naming them. This doc names them.
 | **intractable** | answer exists, no feasible algorithm | prove intractability, or find structure that shortcuts it | search over W₀ (10⁵⁰⁰, not evolvable) |
 | **unmeasurable** | answer exists, ground truth / data absent | compute the *deficit*, characterize what is measurable | m=0 verification; the KKLT tail |
 | **underdetermined** | no unique answer exists | the answer is a *set*; compute its invariants and constraints | the measure / selection |
-| **undecidable** | provably no algorithm | prove undecidability (Turing/Gödel) | not yet found in this project |
+| **undecidable** | provably no algorithm | prove undecidability (Turing/Gödel) | the vacuum-existence question (Diophantine → Matiyasevich) |
 
 The key realization: **for each sense, "compute the uncomputable" has a different
 meaning, and each is a positive act, not a surrender.**
@@ -50,6 +50,11 @@ the sense of limit, the justification, and what *remains* computable:
 7. **Small-Λ typicality** — *unmeasurable*. Justification: SUSY V is AdS; Λ needs the
    de Sitter uplift, which is contentious. Positive: the log-uniform prior is measured;
    the Λ distribution follows once an uplift model exists.
+8. **Vacuum-existence decidability** — *undecidable*. Justification: the vacuum
+   conditions are Diophantine (integer flux + polynomial F-terms), and Diophantine
+   solvability is undecidable in general (Matiyasevich); no specific reduction is
+   proven yet, but decidability cannot be assumed. Positive: the fourth wall is now
+   named — the move is to prove-or-name a reduction, not to search.
 
 ## The reframe that makes this a program, not a resignation
 
