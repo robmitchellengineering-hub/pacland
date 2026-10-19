@@ -93,3 +93,39 @@ Rule of Three keeps the *measurements* honest.
 
 *Sources: the five structured verdicts are in `research/floor-fanout.js`; the run
 returned the aggregated results this note synthesizes.*
+
+## Resolved (the four named next steps, closed)
+
+1. **GUT ladder** (`scripts/validate_gut_parameter_count.py`): SM 19, SU(5) 19, SO(10) 20,
+   E6 21, Pati-Salam 21, trinification 20 — all ~19, shuffle not reduction. No row drops
+   below 17, none at the naive 14 (the Higgs growth offsets the gauge unification).
+2. **The rank test** (`scripts/validate_sm_rank_test.py`, `docs/sm-rank-test.md`): the SM's
+   own flavor symmetry leaves orbit-space rank **19**; the dynamical bound is
+   `rank ≤ 2·h¹¹+2·h²¹+2`; the only known UV symmetry (GUT) collapses 3 of 19. The 19 floor
+   is real.
+3. **Discrete-vs-continuous bookkeeping** (this section): the "19" and the "10⁵⁰⁰" count
+   *different* things, so there is no contradiction to merge.
+4. **Swampland bound** (`scripts/validate_swampland_bound.py`): the tadpole gives only an
+   upper bound `N_flux ≤ L`; it can be 0 or negative, so there is no lower bound `≥ 1` from
+   tadpole cancellation alone (a positive bound needs the ISD/SUSY assumption).
+
+## The bookkeeping decision (item 3, settled)
+
+The "19 free parameters" are **continuous** (real couplings, masses, angles). String
+compactifications also carry **discrete** data — flux integers, Hodge numbers, brane
+wrapping numbers — which label the huge discrete landscape (~10⁵⁰⁰ vacua). Counting the
+discrete data as "parameters" would make the string answer "enormously many", flatly
+contradicting any "small floor" like 19. The resolution is the constraint-first
+classification, which already separates the two:
+
+- **labels** (discrete, topological/geometric): flux quanta, `h¹¹,h²¹,c₂,κ`, brane
+  wrapping numbers — these index *which* vacuum, and there are ~10⁵⁰⁰ of them;
+- **parameters** (continuous): the 19 couplings — these are the *dimension* of the
+  low-energy parameter space at each vacuum.
+
+So the "floor" (19) is a **continuous floor** — the dimension of the parameter space —
+while the "landscape" (10⁵⁰⁰) is a **discrete count** of vacua. They are different
+quantities and do not compete: a theory with 19 continuous parameters can still have
+10⁵⁰⁰ discrete vacua. The floor question is *only* about the continuous dimension; the
+discrete landscape is the answer to a different question ("how many vacua?"), not a
+counterexample to the floor.
