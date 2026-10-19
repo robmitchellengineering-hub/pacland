@@ -107,5 +107,39 @@ class TestDistanceConjecture(unittest.TestCase):
         )
 
 
+class TestExactSymbolic(unittest.TestCase):
+    """Exact (sympy) versions of the core identities — zero tolerance, not 1e-12."""
+
+    @classmethod
+    def _sympy(cls):
+        try:
+            import sympy as sp
+        except ImportError:
+            raise unittest.SkipTest("sympy not installed")
+        return sp
+
+    def test_symplectic_and_period_identity(self):
+        sp = self._sympy()
+        a1, b1, a2, b2, a3, b3 = sp.symbols("a1 b1 a2 b2 a3 b3", real=True, positive=True)
+        tau1, tau2, tau3 = a1 + sp.I * b1, a2 + sp.I * b2, a3 + sp.I * b3
+        sigma = sp.Matrix([[0, 1], [-1, 0]])
+        Sigma = sp.kronecker_product(sp.kronecker_product(sigma, sigma), sigma)
+        self.assertEqual(sp.simplify(Sigma.det() - 1), 0)
+        p = lambda t: sp.Matrix([1, t])
+        Pi = sp.kronecker_product(sp.kronecker_product(p(tau1), p(tau2)), p(tau3))
+        Pi_dag = Pi.applyfunc(sp.conjugate).T
+        lhs = sp.expand((sp.I * (Pi_dag * Sigma * Pi))[0])
+        rhs = sp.expand(8 * b1 * b2 * b3)
+        self.assertEqual(sp.simplify(lhs - rhs), 0)
+
+    def test_tadpole_antisymmetry_symbolic(self):
+        sp = self._sympy()
+        sigma = sp.Matrix([[0, 1], [-1, 0]])
+        Sigma = sp.kronecker_product(sp.kronecker_product(sigma, sigma), sigma)
+        F = sp.Matrix(sp.symbols("F0:8"))
+        H = sp.Matrix(sp.symbols("H0:8"))
+        self.assertEqual(sp.simplify((F.T * Sigma * H)[0] + (H.T * Sigma * F)[0]), 0)
+
+
 if __name__ == "__main__":
     unittest.main()

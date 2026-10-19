@@ -74,9 +74,20 @@ already in hand: det Σ = 1, the unimodular charge lattice.)
 So on T⁶ the full swampland package — distance, weak gravity, no global symmetries,
 tadpole/gravity — is **proven exactly**, bookending the measured CY versions.
 
+## Two grades of verification
+
+- **Numerical** (`scripts/validate_t6.py`, 21/21): the closed forms checked to
+  1e-12 against known values — the runtime oracle is correct.
+- **Exact** (`scripts/validate_t6_sympy.py`, 8/8): the *same identities proved
+  symbolically with sympy, zero tolerance* — `det Σ = 1`, `i Π†ΣΠ = 8 Im τ₁Im τ₂Im τ₃`,
+  the no-scale identity, tadpole antisymmetry (symbolic F, H), the distance
+  conjecture `m = m₀ e^{−d}`, and WGC `z = 1`. These are algebraic equalities, not
+  approximations.
+
 ## Reproduce
 
 ```
-python3 scripts/validate_t6.py          # 21/21 self-assertions
-python3 -m unittest discover -s tests   # 138 tests
+python3 scripts/validate_t6.py          # 21/21 numerical self-assertions
+python3 scripts/validate_t6_sympy.py    # 8/8 exact symbolic checks
+python3 -m unittest discover -s tests   # 140 tests
 ```
