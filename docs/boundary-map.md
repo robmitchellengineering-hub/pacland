@@ -60,7 +60,7 @@ the sense of limit, the justification, and what *remains* computable:
 
 We have been asking "how do we compute the uncomputable?" The answer is: **we don't —
 we compute its boundary, and we certify each boundary point with the same rigor we
-demanded of positive results.** Every negative result so far (search dead, deficit
+demanded of positive results.** Every negative result so far (no exact invariant selector, deficit
 total, KKLT tail, measure underdetermined) is not a failure; it is a *boundary point*,
 and the accumulating set of boundary points **is** the theory of where computation
 ends and physics begins.

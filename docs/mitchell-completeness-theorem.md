@@ -1,23 +1,26 @@
-# Mitchell's Completeness Theorem — search can only eliminate, never select
+# Mitchell's Completeness Theorem — no exact invariant selector
 
 `scripts/validate_mitchell_completeness.py` proves the result that turns the
-constraint-first program from "we could not find a fingerprint" into "**no
-fingerprint can exist**". It says the D3 tadpole is a **complete** invariant of the
-flux under duality.
+constraint-first program from "we could not find a fingerprint" into "**no exact
+polynomial invariant selector can exist**". It says the D3 tadpole is the **unique**
+duality-invariant of the flux, and that over the reals each tadpole level set is a single
+orbit while over the integers there are only *finitely many* orbits per tadpole.
 
 ## Theorem (Mitchell)
 
-> **The D3 tadpole `N = Fᵀ J H` is a complete invariant of the flux pair (F, H)
-> under the duality group Sp(b₃): for `N ≠ 0`, two pairs are dual-equivalent
-> **if and only if** they have the same tadpole.**
+> **Over ℝ (or ℚ), for `N ≠ 0` the level set `{Fᵀ J H = N}` is a single
+> `Sp(b₃, ℝ)` orbit (transitivity). Over the integer group `Sp(b₃, ℤ)`, the orbits are
+> classified by the content `d = gcd(F, H)` with `d² | N`, so there are *finitely many*
+> orbits per tadpole — one per divisor `d` of √N — and `N = 0` is a union of several
+> lower-dimensional orbits.**
 
-Consequence for search:
+Consequence for selection:
 
-> **No exact, frame-independent quantity can distinguish two flux vacua that share
-> a tadpole. The only exact selector is the tadpole itself, and it is *bounded*
-> (`N ≤ L`). Therefore a landscape search can only *eliminate* (by the constraint
-> `N ≤ L`) — it can never *select* a special vacuum, because there is no invariant
-> left to select with.**
+> **No exact, polynomial, duality-invariant function of the flux can single out a
+> vacuum: the only exact invariant is the tadpole, and over the integers it alone does
+> not even distinguish the finitely many orbits sharing a tadpole (that needs the
+> content `d`). This is a no-go on *exact invariant* selectors — it does *not* rule out
+> statistical, moduli-dependent, or non-polynomial selection criteria.**
 
 ## Two lemmas, both exact
 
@@ -26,17 +29,17 @@ Every Sp(b₃)-invariant polynomial in (F, H) is a polynomial in `Fᵀ J H`. Pro
 across all degrees in `validate_constraint_first.py` (5/5). So any invariant
 observable is a function of the tadpole **alone**.
 
-**Lemma 2 — the tadpole level sets are single duality orbits (proved here).**
-Sp(b₃) acts transitively on each level set `{Fᵀ J H = N}`, `N ≠ 0`. Proof by
-dimension: the orbit tangent space at a pair is the image of `X ↦ (XF, XH)` for
-`X ∈ sp(b₃)`, and its rank is `2b₃ − 1` (= 11 for b₃ = 6), which is exactly the
-codimension-1 dimension of the level set. The orbit is open in the level set, closed
-(algebraic group orbit), and the level set is connected for `N ≠ 0`, so the orbit
-*is* the level set.
+**Lemma 2 — over ℝ, each level set is a single orbit; over ℤ, finitely many.**
+Over ℝ, `Sp(b₃)` acts transitively on each level set `{Fᵀ J H = N}`, `N ≠ 0`: the orbit
+tangent space has rank `2b₃ − 1` (= 11 for b₃ = 6), equal to the level set's codimension-1
+dimension, and the orbit is open + closed in the connected level set, hence equals it. Over
+the *integer* group this real-manifold argument does not apply — the content `d = gcd(F, H)`
+is a `Sp(b₃, ℤ)`-invariant with `d² | N`, so a non-squarefree `N` splits into multiple
+integral orbits (Wall's theorem).
 
-Together: the invariant ring says "anything invariant is a function of N", and
-transitivity says "within a fixed N there is no further structure to be invariant
-*to*". Hence **N is complete**.
+Together: the invariant ring says "anything invariant is a function of N", and over ℝ
+transitivity says "within a fixed N there is no further continuous structure"; over ℤ the
+residual invariant is the content `d`, giving finitely many orbits per tadpole.
 
 ## The verification (6 exact + 2 numeric)
 
@@ -51,23 +54,21 @@ transitivity says "within a fixed N there is no further structure to be invarian
 
 ## What this does and does not claim
 
-**Does claim (rigorously):** the flux sector has exactly one duality-invariant
-exact structure — the tadpole — and the duality group identifies any two fluxes
-with the same tadpole. The "structure map" finding (tadpole r = 1.0, all else
-uniform) is therefore *forced*, not just measured: there is nothing else for a
-duality-respecting learner to find.
+**Does claim (rigorously):** the flux sector has exactly one duality-invariant exact
+polynomial — the tadpole — and over ℝ the duality group identifies any two fluxes with the
+same (non-zero) tadpole; over ℤ there are finitely many orbits per tadpole, labelled by the
+content. The "structure map" finding (tadpole r = 1.0, all else uniform) is therefore
+*forced*: there is nothing else for an exact, duality-respecting learner to find.
 
-**Does not claim (yet):** the same for the *other* exact structures — topology
-(h¹¹, h²¹, c₂, κ), D-brane charges, anomaly cancellation, charge quantization.
-Those are exact but live outside the flux-invariant ring; the open question the
-ToE must answer next is whether **all** exact structure is constraint structure
-(the "complete list of constraints" program), with the flux sector now proven to
-be one single constraint.
+**Does not claim:** a no-go on *statistical* or *moduli-dependent* selection — the theorem
+is about exact polynomial invariants only. Nor does it cover the *other* exact structures —
+topology (h¹¹, h²¹, c₂, κ), D-brane charges, anomaly cancellation, charge quantization —
+which live outside the flux-invariant ring.
 
-**Boundary of the argument:** global transitivity rests on two standard facts
-(the orbit of an algebraic group is Zariski-closed; the `N ≠ 0` level set is
-connected). These are classical and stated here as such; the machine-checked
-(Lean) upgrade is the deferred proof-arm, as with the other theorems.
+**Boundary of the argument:** the real transitivity rests on two standard facts (the orbit
+is closed; the `N ≠ 0` level set is connected), and the integral "finitely many orbits" on
+the content classification (Wall's theorem). Both are classical and stated here as such; the
+machine-checked (Lean) upgrade is the deferred proof-arm.
 
 ## Reproduce
 

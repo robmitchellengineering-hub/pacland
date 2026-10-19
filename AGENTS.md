@@ -125,7 +125,7 @@ source, not a textbook formula:**
   independent foundation. (Rob found Darboux 2026-10-19.)
 - **The Five Pillars** (`docs/five-pillars.md`): a 6-way fan-out found the COMPLETE
   scaffolding of constraint-first, in five slots each with named theorems — local (Darboux),
-  algebraic (Weyl FFT + Chevalley–Shephard–Todd: the tadpole ring is FREE), global (Gromov
+  algebraic (Weyl FFT: the invariant ring is C[tadpole], a single generator), global (Gromov
   non-squeezing / capacities, Eliashberg–Gromov C⁰-rigidity, Arnold conjecture, Marsden–Weinstein
   reduction, Delzant, Duistermaat–Heckman), topological (Atiyah–Singer: N_gen=|χ|/2 = index;
   K-theory: D-brane charges = K(X) classes, tadpole = "total charge = 0 in K(X)"; Bott
@@ -143,16 +143,14 @@ source, not a textbook formula:**
   theorem is its degree-2 slice. So "the only exact structure is the constraint" is
   now a **theorem** (Weyl + measurement), not a conjecture.
 - **Mitchell's Completeness Theorem** (`docs/mitchell-completeness-theorem.md`,
-  `scripts/validate_mitchell_completeness.py`, 6 exact + 2 numeric): the tadpole FᵀJH is a
-  **COMPLETE** invariant of the flux under duality — two pairs with N≠0 are
-  dual-equivalent iff they have the same tadpole. Lemma 1 = Constraint-First (FFT);
-  Lemma 2 = Sp(b₃) acts transitively on each tadpole level set (orbit tangent rank
-  = 2b₃−1 = 11, exact, at generic points AND at the canonical pair). Consequence:
-  no exact frame-independent quantity can distinguish vacua sharing a tadpole, and
-  since N ≤ L is bounded, **search can only eliminate, never select** — the 20-year
-  "search for a special vacuum" program is provably dead. Open question this names
-  for the ToE: are ALL exact structures constraint structures (topology, charges,
-  anomalies), with flux now proven to be a single constraint?
+  `scripts/validate_mitchell_completeness.py`, 6 exact + 2 numeric): the tadpole FᵀJH is the
+  **UNIQUE** duality-invariant of the flux. Lemma 1 = Constraint-First (FFT); Lemma 2 = over
+  ℝ Sp(b₃) acts transitively on each tadpole level set (orbit tangent rank = 2b₃−1 = 11,
+  exact), while over ℤ there are **finitely many orbits per tadpole** (content d=gcd(F,H),
+  d²|N) and N=0 is several lower-dimensional orbits. Consequence: no *exact polynomial
+  duality-invariant* function can single out a vacuum — a no-go on exact invariant selectors,
+  NOT on statistical/moduli-dependent/non-polynomial selection (⚠️ corrected by the
+  adversarial review; "complete invariant" and "search provably dead" were overclaims).
 - **Full-duality completion** (`scripts/validate_full_duality.py`, 5/5 symbolic): the
   no-go holds for the FULL duality group Sp(b₃) × SL(2,Z), not just the monodromy
   subgroup. S-duality S:(F,H)→(−H,F) and T:(F,H)→(F,H+F) preserve the tadpole, and

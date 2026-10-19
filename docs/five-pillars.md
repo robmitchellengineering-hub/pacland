@@ -13,7 +13,7 @@ pillars** are the foundations that make the claim stand.
 | slot | what it forces | the theorems |
 |---|---|---|
 | **local** — no fingerprint | no local invariant exists | Darboux (no local symplectic invariants) |
-| **algebraic** — one invariant | the only invariant is the tadpole | Weyl's FFT (Sp ring = C[tadpole]); Chevalley–Shephard–Todd (that ring is *free*, no hidden relations) |
+| **algebraic** — one invariant | the only invariant is the tadpole | Weyl's FFT (Sp ring = C[tadpole], a single generator) |
 | **global** — what survives | the residual structure is global symplectic topology | Gromov's non-squeezing (capacities); Eliashberg–Gromov C⁰-rigidity; Arnold conjecture (homology-counted fixed points); Marsden–Weinstein reduction (vacuum space = symplectic quotient); Delzant (toric case = moment polytope); Duistermaat–Heckman (fixed-point measure) |
 | **topological** — the labels | the labels are topology, not inputs | Atiyah–Singer (N_gen = |χ|/2 = index of Dirac); K-theory (D-brane charges = K(X) classes); Bott periodicity (the 2-periodic brane spectrum) |
 | **counting** — the numbers | the parameter/vacuum counts are theorems | Molien–Weyl + Hilbert–Serre (19 = orbit-space dimension); Morse inequalities (m_k ≥ b_k); Ashok–Denef–Douglas index (signed vacuum count = topological index) |
@@ -27,8 +27,9 @@ is forced from five different mathematical directions, not one.
 **1. The vacuum count is bounded, not fixed (Morse / Ashok–Denef–Douglas).** The *signed*
 vacuum count is the topological index (χ of the moduli space), but the *unsigned* count is
 only bounded below by the Betti numbers and otherwise depends on the flux — which has no
-fingerprint. So "search is dead" sharpens to: **topology bounds how many vacua exist, but
-never determines them; the search target is free to move within a topological bracket.**
+fingerprint. So the no-go on exact invariant selection sharpens to: **topology bounds how
+many vacua exist, but never determines them; the search target is free to move within a
+topological bracket.**
 
 **2. The constraint is a K-theory statement (Witten / Freed–Witten).** D-brane charges are
 K(X)-classes (topological labels), and the tadpole is **"total charge = 0 in K(X)"** — the
@@ -38,13 +39,13 @@ periodicity makes the observed 2-periodic brane spectrum a theorem.
 
 **3. The vacuum space is a symplectic quotient (Marsden–Weinstein).** The vacuum space is
 literally `μ⁻¹(0)/G` — the constraint (tadpole/D-term/F-term) is a moment map, and the
-quotient by gauge is symplectic reduction. Its complete invariant content is the moment
+quotient by gauge is symplectic reduction. Its invariant content is the moment
 polytope (Delzant) plus a fixed-point-determined measure (Duistermaat–Heckman). So the
 "surviving global structure" is not an analogy — it is a theorem about symplectic quotients.
 
 ## The strongest single line
 
-> **No local invariant (Darboux) · one algebraic invariant (FFT, a free ring) · the
+> **No local invariant (Darboux) · one algebraic invariant (FFT: a single generator) · the
 > surviving structure is global symplectic topology (Gromov/Arnold/reduction) · the labels
 > are topological (Atiyah–Singer/K-theory) · and the counts are theorems (Molien/Morse).**
 

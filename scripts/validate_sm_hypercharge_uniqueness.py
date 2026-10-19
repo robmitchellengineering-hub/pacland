@@ -4,14 +4,19 @@
 Mitchell's Uniqueness Theorem: the D3 tadpole FᵀJH is the UNIQUE bilinear symplectic
 invariant of the flux — the constraint is the only exact structure. This script proves
 the gauge-sector analog: given the SM's matter content (gauge reps + chirality), the
-anomaly-cancellation conditions determine the hypercharge assignment UNIQUELY, up to
-overall normalization and the u↔d flavor swap.
+anomaly-cancellation conditions determine the hypercharge assignment uniquely, up to
+overall normalization and the u↔d flavor swap — *among solutions with Y_Q ≠ 0* (the
+correct electric-charge assignment). There is a third, unphysical branch Y_Q = 0,
+giving (0, t, −t, 0, 0); it is anomaly-free but exotic, so the uniqueness claim is
+scoped to Y_Q ≠ 0.
 
 The argument (exact, sympy):
   1. The three LINEAR conditions — [grav]²U(1), [SU(2)]²U(1), [SU(3)]²U(1) — solve to
      Y_L = −3Y_Q,  Y_e = −6Y_Q,  Y_d = 2Y_Q − Y_u,  leaving a 2-dimensional family.
   2. The cubic [U(1)]³ restricted to that family factors as
      18·Y_Q·(8Y_Q² + 2Y_Q·Y_u − Y_u²) = −18·Y_Q·(Y_u − 4Y_Q)(Y_u + 2Y_Q).
+     The factor Y_Q gives the unphysical branch Y_Q = 0 (excluded); the other two factors
+     give the physical solutions.
   3. Hence Y_u = 4Y_Q or Y_u = −2Y_Q — two 1-dimensional families, the SM assignment
      and its u↔d swap:
         SM:      (Y_Q, 4Y_Q, −2Y_Q, −3Y_Q, −6Y_Q)   =  (1/6, 2/3, −1/3, −1/2, −1)

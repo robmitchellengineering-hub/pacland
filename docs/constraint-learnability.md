@@ -53,9 +53,9 @@ tautological is the **split**:
 > out (the tadpole bound); the quantities that would *select* a vacuum (W₀, g_s,
 > gauge couplings) are statistically uniform in the flux that produced them.
 
-This is the empirical foundation of "constraint-first": search is dead not merely
-for W₀ but for the whole observable sector; the only thing the landscape lets you
-*learn* is what it *forbids*.
+This is the empirical foundation of "constraint-first": on these 107 vacua, no
+dynamical observable is learnable from flux — not merely W₀ but the whole observable
+sector; the only thing the landscape lets you *learn* is what it *forbids*.
 
 ## Q2 closes the loop: the constraints *compose*
 

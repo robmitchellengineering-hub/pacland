@@ -47,7 +47,7 @@ landscape), never computed.
 
 The invariant-theory angle is the most interesting: the SM *does* have an FFT-style
 result — the flavor/reparametrization group SU(3)⁵ acts on the Yukawa matrices, and its
-complete invariant ring is exactly the ~19 physical parameters (Bento–Silva–Trautner,
+invariant ring is exactly the ~19 physical parameters (Bento–Silva–Trautner,
 JHEP 2024, Hilbert series + plethystic logarithm). So *within* the SM, the 19 are the
 terminal invariants — nothing relates them, by a theorem. But a UV completion with a
 **larger** group (SU(5), SO(10), the string geometry) shrinks the ring — which is

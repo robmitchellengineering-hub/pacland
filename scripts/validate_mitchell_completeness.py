@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Mitchell's Completeness Theorem — the tadpole is a COMPLETE invariant of the flux,
-so no duality-invariant observable can single out a vacuum: search can only eliminate.
+"""Mitchell's Completeness Theorem — the tadpole is the UNIQUE duality-invariant of the
+flux; over the reals each level set is a single orbit, over the integers finitely many
+orbits per tadpole (labelled by the content).  No exact polynomial invariant selector
+can single out a vacuum.
 
 Rigorous statement being proven:
 
@@ -241,12 +243,12 @@ print("Corollary, Check 5 (numeric): across 200 dual-equivalent vacua the only "
       f"(std {no_go_var:.2f}) -> an invariant learner sees a single point  -> PASS")
 
 print(f"\n{'=' * 68}")
-print("Mitchell's Completeness Theorem: the D3 tadpole F^T J H is a COMPLETE invariant")
-print("of the flux under duality.  Every invariant observable is a function of the")
-print("tadpole alone (Lemma 1) and the duality group acts transitively on each")
-print("non-zero tadpole level set (Lemma 2).  Therefore no exact, frame-independent")
-print("quantity can distinguish vacua that share a tadpole: search can only eliminate")
-print("(by the bound N <= L), never select.  Any target varying within a level set is")
-print("unlearnable by any duality-invariant learner.")
+print("Mitchell's Completeness Theorem: the D3 tadpole F^T J H is the UNIQUE invariant")
+print("of the flux under duality.  Every invariant polynomial is a function of the")
+print("tadpole alone (Lemma 1) and over the reals the duality group acts transitively on")
+print("each non-zero tadpole level set (Lemma 2); over the integers there are finitely")
+print("many orbits per tadpole (content d = gcd(F,H), d^2 | N).  So no exact polynomial")
+print("duality-invariant function can single out a vacuum (statistical / moduli-dependent")
+print("selection is NOT ruled out).")
 print("6 exact + 2 numeric checks PASS.")
 sys.exit(0)

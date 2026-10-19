@@ -54,7 +54,7 @@ now a theorem, not a program: for the flux, there is nothing left to look for.
 |---|---|---|
 | Mitchell's Uniqueness | `validate_mitchell_uniqueness.py` | unique *bilinear* invariant = tadpole (6/6) |
 | Constraint-First | `validate_constraint_first.py` | tadpole generates the *whole* invariant ring (5/5) |
-| Mitchell's Completeness | `validate_mitchell_completeness.py` | tadpole is *complete*; search can only eliminate (6+2) |
+| Mitchell's Completeness | `validate_mitchell_completeness.py` | tadpole *unique*; over ℝ one orbit, over ℤ finitely many (content d\|√N) (6+2) |
 | Full-duality completion | `validate_full_duality.py` | holds for Sp(b₃) × SL(2,Z), not just Sp (5/5) |
 
 One command reproduces the whole tower:

@@ -12,8 +12,8 @@ The tadpole N = F^T J H is invariant under BOTH groups (checked here).  Since
 Lemma 1 (the FFT, validate_constraint_first.py) says the Sp-invariants are exactly
 C[N], and N is SL(2,Z)-invariant, the invariant ring of the FULL group is also
 exactly C[N] — SL(2,Z)-invariance cannot remove anything, because the generator is
-already invariant.  So the no-go ("N is a complete invariant, search can only
-eliminate") holds for the full duality group.
+already invariant.  So the no-go ("N is the unique invariant -- no exact polynomial
+duality-invariant selector exists") holds for the full duality group.
 
 Checks (all exact/symbolic):
   1. general SL(2) transform preserves N up to the determinant:  N' = (ad - bc) N.
@@ -68,12 +68,12 @@ def main():
     print("Check 4: Sp-invariants = C[N] (FFT) and N is SL(2,Z)-invariant, so the")
     print("        FULL duality group's invariant ring is exactly C[N]  -> PASS")
 
-    # ---- Check 5: full group still transitive on the level set
+    # ---- Check 5: full group still transitive on the level set (over R)
     # SL(2,Z) preserves N (Checks 1-3), so it maps each level set {N=const} to itself;
-    # Sp alone already acts transitively on it (validate_mitchell_completeness.py).  Hence
-    # the full group does too, and the no-go is unchanged.
-    print("Check 5: SL(2,Z) maps each N-level-set to itself, and Sp already acts")
-    print("        transitively on it, so the full group is transitive  -> PASS")
+    # Sp(R) already acts transitively on it (validate_mitchell_completeness.py).  Hence
+    # the full real group does too, and the no-go is unchanged.
+    print("Check 5: SL(2,Z) maps each N-level-set to itself, and Sp(R) already acts")
+    print("        transitively on it, so the full real group is transitive  -> PASS")
 
     print(f"\n{'=' * 68}")
     print("Full-duality completion: the D3 tadpole F^T J H is the unique invariant of")

@@ -7,7 +7,7 @@ stronger than either alone.
 ## The convergence
 
 **Session A (this one — characterization):** verification ≠ selection → the two-level
-certificate → the negative result (search dead) → structure mining → constraint
+certificate → the negative result (no exact invariant selector) → structure mining → constraint
 verification → log-uniform W₀ (measured) → the boundary map ("you don't compute the
 uncomputable, you map it").
 
