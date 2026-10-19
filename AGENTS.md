@@ -109,6 +109,17 @@ source, not a textbook formula:**
   Fundamental Theorem of invariant theory (Weyl 1939) specialized to k=2; Mitchell's
   theorem is its degree-2 slice. So "the only exact structure is the constraint" is
   now a **theorem** (Weyl + measurement), not a conjecture.
+- **No-Fingerprint No-Go Theorem** (`docs/no-fingerprint-theorem.md`,
+  `scripts/validate_no_fingerprint.py`, 6 exact + 2 numeric): the tadpole FᵀJH is a
+  **COMPLETE** invariant of the flux under duality — two pairs with N≠0 are
+  dual-equivalent iff they have the same tadpole. Lemma 1 = Constraint-First (FFT);
+  Lemma 2 = Sp(b₃) acts transitively on each tadpole level set (orbit tangent rank
+  = 2b₃−1 = 11, exact, at generic points AND at the canonical pair). Consequence:
+  no exact frame-independent quantity can distinguish vacua sharing a tadpole, and
+  since N ≤ L is bounded, **search can only eliminate, never select** — the 20-year
+  "search for a special vacuum" program is provably dead. Open question this names
+  for the ToE: are ALL exact structures constraint structures (topology, charges,
+  anomalies), with flux now proven to be a single constraint?
 - **TO-DO (deferred to a bigger machine): the Lean "proof arm".** Formalize the
   two-level certificate (Hoeffding) and the T⁶ structure map in Lean 4 + Mathlib +
   PhysLib, using DeepSeek-Prover-V2 (or PhysProver once released) as the proof
