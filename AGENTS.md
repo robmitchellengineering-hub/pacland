@@ -102,6 +102,13 @@ source, not a textbook formula:**
   the **unique** bilinear symplectic invariant of the flux, for *any* compactification.
   This is the rigorous backbone of the constraint-first conjecture — "the only exact
   structure is the constraint" is forced by symplectic geometry, not just measured.
+- **Darboux connection** (`docs/darboux-connection.md`): Darboux's theorem (a symplectic
+  form has NO local invariants) is the DIFFERENTIAL half of the constraint-first result;
+  Weyl's FFT (Sp's only invariant = the tadpole) is the ALGEBRAIC half. They are two
+  different theorems, two steps in one chain (Darboux: local geometry → Sp(2n); FFT:
+  Sp(2n)-invariants → tadpole), landing on the same sentence: the surviving exact
+  structure is global topology (labels) + the constraint. NOT a duplication — a second
+  independent foundation. (Rob found Darboux 2026-10-19.)
 - **Constraint-First Theorem** (`docs/constraint-first-theorem.md`,
   `scripts/validate_constraint_first.py`, 5/5 degrees, exact): the tadpole generates
   the **entire** ring of symplectic invariants of the flux pair — every
