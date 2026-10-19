@@ -147,15 +147,23 @@ source, not a textbook formula:**
   the CONJECTURED generalization, NOT proven — the flux theorem was provable only because
   flux has a clean duality group (Sp) + FFT, which the SM's couplings lack. Falsifiable:
   any UV relation among the 19 parameters (e.g. GUT unification) breaks the conjecture.
+  **Refined by the 5-way fan-out** (`docs/sm-conjecture-notes.md`): GUT/string DO relate
+  the parameters (gauge unification, geometric Yukawas) → "no invariant relates them" is
+  overclaim; the surviving claim is "no unique *value* is derived — only relations"
+  (a ToE predicts relations/invariants, never values). Fan-out tool + recipe:
+  `research/sm-conjecture-fanout.js`, `docs/research-fanout.md`.
 - **The Lean "proof arm" is STARTED, not deferred** (`pacland-proof/`, Lean 4.35 +
   Mathlib): `PaclandProof/Mitchell.lean` machine-checks **Mitchell's Uniqueness
   Theorem** for n=1 — the only `2×2` matrix with `SᵀMS=M` for all symplectic `S` is a
-  scalar multiple of `J` (plus `J` antisymmetric ⇒ `FᵀJF=HᵀJH=0`). **The "bigger
-  machine" was a false wall:** the 16 GB Mac runs `lake build` fine via the mathlib
-  cache (only your own file compiles; mathlib's olean cache is downloaded, 7.2 GB in
-  `.lake`, git-ignored). Reproduce: `cd pacland-proof && lake build`. Next targets:
-  general-n uniqueness (block matrices over `Fin (2n)`), then transitivity
-  (Mitchell's Completeness). PhysLib is public (leanprover-community/physlib).
+  scalar multiple of `J` (plus `J` antisymmetric ⇒ `FᵀJF=HᵀJH=0`). `General.lean` now
+  machine-checks the **general-n** theorem too: `scalar_of_commute_all_symm` +
+  `mitchell_uniqueness` (for abstract `l`, any field `R`) — the only matrix with
+  `SᵀMS=M` for every symplectic `S` is a scalar multiple of `J l R`, plus the shear /
+  block-diagonal / swap generators and the pairing invariance. **The "bigger machine"
+  was a false wall:** the 16 GB Mac runs `lake build` fine via the mathlib cache (7.2 GB
+  in `.lake`, git-ignored). No `sorry`/`axiom`/`admit`/`native_decide` — all
+  kernel-checked. Reproduce: `cd pacland-proof && lake build`. Remaining Lean target:
+  transitivity (Mitchell's Completeness). PhysLib is public (leanprover-community/physlib).
 - `pacland climb` runs the deficit climber on the mesh (studio-linux via
   `mac → win-2 → studio-linux`); `data/cy_corpus.json` is the answer key.
 - **Swampland connection (2026-10-19):** `src/pacland/swampland.py` +
