@@ -116,6 +116,25 @@ def geodesic_distance(v, v0) -> float:
     return float(0.5 * np.log(v / v0))
 
 
+def kk_gauge_coupling(v) -> float:
+    """KK graviphoton coupling ``g_KK = 1/sqrt(v)`` — the same scale as the KK mass.
+
+    Both the KK mass and the KK gauge coupling are set by the inverse radius
+    ``1/R = 1/sqrt(v)``, which is why the KK modes *saturate* the electric Weak
+    Gravity Conjecture.
+    """
+    return float(1.0 / np.sqrt(v))
+
+
+def wgc_ratio(v) -> float:
+    """The KK mode's electric-WGC ratio ``z = q g M_pl / m = g_KK / m_KK = 1``.
+
+    ``z >= 1`` is the WGC bound; ``z = 1`` is saturation. On T^6 the KK modes
+    saturate it exactly (their mass and gauge coupling are both 1/R).
+    """
+    return kk_gauge_coupling(v) / kk_mass(v)
+
+
 @dataclass(frozen=True)
 class T6Background:
     """A T^6 = (T^2)^3 flux compactification — the oracle's genotype.
@@ -179,6 +198,8 @@ __all__ = [
     "winding_mass",
     "tower_mass",
     "geodesic_distance",
+    "kk_gauge_coupling",
+    "wgc_ratio",
     "T6Background",
     "exact_t6_oracle",
     "zero_error_model",

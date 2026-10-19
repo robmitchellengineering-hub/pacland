@@ -55,22 +55,28 @@ is the measured structure map's three-tier picture — exact (tadpole) / weak
 (W₀, saxions) / uniform (g_s, gauge, …) — reproduced *analytically* on T⁶, with the
 "exact" tier provably unique. `validate_t6.py` asserts it (19/19).
 
-## The distance conjecture, exactly
+## The swampland conjectures, exactly
 
-T⁶ is where the distance conjecture becomes a closed form, on the *correct* moduli
+T⁶ is where the swampland conjectures become closed forms, on the *correct* moduli
 (the Kähler moduli — the CY proxy in `docs/swampland-connection.md` ran on the CS
 moduli, the wrong sector). For a T² of volume v:
 
 - KK mass `m_KK = 1/√v` (the inverse radius), winding mass `m_w = √v`;
 - the Kähler-moduli geodesic distance is `d = ½ log(v/v₀)`;
-- hence the lightest tower mass falls **exactly** as `m(v) = m(v₀) e^{−d}`.
+- hence the lightest tower mass falls **exactly** as `m(v) = m(v₀) e^{−d}` —
+  the **distance conjecture**, proven.
 
-So the distance conjecture's exponential tower — measured only as a CS-moduli proxy
-on the CY — is **proven exactly on T⁶** in the sector where it actually applies.
+And the **Weak Gravity Conjecture** is *saturated*, not just satisfied: the KK
+gauge coupling `g_KK = 1/√v` equals the KK mass scale, so the KK mode's ratio
+`z = g_KK/m_KK = 1` — the extremal bound, exactly. (No global symmetries was
+already in hand: det Σ = 1, the unimodular charge lattice.)
+
+So on T⁶ the full swampland package — distance, weak gravity, no global symmetries,
+tadpole/gravity — is **proven exactly**, bookending the measured CY versions.
 
 ## Reproduce
 
 ```
-python3 scripts/validate_t6.py          # 19/19 self-assertions
-python3 -m unittest discover -s tests   # 137 tests
+python3 scripts/validate_t6.py          # 21/21 self-assertions
+python3 -m unittest discover -s tests   # 138 tests
 ```

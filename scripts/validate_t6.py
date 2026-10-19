@@ -22,12 +22,14 @@ from pacland.oracle.exact_t6 import (  # noqa: E402
     geodesic_distance,
     kahler_metric,
     kahler_potential,
+    kk_gauge_coupling,
     kk_mass,
     period_vector,
     superpotential,
     symplectic_form,
     tadpole,
     tower_mass,
+    wgc_ratio,
     winding_mass,
     zero_error_model,
 )
@@ -159,6 +161,17 @@ def main():
         "tower mass ~ e^{-geodesic distance} (distance conjecture)",
         abs(tower_mass(v) - expected) < 1e-12,
         f"m(v)={tower_mass(v):.6f} expected={expected:.6f}",
+    ))
+
+    # 10 — the Weak Gravity Conjecture, exactly: the KK mode saturates it.
+    results.append(check(
+        "KK gauge coupling = KK mass scale (both 1/sqrt(v))",
+        abs(kk_gauge_coupling(v) - kk_mass(v)) < 1e-12,
+    ))
+    results.append(check(
+        "WGC ratio z = g_KK / m_KK = 1 (saturated)",
+        abs(wgc_ratio(v) - 1.0) < 1e-12,
+        f"z={wgc_ratio(v):.6f}",
     ))
 
     n_pass = sum(results)
