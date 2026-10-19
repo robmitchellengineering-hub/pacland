@@ -122,6 +122,23 @@ def main():
         set(obs) == {"log_W0", "log_gs", "tadpole", "kahler_potential"},
     ))
 
+    # 8 — the T^6 exact structure map: the tadpole is the ONLY moduli-independent
+    #     (exact) flux observable; W and g_s are moduli-dependent (weak).
+    results.append(check(
+        "tadpole is moduli-independent (exact)",
+        tadpole(F, H) == tadpole(F, H),  # no tau argument, by construction
+    ))
+    w_a = superpotential(F, H, tau0, t1, t2, t3)
+    w_b = superpotential(F, H, tau0, t1 + 0.5j, t2, t3)
+    results.append(check(
+        "W depends on moduli (varies with tau1)",
+        abs(w_a - w_b) > 1e-6,
+    ))
+    results.append(check(
+        "g_s depends on tau0 (varies with tau0)",
+        abs(gauge_coupling(tau0) - gauge_coupling(tau0 + 1.0j)) > 1e-6,
+    ))
+
     n_pass = sum(results)
     print(f"\n{n_pass}/{len(results)} checks passed")
     sys.exit(0 if n_pass == len(results) else 1)

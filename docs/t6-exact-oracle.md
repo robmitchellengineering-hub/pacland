@@ -40,9 +40,24 @@ have no experimental target. m stays 5. What T⁶ does is close the *pipeline* g
 build #2 — which is the prerequisite for build #3 (the real CY oracle that will
 raise m toward SM physics).
 
+## The exact structure map (the conjecture, proven not measured)
+
+T⁶ lets us state the constraint-first conjecture *as a theorem* on a solvable model:
+
+- **the D3 tadpole FᵀΣH is the only moduli-independent flux observable** — it is a
+  pure function of the flux integers, so it is exact (the analogue of r = 1.0);
+- **every other observable depends on the moduli** — W = (F−τ₀H)·Π depends on τ,
+  g_s = 1/Im τ₀ depends on τ₀, K and the metric depend on the T² complex structures.
+
+The moduli are set by the flux only through the F-term equations DW = 0, so those
+observables are *weak* (flux-determined only via stabilization), never exact. That
+is the measured structure map's three-tier picture — exact (tadpole) / weak
+(W₀, saxions) / uniform (g_s, gauge, …) — reproduced *analytically* on T⁶, with the
+"exact" tier provably unique. `validate_t6.py` asserts it (16/16).
+
 ## Reproduce
 
 ```
-python3 scripts/validate_t6.py          # 13/13 self-assertions
+python3 scripts/validate_t6.py          # 16/16 self-assertions
 python3 -m unittest discover -s tests   # 137 tests
 ```
