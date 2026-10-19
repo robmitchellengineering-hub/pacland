@@ -167,7 +167,7 @@ def boundary_map() -> list[Boundary]:
 
 def certify(question: str) -> Boundary | None:
     """Return the certified boundary for a question, or None if uncertified."""
-    for b in BOUNDARIES:
+    for b in boundary_map():
         if question in b.question:
             return b
     return None
