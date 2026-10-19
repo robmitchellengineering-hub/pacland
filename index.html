@@ -44,6 +44,7 @@
     <div class="sub">A probably-approximately-correct <strong>verification discipline</strong> for the string landscape — what you can claim, what you can measure, and what you cannot compute.</div>
     <div class="links">
       <a href="#theorems">The theorems</a>
+      <a href="#sm">SM frontier</a>
       <a href="#results">Key results</a>
       <a href="#boundary">Boundary map</a>
       <a href="#swampland">Swampland</a>
@@ -76,6 +77,22 @@
       <p><strong>The headline consequence.</strong> The only exact selector in the flux landscape is the tadpole — and it is <em>bounded</em> (N ≤ L). Therefore a landscape search can only <strong>eliminate</strong> (by the constraint N ≤ L); it can never <strong>select</strong> a special vacuum, because there is no invariant left to select with. The 20-year "search for a special vacuum" program is provably dead: there is no fingerprint to find, because symplectic geometry forbids one.</p>
     </div>
     <p class="muted">The falsifiable edge, stated plainly: <em>no exact flux observable beyond the tadpole can ever be found.</em> A single counterexample — one moduli-independent, duality-invariant flux quantity that is not a function of <code>FᵀJH</code> — falsifies the whole tower. That is what makes it science, not slogan.</p>
+
+    <h2 id="sm">The Standard-Model frontier — constraint-first, one sector up</h2>
+    <p>The Complete Exact Structure Theorem proved the <strong>flux sector's</strong> only exact structure is its constraint plus its label. The same classification extends one sector up to the <strong>Standard Model</strong> — the m = 0 frontier the theorem named as its open question.</p>
+    <table>
+      <thead><tr><th>type</th><th>flux sector (proven)</th><th>Standard Model</th></tr></thead>
+      <tbody>
+        <tr><td><strong>constraint</strong> — "what the theory forbids"</td><td>D3 tadpole N ≤ L (the <em>unique</em> invariant)</td><td>anomaly cancellation, charge quantization</td></tr>
+        <tr><td><strong>label</strong> — "which geometry you picked"</td><td>h¹¹, h²¹, c₂, κ</td><td>gauge group SU(3)×SU(2)×U(1); N_gen = 3 = a topological index (|χ|/2 in the heterotic class)</td></tr>
+        <tr><td><strong>parameter</strong> — unpredicable</td><td>W₀, g_s, couplings, masses, Λ</td><td>the ~19 free numbers (masses, couplings, mixing angles, θ_QCD)</td></tr>
+      </tbody>
+    </table>
+    <p>The checkable piece: <code>scripts/validate_sm_anomaly.py</code> verifies, exactly (rational arithmetic, zero floating point), that the SM fermion content cancels <strong>all five</strong> gauge/gravitational anomalies per generation — <code>[SU(3)]³ = [SU(3)]²U(1) = [SU(2)]²U(1) = [U(1)]³ = [grav]²U(1) = 0</code> (5/5). The hypercharges <code>(1/6, 2/3, −1/3, −1/2, −1)</code> are <strong>forced</strong> by these vanishing conditions — required for consistency, not predicted. That is the gauge-sector analog of "the tadpole is the unique exact invariant": the SM's first exact structure is what the theory forbids.</p>
+    <div class="callout">
+      <p><strong>The generalization.</strong> In <em>every</em> sector, the exact structure is <strong>constraint + label</strong>; everything else is a free, unpredicable parameter. Flux sector: <em>proven</em>. SM sector: <em>verified observation</em> — not yet a theorem.</p>
+    </div>
+    <p>The falsifiable test: <em>derive any one of the SM's ~19 free parameters from first principles</em> and the constraint-first generalization is falsified. Every new "exact" structure that turns out to be a constraint or a topological label is evidence for it. Reproduce: <code>python3 scripts/validate_sm_anomaly.py</code>. Full doc: <code>docs/sm-frontier.md</code>.</p>
 
     <h2 id="results">What we measured</h2>
     <div class="grid">
@@ -156,11 +173,14 @@
       <thead><tr><th>result</th><th>file</th><th>status</th></tr></thead>
       <tbody>
         <tr><td><strong>Mitchell's Uniqueness, n = 1</strong> — the only 2×2 matrix M with SᵀMS = M for every symplectic S is a scalar multiple of J, plus J antisymmetric ⇒ FᵀJF = HᵀJH = 0</td><td><code>PaclandProof/Mitchell.lean</code></td><td><span class="tag">✅ machine-checked</span></td></tr>
-        <tr><td>General-n uniqueness (block matrices over Fin (2n)) — the symplectic generators (shear, block-diagonal, J) and the pairing-invariance lemma are being formalized</td><td><code>PaclandProof/General.lean</code></td><td><span class="tag">in progress</span></td></tr>
+        <tr><td>The shear <code>fromBlocks 1 X 0 1</code> is symplectic (symmetric X)</td><td><code>PaclandProof/General.lean</code></td><td><span class="tag">✅ machine-checked</span></td></tr>
+        <tr><td>The diagonal <code>fromBlocks U 0 0 V</code> is symplectic (UᵀV = 1)</td><td><code>PaclandProof/General.lean</code></td><td><span class="tag">✅ machine-checked</span></td></tr>
+        <tr><td>The pairing <code>(Sx)ᵀ J (Sy) = xᵀ J y</code> is Sp-invariant</td><td><code>PaclandProof/General.lean</code></td><td><span class="tag">✅ machine-checked</span></td></tr>
+        <tr><td>Full uniqueness, general n (block matrices over Fin (2n))</td><td>—</td><td><span class="tag">next (sketch documented)</span></td></tr>
         <tr><td>Mitchell's Completeness (transitivity of Sp on each tadpole level set)</td><td>—</td><td><span class="tag">next</span></td></tr>
       </tbody>
     </table>
-    <p class="muted">The "bigger machine" was a false wall: the 16 GB Mac runs <code>lake build</code> via the mathlib cache. Reproduce: <code>cd pacland-proof &amp;&amp; lake build</code>. A green build means Lean's kernel accepted every theorem. (The all-degrees Constraint-First step is Weyl's 1939 FFT, cited rather than re-proven — the sympy degree 1–5 verification is the evidence.)</p>
+    <p class="muted">The "bigger machine" was a false wall: the 16 GB Mac runs <code>lake build</code> via the mathlib cache. Reproduce: <code>cd pacland-proof &amp;&amp; lake build</code>. A green build means Lean's kernel accepted every theorem — <strong>no <code>sorry</code>, no <code>axiom</code>, no <code>native_decide</code></strong>; every theorem is kernel-checked. The general-n argument is worked out in full in the README (shear → diagonal → J → block-matrix extraction); the block-matrix step for the full theorem is the remaining formalization. (The all-degrees Constraint-First step is Weyl's 1939 FFT, cited rather than re-proven — the sympy degree 1–5 verification is the evidence.)</p>
 
     <h2 id="use">Use it</h2>
     <p>The whole discipline is a pip-installable, pure-stdlib Python library with a CLI:</p>
