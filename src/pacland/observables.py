@@ -64,4 +64,23 @@ FLUX_OBSERVABLES: tuple[DeficitObservable, ...] = (
     DeficitObservable("mass spectrum", True, False, False),
 )
 
-__all__ = ["STANDARD_OBSERVABLES", "TOPOLOGY_OBSERVABLES", "FLUX_OBSERVABLES"]
+# The Standard-Model sector — constraint-first, one sector up. The SM's *exact*
+# structure (the Complete Exact Structure theorem's "constraints + labels +
+# parameters") is computed EXACTLY by sympy (zero tolerance) and validated against
+# the measured SM. Four independent exact facts, each a real deficit rung:
+#   anomaly cancellation     5/5  — the five gauge/gravitational anomalies vanish
+#   hypercharge uniqueness   4/4  — the anomaly conditions uniquely fix hypercharge
+#   generation number        1    — N_gen = 3 = a topological index (|chi|/2)
+#   free-parameter count     1    — 19 = orbit-space dimension of the flavor group
+# These are the m=0 frontier the flux theorem named: the SM sector's exact content,
+# now climbed. (The 19 free parameters remain unVALIDATED as *predictions* — their
+# measured values are the c*; what is validated here is the exact structure that
+# classifies them, not a vacuum that produces them.)
+SM_OBSERVABLES: tuple[DeficitObservable, ...] = (
+    DeficitObservable("SM anomaly cancellation (5/5)", True, True, True),
+    DeficitObservable("SM hypercharge uniqueness (4/4)", True, True, True),
+    DeficitObservable("SM generation number N_gen=3", True, True, True),
+    DeficitObservable("SM free-parameter count = 19", True, True, True),
+)
+
+__all__ = ["STANDARD_OBSERVABLES", "TOPOLOGY_OBSERVABLES", "FLUX_OBSERVABLES", "SM_OBSERVABLES"]

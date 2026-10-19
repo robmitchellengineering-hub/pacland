@@ -87,9 +87,11 @@ source, not a textbook formula:**
   **HELD:** Mitchell's Uniqueness, the constraint-first framework, the 19 count, Darboux,
   Atiyah–Singer, K-theory, Gromov. The core survives; the headlines need scoping.
 - The **Mitchell Verification Deficit** is the count `m` of observables that are
-  simultaneously measured + computable + validated. Today **m = 5**: topology
+  simultaneously measured + computable + validated. Today **m = 9**: topology
   (CYTools: h11, h21, c2, κ) = 4, flux (JAXVacua: tadpole = exact symplectic
-  pairing FᵀJH) = 1. SM physics = 0 (the real frontier).
+  pairing FᵀJH) = 1, Standard Model (sympy, exact) = 4 (anomaly cancellation 5/5,
+  hypercharge uniqueness 4/4, N_gen=3, 19 = orbit-space dim). The SM's 19 free
+  parameters remain unvalidated as *predictions* — only their exact structure is climbed.
 - **Every JAXVacua model is a truncation.** `h12` = number of CS moduli KEPT. The
   bundled `h12=2` keeps 2 of 272 (its polytope has h¹¹=2, h²¹=272). All measured
   results (structure map, fingerprint, no-scale) are inside this 2-moduli slice.
@@ -201,12 +203,13 @@ source, not a textbook formula:**
   `scripts/test_swampland.py` turn the constraint-first conjecture into per-conjecture
   tests. WGC scale g·M_pl is uniform in flux (r < 0.25, confirmed); charge gcd = 1
   (no forced discrete global symmetry); distance proxy real signal (CS-sector; clean DC test needs the bigger
-  machine). Extends the *prediction* surface, NOT the deficit (m stays 5).
+  machine). Extends the *prediction* surface, NOT the deficit (m stays 9).
 - Live site: https://pacland.netlify.app (Netlify) + GitHub Pages mirror.
 - The four-wall map is `src/pacland/limits.py` and `docs/boundary-map.md`.
 - **TO-DO — the verification system's remaining uses (queued, not done):**
-  1. Climb the SM deficit — register the SM results (anomaly 5/5, hypercharge 4/4,
-     invariant ring 19, parameter count) as deficit rungs, raising m from 5 toward ~8–9.
+  1. Climb the SM deficit — **DONE** (`src/pacland/observables.py::SM_OBSERVABLES`): the
+     SM's exact structure is now 4 validated rungs (anomaly 5/5, hypercharge 4/4, N_gen=3,
+     19 = orbit-space dim), raising **m from 5 to 9** (topology 4 + flux 1 + SM 4).
   2. Rule of Three on the SM results — each is currently ONE confirmation; cross-check
      each three ways (sympy + literature + an independent method).
   3. The rank test (the floor question) — **DONE** (`scripts/validate_sm_rank_test.py` +

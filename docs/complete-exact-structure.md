@@ -34,7 +34,7 @@ it forbids (constraints) and what it is handed (topology).*
 ## Why the flux sector is now saturated (the hard ceiling on m)
 
 The Mitchell Verification Deficit `m` counts observables that are simultaneously
-measured + computable + validated. Today `m = 5` (4 topology + 1 flux).
+measured + computable + validated. Today `m = 9` (4 topology + 1 flux + 4 Standard Model).
 Mitchell's Completeness Theorem turns this from "we haven't found more yet" into a
 **hard ceiling for the flux sector**:
 
