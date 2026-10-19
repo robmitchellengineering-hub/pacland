@@ -90,6 +90,20 @@ source, not a textbook formula:**
   memory-safe but slow (~43 s/candidate). So the chase is a SPEED problem, not a 96 GB
   problem: make `scipy` (or a chunked `newton`) fast enough to sample hundreds of
   vacua. Paper's ancillary polytopes: arXiv:2306.06160 (h12_5..h12_25).
+- **Exact T⁶ toroidal orbifold oracle (build #2 done properly):**
+  `src/pacland/oracle/exact_t6.py` — closed-form periods, Kähler potential/metric,
+  tadpole FᵀΣH (the *unique* moduli-independent observable), W, g_s, KK/winding
+  tower, geodesic distance. The full swampland package (distance, WGC, no global
+  symmetries) is *proven exactly*. Two verification grades: numerical 21/21
+  (`scripts/validate_t6.py`) + **exact symbolic 8/8** (`scripts/validate_t6_sympy.py`,
+  sympy, zero tolerance).
+- **TO-DO (deferred to a bigger machine): the Lean "proof arm".** Formalize the
+  two-level certificate (Hoeffding) and the T⁶ structure map in Lean 4 + Mathlib +
+  PhysLib, using DeepSeek-Prover-V2 (or PhysProver once released) as the proof
+  assistant. Deferred because Lean/Mathlib compilation is resource-heavy and the
+  mesh has no big machine (Mac is Intel 16 GB, no JAX; studio-linux VM is 4 GB and
+  flaky). The sympy exact grade above is the interim; the machine-checked theorem is
+  the goal when hardware arrives. PhysLib is public (leanprover-community/physlib).
 - `pacland climb` runs the deficit climber on the mesh (studio-linux via
   `mac → win-2 → studio-linux`); `data/cy_corpus.json` is the answer key.
 - **Swampland connection (2026-10-19):** `src/pacland/swampland.py` +
