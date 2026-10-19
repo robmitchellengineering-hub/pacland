@@ -1,63 +1,71 @@
 # PACLAND
 
 **Probably Approximately Correct Landscape** — a Valiant-verification system for the
-string landscape. Live: [pacland.netlify.app](https://pacland.netlify.app) ·
-`pip install pacland`
+string landscape, now with a **proven theorem tower** and a **Standard-Model frontier**.
+Live: [pacland.netlify.app](https://pacland.netlify.app) · `pip install pacland`
 
 ## The result, in one sentence
 
-> **The landscape's only exact structure is what it *forbids* — the constraint.**
-> Everything it produces (couplings, masses, phases, the cosmological constant) is
-> noise plus a weak scale; no observable carries the geometric fingerprint a search
-> would need. So no search can find our vacuum in observables — the only navigable
-> move is elimination by verified constraint.
+> **A theory of everything predicts nothing exactly except what it *forbids*
+> (constraints) and what it is *handed* (labels).** In the flux sector this is now a
+> **proven theorem**: the D3 tadpole is the *unique* exact structure, so the 20-year
+> "search for the special vacuum" is provably dead — search can only eliminate, never
+> select. In the Standard Model the same two-type decomposition holds, and the open
+> question is precisely stated and falsifiable.
 
-That is the **constraint-first theorem**, established by measurement on real
-supersymmetric flux vacua and stated as a paper:
-[`paper/structure-map.pdf`](paper/structure-map.pdf).
+## The theorem tower — machine-checked
 
-## What is measured (the structure map)
+Five theorems, each verified symbolically at zero tolerance, plus a Lean 4 + Mathlib
+arm that machine-checks the core:
 
-Every flux-determined observable, classified by a joint learnability test gated by a
-positive control (the tadpole must come back r = 1.0):
-
-| observable | r | verdict |
+| theorem | statement | grade |
 |---|---|---|
-| **tadpole N_flux** | **1.00** | **exact** — the symplectic pairing FᵀJH |
-| W₀ | 0.62 | weakly learnable (scale via the tadpole) |
-| saxions | 0.30–0.42 | weakly learnable (stabilization) |
-| g_s, gauge couplings, mass-shape, axions, dilaton, AdS V | < 0.25 | uniform |
+| **Mitchell's Uniqueness** | the tadpole `N = FᵀJH` is the unique bilinear symplectic invariant | 6/6 + Lean (n=1 *and* general n) |
+| **Constraint-First** | the tadpole generates the *entire* invariant ring (Weyl's FFT, k=2) | 5/5 degrees |
+| **Mitchell's Completeness** | `N` is a *complete* invariant (same tadpole ⟺ dual-equivalent) | 6 exact + 2 numeric |
+| **Full-duality** | holds for Sp(b₃) × SL(2,ℤ), not just Sp | 5/5 |
+| **Complete Exact Structure** | the ToE's exact content = constraints + labels, nothing else | assembly |
 
-## The headline results
+One command reproduces the tower: `python3 scripts/validate_all_theorems.py`.
+Machine-checked arm: `cd pacland-proof && lake build` (no `sorry`/`axiom`/`native_decide`).
 
-- **The Mitchell Verification Deficit** — the count `m` of observables simultaneously
-  measured + computable + validated. It read ∞ (vacuous) and has been **climbed to
-  m = 5**: CYTools topology (h11, h21, c2, κ) = 4, JAXVacua tadpole = 1. The SM-physics
-  sector is the open frontier (m = 0).
-- **Search over W₀ is hopeless** — by *rarity + extrapolation*: the KKLT target sits
-  ~20 prediction-errors outside the observed range.
-- **The mass spectrum carries no fingerprint** — its shape is uniform in flux
-  ([`paper/fingerprint.pdf`](paper/fingerprint.pdf)).
-- **The no-scale theorem confirmed** — SUSY vacua sit at V = 0 to machine precision.
+## The Standard-Model frontier — constraint-first, one sector up
 
-## The methodology (this is the point)
+The SM's exact structure decomposes exactly like the flux sector's, and it's now partly
+*proven*:
 
-- **The Rule of Three** — no "structured vs. random" claim from one test. Three
-  independent confirmations must agree (single-coordinate MI, joint ridge-quadratic
-  CV r, permutation null). This rule caught and corrected our own W₀ over-reach.
-- **Use the wall, don't hit it** — "uncomputable" is four walls (intractable /
-  unmeasurable / underdetermined / undecidable), each with a way around; the way
-  around *is* the result.
-- **Mirror symmetry** is a free validation target (h11 ↔ h21, χ → −χ).
+| type | flux (proven) | Standard Model |
+|---|---|---|
+| constraint | tadpole `N ≤ L` | anomaly cancellation, charge quantization |
+| label | `h¹¹, h²¹, c₂, κ` | gauge group; N_gen = 3 (topological) |
+| parameter | W₀, g_s, couplings, Λ | the 19 free couplings |
 
-Every headline number is reproducible: `python3 scripts/verify_results.py`
-regenerates and asserts all of them from committed data.
+- **Anomaly cancellation is a constraint** (5/5 exact) — the hypercharges are *forced*.
+- **Hypercharge is unique** (4/4 exact) — the gauge-sector analog of Mitchell's Uniqueness.
+- **The 19 = the orbit-space dimension** of the flavor group — the independent invariants.
 
-## Papers
+Two research fan-outs refined the open claim (see `docs/sm-conjecture-notes.md`,
+`docs/sm-floor-notes.md`):
 
-- [`paper/PACLAND-preprint.pdf`](paper/PACLAND-preprint.pdf) — the verification discipline
-- [`paper/fingerprint.pdf`](paper/fingerprint.pdf) — the mass spectrum carries no fingerprint
-- [`paper/structure-map.pdf`](paper/structure-map.pdf) — the constraint-first theorem
+> **A ToE predicts *relations* (invariants), never *values*.** And the "floor" is not
+> one number but a structure: **0 continuous, 1 discrete (the tadpole), 19 relations** —
+> with the 19 relations generable from fewer UV parameters.
+
+## The methodology
+
+- **The Rule of Three** — no claim from one test; three independent confirmations must agree.
+- **Use the wall, don't hit it** — "uncomputable" is four walls, each with a way around.
+- **Mirror symmetry** — a free validation target (h11 ↔ h21, χ → −χ).
+- **Research fan-out** — parallel independent passes on a sharp question, then
+  compare-notes (`docs/research-fanout.md`); it has caught two conflations so far.
+
+## Papers (four)
+
+- `paper/constraint-first-theorem.pdf` — Mitchell's Uniqueness → Complete Exact Structure (the theorems)
+- `paper/structure-map.pdf` — the measurement that motivated the theorem
+- `paper/fingerprint.pdf` — the mass spectrum carries no fingerprint
+- `paper/PACLAND-preprint.pdf` — the verification discipline (umbrella)
+- `paper/constraint-first-explainer.pdf` — the investor/partner explainer
 
 ## CLI
 
@@ -75,13 +83,15 @@ pacland climb             # run the deficit climber on the mesh
 ## Tests
 
 ```sh
-python3 -m unittest discover -s tests   # 119 tests
+python3 -m unittest discover -s tests   # 140 tests
 ```
 
 ## Honest frontier
 
-The next `m` requires the **Kähler-moduli mass spectrum**, which needs instanton
-corrections — diagnosed as an XLA autodiff hang (not physics, not data), with the
-shortcut specified (finite-difference the Kähler metric + the 2-term instanton
-superpotential) and the conifold limit as the alternative geometry. See
-`docs/boundary-map.md` and `docs/structure-map.md`.
+- **Lean transitivity** (Mitchell's Completeness) is the one theorem not yet
+  machine-checked.
+- **The SM "floor"** — can the 19 invariants be generated from fewer than ~14 UV
+  parameters? The decisive test (express the invariants as functions of moduli, check
+  the Jacobian rank) is the next fan-out.
+- **arXiv** — the four papers are ready, pending account + hep-th endorsement
+  (`docs/arxiv-submission.md`).
