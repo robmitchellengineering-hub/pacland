@@ -1,10 +1,10 @@
-# The tadpole-uniqueness theorem — the conjecture's core, proved
+# Mitchell's Uniqueness Theorem — the conjecture's core, proved
 
-`scripts/validate_tadpole_uniqueness.py` proves, symbolically (sympy, zero
+`scripts/validate_mitchell_uniqueness.py` proves, symbolically (sympy, zero
 tolerance, 6/6 checks), the mathematical backbone of the constraint-first
 conjecture.
 
-## Theorem
+## Theorem (Mitchell)
 
 > **The D3 tadpole `N_flux = Fᵀ J H` is the unique non-trivial bilinear symplectic
 > invariant of the flux (F, H), for any compactification (any b₃).**
@@ -18,7 +18,8 @@ are not physical observables; `Fᵀ J F = Hᵀ J H = 0` identically (antisymmetr
 
 The constraint-first conjecture says *"the landscape's only exact structure is what
 it forbids."* That was a **measurement** (the structure map: tadpole r = 1.0, all
-else uniform) and an **exact-model observation** (T⁶). This theorem closes the gap:
+else uniform) and an **exact-model observation** (T⁶). Mitchell's Uniqueness Theorem
+closes the gap:
 
 - the *only* flux quantity that is both **exact** and **gauge-invariant** is the
   tadpole — so there is no other structure for the landscape to have;
@@ -32,7 +33,7 @@ theorem, not just a measurement.
 ## Reproduce
 
 ```
-python3 scripts/validate_tadpole_uniqueness.py   # 6/6 symbolic checks
+python3 scripts/validate_mitchell_uniqueness.py   # 6/6 symbolic checks
 ```
 
 The same argument on T⁶ (b₃ = 8) is `scripts/validate_t6_sympy.py` (8/8); the

@@ -1,4 +1,4 @@
-"""Tadpole uniqueness theorem — F^T J H is the unique exact (symplectic-invariant)
+"""Mitchell's Uniqueness Theorem — F^T J H is the unique exact (symplectic-invariant)
 structure of the flux, for ANY compactification (any b3). Symbolic proof.
 
 The constraint-first conjecture claims "the landscape's only exact structure is its
@@ -7,7 +7,7 @@ bilinear forms in the flux (F, H), the only one invariant under the symplectic
 group Sp(b3, Z) is the D3 tadpole N_flux = F^T J H. Everything else (F^T F, H^T H,
 F^T H) is gauge-dependent and therefore not a physical observable.
 
-Run:  python3 scripts/validate_tadpole_uniqueness.py
+Run:  python3 scripts/validate_mitchell_uniqueness.py
 """
 import sys
 
@@ -58,9 +58,9 @@ def main():
 
     n_pass = sum(results)
     print(f"\n{n_pass}/{len(results)} checks passed")
-    print("\nTheorem: the D3 tadpole F^T J H is the unique bilinear symplectic invariant")
-    print("of the flux. Hence it is the only *exact* (gauge-independent) structure the")
-    print("landscape can have — the constraint-first conjecture's core, now a theorem.")
+    print("\nMitchell's Uniqueness Theorem: the D3 tadpole F^T J H is the unique")
+    print("bilinear symplectic invariant of the flux — the only *exact* (gauge-")
+    print("independent) structure the landscape can have.")
     sys.exit(0 if n_pass == len(results) else 1)
 
 

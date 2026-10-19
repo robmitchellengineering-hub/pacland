@@ -97,6 +97,11 @@ source, not a textbook formula:**
   symmetries) is *proven exactly*. Two verification grades: numerical 21/21
   (`scripts/validate_t6.py`) + **exact symbolic 8/8** (`scripts/validate_t6_sympy.py`,
   sympy, zero tolerance).
+- **Mitchell's Uniqueness Theorem** (`docs/mitchell-uniqueness-theorem.md`,
+  `scripts/validate_mitchell_uniqueness.py`, 6/6 symbolic): the D3 tadpole FᵀJH is
+  the **unique** bilinear symplectic invariant of the flux, for *any* compactification.
+  This is the rigorous backbone of the constraint-first conjecture — "the only exact
+  structure is the constraint" is forced by symplectic geometry, not just measured.
 - **TO-DO (deferred to a bigger machine): the Lean "proof arm".** Formalize the
   two-level certificate (Hoeffding) and the T⁶ structure map in Lean 4 + Mathlib +
   PhysLib, using DeepSeek-Prover-V2 (or PhysProver once released) as the proof
