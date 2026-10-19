@@ -16,6 +16,8 @@
   header .links { margin-top: 1.2rem; }
   header .links a { color: #fff; border: 1px solid rgba(255,255,255,.4); padding: .35rem .8rem; border-radius: 999px; text-decoration: none; margin-right: .5rem; font-size: .9rem; }
   header .links a:hover { background: rgba(255,255,255,.12); }
+  header .links a.primary { background: #fff; color: var(--accent); font-weight: 600; border-color: #fff; }
+  header .links a.primary:hover { background: rgba(255,255,255,.85); }
   main { padding: 2.5rem 0 4rem; }
   h2 { font-size: 1.4rem; margin: 2.2rem 0 .6rem; color: var(--accent); letter-spacing: -.01em; }
   p { margin: .6rem 0; }
@@ -43,6 +45,8 @@
     <h1>PACLAND</h1>
     <div class="sub">A probably-approximately-correct <strong>verification discipline</strong> for the string landscape — what you can claim, what you can measure, and what you cannot compute.</div>
     <div class="links">
+      <a class="primary" href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/paper/pacland-marketing.pdf">Download the one-pager (PDF)</a>
+      <a href="#arc">The arc</a>
       <a href="#theorems">The theorems</a>
       <a href="#sm">SM frontier</a>
       <a href="#results">Key results</a>
@@ -60,6 +64,30 @@
 
     <p class="lead">String theory is ~10<sup>500</sup> vacua and no experiment that tells most of them apart. "Unified string theory" fuses two questions — <em>does some vacuum match us?</em> and <em>why that one?</em> — and the field has <strong>no verification layer</strong> for either. PACLAND is that layer, built with Valiant's probably-approximately-correct learning: a certificate that bounds a candidate's error even when the verifier is itself approximate, a measured prior, a negative result, and a map of the computable.</p>
 
+    <div class="callout">
+      <p><strong>New — the plain-English overview.</strong> What this work did for the landscape, why it matters, and where it goes next, in a few pages and no equations. <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/paper/pacland-marketing.pdf">Download the PDF</a> (tap to open on a phone).</p>
+    </div>
+
+    <h2 id="arc">The arc — measure, then prove, then redeploy</h2>
+    <p>The project ran in three acts, and this page is ordered so you can follow the whole arc while every original piece stays put.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Act I — Measure</h3>
+        <p class="muted">We built the <strong>verification discipline</strong> — the two-level certificate, the Mitchell Verification Deficit, the Rule of Three — and measured real flux vacua. The <strong>structure map</strong> came back: only the tadpole is exact (r = 1.0), everything else uniform.</p>
+        <p><a href="#results">What we measured</a> · <a href="#structure">structure map</a> · <a href="#method">Rule of Three</a> · <a href="#deficit">deficit</a> · <a href="#boundary">boundary map</a></p>
+      </div>
+      <div class="card">
+        <h3>Act II — Prove</h3>
+        <p class="muted">The measurement motivated the <strong>theorem tower</strong>: Weyl's FFT proves the tadpole is <em>unique</em>; the no-fingerprint no-go proves no <em>exact invariant</em> selector exists; the Complete Exact Structure theorem proves the ToE = constraints + labels. Machine-checked in Lean. The measurement became redundant for the flux claim — that is the win.</p>
+        <p><a href="#theorems">the theorem tower</a> · <a href="#lean">Lean proofs</a> · the <a href="#theorems">Five Pillars</a></p>
+      </div>
+      <div class="card">
+        <h3>Act III — Redeploy</h3>
+        <p class="muted">The same discipline — Rule of Three, deficit, fan-out — is now applied <strong>one sector up</strong>, to the Standard Model. Anomaly cancellation (5/5), hypercharge uniqueness (4/4), the invariant ring (19 = orbit-space). m = 0 is the frontier.</p>
+        <p><a href="#sm">the Standard-Model frontier</a> · <a href="#sm">refinements from the fan-outs</a></p>
+      </div>
+    </div>
+
     <h2 id="theorems">The theorem tower — "the only exact structure is the constraint" is now proved</h2>
     <p>The constraint-first claim began as a measurement (the structure map: the tadpole comes back r = 1.0, every other observable uniform). It is now a <strong>tower of five theorems</strong>, each verified symbolically with sympy at zero tolerance, plus a machine-checked Lean arm. One command reproduces the whole tower: <code>python3 scripts/validate_all_theorems.py</code>.</p>
     <table>
@@ -74,9 +102,21 @@
     </table>
 
     <div class="callout">
-      <p><strong>The headline consequence.</strong> The only exact selector in the flux landscape is the tadpole — and it is <em>bounded</em> (N ≤ L). Therefore a landscape search can only <strong>eliminate</strong> (by the constraint N ≤ L); it can never <strong>select</strong> a special vacuum, because there is no invariant left to select with. The 20-year "search for a special vacuum" program is provably dead: there is no fingerprint to find, because symplectic geometry forbids one.</p>
+      <p><strong>The headline consequence.</strong> The only <em>exact, polynomial, duality-invariant</em> selector in the flux landscape is the tadpole. So no exact invariant function can single out a vacuum — but this is a no-go on <em>exact invariant</em> selectors, not on search in general: statistical, moduli-dependent, or non-polynomial selection is not ruled out. Over the integers the tadpole is not even a complete invariant — the content d = gcd(F,H) (d²|N) labels finitely many orbits per tadpole.</p>
     </div>
     <p class="muted">The falsifiable edge, stated plainly: <em>no exact flux observable beyond the tadpole can ever be found.</em> A single counterexample — one moduli-independent, duality-invariant flux quantity that is not a function of <code>FᵀJH</code> — falsifies the whole tower. That is what makes it science, not slogan.</p>
+    <p><strong>The Five Pillars.</strong> The no-fingerprint result rests on five independent families of theorems, each forcing a piece of the conclusion:</p>
+    <table>
+      <thead><tr><th>pillar</th><th>forces</th></tr></thead>
+      <tbody>
+        <tr><td><strong>local</strong></td><td>no local invariant — <strong>Darboux</strong> (a symplectic form has no curvature-like fingerprint)</td></tr>
+        <tr><td><strong>algebraic</strong></td><td>the only invariant is the tadpole — <strong>Weyl's FFT</strong> (the invariant ring has a single generator)</td></tr>
+        <tr><td><strong>global</strong></td><td>what survives is global symplectic topology — <strong>Gromov non-squeezing</strong>, capacities, Eliashberg–Gromov rigidity, Arnold conjecture, Marsden–Weinstein</td></tr>
+        <tr><td><strong>topological</strong></td><td>the labels are topology — <strong>Atiyah–Singer</strong> (N_gen = |χ|/2), <strong>K-theory</strong> (D-brane charges = K(X)), Bott periodicity</td></tr>
+        <tr><td><strong>counting</strong></td><td>the numbers are theorems — <strong>Molien–Weyl</strong> (19 = orbit-space dim), Morse (m_k ≥ b_k), Ashok–Denef–Douglas</td></tr>
+      </tbody>
+    </table>
+    <p class="muted">The four walls are what you can't do; the five pillars are what makes the claim stand. Three pillars sharpen the result: the vacuum count is <em>bounded, not fixed</em> by topology; the constraint is a <em>K-theory vanishing</em> (total charge = 0 in K(X)); the vacuum space is a <em>symplectic quotient</em> (Marsden–Weinstein). See <code>docs/five-pillars.md</code>.</p>
 
     <h2 id="sm">The Standard-Model frontier — constraint-first, one sector up</h2>
     <p>The Complete Exact Structure Theorem proved the <strong>flux sector's</strong> only exact structure is its constraint plus its label. The same classification extends one sector up to the <strong>Standard Model</strong> — the m = 0 frontier the theorem named as its open question.</p>
@@ -90,10 +130,12 @@
     </table>
     <p>The checkable piece: <code>scripts/validate_sm_anomaly.py</code> verifies, exactly (rational arithmetic, zero floating point), that the SM fermion content cancels <strong>all five</strong> gauge/gravitational anomalies per generation — <code>[SU(3)]³ = [SU(3)]²U(1) = [SU(2)]²U(1) = [U(1)]³ = [grav]²U(1) = 0</code> (5/5). The hypercharges <code>(1/6, 2/3, −1/3, −1/2, −1)</code> are <strong>forced</strong> by these vanishing conditions — required for consistency, not predicted.</p>
     <p><strong>The gauge-sector uniqueness theorem</strong> (<code>scripts/validate_sm_hypercharge_uniqueness.py</code>, 4/4, exact — the SM analog of Mitchell's Uniqueness): given the SM matter content (gauge reps + chirality), the anomaly conditions determine the hypercharge assignment <strong>uniquely</strong>, up to overall normalization and the u↔d swap. The three linear conditions (<code>[grav]²U(1)</code>, <code>[SU(2)]²U(1)</code>, <code>[SU(3)]²U(1)</code>) leave a 2-dimensional family (<code>Y_L = −3Y_Q</code>, <code>Y_e = −6Y_Q</code>, <code>Y_d = 2Y_Q − Y_u</code>); the cubic <code>[U(1)]³</code> collapses it — <code>18·Y_Q·(2Y_Q + Y_u)(4Y_Q − Y_u) = 0</code> ⟹ <code>Y_u = 4Y_Q</code> (the SM) or <code>Y_u = −2Y_Q</code> (the u↔d swap). The gauge constraint is <strong>unique</strong>, exactly as the flux constraint (the tadpole) is unique.</p>
+    <p><strong>The invariant ring — 19 = orbit-space dimension.</strong> <code>scripts/validate_sm_invariant_ring.py</code> makes the FFT analog exact: the 19 parameters are the orbit-space dimension of the flavor group (quark sector 36 − 27 + 1 = 10, lepton 18 − 18 + 3 = 3, plus gauge 3 + Higgs 2 + θ 1). They are the <em>independent flavor invariants</em> — nothing relates them within the SM, by a theorem. And <code>scripts/validate_gut_parameter_count.py</code> shows minimal SU(5) leaves ~19 (not 14): gauge unification saves 2 but the Higgs sector grows ~2 — a <em>shuffle, not a reduction</em>.</p>
     <div class="callout">
-      <p><strong>The generalization.</strong> In <em>every</em> sector, the exact structure is <strong>constraint + label</strong>; everything else is a free, unpredicable parameter. Flux sector: <em>proven</em>. SM sector: <em>two theorems now</em> — anomaly cancellation (5/5) and hypercharge uniqueness (4/4) — with the full "the 19 parameters have no invariant to be a function of" proof still open.</p>
+      <p><strong>The generalization.</strong> In <em>every</em> sector, the exact structure is <strong>constraint + label</strong>; everything else is a free parameter. Flux sector: <em>proven</em>. SM sector: anomaly cancellation (5/5), hypercharge uniqueness (4/4), the invariant ring (19 = orbit-space) — all exact.</p>
     </div>
-    <p>The falsifiable test: <em>derive any one of the SM's ~19 free parameters from first principles</em> and the constraint-first generalization is falsified. Every new "exact" structure that turns out to be a constraint or a topological label is evidence for it. Reproduce: <code>python3 scripts/validate_sm_anomaly.py</code> (5/5) and <code>python3 scripts/validate_sm_hypercharge_uniqueness.py</code> (4/4). Full doc: <code>docs/sm-frontier.md</code>.</p>
+    <p><strong>The refined claim (from two research fan-outs).</strong> The first fan-out split "unpredicable" and found the honest form: <strong>a ToE predicts <em>relations</em> (invariants), never <em>values</em></strong> — GUTs and string geometry <em>relate</em> the parameters but never derive their absolute values. The second fan-out split "free parameter" and found the floor is a structure, not a number: <strong>0 continuous, 1 discrete (the tadpole), 19 relations</strong>. See <code>docs/sm-conjecture-notes.md</code> and <code>docs/sm-floor-notes.md</code>.</p>
+    <p>The falsifiable test: <em>derive any one of the SM's ~19 free parameters from first principles</em> and the constraint-first generalization is falsified. Reproduce: <code>python3 scripts/validate_sm_anomaly.py</code> (5/5), <code>validate_sm_hypercharge_uniqueness.py</code> (4/4), <code>validate_sm_invariant_ring.py</code>, <code>validate_gut_parameter_count.py</code>. Full doc: <code>docs/sm-frontier.md</code>.</p>
 
     <h2 id="results">What we measured</h2>
     <div class="grid">
