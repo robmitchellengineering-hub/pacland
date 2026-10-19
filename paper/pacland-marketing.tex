@@ -1,0 +1,178 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{navy}{HTML}{142a5e}
+\definecolor{accent}{HTML}{c07a1c}
+\definecolor{lightbg}{HTML}{eef2f8}
+\definecolor{softnavy}{HTML}{2a4a8f}
+
+\setlength{\fboxsep}{9pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=accent,
+  linkcolor=navy,
+  pdfauthor={Rob Mitchell},
+  pdftitle={PACLAND --- a new proof about the landscape of everything}
+}
+
+% ---- section heading: navy title + amber rule ----
+\newcommand{\sechead}[1]{%
+  \vspace{1.3em}%
+  \noindent{\Large\bfseries\color{navy}#1}\par
+  \vspace{0.22em}%
+  \noindent\textcolor{accent}{\rule{\linewidth}{1.2pt}}\par
+  \vspace{0.65em}%
+}
+
+% ---- light callout box with an accent title ----
+\newcommand{\callout}[2]{%
+  \vspace{0.45em}\noindent
+  \fcolorbox{navy}{lightbg}{%
+    \parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{%
+      {\small\bfseries\color{navy}#1}\par\vspace{0.28em}{\small #2}%
+    }%
+  }\vspace{0.45em}%
+}
+
+% ---- one stat cell in the number strip ----
+\newcommand{\statbox}[2]{%
+  \colorbox{lightbg}{%
+    \parbox{\dimexpr0.30\linewidth-2\fboxsep\relax}{%
+      \centering{\color{navy}\fontsize{24}{28}\selectfont\bfseries #1}\\[0.22em]
+      {\color{navy}\footnotesize #2}%
+    }%
+  }%
+}
+
+\begin{document}
+
+% ================= HERO =================
+\noindent
+\colorbox{navy}{%
+  \parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+    \vspace{0.35em}
+    \begin{center}
+      {\color{white}\fontsize{34}{40}\selectfont\bfseries PACLAND}\\[0.12em]
+      {\color{accent}\large A new proof about the landscape of everything}\\[0.55em]
+      {\color{white}\small String theory says our universe is one of roughly $10^{500}$
+      possible worlds. For twenty years the field's biggest question has been:
+      \emph{which one is ours --- and how could we ever find out?} A new theorem, built on
+      ninety years of mathematics, gives a surprising and rigorous answer.}
+    \end{center}
+    \vspace{0.35em}
+  }%
+}
+
+% ================= NUMBER STRIP =================
+\vspace{0.8em}
+\noindent\statbox{$10^{500}$}{possible universes in the landscape}
+\hfill
+\statbox{$1$}{single exact rule that survives}
+\hfill
+\statbox{$5$}{independent pillars of mathematics}
+
+% ================= 1. THE QUESTION =================
+\sechead{The question nobody could settle}
+
+String theory does not predict one universe. It predicts a \emph{landscape} of about
+$10^{500}$ of them --- a one followed by five hundred zeros. Each is a different possible
+universe, with its own particles, its own forces, its own numbers. Most look nearly
+identical to one another, and no experiment can tell most of them apart.
+
+For two decades physicists hunted for a \emph{fingerprint}: a hidden pattern that points to
+our universe and lets us rule the other $10^{500}$ out. The hope was that some shortcut --- a
+formula, a map, a clue --- was waiting to be found.
+
+% ================= 2. WHAT THE PAPER PROVED =================
+\sechead{What the paper proved}
+
+The shortcut is not there --- at least, not the exact kind. Using a 1939 result by the
+mathematician Hermann Weyl, the paper proves that the landscape contains exactly one piece
+of exact structure: a \textbf{single rule} that every possible universe must obey (physicists
+call it a \emph{constraint}). Everything else --- the strengths of the forces, the masses of
+the particles, the cosmological constant --- is, in a precise mathematical sense, \emph{noise}.
+It carries no fingerprint of the universe that produced it.
+
+\callout{The one rule (don't worry about the symbols)}{The paper writes the rule as
+$N = F^{\top} J H$ --- a simple pairing of two numbers, called the D3 tadpole. The point is
+not the notation; the point is that this is the \emph{only} exact thing the landscape
+contains.}
+
+The headline, now a theorem: \textbf{the landscape's only exact structure is what it
+forbids.} No exact, symmetry-respecting formula can single out our universe --- because no
+such formula exists to find.
+
+\callout{What this does --- and does not --- rule out}{It rules out \emph{exact algebraic}
+selectors: the clean, deterministic formula that picks our universe out of the pile. It does
+\emph{not} rule out clever statistical or approximate methods. The search is far harder than
+anyone hoped --- not literally impossible.}
+
+% ================= 3. WHY IT MATTERS =================
+\sechead{Why it matters}
+
+\textbf{1. It reframes the problem.} The field spent twenty years trying to find the needle
+in a $10^{500}$-haystack. This theorem says the right question was never \emph{which needle?}
+but \emph{how do we verify a candidate once we have one?} --- and that is a question we can
+actually work on.
+
+\textbf{2. It is falsifiable.} Most ideas in this corner of physics cannot be tested. This
+one stakes everything on a single, checkable claim: find one exact, symmetry-respecting
+quantity that is not just a repackaging of the one rule, and the whole result falls. That is
+how science is supposed to work.
+
+\textbf{3. It stands on five pillars.} Five separate branches of twentieth-century
+mathematics --- geometry, algebra, symplectic geometry, topology, and counting --- each
+independently force the same conclusion. The result does not rest on one argument; it rests
+on five.
+
+% ================= 4. WHERE WE GO FROM HERE =================
+\sechead{Where we go from here}
+
+The proof covers the gravitational side --- the ``flux'' that shapes a universe. The next
+sector is the one we actually live in: the \textbf{Standard Model} of particle physics. There
+the same picture is already emerging --- the electric charges are forced by consistency, the
+structure is the same two-type pattern --- and one big, falsifiable question is now open: are
+the \textbf{19 free numbers} of the Standard Model (the masses and the couplings) predictable
+by any deeper theory, or are they, like the landscape, fundamentally unpredictable?
+\emph{Either answer is a real discovery.}
+
+In parallel, the proofs are being re-checked by computer --- using \textbf{Lean}, the system
+mathematicians use to verify proofs --- so nobody has to take the claim on faith. And the
+whole toolkit is open source, free for anyone to run, check, and build on.
+
+% ================= CTA =================
+\vspace{1.0em}
+\noindent
+\colorbox{navy}{%
+  \parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+    \vspace{0.3em}
+    \begin{center}
+      {\color{accent}\large\bfseries See it \,\textbullet\, Check it \,\textbullet\, Build on it}\\[0.45em]
+      {\color{white}\small The full story, live:}\\[0.15em]
+      {\color{white}\large\bfseries\url{https://pacland.netlify.app}}\\[0.5em]
+      {\color{white}\small The code, the proofs, and the data --- everything reproducible:}\\[0.15em]
+      {\color{white}\large\bfseries\url{https://github.com/robmitchellengineering-hub/pacland}}\\[0.5em]
+      {\color{white}\small The paper itself:}\\[0.15em]
+      {\color{white}\normalsize\emph{Mitchell's Completeness Theorem: no exact invariant
+      selector in the flux landscape}}
+    \end{center}
+    \vspace{0.3em}
+  }%
+}
+
+\vspace{0.7em}
+\begin{center}
+  {\footnotesize\color{navy}\textbf{PACLAND} \,\textbullet\, Probably Approximately Correct
+  Landscape \,\textbullet\, \emph{a verification discipline, not a physics solver}}
+\end{center}
+
+\end{document}
