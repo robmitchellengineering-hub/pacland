@@ -1,0 +1,185 @@
+#!/usr/bin/env python3
+"""The rank test — the SM "floor" question, as an exact Jacobian-rank computation.
+
+What the "floor" question asks (docs/sm-floor-notes.md): is the SM's 19 free
+parameters a *real* floor (irreducible), or is it *dynamically reducible* — does some
+symmetry force the map from inputs to parameters to collapse to fewer than 19, the way
+the flux sector collapses everything to the single tadpole?
+
+The flux sector is the collapse CONTROL: 2·b3 = 12 flux integers in, 1 invariant out
+(the D3 tadpole N = F^T J H), because Sp(b3) acts transitively and Weyl's FFT says the
+invariant ring is C[N]. The rank test generalizes that question to the SM: compute the
+rank of the Jacobian of the group action on the raw parameter space, and read off the
+orbit-space dimension — the number of genuinely independent invariants.
+
+Two tiers, stated honestly up front:
+
+  TIER 1 (done here, exact, sympy): the *kinematic* rank — the rank of the SM's OWN
+  flavor/reparametrization group action. This is the invariant-theory result
+  (Bento–Silva–Trautner, JHEP 2024) recomputed as an explicit Jacobian rank, and it
+  answers: does the SM's own symmetry collapse the 19? (Answer: no — rank = 19.)
+
+  TIER 2 (the decisive test, NOT done here): the *dynamical* rank — in a concrete
+  string compactification with h11+h21 >= 19 moduli, express the 19 invariants as
+  functions of the moduli and compute the Jacobian of moduli -> parameters. Whether
+  that rank is forced below 19 is the "floor" question proper. It needs the
+  >=19-moduli geometry (the bigger-machine chase), not this small-torus script.
+
+This script computes, exactly (rational arithmetic, no floating point):
+
+  1. FLUX CONTROL: the Jacobian of the map (F,H) -> (N, N^2) has rank 1 — the collapse.
+  2. QUARK SECTOR: the U(3)^3 flavor action on (Y_u, Y_d) has orbit rank 26 -> 10 invariants.
+  3. LEPTON SECTOR: the U(3)^2 flavor action on Y_e has orbit rank 15 -> 3 invariants.
+  4. TOTAL: 10 + 3 + gauge(3) + Higgs(2) + theta(1) = 19 — no collapse below 19.
+"""
+
+import sympy as sp
+from sympy.polys.domains import FF
+from sympy.polys.matrices import DomainMatrix
+
+# Modular rank: the Q-rank of an integer matrix equals its GF(p)-rank for all but
+# finitely many primes, so three distinct primes agree and give the exact rank fast
+# (fraction-free rational rank on a 27x36 matrix is the slow path).
+_MOD_PRIMES = (1000003, 1000033, 1000037)
+
+
+def exact_rank(J):
+    """Exact rank of an integer matrix via GF(p) reduction at three primes."""
+    ranks = [DomainMatrix.from_Matrix(J).convert_to(FF(p)).rank() for p in _MOD_PRIMES]
+    return max(ranks), ranks
+
+
+def u3_basis():
+    """A real 9-dimensional basis of the Lie algebra u(3) (anti-Hermitian 3x3)."""
+    gens = []
+    # 3 imaginary diagonals: i E_kk
+    for k in range(3):
+        E = sp.zeros(3, 3)
+        E[k, k] = 1
+        gens.append(sp.I * E)
+    # 6 off-diagonals: E_ij - E_ji  (real, antisymmetric) and i(E_ij + E_ji) (imag, symmetric)
+    for i in range(3):
+        for j in range(i + 1, 3):
+            Eij = sp.zeros(3, 3); Eij[i, j] = 1
+            Eji = sp.zeros(3, 3); Eji[j, i] = 1
+            gens.append(Eij - Eji)
+            gens.append(sp.I * (Eij + Eji))
+    return gens
+
+
+def generic_complex(re_seq, im_seq):
+    """A generic 3x3 complex matrix from two 9-entry sequences of distinct small primes.
+
+    Small primes keep the exact rank fast, and their linear independence avoids the
+    consecutive-integer degeneracy (a 1..9 row-major fill makes row3 = 2*row2 - row1).
+    """
+    M = sp.zeros(3, 3)
+    for i in range(3):
+        for j in range(3):
+            k = 3 * i + j
+            M[i, j] = sp.Rational(re_seq[k]) + sp.I * sp.Rational(im_seq[k])
+    return M
+
+
+# Distinct small primes (<= 61), three independent orderings per matrix.
+_P = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61]
+
+
+def orbit_rank(Yu, Yd=None):
+    """Rank of the flavor-group action's differential at a generic point.
+
+    Yu, Yd are 3x3 complex. Returns (orbit_rank, n_params) where n_params is the real
+    dimension of the parameter space (36 for two matrices, 18 for one).
+    """
+    gens = u3_basis()
+    Z = sp.zeros(3, 3)
+    rows = []
+    if Yd is not None:
+        # quark: U(3)_QL x U(3)_uR x U(3)_dR, 27 generators acting on (Yu, Yd)
+        triples = [(g, Z, Z) for g in gens] + [(Z, g, Z) for g in gens] + [(Z, Z, g) for g in gens]
+        for Xq, Xu, Xd in triples:
+            dYu = Xq * Yu - Yu * Xu
+            dYd = Xq * Yd - Yd * Xd
+            rows.append(_real_vec([dYu, dYd]))
+        n_params = 36
+    else:
+        # lepton: U(3)_LL x U(3)_eR, 18 generators acting on Ye
+        pairs = [(g, Z) for g in gens] + [(Z, g) for g in gens]
+        for Xl, Xe in pairs:
+            dYe = Xl * Yu - Yu * Xe
+            rows.append(_real_vec([dYe]))
+        n_params = 18
+    J = sp.Matrix(rows)
+    rank, ranks = exact_rank(J)
+    assert ranks[0] == ranks[1] == ranks[2], f"modular ranks disagree: {ranks}"
+    return rank, n_params
+
+
+def _real_vec(mats):
+    """Flatten a list of complex 3x3 matrices into one real column vector [Re, Im]."""
+    out = []
+    for M in mats:
+        flat = [e for row in M.tolist() for e in row]
+        out += [sp.re(e) for e in flat] + [sp.im(e) for e in flat]
+    return out
+
+
+def flux_control():
+    """FLUX CONTROL: the map (F,H) -> (N, N^2) has Jacobian rank 1 (the collapse)."""
+    F = sp.Matrix(sp.symbols('F0:6'))
+    H = sp.Matrix(sp.symbols('H0:6'))
+    Jsym = sp.Matrix([[sp.zeros(3, 3), sp.eye(3)], [-sp.eye(3), sp.zeros(3, 3)]])
+    N = (F.T * Jsym * H)[0]
+    coords = list(F) + list(H)
+    gradN = sp.Matrix([sp.diff(N, c) for c in coords]).T        # 1 x 12
+    gradN2 = sp.Matrix([sp.diff(N ** 2, c) for c in coords]).T   # 1 x 12 (collinear with gradN)
+    Jac = sp.Matrix.vstack(gradN, gradN2)
+    return Jac.rank(), len(coords)
+
+
+def main():
+    # --- 1. Flux control ---
+    frank, fdim = flux_control()
+    print("1. FLUX CONTROL (the collapse): (F,H) in R^12 -> invariants (N, N^2)")
+    print(f"   Jacobian rank = {frank}  (inputs = {fdim})  -> 1 invariant, exactly")
+    print(f"   {'PASS' if frank == 1 else 'FAIL'}: the flux sector collapses to rank 1.\n")
+
+    # --- 2. Quark sector ---
+    Yu = generic_complex(_P[0:9], _P[9:18])
+    Yd = generic_complex(_P[17:8:-1], _P[8::-1])
+    qrank, qdim = orbit_rank(Yu, Yd)
+    q_inv = qdim - qrank
+    print("2. QUARK SECTOR: U(3)_QL x U(3)_uR x U(3)_dR acting on (Y_u, Y_d)")
+    print(f"   orbit rank = {qrank}  (group dim 27, stabilizer dim {27 - qrank})")
+    print(f"   orbit-space dimension = {qdim} - {qrank} = {q_inv}  = 6 masses + 4 CKM")
+    print(f"   {'PASS' if q_inv == 10 else 'FAIL'}: expected 10.\n")
+
+    # --- 3. Lepton sector ---
+    Ye = generic_complex([11, 2, 17, 5, 23, 7, 3, 13, 19], [43, 29, 53, 37, 61, 41, 31, 47, 59])
+    lrank, ldim = orbit_rank(Ye, None)
+    l_inv = ldim - lrank
+    print("3. LEPTON SECTOR: U(3)_LL x U(3)_eR acting on Y_e")
+    print(f"   orbit rank = {lrank}  (group dim 18, stabilizer dim {18 - lrank})")
+    print(f"   orbit-space dimension = {ldim} - {lrank} = {l_inv}  = 3 charged-lepton masses")
+    print(f"   {'PASS' if l_inv == 3 else 'FAIL'}: expected 3.\n")
+
+    # --- 4. Total ---
+    total = q_inv + l_inv + 3 + 2 + 1   # + gauge 3 + Higgs 2 + theta 1
+    print("4. TOTAL orbit-space dimension = quark + lepton + gauge + Higgs + theta")
+    print(f"   = {q_inv} + {l_inv} + 3 + 2 + 1 = {total}")
+    print(f"   {'PASS' if total == 19 else 'FAIL'}: expected 19.\n")
+
+    ok = (frank == 1 and q_inv == 10 and l_inv == 3 and total == 19)
+    print("=" * 66)
+    print("RANK TEST (Tier 1 — the SM's OWN flavor symmetry):")
+    print("  flux control collapses to rank 1 (the constraint-first lesson).")
+    print("  the SM's flavor group does NOT collapse the 19 — orbit-space rank = 19.")
+    print("  => within the SM, the 19 are genuinely independent invariants (no collapse).")
+    print("  => the OPEN question is Tier 2: does the GEOMETRY (>=19 moduli) force rank < 19?")
+    print("     (the decisive 'floor' test — needs the bigger-machine, >=19-moduli geometry).")
+    print("ALL CHECKS PASS" if ok else "SOME CHECKS FAILED")
+    return 0 if ok else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

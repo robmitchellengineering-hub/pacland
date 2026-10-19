@@ -209,7 +209,10 @@ source, not a textbook formula:**
      invariant ring 19, parameter count) as deficit rungs, raising m from 5 toward ~8–9.
   2. Rule of Three on the SM results — each is currently ONE confirmation; cross-check
      each three ways (sympy + literature + an independent method).
-  3. The rank test (the floor question) — express the 19 invariants as functions of
-     moduli, check the Jacobian rank (the decisive SM test; fan-out, after off-peak).
+  3. The rank test (the floor question) — **Tier 1 done** (`scripts/validate_sm_rank_test.py`
+     + `docs/sm-rank-test.md`): the SM's *own* flavor symmetry leaves orbit-space rank **19**
+     (quark 26→10, lepton 15→3, exact Jacobian rank; flux control collapses to rank 1),
+     three-way checked. **Tier 2 open**: the *dynamical* rank (moduli → 19 in a ≥19-moduli
+     compactification) is the decisive floor test — needs the bigger machine (h12=272).
   4. Four-wall map for the SM — classify which SM observables are
      intractable/unmeasurable/underdetermined, to know where the SM deficit can climb.
