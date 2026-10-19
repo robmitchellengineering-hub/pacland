@@ -109,6 +109,17 @@ source, not a textbook formula:**
   Sp(2n)-invariants → tadpole), landing on the same sentence: the surviving exact
   structure is global topology (labels) + the constraint. NOT a duplication — a second
   independent foundation. (Rob found Darboux 2026-10-19.)
+- **Theorem taxonomy** (`docs/theorem-taxonomy.md`): a 6-way fan-out found the COMPLETE
+  scaffolding of constraint-first, in five slots each with named theorems — local (Darboux),
+  algebraic (Weyl FFT + Chevalley–Shephard–Todd: the tadpole ring is FREE), global (Gromov
+  non-squeezing / capacities, Eliashberg–Gromov C⁰-rigidity, Arnold conjecture, Marsden–Weinstein
+  reduction, Delzant, Duistermaat–Heckman), topological (Atiyah–Singer: N_gen=|χ|/2 = index;
+  K-theory: D-brane charges = K(X) classes, tadpole = "total charge = 0 in K(X)"; Bott
+  periodicity), counting (Molien–Weyl + Hilbert–Serre: 19 = orbit-space dim; Morse m_k≥b_k;
+  Ashok–Denef–Douglas: signed vacuum count = topological index, unsigned only bounded). Three
+  sharper statements: (1) vacuum count is bounded-not-fixed by topology; (2) the constraint is
+  a K-theory vanishing, not just an algebraic pairing; (3) the vacuum space is a symplectic
+  quotient (Marsden–Weinstein). Fan-out script: `research/theorem-hunt-fanout.js`.
 - **Constraint-First Theorem** (`docs/constraint-first-theorem.md`,
   `scripts/validate_constraint_first.py`, 5/5 degrees, exact): the tadpole generates
   the **entire** ring of symplectic invariants of the flux pair — every
