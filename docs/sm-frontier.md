@@ -57,15 +57,43 @@ So the hypercharges are **the unique solution** — the gauge-sector constraint 
 unique, exactly as the flux constraint (the tadpole) is unique. This is the same
 theorem shape: *the only exact structure is the constraint*.
 
+## The parameters — "unpredicable" means two different things, and only one is proven
+
+`scripts/validate_sm_parameter_count.py` counts the minimal SM's free couplings
+exactly: **19** = 3 gauge + 9 masses + 4 CKM + 2 Higgs + 1 θ_QCD. These are the
+independent gauge-invariant, renormalizable couplings — the free *inputs*.
+
+There is a crucial, honest distinction here that the flux sector did **not** have to
+draw:
+
+1. **"Unpredicable within the SM" — trivially true.** The 19 parameters are free
+   inputs *by definition*; the SM has no gauge or global symmetry that fixes any of
+   them (its only continuous global symmetries, baryon and lepton number, are
+   accidental and constrain nothing). This is a counting fact, not a theorem.
+2. **"Unpredicable in any UV completion" — the non-trivial claim, and *unproven*.** The
+   flux theorem said "no invariant exists *in principle*" — and that was provable only
+   because the flux has a clean duality group (Sp) with a known invariant theory (the
+   FFT). The SM has **no such clean group action** on its couplings, so the analogous
+   claim ("no ToE can predict the masses and couplings either") is a *conjecture* — and
+   it may well be **false**: a GUT or string construction that relates the couplings
+   (e.g. gauge-coupling unification, a Yukawa relation) would be exactly such a
+   prediction.
+
+So the honest status: the SM frontier has *proven* that its **constraint** (anomaly
+cancellation → unique hypercharge) is unique, and *classified* that its **parameters**
+are the free inputs. The headline generalization — "the ToE predicts nothing exactly
+except constraints and labels, in *every* sector" — is **proven for flux, conjectured
+for the SM**, and the conjecture is falsifiable in the clearest possible way: any UV
+relation among the 19 parameters breaks it.
+
 ## The generalization (the ToE's shape)
 
 > **In every sector, the exact structure is constraint + label; everything else is a
 > free, unpredicable parameter.**
 
 - Flux sector: *proven* (Mitchell's Completeness + Complete Exact Structure).
-- Gauge/SM sector: *the anomaly cancellation is a constraint (verified); the gauge
-  group and generations are labels; the 19 parameters are candidates for
-  "unpredicable"* — the same claim, not yet a theorem.
+- Gauge/SM sector: *constraint proven unique (hypercharge), parameters classified as
+  free inputs; the "unpredicable in any UV completion" half is conjectured, not proven.*
 
 ## The falsifiable test
 
@@ -100,4 +128,5 @@ be a function of.
 ```
 python3 scripts/validate_sm_anomaly.py                    # 5/5 SM anomaly coefficients vanish
 python3 scripts/validate_sm_hypercharge_uniqueness.py     # 4/4 hypercharge is forced (unique)
+python3 scripts/validate_sm_parameter_count.py            # 19 free couplings, counted exactly
 ```

@@ -134,19 +134,19 @@ source, not a textbook formula:**
   is only from branes/SM (the m=0 frontier). Falsifiable: a single moduli-independent
   duality-invariant flux quantity not a function of FᵀJH breaks the tower.
   `scripts/validate_all_theorems.py` runs the whole tower (6 proofs) in one command.
-- **Standard-Model frontier (the next physics)** (`docs/sm-frontier.md`,
-  `scripts/validate_sm_anomaly.py` 5/5 + `scripts/validate_sm_hypercharge_uniqueness.py`
-  4/4, both exact): extends constraint-first one sector up. The SM's exact structure
-  decomposes exactly like the flux sector's — **constraints** (anomaly cancellation,
-  charge quantization) + **labels** (gauge group SU(3)×SU(2)×U(1), N_gen=3 = topological
-  index) + **parameters** (the ~19 free numbers = unpredicable). Two theorems now:
-  (1) anomaly cancellation verified 5/5 (all five coefficients vanish, exact); (2) the
-  **gauge-sector uniqueness theorem** — the anomaly conditions force the hypercharges
-  uniquely up to normalization + the u↔d swap (the SM analog of Mitchell's Uniqueness).
-  Falsifiable: derive any one of the 19 parameters from first principles and the
-  generalization breaks. Open target: the FULL gauge-sector analog — an invariant-theory
-  proof that the SM's exact structure is *only* constraint + label (the 19 parameters
-  have no invariant to be a function of).
+- **Standard-Model frontier (the next physics)** (`docs/sm-frontier.md`; scripts
+  `validate_sm_anomaly.py` 5/5, `validate_sm_hypercharge_uniqueness.py` 4/4,
+  `validate_sm_parameter_count.py`, all exact): extends constraint-first one sector up.
+  The SM's exact structure decomposes exactly like the flux sector's — **constraints**
+  (anomaly cancellation, charge quantization) + **labels** (gauge group SU(3)×SU(2)×U(1),
+  N_gen=3 = topological index) + **parameters** (19 free couplings, counted). Proven:
+  (1) anomaly cancellation 5/5; (2) **gauge-sector uniqueness** — anomaly conditions force
+  the hypercharges uniquely up to normalization + u↔d swap (SM analog of Mitchell's
+  Uniqueness). **Honest distinction (important):** "unpredicable within the SM" is a
+  trivial counting fact (the 19 are free inputs); "unpredicable in any UV completion" is
+  the CONJECTURED generalization, NOT proven — the flux theorem was provable only because
+  flux has a clean duality group (Sp) + FFT, which the SM's couplings lack. Falsifiable:
+  any UV relation among the 19 parameters (e.g. GUT unification) breaks the conjecture.
 - **The Lean "proof arm" is STARTED, not deferred** (`pacland-proof/`, Lean 4.35 +
   Mathlib): `PaclandProof/Mitchell.lean` machine-checks **Mitchell's Uniqueness
   Theorem** for n=1 — the only `2×2` matrix with `SᵀMS=M` for all symplectic `S` is a
