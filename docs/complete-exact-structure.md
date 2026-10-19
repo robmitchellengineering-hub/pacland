@@ -8,8 +8,8 @@ theory of everything can possibly say exactly**, and what it provably cannot.
 > **For a CY₃ orientifold flux compactification, every exact (moduli-independent,
 > duality-invariant) observable is either**
 >
-> 1. **the D3 tadpole** `N = Fᵀ J H` — the *unique* flux observable, by the
->    No-Fingerprint No-Go Theorem; **or**
+> 1. **the D3 tadpole** `N = Fᵀ J H` — the *unique* flux observable, by
+>    Mitchell's Completeness Theorem; **or**
 > 2. **a topological invariant of the CY** — `h¹¹, h²¹, c₂, κ` (and their mirror
 >    combinations), determined by the geometry, not by the flux.
 >
@@ -34,8 +34,8 @@ it forbids (constraints) and what it is handed (topology).*
 ## Why the flux sector is now saturated (the hard ceiling on m)
 
 The Mitchell Verification Deficit `m` counts observables that are simultaneously
-measured + computable + validated. Today `m = 5` (4 topology + 1 flux). The
-No-Fingerprint No-Go Theorem turns this from "we haven't found more yet" into a
+measured + computable + validated. Today `m = 5` (4 topology + 1 flux).
+Mitchell's Completeness Theorem turns this from "we haven't found more yet" into a
 **hard ceiling for the flux sector**:
 
 - the flux contributes exactly **one** observable, `N`, and — by the FFT and the
@@ -54,7 +54,7 @@ now a theorem, not a program: for the flux, there is nothing left to look for.
 |---|---|---|
 | Mitchell's Uniqueness | `validate_mitchell_uniqueness.py` | unique *bilinear* invariant = tadpole (6/6) |
 | Constraint-First | `validate_constraint_first.py` | tadpole generates the *whole* invariant ring (5/5) |
-| No-Fingerprint No-Go | `validate_no_fingerprint.py` | tadpole is *complete*; search can only eliminate (6+2) |
+| Mitchell's Completeness | `validate_mitchell_completeness.py` | tadpole is *complete*; search can only eliminate (6+2) |
 | Full-duality completion | `validate_full_duality.py` | holds for Sp(b₃) × SL(2,Z), not just Sp (5/5) |
 
 One command reproduces the whole tower:

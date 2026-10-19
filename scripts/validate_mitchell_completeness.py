@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""No-Fingerprint No-Go Theorem — the tadpole is a COMPLETE invariant of the flux,
+"""Mitchell's Completeness Theorem — the tadpole is a COMPLETE invariant of the flux,
 so no duality-invariant observable can single out a vacuum: search can only eliminate.
 
 Rigorous statement being proven:
@@ -241,7 +241,7 @@ print("Corollary, Check 5 (numeric): across 200 dual-equivalent vacua the only "
       f"(std {no_go_var:.2f}) -> an invariant learner sees a single point  -> PASS")
 
 print(f"\n{'=' * 68}")
-print("No-Fingerprint No-Go Theorem: the D3 tadpole F^T J H is a COMPLETE invariant")
+print("Mitchell's Completeness Theorem: the D3 tadpole F^T J H is a COMPLETE invariant")
 print("of the flux under duality.  Every invariant observable is a function of the")
 print("tadpole alone (Lemma 1) and the duality group acts transitively on each")
 print("non-zero tadpole level set (Lemma 2).  Therefore no exact, frame-independent")

@@ -8,7 +8,7 @@ exits 0, so the whole tower can be reproduced with a single command.
 Tower:
   1. Mitchell's Uniqueness Theorem   (6/6 symbolic)
   2. Constraint-First Theorem        (5/5 degrees, FFT)
-  3. No-Fingerprint No-Go Theorem    (6 exact + 2 numeric)
+  3. Mitchell's Completeness Theorem (6 exact + 2 numeric)
   4. Full-duality completion         (5/5, Sp(b3) x SL(2,Z))
   5. T^6 exact oracle, symbolic      (8/8)
   6. T^6 exact oracle, numerical     (21/21)
@@ -23,7 +23,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TOWER = [
     ("Mitchell's Uniqueness Theorem", "validate_mitchell_uniqueness.py", "6/6 symbolic"),
     ("Constraint-First Theorem", "validate_constraint_first.py", "5/5 degrees, FFT"),
-    ("No-Fingerprint No-Go Theorem", "validate_no_fingerprint.py", "6 exact + 2 numeric"),
+    ("Mitchell's Completeness Theorem", "validate_mitchell_completeness.py", "6 exact + 2 numeric"),
     ("Full-duality completion", "validate_full_duality.py", "5/5, Sp x SL(2,Z)"),
     ("T^6 exact oracle (symbolic)", "validate_t6_sympy.py", "8/8"),
     ("T^6 exact oracle (numerical)", "validate_t6.py", "21/21"),

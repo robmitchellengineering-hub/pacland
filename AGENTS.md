@@ -109,8 +109,8 @@ source, not a textbook formula:**
   Fundamental Theorem of invariant theory (Weyl 1939) specialized to k=2; Mitchell's
   theorem is its degree-2 slice. So "the only exact structure is the constraint" is
   now a **theorem** (Weyl + measurement), not a conjecture.
-- **No-Fingerprint No-Go Theorem** (`docs/no-fingerprint-theorem.md`,
-  `scripts/validate_no_fingerprint.py`, 6 exact + 2 numeric): the tadpole FᵀJH is a
+- **Mitchell's Completeness Theorem** (`docs/mitchell-completeness-theorem.md`,
+  `scripts/validate_mitchell_completeness.py`, 6 exact + 2 numeric): the tadpole FᵀJH is a
   **COMPLETE** invariant of the flux under duality — two pairs with N≠0 are
   dual-equivalent iff they have the same tadpole. Lemma 1 = Constraint-First (FFT);
   Lemma 2 = Sp(b₃) acts transitively on each tadpole level set (orbit tangent rank

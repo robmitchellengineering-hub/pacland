@@ -1,11 +1,11 @@
-# No-Fingerprint No-Go Theorem — search can only eliminate, never select
+# Mitchell's Completeness Theorem — search can only eliminate, never select
 
-`scripts/validate_no_fingerprint.py` proves the result that turns the
+`scripts/validate_mitchell_completeness.py` proves the result that turns the
 constraint-first program from "we could not find a fingerprint" into "**no
 fingerprint can exist**". It says the D3 tadpole is a **complete** invariant of the
 flux under duality.
 
-## Theorem (No-Fingerprint No-Go)
+## Theorem (Mitchell)
 
 > **The D3 tadpole `N = Fᵀ J H` is a complete invariant of the flux pair (F, H)
 > under the duality group Sp(b₃): for `N ≠ 0`, two pairs are dual-equivalent
@@ -72,7 +72,7 @@ connected). These are classical and stated here as such; the machine-checked
 ## Reproduce
 
 ```
-python3 scripts/validate_no_fingerprint.py        # 6 exact + 2 numeric
+python3 scripts/validate_mitchell_completeness.py   # 6 exact + 2 numeric
 python3 scripts/validate_constraint_first.py      # Lemma 1, all degrees (5/5)
 python3 scripts/validate_mitchell_uniqueness.py   # Lemma 1, degree 2 (6/6)
 ```

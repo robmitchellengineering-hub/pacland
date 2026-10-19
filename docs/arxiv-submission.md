@@ -7,7 +7,7 @@ content work is left.
 ## Order of submission
 
 1. **`constraint-first-theorem.pdf`** — the NEW flagship. The rigorous theorems:
-   Mitchell's Uniqueness, Constraint-First (Weyl FFT), No-Fingerprint No-Go,
+   Mitchell's Uniqueness, Constraint-First (Weyl FFT), Mitchell's Completeness,
    full-duality completion, and the Complete Exact Structure Theorem. Submit this
    first; the other three cite it.
 2. **`structure-map.pdf`** — the measurement that motivated the theorem (the
@@ -15,9 +15,9 @@ content work is left.
 3. **`fingerprint.pdf`** — the mass-spectrum no-fingerprint result.
 4. **`PACLAND-preprint.pdf`** — the verification discipline (the umbrella paper).
 
-## Paper 1 — The flux landscape has exactly one exact structure (submit first)
+## Paper 1 — Mitchell's Completeness Theorem (submit first)
 
-- **Title.** `The flux landscape has exactly one exact structure: the D3 tadpole`
+- **Title.** `Mitchell's Completeness Theorem: the flux landscape has nothing to find`
 - **Author.** `Rob Mitchell`
 - **Primary subject class.** `hep-th` (High Energy Physics – Theory)
 - **Abstract.** (paste verbatim — full text in `paper/constraint-first-theorem.tex`)
