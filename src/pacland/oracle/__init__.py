@@ -11,6 +11,17 @@ from typing import Protocol, runtime_checkable
 
 from .adapters import CyToolsAdapter, CymetricAdapter, JaxVacuaAdapter, require_package
 from .exact_toric import ToricBackground, exact_toric_oracle, zero_error_model
+from .exact_t6 import (
+    T6Background,
+    exact_t6_oracle,
+    gauge_coupling,
+    kahler_metric,
+    kahler_potential,
+    period_vector,
+    superpotential,
+    symplectic_form,
+    tadpole,
+)
 
 
 @runtime_checkable
@@ -29,6 +40,15 @@ __all__ = [
     "ToricBackground",
     "exact_toric_oracle",
     "zero_error_model",
+    "T6Background",
+    "exact_t6_oracle",
+    "symplectic_form",
+    "period_vector",
+    "kahler_potential",
+    "kahler_metric",
+    "tadpole",
+    "superpotential",
+    "gauge_coupling",
     "CyToolsAdapter",
     "CymetricAdapter",
     "JaxVacuaAdapter",
