@@ -89,14 +89,26 @@ total Kähler+CS moduli, the 19 cannot be independently realized; the floor is r
 The repo's own measurements (h12=2, `h¹¹+h²¹=4`) sit far below the threshold, which is why
 they see the parameter space as "collapsed" — they are inside the reducible regime.
 
-### 2b. The symmetry question (open — the true floor question)
+### 2b. The symmetry question — the only known symmetry (GUT) collapses 3, not 19
 
 The flux lesson is *not* the dimension bound — it is that a **symmetry** (Sp duality + FFT)
 collapses 2·b₃ inputs to 1, *far below* the dimension bound. The analogous question for the
-SM is whether a UV symmetry forces rank below `2·h¹¹ + 2·h²¹ + 2` even in the large-h
-regime. Answering it needs a concrete geometric SM (Yukawas from period integrals /
-wavefunction overlaps, gauge couplings from cycle volumes) — the magnetized-brane /
-bigger-machine build (`h12 = 272`), which is the speed problem in `AGENTS.md`.
+SM is whether a UV symmetry forces a similar collapse. The **only** known candidate — GUT
+unification — is computed here as an exact Jacobian rank:
+
+| relation | SM rank | GUT rank | drop |
+|---|---|---|---|
+| gauge: `(g_GUT) → (g_Y, g_2, g_3)` | 3 | **1** | 2 |
+| b–τ: `(y, v) → (m_b, m_τ)` | 2 | **1** | 1 |
+| **total** | | | **3** |
+
+The GUT symmetry collapses exactly **3 of the 19** (gauge unification 3→1, bottom–tau 2→1),
+matching the count in `validate_sm_invariant_ring.py` (`19 − 3`), and the GUT Higgs sector
+grows ~2 back — a *shuffle*, not a collapse. There is **no known symmetry that collapses all
+19**: the flux-style total collapse (`2·b₃ → 1`) needs a duality group + FFT, which the SM's
+couplings simply do not have. A larger UV symmetry that does collapse more (e.g. SO(10)/E6
+Yukawa relations) is the falsifiable edge — but it is a *relation*, never a value, so even
+that cannot reach a single number.
 
 ## Status
 
@@ -105,5 +117,14 @@ bigger-machine build (`h12 = 272`), which is the speed problem in `AGENTS.md`.
   Jacobian rank*, not a slogan.
 - **Tier 2a (dynamical dimension bound): done, exact.** Rank ≤ 2·h¹¹ + 2·h²¹ + 2; the 19 is
   reducible for `h¹¹+h²¹ ≤ 8`, generically real only for `h¹¹+h²¹ ≥ 9`.
-- **Tier 2b (symmetry collapse): open.** Whether a UV symmetry forces rank below the bound
-  in the large-h regime needs a concrete geometric SM — the bigger-machine build.
+- **Tier 2b (symmetry collapse): done for the known case.** The only known UV symmetry (GUT)
+  collapses exactly 3 of the 19 — never all 19. No flux-style total collapse exists for the
+  SM, because it has no duality group + FFT.
+
+## The answer
+
+The "19 floor" is **real**: it is reducible only by the trivial dimension bound (small
+`h¹¹+h²¹ ≤ 8`) or by a *partial* symmetry relation (GUT: 3 of 19), never by a total
+symmetry collapse. The flux sector collapses to 1 because it *has* a duality group; the SM
+does not — that asymmetry is the whole of the constraint-first result, now measured as
+Jacobian ranks on both sides.
