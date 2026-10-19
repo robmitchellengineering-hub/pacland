@@ -120,6 +120,20 @@ source, not a textbook formula:**
   "search for a special vacuum" program is provably dead. Open question this names
   for the ToE: are ALL exact structures constraint structures (topology, charges,
   anomalies), with flux now proven to be a single constraint?
+- **Full-duality completion** (`scripts/validate_full_duality.py`, 5/5 symbolic): the
+  no-go holds for the FULL duality group Sp(b₃) × SL(2,Z), not just the monodromy
+  subgroup. S-duality S:(F,H)→(−H,F) and T:(F,H)→(F,H+F) preserve the tadpole, and
+  since Sp-invariants = C[N] (FFT) with N SL(2,Z)-invariant, the full invariant ring
+  is exactly C[N].
+- **Complete Exact Structure Theorem** (`docs/complete-exact-structure.md`): the ToE's
+  exact content is exhausted by two types — **constraints** (tadpole N ≤ L, flux
+  quantization, RR tadpoles, anomaly cancellation) and **labels** (topology h¹¹,h²¹,
+  c₂,κ). Nothing else is exact; W₀, g_s, masses, couplings, Λ are provably NOT exact
+  observables. Key consequence: the flux sector's contribution to the deficit m is
+  **saturated at 1** (the tadpole) — m can never grow from flux again; future growth
+  is only from branes/SM (the m=0 frontier). Falsifiable: a single moduli-independent
+  duality-invariant flux quantity not a function of FᵀJH breaks the tower.
+  `scripts/validate_all_theorems.py` runs the whole tower (6 proofs) in one command.
 - **TO-DO (deferred to a bigger machine): the Lean "proof arm".** Formalize the
   two-level certificate (Hoeffding) and the T⁶ structure map in Lean 4 + Mathlib +
   PhysLib, using DeepSeek-Prover-V2 (or PhysProver once released) as the proof
