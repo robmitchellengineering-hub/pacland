@@ -79,18 +79,17 @@ source, not a textbook formula:**
 - **Every JAXVacua model is a truncation.** `h12` = number of CS moduli KEPT. The
   bundled `h12=2` keeps 2 of 272 (its polytope has h¹¹=2, h²¹=272). All measured
   results (structure map, fingerprint, no-scale) are inside this 2-moduli slice.
-- **TO-DO (bigger systems): chase the full model on a big machine.** Two JAXVacua
-  bugs are now FIXED (on studio-linux venv, `.bak` backups): (1) `M_cap_generators`
-  unbound in `cytools_interface.py` (assigned only in the `h12<100` branch, used
-  unconditionally) — fixed, so **h12=272 now BUILDS**; (2) `ddV_x` was
-  `jax.jacrev(grad(V_x))` (reverse-over-reverse Hessian) — fixed to
-  `jax.hessian(V_x)` (forward-over-reverse). The remaining ~96 GB OOM is now PROVEN
-  to be JAX JIT **tracing**, not physics: Newton solver `while_loop` →
-  `jnp.linalg.solve` → `broadcast_in_dim` → `standard_abstract_eval` (XLA tracer
-  materialising a pathological intermediate at h12=25). So sampling h12=25/272
-  genuinely needs ~96 GB+ RAM, or a `stringjax_tools`/Newton-solver rewrite to avoid
-  `while_loop`+`linalg.solve` tracing. The paper's ancillary polytopes live at
-  arXiv:2306.06160 (h12_5..h12_25).
+- **TO-DO (bigger systems): run the full model — memory is solved, speed is not.** Two
+  JAXVacua bugs are FIXED (studio-linux venv, `.bak` backups): (1) `M_cap_generators`
+  unbound in `cytools_interface.py` — fixed, so **h12=272 now BUILDS**; (2) `ddV_x`
+  was `jax.jacrev(grad(V_x))` — fixed to `jax.hessian(V_x)`. The ~96 GB OOM is now
+  PROVEN to be the **vmapped Newton solver's** JIT tracing (`jax.vmap` + `while_loop`
+  + `jnp.linalg.solve` → `broadcast_in_dim`): `V_x`/`dV_x`/`ddV_x` each compile fine
+  individually ((), (52,), (52,52), in seconds), but the batched Newton trace explodes.
+  **`solver="scipy"` bypasses it** (sequential, no vmap) and runs h12=25 on 4 GB —
+  memory-safe but slow (~43 s/candidate). So the chase is a SPEED problem, not a 96 GB
+  problem: make `scipy` (or a chunked `newton`) fast enough to sample hundreds of
+  vacua. Paper's ancillary polytopes: arXiv:2306.06160 (h12_5..h12_25).
 - `pacland climb` runs the deficit climber on the mesh (studio-linux via
   `mac → win-2 → studio-linux`); `data/cy_corpus.json` is the answer key.
 - **Swampland connection (2026-10-19):** `src/pacland/swampland.py` +
