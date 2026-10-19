@@ -134,13 +134,15 @@ source, not a textbook formula:**
   is only from branes/SM (the m=0 frontier). Falsifiable: a single moduli-independent
   duality-invariant flux quantity not a function of FᵀJH breaks the tower.
   `scripts/validate_all_theorems.py` runs the whole tower (6 proofs) in one command.
-- **TO-DO (deferred to a bigger machine): the Lean "proof arm".** Formalize the
-  two-level certificate (Hoeffding) and the T⁶ structure map in Lean 4 + Mathlib +
-  PhysLib, using DeepSeek-Prover-V2 (or PhysProver once released) as the proof
-  assistant. Deferred because Lean/Mathlib compilation is resource-heavy and the
-  mesh has no big machine (Mac is Intel 16 GB, no JAX; studio-linux VM is 4 GB and
-  flaky). The sympy exact grade above is the interim; the machine-checked theorem is
-  the goal when hardware arrives. PhysLib is public (leanprover-community/physlib).
+- **The Lean "proof arm" is STARTED, not deferred** (`pacland-proof/`, Lean 4.35 +
+  Mathlib): `PaclandProof/Mitchell.lean` machine-checks **Mitchell's Uniqueness
+  Theorem** for n=1 — the only `2×2` matrix with `SᵀMS=M` for all symplectic `S` is a
+  scalar multiple of `J` (plus `J` antisymmetric ⇒ `FᵀJF=HᵀJH=0`). **The "bigger
+  machine" was a false wall:** the 16 GB Mac runs `lake build` fine via the mathlib
+  cache (only your own file compiles; mathlib's olean cache is downloaded, 7.2 GB in
+  `.lake`, git-ignored). Reproduce: `cd pacland-proof && lake build`. Next targets:
+  general-n uniqueness (block matrices over `Fin (2n)`), then transitivity
+  (Mitchell's Completeness). PhysLib is public (leanprover-community/physlib).
 - `pacland climb` runs the deficit climber on the mesh (studio-linux via
   `mac → win-2 → studio-linux`); `data/cy_corpus.json` is the answer key.
 - **Swampland connection (2026-10-19):** `src/pacland/swampland.py` +
