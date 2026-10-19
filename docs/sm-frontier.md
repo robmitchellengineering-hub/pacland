@@ -129,4 +129,20 @@ be a function of.
 python3 scripts/validate_sm_anomaly.py                    # 5/5 SM anomaly coefficients vanish
 python3 scripts/validate_sm_hypercharge_uniqueness.py     # 4/4 hypercharge is forced (unique)
 python3 scripts/validate_sm_parameter_count.py            # 19 free couplings, counted exactly
+python3 scripts/validate_sm_invariant_ring.py             # 19 = orbit-space dim (the FFT analog) + GUT reduction
 ```
+
+## The sharpened open question: the "floor"
+
+`validate_sm_invariant_ring.py` makes the FFT analog exact: the 19 parameters are the
+orbit-space dimension of the flavor/reparametrization group (Bento–Silva–Trautner,
+JHEP 2024), i.e. they are the *independent flavor invariants* — nothing relates them
+within the SM, by a theorem. A UV completion with a larger group shrinks the ring
+(minimal SU(5): 19 → 16). The refined conjecture ("a ToE predicts relations, never
+values") now has a precise target:
+
+> **What is the minimum orbit-space dimension any consistent UV completion can reach —
+> a lower bound on free parameters below which no ToE can go?**
+
+The flux sector's floor is 1 (the tadpole). The SM sector's floor is unknown, and
+finding it is the concrete next theorem.
