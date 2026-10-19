@@ -194,30 +194,58 @@ A single counterexample falsifies it. That is what makes this a theorem rather t
 a slogan.
 \end{remark}
 
-\section{Darboux's theorem: the local half}
+\section{The Five Pillars: independent foundations}
 
-The constraint-first result has a second, independent foundation. Darboux's theorem
-states that a symplectic form has \emph{no local invariants}: every symplectic manifold
-is locally isomorphic to the standard phase space $(\mathbb{R}^{2n}, \sum dp_i\wedge
-dq_i)$, so no local geometric quantity (a symplectic analog of curvature) can
-distinguish one patch from another. This kills the \emph{local} fingerprint.
+The result rests not on one argument but on five independent families of theorems, each
+forcing a piece of the conclusion. We call them the five pillars.
 
-It is the differential-geometric complement to the algebraic result above, and the two
-are steps in one chain:
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+pillar & forces \\
+\midrule
+\textbf{local} & no local invariant exists --- Darboux \\
+\textbf{algebraic} & the only invariant is the tadpole --- Weyl's FFT; the ring is \emph{free} --- Chevalley--Shephard--Todd \\
+\textbf{global} & what survives is global symplectic topology --- Gromov non-squeezing, symplectic capacities, Eliashberg--Gromov $C^0$-rigidity, Arnold conjecture, Marsden--Weinstein reduction, Delzant, Duistermaat--Heckman \\
+\textbf{topological} & the labels are topology --- Atiyah--Singer ($N_{\rm gen}=|\chi|/2$), K-theory (D-brane charges are $K(X)$ classes), Bott periodicity \\
+\textbf{counting} & the numbers are theorems --- Molien--Weyl + Hilbert--Serre ($19$ = orbit-space dimension), Morse ($m_k\ge b_k$), Ashok--Denef--Douglas (signed vacuum count = index) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Darboux's theorem is the \emph{local} pillar: a symplectic form has no local invariants,
+so no local geometric quantity (a symplectic analog of curvature) can distinguish one
+patch from another. It is the differential-geometric complement to the algebraic result,
+and the two are steps in one chain:
 
 \begin{center}
 \emph{Darboux: local symplectic geometry $\to$ the linear group $\mathrm{Sp}(2n)$} \quad
 \emph{FFT: $\mathrm{Sp}(2n)$-invariants $\to$ the tadpole.}
 \end{center}
 
-Darboux says there is no \emph{local} fingerprint; the First Fundamental Theorem says
-there is no \emph{duality-invariant} fingerprint either --- only the pairing. What
-survives is \emph{global} symplectic/topological structure (symplectic capacities,
-Gromov--Witten, Floer homology, the Hodge numbers $h^{11},h^{21},c_2,\kappa$) plus the
-constraint. That surviving structure is exactly the Complete Exact Structure theorem's
-``constraints + labels.'' The search program therefore fails for \emph{two independent
-reasons}: no local invariant (Darboux) and no duality-invariant except the tadpole
-(FFT).
+Darboux says there is no \emph{local} fingerprint; the FFT says there is no
+\emph{duality-invariant} fingerprint either --- only the pairing. The remaining pillars
+make the surviving structure precise: it is \emph{global} symplectic topology (capacities,
+rigidity, homology-counted fixed points) and \emph{topological} labels (the index theorem,
+K-theory), with the counts themselves as theorems (Molien--Weyl, Morse). Three of these
+yield sharper statements than ``no fingerprint'':
+
+\begin{enumerate}
+\item \emph{The vacuum count is bounded, not fixed.} The signed count is the topological
+index; the unsigned count is only bounded below by the Betti numbers and otherwise depends
+on the flux --- which has no fingerprint.
+\item \emph{The constraint is a K-theory vanishing.} D-brane charges are $K(X)$ classes, and
+the tadpole is ``total charge $=0$ in $K(X)$'' --- a topological statement deeper than the
+algebraic pairing.
+\item \emph{The vacuum space is a symplectic quotient.} By Marsden--Weinstein, the vacuum
+space is $\mu^{-1}(0)/G$: the tadpole is a moment map and the gauge quotient is symplectic
+reduction, whose invariant content is the moment polytope.
+\end{enumerate}
+
+The search program therefore fails for multiple independent reasons --- no local invariant,
+no duality-invariant, a vacuum count that topology bounds but never fixes --- and the
+surviving exact structure is exactly the Complete Exact Structure theorem's ``constraints +
+labels.''
 
 \section{Conclusion}
 
