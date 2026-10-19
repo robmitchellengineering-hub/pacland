@@ -16,6 +16,8 @@
   header .links { margin-top: 1.2rem; }
   header .links a { color: #fff; border: 1px solid rgba(255,255,255,.4); padding: .35rem .8rem; border-radius: 999px; text-decoration: none; margin-right: .5rem; font-size: .9rem; }
   header .links a:hover { background: rgba(255,255,255,.12); }
+  header .links a.primary { background: #fff; color: var(--accent); font-weight: 600; border-color: #fff; }
+  header .links a.primary:hover { background: rgba(255,255,255,.85); }
   main { padding: 2.5rem 0 4rem; }
   h2 { font-size: 1.4rem; margin: 2.2rem 0 .6rem; color: var(--accent); letter-spacing: -.01em; }
   p { margin: .6rem 0; }
@@ -43,6 +45,7 @@
     <h1>PACLAND</h1>
     <div class="sub">A probably-approximately-correct <strong>verification discipline</strong> for the string landscape — what you can claim, what you can measure, and what you cannot compute.</div>
     <div class="links">
+      <a class="primary" href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/paper/pacland-marketing.pdf">Download the one-pager (PDF)</a>
       <a href="#arc">The arc</a>
       <a href="#theorems">The theorems</a>
       <a href="#sm">SM frontier</a>
@@ -60,6 +63,10 @@
   <div class="wrap">
 
     <p class="lead">String theory is ~10<sup>500</sup> vacua and no experiment that tells most of them apart. "Unified string theory" fuses two questions — <em>does some vacuum match us?</em> and <em>why that one?</em> — and the field has <strong>no verification layer</strong> for either. PACLAND is that layer, built with Valiant's probably-approximately-correct learning: a certificate that bounds a candidate's error even when the verifier is itself approximate, a measured prior, a negative result, and a map of the computable.</p>
+
+    <div class="callout">
+      <p><strong>New — the plain-English overview.</strong> What this work did for the landscape, why it matters, and where it goes next, in a few pages and no equations. <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/paper/pacland-marketing.pdf">Download the PDF</a> (tap to open on a phone).</p>
+    </div>
 
     <h2 id="arc">The arc — measure, then prove, then redeploy</h2>
     <p>The project ran in three acts, and this page is ordered so you can follow the whole arc while every original piece stays put.</p>
