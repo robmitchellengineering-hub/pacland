@@ -9,8 +9,8 @@ from pacland.limits import Boundary, LimitType, boundary_map, certify
 
 
 class TestLimits(unittest.TestCase):
-    def test_map_has_eight_boundaries(self):
-        self.assertEqual(len(boundary_map()), 8)
+    def test_map_has_thirteen_boundaries(self):
+        self.assertEqual(len(boundary_map()), 13)
 
     def test_all_four_walls_are_covered(self):
         types = {b.limit for b in boundary_map()}
@@ -37,6 +37,11 @@ class TestLimits(unittest.TestCase):
 
     def test_certify_unknown_returns_none(self):
         self.assertIsNone(certify("an unrelated question"))
+
+    def test_certify_sm_parameter_prediction_is_underdetermined(self):
+        b = certify("Predict the 19 SM parameter values")
+        self.assertIsNotNone(b)
+        self.assertEqual(b.limit, LimitType.UNDERDETERMINED)
 
 
 if __name__ == "__main__":

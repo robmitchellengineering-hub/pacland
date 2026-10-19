@@ -221,5 +221,7 @@ source, not a textbook formula:**
      for h¹¹+h²¹ ≤ 8, generically real only for h¹¹+h²¹ ≥ 9; the ONLY known UV symmetry (GUT)
      collapses exactly **3 of 19** (gauge 3→1, b–τ 2→1) — no total collapse (SM has no duality
      group + FFT). **Answer: the 19 floor is real.**
-  4. Four-wall map for the SM — classify which SM observables are
-     intractable/unmeasurable/underdetermined, to know where the SM deficit can climb.
+  4. Four-wall map for the SM — **DONE** (`src/pacland/limits.py::SM_BOUNDARIES` +
+     `docs/sm-boundary-map.md`): the 19 values (underdetermined), the UV completion
+     (underdetermined), UV verification (unmeasurable), non-perturbative QCD (intractable),
+     strong CP (underdetermined). The SM's exact structure is computable — the values are not.

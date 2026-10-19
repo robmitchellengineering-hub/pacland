@@ -112,9 +112,57 @@ BOUNDARIES = [
 ]
 
 
+# The Standard-Model sector — the four-wall map extended one sector up
+# (docs/sm-boundary-map.md). The SM's exact structure (anomaly cancellation,
+# hypercharge uniqueness, N_gen=3, 19) is COMPUTABLE and validated (deficit m climbs
+# there); these entries classify what REMAINS a wall in the SM sector.
+SM_BOUNDARIES = [
+    Boundary(
+        "Predict the 19 SM parameter values from first principles",
+        LimitType.UNDERDETERMINED,
+        "Within the SM the 19 are free inputs (no unique value exists); the rank "
+        "test shows the floor is real — no known symmetry collapses them "
+        "(docs/sm-rank-test.md).",
+        "The set's invariants ARE computable: 19 = orbit-space dimension, and the "
+        "rank test (real floor) is the computable structure of the underdetermined set.",
+    ),
+    Boundary(
+        "Identify the UV completion (which CY/GUT realizes our SM)",
+        LimitType.UNDERDETERMINED,
+        "Many UV completions realize the same low-energy SM (no unique answer); the "
+        "inverse problem has no fingerprint.",
+        "The exact structure shared by all completions is computable: anomaly "
+        "cancellation, hypercharge uniqueness, N_gen=3, 19 = orbit-space dim.",
+    ),
+    Boundary(
+        "Verify a candidate UV completion's SM predictions",
+        LimitType.UNMEASURABLE,
+        "No experiment probes the UV scale directly; the candidate's compactification "
+        "ground truth is absent.",
+        "The deficit is the positive: m=9 (climbing), with anomaly cancellation 5/5 "
+        "and hypercharge uniqueness 4/4 the first validated SM rungs.",
+    ),
+    Boundary(
+        "Compute non-perturbative QCD observables (hadron masses, muon g-2 hadronic)",
+        LimitType.INTRACTABLE,
+        "Lattice QCD is feasible but computationally costly; some quantities (the "
+        "muon g-2 hadronic contribution) need large-scale Monte Carlo.",
+        "Lattice QCD is a working, validated tool; scoped computations are routine.",
+    ),
+    Boundary(
+        "Why is theta_QCD so small (the strong CP problem)",
+        LimitType.UNDERDETERMINED,
+        "theta_QCD is a free parameter (1 of the 19); the SM gives no reason for its "
+        "smallness, so no unique answer exists within the SM.",
+        "A mechanism (axion, etc.) is a concrete falsifiable target; the measured "
+        "theta ~ 0 constrains it.",
+    ),
+]
+
+
 def boundary_map() -> list[Boundary]:
-    """The certified computable/uncomputable boundary to date."""
-    return list(BOUNDARIES)
+    """The certified computable/uncomputable boundary to date (flux + SM)."""
+    return list(BOUNDARIES) + list(SM_BOUNDARIES)
 
 
 def certify(question: str) -> Boundary | None:
