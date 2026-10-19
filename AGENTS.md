@@ -210,8 +210,10 @@ source, not a textbook formula:**
   1. Climb the SM deficit — **DONE** (`src/pacland/observables.py::SM_OBSERVABLES`): the
      SM's exact structure is now 4 validated rungs (anomaly 5/5, hypercharge 4/4, N_gen=3,
      19 = orbit-space dim), raising **m from 5 to 9** (topology 4 + flux 1 + SM 4).
-  2. Rule of Three on the SM results — each is currently ONE confirmation; cross-check
-     each three ways (sympy + literature + an independent method).
+  2. Rule of Three on the SM results — **DONE** (`scripts/crosscheck_sm_float.py` +
+     `docs/sm-rule-of-three.md`): anomaly cancellation and hypercharge uniqueness now have
+     three agreeing arms (sympy exact + independent float method + literature); the "19"
+     was already three-way checked by the rank test.
   3. The rank test (the floor question) — **DONE** (`scripts/validate_sm_rank_test.py` +
      `docs/sm-rank-test.md`): the SM's *own* flavor symmetry leaves orbit-space rank **19**
      (quark 26→10, lepton 15→3, exact Jacobian rank; flux control collapses to rank 1),
