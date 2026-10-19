@@ -1,6 +1,11 @@
 import Mathlib
 
 /-!
+Copyright (c) 2026 Rob Mitchell. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Rob Mitchell
+-/
+/-!
 # Mitchell's Uniqueness Theorem — machine-checked core
 
 The D3 tadpole `Fᵀ J H` is the unique symplectic invariant bilinear form in the flux
@@ -28,17 +33,19 @@ def Symp₂ (S : Matrix (Fin 2) (Fin 2) ℚ) : Prop :=
 
 /-- `J₂` is antisymmetric. -/
 theorem J₂_antisymm : J₂ + J₂ᵀ = 0 := by
-  native_decide
+  ext i j <;> fin_cases i <;> fin_cases j <;> norm_num [J₂, Matrix.transpose_apply]
 
 /-- The shear `[[1,1],[0,1]]` is symplectic. -/
 theorem shear_symp : Symp₂ !![1, 1; 0, 1] := by
   unfold Symp₂
-  native_decide
+  ext i j <;> fin_cases i <;> fin_cases j <;>
+    norm_num [J₂, Matrix.mul_apply, Matrix.transpose_apply, Fin.sum_univ_two]
 
 /-- The dilation `[[2,0],[0,1/2]]` is symplectic. -/
 theorem dilate_symp : Symp₂ !![2, 0; 0, (1 / 2 : ℚ)] := by
   unfold Symp₂
-  native_decide
+  ext i j <;> fin_cases i <;> fin_cases j <;>
+    norm_num [J₂, Matrix.mul_apply, Matrix.transpose_apply, Fin.sum_univ_two] <;> ring_nf
 
 /-- **Mitchell's Uniqueness Theorem (n = 1).**
 The only bilinear forms invariant under the whole symplectic group are the scalar
