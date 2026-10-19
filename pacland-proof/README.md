@@ -10,10 +10,11 @@ verified by Lean's kernel, not by a computation.
 | theorem | file | status |
 |---|---|---|
 | **Mitchell's Uniqueness Theorem** (n = 1) | `PaclandProof/Mitchell.lean` | ✅ proven |
+| **Mitchell's Uniqueness Theorem** (general n, any field) | `PaclandProof/General.lean` | ✅ proven |
 | shear `fromBlocks 1 X 0 1` is symplectic (symmetric `X`) | `PaclandProof/General.lean` | ✅ proven |
 | diagonal `fromBlocks U 0 0 V` symplectic (`UᵀV = 1`) | `PaclandProof/General.lean` | ✅ proven |
 | pairing `(Sx)ᵀ J (Sy) = xᵀ J y` is Sp-invariant | `PaclandProof/General.lean` | ✅ proven |
-| full uniqueness, general n | same argument in every dimension | next |
+| **Mitchell's Completeness** — transitivity (n = 1): `{xᵀJy = 1}` is one orbit | `PaclandProof/Transitivity.lean` | ✅ proven |
 
 `Mitchell.lean` proves, machine-checked, that for the `2×2` symplectic form
 `J = [[0,1],[-1,0]]` the only matrices `M` with `Sᵀ M S = M` for *every*
@@ -29,8 +30,15 @@ and the dilation `[[2,0],[0,1/2]]` — extracts the entry constraints, and shows
 `General.lean` proves the machinery the general-n uniqueness argument rests on, in
 **abstract** form (any finite index type `l`, any field `R`): the symplectic
 generators (shear, diagonal, and the swap `J` itself, via
-`SymplecticGroup.fromBlocks_mem_iff`) and the pairing-invariance identity
-`(Sx)ᵀ J (Sy) = xᵀ J y` — the reason the tadpole is *an* invariant.
+`SymplecticGroup.fromBlocks_mem_iff`), the pairing-invariance identity
+`(Sx)ᵀ J (Sy) = xᵀ J y` — the reason the tadpole is *an* invariant — and the full
+general-n uniqueness theorem itself (`mitchell_uniqueness`).
+
+`Transitivity.lean` proves the completeness half for `n = 1`: every pair `(x, y)`
+with `xᵀ J₂ y = 1` is the image of the canonical pair `(e₀, e₁)` under a symplectic
+`2×2` matrix — i.e. the level set `{xᵀJy = 1}` is a single orbit. The proof is the
+`2×2` identity `Sᵀ J S = det S • J` (`S` symplectic ⟺ `det S = 1`), and the matrix
+with columns `x, y` has determinant `xᵀJy = 1`.
 
 ## Reproduce
 
@@ -45,10 +53,13 @@ A green `lake build` means Lean's kernel accepted every theorem. No `sorry`, no
 
 ## The honest boundary
 
-- The **full uniqueness** is proven for **n = 1** (2×2); the general-n statement is
-  the next target. The generator facts and the pairing invariance are already proven
-  in abstract form (`General.lean`); the block-matrix extraction for the full
-  general-n theorem is the remaining step.
+- **Uniqueness is done in full**: `n = 1` (`Mitchell.lean`) and **general n, any
+  field** (`General.lean::mitchell_uniqueness`, with the block-matrix extraction via
+  `fromBlocks`). No remaining uniqueness target.
+- **Completeness (transitivity) is done for `n = 1`** (`Transitivity.lean`): the
+  level set `{xᵀJy = 1}` is a single `Sp(2) = SL(2)` orbit. The **general-n**
+  transitivity (the real-rank/orbit-tangent argument, `rank = 2n−1` over ℝ) is the
+  remaining formalization target — a harder statement than the uniqueness step.
 
 ### The general-n proof sketch (what the formalization must encode)
 

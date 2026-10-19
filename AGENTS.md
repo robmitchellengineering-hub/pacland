@@ -195,8 +195,11 @@ source, not a textbook formula:**
   block-diagonal / swap generators and the pairing invariance. **The "bigger machine"
   was a false wall:** the 16 GB Mac runs `lake build` fine via the mathlib cache (7.2 GB
   in `.lake`, git-ignored). No `sorry`/`axiom`/`admit`/`native_decide` — all
-  kernel-checked. Reproduce: `cd pacland-proof && lake build`. Remaining Lean target:
-  transitivity (Mitchell's Completeness). PhysLib is public (leanprover-community/physlib).
+  kernel-checked. Reproduce: `cd pacland-proof && lake build`.
+  **Completeness (transitivity) is now machine-checked for n=1** (`PaclandProof/Transitivity.lean`:
+  `Sᵀ J S = det S • J`, so symplectic ⟺ det = 1, and `{xᵀJy = 1}` is one SL(2) orbit).
+  Remaining Lean target: transitivity for **general n** (the orbit-tangent rank argument).
+  PhysLib is public (leanprover-community/physlib).
 - `pacland climb` runs the deficit climber on the mesh (studio-linux via
   `mac → win-2 → studio-linux`); `data/cy_corpus.json` is the answer key.
 - **Swampland connection (2026-10-19):** `src/pacland/swampland.py` +

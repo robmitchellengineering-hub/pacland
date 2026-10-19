@@ -1,2 +1,3 @@
 import PaclandProof.Mitchell
 import PaclandProof.General
+import PaclandProof.Transitivity
