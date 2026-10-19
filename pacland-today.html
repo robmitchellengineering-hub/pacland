@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PACLAND — today</title>
+<style>
+:root { --green:#00e07f; --black:#07090c; --panel:#0c1118; --line:#1b2530;
+  --pink:#ff2fd6; --cyan:#06b6d4; --blue:#4d6bfe; --mut:#8b95a7; --text:#e6edf3; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--black); color:var(--text);
+  font:16px/1.6 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+.wrap { max-width:980px; margin:0 auto; padding:48px 24px 64px; }
+h1 { font-size:34px; margin:0 0 4px; color:#fff; letter-spacing:.5px; }
+.tag { color:var(--green); font-weight:600; margin:0 0 28px; }
+.lede { font-size:20px; line-height:1.5; color:#fff; margin:0 0 10px; }
+.lede em { color:var(--green); font-style:normal; }
+.sub { color:var(--mut); margin:0 0 36px; }
+h2 { font-size:13px; text-transform:uppercase; letter-spacing:2px; color:var(--green); margin:42px 0 14px; }
+.shots { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+.shot { background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+.shot img { width:100%; display:block; }
+.shot .cap { padding:10px 14px; font-size:13px; color:var(--mut); border-top:1px solid var(--line); }
+.shot .cap b { color:var(--text); }
+.nums { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; }
+.num { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px; }
+.num .v { font-size:30px; color:var(--green); font-weight:700; }
+.num .l { font-size:14px; color:var(--text); margin-top:2px; }
+.num .s { font-size:12px; color:var(--mut); margin-top:6px; }
+table { border-collapse:collapse; width:100%; font-size:14px; }
+th,td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { color:var(--green); text-transform:uppercase; letter-spacing:1px; font-size:11px; }
+.ok { color:var(--green); } .no { color:var(--mut); }
+.callout { background:var(--panel); border-left:3px solid var(--green); border-radius:8px; padding:16px 18px; margin:18px 0; font-size:15px; }
+.callout b { color:#fff; }
+.foot { margin-top:48px; padding-top:18px; border-top:1px solid var(--line); color:var(--mut); font-size:13px; }
+a { color:var(--cyan); text-decoration:none; }
+code { background:#111827; padding:1px 6px; border-radius:5px; font-size:13px; color:#cdd9e5; }
+.brand { display:flex; align-items:center; gap:14px; margin-bottom:26px; }
+.brand .mk { width:56px; height:56px; border-radius:10px; background:linear-gradient(135deg,var(--green),var(--cyan));
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:22px; color:#04120a; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="mk">PL</div>
+    <div>
+      <h1 style="font-size:30px; margin:0">PACLAND — today</h1>
+      <p class="tag" style="margin:0">measured, not projected</p>
+    </div>
+  </div>
+  <p class="lede">PACLAND's promise: the landscape's only exact structure is <em>what it forbids</em> — and today's proof is the verification deficit climbed from vacuous to <b>m = 5</b>.</p>
+  <p class="sub">The results in one read — what carries a reproducible number versus what is still not built.</p>
+  <h2>Live</h2>
+  <div class="shots"></div>
+  <h2>Measured</h2>
+  <div class="nums"><div class="num"><div class="v">m = 5</div><div class="l">Mitchell Verification Deficit</div><div class="s">topology h11·h21·c2·κ = 4 + JAXVacua tadpole = 1; SM physics = 0</div></div>
+<div class="num"><div class="v">r = 1.00</div><div class="l">tadpole N_flux — exact (positive control)</div><div class="s">symplectic pairing FᵀJH, wide-flux joint ridge-CV</div></div>
+<div class="num"><div class="v">0.62</div><div class="l">W₀ weakly learnable</div><div class="s">joint ridge-CV r on 174 SUSY flux vacua</div></div>
+<div class="num"><div class="v">1.1e-26</div><div class="l">no-scale V = 0 at SUSY</div><div class="s">max|V| across SUSY points — machine precision</div></div></div>
+  <h2>Real now</h2>
+  <table><tr><th>What</th><th>Evidence</th></tr><tr><td class="ok">Constraint-first theorem (structure map)</td><td>every flux observable classified by a joint ridge-CV learnability test gated by the r=1.0 tadpole control — paper/structure-map.pdf</td></tr>
+<tr><td class="ok">The full structure-map table</td><td>tadpole 1.00; W₀ 0.62; saxions 0.30–0.42; g_s 0.12; gauge couplings 0.02–0.12; mass-shape <0.25; axions/dilaton/AdS V ≤0.15 — docs/structure-map.md</td></tr>
+<tr><td class="ok">Verification-deficit arithmetic</td><td>m=5 pinned by scripts/verify_deficit_numbers.py (m=19 → 31% radius; 1% radius needs ~18,444 observables)</td></tr>
+<tr><td class="ok">No-scale theorem</td><td>SUSY vacua sit at V = 0 to machine precision (max|V| = 1.1e-26) — check 3 of scripts/verify_results.py</td></tr>
+<tr><td class="ok">W₀ prior — measured, not assumed</td><td>log-uniform with R² = 0.92 on 380 SUSY flux vacua (natural ISD measure) — data/ + scripts/measure_w0_tuning.py</td></tr>
+<tr><td class="ok">Reproducibility harness</td><td>python3 scripts/verify_results.py passes 9/9 checks from committed data; 127 unit tests green</td></tr>
+<tr><td class="ok">Swampland prediction surface</td><td>WGC scale uniform (r < 0.25); charge gcd = 1; distance proxy Pearson −0.68 (z = −9.2, flux-controlled residual −0.63) — docs/swampland-connection.md</td></tr>
+<tr><td class="ok">De Sitter benchmark</td><td>2,683 critical points with 231 stable dS — a seeded counterexample calibrating any dS guard — docs/ds-conjecture-test.md</td></tr>
+<tr><td class="ok">The wall map (four senses of uncomputable)</td><td>intractable / unmeasurable / underdetermined / undecidable, each with a move — src/pacland/limits.py + docs/boundary-map.md</td></tr>
+<tr><td class="ok">Shipped artifact</td><td>pip install pacland (v0.1.0); live at pacland.netlify.app + GitHub Pages mirror</td></tr></table>
+  <h2>Not built yet</h2>
+  <table><tr><th>What</th><th>Status</th></tr><tr><td class="no">Kähler-moduli mass spectrum</td><td>blocked — needs instanton corrections; the XLA autodiff hang is diagnosed and the finite-difference shortcut specified, but not yet computed</td></tr>
+<tr><td class="no">Full h12=272 flux sampling</td><td>memory solved (scipy bypasses the 96GB vmap JIT trace; h12=25 runs on 4GB) but ~43 s/candidate — hundreds of vacua not yet sampled</td></tr>
+<tr><td class="no">SM-physics sector (m = 0)</td><td>no observable simultaneously measured + computable + validated — the real frontier</td></tr>
+<tr><td class="no">Clean distance-conjecture test</td><td>the proxy signal is real but runs on CS moduli; the conjecture lives on Kähler moduli — needs the bigger machine + a geodesic distance</td></tr>
+<tr><td class="no">WGC existence half / strong no-global-symmetry</td><td>needs the full charged spectrum and the gauge charge-lattice internals — neither exposed yet</td></tr></table>
+  <div class="callout">The boundary that matters: 'measured' means a number that reproduces from committed data and passes the Rule of Three behind the r=1.0 tadpole control. 'Projected' means a swampland prediction or a deficit step with no experimental target yet — m=5 is measured; the swampland bounds and the h12=272 chase are projected.</div>
+  <h2>Where it's going</h2>
+  <p>The open frontier is the Kähler-moduli mass spectrum and the full h12=272 machine — memory is solved, speed is not — then the SM-physics sector, where m is still 0.</p>
+  <div class="foot">Source: github.com/robmitchellengineering-hub/pacland — README.md, docs/structure-map.md, docs/boundary-map.md, docs/swampland-connection.md; numbers regenerated from committed data at local HEAD 4c80eb6 (2026-10-19). ·  · main <code>uncommitted</code>.</div>
+</div>
+</body>
+</html>

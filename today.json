@@ -1,0 +1,98 @@
+{
+  "name": "pacland",
+  "title": "PACLAND — today",
+  "tag": "measured, not projected",
+  "mark": "PL",
+  "lede": "PACLAND's promise: the landscape's only exact structure is <em>what it forbids</em> — and today's proof is the verification deficit climbed from vacuous to <b>m = 5</b>.",
+  "sub": "The results in one read — what carries a reproducible number versus what is still not built.",
+  "shots": [],
+  "nums": [
+    {
+      "value": "m = 5",
+      "label": "Mitchell Verification Deficit",
+      "sub": "topology h11·h21·c2·κ = 4 + JAXVacua tadpole = 1; SM physics = 0"
+    },
+    {
+      "value": "r = 1.00",
+      "label": "tadpole N_flux — exact (positive control)",
+      "sub": "symplectic pairing FᵀJH, wide-flux joint ridge-CV"
+    },
+    {
+      "value": "0.62",
+      "label": "W₀ weakly learnable",
+      "sub": "joint ridge-CV r on 174 SUSY flux vacua"
+    },
+    {
+      "value": "1.1e-26",
+      "label": "no-scale V = 0 at SUSY",
+      "sub": "max|V| across SUSY points — machine precision"
+    }
+  ],
+  "real": [
+    {
+      "what": "Constraint-first theorem (structure map)",
+      "evidence": "every flux observable classified by a joint ridge-CV learnability test gated by the r=1.0 tadpole control — paper/structure-map.pdf"
+    },
+    {
+      "what": "The full structure-map table",
+      "evidence": "tadpole 1.00; W₀ 0.62; saxions 0.30–0.42; g_s 0.12; gauge couplings 0.02–0.12; mass-shape <0.25; axions/dilaton/AdS V ≤0.15 — docs/structure-map.md"
+    },
+    {
+      "what": "Verification-deficit arithmetic",
+      "evidence": "m=5 pinned by scripts/verify_deficit_numbers.py (m=19 → 31% radius; 1% radius needs ~18,444 observables)"
+    },
+    {
+      "what": "No-scale theorem",
+      "evidence": "SUSY vacua sit at V = 0 to machine precision (max|V| = 1.1e-26) — check 3 of scripts/verify_results.py"
+    },
+    {
+      "what": "W₀ prior — measured, not assumed",
+      "evidence": "log-uniform with R² = 0.92 on 380 SUSY flux vacua (natural ISD measure) — data/ + scripts/measure_w0_tuning.py"
+    },
+    {
+      "what": "Reproducibility harness",
+      "evidence": "python3 scripts/verify_results.py passes 9/9 checks from committed data; 127 unit tests green"
+    },
+    {
+      "what": "Swampland prediction surface",
+      "evidence": "WGC scale uniform (r < 0.25); charge gcd = 1; distance proxy Pearson −0.68 (z = −9.2, flux-controlled residual −0.63) — docs/swampland-connection.md"
+    },
+    {
+      "what": "De Sitter benchmark",
+      "evidence": "2,683 critical points with 231 stable dS — a seeded counterexample calibrating any dS guard — docs/ds-conjecture-test.md"
+    },
+    {
+      "what": "The wall map (four senses of uncomputable)",
+      "evidence": "intractable / unmeasurable / underdetermined / undecidable, each with a move — src/pacland/limits.py + docs/boundary-map.md"
+    },
+    {
+      "what": "Shipped artifact",
+      "evidence": "pip install pacland (v0.1.0); live at pacland.netlify.app + GitHub Pages mirror"
+    }
+  ],
+  "not_built": [
+    {
+      "what": "Kähler-moduli mass spectrum",
+      "status": "blocked — needs instanton corrections; the XLA autodiff hang is diagnosed and the finite-difference shortcut specified, but not yet computed"
+    },
+    {
+      "what": "Full h12=272 flux sampling",
+      "status": "memory solved (scipy bypasses the 96GB vmap JIT trace; h12=25 runs on 4GB) but ~43 s/candidate — hundreds of vacua not yet sampled"
+    },
+    {
+      "what": "SM-physics sector (m = 0)",
+      "status": "no observable simultaneously measured + computable + validated — the real frontier"
+    },
+    {
+      "what": "Clean distance-conjecture test",
+      "status": "the proxy signal is real but runs on CS moduli; the conjecture lives on Kähler moduli — needs the bigger machine + a geodesic distance"
+    },
+    {
+      "what": "WGC existence half / strong no-global-symmetry",
+      "status": "needs the full charged spectrum and the gauge charge-lattice internals — neither exposed yet"
+    }
+  ],
+  "callout": "The boundary that matters: 'measured' means a number that reproduces from committed data and passes the Rule of Three behind the r=1.0 tadpole control. 'Projected' means a swampland prediction or a deficit step with no experimental target yet — m=5 is measured; the swampland bounds and the h12=272 chase are projected.",
+  "where": "The open frontier is the Kähler-moduli mass spectrum and the full h12=272 machine — memory is solved, speed is not — then the SM-physics sector, where m is still 0.",
+  "foot": "Source: github.com/robmitchellengineering-hub/pacland — README.md, docs/structure-map.md, docs/boundary-map.md, docs/swampland-connection.md; numbers regenerated from committed data at local HEAD 4c80eb6 (2026-10-19)."
+}
