@@ -102,6 +102,13 @@ source, not a textbook formula:**
   the **unique** bilinear symplectic invariant of the flux, for *any* compactification.
   This is the rigorous backbone of the constraint-first conjecture — "the only exact
   structure is the constraint" is forced by symplectic geometry, not just measured.
+- **Constraint-First Theorem** (`docs/constraint-first-theorem.md`,
+  `scripts/validate_constraint_first.py`, 5/5 degrees, exact): the tadpole generates
+  the **entire** ring of symplectic invariants of the flux pair — every
+  duality-invariant exact polynomial in (F,H) is a power of FᵀJH. This is the First
+  Fundamental Theorem of invariant theory (Weyl 1939) specialized to k=2; Mitchell's
+  theorem is its degree-2 slice. So "the only exact structure is the constraint" is
+  now a **theorem** (Weyl + measurement), not a conjecture.
 - **TO-DO (deferred to a bigger machine): the Lean "proof arm".** Formalize the
   two-level certificate (Hoeffding) and the T⁶ structure map in Lean 4 + Mathlib +
   PhysLib, using DeepSeek-Prover-V2 (or PhysProver once released) as the proof

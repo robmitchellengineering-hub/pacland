@@ -38,3 +38,9 @@ python3 scripts/validate_mitchell_uniqueness.py   # 6/6 symbolic checks
 
 The same argument on T⁶ (b₃ = 8) is `scripts/validate_t6_sympy.py` (8/8); the
 general-b₃ case here is the CY (b₃ = 6) and trivially extends to any b₃.
+
+**Completeness upgrade:** this is the degree-2 slice of the **Constraint-First
+Theorem** (`docs/constraint-first-theorem.md`,
+`scripts/validate_constraint_first.py`, 5/5 degrees) — the tadpole is the *unique*
+invariant of **any** degree, not just degree 2, by the First Fundamental Theorem of
+invariant theory (Weyl 1939).
