@@ -72,6 +72,20 @@ source, not a textbook formula:**
 
 ## State (durable facts)
 
+- **⚠️ ADVERSARIAL REVIEW FOUND FLAWS — fix before publishing** (`docs/adversarial-review.md`,
+  6 agents attacked the result). **FATAL:** (1) "search is provably dead" is overclaimed —
+  the theorem only rules out *exact polynomial duality-invariant* selectors, NOT
+  moduli-dependent / non-polynomial / statistical ones (and N ≤ L *bounds* the search space,
+  supporting selection); downgrade to "no exact polynomial invariant selector". (2) The
+  tadpole is NOT a complete invariant over ℤ — the content `d = gcd(F,H)` with `d² | N` is an
+  extra invariant, so non-squarefree N splits into multiple orbits; restate Completeness as
+  "finitely many orbits per tadpole (one per divisor d | √N)" and handle N=0. **SERIOUS:**
+  (3) hypercharge uniqueness needs the extra assumption `Y_Q ≠ 0` (a third unphysical branch
+  `(0,t,−t,0,0)`); (4) Chevalley–Shephard–Todd is misapplied (it is for FINITE reflection
+  groups, Sp is infinite) — drop/replace the "free ring" claim; (5) name the FFT group as the
+  FULL duality group Sp×SL(2,ℤ), not just "duality" (SL(2) alone gives the Plücker ring).
+  **HELD:** Mitchell's Uniqueness, the constraint-first framework, the 19 count, Darboux,
+  Atiyah–Singer, K-theory, Gromov. The core survives; the headlines need scoping.
 - The **Mitchell Verification Deficit** is the count `m` of observables that are
   simultaneously measured + computable + validated. Today **m = 5**: topology
   (CYTools: h11, h21, c2, κ) = 4, flux (JAXVacua: tadpole = exact symplectic
@@ -192,3 +206,12 @@ source, not a textbook formula:**
   machine). Extends the *prediction* surface, NOT the deficit (m stays 5).
 - Live site: https://pacland.netlify.app (Netlify) + GitHub Pages mirror.
 - The four-wall map is `src/pacland/limits.py` and `docs/boundary-map.md`.
+- **TO-DO — the verification system's remaining uses (queued, not done):**
+  1. Climb the SM deficit — register the SM results (anomaly 5/5, hypercharge 4/4,
+     invariant ring 19, parameter count) as deficit rungs, raising m from 5 toward ~8–9.
+  2. Rule of Three on the SM results — each is currently ONE confirmation; cross-check
+     each three ways (sympy + literature + an independent method).
+  3. The rank test (the floor question) — express the 19 invariants as functions of
+     moduli, check the Jacobian rank (the decisive SM test; fan-out, after off-peak).
+  4. Four-wall map for the SM — classify which SM observables are
+     intractable/unmeasurable/underdetermined, to know where the SM deficit can climb.
