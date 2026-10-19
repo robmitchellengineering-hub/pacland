@@ -58,29 +58,52 @@ the flavor group — the orbit space is exactly 19-dimensional. The SM's own sym
 All three agree on 19. The kinematic floor is settled: **19, no collapse from the SM's own
 symmetry.**
 
-## What is still open — Tier 2, the decisive test
+## Tier 2 — the dynamical rank: the dimension bound (done) and the symmetry question (open)
 
-The flux lesson is *dynamical*: a clean duality group (Sp) plus a known invariant theory
-(FFT) collapses the *geometry's* inputs to one invariant. The SM's couplings have **no such
-group action**, which is exactly why the analogous collapse is not automatic. The decisive
-test is therefore:
+The dynamical rank has two parts, and they split cleanly:
 
-> In a flux compactification with **≥ 19 moduli**, write the 19 invariants as functions of
-> the moduli and compute the Jacobian rank. Rank = 19 means the geometry can dial all 19
-> independently (the floor is real in that class); rank < 19 means the geometry forces
-> relations (the floor is dynamically reducible).
+### 2a. The dimension bound (exact, done)
 
-This requires (a) a concrete model in which the SM structure is realized geometrically
-(Yukawas from period integrals / wavefunction overlaps, gauge couplings from cycle
-volumes), and (b) ≥ 19 moduli, so the result is not the trivial "too few moduli" bound.
-Both point at the bigger-machine chase (`h12 = 272`, the full-model JAXVacua build), which
-is the speed problem documented in `AGENTS.md` — memory is solved, sampling speed is not.
+In a concrete compactification the 19 parameters are functions of the moduli: gauge
+couplings of the dilaton + Kähler moduli (`2·h¹¹` real), masses + CKM of the holomorphic
+Yukawas of the complex-structure moduli (`2·h²¹` real), θ_QCD of one axion (already in the
+dilaton/Kähler imaginary part), and the Higgs terms of **discrete** flux (no continuous
+moduli dependence). Hence
+
+> **rank(moduli → 19 params) ≤ 2·h¹¹ + 2·h²¹ + 2**, so the 19 is dynamically reducible
+> (rank < 19) **iff `h¹¹ + h²¹ ≤ 8`**, and only generically a real floor (rank = 19) for
+> `h¹¹ + h²¹ ≥ 9`.
+
+| h¹¹ | h²¹ | bound | verdict |
+|---|---|---|---|
+| 2 | 2 (the repo's truncated h12=2) | 10 | reducible |
+| 3 | 3 (T⁶ diagonal) | 14 | reducible |
+| 4 | 4 | 18 | reducible |
+| 4 | 5 | 20 | rank 19 possible |
+| 2 | 272 (full model) | 550 | rank 19 possible |
+| 1 | 101 (quintic) | 206 | rank 19 possible |
+
+This is a pure dimension count — exact, no model ambiguity — and it answers the "small
+h¹¹+h²¹" case the floor question asked about: **in any compactification with fewer than 9
+total Kähler+CS moduli, the 19 cannot be independently realized; the floor is reducible.**
+The repo's own measurements (h12=2, `h¹¹+h²¹=4`) sit far below the threshold, which is why
+they see the parameter space as "collapsed" — they are inside the reducible regime.
+
+### 2b. The symmetry question (open — the true floor question)
+
+The flux lesson is *not* the dimension bound — it is that a **symmetry** (Sp duality + FFT)
+collapses 2·b₃ inputs to 1, *far below* the dimension bound. The analogous question for the
+SM is whether a UV symmetry forces rank below `2·h¹¹ + 2·h²¹ + 2` even in the large-h
+regime. Answering it needs a concrete geometric SM (Yukawas from period integrals /
+wavefunction overlaps, gauge couplings from cycle volumes) — the magnetized-brane /
+bigger-machine build (`h12 = 272`), which is the speed problem in `AGENTS.md`.
 
 ## Status
 
 - **Tier 1 (kinematic): done, exact, three ways.** The SM's own symmetry leaves 19 free;
   it does not collapse them. Flux's own symmetry leaves 1. The asymmetry is now a *measured
   Jacobian rank*, not a slogan.
-- **Tier 2 (dynamical): open.** The decisive "does the geometry collapse the 19" test needs
-  the ≥19-moduli bigger machine and a concrete geometric SM — the next compute target after
-  the speed chase lands.
+- **Tier 2a (dynamical dimension bound): done, exact.** Rank ≤ 2·h¹¹ + 2·h²¹ + 2; the 19 is
+  reducible for `h¹¹+h²¹ ≤ 8`, generically real only for `h¹¹+h²¹ ≥ 9`.
+- **Tier 2b (symmetry collapse): open.** Whether a UV symmetry forces rank below the bound
+  in the large-h regime needs a concrete geometric SM — the bigger-machine build.

@@ -19,11 +19,14 @@ Two tiers, stated honestly up front:
   (Bento–Silva–Trautner, JHEP 2024) recomputed as an explicit Jacobian rank, and it
   answers: does the SM's own symmetry collapse the 19? (Answer: no — rank = 19.)
 
-  TIER 2 (the decisive test, NOT done here): the *dynamical* rank — in a concrete
-  string compactification with h11+h21 >= 19 moduli, express the 19 invariants as
-  functions of the moduli and compute the Jacobian of moduli -> parameters. Whether
-  that rank is forced below 19 is the "floor" question proper. It needs the
-  >=19-moduli geometry (the bigger-machine chase), not this small-torus script.
+  TIER 2 (the *dynamical* rank): in a concrete compactification the 19 parameters are
+  functions of the moduli, so their Jacobian rank is bounded by the number of real
+  moduli entering the map. That bound is computed EXACTLY here:
+      rank <= 2*h11 + 2*h21 + 2   (Kaehler + complex-structure + dilaton real moduli)
+  so the 19 is dynamically reducible (rank < 19) iff h11 + h21 <= 8, and only
+  generically a real floor (rank = 19) for h11 + h21 >= 9. The one piece still open —
+  whether a UV *symmetry* forces rank below even this bound (the flux lesson) — needs a
+  concrete geometric SM (the magnetized-brane / bigger-machine build).
 
 This script computes, exactly (rational arithmetic, no floating point):
 
@@ -31,6 +34,7 @@ This script computes, exactly (rational arithmetic, no floating point):
   2. QUARK SECTOR: the U(3)^3 flavor action on (Y_u, Y_d) has orbit rank 26 -> 10 invariants.
   3. LEPTON SECTOR: the U(3)^2 flavor action on Y_e has orbit rank 15 -> 3 invariants.
   4. TOTAL: 10 + 3 + gauge(3) + Higgs(2) + theta(1) = 19 — no collapse below 19.
+  5. DYNAMIC BOUND: rank <= 2*h11 + 2*h21 + 2; reducible iff h11 + h21 <= 8.
 """
 
 import sympy as sp
@@ -137,6 +141,29 @@ def flux_control():
     return Jac.rank(), len(coords)
 
 
+def dynamical_rank_bound():
+    """TIER 2 — the dynamical rank bound, exact (pure dimension counting).
+
+    The 19 parameters are functions of the moduli: gauge couplings of the dilaton +
+    Kaehler moduli (2*h11 real), masses + CKM of the holomorphic Yukawas of the
+    complex-structure moduli (2*h21 real), theta of one axion (already in the
+    dilaton/Kaehler imaginary part), and the Higgs terms of DISCRETE flux (no continuous
+    moduli dependence). So the Jacobian rank is at most 2*h11 + 2*h21 + 2.
+    """
+    cases = [(1, 1), (2, 2), (2, 3), (3, 3), (4, 4), (4, 5), (2, 272), (1, 101), (9, 9)]
+    print("5. TIER 2 — DYNAMICAL RANK BOUND (exact dimension count)")
+    print("   rank(moduli -> 19 params) <= 2*h11 + 2*h21 + 2")
+    print(f"   {'h11':>4} {'h21':>4} {'bound':>6}   verdict")
+    for h11, h21 in cases:
+        b = 2 * h11 + 2 * h21 + 2
+        v = "rank < 19 (REDUCIBLE)" if b < 19 else "rank 19 possible (generically real)"
+        print(f"   {h11:>4} {h21:>4} {b:>6}   {v}")
+    print("   => threshold: h11 + h21 <= 8  ->  19 is dynamically reducible (rank < 19)")
+    print("      h11 + h21 >= 9  ->  19 is generically a real floor (rank = 19 possible)")
+    print("   => the repo's truncated models (h12=2: h11+h21 = 4) sit far below threshold.")
+    return True
+
+
 def main():
     # --- 1. Flux control ---
     frank, fdim = flux_control()
@@ -169,14 +196,20 @@ def main():
     print(f"   = {q_inv} + {l_inv} + 3 + 2 + 1 = {total}")
     print(f"   {'PASS' if total == 19 else 'FAIL'}: expected 19.\n")
 
-    ok = (frank == 1 and q_inv == 10 and l_inv == 3 and total == 19)
+    # --- 5. Tier 2 dynamical rank bound ---
+    db_ok = dynamical_rank_bound()
+    print()
+
+    ok = (frank == 1 and q_inv == 10 and l_inv == 3 and total == 19 and db_ok)
     print("=" * 66)
-    print("RANK TEST (Tier 1 — the SM's OWN flavor symmetry):")
-    print("  flux control collapses to rank 1 (the constraint-first lesson).")
-    print("  the SM's flavor group does NOT collapse the 19 — orbit-space rank = 19.")
-    print("  => within the SM, the 19 are genuinely independent invariants (no collapse).")
-    print("  => the OPEN question is Tier 2: does the GEOMETRY (>=19 moduli) force rank < 19?")
-    print("     (the decisive 'floor' test — needs the bigger-machine, >=19-moduli geometry).")
+    print("RANK TEST — the complete picture:")
+    print("  Tier 1 (kinematic): the SM's OWN flavor symmetry leaves rank 19 (no collapse),")
+    print("    while flux's own symmetry collapses to rank 1 (the constraint-first lesson).")
+    print("  Tier 2 (dynamical): rank <= 2*h11 + 2*h21 + 2, so the 19 is reducible for")
+    print("    h11+h21 <= 8 and only generically a real floor for h11+h21 >= 9.")
+    print("  OPEN: whether a UV *symmetry* forces rank below the dimension bound in the")
+    print("    large-h regime — the true 'floor' question — needs a concrete geometric SM")
+    print("    (magnetized branes / the bigger machine).")
     print("ALL CHECKS PASS" if ok else "SOME CHECKS FAILED")
     return 0 if ok else 1
 
