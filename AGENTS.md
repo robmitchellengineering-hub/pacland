@@ -135,16 +135,18 @@ source, not a textbook formula:**
   duality-invariant flux quantity not a function of FᵀJH breaks the tower.
   `scripts/validate_all_theorems.py` runs the whole tower (6 proofs) in one command.
 - **Standard-Model frontier (the next physics)** (`docs/sm-frontier.md`,
-  `scripts/validate_sm_anomaly.py`, 5/5 exact): extends constraint-first one sector up.
-  The SM's exact structure decomposes exactly like the flux sector's — **constraints**
-  (anomaly cancellation, charge quantization) + **labels** (gauge group SU(3)×SU(2)×U(1),
-  N_gen=3 = topological index) + **parameters** (the ~19 free numbers = unpredicable).
-  Anomaly cancellation is verified 5/5 (all five coefficients vanish, exact rational
-  arithmetic) — the hypercharges are FORCED, not predicted, the gauge-sector analog of
-  the tadpole being the unique invariant. Falsifiable: derive any one of the 19
-  parameters from first principles and the generalization breaks. Open target: the
-  gauge-sector analog of the uniqueness theorem (is the SM's exact structure ALSO
-  provably "constraint + label" by some invariant theory?).
+  `scripts/validate_sm_anomaly.py` 5/5 + `scripts/validate_sm_hypercharge_uniqueness.py`
+  4/4, both exact): extends constraint-first one sector up. The SM's exact structure
+  decomposes exactly like the flux sector's — **constraints** (anomaly cancellation,
+  charge quantization) + **labels** (gauge group SU(3)×SU(2)×U(1), N_gen=3 = topological
+  index) + **parameters** (the ~19 free numbers = unpredicable). Two theorems now:
+  (1) anomaly cancellation verified 5/5 (all five coefficients vanish, exact); (2) the
+  **gauge-sector uniqueness theorem** — the anomaly conditions force the hypercharges
+  uniquely up to normalization + the u↔d swap (the SM analog of Mitchell's Uniqueness).
+  Falsifiable: derive any one of the 19 parameters from first principles and the
+  generalization breaks. Open target: the FULL gauge-sector analog — an invariant-theory
+  proof that the SM's exact structure is *only* constraint + label (the 19 parameters
+  have no invariant to be a function of).
 - **The Lean "proof arm" is STARTED, not deferred** (`pacland-proof/`, Lean 4.35 +
   Mathlib): `PaclandProof/Mitchell.lean` machine-checks **Mitchell's Uniqueness
   Theorem** for n=1 — the only `2×2` matrix with `SᵀMS=M` for all symplectic `S` is a

@@ -36,6 +36,27 @@ for consistency*. This is the gauge-sector exact statement that parallels the fl
 sector's "the tadpole is the unique exact invariant": the SM's first exact structure
 is **what the theory forbids**, not what it selects.
 
+## The gauge-sector uniqueness theorem (Mitchell's Uniqueness, one sector up)
+
+`scripts/validate_sm_hypercharge_uniqueness.py` proves it symbolically (4/4, exact):
+
+> **Given the SM matter content (gauge reps + chirality), the anomaly-cancellation
+> conditions determine the hypercharge assignment uniquely, up to overall
+> normalization and the u↔d flavor swap.**
+
+The three *linear* conditions (`[grav]²U(1)`, `[SU(2)]²U(1)`, `[SU(3)]²U(1)`) leave a
+2-dimensional family (`Y_L = −3Y_Q`, `Y_e = −6Y_Q`, `Y_d = 2Y_Q − Y_u`); the cubic
+`[U(1)]³` then collapses it:
+
+```
+[U(1)]³ reduced  =  18·Y_Q·(2Y_Q + Y_u)(4Y_Q − Y_u)  =  0
+⟹  Y_u = 4Y_Q   (the SM)    or    Y_u = −2Y_Q   (the u↔d swap)
+```
+
+So the hypercharges are **the unique solution** — the gauge-sector constraint is
+unique, exactly as the flux constraint (the tadpole) is unique. This is the same
+theorem shape: *the only exact structure is the constraint*.
+
 ## The generalization (the ToE's shape)
 
 > **In every sector, the exact structure is constraint + label; everything else is a
@@ -67,14 +88,16 @@ be a function of.
 - **N_gen = 3 as a topological label** is exactly true in the heterotic class
   (`|χ|/2`); in the broader landscape, generation number is geometric/bundle-topological
   data — still a *label*, but the precise invariant varies by construction.
-- **No theorem yet**: unlike the flux sector (where symplectic invariant theory gives
-  a *proof*), the SM classification here is a *verified observation* — the anomaly
-  cancellation is checked, not derived from a uniqueness theorem. The gauge-sector
-  analog of "the tadpole is the unique invariant" is the open target: is there a
-  unique-invariant theorem for the SM's exact structure?
+- **No theorem yet** (fully): unlike the flux sector (where symplectic invariant theory
+  gives a *complete* proof), the SM classification here is a *verified observation* plus
+  the **hypercharge-uniqueness theorem** (the gauge constraint is unique). The remaining
+  open target is the *full* gauge-sector analog: is there an invariant-theory proof that
+  the SM's exact structure is *only* constraint + label — i.e. that the 19 parameters
+  have no invariant to be a function of, the way the flux couplings provably don't?
 
 ## Reproduce
 
 ```
-python3 scripts/validate_sm_anomaly.py    # 5/5 SM anomaly coefficients vanish
+python3 scripts/validate_sm_anomaly.py                    # 5/5 SM anomaly coefficients vanish
+python3 scripts/validate_sm_hypercharge_uniqueness.py     # 4/4 hypercharge is forced (unique)
 ```
