@@ -1,11 +1,14 @@
-# The theorem taxonomy — the complete scaffolding of constraint-first
+# The Five Pillars — the complete scaffolding of constraint-first
 
 The fan-out asked: what other theorems (like Darboux) independently strengthen the
 constraint-first result? Six domains answered. Together they turn "constraint-first" from
 *one theorem + one complement* into a **complete web of named theorems**, each forcing a
 piece of the conclusion.
 
-## The taxonomy — five slots, each filled
+Where the **four walls** are the senses in which the problem is uncomputable, the **five
+pillars** are the foundations that make the claim stand.
+
+## The Five Pillars — five slots, each filled
 
 | slot | what it forces | the theorems |
 |---|---|---|
@@ -46,7 +49,7 @@ polytope (Delzant) plus a fixed-point-determined measure (Duistermaat–Heckman)
 > are topological (Atiyah–Singer/K-theory) · and the counts are theorems (Molien/Morse).**
 
 Every clause has a named theorem behind it. That is what "strengthened" looks like: the
-claim is no longer one result, it is a *taxonomy* no single theorem can uproot.
+claim is no longer one result, it stands on five pillars no single theorem can uproot.
 
 ## Named next steps (kept)
 
@@ -65,5 +68,5 @@ claim is no longer one result, it is a *taxonomy* no single theorem can uproot.
 ## Meta
 
 Three fan-outs, three upgrades: the first caught "unpredicable" (two readings), the second
-caught "free parameter" (three meanings), the third found a *complete taxonomy* of
+caught "free parameter" (three meanings), the third found the **Five Pillars** of
 supporting theorems. The instrument keeps paying for itself.
