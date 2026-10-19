@@ -53,11 +53,24 @@ The moduli are set by the flux only through the F-term equations DW = 0, so thos
 observables are *weak* (flux-determined only via stabilization), never exact. That
 is the measured structure map's three-tier picture — exact (tadpole) / weak
 (W₀, saxions) / uniform (g_s, gauge, …) — reproduced *analytically* on T⁶, with the
-"exact" tier provably unique. `validate_t6.py` asserts it (16/16).
+"exact" tier provably unique. `validate_t6.py` asserts it (19/19).
+
+## The distance conjecture, exactly
+
+T⁶ is where the distance conjecture becomes a closed form, on the *correct* moduli
+(the Kähler moduli — the CY proxy in `docs/swampland-connection.md` ran on the CS
+moduli, the wrong sector). For a T² of volume v:
+
+- KK mass `m_KK = 1/√v` (the inverse radius), winding mass `m_w = √v`;
+- the Kähler-moduli geodesic distance is `d = ½ log(v/v₀)`;
+- hence the lightest tower mass falls **exactly** as `m(v) = m(v₀) e^{−d}`.
+
+So the distance conjecture's exponential tower — measured only as a CS-moduli proxy
+on the CY — is **proven exactly on T⁶** in the sector where it actually applies.
 
 ## Reproduce
 
 ```
-python3 scripts/validate_t6.py          # 16/16 self-assertions
+python3 scripts/validate_t6.py          # 19/19 self-assertions
 python3 -m unittest discover -s tests   # 137 tests
 ```

@@ -10,12 +10,16 @@ from pacland.oracle.exact_t6 import (  # noqa: E402
     T6Background,
     exact_t6_oracle,
     gauge_coupling,
+    geodesic_distance,
     kahler_metric,
     kahler_potential,
+    kk_mass,
     period_vector,
     superpotential,
     symplectic_form,
     tadpole,
+    tower_mass,
+    winding_mass,
     zero_error_model,
 )
 
@@ -89,6 +93,18 @@ class TestOracle(unittest.TestCase):
     def test_flux_length_guarded(self):
         with self.assertRaises(ValueError):
             T6Background((1, 2, 3), (1, 2, 3))
+
+
+class TestDistanceConjecture(unittest.TestCase):
+    def test_tower_mass_exponential(self):
+        v0, v = 1.0, 100.0
+        self.assertAlmostEqual(kk_mass(v), v ** -0.5, places=12)
+        self.assertAlmostEqual(winding_mass(v), v ** 0.5, places=12)
+        self.assertAlmostEqual(
+            tower_mass(v),
+            tower_mass(v0) * np.exp(-geodesic_distance(v, v0)),
+            places=12,
+        )
 
 
 if __name__ == "__main__":

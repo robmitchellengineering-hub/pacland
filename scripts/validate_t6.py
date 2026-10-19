@@ -19,12 +19,16 @@ from pacland.oracle.exact_t6 import (  # noqa: E402
     T6Background,
     exact_t6_oracle,
     gauge_coupling,
+    geodesic_distance,
     kahler_metric,
     kahler_potential,
+    kk_mass,
     period_vector,
     superpotential,
     symplectic_form,
     tadpole,
+    tower_mass,
+    winding_mass,
     zero_error_model,
 )
 
@@ -137,6 +141,24 @@ def main():
     results.append(check(
         "g_s depends on tau0 (varies with tau0)",
         abs(gauge_coupling(tau0) - gauge_coupling(tau0 + 1.0j)) > 1e-6,
+    ))
+
+    # 9 — the distance conjecture, exactly: the tower mass falls exponentially with
+    #     geodesic distance in the Kaehler-moduli direction, m ~ e^{-d}.
+    v0, v = 1.0, 10.0
+    results.append(check(
+        "KK mass falls with volume (1/sqrt(v))",
+        kk_mass(v) < kk_mass(v0) and abs(kk_mass(v) - v ** -0.5) < 1e-12,
+    ))
+    results.append(check(
+        "winding mass grows with volume (sqrt(v))",
+        winding_mass(v) > winding_mass(v0) and abs(winding_mass(v) - v ** 0.5) < 1e-12,
+    ))
+    expected = tower_mass(v0) * np.exp(-geodesic_distance(v, v0))
+    results.append(check(
+        "tower mass ~ e^{-geodesic distance} (distance conjecture)",
+        abs(tower_mass(v) - expected) < 1e-12,
+        f"m(v)={tower_mass(v):.6f} expected={expected:.6f}",
     ))
 
     n_pass = sum(results)

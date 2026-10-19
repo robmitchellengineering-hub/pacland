@@ -88,6 +88,34 @@ def gauge_coupling(tau0) -> float:
     return float(1.0 / complex(tau0).imag)
 
 
+def kk_mass(v) -> float:
+    """Kaluza-Klein scale of a T^2 of volume ``v``: ``m_KK = 1/sqrt(v)``.
+
+    In string units (alpha' = 1) the KK mode mass is the inverse radius, and the
+    T^2 radius is sqrt(v).
+    """
+    return float(1.0 / np.sqrt(v))
+
+
+def winding_mass(v) -> float:
+    """Winding-mode scale of a T^2 of volume ``v``: ``m_w = sqrt(v)``."""
+    return float(np.sqrt(v))
+
+
+def tower_mass(v) -> float:
+    """Lightest tower mass (KK or winding, whichever is lighter): ``min(1/sqrt(v), sqrt(v))``."""
+    return min(kk_mass(v), winding_mass(v))
+
+
+def geodesic_distance(v, v0) -> float:
+    """Geodesic distance in the Kaehler-moduli direction from volume ``v0`` to ``v``.
+
+    The Kaehler metric on the T^6 volume direction is ``ds = dv/(2v)``, so the
+    geodesic distance is ``(1/2) log(v/v0)``.
+    """
+    return float(0.5 * np.log(v / v0))
+
+
 @dataclass(frozen=True)
 class T6Background:
     """A T^6 = (T^2)^3 flux compactification — the oracle's genotype.
@@ -147,6 +175,10 @@ __all__ = [
     "tadpole",
     "superpotential",
     "gauge_coupling",
+    "kk_mass",
+    "winding_mass",
+    "tower_mass",
+    "geodesic_distance",
     "T6Background",
     "exact_t6_oracle",
     "zero_error_model",
