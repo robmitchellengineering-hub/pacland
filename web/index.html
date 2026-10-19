@@ -43,6 +43,7 @@
     <h1>PACLAND</h1>
     <div class="sub">A probably-approximately-correct <strong>verification discipline</strong> for the string landscape — what you can claim, what you can measure, and what you cannot compute.</div>
     <div class="links">
+      <a href="#arc">The arc</a>
       <a href="#theorems">The theorems</a>
       <a href="#sm">SM frontier</a>
       <a href="#results">Key results</a>
@@ -59,6 +60,26 @@
   <div class="wrap">
 
     <p class="lead">String theory is ~10<sup>500</sup> vacua and no experiment that tells most of them apart. "Unified string theory" fuses two questions — <em>does some vacuum match us?</em> and <em>why that one?</em> — and the field has <strong>no verification layer</strong> for either. PACLAND is that layer, built with Valiant's probably-approximately-correct learning: a certificate that bounds a candidate's error even when the verifier is itself approximate, a measured prior, a negative result, and a map of the computable.</p>
+
+    <h2 id="arc">The arc — measure, then prove, then redeploy</h2>
+    <p>The project ran in three acts, and this page is ordered so you can follow the whole arc while every original piece stays put.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Act I — Measure</h3>
+        <p class="muted">We built the <strong>verification discipline</strong> — the two-level certificate, the Mitchell Verification Deficit, the Rule of Three — and measured real flux vacua. The <strong>structure map</strong> came back: only the tadpole is exact (r = 1.0), everything else uniform.</p>
+        <p><a href="#results">What we measured</a> · <a href="#structure">structure map</a> · <a href="#method">Rule of Three</a> · <a href="#deficit">deficit</a> · <a href="#boundary">boundary map</a></p>
+      </div>
+      <div class="card">
+        <h3>Act II — Prove</h3>
+        <p class="muted">The measurement motivated the <strong>theorem tower</strong>: Weyl's FFT proves the tadpole is <em>unique</em>; the no-search no-go proves search is <em>dead</em>; the Complete Exact Structure theorem proves the ToE = constraints + labels. Machine-checked in Lean. The measurement became redundant for the flux claim — that is the win.</p>
+        <p><a href="#theorems">the theorem tower</a> · <a href="#lean">Lean proofs</a> · the <a href="#theorems">Five Pillars</a></p>
+      </div>
+      <div class="card">
+        <h3>Act III — Redeploy</h3>
+        <p class="muted">The same discipline — Rule of Three, deficit, fan-out — is now applied <strong>one sector up</strong>, to the Standard Model. Anomaly cancellation (5/5), hypercharge uniqueness (4/4), the invariant ring (19 = orbit-space). m = 0 is the frontier.</p>
+        <p><a href="#sm">the Standard-Model frontier</a> · <a href="#sm">refinements from the fan-outs</a></p>
+      </div>
+    </div>
 
     <h2 id="theorems">The theorem tower — "the only exact structure is the constraint" is now proved</h2>
     <p>The constraint-first claim began as a measurement (the structure map: the tadpole comes back r = 1.0, every other observable uniform). It is now a <strong>tower of five theorems</strong>, each verified symbolically with sympy at zero tolerance, plus a machine-checked Lean arm. One command reproduces the whole tower: <code>python3 scripts/validate_all_theorems.py</code>.</p>
