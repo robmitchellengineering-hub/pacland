@@ -139,7 +139,7 @@
 
     <h2 id="results">What we measured</h2>
     <div class="grid">
-      <div class="card"><h3>The Mitchell Verification Deficit</h3><div class="big">m = 5, closing</div><p>Started total (m = 0, certificate vacuous). Climbed with real computation: topology h11·h21·c2·κ (m = 4) and the flux tadpole N_flux = FᵀJH exactly (m = 1). SM physics still m = 0. Completeness proves the flux sector is <em>saturated</em> at 1 — m can never grow from flux again.</p></div>
+      <div class="card"><h3>The Mitchell Verification Deficit</h3><div class="big">m = 9, closing</div><p>Started total (m = 0, certificate vacuous). Climbed with real computation: topology h11·h21·c2·κ (m = 4), the flux tadpole N_flux = FᵀJH exactly (m = 1), and the SM's exact structure (m = 4: anomaly cancellation 5/5, hypercharge uniqueness 4/4, N_gen = 3, 19 = orbit-space dim). Completeness proves the flux sector is <em>saturated</em> at 1 — growth from here is branes + SM.</p></div>
       <div class="card"><h3>W₀ prior</h3><div class="big">log-uniform, R² = 0.92</div><p>Measured on 380 SUSY flux vacua (natural measure). The KKLT log-uniform prior — measured, not assumed.</p></div>
       <div class="card"><h3>Search over W₀</h3><div class="big">rarity, not learnability</div><p>W₀ is log-uniform (R²=0.92) → small W₀ is exponentially rare. The "zero-information" claim was retracted: W₀ is weakly learnable (r≈0.6) via multi-coordinate structure. The tuning problem is a measure fact, not a search-with-gradient fact.</p></div>
       <div class="card"><h3>Small W₀</h3><div class="big">43% of vacua</div><p>P(|W₀| &lt; 1) ≈ 43% on the natural measure — not the ~5% that biased sampling suggested.</p></div>
@@ -235,7 +235,7 @@ pacland constrain data.json    # constraint elimination + uniformity
 pacland solve data.json        # constraint-first: the certified viable class
 pacland viable data.json       # the viability polytope (the answer is a region)
 pacland verify candidate.json  # run guards + falsify against the SM
-pacland deficit                # the Mitchell Verification Deficit (m=5, closing)
+pacland deficit                # the Mitchell Verification Deficit (m=9, closing)
 pacland climb                  # run the deficit climber on the mesh
 
 # the theorem tower, all five proofs in one command:
@@ -254,7 +254,7 @@ python3 scripts/validate_all_theorems.py</code></pre>
         <label>δ_s <input id="ds" type="number" value="0.025" step="0.005"></label>
         <label>δ_e <input id="de" type="number" value="0.025" step="0.005"></label>
         <p><strong>bound = <span id="bound"></span></strong> · confidence <span id="conf"></span></p>
-        <p class="muted">Try m = 0 (no validated oracles) and the radius goes infinite — that was the total deficit. Today m = 5: four CYTools topology rungs + the JAXVacua tadpole, all validated by real computation.</p>
+        <p class="muted">Try m = 0 (no validated oracles) and the radius goes infinite — that was the total deficit. Today m = 9: four CYTools topology rungs + the JAXVacua tadpole + four exact SM rungs, all validated by real computation.</p>
       </div>
       <div class="card">
         <h3>② Falsify a candidate</h3>
