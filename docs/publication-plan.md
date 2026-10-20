@@ -6,6 +6,9 @@ check it**. Everything else (endorsement, arXiv, citation) follows from one expe
 
 ## The three-step path
 
+**Status: step 1 is DONE** — the flagship paper is live on Zenodo with DOI
+`10.5281/zenodo.23497239` (open access, CC BY 4.0), published 2026-10-20.
+
 1. **Make it citable now** — upload the 5-page paper to **Zenodo** (or OSF Preprints):
    free, no endorsement, no affiliation, mints a permanent DOI in minutes. This
    establishes priority and gives a citable link that isn't a GitHub URL.

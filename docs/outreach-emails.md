@@ -2,6 +2,9 @@
 
 Ready to copy-paste. Order: Zenodo first (priority), then the four emails one at a time.
 
+**Status: Zenodo is DONE** — DOI `10.5281/zenodo.23497239` is live (published
+2026-10-20, open access, CC BY 4.0). Next is the four emails, one at a time.
+
 ## 1. Zenodo upload (mint the DOI)
 
 Go to https://zenodo.org → **New upload**. Fill:

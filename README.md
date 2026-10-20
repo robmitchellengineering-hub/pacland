@@ -67,6 +67,10 @@ Two research fan-outs refined the open claim (see `docs/sm-conjecture-notes.md`,
 - `paper/PACLAND-preprint.pdf` — the verification discipline (umbrella)
 - `paper/constraint-first-explainer.pdf` — the investor/partner explainer
 
+**Published:** the flagship theorem paper is on Zenodo with a permanent DOI —
+[`10.5281/zenodo.23497239`](https://doi.org/10.5281/zenodo.23497239)
+(open access, CC BY 4.0).
+
 ## CLI
 
 ```sh
@@ -94,4 +98,4 @@ python3 -m unittest discover -s tests   # 140 tests
   parameters? The decisive test (express the invariants as functions of moduli, check
   the Jacobian rank) is the next fan-out.
 - **arXiv** — the four papers are ready, pending account + hep-th endorsement
-  (`docs/arxiv-submission.md`).
+  (`docs/arxiv-submission.md`). Priority is already secured by the Zenodo DOI above.
