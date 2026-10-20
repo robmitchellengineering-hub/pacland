@@ -54,12 +54,18 @@ Colibri removes the GPU from the second, not the first. They are not interchange
 
 | part | pick | why |
 |---|---|---|
-| CPU | Ryzen 9 7950X / 9950X (16c/32t) | the decode ceiling is CPU-bound |
-| RAM | 64 GB (128 GB for GLM-5.2 resident) | more RAM = more resident experts = faster |
+| CPU | **AMD Ryzen AI Max+ 395 ("Strix Halo")**, 16c Zen 5, 128 GB | the decode is **memory-bound**: 256 GB/s unified memory is the lever, not core count |
+| RAM | 128 GB unified (64 GB floor) | more RAM = more resident experts = faster; unified means the iGPU shares it, no PCIe copy |
 | Storage | 2× 2 TB NVMe Gen4 (RAID0 or `COLI_MODEL_MIRROR`) | the +37.5% lives in the first two drives |
-| GPU | none (iGPU already helps some models) | that is the whole point |
+| GPU | none — the Radeon 8060S iGPU (40 CU) does the expert tier | that is the whole point |
 
-≈ USD 1,500–2,000, vs the ~$3,500–4,000 GPU build.
+≈ USD 1,600–2,000 (e.g. Framework Desktop 128 GB), vs the ~$3,500–4,000 GPU build.
+
+**Why Strix Halo and not a 7950X/9950X:** desktop 16-core chips are capped at
+dual-channel DDR5 ≈ 90 GB/s, so for this memory-bound workload they wait on memory and
+the extra cores do nothing. Colibri's own top CPU-only number — GLM-5.2 at 1.83 tok/s —
+was measured on this chip, versus 0.93 (5800X) / 1.24 (5950X) on the *smaller*
+DeepSeek V4 Flash.
 
 ## The honest speed caveat
 
