@@ -42,24 +42,36 @@ expensive work you don't need yet.** Three concrete forms:
 candidates = the SETI@home/Folding@home shape: no fast interconnect, each machine chews
 its own shard. That part of Rob's instinct is right.
 
-**But "old GPUs" is the weak half:**
+**Refinement (Rob, 2026-10-20): old gaming laptops, not bare GPUs.** A gaming laptop is a
+self-contained mesh node — CPU + RAM + storage + network + power in one box, exactly the
+"one agent per machine" unit the mesh is built for. This is the better shape:
 
-- **CPU tier (h12=25):** runs on CPU (`scipy`, 4 GB). Old/free CPU boxes work — and the
-  mesh already has 40 cores. **No GPU needed at all.**
-- **Old GPUs for the GPU tier (h12=272):** poor ROI. One RTX 4090 ≈ 82 TFLOPS FP32 vs a
-  GTX 1060 ≈ 4.4 — so ~18 old cards at $60 each ($1,080) plus 18 host machines, power and
-  management, vs one 4090 (~$1,800) or **renting** one at ~$0.40/hr. Pascal cards sit at
-  the edge of JAX/CUDA support, and 6–8 GB VRAM is fine for h12=25's small Hessians but
-  not h12=272. Renting a modern GPU for a few hours beats maintaining a pile of old cards.
+- **CPU tier (h12=25):** the laptops' CPUs do the work (`scipy`, 4 GB). Each laptop adds
+  4–8 cores to the candidate-parallelism. **No GPU needed at all.**
+- **Their GPUs are a bonus, not the point.** Mobile GPUs are throttled + 6–8 GB VRAM: fine
+  for h12=25's small batched Hessians, useless for h12=272 (needs 24 GB+). So the laptop
+  GPU does not change the h12=272 answer — still rent a modern GPU for that tier.
+- **Caveats:** sustained load throttles laptop CPUs and wears them; run them plugged in
+  (battery removed or charge-limited) and expect the boost clock to sag. N laptops = N
+  things to keep updated and reliable — the mesh loop/watchdog already does most of that.
 
-**The efficient system is a sharder, not a GPU pool.** The mesh already provides the
-hard part (git-as-bus dispatch, one job per node). What's missing is ~100 lines: split the
+**Concrete example — the Legion Go (already a mesh node as `win-2`).** Ryzen Z1 Extreme
+(8c/16t Zen 4) + Radeon 780M iGPU + 16 GB LPDDR5X, small and low-power. It is the exact
+architecture the Colibri evaluation names as the CPU/iGPU sweet spot, just at the small
+end: the 780M is the GPU in Colibri's own "machine A" (Qwen3.6-35B at 6.0 tok/s CPU /
+9.9 Vulkan-iGPU), and 16 threads is ample for the h12=25 `scipy` sampler (4 GB). Its only
+limits: **16 GB RAM** (no big frontier models — DeepSeek V4 Flash wants 16/32 GB) and **no
+CUDA** (780M is an iGPU). A few of these = a cheap, quiet, low-power compute pool; their
+CPUs do the flux work, and their iGPU can run the *small* local models for free.
+
+**The efficient system is a sharder, not a GPU pool.** The mesh already provides the hard
+part (git-as-bus dispatch, one job per node). What's missing is ~100 lines: split the
 candidate list into shards, dispatch each shard to a node, aggregate the results back.
-That is lever 3 made concrete, and it needs no new hardware.
+That is lever 3 made concrete.
 
-**Verdict:** pool old **CPU** boxes (free/cheap) for the CPU tier — genuinely worth it,
-and mostly already in hand. Do **not** buy old GPUs — rent a modern one for the bursty
-GPU tier. Build the sharder on top of the mesh dispatch.
+**Verdict:** add old gaming laptops as cheap CPU+RAM mesh nodes for the CPU tier —
+genuinely worth it, self-contained, and the mesh already supports them. Their GPUs are a
+free bonus, not the reason. Still rent a modern GPU for the h12=272 tier.
 
 ## Potential MorpheOS route (flagged)
 
