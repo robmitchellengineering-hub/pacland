@@ -1,0 +1,6 @@
+{
+  "gates": [
+    { "name": "unit-tests", "cmd": ["python3", "-m", "unittest", "discover", "-s", "tests", "-q"], "expectStderr": true }
+  ],
+  "ledger": false
+}
