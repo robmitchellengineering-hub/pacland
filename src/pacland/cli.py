@@ -303,6 +303,31 @@ def _cmd_climb(args) -> None:
     print(f"  all passed: {r.get('all_passed')}")
 
 
+def _cmd_disciplines(_args) -> None:
+    """List the discipline sections — each its own thing within PACLAND."""
+    from .disciplines import DISCIPLINES
+
+    for d in DISCIPLINES:
+        print(f"[{d.slug:10s}] {d.name} — {d.status}")
+        print(f"    {d.blurb}")
+        print(f"    docs: {d.docs}   code: {d.package or 'not built yet'}")
+        print()
+
+
+def _cmd_climate(args) -> None:
+    """Climate discipline: the verification deficit (playbook item #1)."""
+    from .climate.deficit import summary
+
+    print(summary(delta_e=args.delta))
+
+
+def _cmd_drugs(args) -> None:
+    """Drug discovery discipline: the verification deficit (playbook item #2)."""
+    from .drugs.deficit import summary
+
+    print(summary(delta_e=args.delta))
+
+
 def main(argv=None) -> None:
     p = argparse.ArgumentParser(
         prog="pacland",
@@ -345,6 +370,17 @@ def main(argv=None) -> None:
     cf = sub.add_parser("certify", help="certify a question's boundary")
     cf.add_argument("question", help="a question string")
     cf.set_defaults(func=_cmd_certify)
+
+    di = sub.add_parser("disciplines", help="list the discipline sections")
+    di.set_defaults(func=_cmd_disciplines)
+
+    cm = sub.add_parser("climate", help="climate discipline: the verification deficit")
+    cm.add_argument("--delta", type=float, default=0.025, help="confidence budget delta_e")
+    cm.set_defaults(func=_cmd_climate)
+
+    dm = sub.add_parser("drugs", help="drug discovery discipline: the verification deficit")
+    dm.add_argument("--delta", type=float, default=0.025, help="confidence budget delta_e")
+    dm.set_defaults(func=_cmd_drugs)
 
     args = p.parse_args(argv)
     args.func(args)
