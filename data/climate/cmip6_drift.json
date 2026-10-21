@@ -1,0 +1,104 @@
+{
+  "description": "Per-model CMIP6 net top-of-atmosphere energy drift (pre-industrial control), from Irving et al. 2021. Non-zero netTOA in a steady-state control = energy leakage (non-conservation).",
+  "unit": "netTOA in J yr-1 (convert to W m-2 by /3.15576e7 s/yr /5.101e14 m2)",
+  "source": "Irving, Hobbs, Church & Zika 2021, J. Climate 34, 7637-7651, doi:10.1175/JCLI-D-20-0281.1. Data: figshare doi:10.6084/m9.figshare.12143562 (drifts.csv).",
+  "earth_energy_imbalance_wm2": 0.77,
+  "eei_source": "Loeb et al. 2021, GRL 48, e2021GL093047 (CERES, 2005-2019).",
+  "models": [
+    {
+      "model": "ACCESS-CM2",
+      "institution": "CSIRO",
+      "netTOA_J_per_yr": 5.92e+21
+    },
+    {
+      "model": "ACCESS-ESM1-5",
+      "institution": "CSIRO",
+      "netTOA_J_per_yr": -3.96e+21
+    },
+    {
+      "model": "BCC-CSM2-MR",
+      "institution": "BCC",
+      "netTOA_J_per_yr": -8.76e+21
+    },
+    {
+      "model": "BCC-ESM1",
+      "institution": "BCC",
+      "netTOA_J_per_yr": -6.47e+21
+    },
+    {
+      "model": "CNRM-CM6-1",
+      "institution": "CNRM-CERFACS",
+      "netTOA_J_per_yr": 2.35e+22
+    },
+    {
+      "model": "CNRM-ESM2-1",
+      "institution": "CNRM-CERFACS",
+      "netTOA_J_per_yr": 2.39e+22
+    },
+    {
+      "model": "E3SM-1-0",
+      "institution": "E3SM-Project",
+      "netTOA_J_per_yr": -3.64e+20
+    },
+    {
+      "model": "E3SM-1-1",
+      "institution": "E3SM-Project",
+      "netTOA_J_per_yr": -1.09e+21
+    },
+    {
+      "model": "EC-Earth3",
+      "institution": "EC-Earth-Consortium",
+      "netTOA_J_per_yr": 5.65e+20
+    },
+    {
+      "model": "EC-Earth3-Veg",
+      "institution": "EC-Earth-Consortium",
+      "netTOA_J_per_yr": 2.9e+20
+    },
+    {
+      "model": "GFDL-CM4",
+      "institution": "NOAA-GFDL",
+      "netTOA_J_per_yr": 3.88e+21
+    },
+    {
+      "model": "GISS-E2-1-G",
+      "institution": "NASA-GISS",
+      "netTOA_J_per_yr": 9.08e+20
+    },
+    {
+      "model": "GISS-E2-1-G-CC",
+      "institution": "NASA-GISS",
+      "netTOA_J_per_yr": 1.12e+21
+    },
+    {
+      "model": "HadGEM3-GC31-LL",
+      "institution": "MOHC",
+      "netTOA_J_per_yr": 3.06e+21
+    },
+    {
+      "model": "IPSL-CM6A-LR",
+      "institution": "IPSL",
+      "netTOA_J_per_yr": 1.07e+22
+    },
+    {
+      "model": "MPI-ESM-1-2-HAM",
+      "institution": "HAMMOZ-Consortium",
+      "netTOA_J_per_yr": 5.64e+21
+    },
+    {
+      "model": "MPI-ESM1-2-HR",
+      "institution": "MPI-M",
+      "netTOA_J_per_yr": 3.34e+21
+    },
+    {
+      "model": "MPI-ESM1-2-LR",
+      "institution": "MPI-M",
+      "netTOA_J_per_yr": 6.77e+21
+    },
+    {
+      "model": "UKESM1-0-LL",
+      "institution": "MOHC",
+      "netTOA_J_per_yr": 3.5e+20
+    }
+  ]
+}
