@@ -1,14 +1,14 @@
 # The CMIP6 conservation deficit — a machine-checked guard on model energy drift
 
 Status: **computed and guarded** — `src/pacland/climate/cmip6_drift.py` +
-`data/climate/cmip6_drift.json` + 5 known-answer tests (green). This is the write-up
+`data/climate/cmip6_drift.json` + 8 known-answer tests (green). This is the write-up
 of the climate discipline's first real-data guard run.
 
 ## The finding, in one sentence
 
-> **12 of 19 CMIP6 models fail a machine-checked energy-conservation guard, and two of
+> **12 of 19 CMIP6 models fail a machine-checked energy-conservation guard; two of
 > them — CNRM-ESM2-1 and CNRM-CM6-1 — leak energy at ~1.9× the Earth's own energy
-> imbalance.**
+> imbalance; and the leak lives in the atmosphere, not the ocean.**
 
 ## 1. Why conservation is the first thing to check
 
@@ -29,16 +29,20 @@ satisfy, with the leak quantified against a reference signal.
 ## 2. Method
 
 - **Data** — the open figshare release of Irving et al. 2021
-  (doi:10.6084/m9.figshare.12143562, `drifts.csv`): per-model net-TOA drift in J yr⁻¹,
-  19 CMIP6 models.
+  (doi:10.6084/m9.figshare.12143562, `drifts.csv`): per-model net-TOA drift **and**
+  ocean-heat-content (OHC) drift in J yr⁻¹, 19 CMIP6 models.
 - **Conversion** — J yr⁻¹ → W m⁻²: divide by 3.15576×10⁷ s yr⁻¹ and the Earth surface
   area 5.101×10¹⁴ m².
 - **Guard** — `guard_energy_budget(net_toa_flux = drift, d_energy_dt = 0, tol = 0.1)`;
   a steady-state control must satisfy net TOA ≈ 0, so any drift beyond tolerance fails.
 - **Reference signal** — the Earth's energy imbalance (EEI) = 0.77 W m⁻² (Loeb et al.
   2021, CERES, 2005–2019).
+- **The split** — total TOA drift vs the ocean's own drift; the difference is the
+  *non-ocean* leak (atmosphere + land + cryosphere).
 
-## 3. Results — the per-model verdict
+## 3. Results
+
+### 3.1 The per-model verdict
 
 | model | institution | net-TOA drift (W m⁻²) | guard | vs EEI |
 |---|---|---|---|---|
@@ -63,25 +67,50 @@ satisfy, with the leak quantified against a reference signal.
 | EC-Earth3-Veg | EC-Earth | +0.018 | ✅ pass | 0.02× |
 
 **Headline:** 12 of 19 fail the conservation guard; 2 leak faster than the Earth's
-energy imbalance. The seven clean models drift at 0.02–0.07 W m⁻² — an order of
-magnitude below the leakers.
+energy imbalance.
 
-## 4. What this means
+### 3.2 Where the leak lives — the sharp split
 
-The kicker is the **leak-vs-signal** comparison. A model projecting the Earth's energy
-imbalance (0.77 W m⁻²) while *leaking* 1.5 W m⁻² is carrying an internal error roughly
-twice the size of the signal it is asked to forecast. That error is invisible in skill
-scores — a drifting model can still reproduce the historical record — and it is not
-captured by ensemble spread, which treats every member as equally credible.
+| | median | drift |
+|---|---|---|
+| total TOA (the whole model) | **0.241 W m⁻²** |
+| ocean only (OHC) | **0.051 W m⁻²** |
 
-Conservation is therefore not a solved detail of CMIP6; it is a **hard, quantified
-defect in most models**, and in two of them it exceeds the climate signal itself.
+The total leak is **~5× the ocean's own drift** — so the leak is almost entirely in
+the **atmosphere/land/cryosphere**, not the ocean. The two worst models make the point
+sharply: CNRM-ESM2-1 leaks 1.485 W m⁻² total, yet its *ocean* drifts only 0.086 W m⁻² —
+the atmosphere is leaking ~1.4 W m⁻² while the ocean conserves. This is the known
+atmospheric-leak problem (non-conserving advection / inconsistent coupling), now a
+per-model, quantified split.
+
+### 3.3 The conservation trust ranking
+
+- **broken** (leak > EEI): CNRM-ESM2-1, CNRM-CM6-1
+- **leaking** (0.1 < leak ≤ EEI): IPSL-CM6A-LR, BCC-CSM2-MR, MPI-ESM1-2-LR, BCC-ESM1,
+  ACCESS-CM2, MPI-ESM-1-2-HAM, ACCESS-ESM1-5, GFDL-CM4, MPI-ESM1-2-HR, HadGEM3-GC31-LL
+- **clean** (leak ≤ 0.1): GISS-E2-1-G-CC, E3SM-1-1, GISS-E2-1-G, EC-Earth3, E3SM-1-0,
+  UKESM1-0-LL, EC-Earth3-Veg
+
+## 4. Conclusions
+
+1. **Conservation is not a solved detail — it is a hard, quantified defect in most
+   CMIP6 models.** 12 of 19 leak; the leak is invisible to skill scores and to
+   ensemble spread.
+2. **The error bar can exceed the signal.** Two models leak at ~1.9× the EEI they are
+   used to project — an internal error twice the size of the forecast itself.
+3. **The leak is in the atmosphere, not the ocean.** The ocean component of these
+   models conserves energy ~5× better than the whole; so ocean heat-uptake projections
+   are more trustworthy than TOA/atmospheric ones, and the fix effort belongs in the
+   atmospheric advection/coupling, not the ocean.
+4. **Conservation should be a precondition, not a footnote.** A model that fails the
+   guard should be drift-corrected explicitly — or excluded from any energy-balance
+   conclusion — before its projection is used.
 
 ## 5. Honest limits
 
 - This **re-expresses** Irving et al. 2021's measurement as a machine-checked guard; it
-  is not a new measurement. The contribution is the pass/fail gate and the
-  leak-vs-EEI ratio, not the underlying numbers.
+  is not a new measurement. The contribution is the pass/fail gate, the leak-vs-EEI
+  ratio, and the ocean-vs-atmosphere split, not the underlying numbers.
 - `tol = 0.1 W m⁻²` is a chosen threshold; the **ranking** is robust to it, the
   12-fail **count** is stated at this threshold.
 - The drift is measured in `piControl`. Operational projections **remove** drift in
@@ -95,6 +124,6 @@ defect in most models**, and in two of them it exceeds the climate signal itself
 
 ```sh
 cd pacland
-python3 scripts/climate_cmip6_drift.py                       # full verdict table
+python3 scripts/climate_cmip6_drift.py                       # full verdict table + split
 PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift -v   # known-answer tests
 ```
