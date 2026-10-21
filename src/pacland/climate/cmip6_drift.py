@@ -107,4 +107,29 @@ def summary(data: dict | None = None, tol_wm2: float = 0.1) -> dict:
     }
 
 
-__all__ = ["load", "drift_wm2", "verdict_table", "trust_ranking", "summary"]
+def trust_entries() -> list:
+    """Emit the CMIP6 models as trust-board entries (broken/weak/clean)."""
+    from ..trust import TrustEntry
+
+    d = load()
+    eei = d["earth_energy_imbalance_wm2"]
+    out = []
+    for r in verdict_table():
+        a = abs(r["netTOA_drift_wm2"])
+        if a > eei:
+            tier = "broken"
+        elif a > 0.1:
+            tier = "weak"
+        else:
+            tier = "clean"
+        out.append(TrustEntry(
+            discipline="climate",
+            artifact=f"CMIP6 {r['model']}",
+            tier=tier,
+            detail=f"net-TOA energy leak {r['netTOA_drift_wm2']:+.3f} W/m2 ({a / eei:.2f}x EEI)",
+            evidence="Irving et al. 2021, figshare doi:10.6084/m9.figshare.12143562",
+        ))
+    return out
+
+
+__all__ = ["load", "drift_wm2", "verdict_table", "trust_ranking", "summary", "trust_entries"]

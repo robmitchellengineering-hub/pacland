@@ -328,6 +328,22 @@ def _cmd_drugs(args) -> None:
     print(summary(delta_e=args.delta))
 
 
+def _cmd_trust(_args) -> None:
+    """The trust board — every discipline, one ranked output."""
+    from .trust import board, summary
+
+    s = summary()
+    marks = {"broken": "RED", "weak": "AMBER", "clean": "GREEN"}
+    print("Trust board — every discipline, one ranked output")
+    print(f"  artifacts: {s['n_artifacts']}  broken: {s['n_broken']}  "
+          f"weak: {s['n_weak']}  clean: {s['n_clean']}")
+    print()
+    for e in board():
+        print(f"[{marks[e.tier]:5s}] [{e.discipline:9s}] {e.artifact}")
+        print(f"         {e.detail}")
+        print(f"         src: {e.evidence}")
+
+
 def main(argv=None) -> None:
     p = argparse.ArgumentParser(
         prog="pacland",
@@ -381,6 +397,9 @@ def main(argv=None) -> None:
     dm = sub.add_parser("drugs", help="drug discovery discipline: the verification deficit")
     dm.add_argument("--delta", type=float, default=0.025, help="confidence budget delta_e")
     dm.set_defaults(func=_cmd_drugs)
+
+    t = sub.add_parser("trust", help="the trust board — ranked artifacts across disciplines")
+    t.set_defaults(func=_cmd_trust)
 
     args = p.parse_args(argv)
     args.func(args)
