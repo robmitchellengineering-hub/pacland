@@ -106,6 +106,12 @@ source, not a textbook formula:**
   memory-safe but slow (~43 s/candidate). So the chase is a SPEED problem, not a 96 GB
   problem: make `scipy` (or a chunked `newton`) fast enough to sample hundreds of
   vacua. Paper's ancillary polytopes: arXiv:2306.06160 (h12_5..h12_25).
+  **UPDATE 2026-10-21 — it is not only a speed problem.** The first real h12=25 run
+  (pacland-rog, overnight) found **0 critical points in 13,311 candidates**: the ISD
+  proposal itself degrades ~40x at h12=25 (starting `|dV|` median 173 vs 4 at h12=2),
+  so `scipy`/`hybrid`/`sample_SUSY_flux_vacua` all fail, and enabling instanton
+  corrections (`maximum_degree>0`) does not help. See `docs/h12-25-sampling-wall.md`
+  for the measured numbers and next directions.
 - **Exact T⁶ toroidal orbifold oracle (build #2 done properly):**
   `src/pacland/oracle/exact_t6.py` — closed-form periods, Kähler potential/metric,
   tadpole FᵀΣH (the *unique* moduli-independent observable), W, g_s, KK/winding
