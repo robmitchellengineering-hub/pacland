@@ -31,6 +31,22 @@ verifies itself is circular). It is proven by driving real repos:
 | harness-mesh | 11 guards, 33 mutations, each proven to go red |
 | morpheus-self-hosted | adopter (status not re-verified in this session) |
 
+## Licensing — open spec, licensed SDK
+
+The model is open-core:
+
+- **Spec** — `github.com/robmitchellengineering-hub/valiant-verification` — **public,
+  Apache-2.0.** The specification is open: what a gate, guard, and ledger are, and the
+  portable contract a repo adopts.
+- **SDK** — `github.com/robmitchellengineering-hub/valiant-verification-sdk` — **private,
+  licensed.** It is the implementation layer (`valiant verify` / `mutate` / `ledger` /
+  `status`) that enforces the spec. There is no open license file — access to the repo
+  is the license.
+
+The badge is minted by the licensed SDK; the spec is free for anyone to implement against.
+That is the commercial seam: **the discipline is public, the machine that certifies it is
+the product.**
+
 ## How it monetises
 
 The badge is the product: a repo, a model, or a claim that carries it is *verifiably
