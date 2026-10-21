@@ -1,0 +1,16 @@
+{
+  "description": "Earth's energy-budget closure, 2005-2020. Literature values, rounded to 0.01 W/m2 and cited; cross-check the source tables before quoting as exact (Rule of Three).",
+  "unit": "W m^-2, global mean, positive = the Earth system is gaining energy",
+  "sources": {
+    "eei_ceres": "Loeb et al. 2021, 'Satellite and Ocean Data Reveal Marked Increase in Earth's Heating Rate', Geophys. Res. Lett. 48, e2021GL093047. CERES Earth energy imbalance, 2005-2019 mean = 0.77 W/m2 (net TOA radiative flux).",
+    "components": "von Schuckmann et al. 2023, 'Heat stored in the Earth system 1960-2020: where does the energy go?', Earth Syst. Sci. Data 15, 1675-1709. Component heat uptake, 2006-2020 mean."
+  },
+  "eei_ceres_wm2": 0.77,
+  "components_wm2": {
+    "ocean_0_2000m": 0.62,
+    "deep_ocean_gt2000m": 0.07,
+    "atmosphere": 0.01,
+    "land": 0.02,
+    "cryosphere": 0.04
+  }
+}

@@ -1,23 +1,8 @@
 # PACLAND
 
-**Probably Approximately Correct Landscape** — a Valiant-verification system, applied
-one field at a time. The string landscape (with a **proven theorem tower** and a
-**Standard-Model frontier**) is the founding discipline; **climate** is the first
-expansion. Live: [pacland.netlify.app](https://pacland.netlify.app) · `pip install pacland`
-
-## Disciplines — one verification spine, many fields
-
-| discipline | status | what it holds |
-|---|---|---|
-| **String landscape** | core (built) | PAC verification of the flux landscape + Standard Model |
-| **Climate / Earth-system** | built — deficit + guard-suite | `docs/climate-verification-deficit.md` · `pacland climate` |
-| Drug discovery / protein science | built — deficit + guard-suite | `docs/drugs-verification-deficit.md` · `pacland drugs` |
-| Epidemiology / disease modelling | queued | identifiability as the underdetermined wall |
-| AI safety / capability verification | queued (parallel lane) | the verification machine aimed at model claims |
-
-Each discipline is its own thing — own subpackage, docs, and CLI command — sharing one
-spine (two-level certificate, verification deficit, constraint-first, four-walls map).
-The registry is `src/pacland/disciplines.py`; list them with `pacland disciplines`.
+**Probably Approximately Correct Landscape** — a Valiant-verification system for the
+string landscape, now with a **proven theorem tower** and a **Standard-Model frontier**.
+Live: [pacland.netlify.app](https://pacland.netlify.app) · `pip install pacland`
 
 ## The result, in one sentence
 
