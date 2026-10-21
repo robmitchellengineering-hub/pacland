@@ -47,6 +47,7 @@
     <div class="links">
       <a class="primary" href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/paper/pacland-marketing.pdf">Download the one-pager (PDF)</a>
       <a href="#disciplines">Disciplines</a>
+      <a href="#climate">Climate</a>
       <a href="#trust">Trust board</a>
       <a href="#published">Published</a>
       <a href="#arc">The arc</a>
@@ -99,6 +100,29 @@
         <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ai-verified-badge.md">the badge</a></p>
       </div>
     </div>
+
+    <h2 id="climate">Climate — the verification deficit, measured</h2>
+    <p class="lead">The first expansion. Applied to climate modelling, the discipline produces a number the field has never had: how much of a projection is <em>verified</em> versus <em>extrapolated</em>.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>The verification deficit</h3>
+        <div class="big">m = 4 → 68% · m = 0</div>
+        <p class="muted">Only 4 observables (GMST, EEI, OHC, GMSL) are simultaneously measured + computable + validated on the historical record — a ≈68% certificate radius. The 2100 projection targets have m = 0: no future state is measured, so the projection is <strong>extrapolation, not verification</strong>.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">deficit report</a></p>
+      </div>
+      <div class="card">
+        <h3>Energy budget, on real data</h3>
+        <div class="big">0.15 → 0.01 W/m²</div>
+        <p class="muted">The 0–2000 m ocean alone under-closes the energy budget (residual 0.15 W/m²); the full budget — ocean + atmosphere + land + cryosphere — closes it (0.01 W/m²). The budget is only an invariant when <em>all</em> reservoirs are counted.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">energy-budget closure</a></p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>The CMIP6 conservation drift (real data).</strong> 12 of 19 CMIP6 models leak energy; two — CNRM-ESM2-1 (1.485 W/m²) and CNRM-CM6-1 (1.46 W/m²) — leak at ~1.9× the Earth's energy imbalance (0.77 W/m²). And the leak lives in the <em>atmosphere</em>, not the ocean: median total TOA drift 0.241 W/m² vs 0.051 W/m² in the ocean. A model leaking heat at twice the signal it's forecasting is carrying an error the size of the projection.</p>
+    </div>
+    <p class="muted">Full write-up: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">the CMIP6 conservation deficit</a> · reproduce: <code>pacland climate</code> · <code>python3 scripts/climate_cmip6_drift.py</code>.</p>
 
     <h2 id="trust">Trust board — every discipline, one ranked output</h2>
     <p>The monetisation surface: each discipline drops its artifacts into one ranked board, machine-checked and cited. <code>pacland trust</code> ranks 28 artifacts today — <strong>2 broken, 10 weak, 16 clean</strong>.</p>
