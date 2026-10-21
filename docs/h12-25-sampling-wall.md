@@ -49,6 +49,23 @@ metric `I = Im N` at h12=25, so rounding the ISD flux perturbs that direction by
 solver can recover — the starting points are not just "a bit off", they are in the
 wrong region of field space.
 
+**It is intrinsic, not a polytope bug.** cond(`M`) across h12 and across every
+bundled h12=25 polytope:
+
+| scope | cond(`M`) |
+|---|---|
+| h12 = 2 / 5 / 10 / 15 / 20 / 25 | 1.8e2 / 1.1e10 / 2.9e6 / 7.5e7 / 7.3e8 / 4.8e6 |
+| h12=25, `model_ID` 1..9 | 4.8e6, 9.6e8, 2.3e9, 3.3e9, 3.7e8, 1.8e8, 1.1e8, 8.2e8, 2.7e10 |
+
+Every h12 ≥ 5 is ill-conditioned (1e6–1e10), and `model_ID=1` is already the
+*best* h12=25 polytope. The near-null eigenvalue is a real nearly-flat direction
+in the moduli metric (a hierarchy), not bad data.
+
+**It breaks the linearised shifts too, not only the rounding.** The SUSY method
+(`sample_SUSY_flux_vacua` → `linearised_shifts`) leaves the Kähler cone on the very
+first step (`hyperplanes @ Im(z) < 0`) with residual still O(100), so the one-step
+filter rejects every candidate.
+
 ## What was ruled out
 
 - **Missing worldsheet-instanton corrections** (`maximum_degree=0` → the
@@ -58,27 +75,35 @@ wrong region of field space.
 - **`ISD+` vs `ISD-` and the flux-prior σ** (0.5 / 2.0 / 5.0): none recovers —
   best case `ISD+`, σ=0.5 gives `\|dV\|` min 13, still ~100× a critical point.
   The ill-conditioning is not a sampling-config problem.
+- **A different polytope**: all 9 bundled h12=25 models are ill-conditioned.
+- **Damped `step_size` / cone sampling**: the shift leaves the Kähler cone anyway.
 
 ## The wall, classified
 
 This is the **intractable** wall in `AGENTS.md`, located at the *proposal*, not the
-solver and not the hardware. The cause is measured: **the ISD matrix `M` is
-ill-conditioned at h12=25 (cond 4.8e6 vs 183)**, so integer-rounding the
-ISD-completed flux lands far off the F-flat slice.
+solver and not the hardware. The cause is measured and exhaustive: **the ISD matrix
+`M` is ill-conditioned for every h12 ≥ 5 (cond 1e6–1e10, all polytopes)**, so both
+the integer-rounding of the proposal and the linearised shifts are pushed off the
+F-flat slice / out of the Kähler cone.
 
-## Next directions
+## The fix (the actual lever)
 
-1. **Re-condition the ISD step** — the near-null eigenvalue of `M` is a nearly-flat
-   direction in the field-space metric. A different period basis / gauge choice, or
-   a nearest-integer rounding that respects the ill-conditioned directions, may land
-   back on the F-flat slice.
-2. Check whether the near-null direction is real (a hierarchy in the h12=25
-   geometry) or an artifact of `maximum_degree=0` / the polytope data — confirm
-   `model_ID=1` is a valid h12=25 polytope (ancillary polytopes arXiv:2306.06160
-   cover h12_5..h12_25), and re-measure cond(`M`) with instanton corrections on.
-3. Try `sample_SUSY_flux_vacua` with a small `vmap_dim` (2–8) and its *cone* moduli
-   sampling; the cone may stay inside the well-conditioned region that box sampling
-   does not.
+The near-null eigenvalue of `M` is a nearly-flat direction in the field-space
+metric — a *hierarchy* that the h12 truncation must respect. The ISD proposal and
+the linearised shifts both invert quantities in `M`, so both break. The fix is to
+stop inverting the flat direction:
+
+1. **Regularise / project out the flat direction** before the ISD completion and
+   before each linearised shift (truncate `M`'s eigensystem above a condition
+   threshold), or
+2. **Nearest-integer rounding in the `M` metric** (lattice/coordinate-descent that
+   minimises `Σ|D_A W|` instead of naive `round()`), or
+3. **A different proposal** that never inverts the flat direction (e.g. sample in
+   the well-conditioned subspace and lift).
+
+Each is a small, testable change against `sampler.ISD_sampling` /
+`linearised_shifts_ISD`; the diagnostic is the same cond(`M`) + `|dV|`-after-round
+table in this file.
 
 Recorded so this is not re-derived: the sampler runs end-to-end and the mesh job
 path is proven; the open question is purely the h12=25 proposal.
