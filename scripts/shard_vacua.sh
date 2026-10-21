@@ -2,12 +2,13 @@
 # shard_vacua.sh — shard the h12=25 flux-vacua sampling across the mesh's Linux nodes.
 #
 # The sampler (JAXVacua + cytools) is Linux-only, so the shard nodes are the mesh's
-# Linux VMs (studio-linux, studio-linux2). Each node runs /home/rob/sample_h12_25.py
+# Linux nodes: pacland-rog (the always-on GL752VW) is the default; the studio-linux /
+# studio-linux2 VMs on win-2 join when they are up. Each node runs /home/rob/sample_h12_25.py
 # on its share and echoes the JSON to stdout; the mesh loop writes that to
 # runs/<host>/<id>/stdout.txt, which this script collects and merges.
 #
 # Usage:  scripts/shard_vacua.sh <n_total> [node ...]
-#         scripts/shard_vacua.sh 30 studio-linux studio-linux2
+#         scripts/shard_vacua.sh 30 pacland-rog studio-linux studio-linux2
 #
 # Self-asserting: exits non-zero if a shard's result is missing or empty.
 set -euo pipefail
@@ -19,7 +20,7 @@ n_total="${1:?usage: shard_vacua.sh <n_total> [node ...]}"
 shift
 nodes=("$@")
 if [ ${#nodes[@]} -eq 0 ]; then
-  nodes=(studio-linux studio-linux2)
+  nodes=(pacland-rog)   # the always-on Linux node; add studio-linux/studio-linux2 when up
 fi
 
 k=${#nodes[@]}
@@ -36,7 +37,7 @@ for i in "${!nodes[@]}"; do
   # sampler writes the JSON, then `cat` puts it on stdout so the mesh captures it.
   cmd="/home/rob/cytools-venv/bin/python /home/rob/sample_h12_25.py $shard $out && cat $out"
   echo "dispatching $shard vacua -> $node"
-  job_id=$("${DISPATCH[@]}" --node "$node" --needs shell:posix --timeout 3600 --push \
+  job_id=$("${DISPATCH[@]}" --node "$node" --needs shell:posix --timeout 21600 --push \
       --slug "vacua-shard-$i" --note "pacland flux sampling shard $i/$k ($shard vacua, $node)" \
       --command "$cmd" 2>&1 | awk '/^id/{print $2; exit}')
   if [ -z "$job_id" ]; then
@@ -51,7 +52,7 @@ done
 
 # --- wait for the results to come back over the mesh bus ---
 echo "waiting for results (the node loop pulls, runs, and pushes back)..."
-deadline=$((SECONDS + 3600))
+deadline=$((SECONDS + 21600))
 merged="data/h12_25_sharded.json"
 all_rows="[]"
 for i in "${!job_ids[@]}"; do

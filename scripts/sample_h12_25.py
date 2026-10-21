@@ -7,6 +7,12 @@ Why scipy: the vmapped Newton solver (``solver="newton"``) OOMs its JIT trace at
 Run on the JAXVacua host (studio-linux venv):
 
     /home/rob/cytools-venv/bin/python scripts/sample_h12_25.py 30 /home/rob/h12_25_vacua.json
+    /home/rob/cytools-venv/bin/python scripts/sample_h12_25.py 100 /home/rob/h12_25_vacua.json 800  # 16k candidates, ~overnight
+
+Args: <n_target> <output.json> [max_batches]. max_batches bounds the candidate budget
+(n_batch=20 candidates per batch); it defaults to 500. The first smoke run used the
+previous default (20 batches = 400 candidates) and found 0 critical points, so an
+overnight run must raise it explicitly.
 
 Saves a JSON file with one entry per critical point (flux, moduli, tau, V, log W0,
 eigenvalues, is_susy, Nflux). Emits ``DONE`` on completion so the caller can poll.
@@ -45,13 +51,17 @@ def _plain(v):
 def main():
     n_target = int(sys.argv[1]) if len(sys.argv) > 1 else 30
     out = sys.argv[2] if len(sys.argv) > 2 else "/home/rob/h12_25_vacua.json"
+    # max_batches bounds the total candidate budget (n_batch=20 x max_batches).
+    # The old default (20 batches = 400 candidates) sampled 0 critical points in the
+    # first h12=25 smoke run; an overnight run must raise this to see a real number.
+    max_batches = int(sys.argv[3]) if len(sys.argv) > 3 else 500
 
     model = jvc.FluxVacuaFinder(h12=25, model_ID=1, model_type="KS", maximum_degree=0)
     print("BUILT", flush=True)
 
     t0 = time.time()
     vacua = model.sample_critical_points(
-        Q=None, n_target=n_target, n_batch=20,
+        Q=None, n_target=n_target, n_batch=20, max_batches=max_batches,
         isd_mode="ISD-", solver="scipy", verbose=True,
     )
     dt = time.time() - t0

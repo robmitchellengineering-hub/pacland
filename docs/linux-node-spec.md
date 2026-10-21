@@ -5,6 +5,11 @@ only Linux today is two 4 vCPU / 4 GB VMs on `win-2`. Dual-boot was considered a
 (manual, fragile, and the Mac must never leave macOS — it is the way-in). This spec is the
 clean alternative: **add dedicated Linux machines as permanent mesh nodes**, no flipping.
 
+**Status (2026-10-21):** the first dedicated node is live — **`pacland-rog`** (ASUS GL752VW,
+i7-6700HQ 8 threads / 32 GB, Ubuntu 24.04.5). Toolchain installed (`~/cytools-venv`:
+cytools 1.4.12, jaxvacua 0.1.2), sampler at `~/sample_h12_25.py`, mesh loop running.
+First h12=25 shard run dispatched overnight 2026-10-21 (`n_target=100, max_batches=800`).
+
 ## What a node needs (flux sampling + general Linux compute)
 
 | resource | minimum | why |
