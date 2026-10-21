@@ -57,11 +57,11 @@ DISCIPLINES: tuple[Discipline, ...] = (
     ),
     Discipline(
         slug="ai",
-        name="AI safety / capability verification",
-        status="queued (parallel lane)",
+        name="Valiant Verification (software & AI)",
+        status="the verified-badge lane",
         package=None,
-        docs="—",
-        blurb="Point the already-built verification machine at model claims.",
+        docs="docs/ai-verified-badge.md",
+        blurb="The SDK applied to repos and models — the badge is the product.",
     ),
 )
 

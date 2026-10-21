@@ -65,9 +65,22 @@ def _system_entries() -> list[TrustEntry]:
     ]
 
 
+def _ai_entries() -> list[TrustEntry]:
+    # The verified-badge lane: repos that adopted valiant.json and pass.
+    return [
+        TrustEntry("ai", "valiant.json adoption — pacland", "clean",
+                   "unit-tests gate green (178 tests)",
+                   "valiant.json (this repo)"),
+        TrustEntry("ai", "valiant.json adoption — harness-mesh", "clean",
+                   "11 guards, 33 mutations, each proven to go red",
+                   "harness-mesh DISPATCH.md §5"),
+    ]
+
+
 def board() -> list[TrustEntry]:
     """Every discipline's artifacts, ranked: broken first, then weak, then clean."""
-    entries = _climate_entries() + _landscape_entries() + _drugs_entries() + _system_entries()
+    entries = (_climate_entries() + _landscape_entries() + _drugs_entries()
+               + _ai_entries() + _system_entries())
     entries.sort(key=lambda e: TIER_ORDER[e.tier])
     return entries
 

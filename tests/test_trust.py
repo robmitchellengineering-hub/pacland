@@ -7,10 +7,10 @@ from pacland.trust import board, summary
 class TestTrustBoard(unittest.TestCase):
     def test_board_counts(self):
         s = summary()
-        self.assertEqual(s["n_artifacts"], 26)
+        self.assertEqual(s["n_artifacts"], 28)
         self.assertEqual(s["n_broken"], 2)
         self.assertEqual(s["n_weak"], 10)
-        self.assertEqual(s["n_clean"], 14)
+        self.assertEqual(s["n_clean"], 16)
 
     def test_broken_are_the_two_cnrm_models(self):
         self.assertEqual(summary()["broken"],
