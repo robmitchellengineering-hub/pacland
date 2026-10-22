@@ -83,7 +83,26 @@ the atmosphere is leaking ~1.4 W m⁻² while the ocean conserves. This is the k
 atmospheric-leak problem (non-conserving advection / inconsistent coupling), now a
 per-model, quantified split.
 
-### 3.3 The conservation trust ranking
+### 3.3 The mass leak — the second conservation law
+
+The energy leak is not the only non-conservation. The same 19 models' **ocean-mass
+drift** (`masso`, converted to a sea-level-equivalent rate at 1 mm = 3.6×10¹⁴ kg):
+
+| model | ocean-mass drift |
+|---|---|
+| ACCESS-ESM1-5 | **−1.032 mm yr⁻¹** (~30% of SLR) |
+| UKESM1-0-LL | +0.558 mm yr⁻¹ |
+| E3SM-1-0 | −0.486 mm yr⁻¹ |
+| CNRM-ESM2-1 | +0.444 mm yr⁻¹ |
+| BCC-ESM1 | +0.386 mm yr⁻¹ |
+| CNRM-CM6-1 | +0.303 mm yr⁻¹ |
+
+**6 of 19 models leak ocean mass beyond 0.3 mm yr⁻¹ (~10% of the observed 3.4 mm yr⁻¹
+sea-level rise)**. The worst, ACCESS-ESM1-5, drifts at −1.03 mm yr⁻¹ — a third of the
+entire sea-level signal. So the models leak both energy *and* mass; neither conservation
+law is a solved detail.
+
+### 3.4 The conservation trust ranking
 
 - **broken** (leak > EEI): CNRM-ESM2-1, CNRM-CM6-1
 - **leaking** (0.1 < leak ≤ EEI): IPSL-CM6A-LR, BCC-CSM2-MR, MPI-ESM1-2-LR, BCC-ESM1,

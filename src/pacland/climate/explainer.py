@@ -30,6 +30,7 @@ def content() -> list[tuple[str, str]]:
         ("b", f"{ds['n_failing_conservation']} of {ds['n_models']} CMIP6 models leak energy (net TOA drift beyond 0.1 W/m²)."),
         ("b", f"{ds['n_exceeding_eei']} leak faster than the Earth's energy imbalance: {ds['worst_model']} at {ds['worst_drift_wm2']:.3f} W/m² ({ds['worst_ratio_to_eei']:.2f}× the {ds['eei_wm2']} W/m² EEI)."),
         ("b", f"The leak lives in the atmosphere: median total TOA drift {ds['median_abs_nettoa_wm2']:.3f} W/m² vs {ds['median_abs_ocean_wm2']:.3f} W/m² in the ocean."),
+        ("b", f"{ds['n_failing_mass']} models also leak ocean mass beyond {ds['tol_mm_per_yr']} mm/yr — {ds['worst_mass_model']} at {ds['worst_mass_mm_per_yr']:+.2f} mm/yr, {ds['worst_mass_ratio_to_slr']:.0%} of observed sea-level rise ({ds['slr_reference_mm_per_yr']} mm/yr)."),
         ("h", "5 · Why it matters"),
         ("p", "A model leaking heat at ~2× the signal it is projecting carries an error the size of the projection. Conservation is not a solved detail — it is a hard, quantified defect in most models, and it is invisible to skill scores and to ensemble spread."),
         ("h", "6 · Reproduce"),
