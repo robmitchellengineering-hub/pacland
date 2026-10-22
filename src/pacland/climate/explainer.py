@@ -6,6 +6,7 @@ change.
 """
 from __future__ import annotations
 
+from .ace_fidelity import anchor_deficit as ace_anchor, channel_summary as ace_channels
 from .cmip6_drift import summary as drift_summary
 from .deficit import climate_deficit_report
 from .energy_budget import closure
@@ -17,6 +18,8 @@ def content() -> list[tuple[str, str]]:
     eb = closure()
     ds = drift_summary()
     xs = crosscheck_summary()
+    ace_cs = ace_channels()
+    ace_a = ace_anchor()
     mass_ratio = abs(ds["worst_mass_mm_per_yr"]) / ds["slr_reference_mm_per_yr"]
     return [
         ("title", "PACLAND · Climate"),
@@ -27,7 +30,7 @@ def content() -> list[tuple[str, str]]:
         ("headline", f"The leak is in the coupling, not the ocean ({ds['n_failing_energy']}/19 energy, {ds['n_failing_mass']}/19 mass, {ds['n_failing_salt']}/19 salt) — fix the air-sea exchange, the ocean model is fine."),
         ("headline", f"Only {xs['n_survives_all']} of 19 models survive all three axes — conservation-clean, reasonable sensitivity, reasonable forcing ({', '.join(xs['survives_all_axes'])})."),
         ("headline", "The forcing axis sharpens it: MPI-ESM1-2-LR / HAM leak AND force too strongly, ACCESS-ESM1-5 / BCC / CNRM-ESM2-1 leak AND force too weakly — conservation alone is never enough."),
-        ("headline", "Skillful ≠ true — before trusting an AI climate model, ask: against the Earth, or against another model?"),
+        ("headline", f"Skillful ≠ true — ACE's '>90% of tracked variables' is {ace_cs['reference_fidelity_pct']:.0%} model-vs-model ({ace_cs['n_beats_baseline']}/{ace_cs['n_outputs']} vs a coarser GCM); against the Earth it is certified only to ~{ace_a.radius:.0%} on m={ace_a.n_validation} observables."),
         ("headline", "Trust by verdict, not by reputation — a machine-checked pass/fail, not a paper footnote."),
         ("h", "1 · What we are measuring"),
         ("p", "Climate projections are the most consequential predictions we make. The discipline asks the question the field has never answered in numbers: how much of a projection is verified, versus extrapolated?"),
