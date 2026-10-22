@@ -7,7 +7,8 @@ against reality before it is published. The docs had rotted in exactly that way 
 they fell behind the code.
 
 Each test below recomputes a number from the code or the committed data and fails when
-a doc quotes a different one:
+a doc quotes a different one — or when a string the CLI prints does (``SOURCE_SURFACES``;
+``pacland certify`` echoes the boundary justifications, ``pacland limits`` the positives):
 
   1. **`m`**, the Mitchell Verification Deficit — recomputed from the
      measured/computable/validated flags in ``pacland.observables`` across the
@@ -66,6 +67,11 @@ LANDSCAPE_DOCS = (
     "docs/orbit-space-unification.md",
     "docs/sampling-frontier.md",
 )
+
+# Non-doc surfaces the CLI prints verbatim: `pacland certify` echoes a boundary's
+# justification and `pacland limits` echoes its positive line, so a stale `m` here is
+# published just as surely as one in a doc.
+SOURCE_SURFACES = ("src/pacland/limits.py",)
 
 # Docs that quote how many tests the suite has.
 TEST_COUNT_DOCS = (
@@ -142,7 +148,7 @@ class TestDocClaims(unittest.TestCase):
         )
 
         claims = 0
-        for rel in DEFICIT_DOCS:
+        for rel in DEFICIT_DOCS + SOURCE_SURFACES:
             for number, line in doc_lines(rel):
                 if _is_history(line):
                     continue
@@ -219,7 +225,12 @@ class TestDocClaims(unittest.TestCase):
 
     def test_every_guarded_doc_exists_and_is_nonempty(self):
         # A renamed/moved doc must fail loudly here, not silently stop being checked.
-        for rel in set(DEFICIT_DOCS) | set(LANDSCAPE_DOCS) | set(TEST_COUNT_DOCS):
+        for rel in (
+            set(DEFICIT_DOCS)
+            | set(LANDSCAPE_DOCS)
+            | set(TEST_COUNT_DOCS)
+            | set(SOURCE_SURFACES)
+        ):
             path = ROOT / rel
             self.assertTrue(path.is_file(), f"guarded doc {rel} does not exist")
             self.assertGreater(
