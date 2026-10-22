@@ -67,6 +67,17 @@ def _drugs_entries() -> list[TrustEntry]:
     ]
 
 
+def _economics_entries() -> list[TrustEntry]:
+    return [
+        TrustEntry("economics", "accounting guard-suite", "clean",
+                   "5 guards (circular flow / sectoral balances / stock-flow / budget / non-negative price), each mutation-tested",
+                   "src/pacland/economics/guards.py"),
+        TrustEntry("economics", "constraint-first (double-entry + Walras' law)", "clean",
+                   "E1/E1'/E2 exact (5/5); E3 SMD cited; the uniqueness generalization is heuristic — no symmetry group",
+                   "scripts/validate_economics_constraint_first.py"),
+    ]
+
+
 def _system_entries() -> list[TrustEntry]:
     return [
         TrustEntry("system", "climate guard-suite", "clean",
@@ -90,7 +101,7 @@ def _ai_entries() -> list[TrustEntry]:
 def board() -> list[TrustEntry]:
     """Every discipline's artifacts, ranked: broken first, then weak, then clean."""
     entries = (_climate_entries() + _landscape_entries() + _drugs_entries()
-               + _ai_entries() + _system_entries())
+               + _economics_entries() + _ai_entries() + _system_entries())
     entries.sort(key=lambda e: TIER_ORDER[e.tier])
     return entries
 

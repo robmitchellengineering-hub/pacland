@@ -59,9 +59,22 @@ established discipline by discipline.
   (structure, medicinal chemistry, synthetic feasibility), each able to rule the
   candidate out on its own.
 
+## Worked example — economics' own safeguards
+
+- **Economics' oracle:** **accounting consistency** — double-entry identities hold *by
+  construction*. Income equals expenditure equals output; every financial asset is
+  someone's liability. A model that breaks a national-accounts identity is wrong without
+  any data — the analogue of a pentavalent carbon (drugs) and piControl → zero drift
+  (climate).
+- **Economics' Rule of Three:** three independent ledgers a model must all close —
+  the **circular flow** (income ≡ expenditure ≡ output), the **sectoral balances**
+  ((S−I)+(T−G)+(M−X)=0), and **stock-flow consistency** (Δstock = flow). Three distinct
+  failure modes (a flow leak, sectors that don't sum, a stock that moves without its
+  flow), each able to falsify on its own.
+
 The principle each discipline must satisfy: **name its own oracle (the always-true
 answer) and its own set of N independent checks (one per failure mode, all must agree).**
-Climate and drugs have theirs; each future discipline must work out its own before its
+Climate, drugs and economics have theirs; each future discipline must work out its own before its
 results count as grounded. The *how* — the machine that turns a claim's failure modes
 into the minimal check-set, and the sweep that finds it automatically — is
 `docs/verification-config.md`.

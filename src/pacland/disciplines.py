@@ -48,6 +48,14 @@ DISCIPLINES: tuple[Discipline, ...] = (
         blurb="Chemical space as a landscape; falsification guards over docking and folding predictions.",
     ),
     Discipline(
+        slug="economics",
+        name="Economics / macro-finance",
+        status="built — deficit + guard-suite",
+        package="pacland.economics",
+        docs="docs/economics-verification-deficit.md",
+        blurb="Accounting identities as the always-true oracle; a policy forecast is extrapolation, not verification.",
+    ),
+    Discipline(
         slug="epi",
         name="Epidemiology / disease modelling",
         status="queued",
