@@ -76,14 +76,35 @@ generic rows show a rough `|W_T|/|W| ≈ 0.6·|τ|`. Follow-up: re-fit on `|W|` 
 
 ## Sequence (cheap → long)
 
-1. **Complete the covariance table** — Law III (g_s) **done**, IIb (phase) **dispatched**, IV
-   (moduli): shell jobs on `pacland-rog`, each with a control. [cheap]
+1. **Complete the covariance table** — Laws I–V **done** (scaling, superpotential magnitude+phase,
+   string-coupling, moduli, counting): shell jobs on `pacland-rog`, each with a control. [cheap]
 2. **The truncation diagnostic** — **DONE** (`diagnose_truncation.py`, `2339Z`): interior ⇒ physical
    hierarchy, not truncation. [cheap]
-3. **The K-theory torsion correspondence** — tadpole (Euler index, Freed–Witten ℤ₂) ≡ anomaly
-   (Dirac index, Witten global ℤ₂) as the same K-theory kind. The flux↔SM bridge. [symbolic]
-4. **The Molien–Weyl cert** — Law V, certify the 19 and the GUT 3-collapse. [symbolic]
-5. **The dictionary rank on one stratum** — the long pole, and where `m` grows.
+3. **The K-theory torsion correspondence** — rational half **done** (`validate_ktheory_torsion.py`:
+   Â has no pure `c₃`, so the O3 charge is the Euler index, not the Dirac index — same K-theory
+   *kind*, different *index*). The ℤ₂ torsion (Freed–Witten vs Witten global anomaly) is the named
+   open half, out of reach of rational cohomology. [symbolic]
+4. **The Molien–Weyl cert** — Law V **done** (`validate_molien_weyl.py`, three routes to 19). [symbolic]
+5. **The dictionary rank** — **the negative theorem, established** (below). The full dictionary
+   *map* remains the long pole, and is provably not a map: the 19 are free coordinates. [long]
+
+## The dictionary rank — the negative theorem
+
+The dictionary is **ranked, not solved**. Its rank is established exactly (all in
+`validate_sm_rank_test.py` + `validate_molien_weyl.py`):
+
+- **flux sector**: the map `(F,H) → observables` has **rank 1** — the tadpole. Everything else the
+  flux could carry is noise (the structure map, `r = 1.0` only for `N`). The flux dictionary is the
+  collapse to the single constraint.
+- **SM sector**: the map `(UV inputs) → 19 parameters` has **rank 19** — the orbit-space dimension —
+  and the *only* known UV symmetry (GUT) collapses exactly **3 of 19** (gauge 3→1, b–τ 2→1), never
+  all 19 (the SM has no duality group + FFT, so there is no flux-style total collapse).
+
+Consequence, stated as a result: **the 19 are free coordinates, not functions of the invariants** —
+there is no "connecting equation" to find, and a programme looking for one is looking for something
+the theorem already ruled out. The connecting structure is the *quotient map* (a point per tadpole
+for flux), and the unification result is the rank plus its collapses. This is where `m` (the
+Mitchell Verification Deficit) is certified, not where a formula appears.
 
 ## Falsifiers that kill the whole programme (unchanged, re-asserted)
 
