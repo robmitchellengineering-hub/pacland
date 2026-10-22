@@ -43,6 +43,17 @@ Dispatched 2026-10-22 on `pacland-rog`; both completed `pass`.
 Every one of the 80 vacua satisfies `N_flux ≤ L`. The SUSY fraction falls 40% → 5%
 as h12 approaches the cliff — the constraint holds, the selection thins.
 
-Vacuum JSONs are on the rog (`/home/rob/h12_3_m3_vacua.json`,
-`/home/rob/h12_4_m1_vacua.json`); pull them into `data/` for the full tadpole
-distribution and the mirror-symmetry (`h¹¹↔h²¹`) check.
+The constraint-first structure shows in the distributions (same runs):
+
+| h12 | `W₀ = \|W\|` | `g_s = 1/Im τ` | `N_flux` |
+|---|---|---|---|
+| 3 | [14, 2.7e62], med 55 | [0.00, 0.47], med 0.16 | [5, 103] ≤ 104 |
+| 4 | [7.9, 3.2e75], med 4.9e43 | [0.00, 0.43], med ~0 | [2, 75] ≤ 76 |
+
+The **constraint is exact** (`N_flux ≤ L`, no exceptions) while the **parameter `W₀`
+is free** — spread over ~60 orders of magnitude — and `g_s` stays weak (`< 0.5`, the
+ISD sampler's perturbative regime). The exact thing is tight; the non-exact thing is
+not predicted.
+
+Vacuum JSONs are committed at `data/h12_3_m3_vacua.json` and
+`data/h12_4_m1_vacua.json` (40 vacua each: flux, moduli, tau, residual, is_susy).
