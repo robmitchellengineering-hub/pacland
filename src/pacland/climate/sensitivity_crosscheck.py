@@ -30,8 +30,11 @@ def load() -> dict:
 
 
 def sensitivity_tier(ecs: float, d: dict) -> str:
-    if ecs <= d["likely_range_K"][1]:
+    lo, hi = d["likely_range_K"]
+    if lo <= ecs <= hi:
         return "reasonable"
+    if ecs < lo:
+        return "low"
     if ecs <= d["hot_threshold_K"]:
         return "high"
     return "hot"
