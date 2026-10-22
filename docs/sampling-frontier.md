@@ -31,29 +31,42 @@ candidate is generated. Other h12=3 model_IDs (2, 3, 4) carry the data and work.
 `scripts/sample_h12_gen.py` takes `model_ID` explicitly so the frontier can be
 sampled on a valid model.
 
-## Runs
+## The full run — 14 models, 5,885 vacua (2026-10-22, sharded on `pacland-rog`)
 
-Dispatched 2026-10-22 on `pacland-rog`; both completed `pass`.
+| h12 | model | crit pts | SUSY | SUSY% | W₀ med (10^) | g_s max | `N_flux` | `L` |
+|---|---|---|---|---|---|---|---|---|
+| 2 | m1 | 500 | 120 | 24% | 6.3 | 0.48 | [1, 274] | 276 |
+| 2 | m2 | 500 | 202 | 40% | 1.8 | 0.50 | [2, 118] | 120 |
+| 2 | m3 | 504 | 49 | 10% | 20.2 | 0.49 | [1, 129] | 148 |
+| 2 | m4 | 501 | 114 | 23% | 2.1 | 0.49 | [1, 118] | 124 |
+| 2 | m5 | 500 | 124 | 25% | 2.2 | 0.50 | [1, 134] | 136 |
+| 2 | m6 | 502 | 192 | 38% | 2.1 | 0.50 | [1, 132] | 132 |
+| 2 | m7 | 417 | 154 | 37% | 1.8 | 0.49 | [1, 217] | 276 |
+| 3 | m2 | 504 | 7 | 1% | 63.7 | 0.48 | [1, 135] | 136 |
+| 3 | m3 | 408 | 141 | 35% | 1.7 | 0.50 | [2, 104] | 104 |
+| 3 | m4 | 505 | 131 | 26% | 2.6 | 0.50 | [1, 120] | 120 |
+| 4 | m1 | 159 | 8 | 5% | 17.1 | 0.50 | [1, 76] | 76 |
+| 4 | m2 | 171 | 0 | 0% | 64.5 | 0.36 | [1, 64] | 104 |
+| 4 | m3 | 500 | 2 | 0.4% | 63.2 | 0.29 | [1, 112] | 128 |
+| 4 | m4 | 214 | 1 | 0.5% | 62.9 | 0.49 | [1, 108] | 136 |
 
-| run | critical points | SUSY | tadpole `N_flux` | bound `L` | all ≤ L |
-|---|---|---|---|---|---|
-| `h12-3-m3-vacua` (h12=3, model_ID=3) | **40** | **16** | [5, 103], med 48 | 104 | ✅ |
-| `h12-4-m1-vacua` (h12=4, model_ID=1) | **40** | **2** | [2, 75], med 20 | 76 | ✅ |
+**Aggregate:** h12=2 → 3,424 pts / 955 SUSY (**27.9%**) · h12=3 → 1,417 / 279
+(**19.7%**) · h12=4 → 1,044 / 11 (**1.1%**) · h12=5 → 0. Total **5,885 critical
+points, 1,245 SUSY vacua.**
 
-Every one of the 80 vacua satisfies `N_flux ≤ L`. The SUSY fraction falls 40% → 5%
-as h12 approaches the cliff — the constraint holds, the selection thins.
+## What the full run shows
 
-The constraint-first structure shows in the distributions (same runs):
+1. **The SUSY fraction collapses ~25×** from h12=2 (28%) → h12=3 (20%) → h12=4 (1%)
+   → h12=5 (0). The frontier is a measured curve, not a single cliff.
+2. **The constraint holds everywhere** — all 5,885 vacua satisfy `N_flux ≤ L`, no
+   exceptions.
+3. **W₀ is free** — spans ~77 orders of magnitude (`10^0.1` to `10^78.9`); `g_s` stays
+   weak (`< 0.5`).
+4. **W₀ median tracks the SUSY fraction** — the SUSY-rich models (h12=3 m3/m4, ~30%)
+   have small `W₀` (median `10^1.7`–`10^2.6`), while the SUSY-poor models (h12=4
+   m2/m3/m4, ~0%) have huge `W₀` (median `10^63`–`10^65`). SUSY vacua live at small
+   `W₀`; as h12 grows the sampler stops finding them and returns only large-`W₀`
+   non-SUSY critical points.
 
-| h12 | `W₀ = \|W\|` | `g_s = 1/Im τ` | `N_flux` |
-|---|---|---|---|
-| 3 | [14, 2.7e62], med 55 | [0.00, 0.47], med 0.16 | [5, 103] ≤ 104 |
-| 4 | [7.9, 3.2e75], med 4.9e43 | [0.00, 0.43], med ~0 | [2, 75] ≤ 76 |
-
-The **constraint is exact** (`N_flux ≤ L`, no exceptions) while the **parameter `W₀`
-is free** — spread over ~60 orders of magnitude — and `g_s` stays weak (`< 0.5`, the
-ISD sampler's perturbative regime). The exact thing is tight; the non-exact thing is
-not predicted.
-
-Vacuum JSONs are committed at `data/h12_3_m3_vacua.json` and
-`data/h12_4_m1_vacua.json` (40 vacua each: flux, moduli, tau, residual, is_susy).
+Vacuum JSONs are committed at `data/h12_<h>_m<m>_stats.json` (14 files; each vacuum
+carries flux, moduli, tau, residual, is_susy).
