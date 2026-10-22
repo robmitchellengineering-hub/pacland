@@ -4,15 +4,21 @@ The synthesis of this project plus the leading research, stated as one program.
 
 ## What we now know — three results point the same way
 
-1. **No exact invariant selects a vacuum, and no certificate-only search converges
-   (ours, proved).** W0 is statistically uniform (Denef–Douglas), so `flux → W0` has
-   ~zero mutual information; by Valiant's contrapositive (*evolvable ⇒ learnable*),
-   no certificate-only evolutionary search converges. We confirmed the uniformity on
-   163 real flux vacua. `docs/learnability-negative.md`.
+1. **No exact invariant can select a vacuum, and certificate-only search is hopeless
+   for a second reason (ours).** The tadpole is the unique exact structure, so no
+   exact polynomial duality-invariant flux function can single out a vacuum. The
+   earlier argument from Valiant's contrapositive was **retracted on 2026-10-19**: the
+   "zero mutual information" premise was a single-coordinate artefact, and the joint
+   test finds weak multi-coordinate learnability (r ≈ 0.62 on 174 SUSY vacua). What
+   survives is the **extrapolation** argument: with a prediction error of 0.50 nats,
+   the KKLT target log|W0| = −9.2 sits 9.9 nats below the mean — far outside the
+   sampled region. `docs/learnability-negative.md` §3.
 
-2. **The deficit is total, and that's a measurement problem, not a conceptual one
-   (ours).** `m = 0` validated oracle outputs today, so the certificate is vacuous —
-   but it closes as calibrated oracles are built. `docs/verification-deficit.md`.
+2. **The deficit is 9, and it is a measurement problem, not a conceptual one (ours).**
+   m = 9 observables are simultaneously measured, computable and validated — topology
+   4, flux 1 (the tadpole), Standard Model 4 — recomputed from
+   `src/pacland/observables.py` on 2026-10-22. It was 5 before the SM sector was
+   climbed.
 
 3. **The literature was never searching.** Denef–Douglas (uniformity), the swampland
    program (constraints), and the S-matrix bootstrap (consistency) all attack the
@@ -52,10 +58,10 @@ not by search.
 The field splits into "search" (ML landscape scans) and "constrain"
 (swampland/bootstrap), and treats them as separate camps. We unify them under one
 discipline — *verified* constraint, with information-theoretic structure mining on one
-side and certificates on the other. Nobody does the search side (it's dead), and nobody
-*certifies* the constraint side (there's no framework). We now have both halves of the
-framework, and the point where they meet is where the compactification gets pinned down
-— or provably can't.
+side and certificates on the other. Nobody does the search side (no exact invariant
+can select a vacuum), and nobody *certifies* the constraint side (there's no
+framework). We now have both halves of the framework, and the point where they meet is
+where the compactification gets pinned down — or provably can't.
 
 ## The first build: a non-linear structure miner
 
