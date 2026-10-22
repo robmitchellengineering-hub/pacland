@@ -2,9 +2,10 @@
 
 The Complete Exact Structure Theorem proved that the **flux sector's** only exact
 structure is its constraint (the D3 tadpole) plus its label (CY topology). This doc
-extends the same classification to the **Standard Model**, which is the `m = 0`
-frontier the theorem named as the open question: *are ALL exact structures
-constraint structures?*
+extends the same classification to the **Standard Model**, which *was* the frontier
+the theorem named as the open question (history: it read `m = 0` when the theorem was
+written, and 5 before the SM rungs; climbing the SM half is what raised the deficit
+from 5 to 9, commit `0c6bfe0`): *are ALL exact structures constraint structures?*
 
 ## The SM's exact structure decomposes exactly like the flux sector's
 

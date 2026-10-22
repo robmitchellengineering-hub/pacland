@@ -72,7 +72,7 @@ constraint-first program restated as a limit:
 4. **Weak-structure tails** — W₀'s r = 0.62 cannot hit the KKLT target (20 σ away),
    but it *can* rule out the wrong-W₀ vacua; narrow by the tail, not the target.
 5. **SM prioritisation** — rank the ten SM observables by elimination power and
-   build the oracles (close the deficit m = 5) in that order, highest cut first.
+   build the oracles (close the deficit m = 9) in that order, highest cut first.
 
 All five are testable with the existing system. Items 1–4 run now on the data we
-have; item 5 is the roadmap for turning m = 5 into m = 6, 7, ….
+have; item 5 is the roadmap for turning m = 9 into 10, 11, ….

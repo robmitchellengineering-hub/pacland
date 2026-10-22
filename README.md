@@ -94,7 +94,7 @@ Two research fan-outs refined the open claim (see `docs/sm-conjecture-notes.md`,
 ```sh
 pip install pacland
 pacland limits            # the boundary map (four walls)
-pacland deficit           # the Mitchell Verification Deficit (m = 5)
+pacland deficit           # the Mitchell Verification Deficit (m = 9)
 pacland mine data.json    # classify observables: structured vs random
 pacland constrain data.json
 pacland solve data.json   # constraint-first: the certified viable class
@@ -105,7 +105,7 @@ pacland climb             # run the deficit climber on the mesh
 ## Tests
 
 ```sh
-python3 -m unittest discover -s tests   # 232 tests
+python3 -m unittest discover -s tests   # 236 tests
 ```
 
 ## Honest frontier

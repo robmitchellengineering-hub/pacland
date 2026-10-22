@@ -39,9 +39,13 @@ BOUNDARIES = [
     Boundary(
         "Verify a candidate vacuum today",
         LimitType.UNMEASURABLE,
-        "m=0 validated oracle outputs -> the certificate radius is infinite "
-        "(docs/verification-deficit.md).",
-        "The deficit is computable, and it closes as calibrated oracles are built.",
+        "m=9 validated oracle outputs (topology 4 + flux 1 + SM 4) -> the certificate "
+        "radius is finite, 0.45 at delta_e = 0.025 (docs/verification-deficit.md); the "
+        "*values* (the 19 free parameters) are still unvalidated, so a value prediction "
+        "carries no bound.",
+        "The deficit is the positive: m=9 for exact structure (topology 4 + flux 1 + "
+        "SM 4), still nothing for the values, and it closes as calibrated value oracles "
+        "are built.",
     ),
     Boundary(
         "Measure the KKLT tuning probability (|W0| ~ 1e-4)",

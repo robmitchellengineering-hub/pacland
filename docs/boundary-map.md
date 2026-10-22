@@ -10,7 +10,7 @@ climbing them without naming them. This doc names them.
 | sense | meaning | the move | our instance |
 |---|---|---|---|
 | **intractable** | answer exists, no feasible algorithm | prove intractability, or find structure that shortcuts it | search over W₀ (10⁵⁰⁰, not evolvable) |
-| **unmeasurable** | answer exists, ground truth / data absent | compute the *deficit*, characterize what is measurable | m=0 verification; the KKLT tail |
+| **unmeasurable** | answer exists, ground truth / data absent | compute the *deficit*, characterize what is measurable | the SM's *values* (nothing validated); the KKLT tail |
 | **underdetermined** | no unique answer exists | the answer is a *set*; compute its invariants and constraints | the measure / selection |
 | **undecidable** | provably no algorithm | prove undecidability (Turing/Gödel) | the vacuum-existence question (Diophantine → Matiyasevich) |
 
@@ -33,8 +33,10 @@ the sense of limit, the justification, and what *remains* computable:
 
 1. **Search over W₀** — *intractable*. Justification: log-uniform W₀ (measured) →
    not learnable → not evolvable. Positive: the verifier survives.
-2. **Verify a candidate today** — *unmeasurable*. Justification: m=0 → vacuous
-   certificate. Positive: the deficit is computable and closes as oracles are built.
+2. **Verify a candidate today** — *unmeasurable for its values*. Justification: the
+   values sector has nothing validated → a vacuous certificate for any *value* claim
+   (the `m = 9` rungs cover exact structure only). Positive: the deficit is computable
+   and closes as oracles are built.
 3. **KKLT tuning probability** — *unmeasurable*. Justification: target 7.6 nats
    below data. Positive: the prior is measured over 3.7 nats; extrapolation is
    flagged.

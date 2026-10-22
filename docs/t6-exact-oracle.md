@@ -36,7 +36,7 @@ identically zero — the verifier is *provably* exact.
 
 It does **not** raise the SM Mitchell Deficit m (which counts *measured* +
 computable + validated SM observables): T⁶ is not our universe, so its observables
-have no experimental target. m stays 5. What T⁶ does is close the *pipeline* gap —
+have no experimental target. m stays 9. What T⁶ does is close the *pipeline* gap —
 build #2 — which is the prerequisite for build #3 (the real CY oracle that will
 raise m toward SM physics).
 
@@ -89,5 +89,5 @@ tadpole/gravity — is **proven exactly**, bookending the measured CY versions.
 ```
 python3 scripts/validate_t6.py          # 21/21 numerical self-assertions
 python3 scripts/validate_t6_sympy.py    # 8/8 exact symbolic checks
-python3 -m unittest discover -s tests   # 140 tests
+python3 -m unittest discover -s tests   # 236 tests
 ```

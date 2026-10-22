@@ -82,7 +82,7 @@ A swampland quantity that falls in neither bucket would be a *new kind of struct
 The swampland bounds are *predictions*, not *measurements*: there is no experimental
 target value for "the WGC scale" the way there is for α_s(M_Z). So this system
 extends PACLAND's **prediction** surface (`docs/falsifiable-predictions.md`), not its
-verification deficit. m stays **5** (topology 4 + flux tadpole 1); the swampland
+verification deficit. m stays **9** (topology 4 + flux tadpole 1 + SM 4); the swampland
 work is the benchmark that future structure-mining claims must beat, not a new
 validated oracle rung.
 
@@ -90,7 +90,7 @@ validated oracle rung.
 
 ```
 python3 scripts/test_swampland.py
-python3 -m unittest discover -s tests -q   # 127 tests
+python3 -m unittest discover -s tests -q   # 236 tests
 ```
 
 The module cross-checks its numpy ridge against the canonical stdlib
