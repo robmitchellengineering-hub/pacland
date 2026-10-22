@@ -100,6 +100,20 @@ free content is everything behavioural.
 
 Reproduce: `python3 scripts/validate_economics_identification.py` (5/5 exact).
 
+## The empirical axis, built — forecast failure
+
+`src/pacland/economics/forecast.py` makes the Meese–Rogoff point a check, not a citation:
+
+- **`guard_forecast_is_extrapolation`** — compares a model's one-step-ahead forecast
+  error against the no-change (random-walk) benchmark. It stays green while the model
+  fails to beat the benchmark (the forecast is extrapolation, not verification), and goes
+  **red** when a model has real out-of-sample skill (falsifying the axis-1 claim for that
+  model) — the seeded-oracle mutation proves the check can fire.
+- The real-data confirmation of axis 1 is the field's own record: Meese–Rogoff 1983, Rossi
+  2013, Gürkaynak et al. — a structural model fails to beat a random walk out of sample.
+
+Reproduce: `python3 scripts/validate_economics_forecast.py` (3/3).
+
 ## Honest limits
 
 - **"validated" ≠ "validated out-of-sample."** It means "reproduces the measured series
