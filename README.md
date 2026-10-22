@@ -24,10 +24,12 @@ The registry is `src/pacland/disciplines.py`; list them with `pacland discipline
 
 > **A theory of everything predicts nothing exactly except what it *forbids*
 > (constraints) and what it is *handed* (labels).** In the flux sector this is now a
-> **proven theorem**: the D3 tadpole is the *unique* exact structure, so the 20-year
-> "search for the special vacuum" is provably dead — search can only eliminate, never
-> select. In the Standard Model the same two-type decomposition holds, and the open
-> question is precisely stated and falsifiable.
+> **proven theorem**: the D3 tadpole is the *unique* exact structure, so no exact,
+> polynomial, duality-invariant flux function can single out a vacuum. That is a
+> no-go on *exact invariant* selectors only — it does not rule out statistical,
+> moduli-dependent, or non-polynomial selection, and `N ≤ L` *bounds* the search
+> space rather than forbidding it. In the Standard Model the same two-type
+> decomposition holds, and the open question is precisely stated and falsifiable.
 
 ## The theorem tower — machine-checked
 
@@ -103,7 +105,7 @@ pacland climb             # run the deficit climber on the mesh
 ## Tests
 
 ```sh
-python3 -m unittest discover -s tests   # 140 tests
+python3 -m unittest discover -s tests   # 232 tests
 ```
 
 ## Honest frontier
