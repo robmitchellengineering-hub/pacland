@@ -66,11 +66,13 @@ established discipline by discipline.
   someone's liability. A model that breaks a national-accounts identity is wrong without
   any data — the analogue of a pentavalent carbon (drugs) and piControl → zero drift
   (climate).
-- **Economics' Rule of Three:** three independent ledgers a model must all close —
-  the **circular flow** (income ≡ expenditure ≡ output), the **sectoral balances**
-  ((S−I)+(T−G)+(M−X)=0), and **stock-flow consistency** (Δstock = flow). Three distinct
-  failure modes (a flow leak, sectors that don't sum, a stock that moves without its
-  flow), each able to falsify on its own.
+- **Economics' Rule of Three:** three independent axes, each from a different
+  direction, all pointing at the one claim *"a macro model predicts relations, never
+  values"* — **empirical** (out-of-sample forecast failure: Meese–Rogoff / Rossi /
+  Gürkaynak), **theoretical** (set-identification: Sonnenschein–Mantel–Debreu / Gorman —
+  aggregates never identify the model), and **structural** (the accounting identities —
+  double-entry, the only exact content). The three ledgers (circular flow, sectoral
+  balances, stock-flow) are three facets of the *structural* axis, not three axes.
 
 The principle each discipline must satisfy: **name its own oracle (the always-true
 answer) and its own set of N independent checks (one per failure mode, all must agree).**

@@ -83,6 +83,23 @@ because any aggregate behaviour consistent with Walras' law + homogeneity is rea
 **unidentifiable from aggregates**. The reliable content is what the accounts forbid; the
 free content is everything behavioural.
 
+## The theoretical axis, built — set-identification (the "better model")
+
+`src/pacland/economics/identification.py` makes the SMD point a check, not a citation:
+
+- **Gorman aggregation** — two economies with *different* endowment distributions but the
+  same total produce the *same* aggregate excess demand. So the distribution is not
+  identified from aggregates; the total is.
+- **`guard_point_identified`** — a model's point claim is refused when an alternative
+  parameter value produces the same aggregate (set-identified), and admitted only when no
+  alternative exists (point-identified). This is the axis-2 falsifier: it goes red exactly
+  when a model reports a point inside an unidentified region.
+- **The better model** (`constraint_set_model`) — emits the *identified* quantity (the
+  private balance S−I, forced by the identity) and the *identified set* for the rest (S vs I
+  are a line), and refuses a point forecast inside an unidentified region.
+
+Reproduce: `python3 scripts/validate_economics_identification.py` (5/5 exact).
+
 ## Honest limits
 
 - **"validated" ≠ "validated out-of-sample."** It means "reproduces the measured series
