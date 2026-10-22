@@ -12,14 +12,16 @@ physics claim; it is a *where next* analysis for the verification discipline.
 
 ## The recipe — the expandable methodology (how to add a discipline)
 
-Eight steps, distilled from climate and drugs. Run them in order; a result does not
-count as *grounded* until steps 2–3 (its own oracle + Rule of Three) are done.
+Steps 2–3 are the machine in `docs/verification-config.md` — enumerate the claim's
+failure modes, one check each, mutation-tested, independent, minimal cover. A result
+does not count as *grounded* until steps 2–3 are done.
 
 1. **Gap analysis (5-angle fan-out).** Confirm no (ε,δ) certificate / verification
    deficit exists in the field (`docs/research-fanout.md`).
 2. **Name the oracle.** The always-true answer — what *must* hold. (climate: `piControl`
-   → zero drift; drugs: chemical validity.)
-3. **Name the Rule of Three.** Three independent ways a wrong answer shows.
+   → zero drift; drugs: chemical validity.) This is one special check in the config —
+   it targets the failure mode "we are measuring the wrong thing entirely."
+3. **Name the N independent checks.** One per failure mode, all must agree — N is not 3.
    (climate: energy + mass + salt ledgers; drugs: validity + drug-likeness +
    synthesizability.)
 4. **Build the deficit.** measured + computable + validated → `m` → radius `1/√m`.

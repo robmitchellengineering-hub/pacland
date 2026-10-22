@@ -60,6 +60,8 @@ established discipline by discipline.
   candidate out on its own.
 
 The principle each discipline must satisfy: **name its own oracle (the always-true
-answer) and its own Rule of Three (the independent ways a wrong answer would show).**
+answer) and its own set of N independent checks (one per failure mode, all must agree).**
 Climate and drugs have theirs; each future discipline must work out its own before its
-results count as grounded.
+results count as grounded. The *how* — the machine that turns a claim's failure modes
+into the minimal check-set, and the sweep that finds it automatically — is
+`docs/verification-config.md`.
