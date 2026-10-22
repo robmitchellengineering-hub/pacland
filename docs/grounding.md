@@ -48,5 +48,18 @@ established discipline by discipline.
   not the ocean model. That is a discipline-specific three-way check, not the physics
   trio (MI/ridge/permutation) borrowed out of place.
 
+## Worked example — drug discovery's own safeguards
+
+- **Drugs' oracle:** **chemical validity** — a molecule must be valency/charge/tautomer-
+  consistent (the RDKit-sanitisation standard). A "molecule" with a pentavalent carbon is
+  not a molecule; validity is an always-true answer, no opinion required.
+- **Drugs' Rule of Three:** three independent checks a candidate must all pass —
+  **validity** (well-formed), **drug-likeness** (Lipinski / PAINS / REOS forbidden-state
+  filters), **synthesizability** (RAScore accessibility floor). Three different axes
+  (structure, medicinal chemistry, synthetic feasibility), each able to rule the
+  candidate out on its own.
+
 The principle each discipline must satisfy: **name its own oracle (the always-true
 answer) and its own Rule of Three (the independent ways a wrong answer would show).**
+Climate and drugs have theirs; each future discipline must work out its own before its
+results count as grounded.
