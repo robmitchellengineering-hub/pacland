@@ -12,9 +12,9 @@ verification → log-uniform W₀ (measured) → the boundary map ("you don't co
 uncomputable, you map it").
 
 **Session B (v2 — engineering):** "our exact discipline does not exist in the field" →
-the Verification Deficit (total, m=0) → the Verification Vault (guards + mutation
-tests over CYTools/JAXVacua) → Reality Guards (falsification suite) → a rated
-6-approach portfolio.
+the Verification Deficit (total — nothing validated at that point) → the Verification
+Vault (guards + mutation tests over CYTools/JAXVacua) → Reality Guards (falsification
+suite) → a rated 6-approach portfolio.
 
 The shared insight, in two phrasings:
 
@@ -54,7 +54,7 @@ all built or scoped:
 
 | layer | status | session |
 |---|---|---|
-| certificate + deficit (the math) | built, m=0 = total deficit | A + B |
+| certificate + deficit (the math) | built; `m = 9` today (it was 0 when these sessions ran) | A + B |
 | vault + guards + reality-guards (the machine) | built, mutation-tested, real-validated | B |
 | structure/constraint/boundary (the characterization) | built, log-uniform W₀, 7-boundary map | A |
 | falsify the swampland (attack) | scoped, cheap to start | B |

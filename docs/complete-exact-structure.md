@@ -42,8 +42,9 @@ Mitchell's Completeness Theorem turns this from "we haven't found more yet" into
   transitivity of the duality group — there is provably **no second flux observable
   to find**;
 - so `m` can never grow from the flux sector. Any future growth must come from the
-  *other* sectors (D-brane charges, the Standard Model), which is exactly the
-  `m = 0` frontier.
+  *other* sectors — the part of the frontier that is still unclimbed: the D-brane
+  charges and the SM's free-parameter *values* (the SM's exact structure has since been
+  climbed, and it is what took `m` from 5 to 9).
 
 This is the precise sense in which "the only exact structure is the constraint" is
 now a theorem, not a program: for the flux, there is nothing left to look for.
