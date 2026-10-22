@@ -35,7 +35,7 @@ import jax.numpy as jnp  # noqa: E402
 import numpy as np  # noqa: E402
 import jaxvacua as jvc  # noqa: E402
 
-H12 = [2, 3, 4, 5, 10, 15, 20, 25]
+H12 = [int(a) for a in sys.argv[1:]] or [2, 3, 4, 5, 10, 15, 20, 25]  # shardable: pass h12 values
 SCALES = [1.0, 10.0, 100.0]
 N_POINTS = 6
 SEED = 20261022
@@ -80,6 +80,7 @@ def main():
 
     print("=" * 96)
     print("G3 — cond(M) over a stated moduli box, by h12 and scale")
+    print(f"h12 in {H12}")
     print(f"box: Re z in [-s, s], Im z in [0.5s, 3.0s], s in {SCALES}; {N_POINTS} points each; seed {SEED}")
     print("NOTE: cone membership NOT enforced (no sampler exposed by FluxVacuaFinder) —")
     print("      this is the trend of cond(M) over the box, not the wall doc's exact numbers.")
