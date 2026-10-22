@@ -4,10 +4,11 @@ The synthesis of this project plus the leading research, stated as one program.
 
 ## What we now know — three results point the same way
 
-1. **Search is dead (ours, proved).** W0 is statistically uniform (Denef–Douglas),
-   so `flux → W0` has ~zero mutual information; by Valiant's contrapositive
-   (*evolvable ⇒ learnable*), no certificate-only evolutionary search converges. We
-   confirmed the uniformity on 163 real flux vacua. `docs/learnability-negative.md`.
+1. **No exact invariant selects a vacuum, and no certificate-only search converges
+   (ours, proved).** W0 is statistically uniform (Denef–Douglas), so `flux → W0` has
+   ~zero mutual information; by Valiant's contrapositive (*evolvable ⇒ learnable*),
+   no certificate-only evolutionary search converges. We confirmed the uniformity on
+   163 real flux vacua. `docs/learnability-negative.md`.
 
 2. **The deficit is total, and that's a measurement problem, not a conceptual one
    (ours).** `m = 0` validated oracle outputs today, so the certificate is vacuous —

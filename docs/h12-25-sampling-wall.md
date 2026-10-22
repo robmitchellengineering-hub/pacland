@@ -101,9 +101,31 @@ stop inverting the flat direction:
 3. **A different proposal** that never inverts the flat direction (e.g. sample in
    the well-conditioned subspace and lift).
 
-Each is a small, testable change against `sampler.ISD_sampling` /
-`linearised_shifts_ISD`; the diagnostic is the same cond(`M`) + `|dV|`-after-round
-table in this file.
+Each is a small, testable change against the real sampler entry points. An earlier
+version of this section pointed at `sampler.ISD_sampling` / `linearised_shifts_ISD` —
+those pointers were wrong: there is no `sampler.py` in the installed package. The real
+symbols, read off `/home/rob/cytools-venv/lib/python3.12/site-packages/jaxvacua` on
+`pacland-rog` (2026-10-22):
+
+- **The ISD proposal** — `jaxvacua.sampling.data_sampler.ISD_sampling` (a method of
+  `class data_sampler` in `sampling.py`, with variants `_ISD_sampling_FH`,
+  `_ISD_sampling_PM`, `initial_guesses_ISD`). Not a module-level function, and not in
+  a module called `sampler`.
+- **The one-step linearised shifts** —
+  `jaxvacua.flux_vacua_finder.FluxVacuaFinder.linearised_shifts_ISD` (a method of
+  `class FluxVacuaFinder` in `flux_vacua_finder.py`; the shared entry point is
+  `linearised_shifts`).
+- **The ISD completion and its integer rounding** —
+  `jaxvacua.flux_bounding._process_h_at_modulus_jit` (`jnp.round` of the completed
+  flux) and `bounded_fluxes._build_isd_apply_init` (`jnp.around(f_cont, 0)` inside
+  `apply_init_sub`).
+- **The ISD matrix `M` and its spectrum** — `bounded_fluxes._compute_evs_and_M_raw`
+  builds `M = self.model.ISD_matrix(...)` and takes `jnp.linalg.eigvalsh(M)`.
+  `ISD_matrix` itself is defined on the model in `periods.py` / `css.py`; the batched
+  ISD kernels are `precompute_isd_data`, `_build_isd_kernels`, `isd_refine_batch` and
+  `_prepare_isd_pipeline` (all in `flux_bounding.py`).
+
+The diagnostic is the same cond(`M`) + `|dV|`-after-round table in this file.
 
 Recorded so this is not re-derived: the sampler runs end-to-end and the mesh job
 path is proven; the open question is purely the h12=25 proposal.
