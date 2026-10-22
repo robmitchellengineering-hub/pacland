@@ -82,4 +82,27 @@ def summary() -> dict:
     }
 
 
-__all__ = ["load", "sensitivity_tier", "crosscheck", "summary"]
+__all__ = ["load", "sensitivity_tier", "crosscheck", "summary", "trust_entries"]
+
+
+def trust_entries() -> list:
+    """Emit the two-axis trust entries (clean = both axes pass; broken = both fail)."""
+    from ..trust import TrustEntry
+
+    out = []
+    for r in crosscheck():
+        v = r["verdict"]
+        if v == "survives both axes":
+            tier = "clean"
+        elif v in ("leaky AND hot sensitivity", "leaky AND high sensitivity"):
+            tier = "broken"
+        else:
+            tier = "weak"
+        out.append(TrustEntry(
+            discipline="climate",
+            artifact=f"CMIP6 {r['model']}",
+            tier=tier,
+            detail=f"{v} — {r['ledgers_failed']} ledgers failed, ECS {r['ecs_K']:.2f} C",
+            evidence="Irving et al. 2021 (drift) + Zelinka et al. 2020 (ECS)",
+        ))
+    return out

@@ -7,8 +7,9 @@ of the climate discipline's first real-data guard run.
 ## The finding, in one sentence
 
 > **12 of 19 CMIP6 models leak energy, 6 leak ocean mass, but only 2 leak salt — so
-> the leak lives in the atmosphere-ocean coupling, not the ocean model; and two of the
-> leakers (CNRM-ESM2-1, CNRM-CM6-1) leak heat at ~1.9× the Earth's energy imbalance.**
+> the leak lives in the atmosphere-ocean coupling, not the ocean model. Crossed with
+> the field's climate-sensitivity axis, only 2 of 19 survive both axes (the GISS
+> family); the rest fail conservation, sensitivity, or both.**
 
 ## The climate oracle and the Rule of Three
 
