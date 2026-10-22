@@ -50,11 +50,52 @@ demonstration that the library's superpotential contains a term non-linear in fl
 
 ---
 
-## Candidate laws (not yet named — pending verification)
+## Mitchell's Law II — the S-duality invariance of the superpotential
 
-| candidate | what it would say | test | status |
-|---|---|---|---|
-| the S-duality transformation law | `\|W_S\|/\|W\| = e^b · \|τ\|^a` with a clean fit across vacua — i.e. the library realises `(F,H)→(−H,F)`, `τ→−1/τ` as a genuine duality | `scripts/validate_s_duality_vacua.py`, job `2150Z` | **running** — becomes **Mitchell's Law II** only if the log residual < 0.10 |
+**Statement.** Under the S-generator of the duality group acting on the flux pair and the
+axio-dilaton,
+
+```
+(F, H) -> (-H, F)        tau -> -1/tau        moduli held fixed
+```
+
+the superpotential is **invariant in magnitude**: `|W(-H, F; τ = -1/τ)| = |W(F, H; τ)|`.
+Equivalently: the realised transformation law is `|W_S|/|W| = |τ|^0` — the exponent is zero.
+
+**Why it matters.** It is the first direct evidence for **C3's well-definedness** half of the
+unification claim: a duality transformation maps a vacuum to a vacuum carrying the *same*
+superpotential, so the orbit-space coordinates are consistent across dual descriptions. It is
+also the reason the tadpole invariance under S is not a coincidence: `N' = (-H)ᵀJF = FᵀJH = N`
+because `J` is antisymmetric, and the same antisymmetry is what leaves `W` invariant.
+
+**Evidence.** `scripts/validate_s_duality_vacua.py`, job `2026-10-22T2150Z` on `pacland-rog`
+(jaxvacua 0.1.2), 25 primitive SUSY vacua with **0 failures**:
+
+```
+evaluated 25   failed 0
+transformation law fit: |W_S|/|W| = exp(-0.0000) * |tau|^-0.0000
+  residual rms in log: 0.0000
+  verdict: LAW
+```
+
+The sample spans `|τ|` from 2.16 to 11.49, i.e. nearly a decade in coupling, and the ratio is
+`1.0000e+00` on **every** row — not a fit through scattered points but a constant. The test
+deliberately did **not** assume the textbook law; it fitted `a` and `b` freely, and both came
+back zero.
+
+**Scope.** Verified for `h12 = 2`, `model_ID = 1` (the KS truncation), on primitive
+(`d = 1`) SUSY vacua, for the **magnitude** `|W|`. The complex phase of `W` under S-duality is
+**not** verified here — the fit constrains the modulus, not the argument — and no claim is made
+about `h12 ≥ 3` or about the potential `V`, which is not invariant (`V ∝ e^K(...)` changes with
+the Kähler data even when `W` does not).
+
+**Falsifier.** Any vacuum in the same class whose `|W_S|/|W|` departs from 1 by more than the
+fit's tolerance (log residual > 0.10). A phase measurement departing from a fixed law would
+weaken the statement to magnitude-only invariance, which is what is claimed today.
+
+---
+
+## Candidate laws (not yet named — pending verification)
 | the injectivity law | distinct duality orbits at fixed `N` never share low-energy data | not written yet (corpus-only, no jaxvacua needed) | queued as test 2 of C3 |
 
 **Naming rule for what comes next.** A candidate is written up here the moment its test lands,
