@@ -70,6 +70,19 @@ wraps them as pass/fail, mutation-tested checks (`src/pacland/economics/guards.p
 
 Each has a seeded-fault mutation test proving it goes red on the fault it exists to catch.
 
+## What is exact vs what is free
+
+The economy's *exact* content is the accounting identities, and they are exact **by
+definition**: double-entry bookkeeping makes income ≡ expenditure and the sectoral
+balances sum to zero *by construction* — no model, no data, no symmetry argument needed.
+Walras' law adds the one genuine invariance this field has — only **relative prices** are
+determined (rescaling the unit of account changes nothing). And Sonnenschein–Mantel–Debreu
+proves the deepest version of the point: the aggregate data can never *select* the model,
+because any aggregate behaviour consistent with Walras' law + homogeneity is realizable by
+*some* economy — so the deep parameters (β, σ, φ, …) are not merely unpredicable, they are
+**unidentifiable from aggregates**. The reliable content is what the accounts forbid; the
+free content is everything behavioural.
+
 ## Honest limits
 
 - **"validated" ≠ "validated out-of-sample."** It means "reproduces the measured series

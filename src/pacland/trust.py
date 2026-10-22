@@ -72,9 +72,6 @@ def _economics_entries() -> list[TrustEntry]:
         TrustEntry("economics", "accounting guard-suite", "clean",
                    "5 guards (circular flow / sectoral balances / stock-flow / budget / non-negative price), each mutation-tested",
                    "src/pacland/economics/guards.py"),
-        TrustEntry("economics", "constraint-first (double-entry + Walras' law)", "clean",
-                   "E1/E1'/E2 exact (5/5); E3 SMD cited; the uniqueness generalization is heuristic — no symmetry group",
-                   "scripts/validate_economics_constraint_first.py"),
     ]
 
 
