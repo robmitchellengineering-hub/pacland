@@ -26,7 +26,13 @@ disagreement between two passes is itself the next check.
   symmetric with the tadpole's Freed–Witten ℤ₂. If correct, they are the same object
   at full strength, not only rationally.
 
-**Open:** the torsion correspondence is unverified. This is the next check (below).
+**Update 2026-10-22 — the check refined "which index."** A sympy expansion of the
+Â-genus to degree 6 found it has **no c₃ term** (coefficient 0), so the constructive
+pass's literal "O3 charge `−χ/24` = `∫Â(TX)`" is wrong. The tadpole's index is the
+**Euler** index (`χ = ∫c₃`, Gauss–Bonnet–Chern), the anomaly's is the **Dirac** index
+(`[Â·ch]₆`, Atiyah–Singer). So "same object" sharpens to: **same K-theory *kind*
+(both a class whose shadow is a vanishing index), different *index* (Euler vs Dirac).**
+The ℤ₂ torsion correspondence is still the open check.
 
 ## 2. Three types, not two (refutes the two-type decomposition)
 
