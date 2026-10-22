@@ -46,9 +46,9 @@ falsifier**. A law earns the name only when all four of `MITCHELLS-LAWS.md` hold
 |---|---|---|---|---|
 | **I** scaling | `W(dF,dH)=d·W`, `N(dF,dH)=d²·N`, `gcd` scales | `d² | N` on all 5,885 rows | a DW zero set not preserved under scaling | **DONE** (5/5 + `2143Z` ratio 2.0) |
 | **II** `\|W\|` S-invariance | `\|W(-H,F;-1/τ)\| = \|W(F,H;τ)\|` | free fit `a,b` in `\|W_S\|/\|W\| = e^a \|τ\|^b` → both 0 | log residual > 0.10 | **DONE** (100/100, 0.0000) |
-| **IIb** phase of `W` under S | `arg W` has a fixed law `f(τ)` | `\|W\|` row reproduces | phase not a function of τ | open |
+| **IIb** phase of `W` under S | `arg(W_S/W) = -arg(τ)` exactly (⇒ `W_S = W·τ̄/\|τ\|`) | `\|W\|` row reproduces (1.0000) | phase scatters (resid > 0.10) | **DONE** (100/100, resid 0.0000) |
 | **III** `g_s` under S,T | `g_s = 1/Im(τ)`; S: `τ→-1/τ` ⇒ `g_s'=\|τ\|²g_s`, T: `τ→τ+1` ⇒ `g_s'=g_s` | `g_s` reproduced at original τ | `g_s' ≠ \|τ\|²g_s` under S | **DONE** (100/100 clean; definitional — the 2209Z `0.21→3.9e7` was a bug) |
-| **IV** moduli covariance | `z_i` transforms by the moduli-sector law | reproduce the stored moduli row | moduli law scatters | open |
+| **IV** moduli covariance | `z_i → z_i` at degree 0 (S/T act on flux+τ only) | G2: transformed point at fixed z is a vacuum | a degree-0 moduli shift needed | **established** (by definition; monodromy deferred to degree>0) |
 | **V** counting | 19 = orbit-space dim (Molien–Weyl); GUT collapses exactly 3 | rank test 3-way | a 20th relation beyond GUT | **next** (rank 3-way done; Molien cert owed) |
 
 **The T-row of `|W|` is a finding, not a law.** `|W_T|/|W|` (T: `(F,H)→(F,H+F)`, `τ→τ+1`) does **not**
