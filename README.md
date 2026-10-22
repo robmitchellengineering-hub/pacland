@@ -12,6 +12,7 @@ expansion. Live: [pacland.netlify.app](https://pacland.netlify.app) · `pip inst
 | **String landscape** | core (built) | PAC verification of the flux landscape + Standard Model |
 | **Climate / Earth-system** | built — deficit + guard-suite | `docs/climate-verification-deficit.md` · `pacland climate` |
 | Drug discovery / protein science | built — deficit + guard-suite | `docs/drugs-verification-deficit.md` · `pacland drugs` |
+| Economics / macro-finance | built — deficit + guard-suite | `docs/economics-verification-deficit.md` · `pacland economics` |
 | Epidemiology / disease modelling | queued | identifiability as the underdetermined wall |
 | AI safety / capability verification | queued (parallel lane) | the verification machine aimed at model claims |
 

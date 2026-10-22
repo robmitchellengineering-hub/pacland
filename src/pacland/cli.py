@@ -328,6 +328,13 @@ def _cmd_drugs(args) -> None:
     print(summary(delta_e=args.delta))
 
 
+def _cmd_economics(args) -> None:
+    """Economics discipline: the verification deficit (playbook item #3)."""
+    from .economics.deficit import summary
+
+    print(summary(delta_e=args.delta))
+
+
 def _cmd_trust(_args) -> None:
     """The trust board — every discipline, one ranked output."""
     from .trust import board, summary
@@ -397,6 +404,10 @@ def main(argv=None) -> None:
     dm = sub.add_parser("drugs", help="drug discovery discipline: the verification deficit")
     dm.add_argument("--delta", type=float, default=0.025, help="confidence budget delta_e")
     dm.set_defaults(func=_cmd_drugs)
+
+    em = sub.add_parser("economics", help="economics discipline: the verification deficit")
+    em.add_argument("--delta", type=float, default=0.025, help="confidence budget delta_e")
+    em.set_defaults(func=_cmd_economics)
 
     t = sub.add_parser("trust", help="the trust board — ranked artifacts across disciplines")
     t.set_defaults(func=_cmd_trust)

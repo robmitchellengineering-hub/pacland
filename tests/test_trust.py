@@ -7,10 +7,10 @@ from pacland.trust import board, summary
 class TestTrustBoard(unittest.TestCase):
     def test_board_counts(self):
         s = summary()
-        self.assertEqual(s["n_artifacts"], 29)
+        self.assertEqual(s["n_artifacts"], 30)
         self.assertEqual(s["n_broken"], 14)
         self.assertEqual(s["n_weak"], 4)
-        self.assertEqual(s["n_clean"], 11)
+        self.assertEqual(s["n_clean"], 12)
 
     def test_broken_are_the_double_flagged(self):
         broken = summary()["broken"]

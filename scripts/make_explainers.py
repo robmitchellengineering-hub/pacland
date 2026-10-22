@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main() -> int:
-    disciplines = ["climate", "drugs"]
+    disciplines = ["climate", "drugs", "economics"]
     for name in disciplines:
         mod = __import__(f"pacland.{name}.explainer", fromlist=["content"])
         out = ROOT / f"PACLAND-{name}-explainer.pdf"
