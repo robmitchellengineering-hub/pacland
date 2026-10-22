@@ -149,7 +149,7 @@
     </div>
 
     <div class="callout">
-      <p><strong>The CMIP6 conservation drift (real data).</strong> 12 of 19 CMIP6 models leak energy; two — CNRM-ESM2-1 (1.485 W/m²) and CNRM-CM6-1 (1.46 W/m²) — leak at ~1.9× the Earth's energy imbalance (0.77 W/m²). And the leak lives in the <em>atmosphere</em>, not the ocean: median total TOA drift 0.241 W/m² vs 0.051 W/m² in the ocean. 6 models also leak <em>ocean mass</em> — ACCESS-ESM1-5 at −1.03 mm/yr, ~30% of observed sea-level rise. A model leaking heat at twice the signal it's forecasting is carrying an error the size of the projection.</p>
+      <p><strong>The CMIP6 conservation drift (real data, three ledgers).</strong> A conserving model must close three independent ledgers — energy, mass, salt. Measured: <strong>12 of 19 leak energy</strong> (two — CNRM-ESM2-1 at 1.485 W/m², CNRM-CM6-1 at 1.46 — at ~1.9× the Earth's energy imbalance), <strong>6 of 19 leak mass</strong> (ACCESS-ESM1-5 at −1.03 mm/yr, ~30% of sea-level rise), but <strong>only 2 of 19 leak salt</strong>. Salt — the purely-ocean ledger — is conserved orders of magnitude better, so the leak lives in the <em>atmosphere-ocean coupling</em>, not the ocean model.</p>
     </div>
     <p class="muted">Full write-up: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">the CMIP6 conservation deficit</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">explainer (PDF)</a> · reproduce: <code>pacland climate</code> · <code>python3 scripts/climate_cmip6_drift.py</code>.</p>
 

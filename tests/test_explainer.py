@@ -17,9 +17,15 @@ class TestExplainerContent(unittest.TestCase):
 
     def test_climate_pulls_real_drift_numbers(self):
         t = _text(climate_content())
-        self.assertIn("12 of 19 CMIP6 models leak energy", t)
+        self.assertIn("12 of 19 models leak", t)
         self.assertIn("CNRM-ESM2-1", t)
         self.assertIn("1.485", t)
+
+    def test_climate_pulls_the_three_ledgers(self):
+        t = _text(climate_content())
+        self.assertIn("2 models leak — salt", t)
+        self.assertIn("conserve all three ledgers", t)
+        self.assertIn("the atmosphere-ocean coupling", t)
 
     def test_climate_pulls_energy_budget_numbers(self):
         t = _text(climate_content())

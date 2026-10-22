@@ -8,13 +8,16 @@ class TestTrustBoard(unittest.TestCase):
     def test_board_counts(self):
         s = summary()
         self.assertEqual(s["n_artifacts"], 28)
-        self.assertEqual(s["n_broken"], 2)
-        self.assertEqual(s["n_weak"], 10)
-        self.assertEqual(s["n_clean"], 16)
+        self.assertEqual(s["n_broken"], 5)
+        self.assertEqual(s["n_weak"], 9)
+        self.assertEqual(s["n_clean"], 14)
 
-    def test_broken_are_the_two_cnrm_models(self):
-        self.assertEqual(summary()["broken"],
-                         ["CMIP6 CNRM-ESM2-1", "CMIP6 CNRM-CM6-1"])
+    def test_broken_are_the_multi_ledger_leakers(self):
+        broken = summary()["broken"]
+        self.assertIn("CMIP6 BCC-ESM1", broken)        # fails all three ledgers
+        self.assertIn("CMIP6 CNRM-ESM2-1", broken)
+        self.assertIn("CMIP6 CNRM-CM6-1", broken)
+        self.assertEqual(len(broken), 5)
 
     def test_board_orders_broken_first(self):
         es = board()

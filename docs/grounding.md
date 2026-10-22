@@ -34,3 +34,19 @@ For each new discipline, *what makes a measurement trustworthy there* is an **op
 question to be worked out per field**, not imported from string theory. The three
 transferable pieces above are the honest floor; everything else is still to be
 established discipline by discipline.
+
+## Worked example — climate's own safeguards (worked out 2026-10-22)
+
+- **Climate's oracle:** `piControl → zero drift`. A pre-industrial control has no
+  forcing, so a conserving model *must* be stationary. This is an always-true answer
+  from the model's own setup — no external dataset — and the drift data measures the
+  violation of it.
+- **Climate's Rule of Three:** the **three conservation ledgers** — energy, mass, salt.
+  Three independent physics (radiative, mass, and a source-free tracer), all of which a
+  conserving model must close. The measured result: 12/19 models leak energy, 6/19 leak
+  mass, but only 2/19 leak salt — so the leak lives in the atmosphere-ocean coupling,
+  not the ocean model. That is a discipline-specific three-way check, not the physics
+  trio (MI/ridge/permutation) borrowed out of place.
+
+The principle each discipline must satisfy: **name its own oracle (the always-true
+answer) and its own Rule of Three (the independent ways a wrong answer would show).**

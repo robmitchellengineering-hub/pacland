@@ -1,14 +1,24 @@
-# The CMIP6 conservation deficit — a machine-checked guard on model energy drift
+# The CMIP6 conservation deficit — a three-ledger machine-checked guard
 
 Status: **computed and guarded** — `src/pacland/climate/cmip6_drift.py` +
-`data/climate/cmip6_drift.json` + 8 known-answer tests (green). This is the write-up
+`data/climate/cmip6_drift.json` + 15 known-answer tests (green). This is the write-up
 of the climate discipline's first real-data guard run.
 
 ## The finding, in one sentence
 
-> **12 of 19 CMIP6 models fail a machine-checked energy-conservation guard; two of
-> them — CNRM-ESM2-1 and CNRM-CM6-1 — leak energy at ~1.9× the Earth's own energy
-> imbalance; and the leak lives in the atmosphere, not the ocean.**
+> **12 of 19 CMIP6 models leak energy, 6 leak ocean mass, but only 2 leak salt — so
+> the leak lives in the atmosphere-ocean coupling, not the ocean model; and two of the
+> leakers (CNRM-ESM2-1, CNRM-CM6-1) leak heat at ~1.9× the Earth's energy imbalance.**
+
+## The climate oracle and the Rule of Three
+
+The discipline-specific grounding (see `docs/grounding.md`):
+
+- **Oracle:** a `piControl` run has no forcing, so a conserving model *must* be
+  stationary — zero drift. That is the always-true answer, and the drift data measures
+  the violation of it.
+- **Rule of Three:** the **three conservation ledgers** — energy, mass, salt — three
+  independent physics a conserving model must all close.
 
 ## 1. Why conservation is the first thing to check
 
@@ -102,25 +112,47 @@ sea-level rise)**. The worst, ACCESS-ESM1-5, drifts at −1.03 mm yr⁻¹ — a 
 entire sea-level signal. So the models leak both energy *and* mass; neither conservation
 law is a solved detail.
 
-### 3.4 The conservation trust ranking
+### 3.4 The salt leak — the third ledger, and where it points
 
-- **broken** (leak > EEI): CNRM-ESM2-1, CNRM-CM6-1
-- **leaking** (0.1 < leak ≤ EEI): IPSL-CM6A-LR, BCC-CSM2-MR, MPI-ESM1-2-LR, BCC-ESM1,
-  ACCESS-CM2, MPI-ESM-1-2-HAM, ACCESS-ESM1-5, GFDL-CM4, MPI-ESM1-2-HR, HadGEM3-GC31-LL
-- **clean** (leak ≤ 0.1): GISS-E2-1-G-CC, E3SM-1-1, GISS-E2-1-G, EC-Earth3, E3SM-1-0,
-  UKESM1-0-LL, EC-Earth3-Veg
+The third independent ledger is **salt** — conserved by definition (no sources or
+sinks), so a conserving ocean's salinity drift must be ~0. The measured salinity drift
+(`soga`) is tiny: only **2 of 19 models** leak (BCC-ESM1 at −4.1×10⁻⁵ g/kg/yr,
+BCC-CSM2-MR at −4.0×10⁻⁵), the rest drift at 10⁻⁷–10⁻⁶.
+
+So the three ledgers fall off sharply:
+
+| ledger | models leaking |
+|---|---|
+| energy (net TOA) | **12 of 19** |
+| mass (ocean mass) | **6 of 19** |
+| salt (salinity) | **2 of 19** |
+
+**This is the conclusion the three-way check was built to find:** salt — the purely
+*ocean* ledger — is conserved orders of magnitude better than energy and mass, which
+cross the atmosphere-ocean boundary. The leak is therefore in the **atmosphere-ocean
+coupling**, not in the ocean model itself. Only **5 of 19 models conserve all three
+ledgers.**
+
+### 3.5 The conservation trust ranking (by ledgers failed)
+
+- **broken** (≥2 ledgers failed): BCC-ESM1 (all 3), CNRM-ESM2-1, CNRM-CM6-1,
+  BCC-CSM2-MR, ACCESS-ESM1-5
+- **leaking** (exactly 1 ledger): IPSL-CM6A-LR, MPI-ESM1-2-LR, ACCESS-CM2,
+  MPI-ESM-1-2-HAM, GFDL-CM4, MPI-ESM1-2-HR, HadGEM3-GC31-LL, E3SM-1-0, UKESM1-0-LL
+- **clean** (0 ledgers failed): GISS-E2-1-G-CC, E3SM-1-1, GISS-E2-1-G, EC-Earth3,
+  EC-Earth3-Veg
 
 ## 4. Conclusions
 
 1. **Conservation is not a solved detail — it is a hard, quantified defect in most
-   CMIP6 models.** 12 of 19 leak; the leak is invisible to skill scores and to
-   ensemble spread.
+   CMIP6 models.** 12 of 19 leak energy, 6 of 19 leak mass; the leak is invisible to
+   skill scores and to ensemble spread.
 2. **The error bar can exceed the signal.** Two models leak at ~1.9× the EEI they are
    used to project — an internal error twice the size of the forecast itself.
-3. **The leak is in the atmosphere, not the ocean.** The ocean component of these
-   models conserves energy ~5× better than the whole; so ocean heat-uptake projections
-   are more trustworthy than TOA/atmospheric ones, and the fix effort belongs in the
-   atmospheric advection/coupling, not the ocean.
+3. **The leak is in the coupling, not the ocean.** Salt (purely oceanic) is conserved
+   ~orders of magnitude better than energy and mass (which cross the air-sea boundary),
+   so the defect is in the atmosphere-ocean exchange, not the ocean model — the fix
+   belongs in the coupling.
 4. **Conservation should be a precondition, not a footnote.** A model that fails the
    guard should be drift-corrected explicitly — or excluded from any energy-balance
    conclusion — before its projection is used.
