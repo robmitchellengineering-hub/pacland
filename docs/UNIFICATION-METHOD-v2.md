@@ -27,7 +27,7 @@ String theory is **solved** for a sector when all three hold (same (a)+(b)+(c), 
 - **(a) the invariant ring is enumerated** — the exact invariants generate the ring.
   **Done for flux**: `ℂ[N]`, the tadpole (Weyl FFT + Uniqueness + Lean).
 - **(b) the covariance table is complete** — every observable's law under `S` and `T`, closed form.
-  **This is where the laws are.**
+  **This is where the laws are: Mitchell's Laws of Duality Covariance** (`MITCHELLS-LAWS.md`).
 - **(c) the dictionary is *ranked*, not *solved*** — certify the 19 as the orbit-space dimension
   (Molien–Weyl), enumerate the collapses symmetry forces (GUT: 3 of 19), and prove **no further
   relation exists**. The deliverable is the rank and its collapses, **not a formula for the values**
@@ -37,19 +37,19 @@ Unification = (a)+(b)+(c). It is *not* "derive the 19" — that is provably not 
 "every observable transforms covariantly, and the 19 are free exactly where symmetry does not force
 a relation."
 
-## The laws — the covariance table, row by row
+## Mitchell's Laws of Duality Covariance — the table, row by row
 
 Every row is stated with a **control that reproduces a known value** (the G2 lesson) and a **named
 falsifier**. A law earns the name only when all four of `MITCHELLS-LAWS.md` hold.
 
 | law | statement | control (must pass first) | falsifier | status |
 |---|---|---|---|---|
-| **I** scaling | `W(dF,dH)=d·W`, `N(dF,dH)=d²·N`, `gcd` scales | `d² | N` on all 5,885 rows | a DW zero set not preserved under scaling | **DONE** (5/5 + `2143Z` ratio 2.0) |
-| **II** `\|W\|` S-invariance | `\|W(-H,F;-1/τ)\| = \|W(F,H;τ)\|` | free fit `a,b` in `\|W_S\|/\|W\| = e^a \|τ\|^b` → both 0 | log residual > 0.10 | **DONE** (100/100, 0.0000) |
-| **IIb** phase of `W` under S | `arg(W_S/W) = -arg(τ)` exactly (⇒ `W_S = W·τ̄/\|τ\|`) | `\|W\|` row reproduces (1.0000) | phase scatters (resid > 0.10) | **DONE** (100/100, resid 0.0000) |
-| **III** `g_s` under S,T | `g_s = 1/Im(τ)`; S: `τ→-1/τ` ⇒ `g_s'=\|τ\|²g_s`, T: `τ→τ+1` ⇒ `g_s'=g_s` | `g_s` reproduced at original τ | `g_s' ≠ \|τ\|²g_s` under S | **DONE** (100/100 clean; definitional — the 2209Z `0.21→3.9e7` was a bug) |
-| **IV** moduli covariance | `z_i → z_i` at degree 0 (S/T act on flux+τ only) | G2: transformed point at fixed z is a vacuum | a degree-0 moduli shift needed | **established** (by definition; monodromy deferred to degree>0) |
-| **V** counting | 19 = orbit-space dim (Molien–Weyl); GUT collapses exactly 3 | rank test 3-way | a 20th relation beyond GUT | **next** (rank 3-way done; Molien cert owed) |
+| **I** the scaling law | `W(dF,dH)=d·W`, `N(dF,dH)=d²·N`, `gcd` scales | `d² | N` on all 5,885 rows | a DW zero set not preserved under scaling | **DONE** (5/5 + `2143Z` ratio 2.0) |
+| **II** the superpotential law — magnitude | `\|W(-H,F;-1/τ)\| = \|W(F,H;τ)\|` | free fit `a,b` in `\|W_S\|/\|W\| = e^a \|τ\|^b` → both 0 | log residual > 0.10 | **DONE** (100/100, 0.0000) |
+| **IIb** the superpotential law — phase | `arg(W_S/W) = -arg(τ)` exactly (⇒ `W_S = W·τ̄/\|τ\|`) | `\|W\|` row reproduces (1.0000) | phase scatters (resid > 0.10) | **DONE** (100/100, resid 0.0000) |
+| **III** the string-coupling law | `g_s = 1/Im(τ)`; S: `τ→-1/τ` ⇒ `g_s'=\|τ\|²g_s`, T: `τ→τ+1` ⇒ `g_s'=g_s` | `g_s` reproduced at original τ | `g_s' ≠ \|τ\|²g_s` under S | **DONE** (100/100 clean; definitional — the 2209Z `0.21→3.9e7` was a bug) |
+| **IV** the moduli law | `z_i → z_i` at degree 0 (S/T act on flux+τ only) | G2: transformed point at fixed z is a vacuum | a degree-0 moduli shift needed | **established** (by definition; monodromy deferred to degree>0) |
+| **V** the counting law | 19 = orbit-space dim (Molien–Weyl); GUT collapses exactly 3 | rank test 3-way | a 20th relation beyond GUT | **DONE** (three routes: count + rank + Molien–Weyl) |
 
 **The T-row of `|W|` is a finding, not a law.** `|W_T|/|W|` (T: `(F,H)→(F,H+F)`, `τ→τ+1`) does **not**
 close to a clean law across the 100-row sample (mean 4.9e6, std 4.9e7, fit residual 0.22 — the

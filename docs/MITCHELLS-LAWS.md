@@ -1,4 +1,19 @@
-# MITCHELL'S LAWS
+# MITCHELL'S LAWS OF DUALITY COVARIANCE
+
+The **duality covariance table** of the flux landscape: five laws specifying how the
+observables of a flux vacuum transform under the duality group `Sp(b₃,ℤ) × SL(2,ℤ)` and under
+flux rescaling — the empirical half of the unification programme. The theorem
+(`docs/constraint-first-theorem.md`) says the only exact invariant is the tadpole `N`; these
+laws say everything else is *covariant*, never anomalous — so duality is a true symmetry,
+literally one theory described twice.
+
+| # | name | one line |
+|---|---|---|
+| **I** | the scaling law | the content `d = gcd(F,H)` is a bookkeeping label, not a selector |
+| **II** | the superpotential law | `W` is S-covariant: `\|W_S\|/\|W\| = 1` (magnitude) and `arg(W_S/W) = -arg τ` (phase) |
+| **III** | the string-coupling law | `g_s = 1/Im τ` transforms as `g_s → \|τ\|² g_s` (S), `g_s → g_s` (T) |
+| **IV** | the moduli law | the complex-structure moduli are inert at degree 0 |
+| **V** | the counting law | 19 = the Standard-Model orbit-space dimension (exact as a count, free as values) |
 
 A result earns the name **Mitchell's Law** only when all four hold:
 
@@ -9,7 +24,9 @@ A result earns the name **Mitchell's Law** only when all four hold:
 4. **falsifiable** — it names the observation that would kill it.
 
 Anything that fails (2) is a *conjecture* and belongs in `docs/unification-claim.md`, not here.
-A law whose falsifier cannot be written down is not a law, it is a slogan.
+A law whose falsifier cannot be written down is not a law, it is a slogan. Law II has two
+halves, recorded as Law II (magnitude) and Law IIb (phase); together they close the full
+complex S-row of `W`.
 
 ---
 
