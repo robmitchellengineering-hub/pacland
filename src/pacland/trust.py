@@ -72,6 +72,9 @@ def _economics_entries() -> list[TrustEntry]:
         TrustEntry("economics", "accounting guard-suite", "clean",
                    "5 guards (circular flow / sectoral balances / stock-flow / budget / non-negative price), each mutation-tested",
                    "src/pacland/economics/guards.py"),
+        TrustEntry("economics", "set-identification guard (theoretical axis)", "clean",
+                   "Gorman non-identification + guard_point_identified: a point claim inside a set-identified region fails",
+                   "src/pacland/economics/identification.py"),
     ]
 
 
