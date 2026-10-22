@@ -10,14 +10,34 @@ physics claim; it is a *where next* analysis for the verification discipline.
 
 ---
 
+## The recipe — the expandable methodology (how to add a discipline)
+
+Eight steps, distilled from climate and drugs. Run them in order; a result does not
+count as *grounded* until steps 2–3 (its own oracle + Rule of Three) are done.
+
+1. **Gap analysis (5-angle fan-out).** Confirm no (ε,δ) certificate / verification
+   deficit exists in the field (`docs/research-fanout.md`).
+2. **Name the oracle.** The always-true answer — what *must* hold. (climate: `piControl`
+   → zero drift; drugs: chemical validity.)
+3. **Name the Rule of Three.** Three independent ways a wrong answer shows.
+   (climate: energy + mass + salt ledgers; drugs: validity + drug-likeness +
+   synthesizability.)
+4. **Build the deficit.** measured + computable + validated → `m` → radius `1/√m`.
+5. **Build the guards.** The constraints, each mutation-tested (must be able to fire).
+6. **Run on real data.** The discipline's own dataset (climate: Irving 2021; drugs: MOSES).
+7. **Write the explainer.** Headlines + the finding, auto-generated from the modules.
+8. **Drop into the trust board.** A ranked entry, tiered by how many checks fail.
+
+---
+
 ## Playbook status
 
 | # | Field | Status |
 |---|---|---|
-| 1 | **Climate / Earth-system modelling** | **in progress** — gap-analysis fan-out running (2026-10-22) |
-| 2 | Drug discovery / protein science | queued |
+| 1 | **Climate / Earth-system modelling** | **built + grounded** (oracle + 3 ledgers, real data) |
+| 2 | **Drug discovery / protein science** | **built + grounded** (oracle + 3 checks; real-data run pending) |
 | 3 | Epidemiology / disease modelling | queued |
-| 4 | AI safety / capability verification | queued (parallel lane) |
+| 4 | Valiant Verification (software & AI) | the verified-badge lane |
 | 5 | Materials discovery | queued |
 | 6 | Quantum-computation verification | queued |
 | 7–10 | condensed matter, genomics, neuroscience, economics | queued (foundational) |
