@@ -7,9 +7,9 @@ from pacland.trust import board, summary
 class TestTrustBoard(unittest.TestCase):
     def test_board_counts(self):
         s = summary()
-        self.assertEqual(s["n_artifacts"], 28)
+        self.assertEqual(s["n_artifacts"], 29)
         self.assertEqual(s["n_broken"], 5)
-        self.assertEqual(s["n_weak"], 9)
+        self.assertEqual(s["n_weak"], 10)
         self.assertEqual(s["n_clean"], 14)
 
     def test_broken_are_the_multi_ledger_leakers(self):
