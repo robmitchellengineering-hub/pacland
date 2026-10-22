@@ -15,6 +15,12 @@ If all three had been required, the error would never have shipped. The tadpole
 (r=1.0 on all three) is the positive control proving the tests work; a claim whose
 three tests disagree is *unresolved*, never "one test says X so X."
 
+**This trio is one *config*, not a ritual.** The general law — *N independent checks,
+each targeting a distinct failure mode, all agree* — and the machine that configures a
+discipline (failure modes → one check each → mutation-test → independence → minimal
+cover → sweep for the most efficient set) live in `docs/verification-config.md`. A new
+discipline writes its own config there; it does not import this trio.
+
 ## The one rule that matters: USE the wall, don't hit it
 
 "Uncomputable" is **four different walls**, each with a *way around*. A wall is
