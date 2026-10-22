@@ -75,6 +75,9 @@ def _economics_entries() -> list[TrustEntry]:
         TrustEntry("economics", "set-identification guard (theoretical axis)", "clean",
                    "Gorman non-identification + guard_point_identified: a point claim inside a set-identified region fails",
                    "src/pacland/economics/identification.py"),
+        TrustEntry("economics", "forecast-failure guard (empirical axis)", "clean",
+                   "guard_forecast_is_extrapolation: red on a model that beats the no-change benchmark",
+                   "src/pacland/economics/forecast.py"),
     ]
 
 
