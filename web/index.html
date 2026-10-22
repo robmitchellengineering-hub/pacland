@@ -149,22 +149,21 @@
     </div>
 
     <div class="callout">
-      <p><strong>The CMIP6 conservation drift (real data, three ledgers).</strong> A conserving model must close three independent ledgers — energy, mass, salt. Measured: <strong>12 of 19 leak energy</strong> (two — CNRM-ESM2-1 at 1.485 W/m², CNRM-CM6-1 at 1.46 — at ~1.9× the Earth's energy imbalance), <strong>6 of 19 leak mass</strong> (ACCESS-ESM1-5 at −1.03 mm/yr, ~30% of sea-level rise), but <strong>only 2 of 19 leak salt</strong>. Salt — the purely-ocean ledger — is conserved orders of magnitude better, so the leak lives in the <em>atmosphere-ocean coupling</em>, not the ocean model. Crossed with the field's climate sensitivity, <strong>only 2 of 19 survive both axes — GISS-E2-1-G</strong>.</p>
+      <p><strong>The CMIP6 conservation drift (real data, three ledgers).</strong> A conserving model must close three independent ledgers — energy, mass, salt. Measured: <strong>12 of 19 leak energy</strong> (two — CNRM-ESM2-1 at 1.485 W/m², CNRM-CM6-1 at 1.46 — at ~1.9× the Earth's energy imbalance), <strong>6 of 19 leak mass</strong> (ACCESS-ESM1-5 at −1.03 mm/yr, ~30% of sea-level rise), but <strong>only 2 of 19 leak salt</strong>. Salt — the purely-ocean ledger — is conserved orders of magnitude better, so the leak lives in the <em>atmosphere-ocean coupling</em>, not the ocean model. Crossed with the field's two other quality axes — climate sensitivity (ECS) and effective forcing (ERF2x) — <strong>only 2 of 19 survive all three axes — the GISS family</strong>.</p>
     </div>
     <p class="muted">Full write-up: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">the CMIP6 conservation deficit</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-ace-reference-fidelity.md">the ACE emulator example</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">explainer (PDF)</a> · reproduce: <code>pacland climate</code> · <code>python3 scripts/climate_cmip6_drift.py</code>.</p>
 
     <h2 id="trust">Trust board — every discipline, one ranked output</h2>
-    <p>The monetisation surface: each discipline drops its artifacts into one ranked board, machine-checked and cited. <code>pacland trust</code> ranks 28 artifacts today — <strong>2 broken, 10 weak, 16 clean</strong>.</p>
+    <p>The monetisation surface: each discipline drops its artifacts into one ranked board, machine-checked and cited. <code>pacland trust</code> ranks 29 artifacts today — <strong>14 broken, 4 weak, 11 clean</strong>.</p>
     <div class="callout">
-      <p><strong>The flagship finding.</strong> 12 of 19 CMIP6 models fail an energy-conservation guard; two leak heat at ~1.9× the Earth's energy imbalance, and the leak lives in the atmosphere, not the ocean.</p>
+      <p><strong>The flagship finding.</strong> 12 of 19 CMIP6 models fail an energy-conservation guard; two leak heat at ~1.9× the Earth's energy imbalance, and the leak lives in the atmosphere, not the ocean. Crossed with ECS and forcing, only the GISS family survives all three axes.</p>
     </div>
     <table>
       <thead><tr><th>tier</th><th>artifact</th><th>verdict</th></tr></thead>
       <tbody>
-        <tr><td><span class="tag">broken</span></td><td>CMIP6 CNRM-ESM2-1</td><td>energy leak 1.485 W/m² (1.93× EEI)</td></tr>
-        <tr><td><span class="tag">broken</span></td><td>CMIP6 CNRM-CM6-1</td><td>energy leak 1.460 W/m² (1.90× EEI)</td></tr>
-        <tr><td><span class="tag">weak</span></td><td>10 CMIP6 models (IPSL-CM6A-LR … HadGEM3-GC31-LL)</td><td>energy leak 0.19–0.67 W/m²</td></tr>
-        <tr><td><span class="tag">clean</span></td><td>the 5-theorem tower + 7 conserving models + 2 guard-suites + 2 badge adoptions</td><td>machine-checked / mutation-tested</td></tr>
+        <tr><td><span class="tag">broken</span></td><td>14 CMIP6 models</td><td>fail ≥2 of 3 axes — CNRM-ESM2-1 fails all three (leaky + hot + low forcing)</td></tr>
+        <tr><td><span class="tag">weak</span></td><td>3 CMIP6 models + ACE emulator</td><td>fail exactly 1 axis — E3SM-1-1 (clean but hot), EC-Earth3-Veg (high sensitivity), MPI-ESM1-2-HR (leaky only)</td></tr>
+        <tr><td><span class="tag">clean</span></td><td>the 5-theorem tower + GISS-E2-1-G / -CC + 2 guard-suites + 2 badge adoptions</td><td>machine-checked / mutation-tested / all three axes</td></tr>
       </tbody>
     </table>
     <p class="muted"><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">the CMIP6 write-up</a> · <code>pacland trust</code> · every entry carries its source.</p>
