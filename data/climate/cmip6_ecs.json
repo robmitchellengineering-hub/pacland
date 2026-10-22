@@ -1,0 +1,35 @@
+{
+  "description": "Equilibrium Climate Sensitivity (K) per CMIP6 model, for the two-axis cross-check (conservation x sensitivity).",
+  "source": "Zelinka et al. 2020, Geophys. Res. Lett. 47, e2019GL085782, doi:10.1029/2019GL085782. Data: github.com/mzelinka/cmip56_forcing_feedback_ecs (v2.2, 2022-06-15).",
+  "likely_range_K": [
+    2.5,
+    4.0
+  ],
+  "hot_threshold_K": 4.5,
+  "range_source": "IPCC AR6 likely range 2.5-4.0 C; >4.5 C is the 'hot model' problem (Hausfather et al. 2022, Nature).",
+  "approx_notes": {
+    "E3SM-1-1": "variant of E3SM-1-0",
+    "GISS-E2-1-G-CC": "variant of GISS-E2-1-G"
+  },
+  "ecs_K": {
+    "ACCESS-CM2": 4.66,
+    "ACCESS-ESM1-5": 3.88,
+    "BCC-CSM2-MR": 3.02,
+    "BCC-ESM1": 3.25,
+    "CNRM-CM6-1": 4.9,
+    "CNRM-ESM2-1": 4.79,
+    "E3SM-1-0": 5.31,
+    "E3SM-1-1": 5.31,
+    "EC-Earth3": 4.26,
+    "EC-Earth3-Veg": 4.33,
+    "GFDL-CM4": 3.89,
+    "GISS-E2-1-G": 2.71,
+    "GISS-E2-1-G-CC": 2.71,
+    "HadGEM3-GC31-LL": 5.55,
+    "IPSL-CM6A-LR": 4.7,
+    "MPI-ESM1-2-HR": 2.98,
+    "MPI-ESM1-2-LR": 3.03,
+    "MPI-ESM-1-2-HAM": 2.95,
+    "UKESM1-0-LL": 5.36
+  }
+}
