@@ -30,7 +30,17 @@ class TrustEntry:
 
 def _climate_entries() -> list[TrustEntry]:
     from .climate.cmip6_drift import trust_entries
-    return trust_entries()
+    entries = trust_entries()
+    # The AI-emulator worked example: ACE is "verified" against a reference GCM,
+    # not the Earth (reference-fidelity, not reality-fidelity).
+    entries.append(TrustEntry(
+        discipline="climate",
+        artifact="ACE (AI2 Climate Emulator)",
+        tier="weak",
+        detail="'verified' as fidelity to FV3GFS, not to the Earth — reference-fidelity, not reality-fidelity",
+        evidence="Watt-Meyer et al. 2023, arXiv:2310.02074",
+    ))
+    return entries
 
 
 def _landscape_entries() -> list[TrustEntry]:

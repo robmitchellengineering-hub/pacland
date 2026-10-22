@@ -24,6 +24,7 @@ def content() -> list[tuple[str, str]]:
         ("headline", f"A 2100 projection is extrapolation, not verification — {proj.n_validation} future states are measured (m = 0)."),
         ("headline", f"The leak lives in the coupling, not the ocean — {ds['n_failing_energy']}/19 leak energy, {ds['n_failing_mass']}/19 leak mass, but only {ds['n_failing_salt']}/19 leak salt."),
         ("headline", "For the first time, a climate model's trustworthiness is a machine-checked verdict — not a footnote in a paper."),
+        ("headline", "Skillful ≠ true: the AI climate emulators are verified against another model, not the Earth."),
         ("h", "1 · What we are measuring"),
         ("p", "Climate projections are the most consequential predictions we make. The discipline asks the question the field has never answered in numbers: how much of a projection is verified, versus extrapolated?"),
         ("h", "2 · The verification deficit"),
