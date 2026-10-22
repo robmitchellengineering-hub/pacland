@@ -9,22 +9,25 @@ from __future__ import annotations
 from .cmip6_drift import summary as drift_summary
 from .deficit import climate_deficit_report
 from .energy_budget import closure
+from .sensitivity_crosscheck import summary as crosscheck_summary
 
 
 def content() -> list[tuple[str, str]]:
     hist, proj = climate_deficit_report()
     eb = closure()
     ds = drift_summary()
+    xs = crosscheck_summary()
     mass_ratio = abs(ds["worst_mass_mm_per_yr"]) / ds["slr_reference_mm_per_yr"]
     return [
         ("title", "PACLAND · Climate"),
         ("subtitle", "The verification discipline applied to climate modelling — a plain-English brief"),
-        ("h", "The headlines"),
-        ("headline", f"The error bar is the size of the signal — {ds['n_exceeding_eei']} models leak heat at ~{ds['worst_ratio_to_eei']:.1f}× the energy imbalance they are used to project."),
-        ("headline", f"A 2100 projection is extrapolation, not verification — {proj.n_validation} future states are measured (m = 0)."),
-        ("headline", f"The leak lives in the coupling, not the ocean — {ds['n_failing_energy']}/19 leak energy, {ds['n_failing_mass']}/19 leak mass, but only {ds['n_failing_salt']}/19 leak salt."),
-        ("headline", "For the first time, a climate model's trustworthiness is a machine-checked verdict — not a footnote in a paper."),
-        ("headline", "Skillful ≠ true: the AI climate emulators are verified against another model, not the Earth."),
+        ("h", "The headlines — and what to do about each"),
+        ("headline", f"{ds['n_exceeding_eei']} models leak heat at ~{ds['worst_ratio_to_eei']:.1f}× the signal — don't build on the leakers, use the {ds['n_conserving_all']} that conserve all three laws."),
+        ("headline", f"A 2100 projection is extrapolation, not verification ({proj.n_validation} future states measured) — spend on measurement, not compute."),
+        ("headline", f"The leak is in the coupling, not the ocean ({ds['n_failing_energy']}/19 energy, {ds['n_failing_mass']}/19 mass, {ds['n_failing_salt']}/19 salt) — fix the air-sea exchange, the ocean model is fine."),
+        ("headline", f"Only {xs['n_survives_both']} of 19 models survive both axes — conservation-clean AND reasonable sensitivity ({', '.join(xs['survives_both_axes'])})."),
+        ("headline", "Skillful ≠ true — before trusting an AI climate model, ask: against the Earth, or against another model?"),
+        ("headline", "Trust by verdict, not by reputation — a machine-checked pass/fail, not a paper footnote."),
         ("h", "1 · What we are measuring"),
         ("p", "Climate projections are the most consequential predictions we make. The discipline asks the question the field has never answered in numbers: how much of a projection is verified, versus extrapolated?"),
         ("h", "2 · The verification deficit"),

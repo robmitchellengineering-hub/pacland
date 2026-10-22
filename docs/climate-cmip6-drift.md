@@ -157,6 +157,27 @@ ledgers.**
    guard should be drift-corrected explicitly — or excluded from any energy-balance
    conclusion — before its projection is used.
 
+## 4b. The second axis — sensitivity (the cross-check against consensus)
+
+Conservation is one necessary condition; the field's own quality axis is **climate
+sensitivity** (ECS), where the known "hot model" problem lives (Hausfather et al. 2022).
+Combining the two — our three ledgers × published ECS (Zelinka et al. 2020) — gives the
+two-axis trust table:
+
+| model | ledgers failed | ECS (°C) | two-axis verdict |
+|---|---|---|---|
+| GISS-E2-1-G / -CC | 0 | 2.71 | **survives both axes** |
+| EC-Earth3 / -Veg | 0 | 4.26 / 4.33 | clean but *high* sensitivity |
+| E3SM-1-1 | 0 | 5.31 | clean but **hot** |
+| MPI-ESM1-2-* | 1 | 2.95–3.03 | leaky but reasonable sensitivity |
+| CNRM, UKESM1, HadGEM3, IPSL | ≥1 | 4.7–5.55 | leaky **and** hot |
+
+**The result that revises the conservation-only answer:** only **2 of 19 models survive
+both axes** — the GISS family. The conservation-cleanest (EC-Earth3-Veg) is only "high"
+sensitivity, and E3SM-1-1 is conservation-clean but *hot*. So conservation alone is not
+enough to pick a trustworthy model — it must be crossed with sensitivity. The model to
+build on is the one that passes both, and today that is **GISS-E2-1-G**.
+
 ## 5. Honest limits
 
 - This **re-expresses** Irving et al. 2021's measurement as a machine-checked guard; it
