@@ -29,7 +29,7 @@ class TrustEntry:
 
 
 def _climate_entries() -> list[TrustEntry]:
-    from .climate.cmip6_drift import trust_entries
+    from .climate.sensitivity_crosscheck import trust_entries
     entries = trust_entries()
     # The AI-emulator worked example: ACE is "verified" against a reference GCM,
     # not the Earth (reference-fidelity, not reality-fidelity).
