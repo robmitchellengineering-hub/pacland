@@ -57,7 +57,7 @@ points, 1,245 SUSY vacua.**
 ## What the full run shows
 
 1. **The SUSY fraction collapses ~25×** from h12=2 (28%) → h12=3 (20%) → h12=4 (1%)
-   → h12=5 (0). The frontier is a measured curve, not a single cliff.
+   → h12=5 (~1%). The frontier is a measured curve, not a single cliff.
 2. **The constraint holds everywhere** — all 5,885 vacua satisfy `N_flux ≤ L`, no
    exceptions.
 3. **W₀ is free** — spans ~77 orders of magnitude (`10^0.1` to `10^78.9`); `g_s` stays
@@ -67,6 +67,18 @@ points, 1,245 SUSY vacua.**
    m2/m3/m4, ~0%) have huge `W₀` (median `10^63`–`10^65`). SUSY vacua live at small
    `W₀`; as h12 grows the sampler stops finding them and returns only large-`W₀`
    non-SUSY critical points.
+
+## Correction (2026-10-22) — h12=5 is NOT 0, it is ~1–2%
+
+The "h12=5 → 0" above was a **sampler artifact, not physics.** The standard sampler
+(`sample_critical_points`) solves `dV = 0`, whose Hessian becomes ill-conditioned at
+h12 ≥ 5 (the flat metric directions), so it *stalls* and reports no critical points.
+Solving **`D W = 0` directly** (the F-terms) avoids the Hessian entirely, and it
+finds SUSY vacua at h12=5: **1/100 trials (|DW| → 1e-9), ~1–2%.** So the SUSY fraction
+at h12=5 is ~1%, not 0 — SUSY continues past the old wall, just rare.
+
+The real lesson: **the frontier is a solver limit, not a physics boundary.** To sample
+h12 ≥ 5, use the SUSY equations (`D W = 0`), not the potential gradient (`dV = 0`).
 
 Vacuum JSONs are committed at `data/h12_<h>_m<m>_stats.json` (14 files; each vacuum
 carries flux, moduli, tau, residual, is_susy).
