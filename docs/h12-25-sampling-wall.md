@@ -103,27 +103,47 @@ stop inverting the flat direction:
 
 Each is a small, testable change against the real sampler entry points. An earlier
 version of this section pointed at `sampler.ISD_sampling` / `linearised_shifts_ISD` —
-those pointers were wrong: there is no `sampler.py` in the installed package. The real
-symbols, read off `/home/rob/cytools-venv/lib/python3.12/site-packages/jaxvacua` on
-`pacland-rog` (2026-10-22):
+those pointers were wrong: there is no `sampler.py` in the installed package. A later
+version still pointed at `bounded_fluxes.py`, which **does not exist** either: the
+module is `flux_bounding.py`. Both wrong pointers cost a working session more than an
+hour of read-only probes hunting a file that was never installed, so the table below
+is re-verified against the installed package, with line numbers, by a job that prints
+them (`jaxvacua 0.1.2`, `/home/rob/cytools-venv`, `pacland-rog`, 2026-10-22T21:39Z):
 
-- **The ISD proposal** — `jaxvacua.sampling.data_sampler.ISD_sampling` (a method of
-  `class data_sampler` in `sampling.py`, with variants `_ISD_sampling_FH`,
-  `_ISD_sampling_PM`, `initial_guesses_ISD`). Not a module-level function, and not in
-  a module called `sampler`.
-- **The one-step linearised shifts** —
-  `jaxvacua.flux_vacua_finder.FluxVacuaFinder.linearised_shifts_ISD` (a method of
-  `class FluxVacuaFinder` in `flux_vacua_finder.py`; the shared entry point is
-  `linearised_shifts`).
-- **The ISD completion and its integer rounding** —
-  `jaxvacua.flux_bounding._process_h_at_modulus_jit` (`jnp.round` of the completed
-  flux) and `bounded_fluxes._build_isd_apply_init` (`jnp.around(f_cont, 0)` inside
-  `apply_init_sub`).
-- **The ISD matrix `M` and its spectrum** — `bounded_fluxes._compute_evs_and_M_raw`
-  builds `M = self.model.ISD_matrix(...)` and takes `jnp.linalg.eigvalsh(M)`.
-  `ISD_matrix` itself is defined on the model in `periods.py` / `css.py`; the batched
-  ISD kernels are `precompute_isd_data`, `_build_isd_kernels`, `isd_refine_batch` and
-  `_prepare_isd_pipeline` (all in `flux_bounding.py`).
+| what | real symbol | file:line |
+|---|---|---|
+| ISD proposal (sampler method) | `sampling.data_sampler.ISD_sampling` | `sampling.py:1897` |
+| variant | `data_sampler._ISD_sampling_FH` / `_ISD_sampling_PM` | `sampling.py:1645` / `:1767` |
+| initial guesses | `data_sampler.initial_guesses_ISD` | `sampling.py:2029` |
+| `class data_sampler` | — | `sampling.py:250` |
+| one-step linearised shifts | `flux_vacua_finder.FluxVacuaFinder.linearised_shifts_ISD` | `flux_vacua_finder.py:666` |
+| shared shift entry point | `FluxVacuaFinder.linearised_shifts` | `flux_vacua_finder.py:1019` |
+| ISD matrix `M` + spectrum | `flux_bounding._compute_evs_and_M_raw` | `flux_bounding.py:782` |
+| ISD integer rounding | `flux_bounding._build_isd_apply_init` | `flux_bounding.py:951` |
+| `M` on the model | `ISD_matrix` | `css.py:514`, `periods.py:1516` |
+
+Installed modules (`ls $P/*.py`): `css, cytools_interface, flux_bounding, flux_eft,
+flux_utils, flux_vacua_finder, freezer, hypergeometric_models, lcs, periods, sampling,
+util, vacuum`. **There is no `bounded_fluxes.py` and no `sampler.py`** — a `grep` of a
+path that does not exist exits 2 and reads like "the symbol is gone"; it is not.
+
+**Interpreter trap — the one that bit the session.** `sympy` *is* installed
+(1.14.0 in `/home/rob/cytools-venv`, verified 2026-10-22T21:42Z), but a job that runs
+bare `python3` gets the system interpreter, and there
+`import sympy` raises `ModuleNotFoundError`. So `validate_flux_scaling_lemma.py` died
+at import and its arm reported nothing, which reads as "the exact algebra is
+unavailable" when the module was there all along. **Every job on `pacland-rog` must
+call `/home/rob/cytools-venv/bin/python`** — the system `python3` has neither sympy
+nor the pinned jax/numpy the numbers were measured with.
+
+Two details from the table matter when writing the experiment. `ISD_matrix` is a
+method **on the model** (`periods.py` / `css.py`), not on the finder — call it as
+`model.ISD_matrix(XPer, cXPer)`. And `_compute_evs_and_M_raw(moduli)` already returns
+both the eigenvalues and `M` itself, so the conditioning probe should call it rather
+than rebuild `M`; rebuilding is how the earlier "2200x amplification" story drifted
+away from the library's own construction. The batched ISD kernels
+(`precompute_isd_data`, `_build_isd_kernels`, `isd_refine_batch`, `_prepare_isd_pipeline`)
+are all in `flux_bounding.py`.
 
 The diagnostic is the same cond(`M`) + `|dV|`-after-round table in this file.
 
