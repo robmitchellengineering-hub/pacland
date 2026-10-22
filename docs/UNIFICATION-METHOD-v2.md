@@ -58,22 +58,28 @@ generic rows show a rough `|W_T|/|W| ≈ 0.6·|τ|`. Follow-up: re-fit on `|W|` 
 
 ## The walls, used (prime directive — walls are information)
 
-- **Truncation (old G3).** Not a blocker. The decisive diagnostic is *where the near-null
-  eigenvector of the ISD matrix `M` points* — boundary-aligned (truncation artefact) vs interior
-  (physical hierarchy) — measured at the **proposal stage** via `data_sampler.initial_guesses_ISD`
-  (sampling.py:2029). The `2207Z` failure used `FluxVacuaFinder` (wrong object) and the `1e135`
-  was a stage error (converged vacuum ⇒ `⋆G=iG` ⇒ `M` singular by construction). Same fix class as
-  G2.
+- **Truncation (old G3) — RESOLVED: it is a physical hierarchy, not a truncation artefact.**
+  The decisive diagnostic is *where the near-null eigenvector of the ISD matrix `M` points*.
+  Measured at generic (proposal-stage) moduli via `model.ISD_matrix(moduli, moduli_c)` — note
+  `data_sampler.initial_guesses_ISD` is NOT used (it JIT-compiles for minutes at h12≥5, and the
+  proposal-stage moduli are just generic moduli before any solve). Result across h12=2..25
+  (`scripts/diagnose_truncation.py`, job `2339Z`): the near-null eigenvector is **interior**
+  (weight 0.969 → 1.000 → 0.572) at every h12, boundary-aligned weight ≈ 0 (≤ 0.028) throughout,
+  and the dilaton direction only mixes in at h12=25 (0.426). So the ISD ill-conditioning
+  (cond 4.2e3 → 1.2e7) is a **flattish physical direction in the CS-moduli metric**, and the
+  SUSY-fraction collapse is a physical effect, not a proposal curve. The projection/regularisation
+  fix is legitimate. (The earlier `1e135` was a stage error: at a converged vacuum `⋆G=iG` makes
+  `M` singular by construction.)
 - **Orbit-space-is-a-point.** Redefines the target (covariance table + rank), does not block it.
 - **API mis-addresses** (`tau_c`, `initial_guesses_ISD`). Standing rule: **pin the signature with
   `inspect.signature` before writing any call.** Bought twice.
 
 ## Sequence (cheap → long)
 
-1. **Complete the covariance table** — Law III (g_s), IIb (phase), IV (moduli): three shell jobs on
-   `pacland-rog`, each with a control. [cheap]
-2. **The truncation diagnostic** with the sampler — decides landscape-curve vs proposal-curve.
-   [cheap]
+1. **Complete the covariance table** — Law III (g_s) **done**, IIb (phase) **dispatched**, IV
+   (moduli): shell jobs on `pacland-rog`, each with a control. [cheap]
+2. **The truncation diagnostic** — **DONE** (`diagnose_truncation.py`, `2339Z`): interior ⇒ physical
+   hierarchy, not truncation. [cheap]
 3. **The K-theory torsion correspondence** — tadpole (Euler index, Freed–Witten ℤ₂) ≡ anomaly
    (Dirac index, Witten global ℤ₂) as the same K-theory kind. The flux↔SM bridge. [symbolic]
 4. **The Molien–Weyl cert** — Law V, certify the 19 and the GUT 3-collapse. [symbolic]
