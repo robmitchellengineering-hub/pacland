@@ -1,145 +1,166 @@
 {
-  "description": "Per-model CMIP6 energy AND mass drift (pre-industrial control), from Irving et al. 2021. netTOA = total top-of-atmosphere energy leak; OHC = ocean heat content drift; masso = ocean mass drift. Non-zero in steady state = non-conservation.",
-  "unit": "netTOA/OHC in J yr-1; masso in kg yr-1",
+  "description": "Per-model CMIP6 conservation drift across THREE independent ledgers (pre-industrial control), from Irving et al. 2021. Energy (netTOA), mass (masso), salt (soga). Non-zero in steady state = non-conservation. The three ledgers are the climate discipline's Rule of Three: a conserving model must close all three.",
+  "unit": "netTOA/OHC in J yr-1; masso in kg yr-1; soga in g kg-1 yr-1 (practical salinity)",
   "source": "Irving, Hobbs, Church & Zika 2021, J. Climate 34, 7637-7651, doi:10.1175/JCLI-D-20-0281.1. Data: figshare doi:10.6084/m9.figshare.12143562 (drifts.csv).",
+  "oracle": "piControl has no forcing, so a conserving model must be stationary: zero drift in energy, mass, AND salt. The drift data measures the violation of this always-true answer.",
   "earth_energy_imbalance_wm2": 0.77,
   "eei_source": "Loeb et al. 2021, GRL 48, e2021GL093047 (CERES, 2005-2019).",
   "sea_level_rise_reference_mm_per_yr": 3.4,
   "slr_source": "NASA/NOAA global-mean sea level rise rate, ~3.4 mm/yr (1993-2020).",
   "kg_per_mm_sl": 360000000000000.0,
+  "salt_tolerance_g_per_kg_per_yr": 1e-05,
   "models": [
     {
       "model": "ACCESS-CM2",
       "institution": "CSIRO",
       "netTOA_J_per_yr": 5.92e+21,
       "OHC_J_per_yr": 2.88e+21,
-      "masso_kg_per_yr": -62633400000000.0
+      "masso_kg_per_yr": -62633400000000.0,
+      "soga_g_per_kg_per_yr": 1.4e-06
     },
     {
       "model": "ACCESS-ESM1-5",
       "institution": "CSIRO",
       "netTOA_J_per_yr": -3.96e+21,
       "OHC_J_per_yr": -6.15e+19,
-      "masso_kg_per_yr": -371576000000000.0
+      "masso_kg_per_yr": -371576000000000.0,
+      "soga_g_per_kg_per_yr": 8.74e-06
     },
     {
       "model": "BCC-CSM2-MR",
       "institution": "BCC",
       "netTOA_J_per_yr": -8.76e+21,
       "OHC_J_per_yr": 1.58e+21,
-      "masso_kg_per_yr": 62966100000000.0
+      "masso_kg_per_yr": 62966100000000.0,
+      "soga_g_per_kg_per_yr": -4.03e-05
     },
     {
       "model": "BCC-ESM1",
       "institution": "BCC",
       "netTOA_J_per_yr": -6.47e+21,
       "OHC_J_per_yr": 3.4e+20,
-      "masso_kg_per_yr": 139000000000000.0
+      "masso_kg_per_yr": 139000000000000.0,
+      "soga_g_per_kg_per_yr": -4.12e-05
     },
     {
       "model": "CNRM-CM6-1",
       "institution": "CNRM-CERFACS",
       "netTOA_J_per_yr": 2.35e+22,
       "OHC_J_per_yr": 1.99e+21,
-      "masso_kg_per_yr": 109000000000000.0
+      "masso_kg_per_yr": 109000000000000.0,
+      "soga_g_per_kg_per_yr": -2.29e-07
     },
     {
       "model": "CNRM-ESM2-1",
       "institution": "CNRM-CERFACS",
       "netTOA_J_per_yr": 2.39e+22,
       "OHC_J_per_yr": 1.38e+21,
-      "masso_kg_per_yr": 160000000000000.0
+      "masso_kg_per_yr": 160000000000000.0,
+      "soga_g_per_kg_per_yr": -1.94e-06
     },
     {
       "model": "E3SM-1-0",
       "institution": "E3SM-Project",
       "netTOA_J_per_yr": -3.64e+20,
       "OHC_J_per_yr": -1.08e+20,
-      "masso_kg_per_yr": -175000000000000.0
+      "masso_kg_per_yr": -175000000000000.0,
+      "soga_g_per_kg_per_yr": 4.45e-06
     },
     {
       "model": "E3SM-1-1",
       "institution": "E3SM-Project",
       "netTOA_J_per_yr": -1.09e+21,
       "OHC_J_per_yr": 1.42e+19,
-      "masso_kg_per_yr": 28879600000000.0
+      "masso_kg_per_yr": 28879600000000.0,
+      "soga_g_per_kg_per_yr": -7.09e-07
     },
     {
       "model": "EC-Earth3",
       "institution": "EC-Earth-Consortium",
       "netTOA_J_per_yr": 5.65e+20,
       "OHC_J_per_yr": 1.35e+21,
-      "masso_kg_per_yr": 23071900000000.0
+      "masso_kg_per_yr": 23071900000000.0,
+      "soga_g_per_kg_per_yr": -5.75e-07
     },
     {
       "model": "EC-Earth3-Veg",
       "institution": "EC-Earth-Consortium",
       "netTOA_J_per_yr": 2.9e+20,
       "OHC_J_per_yr": 1.37e+21,
-      "masso_kg_per_yr": 25400000000000.0
+      "masso_kg_per_yr": 25400000000000.0,
+      "soga_g_per_kg_per_yr": -5.84e-07
     },
     {
       "model": "GFDL-CM4",
       "institution": "NOAA-GFDL",
       "netTOA_J_per_yr": 3.88e+21,
       "OHC_J_per_yr": 3.23e+21,
-      "masso_kg_per_yr": -3120000000000.0
+      "masso_kg_per_yr": -3120000000000.0,
+      "soga_g_per_kg_per_yr": 6.56e-08
     },
     {
       "model": "GISS-E2-1-G",
       "institution": "NASA-GISS",
       "netTOA_J_per_yr": 9.08e+20,
       "OHC_J_per_yr": 6.44e+20,
-      "masso_kg_per_yr": -6380000000000.0
+      "masso_kg_per_yr": -6380000000000.0,
+      "soga_g_per_kg_per_yr": 1.66e-07
     },
     {
       "model": "GISS-E2-1-G-CC",
       "institution": "NASA-GISS",
       "netTOA_J_per_yr": 1.12e+21,
       "OHC_J_per_yr": 8.29e+20,
-      "masso_kg_per_yr": -767000000000.0
+      "masso_kg_per_yr": -767000000000.0,
+      "soga_g_per_kg_per_yr": 2.03e-08
     },
     {
       "model": "HadGEM3-GC31-LL",
       "institution": "MOHC",
       "netTOA_J_per_yr": 3.06e+21,
       "OHC_J_per_yr": 1.97e+21,
-      "masso_kg_per_yr": 49000000000000.0
+      "masso_kg_per_yr": 49000000000000.0,
+      "soga_g_per_kg_per_yr": 6.67e-07
     },
     {
       "model": "IPSL-CM6A-LR",
       "institution": "IPSL",
       "netTOA_J_per_yr": 1.07e+22,
       "OHC_J_per_yr": -1.43e+21,
-      "masso_kg_per_yr": 35500000000000.0
+      "masso_kg_per_yr": 35500000000000.0,
+      "soga_g_per_kg_per_yr": -9.18e-07
     },
     {
       "model": "MPI-ESM-1-2-HAM",
       "institution": "HAMMOZ-Consortium",
       "netTOA_J_per_yr": 5.64e+21,
       "OHC_J_per_yr": 8.05e+17,
-      "masso_kg_per_yr": 7200440000000.0
+      "masso_kg_per_yr": 7200440000000.0,
+      "soga_g_per_kg_per_yr": -1.81e-07
     },
     {
       "model": "MPI-ESM1-2-HR",
       "institution": "MPI-M",
       "netTOA_J_per_yr": 3.34e+21,
       "OHC_J_per_yr": 1.77e+20,
-      "masso_kg_per_yr": 9884170000000.0
+      "masso_kg_per_yr": 9884170000000.0,
+      "soga_g_per_kg_per_yr": -2.54e-07
     },
     {
       "model": "MPI-ESM1-2-LR",
       "institution": "MPI-M",
       "netTOA_J_per_yr": 6.77e+21,
       "OHC_J_per_yr": -5.93e+18,
-      "masso_kg_per_yr": 6172120000000.0
+      "masso_kg_per_yr": 6172120000000.0,
+      "soga_g_per_kg_per_yr": -1.53e-07
     },
     {
       "model": "UKESM1-0-LL",
       "institution": "MOHC",
       "netTOA_J_per_yr": 3.5e+20,
       "OHC_J_per_yr": -4.36e+20,
-      "masso_kg_per_yr": 201000000000000.0
+      "masso_kg_per_yr": 201000000000000.0,
+      "soga_g_per_kg_per_yr": -2.83e-06
     }
   ]
 }

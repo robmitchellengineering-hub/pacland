@@ -73,10 +73,19 @@ def guard_ocean_mass(mass_drift_mm_per_yr: float, tol_mm_per_yr: float = 0.3) ->
     return ok, f"ocean-mass drift={mass_drift_mm_per_yr:+.3f} mm/yr SL-equiv (tol {tol_mm_per_yr})"
 
 
+def guard_ocean_salt(salt_drift_g_per_kg_per_yr: float, tol: float = 1e-6) -> tuple[bool, str]:
+    """Salt-conservation guard: salt has no sources or sinks, so a conserving
+    ocean's salinity drift must be ~0. The third independent ledger of the
+    climate Rule of Three (energy + mass + salt)."""
+    ok = abs(salt_drift_g_per_kg_per_yr) <= tol
+    return ok, f"salinity drift={salt_drift_g_per_kg_per_yr:+.2e} g/kg/yr (tol {tol})"
+
+
 __all__ = [
     "guard_energy_budget",
     "guard_water_budget",
     "guard_carbon_budget",
     "guard_nonnegative_specific_humidity",
     "guard_ocean_mass",
+    "guard_ocean_salt",
 ]
