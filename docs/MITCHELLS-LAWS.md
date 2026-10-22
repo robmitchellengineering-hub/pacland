@@ -95,6 +95,77 @@ weaken the statement to magnitude-only invariance, which is what is claimed toda
 
 ---
 
+## Mitchell's Law IIb — the phase of W under S-duality
+
+**Statement.** Under the S-generator the gauge-invariant superpotential transforms by a pure
+phase: `arg(W_S/W) = -arg(τ)` exactly, equivalently `W_S = W · τ̄/|τ|`. Combined with Law II
+(`|W_S|/|W| = 1`) this closes the full complex S-row: `W_S = W · conj(τ)/|τ|`.
+
+**Evidence.** `scripts/measure_phase_law.py`, job `2026-10-22T2340Z` on `pacland-rog`, 100
+primitive SUSY vacua: fit `arg(W_S/W) = a·arg(τ) + b` gives **a = −1.0000, b = 0.0000, residual
+rms 0.0000**. The control (the magnitude of the same ratio) reproduces Law II: `|W_S|/|W| =
+1.000000` (std 4.4e-16), so the phase is measured on a validated path.
+
+**Scope.** `h12 = 2`, `model_ID = 1`, primitive (`d = 1`) SUSY vacua, degree 0 (fixed moduli).
+The gauge-invariant (Kähler-normalised) `W`; the raw `W` has a different modular weight.
+
+**Falsifier.** A phase that departs from `-arg(τ)` by more than the fit tolerance (residual > 0.10).
+
+---
+
+## Mitchell's Law III — the string-coupling covariance
+
+**Statement.** With `g_s = 1/Im(τ)`: under S (`τ → −1/τ`), `g_s' = |τ|²·g_s` (which is `1/g_s`
+only when `C₀ = 0`); under T (`τ → τ+1`), `g_s' = g_s`.
+
+**Evidence.** `scripts/measure_covariance_table.py`, 100 primitive SUSY vacua: `g_s'/(|τ|²g_s) =
+1.000000` (std 1.4e-16) under S, and `g_s'/g_s = 1.000000` (std 0) under T. **Definitional** — `g_s`
+is read off `τ`, so a deviation is a measurement bug, not a physics finding; it exposed the earlier
+`2209Z` "`g_s 0.21 → 3.9e7`" as a bug (the correct law is `|τ|²·g_s`, not `1/g_s` at general `C₀`).
+
+**Scope.** Any `τ` (definitional); verified on the same 100-vacuum sample.
+
+**Falsifier.** `g_s' ≠ |τ|²·g_s` under S at a point where `g_s = 1/Im(τ)` is the convention.
+
+---
+
+## Mitchell's Law IV — the moduli are inert at degree 0
+
+**Statement.** At degree 0 (no instanton corrections) the S/T generators act on the flux pair and
+the axio-dilaton only; the complex-structure moduli are inert, `z_i → z_i`. Their monodromy is a
+degree > 0 effect and is deferred.
+
+**Evidence.** By definition of the degree-0 duality action, and confirmed by G2
+(`scripts/test_g2_sdual_stability.py`): the transformed point at fixed `z` is a vacuum
+(`|DW| = 1.8e-12 ≤ 1e-6`, control reproduced the stored `3.2e-12`).
+
+**Scope.** Degree 0 (tree level). Not a claim about the full monodromy group.
+
+**Falsifier.** A degree-0 duality transformation that requires a moduli shift to remain a vacuum.
+
+---
+
+## Mitchell's Law V — the counting law (19 = orbit-space dimension)
+
+**Statement.** The Standard Model's exact content includes a **counting** type: the dimension of
+its orbit space under the SM's own flavor group is **19** (quark 10 + lepton 3 + gauge 3 + Higgs 2
++ θ_QCD 1). Exact as a count, free as values — a ToE predicts relations, never values.
+
+**Evidence.** Three independent routes agree (all exact): (a) the counting formula
+`dim(V/G) = n − g + s` (`validate_sm_invariant_ring.py`); (b) the exact Jacobian rank
+(`validate_sm_rank_test.py`, GF(p) modular rank at three primes); (c) the Molien–Weyl /
+Hilbert–Serre cert (`validate_molien_weyl.py`, with an S₃-on-ℂ³ Molien-series control matching
+`1/[(1−t)(1−t²)(1−t³)]`). The only known UV symmetry (GUT) collapses exactly 3 of the 19 (gauge
+3→1, b–τ 2→1).
+
+**Scope.** The SM's own flavor/reparametrization group; the *dynamical* rank is bounded by
+`2h¹¹ + 2h²¹ + 2` (reducible for `h¹¹+h²¹ ≤ 8`).
+
+**Falsifier.** A 20th independent invariant — an exact UV relation among the 19 beyond the GUT
+collapses.
+
+---
+
 ## Candidate laws (not yet named — pending verification)
 | the injectivity law | distinct duality orbits at fixed `N` never share low-energy data | not written yet (corpus-only, no jaxvacua needed) | queued as test 2 of C3 |
 

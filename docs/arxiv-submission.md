@@ -1,6 +1,6 @@
 # arXiv submission package — turn-key
 
-Four papers are ready. This is everything arXiv needs, so the only remaining steps
+Five papers are ready. This is everything arXiv needs, so the only remaining steps
 are things only Rob can do (create/own the account, receive the endorsement) — no
 content work is left.
 
@@ -9,11 +9,14 @@ content work is left.
 1. **`constraint-first-theorem.pdf`** — the NEW flagship. The rigorous theorems:
    Mitchell's Uniqueness, Constraint-First (Weyl FFT), Mitchell's Completeness,
    full-duality completion, and the Complete Exact Structure Theorem. Submit this
-   first; the other three cite it.
-2. **`structure-map.pdf`** — the measurement that motivated the theorem (the
+   first; the others cite it.
+2. **`mitchells-laws.pdf`** — the duality covariance table (Mitchell's Laws I–V):
+   the empirical companion to the theorem. Build it from `paper/mitchells-laws.tex`
+   (`pdflatex paper/mitchells-laws.tex`).
+3. **`structure-map.pdf`** — the measurement that motivated the theorem (the
    structure map, r = 1.0 tadpole).
-3. **`fingerprint.pdf`** — the mass-spectrum no-fingerprint result.
-4. **`PACLAND-preprint.pdf`** — the verification discipline (the umbrella paper).
+4. **`fingerprint.pdf`** — the mass-spectrum no-fingerprint result.
+5. **`PACLAND-preprint.pdf`** — the verification discipline (the umbrella paper).
 
 ## Paper 1 — Mitchell's Completeness Theorem (submit first)
 
@@ -43,7 +46,35 @@ by scripts/validate_all_theorems.py.
 
 - **Comments.** `5 pages. Source and data: https://github.com/robmitchellengineering-hub/pacland`
 
-## Paper 2 — Constraint-first string theory (the measurement)
+## Paper 2 — Mitchell's Laws: the duality covariance table
+
+- **Title.** `Mitchell's Laws: the duality covariance table of the flux landscape`
+- **Author.** `Rob Mitchell`
+- **Primary subject class.** `hep-th` (High Energy Physics – Theory)
+- **Abstract.** (paste verbatim — full text in `paper/mitchells-laws.tex`)
+
+```
+The constraint-first theorem proves the D3 tadpole is the only exact
+duality-invariant of the IIB flux, so the invariant ring is C[N] and no exact
+invariant selector can single out a vacuum. That theorem says what survives; it does
+not say how the surviving observables move under the duality that fixes them. This
+paper measures that motion. On 100 primitive supersymmetric flux vacua of the KS
+truncation, every measurement gated by a control that reproduces a known value, we
+determine the transformation law of the flux superpotential W and the string coupling
+g_s under SL(2,Z): Law I (scaling) — the content d = gcd(F,H) is a bookkeeping label;
+Law II (magnitude) — |W| is S-invariant, ratio 1.000000 on 100/100 vacua; Law IIb
+(phase) — arg(W_S/W) = -arg(tau) exactly, so W_S = W conj(tau)/|tau|; Law III (g_s) —
+g_s -> |tau|^2 g_s under S and g_s -> g_s under T; and well-definedness — the S-dual of
+a stable vacuum is stable. The one place a law fails to close, |W| under T, is reported
+as a finding. Together these rows are the covariance table: the operational statement
+of "one theory described twice," the empirical half of the unification programme.
+Every law carries a named falsifier; code and data are public in
+github.com/robmitchellengineering-hub/pacland.
+```
+
+- **Comments.** `5 pages. Empirical companion to Paper 1; cites it. Source: paper/mitchells-laws.tex`
+
+## Paper 3 — Constraint-first string theory (the measurement)
 
 - **Title.** `Constraint-first string theory: the flux landscape's only exact structure is its constraint`
 - **Author.** `Rob Mitchell`
@@ -69,7 +100,7 @@ measurement rather than asserted.
 
 - **Comments.** `3 pages. Source and data: https://github.com/robmitchellengineering-hub/pacland`
 
-## Paper 3 — The mass spectrum carries no fingerprint
+## Paper 4 — The mass spectrum carries no fingerprint
 
 - **Title.** `The mass spectrum of the IIB flux landscape carries no geometric fingerprint`
 - **Author.** `Rob Mitchell`
@@ -95,7 +126,7 @@ the only learnable structure found to date.
 
 - **Comments.** `3 pages. Companion to Constraint-first string theory (arXiv:XXXX.XXXXX).`
 
-## Paper 4 — Probably Approximately Correct String Theory
+## Paper 5 — Probably Approximately Correct String Theory
 
 - **Title.** `Probably Approximately Correct String Theory: A Verification Discipline for the Landscape`
 - **Author.** `Rob Mitchell`
@@ -121,7 +152,7 @@ unverifiable theory, and this is one.
 
 - **Comments.** `9 pages. Umbrella paper for the PACLAND program.`
 
-## License (all four)
+## License (all five)
 
 Choose **arXiv's default non-exclusive license** (simplest), or **CC BY 4.0** if Rob
 wants the work maximally reusable. Recommendation: **CC BY 4.0** — it matches the
