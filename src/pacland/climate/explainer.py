@@ -9,6 +9,7 @@ from __future__ import annotations
 from .ace_fidelity import anchor_deficit as ace_anchor, channel_summary as ace_channels
 from .cmip6_drift import summary as drift_summary
 from .deficit import climate_deficit_report
+from .ecs_model import ecs_estimates
 from .energy_budget import closure
 from .sensitivity_crosscheck import summary as crosscheck_summary
 
@@ -20,6 +21,7 @@ def content() -> list[tuple[str, str]]:
     xs = crosscheck_summary()
     ace_cs = ace_channels()
     ace_a = ace_anchor()
+    ecs = ecs_estimates()
     mass_ratio = abs(ds["worst_mass_mm_per_yr"]) / ds["slr_reference_mm_per_yr"]
     return [
         ("title", "PACLAND · Climate"),
@@ -31,6 +33,7 @@ def content() -> list[tuple[str, str]]:
         ("headline", f"Only {xs['n_survives_all']} of 19 models survive all three axes — conservation-clean, reasonable sensitivity, reasonable forcing ({', '.join(xs['survives_all_axes'])})."),
         ("headline", "The forcing axis sharpens it: MPI-ESM1-2-LR / HAM leak AND force too strongly, ACCESS-ESM1-5 / BCC / CNRM-ESM2-1 leak AND force too weakly — conservation alone is never enough."),
         ("headline", f"Skillful ≠ true — ACE's '>90% of tracked variables' is {ace_cs['reference_fidelity_pct']:.0%} model-vs-model ({ace_cs['n_beats_baseline']}/{ace_cs['n_outputs']} vs a coarser GCM); against the Earth it is certified only to ~{ace_a.radius:.0%} on m={ace_a.n_validation} observables."),
+        ("headline", f"The best-prediction ECS: {ecs['naive']['mean_K']:.2f} K naive → {ecs['conservation_gated']['mean_K']:.2f} K conservation-gated → {ecs['trust_gated']['mean_K']:.2f} K trust-gated — the verification gates remove {ecs['naive']['mean_K'] - ecs['trust_gated']['mean_K']:.2f} K of hot-model bias and land at the IPCC best estimate."),
         ("headline", "Trust by verdict, not by reputation — a machine-checked pass/fail, not a paper footnote."),
         ("h", "1 · What we are measuring"),
         ("p", "Climate projections are the most consequential predictions we make. The discipline asks the question the field has never answered in numbers: how much of a projection is verified, versus extrapolated?"),
