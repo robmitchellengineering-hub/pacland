@@ -65,9 +65,18 @@ def guard_nonnegative_specific_humidity(q, tol: float = 0.0) -> tuple[bool, str]
     return not bad, f"negative specific humidity at {len(bad)} point(s): {bad[:5]}"
 
 
+def guard_ocean_mass(mass_drift_mm_per_yr: float, tol_mm_per_yr: float = 0.3) -> tuple[bool, str]:
+    """Ocean-mass-conservation guard: in a pre-industrial control the ocean's
+    mass drift must be ~0; a drift beyond tolerance (mm/yr sea-level equivalent)
+    is a leak. A 0.3 mm/yr drift is ~10% of observed sea-level rise (~3.4 mm/yr)."""
+    ok = abs(mass_drift_mm_per_yr) <= tol_mm_per_yr
+    return ok, f"ocean-mass drift={mass_drift_mm_per_yr:+.3f} mm/yr SL-equiv (tol {tol_mm_per_yr})"
+
+
 __all__ = [
     "guard_energy_budget",
     "guard_water_budget",
     "guard_carbon_budget",
     "guard_nonnegative_specific_humidity",
+    "guard_ocean_mass",
 ]

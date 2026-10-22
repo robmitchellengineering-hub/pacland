@@ -1,7 +1,14 @@
 """CMIP6 conservation-drift guard — known-answer tests (Irving et al. 2021 data)."""
 import unittest
 
-from pacland.climate.cmip6_drift import drift_wm2, load, summary, trust_ranking, verdict_table
+from pacland.climate.cmip6_drift import (
+    drift_wm2,
+    load,
+    mass_drift_mm_per_yr,
+    summary,
+    trust_ranking,
+    verdict_table,
+)
 
 
 class TestCmip6Drift(unittest.TestCase):
@@ -42,6 +49,19 @@ class TestCmip6Drift(unittest.TestCase):
         self.assertEqual(t["broken"], ["CNRM-ESM2-1", "CNRM-CM6-1"])
         self.assertEqual(len(t["clean"]), 7)
         self.assertEqual(len(t["leaking"]), 10)
+
+    def test_mass_unit_conversion(self):
+        # 3.6e14 kg/yr = 1 mm/yr sea-level equivalent
+        self.assertAlmostEqual(mass_drift_mm_per_yr(3.6e14), 1.0, places=6)
+
+    def test_six_models_leak_mass(self):
+        self.assertEqual(summary(tol_mm_per_yr=0.3)["n_failing_mass"], 6)
+
+    def test_worst_mass_leaker_is_access_esm1_5(self):
+        s = summary(tol_mm_per_yr=0.3)
+        self.assertEqual(s["worst_mass_model"], "ACCESS-ESM1-5")
+        self.assertAlmostEqual(s["worst_mass_mm_per_yr"], -1.032, places=2)
+        self.assertAlmostEqual(s["worst_mass_ratio_to_slr"], 0.30, places=2)
 
 
 if __name__ == "__main__":
