@@ -97,10 +97,10 @@ def main():
     tau_s = -1.0 / tau
 
     def dw_norm(flux, tau_v):
-        try:
-            val = dw_fn(moduli, tau_v, jnp.array(flux, dtype=float))
-        except TypeError:
-            val = dw_fn(jnp.array(flux, dtype=float), moduli, tau_v)
+        # jaxvacua FluxVacuaFinder.DW signature (verified on-node 2026-10-22T22:5xZ):
+        #   DW(moduli, moduli_c, tau, tau_c, fluxes, conj=False)
+        val = dw_fn(moduli, moduli.conjugate(), tau_v, tau_v.conjugate(),
+                    jnp.array(flux, dtype=float))
         arr = np.asarray(val)
         return float(np.linalg.norm(arr)), arr.shape
 
