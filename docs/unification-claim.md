@@ -61,3 +61,49 @@ relation of any other kind is the falsifier.
 - It does not claim the frontier curve is a landscape fact until test 3 lands.
 - It does not name a "connecting equation". If C3 holds, the connecting structure is the
   quotient map, and an equation may not exist — which is a *result*, not a gap.
+
+---
+
+# Results as the ladder is climbed (newest last; failures recorded, not hidden)
+
+## Test 1 — S-duality well-definedness: **LAW**
+
+Job `2026-10-22T2150Z` on `pacland-rog`, 25 primitive SUSY vacua, **0 failures**. The fitted law
+is `|W_S|/|W| = |τ|^0` with log residual `0.0000`, over `|τ|` from 2.16 to 11.49. The fit was
+free — both exponents came back zero — so the textbook law was not assumed.
+**C3's well-definedness half is supported at degree 0**; written up as
+[`MITCHELLS-LAWS.md`](MITCHELLS-LAWS.md) Law II. Scope: `h12=2`, `model_ID=1`, magnitude only,
+phase untested.
+
+## Test 2 — injectivity: **NO-TEST, and the test as designed was wrong**
+
+Job `2026-10-22T2158Z`, 5,885 vacua, two tolerances (`1e-6`, `1e-3`): **0 moduli-groups contain
+more than one distinct flux**. Reported as `NO-TEST`, never as a pass.
+
+Two things follow, and the second is the important one:
+
+1. The corpus cannot answer this by hunting coincidental collisions: at a *converged* vacuum the
+   moduli are the solution, so they are generic and essentially never coincide. A collision hunt
+   is therefore not a test of injectivity — it is a test of sampling luck.
+2. **Injectivity should be tested between duality-*related* vacua, not coincidental ones.** The
+   right question is whether the map from **orbits** to observables is well-defined and locally
+   injective: take a vacuum, apply a duality generator, and ask whether the transformed pair is a
+   vacuum with the same physical content, and whether moving to a *nearby inequivalent* orbit
+   changes the observables. That is Test 1 continued, and it is the formulation that carries
+   information.
+
+So C3's injectivity half remains **untested**, and the ladder rung is re-specified rather than
+ticked. A test that can only produce `NO-TEST` on the data we hold was the wrong test.
+
+## Test 3 — truncation-independence: **method corrected before any conclusion**
+
+First run (`2148Z`) reported `cond(M)` at `h12=2` of `3.3e135` against the wall document's
+`1.8e2`, with `eig_min ~ 1e-46`. That is not a contradiction — it is a **stage error in my
+script**: at a converged SUSY vacuum `⋆G = iG` holds, so the ISD matrix is singular **by
+construction** and its condition number there is meaningless. The wall doc's `1.8e2` is measured
+at the ISD **proposal** stage, before rounding and solving.
+
+Consequence, and it strengthens rather than weakens the wall document: `cond(M)` must be measured
+on the proposal's own starting points, which the corpus does not store. `2207Z` therefore pins the
+proposal-stage entry point (`initial_guesses_ISD`) before the measurement is attempted again.
+Until then, the wall's central number is **unreproduced**, not refuted.
