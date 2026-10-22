@@ -33,9 +33,16 @@ sampled on a valid model.
 
 ## Runs
 
-Dispatched 2026-10-22 on `pacland-rog` (queued):
-- `h12-3-m3-vacua` — h12=3 model_ID=3, n_target=40, max_batches=300.
-- `h12-4-m1-vacua` — h12=4 model_ID=1, n_target=40, max_batches=250.
+Dispatched 2026-10-22 on `pacland-rog`; both completed `pass`.
 
-Result merges into `data/h12_3_m3_vacua.json` / `data/h12_4_m1_vacua.json` for the
-vacuum statistics (SUSY count, tadpole distribution, mirror-symmetry check).
+| run | critical points | SUSY | tadpole `N_flux` | bound `L` | all ≤ L |
+|---|---|---|---|---|---|
+| `h12-3-m3-vacua` (h12=3, model_ID=3) | **40** | **16** | [5, 103], med 48 | 104 | ✅ |
+| `h12-4-m1-vacua` (h12=4, model_ID=1) | **40** | **2** | [2, 75], med 20 | 76 | ✅ |
+
+Every one of the 80 vacua satisfies `N_flux ≤ L`. The SUSY fraction falls 40% → 5%
+as h12 approaches the cliff — the constraint holds, the selection thins.
+
+Vacuum JSONs are on the rog (`/home/rob/h12_3_m3_vacua.json`,
+`/home/rob/h12_4_m1_vacua.json`); pull them into `data/` for the full tadpole
+distribution and the mirror-symmetry (`h¹¹↔h²¹`) check.
