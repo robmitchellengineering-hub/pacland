@@ -54,7 +54,8 @@ def main():
         return 2
 
     model = jvc.FluxVacuaFinder(h12=h12, model_ID=model_id, model_type="KS", maximum_degree=0)
-    moduli = jnp.array([[m[0], m[1]] for m in row["moduli"]], dtype=complex)
+    # the library wants a 1-D complex moduli array (shape (h12,)), not (h12, 2):
+    moduli = jnp.array([complex(m[0], m[1]) for m in row["moduli"]])
     tau = complex(row["tau"][0], row["tau"][1])
     flux = [int(round(x)) for x in row["flux"]]
 
