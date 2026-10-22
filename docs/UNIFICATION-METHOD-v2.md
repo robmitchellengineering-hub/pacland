@@ -45,11 +45,16 @@ falsifier**. A law earns the name only when all four of `MITCHELLS-LAWS.md` hold
 | law | statement | control (must pass first) | falsifier | status |
 |---|---|---|---|---|
 | **I** scaling | `W(dF,dH)=d·W`, `N(dF,dH)=d²·N`, `gcd` scales | `d² | N` on all 5,885 rows | a DW zero set not preserved under scaling | **DONE** (5/5 + `2143Z` ratio 2.0) |
-| **II** `\|W\|` S-invariance | `\|W(-H,F;-1/τ)\| = \|W(F,H;τ)\|` | free fit `a,b` in `\|W_S\|/\|W\| = e^a \|τ\|^b` → both 0 | log residual > 0.10 | **DONE** (25/25, 0.0000) |
+| **II** `\|W\|` S-invariance | `\|W(-H,F;-1/τ)\| = \|W(F,H;τ)\|` | free fit `a,b` in `\|W_S\|/\|W\| = e^a \|τ\|^b` → both 0 | log residual > 0.10 | **DONE** (100/100, 0.0000) |
 | **IIb** phase of `W` under S | `arg W` has a fixed law `f(τ)` | `\|W\|` row reproduces | phase not a function of τ | open |
-| **III** `g_s` under S,T | `g_s = 1/Im(τ)`; S: `τ→-1/τ`, T: `τ→τ+1` | reproduce `g_s` at the original τ | `g_s` ≠ `1/Im(τ')` with `τ' = -1/τ` | **next** (2209Z reported `0.21 → 3.9e7` — suspicious, re-measure with a control) |
+| **III** `g_s` under S,T | `g_s = 1/Im(τ)`; S: `τ→-1/τ` ⇒ `g_s'=\|τ\|²g_s`, T: `τ→τ+1` ⇒ `g_s'=g_s` | `g_s` reproduced at original τ | `g_s' ≠ \|τ\|²g_s` under S | **DONE** (100/100 clean; definitional — the 2209Z `0.21→3.9e7` was a bug) |
 | **IV** moduli covariance | `z_i` transforms by the moduli-sector law | reproduce the stored moduli row | moduli law scatters | open |
 | **V** counting | 19 = orbit-space dim (Molien–Weyl); GUT collapses exactly 3 | rank test 3-way | a 20th relation beyond GUT | **next** (rank 3-way done; Molien cert owed) |
+
+**The T-row of `|W|` is a finding, not a law.** `|W_T|/|W|` (T: `(F,H)→(F,H+F)`, `τ→τ+1`) does **not**
+close to a clean law across the 100-row sample (mean 4.9e6, std 4.9e7, fit residual 0.22 — the
+mean is carried by rows where `|W|≈0`, the no-scale locus, where the ratio is ill-defined). The
+generic rows show a rough `|W_T|/|W| ≈ 0.6·|τ|`. Follow-up: re-fit on `|W|` away from zero.
 
 ## The walls, used (prime directive — walls are information)
 
