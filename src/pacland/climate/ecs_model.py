@@ -1,31 +1,35 @@
 """Best-prediction ECS — the trust-gated, conservation-gated estimate.
 
 The future cannot be validated (the unmeasurable wall), so the best possible
-prediction is not a certified future — it is the estimate built only from the
-reliable content: the models that conserve physics, then those that also pass
-the field's own sensitivity and forcing axes. This module turns the three-axis
-trust verdict (``sensitivity_crosscheck``) into a prediction:
+prediction is the estimate built only from the reliable content: the models
+that pass the gates we can actually run. Two views, over two data covers:
 
-    naive               all 19 models, uniform            -> ~4.08 K
-    conservation-gated  the 5 that close energy+mass+salt -> ~3.86 K
-    trust-gated         the 2 that survive all three axes -> ~2.71 K
+WIDENED — the full 53-model Zelinka et al. 2020 table, sensitivity + forcing
+gates only (conservation drift exists for only 19 of them):
 
-The gates are HARD (pass/fail per axis), not continuous — continuous weights
-would need arbitrary constants, and a hard gate is parameter-free and survives
-adversarial review. The shift is the result: the naive ensemble carries the
-"hot model" bias (~4.1 K, above the IPCC likely range); each verification gate
-pulls it down until the fully-trustworthy estimate lands at ~2.7 K, inside the
-IPCC likely range (2.5-4.0 K) and at the assessed best estimate (~3.0 K).
+    naive (53)            ~3.78 K
+    sens+forc gated (15)  ~3.08 K, 13 families, range 2.56-3.87 K
 
-Honest caveat: the trust gate is so strict that only ONE family survives (the
-two GISS variants, both 2.71 K), so the trust-gated spread is degenerate. That
-is itself a finding — the gates collapse the ensemble to the single family that
-does not leak physics, is not hot, and forces correctly — not a bug.
+STRICT — the 19 models with conservation drift (Irving et al. 2021), all three
+axes (conservation x sensitivity x forcing):
+
+    naive (19)            ~4.08 K
+    conservation (5)      ~3.86 K
+    three-axis (2 GISS)   ~2.71 K, one family
+
+The widened gate is the best prediction: a genuine multi-family ensemble at the
+IPCC best estimate (~3.0 K). The strict three-axis gate shows conservation's
+power but collapses to a single family. Together they bracket ECS at ~2.7-3.1 K.
+
+Honest notes: the 19-model drift subset is hot-biased (naive 4.08 K vs the full
+53's 3.78 K), so the two naives differ — each gate is reported over its own
+cover and never mixed. Gates are HARD (pass/fail per axis), parameter-free.
 
 Pure stdlib + pacland.climate.sensitivity_crosscheck.
 """
 from __future__ import annotations
 
+import re
 from statistics import mean
 
 from .sensitivity_crosscheck import crosscheck, load
@@ -34,48 +38,66 @@ from .sensitivity_crosscheck import crosscheck, load
 IPCC_BEST_ESTIMATE_K = 3.0
 
 
-def _rows() -> list[dict]:
-    """Per-model three-axis rows (conservation x sensitivity x forcing)."""
-    return crosscheck()
+def family(name: str) -> str:
+    """Model family by leading non-digit prefix (naming heuristic)."""
+    return re.split(r"\d", name)[0].rstrip("-")
 
 
-def _estimate(rows: list[dict]) -> dict:
-    vals = [r["ecs_K"] for r in rows]
+def _est(models: list[str], ecs: dict[str, float]) -> dict:
+    vals = [ecs[m] for m in models]
     return {
-        "n": len(rows),
+        "n": len(models),
         "mean_K": mean(vals),
         "min_K": min(vals),
         "max_K": max(vals),
-        "models": [r["model"] for r in rows],
+        "models": sorted(models),
     }
 
 
 def ecs_estimates() -> dict:
-    """The three nested estimates, from naive to fully trust-gated."""
-    rows = _rows()
+    """Both views: widened (55, sens+forc) and strict (19, three-axis)."""
     d = load()
-    gated = [r for r in rows if r["ledgers_failed"] == 0]
-    trust = [r for r in rows if r["n_axes_failed"] == 0]
+    ecs = d["ecs_K"]
+    erf = d["erf2x_Wm2"]
+    variants = set(d.get("approx_notes", {}))
+    widened = [m for m in ecs if m not in variants]
+    lo, hi = d["likely_range_K"]
+    flo, fhi = d["forcing_range_Wm2"]
+    sens_forc = [m for m in widened if lo <= ecs[m] <= hi and flo <= erf[m] <= fhi]
+
+    rows = crosscheck()
+    strict_naive = [r["model"] for r in rows]
+    cons = [r["model"] for r in rows if r["ledgers_failed"] == 0]
+    trust = [r["model"] for r in rows if r["n_axes_failed"] == 0]
+
     return {
-        "naive": _estimate(rows),
-        "conservation_gated": _estimate(gated),
-        "trust_gated": _estimate(trust),
+        "widened_naive": _est(widened, ecs),
+        "sens_forc_gated": _est(sens_forc, ecs),
+        "strict_naive": _est(strict_naive, ecs),
+        "conservation_gated": _est(cons, ecs),
+        "trust_gated": _est(trust, ecs),
+        "sens_forc_families": len({family(m) for m in sens_forc}),
+        "trust_families": len({family(m) for m in trust}),
         "ipcc_likely_range_K": d["likely_range_K"],
         "ipcc_best_estimate_K": IPCC_BEST_ESTIMATE_K,
     }
 
 
 def best_prediction() -> dict:
-    """The best prediction plus the shift and the honest caveat."""
+    """The widened best + the strict best + the honest bracket."""
     e = ecs_estimates()
-    trust = e["trust_gated"]
+    sf = e["sens_forc_gated"]
+    t = e["trust_gated"]
+    lo, hi = e["ipcc_likely_range_K"]
     return {
         **e,
-        "best_estimate_K": trust["mean_K"],
-        "shift_K": e["naive"]["mean_K"] - trust["mean_K"],
-        "survivor_families": sorted({m.split("-")[0] for m in trust["models"]}),
+        "best_estimate_K": sf["mean_K"],       # widened (the ensemble best)
+        "strict_estimate_K": t["mean_K"],      # three-axis (the strictest subset)
+        "bracket_K": [t["mean_K"], sf["mean_K"]],
+        "shift_naive_to_widened_K": e["widened_naive"]["mean_K"] - sf["mean_K"],
+        "shift_naive_to_strict_K": e["strict_naive"]["mean_K"] - t["mean_K"],
         "inside_ipcc_likely": (
-            e["ipcc_likely_range_K"][0] <= trust["mean_K"] <= e["ipcc_likely_range_K"][1]
+            lo <= sf["mean_K"] <= hi and lo <= t["mean_K"] <= hi
         ),
     }
 
@@ -83,23 +105,24 @@ def best_prediction() -> dict:
 def summary() -> str:
     """One plain-text block for the record (and the report's headline)."""
     e = ecs_estimates()
-    n, g, t = e["naive"], e["conservation_gated"], e["trust_gated"]
+    wn, sf = e["widened_naive"], e["sens_forc_gated"]
+    sn, cg, tg = e["strict_naive"], e["conservation_gated"], e["trust_gated"]
     lo, hi = e["ipcc_likely_range_K"]
     return "\n".join([
         "BEST-PREDICTION ECS — trust-gated, conservation-gated",
-        "=" * 50,
-        f"naive               m = {n['n']:2d}  mean {n['mean_K']:.2f} K  "
-        f"[{n['min_K']:.2f}, {n['max_K']:.2f}]",
-        f"conservation-gated  m = {g['n']:2d}  mean {g['mean_K']:.2f} K  "
-        f"[{g['min_K']:.2f}, {g['max_K']:.2f}]",
-        f"trust-gated         m = {t['n']:2d}  mean {t['mean_K']:.2f} K  "
-        f"[{t['min_K']:.2f}, {t['max_K']:.2f}]",
+        "=" * 52,
+        "WIDENED (53 models, sensitivity + forcing gates):",
+        f"  naive ({wn['n']:2d})       {wn['mean_K']:.2f} K  [{wn['min_K']:.2f}, {wn['max_K']:.2f}]",
+        f"  sens+forc ({sf['n']:2d})   {sf['mean_K']:.2f} K  [{sf['min_K']:.2f}, {sf['max_K']:.2f}]  "
+        f"({e['sens_forc_families']} families)",
+        "STRICT (19 models with conservation drift, all three axes):",
+        f"  naive ({sn['n']:2d})       {sn['mean_K']:.2f} K  [{sn['min_K']:.2f}, {sn['max_K']:.2f}]",
+        f"  conservation ({cg['n']:2d}) {cg['mean_K']:.2f} K",
+        f"  three-axis ({tg['n']:2d})    {tg['mean_K']:.2f} K  ({e['trust_families']} family)",
         "",
-        f"shift: {e['naive']['mean_K'] - t['mean_K']:.2f} K of 'hot model' bias is "
-        f"removed by the verification gates",
-        f"IPCC AR6 likely range {lo}-{hi} K, best estimate "
-        f"{e['ipcc_best_estimate_K']} K — the trust-gated estimate lands inside it",
-        f"survivors: {', '.join(t['models'])} — one family (the honest caveat)",
+        f"best prediction {sf['mean_K']:.2f} K (widened ensemble), strict subset "
+        f"{tg['mean_K']:.2f} K -> bracket [{tg['mean_K']:.2f}, {sf['mean_K']:.2f}] K",
+        f"IPCC AR6 likely {lo}-{hi} K, best estimate {e['ipcc_best_estimate_K']} K",
     ])
 
 
