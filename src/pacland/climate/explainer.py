@@ -17,6 +17,11 @@ def content() -> list[tuple[str, str]]:
     return [
         ("title", "PACLAND · Climate"),
         ("subtitle", "The verification discipline applied to climate modelling — a plain-English brief"),
+        ("h", "The headlines"),
+        ("headline", f"The error bar is the size of the signal — {ds['n_exceeding_eei']} models leak heat at ~{ds['worst_ratio_to_eei']:.1f}× the energy imbalance they are used to project."),
+        ("headline", f"A 2100 projection is extrapolation, not verification — {proj.n_validation} future states are measured (m = 0)."),
+        ("headline", f"The leak lives in the atmosphere, not the ocean — {ds['n_failing_conservation']} of 19 models leak energy, {ds['n_failing_mass']} of 19 leak ocean mass."),
+        ("headline", "For the first time, a climate model's trustworthiness is a machine-checked verdict — not a footnote in a paper."),
         ("h", "1 · What we are measuring"),
         ("p", "Climate projections are the most consequential predictions we make. The discipline asks the question the field has never answered in numbers: how much of a projection is verified, versus extrapolated?"),
         ("h", "2 · The verification deficit"),

@@ -45,6 +45,12 @@ def render(entries: list[tuple[str, str]], out_path: str,
             pdf.ln(3)
             pdf.multi_cell(0, 7, text, align="L")
             pdf.ln(1)
+        elif kind == "headline":
+            pdf.set_font("uni", "", 12.5)
+            pdf.set_text_color(20, 40, 90)
+            pdf.ln(1)
+            pdf.multi_cell(0, 7, "▸  " + text, align="L")
+            pdf.ln(1.5)
         elif kind == "p":
             pdf.set_font("uni", "", 10.5)
             pdf.set_text_color(25, 25, 25)
