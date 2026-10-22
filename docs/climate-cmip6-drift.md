@@ -8,8 +8,9 @@ of the climate discipline's first real-data guard run.
 
 > **12 of 19 CMIP6 models leak energy, 6 leak ocean mass, but only 2 leak salt — so
 > the leak lives in the atmosphere-ocean coupling, not the ocean model. Crossed with
-> the field's climate-sensitivity axis, only 2 of 19 survive both axes (the GISS
-> family); the rest fail conservation, sensitivity, or both.**
+> the field's two other quality axes — sensitivity (ECS) and forcing (ERF2x) — only
+> 2 of 19 survive all three axes (the GISS family); the rest fail conservation,
+> sensitivity, forcing, or some combination.**
 
 ## The climate oracle and the Rule of Three
 
@@ -158,26 +159,35 @@ ledgers.**
    guard should be drift-corrected explicitly — or excluded from any energy-balance
    conclusion — before its projection is used.
 
-## 4b. The second axis — sensitivity (the cross-check against consensus)
+## 4b. The second and third axes — sensitivity and forcing (the cross-check against consensus)
 
-Conservation is one necessary condition; the field's own quality axis is **climate
-sensitivity** (ECS), where the known "hot model" problem lives (Hausfather et al. 2022).
-Combining the two — our three ledgers × published ECS (Zelinka et al. 2020) — gives the
-two-axis trust table:
+Conservation is one necessary condition; the field's own quality axes are **climate
+sensitivity** (ECS, the "hot model" problem — Hausfather et al. 2022) and **effective
+radiative forcing** (ERF2x), both published per-model in Zelinka et al. 2020. Combining
+the three — our ledgers × published ECS × published ERF2x — gives the three-axis trust
+table:
 
-| model | ledgers failed | ECS (°C) | two-axis verdict |
-|---|---|---|---|
-| GISS-E2-1-G / -CC | 0 | 2.71 | **survives both axes** |
-| EC-Earth3 / -Veg | 0 | 4.26 / 4.33 | clean but *high* sensitivity |
-| E3SM-1-1 | 0 | 5.31 | clean but **hot** |
-| MPI-ESM1-2-* | 1 | 2.95–3.03 | leaky but reasonable sensitivity |
-| CNRM, UKESM1, HadGEM3, IPSL | ≥1 | 4.7–5.55 | leaky **and** hot |
+| model | ledgers failed | ECS (°C) | ERF2x (W/m²) | three-axis verdict |
+|---|---|---|---|---|
+| GISS-E2-1-G / -CC | 0 | 2.71 | 3.95 | **survives all three axes** |
+| EC-Earth3 / -Veg | 0 | 4.26 / 4.33 | 3.22 / 3.37 | clean but *high* sensitivity |
+| E3SM-1-1 | 0 | 5.31 | 3.33 | clean but **hot** |
+| MPI-ESM1-2-HR | 1 | 2.98 | 3.65 | leaky but reasonable on both others |
+| MPI-ESM1-2-LR / -HAM | 1 | 2.95–3.03 | 4.22 / 4.16 | leaky **and** forcing too strong |
+| ACCESS-ESM1-5 / BCC | ≥2 | 3.0–3.9 | 2.83–3.11 | leaky **and** forcing too weak |
+| CNRM, UKESM1, HadGEM3, IPSL | ≥1 | 4.7–5.55 | 3.5–3.6 | leaky **and** hot |
+
+Thresholds: ECS reasonable = 2.5–4.0 °C (IPCC AR6 likely range), ERF2x reasonable =
+3.3–4.1 W/m² (assessed 2×CO2 forcing band).
 
 **The result that revises the conservation-only answer:** only **2 of 19 models survive
-both axes** — the GISS family. The conservation-cleanest (EC-Earth3-Veg) is only "high"
-sensitivity, and E3SM-1-1 is conservation-clean but *hot*. So conservation alone is not
-enough to pick a trustworthy model — it must be crossed with sensitivity. The model to
-build on is the one that passes both, and today that is **GISS-E2-1-G**.
+all three axes** — the GISS family. The forcing axis *sharpens* the two-axis answer:
+MPI-ESM1-2-LR and MPI-ESM-1-2-HAM looked merely "leaky but reasonable sensitivity" on
+two axes, but they also force too strongly (4.2 W/m² vs ~3.7 observed); ACCESS-ESM1-5
+and the BCC pair leak *and* force too weakly (2.8–3.1 W/m²); CNRM-ESM2-1 fails all
+three. So conservation alone — or even conservation-plus-sensitivity — is not enough:
+a trustworthy model must pass all three independent axes, and today that is
+**GISS-E2-1-G**.
 
 ## 5. Honest limits
 

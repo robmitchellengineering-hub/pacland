@@ -8,15 +8,16 @@ class TestTrustBoard(unittest.TestCase):
     def test_board_counts(self):
         s = summary()
         self.assertEqual(s["n_artifacts"], 29)
-        self.assertEqual(s["n_broken"], 7)
-        self.assertEqual(s["n_weak"], 11)
+        self.assertEqual(s["n_broken"], 14)
+        self.assertEqual(s["n_weak"], 4)
         self.assertEqual(s["n_clean"], 11)
 
     def test_broken_are_the_double_flagged(self):
         broken = summary()["broken"]
         self.assertIn("CMIP6 CNRM-ESM2-1", broken)
         self.assertIn("CMIP6 UKESM1-0-LL", broken)
-        self.assertEqual(len(broken), 7)
+        self.assertIn("CMIP6 ACCESS-CM2", broken)
+        self.assertEqual(len(broken), 14)
 
     def test_clean_are_the_giss_family(self):
         clean = [e.artifact for e in board()

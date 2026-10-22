@@ -31,5 +31,32 @@
     "MPI-ESM1-2-LR": 3.03,
     "MPI-ESM-1-2-HAM": 2.95,
     "UKESM1-0-LL": 5.36
-  }
+  },
+  "erf2x_Wm2": {
+    "ACCESS-CM2": 3.43,
+    "ACCESS-ESM1-5": 2.83,
+    "BCC-CSM2-MR": 3.11,
+    "BCC-ESM1": 3.01,
+    "CNRM-CM6-1": 3.64,
+    "CNRM-ESM2-1": 2.97,
+    "E3SM-1-0": 3.33,
+    "E3SM-1-1": 3.33,
+    "EC-Earth3": 3.22,
+    "EC-Earth3-Veg": 3.37,
+    "GFDL-CM4": 3.19,
+    "GISS-E2-1-G": 3.95,
+    "GISS-E2-1-G-CC": 3.95,
+    "HadGEM3-GC31-LL": 3.49,
+    "IPSL-CM6A-LR": 3.58,
+    "MPI-ESM1-2-HR": 3.65,
+    "MPI-ESM1-2-LR": 4.22,
+    "MPI-ESM-1-2-HAM": 4.16,
+    "UKESM1-0-LL": 3.61
+  },
+  "forcing_reference_Wm2": 3.7,
+  "forcing_range_Wm2": [
+    3.3,
+    4.1
+  ],
+  "forcing_source": "Effective radiative forcing of 2xCO2; observed ~3.7 W/m2 (IPCC AR6). Same Zelinka et al. 2020 table (ERF2x column)."
 }
