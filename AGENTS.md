@@ -11,8 +11,8 @@ This has happened repeatedly; these rules stop it.
 1. **`main` = stable trunk.** Always green, **PR-only, no direct push**. It holds the shared
    spine (`src/pacland/` core, the CLI, the verification discipline) plus a discipline **only
    once that discipline's change is a complete, reviewed, green unit** — never in-progress work.
-2. **One long-lived branch per discipline** — `discipline/<slug>` (`physics`, `climate`,
-   `drugs`, `economics`). Work on it via
+2. **One long-lived branch per discipline** — `discipline/<slug>` (`landscape`, `climate`,
+   `drugs`, `economics`, `epi`, `ai` — the slugs in `src/pacland/disciplines.py`). Work on it via
    `git worktree add <path> -b <feature> origin/discipline/<slug>`, PR back into the discipline
    branch, and the discipline branch PRs into `main` only when complete.
 3. **File ownership.** A discipline owns `src/pacland/<slug>/**`, `docs/<slug>-*`,
