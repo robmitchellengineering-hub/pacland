@@ -65,6 +65,7 @@ def render(md_path: str, out_path: str) -> None:
             pdf.set_text_color(15, 35, 80)
             pdf.ln(2)
             pdf.multi_cell(0, 6, line[4:], align="L")
+            pdf.ln(1)
         elif line.startswith("- "):
             pdf.set_font("uni", "", 9.5)
             pdf.set_text_color(25, 25, 25)
