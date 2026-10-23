@@ -68,6 +68,16 @@ def projections() -> dict:
         "full_scenario_range_C": (1.5, 5.2),
         "ecs_model_own_C": (2.9, 3.0),             # NINT 3.0 / OMA 2.9
         "ecs_zelinka_C": reference_model()["ecs_K"],
+        "sea_level_2100_thermosteric_m": {
+            "SSP2-4.5": {"lo": 0.21, "hi": 0.24},
+            "note": (
+                "thermosteric only — GISS-E2.1 is atmosphere + ocean, so this is "
+                "ocean thermal expansion (~21-24 cm by 2100), NOT total sea level "
+                "(no ice-sheet term, which is the largest uncertain contribution). "
+                "SSP5-8.5 value is not in the accessible abstract/snippet; the full "
+                "paper (paywalled) carries it."
+            ),
+        },
     }
 
 
@@ -94,6 +104,9 @@ def summary() -> str:
         "Its own 2100 projection (Nazarenko et al. 2022):",
         f"  SSP5-8.5 warming  {ssp['lo']}-{ssp['hi']} C",
         f"  SSP1-2.6 warming  below {p['warming_2100_C']['SSP1-2.6']['hi']} C",
+        f"  sea level (thermosteric, SSP2-4.5)  "
+        f"{p['sea_level_2100_thermosteric_m']['SSP2-4.5']['lo']}-"
+        f"{p['sea_level_2100_thermosteric_m']['SSP2-4.5']['hi']} m",
     ])
 
 
