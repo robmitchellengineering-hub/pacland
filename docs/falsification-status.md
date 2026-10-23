@@ -17,9 +17,29 @@ Principle, what has been actively checked versus what remains open.
 | # | falsifier | status |
 |---|---|---|
 | 1 | a moduli-independent, duality-invariant flux quantity **not** a function of `FᵀJH` | **proven absent** — the invariant ring is `ℂ[N]` (sympy 5/5 degrees); the degree-2 slice is machine-checked in Lean (Uniqueness) |
-| 2 | a **20th** exact relation among the 19 (a completion collapsing more than GUT's 3) | **partially checked** — the 19 = orbit-space dimension is proven *within* the SM (rank test, three-way); the UV extension ("no completion collapses more than 3") is **conjectured**, adversarial pass in flight |
+| 2 | a **20th** exact relation among the 19 (a completion collapsing more than GUT's 3) | **REFUTED as stated** — see the correction below: "no collapse > 3" is false, and the "3" was itself miscounted |
 | 3 | a covariance law that **scatters** at higher h12 | **measured** — the laws hold exactly at h12=2 and h12=5; h12=10 has no in-cone vacua to test (the SUSY collapse) |
 | 4 | a measured **non-uniform** `dN/d\|W₀\|²` near zero, or a proven dS no-go | **measured** — `dN/d\|W₀\|²` is locally flat near zero; the dS no-go is the community's open question (trending-forbidden, no theorem) |
+
+## Correction — the "GUT collapses 3" claim was wrong (falsifier #2 verdict)
+
+The adversarial pass refuted the conjecture "no completion collapses more than 3 of the 19",
+and caught a counting error in our own claim:
+
+- **The "3" was miscounted.** `Y_e = Y_dᵀ` is a 3×3 *matrix* identity — three eigenvalue
+  relations (`m_e=m_d, m_μ=m_s, m_τ=m_b` at `M_GUT`), collapsing 3, not 1. So minimal SU(5)
+  collapses **2 (gauge) + 3 = 5**, not 3.
+- **"SU(5) is the maximum" is backwards.** Minimal single-Higgs SO(10), E₆, Pati–Salam and
+  trinification unify the up sector too (`Y_u=Y_d=Y_e`, `V_CKM=1`), collapsing **12** of the 19 —
+  exact, derivable relations that are *numerically wrong* and hence excluded by data.
+- **SUSY adds a missed relation.** In the MSSM the Higgs quartic is not free
+  (`λ = (g²+g′²)/8` from D-terms), collapsing one Higgs parameter and stacking with unification.
+
+**The salvageable, true statement (much weaker):** no known completion gives an *exact, derivable,
+and numerically-correct* relation among the 19 beyond gauge-coupling unification (2 collapse).
+The exact relations that do exist (up to 12 in SO(10)) are wrong against data; only 2 survive.
+The strongest near-miss for a genuine 20th relation is the **Koide formula** (correct to 10⁻⁵ but
+underived). "GUT collapses exactly 3" must be dropped from the program's copy.
 
 ## The two honest gaps
 
