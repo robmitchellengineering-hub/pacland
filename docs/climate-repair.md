@@ -36,7 +36,7 @@ good models.
 
 | tier | what | status |
 |---|---|---|
-| **1 — global-mean** | subtract the mean leak so the ledger closes on average | ✅ built here |
+| **1 — global-mean** | subtract the mean leak so the ledger closes on average | done — built here |
 | **2 — zonal (spatial)** | subtract the leak's latitudinal pattern so it conserves at every latitude | wired — data from the mesh widening job (`scripts/climate_drift_widen.py`) |
 | **3 — coupling patch** | fix the non-conserving term in the model's own code | the builders' patch — `leak_map()` hands them the spatial spec |
 
