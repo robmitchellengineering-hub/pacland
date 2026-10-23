@@ -149,3 +149,34 @@ The diagnostic is the same cond(`M`) + `|dV|`-after-round table in this file.
 
 Recorded so this is not re-derived: the sampler runs end-to-end and the mesh job
 path is proven; the open question is purely the h12=25 proposal.
+
+## 2026-10-23 — the failure is localised to the rounding, and rounding tweaks cannot fix it
+
+Measured directly on `pacland-rog` (jaxvacua 0.1.2), generic proposal moduli + a random
+integer magnetic flux `h`:
+
+| h12 | `\|DW\|` continuous ISD flux | `\|DW\|` after `round()` | cond(`M`) |
+|---|---|---|---|
+| 2 | **8.3e-14** (F-flat) | 1.8e1 | 4.2e3 |
+| 5 | **1.4e-8** (F-flat) | 8.7e3 | 9.9e9 |
+
+So the ISD **completion is correct** — `f_cont = (s·M·Σ + c₀)·h` is F-flat to ~1e-8 even at
+h12=5. The whole failure is the **integer rounding**, amplified ~500× by cond(`M`).
+
+Three rounding fixes were tried, and all fail at h12=5 for the same reason:
+
+1. **Truncate `M`'s near-null eigenvalues** (raise to a floor) — makes `\|DW\|` *worse*
+   (it breaks the F-flat `f_cont`). Setting them to zero changes `f_cont` off the F-flat slice.
+2. **Coordinate-descent rounding** (flip flux components to minimise `\|DW\|`) — helps h12=2
+   (18→4.5) but not h12=5 (8.7e3→8.73e3): the flat direction is a *combination* of flux
+   components, so single-component flips cannot cancel it.
+3. **Nearest-plane rounding** (one integer adjustment along `round(v_min)`) — no effect: the
+   near-null eigenvector is *spread* across ~12 components with small coefficients, so there is
+   no short integer vector parallel to it, and `round(v_min) ≈ 0`.
+
+**Conclusion.** The h12=5 wall is *not* a rounding bug and *not* a completion bug — it is the
+spread of the flat direction across the integer lattice, which no local integer adjustment can
+cancel. The fix is the wall-doc's **option 3**: a different proposal that never inverts the flat
+direction — sample in the well-conditioned subspace of `M` and lift, rather than rounding the
+full `f_cont`. This is a proposal redesign, not a patch.
+
