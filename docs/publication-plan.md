@@ -25,18 +25,26 @@ vouch: falsifiable claim + sympy symbolic proofs (zero tolerance) + Lean 4 kerne
 (no axioms) + a public reproducible repo + it builds on named, citable papers. An expert
 can verify the core theorem in an afternoon, not take it on faith.
 
-## The contact list (from the research fan-out, 2026-10-20)
+## The contact list (from the research fan-out, 2026-10-20; expanded 2026-10-23)
 
 | person | affiliation | email | relevance | confidence |
 |---|---|---|---|---|
 | Sven Krippendorf | Cambridge DAMTP | `slk38@cam.ac.uk` | JAXVacua lead — the flux-vacua measurements run on his tool | high |
-| Andreas Schachner | Cornell CLASSE | `as3475@cornell.edu` | JAXVacua co-author | high |
+| Andreas Schachner | Cornell CLASSE | `as3475@cornell.edu` | JAXVacua co-author; explicit CY dS constructions (2406.13751) | high |
 | Andreas Trautner | IST Lisbon (CFTP) | `andreas.trautner@tecnico.ulisboa.pt` | the "19 = orbit-space dimension" theorem is his (Bento–Silva–Trautner) | high |
 | Michael R. Douglas | Harvard CMSA | `mdouglas@cmsa.fas.harvard.edu` | Denef–Douglas landscape statistics — the field's central figure | high |
+| Fernando Quevedo | ICTP / Cambridge | (look up) | LVS — the large-volume uplift we characterized | high |
+| Shamit Kachru | Stanford | (look up) | KKLT — the uplift whose control we pinned | high |
+| Liam McAllister | Cornell | (look up) | the D3-tadpole problem (Demirtas–Kim–McAllister) | high |
+| Thomas Van Riet | KU Leuven | (look up) | the anti-D3/KPV uplift debate (Moritz–Retolaza–Westphal) | high |
+| Arthur Hebecker | Heidelberg | (look up) | the uplift control problem (Hebecker–Schreyer–Venken) | high |
+| Washington Taylor | MIT | (look up) | flux-landscape statistics | medium |
+| Irene Valenzuela | CERN | (look up) | swampland, distance conjecture | medium |
 | Abhishek Dubey | LMU Munich (former) | `Abhishek.Dubey@physik.uni-muenchen.de` | JAXVacua first author (email may be stale) | medium |
 
-Send order: **Krippendorf → Trautner → Schachner → Douglas**, personalized, one at a
-time (never a mass BCC). Hold Dubey until the others are tried.
+Send order (personalized, one at a time, never a mass BCC): **Krippendorf → Trautner →
+Schachner → Douglas → Quevedo → Kachru → McAllister → Van Riet → Hebecker**, then the
+medium-confidence ones. The first reply that says "this is sound" is the endorsement.
 
 ## The email (personalize the bracketed parts)
 
@@ -51,10 +59,12 @@ turned one of its consequences into a machine-checked theorem, which I'd value y
 judgment on.
 
 The claim: the D3 tadpole is the unique symplectic invariant of the flux pair (Weyl's
-FFT at k=2), so the landscape's only exact structure is its constraint — and the
-Standard Model's 19 free parameters form a real, not reducible, floor. It is verified
-two independent ways: symbolically (sympy, zero tolerance) and in Lean 4
-(kernel-checked, no axioms), and measured on real flux vacua.
+FFT at k=2), so the landscape's only exact structure is its constraint — a theory of
+everything predicts relations, never values. The Standard Model's 19 parameters are the
+orbit-space dimension of its flavor group, and no known UV completion derives more than
+2 of them correctly (gauge unification). It is verified symbolically (sympy, zero
+tolerance) and in Lean 4 (the FFT slices, degrees 1–4, kernel-checked, no axioms), and
+measured on real flux vacua.
 
 Everything is reproducible:
 github.com/robmitchellengineering-hub/pacland
