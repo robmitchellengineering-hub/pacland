@@ -11,6 +11,7 @@ from .cmip6_drift import summary as drift_summary
 from .deficit import climate_deficit_report
 from .ecs_model import ecs_estimates
 from .energy_budget import closure
+from .reference_model import projections, reference_model
 from .sensitivity_crosscheck import summary as crosscheck_summary
 
 
@@ -22,6 +23,9 @@ def content() -> list[tuple[str, str]]:
     ace_cs = ace_channels()
     ace_a = ace_anchor()
     ecs = ecs_estimates()
+    rm = reference_model()
+    rp = projections()
+    ssp585 = rp["warming_2100_C"]["SSP5-8.5"]
     mass_ratio = abs(ds["worst_mass_mm_per_yr"]) / ds["slr_reference_mm_per_yr"]
     return [
         ("title", "PACLAND · Climate"),
@@ -34,6 +38,7 @@ def content() -> list[tuple[str, str]]:
         ("headline", "The forcing axis sharpens it: MPI-ESM1-2-LR / HAM leak AND force too strongly, ACCESS-ESM1-5 / BCC / CNRM-ESM2-1 leak AND force too weakly — conservation alone is never enough."),
         ("headline", f"Skillful ≠ true — ACE's '>90% of tracked variables' is {ace_cs['reference_fidelity_pct']:.0%} model-vs-model ({ace_cs['n_beats_baseline']}/{ace_cs['n_outputs']} vs a coarser GCM); against the Earth it is certified only to ~{ace_a.radius:.0%} on m={ace_a.n_validation} observables."),
         ("headline", f"The best-prediction ECS: {ecs['widened_naive']['mean_K']:.2f} K naive ({ecs['widened_naive']['n']} models) → {ecs['sens_forc_gated']['mean_K']:.2f} K gated ({ecs['sens_forc_gated']['n']} models, {ecs['sens_forc_families']} families) — the verification gates remove {ecs['widened_naive']['mean_K'] - ecs['sens_forc_gated']['mean_K']:.2f} K and land at the IPCC best estimate."),
+        ("headline", f"The verified model {rm['model']} projects {ssp585['lo']}-{ssp585['hi']}°C of 2100 warming on SSP5-8.5 and below 2°C on SSP1-2.6 — the best prediction, from the one model that passes all three gates."),
         ("headline", "Trust by verdict, not by reputation — a machine-checked pass/fail, not a paper footnote."),
         ("h", "1 · What we are measuring"),
         ("p", "Climate projections are the most consequential predictions we make. The discipline asks the question the field has never answered in numbers: how much of a projection is verified, versus extrapolated?"),
@@ -52,7 +57,10 @@ def content() -> list[tuple[str, str]]:
         ("b", f"So the leak lives in the atmosphere-ocean coupling, not the ocean model: {ds['n_conserving_all']} of {ds['n_models']} models conserve all three ledgers."),
         ("h", "5 · Why it matters"),
         ("p", "A model leaking heat at ~2× the signal it is projecting carries an error the size of the projection. Conservation is not a solved detail — it is a hard, quantified defect in most models, invisible to skill scores and to ensemble spread. And because salt (purely ocean) is conserved far better than energy and mass (which cross the air-sea boundary), the defect is in the coupling, not the ocean."),
-        ("h", "6 · Reproduce"),
+        ("h", "6 · The verified model's own prediction"),
+        ("b", f"{rm['model']} — the one model that passes conservation + sensitivity + forcing — projects {ssp585['lo']}-{ssp585['hi']}°C of 2100 warming on SSP5-8.5 and below 2°C on SSP1-2.6 (Nazarenko et al. 2022)."),
+        ("b", f"Its own reported sensitivity (2.9-3.0°C) differs from our cross-model gate value ({rm['ecs_K']} K) — an estimation-method difference, stated not hidden."),
+        ("h", "7 · Reproduce"),
         ("p", "pacland climate · python3 scripts/climate_cmip6_drift.py · docs/climate-cmip6-drift.md"),
     ]
 

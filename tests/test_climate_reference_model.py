@@ -6,7 +6,7 @@ ERF2x 3.95 W/m2, 0 ledgers leaked.
 """
 import unittest
 
-from pacland.climate.reference_model import reference_model, summary
+from pacland.climate.reference_model import projections, reference_model, summary
 
 
 class TestReferenceModel(unittest.TestCase):
@@ -31,6 +31,28 @@ class TestReferenceModel(unittest.TestCase):
     def test_summary_names_the_number(self):
         self.assertIn("GISS-E2-1-G", summary())
         self.assertIn("2.71 K", summary())
+
+
+class TestProjections(unittest.TestCase):
+    def test_ssp585_warming_is_4_6_to_5_2(self):
+        w = projections()["warming_2100_C"]["SSP5-8.5"]
+        self.assertAlmostEqual(w["lo"], 4.6, places=1)
+        self.assertAlmostEqual(w["hi"], 5.2, places=1)
+
+    def test_ssp126_warming_below_2(self):
+        w = projections()["warming_2100_C"]["SSP1-2.6"]
+        self.assertEqual(w["hi"], 2.0)
+
+    def test_source_is_nazarenko_2022(self):
+        p = projections()
+        self.assertEqual(p["doi"], "10.1029/2021MS002871")
+        self.assertIn("Nazarenko", p["source"])
+
+    def test_ecs_method_dependence_recorded(self):
+        # the model's own reported ECS (2.9-3.0) vs our Zelinka gate (2.71 K)
+        p = projections()
+        self.assertEqual(p["ecs_model_own_C"], (2.9, 3.0))
+        self.assertAlmostEqual(p["ecs_zelinka_C"], 2.71, places=2)
 
 
 if __name__ == "__main__":
