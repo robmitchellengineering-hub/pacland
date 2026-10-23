@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Constraint, Visualized — PACLAND</title>
+<style>
+  :root { --bg:#05070f; --panel:rgba(12,16,30,.82); --accent:#5eead4; --accent2:#a78bfa; --text:#e2e8f0; --muted:#94a3b8; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { height:100%; background:var(--bg); color:var(--text);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; overflow:hidden; }
+  #scene { position:fixed; inset:0; display:block; }
+  #hud { position:fixed; inset:0; pointer-events:none; }
+  #topbar { position:absolute; top:0; left:0; right:0; padding:18px 22px;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  h1 { font-size:20px; font-weight:700; letter-spacing:.5px; }
+  h1 .grad { background:linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { font-size:12px; color:var(--muted); margin-top:4px; max-width:520px; line-height:1.5; }
+  #tabs { display:flex; gap:8px; pointer-events:auto; }
+  .tab { padding:9px 16px; border-radius:10px; background:var(--panel); border:1px solid rgba(255,255,255,.08);
+    color:var(--text); font-size:13px; cursor:pointer; transition:.18s; backdrop-filter:blur(8px); }
+  .tab:hover { border-color:rgba(94,234,212,.4); }
+  .tab.active { background:linear-gradient(90deg,rgba(94,234,212,.18),rgba(167,139,250,.18)); border-color:rgba(94,234,212,.5); }
+  #readout { position:absolute; bottom:20px; left:22px; pointer-events:auto; background:var(--panel);
+    border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:14px 18px; backdrop-filter:blur(8px);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13px; line-height:1.7; }
+  #readout .k { color:var(--muted); }
+  #readout .v { color:var(--accent); font-weight:600; }
+  #legend { position:absolute; right:22px; bottom:20px; background:var(--panel); border:1px solid rgba(255,255,255,.08);
+    border-radius:12px; padding:12px 16px; font-size:12px; color:var(--muted); line-height:1.6; backdrop-filter:blur(8px); }
+  #legend b { color:var(--text); }
+  .hint { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); font-size:11px; color:var(--muted); opacity:.7; }
+  @media (max-width:640px){ #readout,#legend{ display:none; } .sub{ max-width:92vw; } }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="hud">
+  <div id="topbar">
+    <div>
+      <h1>The Constraint, <span class="grad">Visualized</span></h1>
+      <div class="sub">3D views of the theorem tower — the D3 tadpole as a symplectic invariant, and the uplift potential that keeps the landscape metastable.</div>
+    </div>
+    <div id="tabs">
+      <button class="tab active" data-scene="symplectic">① The tadpole = area</button>
+      <button class="tab" data-scene="kpv">② The KPV uplift</button>
+    </div>
+  </div>
+  <div id="readout"></div>
+  <div id="legend"></div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x05070f, 0.045);
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 100);
+camera.position.set(4.2, 3.2, 6.5);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.target.set(0, 0, 0);
+
+// lights
+scene.add(new THREE.AmbientLight(0x8899cc, 1.4));
+const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(5,7,4); scene.add(key);
+const rim = new THREE.DirectionalLight(0xa78bfa, 1.2); rim.position.set(-4,-2,-3); scene.add(rim);
+
+// shared groups
+const groupSymp = new THREE.Group();
+const groupKPV = new THREE.Group();
+scene.add(groupSymp, groupKPV);
+groupKPV.visible = false;
+
+const readout = document.getElementById('readout');
+const legend = document.getElementById('legend');
+
+/* ---------------- ① symplectic invariant: the tadpole = area ---------------- */
+const F0 = new THREE.Vector2(1.35, 0.55), H0 = new THREE.Vector2(-0.30, 1.25);
+
+function drawVector(color, from, to){
+  const dir = new THREE.Vector3(to.x-from.x, to.y-from.y, 0);
+  const len = dir.length();
+  return new THREE.ArrowHelper(dir.clone().normalize(), new THREE.Vector3(from.x,from.y,0), len, color, 0.28, 0.13);
+}
+
+const para = new THREE.Mesh(new THREE.PlaneGeometry(1,1), new THREE.MeshBasicMaterial({ color:0x5eead4, side:THREE.DoubleSide, transparent:true, opacity:.16, depthWrite:false }));
+const paraEdge = new THREE.LineLoop(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color:0x5eead4, transparent:true, opacity:.7 }));
+
+// grid in the z=0 plane
+const grid = new THREE.GridHelper(6, 24, 0x223355, 0x112233);
+grid.rotation.x = Math.PI/2;
+groupSymp.add(para, paraEdge, grid);
+
+let cur = { nf:null, nh:null, ns:null };
+function updatePara(F, H){
+  if (cur.nf) groupSymp.remove(cur.nf, cur.nh, cur.ns);
+  const pts = [[0,0],[F.x,F.y],[F.x+H.x,F.y+H.y],[H.x,H.y],[0,0]];
+  const v3 = pts.map(p => new THREE.Vector3(p[0], p[1], 0));
+  paraEdge.geometry.dispose();
+  paraEdge.geometry = new THREE.BufferGeometry().setFromPoints(v3);
+  const q = [0,0,0, F.x,F.y,0, F.x+H.x,F.y+H.y,0, H.x,H.y,0];
+  para.geometry.dispose();
+  para.geometry = new THREE.BufferGeometry();
+  para.geometry.setAttribute('position', new THREE.Float32BufferAttribute(q,3));
+  para.geometry.setIndex([0,1,2, 0,2,3]);
+  para.geometry.computeVertexNormals();
+  const nf = drawVector(0x5eead4, new THREE.Vector3(), new THREE.Vector3(F.x,F.y,0));
+  const nh = drawVector(0xa78bfa, new THREE.Vector3(), new THREE.Vector3(H.x,H.y,0));
+  const ns = drawVector(0xffffff, new THREE.Vector3(), new THREE.Vector3(F.x+H.x,F.y+H.y,0));
+  groupSymp.add(nf, nh, ns);
+  cur = { nf, nh, ns };
+  return cur;
+}
+updatePara(F0, H0);
+
+/* ---------------- ② KPV uplift potential surface ---------------- */
+function kpvV(psi, r){ // r = p/M, b0^2 ~ 0.93266
+  const b0 = Math.sqrt(0.93266);
+  const s2 = 0.5*Math.sin(2*psi);
+  const root = Math.sqrt(Math.pow(b0,4)*Math.pow(Math.sin(psi),4) + Math.pow(Math.PI*r - psi + s2, 2));
+  const M = 8; // control regime g_s M ~ 8
+  return r + (M/Math.PI)*(root - psi + s2);
+}
+const Npsi = 120, Nr = 60;
+const psiMin = 0.0, psiMax = 1.15, rMin = 0.02, rMax = 0.14;
+const surfPos = [], surfCol = [];
+const cmap = (t) => { // teal -> purple -> pink
+  const c = new THREE.Color();
+  c.lerpColors(new THREE.Color(0x0ea5e9), new THREE.Color(0xa78bfa), Math.min(1, t*1.6));
+  if (t > 0.62) c.lerp(new THREE.Color(0xf472b6), (t-0.62)/0.38);
+  return c;
+};
+let vmin = Infinity, vmax = -Infinity;
+const Vvals = [];
+for (let j=0;j<=Nr;j++){
+  const r = rMin + (rMax-rMin)*j/Nr;
+  for (let i=0;i<=Npsi;i++){
+    const psi = psiMin + (psiMax-psiMin)*i/Npsi;
+    const v = kpvV(psi, r);
+    Vvals.push(v); if(v<vmin)vmin=v; if(v>vmax)vmax=v;
+  }
+}
+let idx = 0;
+for (let j=0;j<=Nr;j++){
+  const r = rMin + (rMax-rMin)*j/Nr;
+  for (let i=0;i<=Npsi;i++){
+    const psi = psiMin + (psiMax-psiMin)*i/Npsi;
+    const v = Vvals[idx++];
+    const t = (v-vmin)/(vmax-vmin);
+    const x = (psi/psiMax)*4.2 - 1.6;
+    const y = (r-rMin)/(rMax-rMin)*3.0 - 1.5;
+    const z = t*2.6;
+    surfPos.push(x, y, z);
+    const c = cmap(t);
+    surfCol.push(c.r, c.g, c.b);
+  }
+}
+const surfGeom = new THREE.BufferGeometry();
+surfGeom.setAttribute('position', new THREE.Float32BufferAttribute(surfPos,3));
+surfGeom.setAttribute('color', new THREE.Float32BufferAttribute(surfCol,3));
+const inds = [];
+for (let j=0;j<Nr;j++) for (let i=0;i<Npsi;i++){
+  const a = j*(Npsi+1)+i, b = a+1, c = a+(Npsi+1), d = c+1;
+  inds.push(a,b,c, b,d,c);
+}
+surfGeom.setIndex(inds);
+surfGeom.computeVertexNormals();
+const surf = new THREE.Mesh(surfGeom, new THREE.MeshStandardMaterial({ vertexColors:true, roughness:.5, metalness:.15, side:THREE.DoubleSide }));
+groupKPV.add(surf);
+groupKPV.rotation.y = -0.6; groupKPV.rotation.x = 0.35; groupKPV.position.z = -0.2;
+
+// the p/M = 0.08 control plane (metastable boundary)
+const cutPlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(4.3, 0.04),
+  new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:.25, side:THREE.DoubleSide })
+);
+cutPlane.rotation.x = Math.PI/2;
+cutPlane.position.set(0.5, 0, 1.0);
+groupKPV.add(cutPlane);
+
+/* ---------------- UI switching ---------------- */
+const tabs = document.querySelectorAll('.tab');
+const legendSymp = `<b>Mitchell's Uniqueness.</b> The D3 tadpole <b>N = FᵀJH = F₁H₂ − F₂H₁</b> is the signed <b>area</b> of the parallelogram spanned by the two flux vectors. A symplectic shear (det = 1) deforms the parallelogram — but the area is <b>invariant</b>. That one invariant is the entire exact content of the flux sector.`;
+const legendKPV = `<b>Machine ① — the uplift-control solver.</b> The anti-D3 potential V(ψ) as a surface over (ψ, p/M). Below the white <b>p/M = 0.08</b> line the minimum is metastable (dS); above it there is no minimum (monotonic). Height = potential, color = height.`;
+legend.innerHTML = legendSymp;
+
+function showScene(name){
+  const symp = name === 'symplectic';
+  groupSymp.visible = symp;
+  groupKPV.visible = !symp;
+  legend.innerHTML = symp ? legendSymp : legendKPV;
+  controls.target.set(0,0,0);
+  if (symp) camera.position.set(4.2, 3.2, 6.5); else { camera.position.set(5, 4, 6); }
+}
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  showScene(t.dataset.scene);
+}));
+
+/* ---------------- animation ---------------- */
+const clock = new THREE.Clock();
+let t = 0;
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  t += dt;
+  if (groupSymp.visible){
+    // symplectic shear S(t) = [[1, s],[0,1]] acts F1 -> F1 + s*F2 (det=1 => area invariant)
+    const s = 1.1*Math.sin(t*0.9);
+    const F = new THREE.Vector2(F0.x + s*F0.y, F0.y);
+    const H = new THREE.Vector2(H0.x + s*H0.y, H0.y);
+    const N = F.x*H.y - F.y*H.x;
+    const N0 = F0.x*H0.y - F0.y*H0.x;
+    cur = updatePara(F, H);
+    readout.innerHTML =
+      `<div><span class="k">tadpole N = F₁H₂ − F₂H₁</span> = <span class="v">${N.toFixed(4)}</span></div>` +
+      `<div><span class="k">shear parameter s =</span> <span class="v">${s.toFixed(3)}</span> &nbsp;·&nbsp; <span class="k">det(S) = 1</span></div>` +
+      `<div><span class="k">N₀ (initial) =</span> <span class="v">${N0.toFixed(4)}</span> &nbsp;·&nbsp; <span class="k">ΔN =</span> <span class="v">${(N-N0).toExponential(1)}</span></div>`;
+  } else {
+    readout.innerHTML =
+      `<div><span class="k">V(ψ) = p + (M/π)[√(b₀⁴sin⁴ψ + (pπ/M − ψ + ½sin2ψ)²) − ψ + ½sin2ψ]</span></div>` +
+      `<div><span class="k">metastable (dS)</span> <span class="v">iff p/M &lt; 0.08</span> · <span class="k">white line = the boundary</span></div>`;
+    // gentle auto-rotate
+    groupKPV.rotation.y += dt*0.12;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
