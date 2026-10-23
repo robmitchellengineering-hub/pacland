@@ -1,20 +1,20 @@
 # PACLAND — operating rules (read before working in this repo)
 
-## Multi-discipline workflow — one branch per discipline, `main` is the spine only
+## Multi-discipline workflow — the core on `main`, every expansion on its own branch
 
-PACLAND is several disciplines built in **parallel** (landscape, climate, drugs, economics, …).
-`main` is **not** the working surface. When every discipline pushes to `main` they collide on
-the shared files (`README.md`, `src/pacland/disciplines.py`, `docs/arxiv-submission.md`, the
-site) and `main` becomes a moving target — a merge conflict and a wrong-attribution every time.
-This has happened repeatedly; these rules stop it.
+PACLAND is one **core** discipline (the string landscape — the founding spine) plus several
+**parallel expansions** (climate, drugs, economics, epi, ai). The expansions collide when they
+all push to `main` and fight over the shared files (`README.md`,
+`src/pacland/disciplines.py`, `docs/arxiv-submission.md`, the site); the core does not. So:
 
-1. **`main` = stable trunk.** Always green, **PR-only, no direct push**. It holds the shared
-   spine (`src/pacland/` core, the CLI, the verification discipline) plus a discipline **only
-   once that discipline's change is a complete, reviewed, green unit** — never in-progress work.
-2. **One long-lived branch per discipline** — `discipline/<slug>` (`landscape`, `climate`,
-   `drugs`, `economics`, `epi`, `ai` — the slugs in `src/pacland/disciplines.py`). Work on it via
+1. **`main` = the core (string landscape) + the shared spine.** Physics work is done **on
+   `main`** (via PR, since `main` is branch-protected): `src/pacland/` core, the CLI, the
+   verification discipline, and the landscape content. Always green, **PR-only, no direct push**.
+2. **Every expansion uses `discipline/<slug>`** (`climate`, `drugs`, `economics`, `epi`, `ai` —
+   the slugs in `src/pacland/disciplines.py`). Work on it via
    `git worktree add <path> -b <feature> origin/discipline/<slug>`, PR back into the discipline
-   branch, and the discipline branch PRs into `main` only when complete.
+   branch, and the discipline branch PRs into `main` **only when that discipline's change is a
+   complete, reviewed, green unit** — never in-progress.
 3. **File ownership.** A discipline owns `src/pacland/<slug>/**`, `docs/<slug>-*`,
    `data/<slug>/`, `scripts/*<slug>*`, `tests/test_<slug>*.py` — and touches nothing else.
    Shared files (`README.md`, `src/pacland/disciplines.py`, `docs/arxiv-submission.md`) are
