@@ -50,9 +50,10 @@ search program needs is absent.
 
 \section{What we proved: the theorem tower}
 
-The constraint-first claim began as that measurement and is now a tower of five
+The constraint-first claim began as that measurement and is now a tower of six
 theorems, each verified symbolically at zero tolerance, plus a machine-checked Lean arm
-(\texttt{pacland-proof/}). One command reproduces the whole tower
+(\texttt{pacland-proof/}) that now machine-checks the FFT slices at degrees 1--4 (no
+linear, only the tadpole, no cubic, only $N^2$). One command reproduces the whole tower
 (\texttt{scripts/validate\_all\_theorems.py}).
 
 \begin{center}
@@ -131,31 +132,33 @@ QCD}$) are, within the Standard Model, free inputs \emph{by definition} --- that
 trivial counting fact, not a result. The non-trivial claim is:
 
 \begin{center}
-\fbox{\parbox{0.9\textwidth}{\textbf{Conjecture.} No ultraviolet completion can predict
-the $19$ parameters either --- they are unpredicable in any theory of everything, for
-the same reason the flux couplings are: there is no invariant for them to be a function
-of.}}
+\fbox{\parbox{0.9\textwidth}{\textbf{Conjecture (refined).} A theory of everything
+predicts \emph{relations}, never \emph{values}. The known ultraviolet completions do
+relate the $19$ --- gauge-coupling unification, Yukawa equalities --- but none derives
+the \emph{values} correctly. Measured: no completion derives more than \textbf{2} of the
+$19$ correctly (only gauge unification survives; minimal $\mathrm{SU}(5)$'s five
+relations and $\mathrm{SO}(10)$'s twelve are numerically wrong).}}
 \end{center}
 
 This is the genuinely open, genuinely falsifiable frontier. The flux theorem was
 provable only because flux has a clean duality group ($\mathrm{Sp}$) with a known
 invariant theory (Weyl's First Fundamental Theorem). The Standard Model's couplings have
 no such clean group action, so the conjecture is exactly that --- and it may be
-\emph{false}: a GUT or string construction that relates the couplings (gauge-coupling
-unification, a Yukawa relation) would be a counterexample.
+\emph{false}: a GUT or string construction that derives a \emph{value} correctly (beyond
+the two surviving relations) would be a counterexample.
 
 \textbf{Why a partner should care.} This is a program with a success criterion, not a
 slogan. Either direction is a publishable, decisive result:
 \begin{itemize}
 \item \emph{Confirmation:} exhibit the invariant-theory structure (the ``duality group +
-FFT'' analog for the gauge sector) that proves no invariant can fix the $19$
-parameters --- completing the theorem in a second sector.
-\item \emph{Falsification:} exhibit one ultraviolet relation among the $19$ --- which
-would itself be the kind of concrete prediction string theory has been accused of
-lacking.
+FFT'' analog for the gauge sector) that proves no completion can fix the values of the
+$19$ parameters --- completing the theorem in a second sector.
+\item \emph{Falsification:} exhibit one ultraviolet relation among the $19$ that is
+\emph{numerically correct} beyond the two surviving ones --- which would itself be the
+kind of concrete prediction string theory has been accused of lacking.
 \end{itemize}
 Either outcome moves unification forward. The tooling is in place and open
-(\texttt{github.com/robmitchellengineering-hub/pacland}); the four arXiv papers are
+(\texttt{github.com/robmitchellengineering-hub/pacland}); the six arXiv papers are
 ready; the verification discipline (a probably-approximately-correct certificate, the
 Mitchell Verification Deficit, the Rule of Three) is the same instrument used to keep
 the flux result honest, and it applies unchanged.
@@ -167,7 +170,7 @@ the flux result honest, and it applies unchanged.
 \toprule
 claim & status \\
 \midrule
-flux: the only exact structure is the constraint & \textbf{proven} (5 theorems + Lean) \\
+flux: the only exact structure is the constraint & \textbf{proven} (6 theorems + Lean degrees 1--4) \\
 SM: the constraint (anomaly $\to$ hypercharge) is unique & \textbf{proven} (4/4 exact) \\
 SM: the $19$ parameters are free inputs & \textbf{counted} (trivial) \\
 SM: the $19$ parameters are unpredicable in any ToE & \textbf{open, falsifiable} \\
