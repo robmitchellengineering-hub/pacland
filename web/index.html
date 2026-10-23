@@ -124,78 +124,6 @@
       </div>
     </div>
 
-    <h2 id="disciplines">Disciplines — one verification spine, many fields</h2>
-    <p>PACLAND is one verification discipline — the two-level certificate, the verification deficit, the constraint-first decomposition, the four-walls map — applied one field at a time. Each discipline is its own thing: its own code, docs, and commands, inside this one repo. <code>pacland disciplines</code> lists them.</p>
-    <div class="grid">
-      <div class="card">
-        <h3>String landscape <span class="tag">core</span></h3>
-        <p class="muted">The founding discipline. PAC verification of the ~10⁵⁰⁰ flux landscape: the theorem tower, the Standard-Model frontier, m = 9 and closing.</p>
-        <p><a href="#arc">the arc</a> · <a href="#theorems">theorems</a> · <a href="#sm">SM frontier</a></p>
-      </div>
-      <div class="card">
-        <h3>Climate / Earth-system <span class="tag">built</span></h3>
-        <p class="muted">The first expansion. No (ε,δ) certificate exists in climate modelling; the deficit is m = 4 on the historical record (≈68% radius) and m = 0 for 2100 projections — extrapolation, not verification.</p>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">deficit report</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-gap-analysis.md">gap analysis</a> · <code>pacland climate</code></p>
-      </div>
-      <div class="card">
-        <h3>Drug discovery <span class="tag">built</span></h3>
-        <p class="muted">Chemical space as a landscape. m = 4 retrospective endpoints (≈68% radius), m = 0 for the novel molecule — extrapolation, not verification.</p>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-verification-deficit.md">deficit report</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-gap-analysis.md">gap analysis</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-drugs-explainer.pdf">explainer (PDF)</a> · <code>pacland drugs</code></p>
-      </div>
-      <div class="card">
-        <h3>Economics / macro-finance <span class="tag">built</span></h3>
-        <p class="muted">Accounting identities as the always-true oracle. m = 4 backcast series (≈68% radius), m = 0 for the policy forecast — extrapolation, not verification.</p>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-verification-deficit.md">deficit report</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-gap-analysis.md">gap analysis</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-accounting-closure.md">real-data closure</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-economics-explainer.pdf">explainer (PDF)</a> · <code>pacland economics</code></p>
-      </div>
-      <div class="card">
-        <h3>Epidemiology <span class="tag">queued</span></h3>
-        <p class="muted">The identifiability problem as the underdetermined wall.</p>
-      </div>
-      <div class="card">
-        <h3>Valiant Verification <span class="tag">verified badge</span></h3>
-        <p class="muted">The SDK applied to repos and models — the badge is the product. Adoptions: pacland, harness-mesh.</p>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ai-verified-badge.md">the badge</a></p>
-      </div>
-    </div>
-
-    <h2 id="climate">Climate — the verification deficit, measured</h2>
-    <p class="lead">The first expansion. Applied to climate modelling, the discipline produces a number the field has never had: how much of a projection is <em>verified</em> versus <em>extrapolated</em>.</p>
-
-    <div class="grid">
-      <div class="card">
-        <h3>The verification deficit</h3>
-        <div class="big">m = 4 → 68% · m = 0</div>
-        <p class="muted">Only 4 observables (GMST, EEI, OHC, GMSL) are simultaneously measured + computable + validated on the historical record — a ≈68% certificate radius. The 2100 projection targets have m = 0: no future state is measured, so the projection is <strong>extrapolation, not verification</strong>.</p>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">deficit report</a></p>
-      </div>
-      <div class="card">
-        <h3>Energy budget, on real data</h3>
-        <div class="big">0.15 → 0.01 W/m²</div>
-        <p class="muted">The 0–2000 m ocean alone under-closes the energy budget (residual 0.15 W/m²); the full budget — ocean + atmosphere + land + cryosphere — closes it (0.01 W/m²). The budget is only an invariant when <em>all</em> reservoirs are counted.</p>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">energy-budget closure</a></p>
-      </div>
-    </div>
-
-    <div class="callout">
-      <p><strong>The CMIP6 conservation drift (real data, three ledgers).</strong> A conserving model must close three independent ledgers — energy, mass, salt. Measured: <strong>12 of 19 leak energy</strong> (two — CNRM-ESM2-1 at 1.485 W/m², CNRM-CM6-1 at 1.46 — at ~1.9× the Earth's energy imbalance), <strong>6 of 19 leak mass</strong> (ACCESS-ESM1-5 at −1.03 mm/yr, ~30% of sea-level rise), but <strong>only 2 of 19 leak salt</strong>. Salt — the purely-ocean ledger — is conserved orders of magnitude better, so the leak lives in the <em>atmosphere-ocean coupling</em>, not the ocean model. Crossed with the field's two other quality axes — climate sensitivity (ECS) and effective forcing (ERF2x) — <strong>only 2 of 19 survive all three axes — the GISS family</strong>.</p>
-    </div>
-    <p class="muted">Full write-up: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">the CMIP6 conservation deficit</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-ace-reference-fidelity.md">the ACE emulator example</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">explainer (PDF)</a> · reproduce: <code>pacland climate</code> · <code>python3 scripts/climate_cmip6_drift.py</code>.</p>
-
-    <h2 id="trust">Trust board — every discipline, one ranked output</h2>
-    <p>The monetisation surface: each discipline drops its artifacts into one ranked board, machine-checked and cited. <code>pacland trust</code> ranks 29 artifacts today — <strong>14 broken, 4 weak, 11 clean</strong>.</p>
-    <div class="callout">
-      <p><strong>The flagship finding.</strong> 12 of 19 CMIP6 models fail an energy-conservation guard; two leak heat at ~1.9× the Earth's energy imbalance, and the leak lives in the atmosphere, not the ocean. Crossed with ECS and forcing, only the GISS family survives all three axes.</p>
-    </div>
-    <table>
-      <thead><tr><th>tier</th><th>artifact</th><th>verdict</th></tr></thead>
-      <tbody>
-        <tr><td><span class="tag">broken</span></td><td>14 CMIP6 models</td><td>fail ≥2 of 3 axes — CNRM-ESM2-1 fails all three (leaky + hot + low forcing)</td></tr>
-        <tr><td><span class="tag">weak</span></td><td>3 CMIP6 models + ACE emulator</td><td>fail exactly 1 axis — E3SM-1-1 (clean but hot), EC-Earth3-Veg (high sensitivity), MPI-ESM1-2-HR (leaky only)</td></tr>
-        <tr><td><span class="tag">clean</span></td><td>the 5-theorem tower + GISS-E2-1-G / -CC + 2 guard-suites + 2 badge adoptions</td><td>machine-checked / mutation-tested / all three axes</td></tr>
-      </tbody>
-    </table>
-    <p class="muted"><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">the CMIP6 write-up</a> · <code>pacland trust</code> · every entry carries its source.</p>
-
     <h2 id="published">Published</h2>
     <div class="card">
       <h3>Mitchell's Completeness Theorem: no exact invariant selector in the flux landscape</h3>
@@ -462,7 +390,79 @@ python3 scripts/validate_all_theorems.py</code></pre>
     </div>
 
   </div>
-</main>
+<h2 id="disciplines">Disciplines — one verification spine, many fields</h2>
+    <p>PACLAND is one verification discipline — the two-level certificate, the verification deficit, the constraint-first decomposition, the four-walls map — applied one field at a time. Each discipline is its own thing: its own code, docs, and commands, inside this one repo. <code>pacland disciplines</code> lists them.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>String landscape <span class="tag">core</span></h3>
+        <p class="muted">The founding discipline. PAC verification of the ~10⁵⁰⁰ flux landscape: the theorem tower, the Standard-Model frontier, m = 9 and closing.</p>
+        <p><a href="#arc">the arc</a> · <a href="#theorems">theorems</a> · <a href="#sm">SM frontier</a></p>
+      </div>
+      <div class="card">
+        <h3>Climate / Earth-system <span class="tag">built</span></h3>
+        <p class="muted">The first expansion. No (ε,δ) certificate exists in climate modelling; the deficit is m = 4 on the historical record (≈68% radius) and m = 0 for 2100 projections — extrapolation, not verification.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">deficit report</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-gap-analysis.md">gap analysis</a> · <code>pacland climate</code></p>
+      </div>
+      <div class="card">
+        <h3>Drug discovery <span class="tag">built</span></h3>
+        <p class="muted">Chemical space as a landscape. m = 4 retrospective endpoints (≈68% radius), m = 0 for the novel molecule — extrapolation, not verification.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-verification-deficit.md">deficit report</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-gap-analysis.md">gap analysis</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-drugs-explainer.pdf">explainer (PDF)</a> · <code>pacland drugs</code></p>
+      </div>
+      <div class="card">
+        <h3>Economics / macro-finance <span class="tag">built</span></h3>
+        <p class="muted">Accounting identities as the always-true oracle. m = 4 backcast series (≈68% radius), m = 0 for the policy forecast — extrapolation, not verification.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-verification-deficit.md">deficit report</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-gap-analysis.md">gap analysis</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-accounting-closure.md">real-data closure</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-economics-explainer.pdf">explainer (PDF)</a> · <code>pacland economics</code></p>
+      </div>
+      <div class="card">
+        <h3>Epidemiology <span class="tag">queued</span></h3>
+        <p class="muted">The identifiability problem as the underdetermined wall.</p>
+      </div>
+      <div class="card">
+        <h3>Valiant Verification <span class="tag">verified badge</span></h3>
+        <p class="muted">The SDK applied to repos and models — the badge is the product. Adoptions: pacland, harness-mesh.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ai-verified-badge.md">the badge</a></p>
+      </div>
+    </div>
+
+    <h2 id="climate">Climate — the verification deficit, measured</h2>
+    <p class="lead">The first expansion. Applied to climate modelling, the discipline produces a number the field has never had: how much of a projection is <em>verified</em> versus <em>extrapolated</em>.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>The verification deficit</h3>
+        <div class="big">m = 4 → 68% · m = 0</div>
+        <p class="muted">Only 4 observables (GMST, EEI, OHC, GMSL) are simultaneously measured + computable + validated on the historical record — a ≈68% certificate radius. The 2100 projection targets have m = 0: no future state is measured, so the projection is <strong>extrapolation, not verification</strong>.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">deficit report</a></p>
+      </div>
+      <div class="card">
+        <h3>Energy budget, on real data</h3>
+        <div class="big">0.15 → 0.01 W/m²</div>
+        <p class="muted">The 0–2000 m ocean alone under-closes the energy budget (residual 0.15 W/m²); the full budget — ocean + atmosphere + land + cryosphere — closes it (0.01 W/m²). The budget is only an invariant when <em>all</em> reservoirs are counted.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">energy-budget closure</a></p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>The CMIP6 conservation drift (real data, three ledgers).</strong> A conserving model must close three independent ledgers — energy, mass, salt. Measured: <strong>12 of 19 leak energy</strong> (two — CNRM-ESM2-1 at 1.485 W/m², CNRM-CM6-1 at 1.46 — at ~1.9× the Earth's energy imbalance), <strong>6 of 19 leak mass</strong> (ACCESS-ESM1-5 at −1.03 mm/yr, ~30% of sea-level rise), but <strong>only 2 of 19 leak salt</strong>. Salt — the purely-ocean ledger — is conserved orders of magnitude better, so the leak lives in the <em>atmosphere-ocean coupling</em>, not the ocean model. Crossed with the field's two other quality axes — climate sensitivity (ECS) and effective forcing (ERF2x) — <strong>only 2 of 19 survive all three axes — the GISS family</strong>.</p>
+    </div>
+    <p class="muted">Full write-up: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">the CMIP6 conservation deficit</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-ace-reference-fidelity.md">the ACE emulator example</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">explainer (PDF)</a> · reproduce: <code>pacland climate</code> · <code>python3 scripts/climate_cmip6_drift.py</code>.</p>
+
+    <h2 id="trust">Trust board — every discipline, one ranked output</h2>
+    <p>The monetisation surface: each discipline drops its artifacts into one ranked board, machine-checked and cited. <code>pacland trust</code> ranks 29 artifacts today — <strong>14 broken, 4 weak, 11 clean</strong>.</p>
+    <div class="callout">
+      <p><strong>The flagship finding.</strong> 12 of 19 CMIP6 models fail an energy-conservation guard; two leak heat at ~1.9× the Earth's energy imbalance, and the leak lives in the atmosphere, not the ocean. Crossed with ECS and forcing, only the GISS family survives all three axes.</p>
+    </div>
+    <table>
+      <thead><tr><th>tier</th><th>artifact</th><th>verdict</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag">broken</span></td><td>14 CMIP6 models</td><td>fail ≥2 of 3 axes — CNRM-ESM2-1 fails all three (leaky + hot + low forcing)</td></tr>
+        <tr><td><span class="tag">weak</span></td><td>3 CMIP6 models + ACE emulator</td><td>fail exactly 1 axis — E3SM-1-1 (clean but hot), EC-Earth3-Veg (high sensitivity), MPI-ESM1-2-HR (leaky only)</td></tr>
+        <tr><td><span class="tag">clean</span></td><td>the 5-theorem tower + GISS-E2-1-G / -CC + 2 guard-suites + 2 badge adoptions</td><td>machine-checked / mutation-tested / all three axes</td></tr>
+      </tbody>
+    </table>
+    <p class="muted"><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">the CMIP6 write-up</a> · <code>pacland trust</code> · every entry carries its source.</p>
+
+    </main>
 
 <footer>
   PACLAND · github.com/robmitchellengineering-hub/pacland · a verification discipline, not a physics solver
