@@ -40,7 +40,7 @@ The theorem tower (`scripts/validate_all_theorems.py`, one command, all symbolic
 **The Standard-Model frontier** (one sector up, same structure): anomaly cancellation 5/5,
 hypercharge uniqueness 4/4, `N_gen = |χ|/2` = topological index, and **19 = the orbit-space
 dimension** of the flavor group (Molien–Weyl; matches Bento–Silva–Trautner and Hanany et al.).
-The only known UV symmetry (GUT) collapses **3 of 19** — no full collapse.
+UV completions impose exact relations — minimal SU(5) collapses **5** (gauge 2 + three `Y_e=Y_dᵀ` mass relations), minimal SO(10)/E₆/Pati–Salam collapse **12** (`Y_u=Y_d=Y_e`, `V_CKM=1`) — but those relations are *numerically wrong* against data, so only gauge unification (**2**) survives.
 
 **Consequence (proven):** no *exact, polynomial, duality-invariant* selector can single out a
 vacuum. This is a no-go on the *equation*, **not** on statistical or moduli-dependent selection.
@@ -91,9 +91,10 @@ can reach.**
 
 ## Part 5 — The honest open gates
 
-1. **The SM extension (conjectured).** "The 19 are free in *any* UV completion" is **conjectured**,
-   not proven — the flux theorem needed a duality group + FFT, which the SM lacks. The surviving
-   claim: no unique *value* is derived, only *relations* (GUT collapses 3, and that is all).
+1. **The SM extension (conjectured).** "No UV completion derives the values correctly" is
+   **conjectured**, not proven — the flux theorem needed a duality group + FFT, which the SM
+   lacks. The surviving claim: no unique *value* is derived, only *relations*, and the relations
+   that exist (SU(5) 5, SO(10) 12) are mostly wrong against data, leaving gauge unification (2).
 2. **The dS uplift (the community's, ~0.70 trending-forbidden).** Every uplift mechanism now fails
    the 10D control test; the dS swampland is strongly supported but **not a theorem**. The decisive
    open question — *is the control problem generic?* — is string phenomenology's hardest open
@@ -102,7 +103,7 @@ can reach.**
 ## Falsifiers (each kills the Principle)
 
 1. a moduli-independent, duality-invariant flux quantity that is **not** a function of `FᵀJH`;
-2. a **20th** exact relation among the 19 (a UV completion that collapses more than GUT's 3);
+2. an exact, derivable, *and numerically-correct* relation among the 19 beyond gauge unification (2);
 3. a covariance law that **scatters** at higher h12;
 4. a measured **non-uniform** `dN/d|W₀|²` near zero, or a proven dS no-go that empties the
    positive-Λ discretuum.
