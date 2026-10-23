@@ -6,7 +6,7 @@
 **Probably Approximately Correct Landscape** — a Valiant-verification system, applied
 one field at a time. The string landscape (with a **proven theorem tower** and a
 **Standard-Model frontier**) is the founding discipline; **climate** is the first
-expansion. Live: [pacland.netlify.app](https://pacland.netlify.app) · `pip install pacland`
+expansion. Live: [pacland.morpheus.nz](https://pacland.morpheus.nz) · `pip install pacland`
 
 ## Disciplines — one verification spine, many fields
 

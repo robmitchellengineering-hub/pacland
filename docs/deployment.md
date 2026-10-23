@@ -2,7 +2,8 @@
 
 Live surfaces (both serving `web/index.html`, the same static demo):
 
-- **Netlify (primary):** https://pacland.netlify.app
+- **pacland.morpheus.nz (primary — the canonical address):** custom domain → Netlify
+  (`pacland.netlify.app`).
   - site id `29e7c912-9a79-4cb3-a7e8-f491dc385c0e`, account `robmitchellengineering-hub`.
   - Deployed 2026-10-18 with Rob's own Netlify token (stored in the Morpheus
     production DB — `user_settings.connections` for `robmitchellengineering@gmail.com`,
@@ -23,12 +24,9 @@ Live surfaces (both serving `web/index.html`, the same static demo):
   `HTTP 401 "Login Redirect"` → `app.netlify.com/edge-access`. A site created via
   the API under Rob's token must be un-walled with
   `PATCH /api/v1/sites/{id}` body `{"sso_login": false}`. Done for this site.
-- **Custom domain `pacland.morpheus.nz` is NOT live yet.** The domain is registered
-  on the main `morpheus.nz` Netlify site, but `morpheus.nz` DNS is hosted on
-  **Cloudflare** (`serenity.oswald.ns.cloudflare.com`) and there is no Cloudflare
-  token in Morpheus connections, the Northflank runtime env, or the deck inbox.
-  To finish: add a Cloudflare CNAME `pacland` → `pacland.netlify.app` and move the
-  domain from the main site to this site. Blocked on Rob's Cloudflare access.
+- **Custom domain `pacland.morpheus.nz` is live** (Cloudflare CNAME `pacland` →
+  `pacland.netlify.app`). The canonical address in every doc is now
+  `pacland.morpheus.nz`; `pacland.netlify.app` remains only as the Netlify backend.
 
 ## Credentials (never in chat or this file)
 
