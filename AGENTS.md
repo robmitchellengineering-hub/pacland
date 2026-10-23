@@ -239,6 +239,17 @@ source, not a textbook formula:**
   `Sᵀ J S = det S • J`, so symplectic ⟺ det = 1, and `{xᵀJy = 1}` is one SL(2) orbit).
   Remaining Lean target: transitivity for **general n** (the orbit-tangent rank argument).
   PhysLib is public (leanprover-community/physlib).
+  **UPDATE 2026-10-23 — the FFT slices degrees 1–4 are now machine-checked.** `DegreeOne.lean`
+  (no linear invariant), `DegreeThree.lean` (no cubic invariant, the dilation's odd-weight
+  argument), `DegreeFour.lean` (only `N²` at quartic, the Weyl + shear 9→1 reduction), alongside
+  the degree-2 Uniqueness. The general-degree FFT remains *cited* (Weyl 1939) + sympy-verified
+  (5 degrees), not Lean-formalized.
+- **The three verification machines (2026-10-23, built, PRs #77–82).** (3) the
+  completion-enumerator `src/pacland/uv_completions.py` — 12 UV completions, collapse checker,
+  verified deficit = 2 (only gauge unification survives data); (1) the KPV uplift-control solver
+  `scripts/scan_kpv.py` — reproduces `p/M < 0.08` and the HS&V `g_s M ≳ 20` control bound, showing
+  control forces `N ≳ 400–10³`; (2) the auto-formalization engine — the Lean degrees 1–4 above.
+  Plan: `docs/three-machines-plan.md`.
 - `pacland climb` runs the deficit climber on the mesh (studio-linux via
   `mac → win-2 → studio-linux`); `data/cy_corpus.json` is the answer key.
 - **Swampland connection (2026-10-19):** `src/pacland/swampland.py` +
@@ -260,9 +271,11 @@ source, not a textbook formula:**
      `docs/sm-rank-test.md`): the SM's *own* flavor symmetry leaves orbit-space rank **19**
      (quark 26→10, lepton 15→3, exact Jacobian rank; flux control collapses to rank 1),
      three-way checked; the *dynamical* rank bound is **rank ≤ 2·h¹¹ + 2·h²¹ + 2** → reducible
-     for h¹¹+h²¹ ≤ 8, generically real only for h¹¹+h²¹ ≥ 9; the ONLY known UV symmetry (GUT)
-     collapses exactly **3 of 19** (gauge 3→1, b–τ 2→1) — no total collapse (SM has no duality
-     group + FFT). **Answer: the 19 floor is real.**
+     for h¹¹+h²¹ ≤ 8, generically real only for h¹¹+h²¹ ≥ 9. **⚠️ CORRECTED (falsifier #2, 2026-10-23):**
+     the earlier "GUT collapses exactly 3 of 19" was **wrong** — `Y_e=Y_dᵀ` is three mass relations
+     (not one), so minimal SU(5) collapses **5**, and minimal SO(10)/E₆/PS collapse **12**; but those
+     relations are *numerically wrong* against data, so only gauge unification (**2**) survives. The
+     true statement: **no completion derives more than 2 of the 19 correctly.** **Answer: the 19 floor is real.**
   4. Four-wall map for the SM — **DONE** (`src/pacland/limits.py::SM_BOUNDARIES` +
      `docs/sm-boundary-map.md`): the 19 values (underdetermined), the UV completion
      (underdetermined), UV verification (unmeasurable), non-perturbative QCD (intractable),

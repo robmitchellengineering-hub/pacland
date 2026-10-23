@@ -177,8 +177,10 @@ its orbit space under the SM's own flavor group is **19** (quark 10 + lepton 3 +
 `dim(V/G) = n − g + s` (`validate_sm_invariant_ring.py`); (b) the exact Jacobian rank
 (`validate_sm_rank_test.py`, GF(p) modular rank at three primes); (c) the Molien–Weyl /
 Hilbert–Serre cert (`validate_molien_weyl.py`, with an S₃-on-ℂ³ Molien-series control matching
-`1/[(1−t)(1−t²)(1−t³)]`). The only known UV symmetry (GUT) collapses exactly 3 of the 19 (gauge
-3→1, b–τ 2→1).
+`1/[(1−t)(1−t²)(1−t³)]`). ⚠️ Corrected (falsifier #2, 2026-10-23): the earlier "GUT collapses
+exactly 3" was wrong — `Y_e=Y_dᵀ` is three mass relations, so minimal SU(5) collapses 5 and
+minimal SO(10)/E₆/PS collapse 12, but those are numerically wrong; only gauge unification (2)
+survives data. The true statement: no completion derives more than **2** of the 19 correctly.
 
 **Scope.** The SM's own flavor/reparametrization group; the *dynamical* rank is bounded by
 `2h¹¹ + 2h²¹ + 2` (reducible for `h¹¹+h²¹ ≤ 8`).
