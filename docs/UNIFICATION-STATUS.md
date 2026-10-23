@@ -1,5 +1,8 @@
 # UNIFICATION — where we are, and the path (2026-10-23)
 
+> **Don't ask a complex system for its values — ask for its constraints, its count, and its
+> deficit. Everything else is covariance, not knowledge.**
+
 One document: everything proven, everything measured, and the sharper picture they form.
 Status is tiered — **proven** (symbolic, machine-checked) vs **measured** (node, with a
 control) vs **asserted** (a hypothesis to test). Never read a tier into another.
