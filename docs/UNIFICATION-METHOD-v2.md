@@ -29,7 +29,8 @@ String theory is **solved** for a sector when all three hold (same (a)+(b)+(c), 
 - **(b) the covariance table is complete** — every observable's law under `S` and `T`, closed form.
   **This is where the laws are: Mitchell's Laws of Duality Covariance** (`MITCHELLS-LAWS.md`).
 - **(c) the dictionary is *ranked*, not *solved*** — certify the 19 as the orbit-space dimension
-  (Molien–Weyl), enumerate the collapses symmetry forces (GUT: 3 of 19), and prove **no further
+  (Molien–Weyl), enumerate the collapses symmetry forces (minimal SU(5): 5, SO(10)/E₆/Pati–Salam: 12 —
+  only gauge unification (2) survives data), and prove **no further
   relation exists**. The deliverable is the rank and its collapses, **not a formula for the values**
   — the theorem already forbids that formula.
 
@@ -49,7 +50,7 @@ falsifier**. A law earns the name only when all four of `MITCHELLS-LAWS.md` hold
 | **IIb** the superpotential law — phase | `arg(W_S/W) = -arg(τ)` exactly (⇒ `W_S = W·τ̄/\|τ\|`) | `\|W\|` row reproduces (1.0000) | phase scatters (resid > 0.10) | **DONE** (100/100, resid 0.0000) |
 | **III** the string-coupling law | `g_s = 1/Im(τ)`; S: `τ→-1/τ` ⇒ `g_s'=\|τ\|²g_s`, T: `τ→τ+1` ⇒ `g_s'=g_s` | `g_s` reproduced at original τ | `g_s' ≠ \|τ\|²g_s` under S | **DONE** (100/100 clean; definitional — the 2209Z `0.21→3.9e7` was a bug) |
 | **IV** the moduli law | `z_i → z_i` at degree 0 (S/T act on flux+τ only) | G2: transformed point at fixed z is a vacuum | a degree-0 moduli shift needed | **established** (by definition; monodromy deferred to degree>0) |
-| **V** the counting law | 19 = orbit-space dim (Molien–Weyl); GUT collapses exactly 3 | rank test 3-way | a 20th relation beyond GUT | **DONE** (three routes: count + rank + Molien–Weyl) |
+| **V** the counting law | 19 = orbit-space dim (Molien–Weyl); minimal SU(5) collapses 5, SO(10)/E₆/PS 12 — only gauge unification (2) survives data | rank test 3-way | a 20th relation beyond GUT | **DONE** (three routes: count + rank + Molien–Weyl) |
 
 **The T-row of `|W|` is a finding, not a law.** `|W_T|/|W|` (T: `(F,H)→(F,H+F)`, `τ→τ+1`) does **not**
 close to a clean law across the 100-row sample (mean 4.9e6, std 4.9e7, fit residual 0.22 — the
@@ -97,8 +98,11 @@ The dictionary is **ranked, not solved**. Its rank is established exactly (all i
   flux could carry is noise (the structure map, `r = 1.0` only for `N`). The flux dictionary is the
   collapse to the single constraint.
 - **SM sector**: the map `(UV inputs) → 19 parameters` has **rank 19** — the orbit-space dimension —
-  and the *only* known UV symmetry (GUT) collapses exactly **3 of 19** (gauge 3→1, b–τ 2→1), never
-  all 19 (the SM has no duality group + FFT, so there is no flux-style total collapse).
+  and the *only* known UV symmetries (GUTs) collapse **5 of 19** for minimal SU(5) (gauge 3→1 = 2,
+  plus `Y_e = Y_dᵀ` = 3 mass relations) or **12** for SO(10)/E₆/Pati–Salam/trinification
+  (`Y_u=Y_d=Y_e`, `V_CKM=1`) — but those exact mass relations are *numerically wrong*, so only
+  gauge unification (2) survives — never all 19 (the SM has no duality group + FFT, so there is no
+  flux-style total collapse). ⚠️ corrected 2026-10-23 (falsifier #2): see docs/falsification-status.md
 
 Consequence, stated as a result: **the 19 are free coordinates, not functions of the invariants** —
 there is no "connecting equation" to find, and a programme looking for one is looking for something

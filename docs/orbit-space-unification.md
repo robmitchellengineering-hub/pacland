@@ -36,8 +36,9 @@ It is **not** a no-go on moduli-dependent, non-polynomial, or statistical select
    is provable because the flux sector has a clean duality group and FFT applies; the SM's 19
    couplings have no such group. The extension is the research bet.
 2. **"A ToE predicts relations, never values."** Refined by two research fan-outs: GUT and string
-   constructions *do* relate parameters (gauge unification collapses 3 couplings to 1; b–τ collapses
-   2 to 1), so "no invariant relates them" is overclaimed. What survives is "no unique *value* is
+   constructions *do* relate parameters (minimal SU(5) collapses 5 — gauge 3→1 plus `Y_e=Y_dᵀ`;
+   SO(10)/E₆/Pati–Salam collapse 12 — but only gauge unification (2) survives data), so "no
+   invariant relates them" is overclaimed. What survives is "no unique *value* is
    derived — only relations".
 3. **That the orbit-space picture is truncation-independent.** Untested. See below.
 
@@ -45,8 +46,10 @@ It is **not** a no-go on moduli-dependent, non-polynomial, or statistical select
 
 The program can currently state the **dimension** of the parameter space and not the **map**:
 19 = the orbit-space dimension, established three independent ways with the SM's own flavour symmetry
-(`docs/sm-rank-test.md`), and the only known UV symmetry (GUT) collapses exactly 3 of those 19. That
+(`docs/sm-rank-test.md`), and the only known UV symmetries (GUTs) collapse 5 (minimal SU(5)) or 12
+(SO(10)/E₆/Pati–Salam/trinification) of those 19 — only gauge unification (2) survives data. That
 is a measurement of the map's *image size*, not of the map.
+⚠️ corrected 2026-10-23 (falsifier #2): see docs/falsification-status.md
 
 The next step is therefore not more vacua but the **dictionary**: write the low-energy data as
 functions on a stratum, on one tractable slice, and ask whether the map is constrained.
@@ -88,7 +91,8 @@ a landscape fact. That correction belongs to this document's claim, not to the s
 1. **Breaks the proven segment:** a single moduli-independent, duality-invariant flux quantity that is
    not a function of `FᵀJH`.
 2. **Breaks the conjectured SM segment:** an exact UV relation among the 19 parameters beyond the
-   GUT-style collapses already known (3 gauge, 2 b–τ).
+   GUT-style collapses already known (SU(5) 5, SO(10)/E₆/PS 12 — only gauge unification (2)
+   survives data).
 3. **Breaks the orbit picture at scale:** the invariant structure changing when more moduli are kept —
    i.e. the h12 diagnostic coming back boundary-aligned.
 

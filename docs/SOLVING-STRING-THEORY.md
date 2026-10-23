@@ -68,7 +68,9 @@ means operationally. Where a law fails to close, the failure is a finding.
 | **G2** the S-dual of a stable vacuum must itself be stable | apply S to a vacuum and re-check `|DW| ≈ 0` at the transformed point | the transformed pair is not a vacuum ⇒ well-definedness fails |
 | **G3** truncation-independence | `cond(M)` at the **proposal** stage across `h12` (`diagnose_isd_conditioning.py` + `2207Z` hook) | invariant structure changes with `h12` ⇒ every frontier number is a slice artefact |
 | **G4** brane / K-theory sector enters `(a)` | extend the invariant-ring analysis to D-brane charges (charges = `K(X)` classes, tadpole = total charge) | a second exact invariant appears that is not a constraint or a label |
-| **G5** the dictionary `(c)` | write low-energy parameters as functions on orbit data for one tractable stratum | freedom beyond the GUT-style collapses (3 gauge, 2 b–τ) ⇒ parameters are not functions of invariants |
+| **G5** the dictionary `(c)` | write low-energy parameters as functions on orbit data for one tractable stratum | freedom beyond the GUT-style collapses (SU(5) 5, SO(10)/E₆/PS 12 — only gauge (2) survives data) ⇒ parameters are not functions of invariants |
+
+⚠️ corrected 2026-10-23 (falsifier #2): see docs/falsification-status.md
 
 `G1` and `G2` are cheap and running or runnable now. `G3` is one hook away. `G4` and `G5` are
 the long poles, and `G5` is where `m` actually grows.

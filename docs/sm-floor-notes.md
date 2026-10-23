@@ -101,8 +101,9 @@ returned the aggregated results this note synthesizes.*
    below 17, none at the naive 14 (the Higgs growth offsets the gauge unification).
 2. **The rank test** (`scripts/validate_sm_rank_test.py`, `docs/sm-rank-test.md`): the SM's
    own flavor symmetry leaves orbit-space rank **19**; the dynamical bound is
-   `rank ≤ 2·h¹¹+2·h²¹+2`; the only known UV symmetry (GUT) collapses 3 of 19. The 19 floor
-   is real.
+   `rank ≤ 2·h¹¹+2·h²¹+2`; the only known UV symmetries (GUTs) collapse 5 (minimal SU(5)) or
+   12 (SO(10)/E₆/Pati–Salam/trinification) of 19 — only gauge unification (2) survives data. The
+   19 floor is real. ⚠️ corrected 2026-10-23 (falsifier #2): see docs/falsification-status.md
 3. **Discrete-vs-continuous bookkeeping** (this section): the "19" and the "10⁵⁰⁰" count
    *different* things, so there is no contradiction to merge.
 4. **Swampland bound** (`scripts/validate_swampland_bound.py`): the tadpole gives only an

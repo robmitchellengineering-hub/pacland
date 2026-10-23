@@ -89,7 +89,7 @@ total Kähler+CS moduli, the 19 cannot be independently realized; the floor is r
 The repo's own measurements (h12=2, `h¹¹+h²¹=4`) sit far below the threshold, which is why
 they see the parameter space as "collapsed" — they are inside the reducible regime.
 
-### 2b. The symmetry question — the only known symmetry (GUT) collapses 3, not 19
+### 2b. The symmetry question — known GUTs collapse 5 (SU(5)) or 12 (SO(10)) of the 19, never 19
 
 The flux lesson is *not* the dimension bound — it is that a **symmetry** (Sp duality + FFT)
 collapses 2·b₃ inputs to 1, *far below* the dimension bound. The analogous question for the
@@ -99,16 +99,18 @@ unification — is computed here as an exact Jacobian rank:
 | relation | SM rank | GUT rank | drop |
 |---|---|---|---|
 | gauge: `(g_GUT) → (g_Y, g_2, g_3)` | 3 | **1** | 2 |
-| b–τ: `(y, v) → (m_b, m_τ)` | 2 | **1** | 1 |
-| **total** | | | **3** |
+| `Y_e = Y_dᵀ`: `m_e=m_d, m_μ=m_s, m_τ=m_b` | 6 | **3** | 3 |
+| **total** (minimal SU(5)) | | | **5** |
 
-The GUT symmetry collapses exactly **3 of the 19** (gauge unification 3→1, bottom–tau 2→1),
-matching the count in `validate_sm_invariant_ring.py` (`19 − 3`), and the GUT Higgs sector
-grows ~2 back — a *shuffle*, not a collapse. There is **no known symmetry that collapses all
-19**: the flux-style total collapse (`2·b₃ → 1`) needs a duality group + FFT, which the SM's
-couplings simply do not have. A larger UV symmetry that does collapse more (e.g. SO(10)/E6
-Yukawa relations) is the falsifiable edge — but it is a *relation*, never a value, so even
-that cannot reach a single number.
+Minimal SU(5) collapses exactly **5 of the 19** (gauge unification 3→1 = 2, plus
+`Y_e = Y_dᵀ` = 3 mass relations), and single-Higgs SO(10)/E₆/Pati–Salam/trinification
+collapse **12** (`Y_u=Y_d=Y_e`, `V_CKM=1`) — but those exact mass relations are
+*numerically wrong* against data, so only gauge unification (2) survives. The GUT Higgs
+sector grows ~2 back — a *shuffle*, not a collapse. There is **no known symmetry that
+collapses all 19**: the flux-style total collapse (`2·b₃ → 1`) needs a duality group +
+FFT, which the SM's couplings simply do not have. Even the up-to-12 relations are
+*relations*, never a value, so no completion reaches a single number.
+⚠️ corrected 2026-10-23 (falsifier #2): see docs/falsification-status.md
 
 ## Status
 
@@ -117,14 +119,15 @@ that cannot reach a single number.
   Jacobian rank*, not a slogan.
 - **Tier 2a (dynamical dimension bound): done, exact.** Rank ≤ 2·h¹¹ + 2·h²¹ + 2; the 19 is
   reducible for `h¹¹+h²¹ ≤ 8`, generically real only for `h¹¹+h²¹ ≥ 9`.
-- **Tier 2b (symmetry collapse): done for the known case.** The only known UV symmetry (GUT)
-  collapses exactly 3 of the 19 — never all 19. No flux-style total collapse exists for the
-  SM, because it has no duality group + FFT.
+- **Tier 2b (symmetry collapse): done for the known case.** Minimal SU(5) collapses 5 of the
+  19, SO(10)/E₆/Pati–Salam/trinification 12 — never all 19, and only gauge unification (2)
+  survives data. No flux-style total collapse exists for the SM, because it has no duality
+  group + FFT.
 
 ## The answer
 
 The "19 floor" is **real**: it is reducible only by the trivial dimension bound (small
-`h¹¹+h²¹ ≤ 8`) or by a *partial* symmetry relation (GUT: 3 of 19), never by a total
-symmetry collapse. The flux sector collapses to 1 because it *has* a duality group; the SM
+`h¹¹+h²¹ ≤ 8`) or by *partial* symmetry relations (SU(5): 5 of 19; SO(10)/E₆/PS: 12 —
+only gauge unification (2) survives data), never by a total symmetry collapse. The flux sector collapses to 1 because it *has* a duality group; the SM
 does not — that asymmetry is the whole of the constraint-first result, now measured as
 Jacobian ranks on both sides.
