@@ -69,7 +69,12 @@ def drift_of(model, paths):
 
 
 def main():
+    limit = None
+    if "--limit" in sys.argv:
+        limit = int(sys.argv[sys.argv.index("--limit") + 1])
     targets = load_targets()
+    if limit:
+        targets = targets[:limit]
     print(f"targets: {len(targets)} models without Irving drift", file=sys.stderr)
     paths = catalog_paths()
     print(f"catalog: {len(paths)} (model,var) rows", file=sys.stderr)
