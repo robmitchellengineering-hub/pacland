@@ -107,12 +107,21 @@ def drift_of(model, paths):
 
 def main():
     limit = None
+    shard = None
     if "--limit" in sys.argv:
         limit = int(sys.argv[sys.argv.index("--limit") + 1])
+    if "--shard" in sys.argv:
+        i = sys.argv.index("--shard")
+        a, b = sys.argv[i + 1].split("/")
+        shard = (int(a), int(b))
     targets = load_targets()
+    if shard:
+        shard_i, shard_n = shard
+        targets = [m for j, m in enumerate(targets) if j % shard_n == shard_i]
     if limit:
         targets = targets[:limit]
-    print(f"targets: {len(targets)} models without Irving drift", file=sys.stderr)
+    label = f"shard {shard[0]}/{shard[1]}" if shard else "without Irving drift"
+    print(f"targets: {len(targets)} models ({label})", file=sys.stderr)
     paths = catalog_paths()
     print(f"catalog: {len(paths)} (model,var) rows", file=sys.stderr)
     out = []
