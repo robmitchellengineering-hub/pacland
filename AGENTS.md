@@ -246,7 +246,7 @@ source, not a textbook formula:**
   tests. WGC scale g·M_pl is uniform in flux (r < 0.25, confirmed); charge gcd = 1
   (no forced discrete global symmetry); distance proxy real signal (CS-sector; clean DC test needs the bigger
   machine). Extends the *prediction* surface, NOT the deficit (m stays 9).
-- Live site: https://pacland.netlify.app (Netlify) + GitHub Pages mirror.
+- Live site: https://pacland.morpheus.nz (Netlify) + GitHub Pages mirror.
 - The four-wall map is `src/pacland/limits.py` and `docs/boundary-map.md`.
 - **TO-DO — the verification system's remaining uses (queued, not done):**
   1. Climb the SM deficit — **DONE** (`src/pacland/observables.py::SM_OBSERVABLES`): the
