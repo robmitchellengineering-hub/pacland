@@ -49,7 +49,9 @@ computable/falsifiable positive. Status tiered: **built** / **in progress** / **
   Lean-checks → LLM-fixes loop.
 - **Falsifiable output:** a `lake build`-green Lean proof of degrees 1–4, then the general FFT.
 - **Runs:** Mac (`~/.elan/bin/lake`).
-- **Status:** **spec**.
+- **Status:** **Phase 1 started** — the degree-1 slice (no linear invariant) is machine-checked in
+  `PaclandProof/DegreeOne.lean` (build green). The degree-3/4 slices are the next target; they
+  need more invariant-theory machinery and are the genuinely hard part.
 
 ## Order and routing
 
