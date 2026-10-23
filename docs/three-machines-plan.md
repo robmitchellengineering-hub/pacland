@@ -32,8 +32,11 @@ computable/falsifiable positive. Status tiered: **built** / **in progress** / **
   (2) the α′² curvature-control boundary `α′²R² < 1`; (3, optional) the backreacted radial ODEs.
 - **Falsifiable output:** "the controlled corner is empty" or "a controlled corner exists at
   `(g_s, M, K) = …`".
-- **Runs:** pacland-rog (scipy) — the KPV potential is a known function; Phase 1 is a scan.
-- **Status:** **spec**.
+- **Runs:** Mac (numpy grid, 1D potential) — `scripts/scan_kpv.py`.
+- **Status:** **Phase 1 built** — reproduces the metastability threshold `p/M < 0.08` (control)
+  and confirms the tadpole cost: control `g_s M > 20` forces `N = K·M ≳ 400 → 10³`, at or above
+  typical `χ/24 ~ 10²–10³`, so the controlled corner is empty or marginal (HS&V "control problem"
+  confirmed). Phase 2 (the α′² curvature boundary `α′²R² < 1`) next.
 
 ## Machine 2 — the Auto-Formalization Engine (machine-check the FFT)
 
