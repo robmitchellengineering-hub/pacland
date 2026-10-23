@@ -49,9 +49,10 @@ def main():
     print("The 19 parameters ARE the independent flavor invariants — nothing relates them")
     print("within the SM (this is the gauge-sector FFT).")
 
-    gut = 3        # gauge 3→1 (saves 2) + b-tau 2→1 (saves 1)
-    print(f"\nMinimal SU(5) reduction: 19 − {gut} = {total - gut} (gauge unification saves 2, "
-          f"b–tau saves 1)")
+    gut = 5        # gauge 3→1 (saves 2) + Y_e=Y_dᵀ (saves 3: m_e=m_d, m_μ=m_s, m_τ=m_b)
+    print(f"\nMinimal SU(5) imposes {gut} relations (gauge 2 + Y_e=Y_dᵀ 3): 19 − {gut} = {total - gut}")
+    print("net free-parameter reduction is 3 (two CP phases are freed by the shrunken flavor group), so 19 → 16")
+    print("(SO(10)/E₆/Pati–Salam impose 12, but those are numerically wrong; only gauge unification (2) survives data.)")
     print("But: the unified coupling/Yukawa remain FREE inputs, and MSSM adds ~105 soft terms.")
     print("Conclusion: a UV completion predicts RELATIONS (shrinks the ring), never VALUES")
 
