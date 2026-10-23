@@ -1,22 +1,24 @@
 # arXiv submission package — turn-key
 
-Five papers are ready. This is everything arXiv needs, so the only remaining steps
-are things only Rob can do (create/own the account, receive the endorsement) — no
-content work is left.
+Five technical papers plus one **flagship synthesis** are ready. This is everything arXiv
+needs, so the only remaining steps are things only Rob can do (create/own the account,
+receive the endorsement) — no content work is left.
 
 ## Order of submission
 
-1. **`constraint-first-theorem.pdf`** — the NEW flagship. The rigorous theorems:
-   Mitchell's Uniqueness, Constraint-First (Weyl FFT), Mitchell's Completeness,
-   full-duality completion, and the Complete Exact Structure Theorem. Submit this
-   first; the others cite it.
-2. **`mitchells-laws.pdf`** — the duality covariance table (Mitchell's Laws I–V):
-   the empirical companion to the theorem. Build it from `paper/mitchells-laws.tex`
-   (`pdflatex paper/mitchells-laws.tex`).
+1. **`constraint-first-theorem.pdf`** — the rigorous theorems: Mitchell's Uniqueness,
+   Constraint-First (Weyl FFT), Mitchell's Completeness, full-duality completion, and the
+   Complete Exact Structure Theorem. Submit this first; the others cite it.
+2. **`mitchells-laws.pdf`** — the duality covariance table (Mitchell's Laws I–V): the
+   empirical companion to the theorem. Build it from `paper/mitchells-laws.tex`
+   (`tectonic paper/mitchells-laws.tex`).
 3. **`structure-map.pdf`** — the measurement that motivated the theorem (the
    structure map, r = 1.0 tadpole).
 4. **`fingerprint.pdf`** — the mass-spectrum no-fingerprint result.
 5. **`PACLAND-preprint.pdf`** — the verification discipline (the umbrella paper).
+6. **`mitchells-principle.pdf`** — the **FLAGSHIP** synthesis: Mitchell's Principle of
+   Constraint-First Unification, submitted **last** because it cites papers 1–5. Build it from
+   `paper/mitchells-principle.tex` (`tectonic paper/mitchells-principle.tex`).
 
 ## Paper 1 — Mitchell's Completeness Theorem (submit first)
 
@@ -152,7 +154,33 @@ unverifiable theory, and this is one.
 
 - **Comments.** `9 pages. Umbrella paper for the PACLAND program.`
 
-## License (all five)
+## Paper 6 — Mitchell's Principle of Constraint-First Unification (the flagship)
+
+- **Title.** `Mitchell's Principle of Constraint-First Unification: relations, never values`
+- **Author.** `Rob Mitchell`
+- **Primary subject class.** `hep-th`
+- **Cross-list.** `hep-ph` (optional — the SM frontier) and `math-ph` (optional — invariant theory)
+- **Abstract.** (paste verbatim — full text in `paper/mitchells-principle.tex`)
+
+```
+The unification of string theory is not a formula for the Standard Model's
+parameters; it is a complete characterization. We state, and assemble the evidence
+for, a single principle: a theory of everything predicts relations, never values.
+The exact content of the flux sector is exhausted by one constraint --- the D3
+tadpole, the unique duality invariant --- together with the topological labels and
+the counting (nineteen, the Standard Model orbit-space dimension). Everything else
+transforms by a covariance table, Mitchell's Laws of Duality Covariance, measured
+on supersymmetric vacua at h12=2 and h12=5. And there is no selection: not exact (a
+no-go theorem), not statistical (the flux measure is flat), not cosmological (the
+cosmological constant is locally flat, and the uplift that would supply it is
+contested). The principle reduces to one equation: the invariant ring of the flux
+is C[N] with N = F^T J H. We state the four falsifiers that would kill it.
+```
+
+- **Comments.** `7 pages. The flagship synthesis: cites papers 1-5. Submit LAST so it can cite
+their arXiv IDs. Source: paper/mitchells-principle.tex`
+
+## License (all six)
 
 Choose **arXiv's default non-exclusive license** (simplest), or **CC BY 4.0** if Rob
 wants the work maximally reusable. Recommendation: **CC BY 4.0** — it matches the
@@ -188,12 +216,12 @@ path the 2026 policy explicitly expedites.
 third-party/proxy endorsement — I must not seek it for him), and click submit.
 
 **What is already done:** every title, abstract, subject class, license choice, and
-the PDF + LaTeX source for all four papers. No content work remains.
+the PDF + LaTeX source for all six papers. No content work remains.
 
 ## Files to upload
 
 For each paper, submit the **TeX source** (arXiv prefers source over PDF-only): the
-`.tex` file compiles standalone with TeX Live 2023 (verified — all four are
+`.tex` file compiles standalone with TeX Live 2023 (verified — all six are
 `article` class with `amsmath`/`booktabs`/`microtype`, no images, no `\input`). The
 compiled PDFs are also in `paper/` as a fallback.
 
