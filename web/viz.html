@@ -46,6 +46,8 @@
       <button class="tab" data-scene="kpv">② The KPV uplift</button>
       <button class="tab" data-scene="orbit">③ The flux orbit</button>
       <button class="tab" data-scene="cone">④ The LCS cone</button>
+      <button class="tab" data-scene="constraint">⑤ The constraint</button>
+      <button class="tab" data-scene="sm">⑥ 19 vs 1</button>
     </div>
   </div>
   <div id="readout"></div>
@@ -268,24 +270,79 @@ function renderCone(state){
 }
 renderCone(coneStates[0]);
 
+/* ---------------- ⑤ constraint: the boundary that only eliminates ---------------- */
+const groupConst = new THREE.Group();
+scene.add(groupConst);
+groupConst.visible = false;
+
+const L = -0.5;
+const constBoundary = new THREE.Mesh(hyperboloidSheet(1.0), new THREE.MeshStandardMaterial({ color:0xf87171, emissive:0xf87171, emissiveIntensity:.16, transparent:true, opacity:.26, side:THREE.DoubleSide, roughness:.4, metalness:.1 }));
+groupConst.add(constBoundary);
+
+const NPOINTS = 460;
+let seeded = 42; const rand = () => { seeded = (seeded*1664525+1013904223)>>>0; return seeded/4294967296; };
+const cPt = new THREE.BufferGeometry();
+const cPos = new Float32Array(NPOINTS*3), cCol = new Float32Array(NPOINTS*3);
+for (let i=0;i<NPOINTS;i++){
+  const u=(rand()*2-1)*2.4, v=(rand()*2-1)*2.4, p=(rand()*2-1)*2.4;
+  const N=(u*u-v*v-p*p)/2, allowed = N <= L;
+  cPos[i*3]=u; cPos[i*3+1]=v; cPos[i*3+2]=p;
+  const c = allowed ? new THREE.Color(0x5eead4) : new THREE.Color(0xf87171);
+  cCol[i*3]=c.r; cCol[i*3+1]=c.g; cCol[i*3+2]=c.b;
+}
+cPt.setAttribute('position', new THREE.BufferAttribute(cPos,3));
+cPt.setAttribute('color', new THREE.BufferAttribute(cCol,3));
+const cPts = new THREE.Points(cPt, new THREE.PointsMaterial({ size:0.055, vertexColors:true, transparent:true, opacity:.95, depthWrite:false }));
+groupConst.add(cPts);
+
+/* ---------------- ⑥ 19 vs 1: the orbit-space dimension ---------------- */
+const groupSM = new THREE.Group();
+scene.add(groupSM);
+groupSM.visible = false;
+
+const fluxAxis = new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.035,3.6,16), new THREE.MeshStandardMaterial({ color:0x5eead4, emissive:0x5eead4, emissiveIntensity:.7, roughness:.3 }));
+fluxAxis.position.x = -1.8;
+groupSM.add(fluxAxis);
+const axisCap = new THREE.Mesh(new THREE.SphereGeometry(0.1,16,16), new THREE.MeshStandardMaterial({ color:0x5eead4, emissive:0x5eead4, emissiveIntensity:.8 }));
+axisCap.position.set(-1.8, 1.9, 0);
+groupSM.add(axisCap);
+
+const smTypes = [['gauge',3,0x5eead4],['mass',9,0xa78bfa],['ckm',4,0xf472b6],['higgs',2,0x38bdf8],['theta',1,0xfbbf24]];
+let si = 0;
+for (const [type,count,col] of smTypes){
+  for (let k=0;k<count;k++){
+    const phi = si*2.39996, yy = 1 - 2*(si+0.5)/19, rr = Math.sqrt(Math.max(0,1-yy*yy));
+    const x = rr*Math.cos(phi), z = rr*Math.sin(phi);
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.085,16,16), new THREE.MeshStandardMaterial({ color:col, emissive:col, emissiveIntensity:.55, roughness:.3 }));
+    dot.position.set(x+1.8, yy*1.4, z);
+    groupSM.add(dot);
+    si++;
+  }
+}
+
 /* ---------------- UI switching ---------------- */
 const tabs = document.querySelectorAll('.tab');
 const legendSymp = `<b>Mitchell's Uniqueness.</b> The D3 tadpole <b>N = FᵀJH = F₁H₂ − F₂H₁</b> is the signed <b>area</b> of the parallelogram spanned by the two flux vectors. A symplectic shear (det = 1) deforms the parallelogram — but the area is <b>invariant</b>. That one invariant is the entire exact content of the flux sector.`;
 const legendKPV = `<b>Machine ① — the uplift-control solver.</b> The anti-D3 potential V(ψ) as a surface over (ψ, p/M). Below the white <b>p/M = 0.08</b> line the minimum is metastable (dS); above it there is no minimum (monotonic). Height = potential, color = height.`;
 const legendOrbit = `<b>Mitchell's Completeness.</b> Each value of the tadpole <b>N = FᵀJH</b> is a single Sp-orbit — shown here as a hyperboloid sheet (a slice of the level set). The invariant <b>labels</b> the orbit: nothing else distinguishes vacua on the same sheet.`;
 const legendCone = `<b>The LCS cone.</b> The complex-structure moduli's convergence region, as a hedgehog of extreme rays (actual double-description count on the KS model). The facet count explodes <b>3 → 26 → 35,610</b> as h12 goes 5 → 10 → 15 — the geometric reason "sample then test the cone" becomes a lottery.`;
+const legendConst = `<b>Complete Exact Structure.</b> The red hyperboloid is the constraint <b>N = L</b>. Teal points satisfy <b>N ≤ L</b> (allowed); red points violate it (forbidden). The constraint is a boundary — it can only <b>eliminate</b>, never select. That is the whole exact content the theory gets to enforce.`;
+const legendSM = `<b>The orbit-space dimension.</b> Left: the flux sector has <b>1</b> invariant (the tadpole — one axis). Right: the Standard Model has <b>19</b> free parameters (teal = 3 gauge, purple = 9 masses, pink = 4 CKM, blue = 2 Higgs, amber = θ). A theory of everything predicts <em>relations, never values</em> — and no completion derives more than 2 of the 19 correctly.`;
 legend.innerHTML = legendSymp;
 
-const legendMap = { symplectic:legendSymp, kpv:legendKPV, orbit:legendOrbit, cone:legendCone };
+const legendMap = { symplectic:legendSymp, kpv:legendKPV, orbit:legendOrbit, cone:legendCone, constraint:legendConst, sm:legendSM };
 function showScene(name){
   groupSymp.visible = name === 'symplectic';
   groupKPV.visible = name === 'kpv';
   groupOrbit.visible = name === 'orbit';
   groupCone.visible = name === 'cone';
+  groupConst.visible = name === 'constraint';
+  groupSM.visible = name === 'sm';
   legend.innerHTML = legendMap[name];
   controls.target.set(0,0,0);
   if (name === 'symplectic') camera.position.set(4.2, 3.2, 6.5);
   else if (name === 'kpv') camera.position.set(5, 4, 6);
+  else if (name === 'sm') camera.position.set(5.5, 2.8, 6.5);
   else camera.position.set(3.5, 2.6, 5.2);
 }
 tabs.forEach(t => t.addEventListener('click', () => {
@@ -331,6 +388,16 @@ function animate(){
     readout.innerHTML =
       `<div><span class="k">LCS cone</span> · <span class="v">${st.label}</span> · <span class="v">${st.count}</span> <span class="k">extreme rays</span>${st.schematic ? ' <span class="k">(illustrative — full set too dense)</span>' : ''}</div>` +
       `<div><span class="k">facet count explodes 3 → 26 → 35,610 with h12</span></div>`;
+  } else if (groupConst.visible){
+    groupConst.rotation.y += dt*0.18;
+    readout.innerHTML =
+      `<div><span class="k">constraint N ≤ L</span> · <span class="v">teal = allowed</span> · <span class="v">red = forbidden (eliminated)</span></div>` +
+      `<div><span class="k">the boundary can only eliminate, never select</span></div>`;
+  } else if (groupSM.visible){
+    groupSM.rotation.y += dt*0.15;
+    readout.innerHTML =
+      `<div><span class="k">flux</span> = <span class="v">1 invariant</span> (the tadpole) &nbsp;·&nbsp; <span class="k">SM</span> = <span class="v">19 free parameters</span></div>` +
+      `<div><span class="k">relations, never values — no completion derives more than 2 correctly</span></div>`;
   }
   controls.update();
   renderer.render(scene, camera);
