@@ -61,6 +61,30 @@ everything else is covariance + counting."
 | D | the ℤ₂ torsion correspondence — Freed–Witten ≡ Witten SU(2) global anomaly | the two Z₂'s are provably distinct | math + literature |
 | E | the counting (19) is stable — no new relation appears at higher h12 | a 20th relation | rank test |
 
+## Research fan-out results (2026-10-23, three independent passes)
+
+1. **Covariance laws — VALIDATED.** All three measured laws are the textbook type IIB
+   S-duality transformations, exactly: `Ŵ = e^{K/2}W → e^{−i·arg τ}Ŵ` (so Law II magnitude +
+   Law IIb phase), and `g_s → |τ|²g_s` (Law III; `1/g_s` is only the `C₀=0` case). The bare
+   `W → W/τ`; invariance is specific to the Kähler-normalised combination, which is what we
+   measured. (Gukov–Vafa–Witten, Giddings–Kachru–Polchinski, Graña, Shukla eq. 2.12.)
+
+2. **ℤ₂ torsion — REFUTED as a literal identity (D resolved).** Freed–Witten is the spin-c
+   obstruction `W₃ = β(w₂)` (complex K-theory); Witten SU(2) is the mod-2 index `π₄(SU(2))`
+   (real KO-theory). Every spin manifold is spin-c, so FW vanishes exactly where the SU(2)
+   anomaly lives — the two Z₂'s are decoupled, and no dictionary exists. So the "same object"
+   thesis holds only at the *rational* level (same kind: a vanishing K-theory class), **not** at
+   the torsion level. Correct the unification-synthesis "same object" claim to "same kind,
+   different index (rational) and different Z₂ (torsion)".
+
+3. **Counting (19) — VALIDATED with two corrections.** The 19 is the correct vanilla/Dirac-SM
+   orbit-space dimension (quark 10 matches Bento–Silva–Trautner and Hanany et al.). Corrections:
+   (a) it is the **no-neutrino** count — Dirac +7 → 26, Majorana +9 → 28, and this must be
+   stated; (b) the GUT "b–τ 2→1" is a **misattribution** — minimal SU(5) ties all three
+   `Y_e = Y_dᵀ` (−3 masses) but frees +2 new CP phases, netting −1; and "SU(5) is the *only*
+   UV symmetry" is false (SO(10) is standard and more restrictive). The 16 is right, the stated
+   mechanism is not.
+
 ## Where to go next
 
 1. **Make the iterated shift robust** (cone-enforced, multi-seed) → a working h12=5..25 sampler
