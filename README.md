@@ -1,5 +1,8 @@
 # PACLAND
 
+> **Don't ask a complex system for its values — ask for its constraints, its count, and its
+> deficit. Everything else is covariance, not knowledge.**
+
 **Probably Approximately Correct Landscape** — a Valiant-verification system, applied
 one field at a time. The string landscape (with a **proven theorem tower** and a
 **Standard-Model frontier**) is the founding discipline; **climate** is the first

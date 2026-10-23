@@ -1,5 +1,8 @@
 # PACLAND — operating rules (read before working in this repo)
 
+> **Don't ask a complex system for its values — ask for its constraints, its count, and its
+> deficit. Everything else is covariance, not knowledge.**
+
 ## Multi-discipline workflow — the core on `main`, every expansion on its own branch
 
 PACLAND is one **core** discipline (the string landscape — the founding spine) plus several
