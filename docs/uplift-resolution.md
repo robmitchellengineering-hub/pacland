@@ -38,7 +38,24 @@ inconsistent low-energy superfield description (Kallosh–Linde–Wrase–Yamada
 polarization is the smooth resolution of the MRW singularity at leading order. **No fatal flaw has
 yet been demonstrated in these candidates** — but "control" has not been demonstrated either.
 
-## Bottom line — the uplift is unresolved, and that is the honest answer
+## Alternatives and the dS swampland — every uplift fails the 10D control test (pass B verdict)
+
+A 2022–2026 "control problem" wave has now hit **every** uplift mechanism:
+
+| mechanism | 4D dS? | 10D controlled? | verdict |
+|---|---|---|---|
+| anti-D3 (KKLT) | yes | **no** | inherits the singularity/backreaction issues |
+| D-term (BKQ hep-th/0309187) | yes | **no** | secretly an F-term (BDKVP 0405246) — not independent |
+| LVS + anti-D3 (hep-th/0502058) | yes | **no** | controlled AdS, **not** dS (Junghans 2201.03572) |
+| F-term / nilpotent goldstino (1507.07556) | yes | **no** | 4D-controlled, 10D control fails (HLSS 2512.17995) |
+| T-brane (1512.04558) | yes | **no** | volume bound + warping never suppressed (Junghans 2609.35985) |
+| classical dS / O-planes (2403.07065) | yes (tree) | contested | strongest counter-example (Andriot), backreaction disputed |
+
+**dS swampland status:** the refined conjecture (1806.08362) is **not proven** (no derivation), is
+**contradicted at the 4D level** by explicit dS SUGRA vacua, but is **strongly supported at the 10D
+level** — the control problem has now hit every mechanism. DESI BAO (2404.03002, 2025) favors
+time-varying dark energy (quintessence), shifting sentiment. De facto: **no controlled dS exists in
+the weakly-coupled/weakly-curved regime** — still not a theorem, but no longer an open-ended hope.
 
 ## Bottom line — the uplift is unresolved, and that is the honest answer
 
@@ -59,11 +76,14 @@ the live, well-posed open question, and it reduces to a **finite list of computa
 
 **What this does to the CC story:** the "why this vacuum" arc ends, honestly, with *no selection
 anywhere we can reach* — no exact selector (proven), no flux statistical selection (measured), and
-no *established* cosmological selection (the uplift that would supply small Λ is unresolved, its
-control an open computation). The small observed Λ is, at best, the anthropic tail of a
-locally-flat discretuum *gated by a mechanism whose control is not yet demonstrated*. That is the
-current, honest state — not a peak, not a proof, not a wall — an open, finite, well-posed
-computation.
+no *established* cosmological selection (the uplift that would supply small Λ is unresolved). The
+second pass sharpens the last point: with every uplift mechanism now hit by the 10D control
+problem, the field is **trending hard toward "forbidden in the controllable regime"** — ~0.70 that
+no controlled dS exists, ~0.30 that one survives — but there is still **no no-go theorem**. So the
+small observed Λ is, at best, the anthropic tail of a locally-flat discretuum *gated by a mechanism
+that every candidate fails to control*. That is the current, honest state: not a peak, not a proof,
+and now leaning against the gate holding — with one decisive open question (is the control problem
+generic?) and one closing move (a rigorous no-go, or a single controlled counter-example).
 
 <!-- PASS A + PASS B verdicts (current 2024-2025 timeline + alternatives table) fold in here if they land -->
 
