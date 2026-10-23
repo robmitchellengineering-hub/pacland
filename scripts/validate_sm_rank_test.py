@@ -165,13 +165,14 @@ def dynamical_rank_bound():
 
 
 def gut_symmetry_collapse():
-    """TIER 2b — the ONLY known UV symmetry (GUT unification), as exact Jacobian ranks.
+    """TIER 2b — the known UV symmetries (GUT unification), as exact Jacobian ranks.
 
     Gauge unification collapses the 3 couplings to 1 (rank 3 -> 1, two relations), and
-    bottom-tau unification collapses 2 masses to 1 (rank 2 -> 1, one relation): a total
-    rank drop of 3 — matching the count in validate_sm_invariant_ring.py. It does NOT
-    collapse all 19 (the GUT Higgs sector grows ~2 back). No SM symmetry does the
-    flux-style TOTAL collapse (2*b3 -> 1), because the SM has no duality group + FFT.
+    Y_e = Y_dᵀ ties the 6 charged-fermion masses into 3 pairs (m_e=m_d, m_μ=m_s,
+    m_τ=m_b; rank 6 -> 3, three relations): a total rank drop of 5 for minimal SU(5).
+    (SO(10)/E₆/Pati–Salam go further — 12 — but those are numerically wrong against
+    data.) It does NOT collapse all 19. No SM symmetry does the flux-style TOTAL
+    collapse (2*b3 -> 1), because the SM has no duality group + FFT.
     """
     print("6. TIER 2b — GUT SYMMETRY COLLAPSE (exact Jacobian ranks)")
     # gauge: SM (g_Y, g_2, g_3) independent -> rank 3;  GUT (g_GUT) -> 3 couplings -> rank 1.
@@ -181,18 +182,20 @@ def gut_symmetry_collapse():
     Jg = sp.Matrix([[sp.diff(gY, g)], [sp.diff(g2, g)], [sp.diff(g3, g)]])
     rg = Jg.rank()
     print(f"   gauge: (g_GUT) -> (g_Y, g_2, g_3)   Jacobian rank = {rg}  (SM 3 -> GUT {rg}, saves {3 - rg})")
-    # bottom-tau: SM (y_b, y_tau) independent -> rank 2;  GUT m_b = m_tau = y*v -> rank 1.
-    y, v = sp.symbols('y v', positive=True)
-    yb, yt = sp.symbols('y_b y_tau', positive=True)
-    Jbt_sm = sp.Matrix([[sp.diff(yb * v, yb), sp.diff(yb * v, yt)], [sp.diff(yt * v, yb), sp.diff(yt * v, yt)]])
-    Jbt_gut = sp.Matrix([[sp.diff(y * v, y), sp.diff(y * v, v)], [sp.diff(y * v, y), sp.diff(y * v, v)]])
-    rbt_sm, rbt_gut = Jbt_sm.rank(), Jbt_gut.rank()
-    print(f"   b-tau: (y, v) -> (m_b, m_tau)   GUT rank = {rbt_gut}  (SM {rbt_sm} -> GUT {rbt_gut}, saves {rbt_sm - rbt_gut})")
-    drop = (3 - rg) + (rbt_sm - rbt_gut)
-    print(f"   total GUT rank drop = {drop}  (gauge {3 - rg} + b-tau {rbt_sm - rbt_gut})")
-    print(f"   => the ONLY known UV symmetry collapses {drop} of the 19, NOT all 19.")
+    # Y_e = Y_dᵀ: SM 6 independent charged-fermion Yukawas -> 6 masses (rank 6);
+    # GUT 3 independent Yukawas -> 6 masses in 3 pairs -> rank 3.
+    v = sp.symbols('v', positive=True)
+    yd, ys, yb = sp.symbols('y_d y_s y_b', positive=True)
+    masses = [yd * v, ys * v, yb * v, yd * v, ys * v, yb * v]  # m_d, m_s, m_b, m_e, m_μ, m_τ
+    params = [yd, ys, yb, v]
+    Jfe_gut = sp.Matrix([[sp.diff(m, p) for p in params] for m in masses])
+    rfe_sm, rfe_gut = 6, Jfe_gut.rank()
+    print(f"   Y_e=Y_dᵀ: 6 charged-fermion masses -> {rfe_gut}  (SM {rfe_sm} -> GUT {rfe_gut}, saves {rfe_sm - rfe_gut})")
+    drop = (3 - rg) + (rfe_sm - rfe_gut)
+    print(f"   total GUT rank drop = {drop}  (gauge {3 - rg} + Y_e=Y_dᵀ {rfe_sm - rfe_gut})")
+    print(f"   => minimal SU(5) imposes {drop} relations (SO(10)/E₆/PS: 12, numerically wrong), NOT all 19.")
     print("   => no flux-style TOTAL collapse (-> 1): the SM lacks a duality group + FFT.")
-    return rg == 1 and rbt_gut == 1 and rbt_sm == 2 and drop == 3
+    return rg == 1 and rfe_gut == 3 and rfe_sm == 6 and drop == 5
 
 
 def main():
@@ -242,11 +245,11 @@ def main():
     print("    while flux's own symmetry collapses to rank 1 (the constraint-first lesson).")
     print("  Tier 2a (dimension bound): rank <= 2*h11 + 2*h21 + 2, so the 19 is reducible")
     print("    for h11+h21 <= 8 and only generically a real floor for h11+h21 >= 9.")
-    print("  Tier 2b (symmetry): the ONLY known UV symmetry (GUT) collapses exactly 3 of the")
-    print("    19 (gauge 3->1, b-tau 2->1); NO symmetry collapses all 19 — the SM has no")
-    print("    duality group + FFT, so the flux-style collapse has no SM analog.")
+    print("  Tier 2b (symmetry): minimal SU(5) imposes 5 relations (gauge 3->1 + Y_e=Y_dᵀ),")
+    print("    SO(10)/E₆/PS impose 12 — but those are numerically wrong, so only gauge")
+    print("    unification (2) survives data; NO symmetry collapses all 19 (no duality group + FFT).")
     print("  => the 19 floor is REAL: reducible only by the trivial counting bound (small h)")
-    print("     or by a partial GUT relation (3 of 19), never by a total symmetry collapse.")
+    print("     or by a partial GUT relation (SU(5): 5, SO(10): 12 — only 2 survive data), never by a total collapse.")
     print("ALL CHECKS PASS" if ok else "SOME CHECKS FAILED")
     return 0 if ok else 1
 
