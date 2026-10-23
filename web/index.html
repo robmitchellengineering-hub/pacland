@@ -397,6 +397,30 @@
     </table>
     <p class="muted">Each machine answers a question reproducibly with a named falsifier, rather than a hand-waved claim. Reproduce: <code>python3 scripts/validate_uv_completions.py</code>, <code>python3 scripts/scan_kpv.py</code>, and <code>cd pacland-proof &amp;&amp; lake build</code>.</p>
 
+    <h2 id="solidity">How solid is it? — the falsifiers, in plain English</h2>
+    <p>The theorem is consolidated five independent ways, and it names exactly what would break it. <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/paper/theorem-solidity.pdf">Full plain-English write-up (PDF)</a>.</p>
+    <table>
+      <thead><tr><th>way it's checked</th><th>what it establishes</th></tr></thead>
+      <tbody>
+        <tr><td>exact sympy proof</td><td>the tadpole is the unique invariant, degree-by-degree, zero rounding (5/5 degrees)</td></tr>
+        <tr><td>Lean machine-check</td><td>every step kernel-verified, degrees 1–4, no <code>sorry</code>/<code>axiom</code></td></tr>
+        <tr><td>non-vacuity checks</td><td>the definitions aren't secretly empty or over-constrained (5 sanity lemmas)</td></tr>
+        <tr><td>real-data measurements</td><td>the laws hold at h12=2, 5; no fingerprint; flat search space</td></tr>
+        <tr><td>adversarial review</td><td>caught one error ("GUT collapses 3" → 2); the core survived</td></tr>
+      </tbody>
+    </table>
+    <p>The four falsifiers, and how likely each is to fire:</p>
+    <table>
+      <thead><tr><th>#</th><th>what would break it</th><th>likelihood</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>a non-tadpole invariant</td><td>≈ 0% (it's a proven theorem)</td></tr>
+        <tr><td>2</td><td>an exact, derivable <em>and</em> numerically-correct 20th relation (beyond gauge unification)</td><td>≈ 30% (the open frontier)</td></tr>
+        <tr><td>3</td><td>a duality law scattering at higher h12</td><td>≈ 10% (untested beyond h12=5)</td></tr>
+        <tr><td>4</td><td>a measured non-uniform dN/d|W₀|² near zero</td><td>≈ 5% (measured flat)</td></tr>
+      </tbody>
+    </table>
+    <p class="muted">Defense in depth: the most likely falsifier (#2) attacks the <em>conjectured</em> Standard-Model extension, not the proven core. The one error found (a GUT collapse count) was caught and corrected — the verification working as designed.</p>
+
     <h2 id="use">Use it</h2>
     <p>The whole discipline is a pip-installable, pure-stdlib Python library with a CLI:</p>
     <pre style="background:#f0f2f7;padding:1rem;border-radius:8px;overflow-x:auto;"><code>pip install -e git+https://github.com/robmitchellengineering-hub/pacland.git#egg=pacland
