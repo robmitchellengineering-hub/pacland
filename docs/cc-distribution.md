@@ -56,24 +56,41 @@ the per-cycle split `(K,M)`. The uplift term itself is a model assumption (the a
 a controlled 10d solution is actively debated: Moritz–Retolaza–Westphal arXiv:1707.08678,
 Gao–Hebecker–Junghans arXiv:2009.03914, Kachru–Kim–McAllister–Zimet arXiv:1908.04788).
 
-<!-- PASS 1 (precise post-uplift CC distribution statement + measure + falsifier) still in flight -->
+## Precise statement (fan-out verdict) — "uniform" is an overclaim, "locally flat" is the theorem
+
+The precise Bousso–Polchinski result (hep-th/0004134 §2) is a **power law**, not uniform:
+
+> `dN/dλ = D · ω_{J−1} · [2(λ−λ_bare)]^{(J−2)/2} / Πᵢ qᵢ`
+
+so the vacua-per-unit-`Λ` count **vanishes** at `λ → λ_bare` for `J > 2` (flat only at `J = 2`).
+The defensible statement is **"locally flat over the 10⁻¹²⁰ anthropic window"**, not "uniform".
+The **uniform** result that *is* proven is **Denef–Douglas** (hep-th/0404116): `W₀` is uniform
+near zero (`dN/d²W₀ ≈ const`), which is what this pass measured — but that is about `W₀`, not
+`Λ`. The link `W₀`-uniform → `Λ`-uniform is a **heuristic** (needs the joint `(W₀, D, σ)`
+distribution), the **uplift** to metastable dS is **contested** (anti-D3/KPV instability:
+Moritz–Retolaza–Westphal 1707.08678, Córdova–de Luca–Tomasiello 1812.04147, Dall'Agata et al.
+2203.12636, Hebecker–Schreyer–Venken 2208.02826), and "anthropic selection" is **unresolved**
+(the measure problem). The dS swampland conjecture (1806.08362; 1807.05193; 1810.05506), if true,
+empties the positive-`Λ` discretuum entirely.
 
 ## Falsifiable statement
 
-> The **pre-uplift scaling variable** `|W₀|²` has **uniform density near zero** (measured), so
-> the flux discretuum is flat and the observed small `Λ` is its anthropic tail — *not* a
-> dynamical selection. The post-uplift `Λ = −3|W₀|²/(8σ³) + D/σ³` is **model-dependent** (needs
-> `A, a, D`), so no sampler of `(W₀, N, g_s)` alone can claim its distribution.
+> The **pre-uplift scaling variable** `|W₀|²` has **uniform density near zero** (measured — the
+> Denef–Douglas result, proven). The flux discretuum is therefore **locally flat** over the tiny
+> anthropic window, so the observed small `Λ` is the anthropic tail — *not* a dynamical
+> selection. The post-uplift `Λ = −3|W₀|²/(8σ³) + D/σ³` is **model-dependent and contested**
+> (needs `A, a, D`; the uplift itself is debated), so no sampler of `(W₀, N, g_s)` alone can
+> claim its distribution.
 >
-> **Falsifiers:** a measured non-uniform `dN/d|W₀|²` near zero; or a proof that the uplift
-> *does* introduce a peak away from zero (a swampland obstruction to the dS uplift would kill
-> the "no selection" completion).
+> **Falsifiers:** a measured non-uniform `dN/d|W₀|²` near zero; a proof of the dS swampland
+> bound `|∇V| ≥ cV` in a controlled compactification (kills the positive-`Λ` discretuum); or a
+> rigorous no-go on the anti-D3 uplift (kills the mechanism producing positive `Λ`).
 
 ## Sources
 
 Bousso–Polchinski hep-th/0004134 · KKLT hep-th/0301240 · GKP hep-th/0105097 ·
-Klebanov–Strassler hep-th/0007191 · KPV hep-th/0109197 · Ashok–Douglas hep-th/0307049 ·
-Denef–Douglas hep-th/0404116 · BKQ hep-th/0309187 · Moritz–Retolaza–Westphal 1707.08678 ·
-Gao–Hebecker–Junghans 2009.03914 · Kachru–Kim–McAllister–Zimet 1908.04788.
-
-<!-- PASS 1 (precise post-uplift CC distribution statement + measure) still in flight -->
+Klebanov–Strassler hep-th/0007191 · KPV hep-th/0112197 · Ashok–Douglas hep-th/0307049 ·
+Denef–Douglas hep-th/0404116 · BKQ hep-th/0309187 · Obied–Ooguri–Spodyneiko–Vafa 1806.08362 ·
+Moritz–Retolaza–Westphal 1707.08678 · Córdova–de Luca–Tomasiello 1812.04147 ·
+Dall'Agata–Emelin–Farakos–Morittu 2203.12636 · Hebecker–Schreyer–Venken 2208.02826 ·
+Kachru–Kim–McAllister–Zimet 1908.04788.
