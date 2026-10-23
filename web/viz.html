@@ -44,6 +44,8 @@
     <div id="tabs">
       <button class="tab active" data-scene="symplectic">① The tadpole = area</button>
       <button class="tab" data-scene="kpv">② The KPV uplift</button>
+      <button class="tab" data-scene="orbit">③ The flux orbit</button>
+      <button class="tab" data-scene="cone">④ The LCS cone</button>
     </div>
   </div>
   <div id="readout"></div>
@@ -194,19 +196,97 @@ cutPlane.rotation.x = Math.PI/2;
 cutPlane.position.set(0.5, 0, 1.0);
 groupKPV.add(cutPlane);
 
+/* ---------------- ③ flux orbit: the tadpole level sets = Sp orbits ---------------- */
+const groupOrbit = new THREE.Group();
+scene.add(groupOrbit);
+groupOrbit.visible = false;
+
+function hyperboloidSheet(a, segT=30, segTh=60){
+  const pos = [], inds = [], tR = 1.15, W = segTh+1;
+  for (let j=0;j<=segT;j++){
+    const tt = -tR + 2*tR*j/segT;
+    const ct = Math.cosh(tt), st = Math.sinh(tt);
+    for (let i=0;i<=segTh;i++){
+      const th = 2*Math.PI*i/segTh;
+      pos.push(a*ct*Math.cos(th), a*st, a*ct*Math.sin(th));
+    }
+  }
+  for (let j=0;j<segT;j++) for (let i=0;i<segTh;i++){
+    const a0=j*W+i, b0=a0+1, c0=a0+W, d0=c0+1;
+    inds.push(a0,b0,c0, b0,d0,c0);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
+  g.setIndex(inds); g.computeVertexNormals();
+  return g;
+}
+[[0.7,0x5eead4],[1.0,0xa78bfa],[1.3,0xf472b6]].forEach(([a,col]) => {
+  groupOrbit.add(new THREE.Mesh(hyperboloidSheet(a), new THREE.MeshStandardMaterial({ color:col, emissive:col, emissiveIntensity:.12, transparent:true, opacity:.32, side:THREE.DoubleSide, roughness:.35, metalness:.2 })));
+});
+groupOrbit.rotation.x = 0.55;
+
+/* ---------------- ④ LCS cone: the facet explosion (3 -> 26 -> 35,610) ---------------- */
+const groupCone = new THREE.Group();
+scene.add(groupCone);
+groupCone.visible = false;
+
+const rays5 = [[0,0.7071,-0.7071],[0,0,1],[0.4101,-0.8157,-0.4079]];
+const rays10 = [
+ [-0.8333,0.1866,0.4034],[-0.8323,0.0759,-0.4788],[-0.6611,-0.1481,-0.2232],
+ [0.9318,0.0623,-0.1397],[0.9327,-0.0046,-0.1246],[0.7274,0.8798,-0.2799],
+ [0.8809,-0.4209,-0.0176],[-0.4985,-0.2217,0.4057],[0.3105,-0.6828,-0.1406],
+ [-0.8093,0.006,-0.4673],[0.7949,0.7286,-0.2608],[0.6756,-0.7112,0.0228],
+ [-0.8871,0.1311,0.3194],[0.9327,-0.0105,-0.1233],[-0.5704,-0.2389,-0.426],
+ [-0.8123,0.1722,0.4571],[-0.9271,0.0991,0.0618],[0.6919,1.0,0.0518],
+ [0.7508,0.056,0.3963],[0.5997,0.4249,0.4584],[0.809,-0.5966,0.1431],
+ [-0.7846,0.1307,0.4367],[-0.8362,0.0406,-0.47],[-0.7355,-0.0563,-0.4419],
+ [-0.535,-0.1918,0.4097],[0.685,-0.7105,0.0274],
+];
+const rays15 = [];
+for (let i=0;i<900;i++){
+  const y = 1 - 2*(i+0.5)/900, r = Math.sqrt(Math.max(0,1-y*y)), phi = i*2.39996;
+  rays15.push([r*Math.cos(phi), y, r*Math.sin(phi)]);
+}
+const coneStates = [
+  { label:'h12 = 5', count:'3', rays:rays5 },
+  { label:'h12 = 10', count:'26', rays:rays10 },
+  { label:'h12 = 15', count:'35,610', rays:rays15, schematic:true },
+];
+let coneRays = new THREE.Group();
+groupCone.add(coneRays);
+function renderCone(state){
+  groupCone.remove(coneRays);
+  coneRays = new THREE.Group();
+  state.rays.forEach(r => {
+    const dir = new THREE.Vector3(r[0],r[1],r[2]).normalize().multiplyScalar(2.1);
+    coneRays.add(new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), dir]),
+      new THREE.LineBasicMaterial({ color:0x5eead4, transparent:true, opacity:.55 })
+    ));
+  });
+  groupCone.add(coneRays);
+}
+renderCone(coneStates[0]);
+
 /* ---------------- UI switching ---------------- */
 const tabs = document.querySelectorAll('.tab');
 const legendSymp = `<b>Mitchell's Uniqueness.</b> The D3 tadpole <b>N = FᵀJH = F₁H₂ − F₂H₁</b> is the signed <b>area</b> of the parallelogram spanned by the two flux vectors. A symplectic shear (det = 1) deforms the parallelogram — but the area is <b>invariant</b>. That one invariant is the entire exact content of the flux sector.`;
 const legendKPV = `<b>Machine ① — the uplift-control solver.</b> The anti-D3 potential V(ψ) as a surface over (ψ, p/M). Below the white <b>p/M = 0.08</b> line the minimum is metastable (dS); above it there is no minimum (monotonic). Height = potential, color = height.`;
+const legendOrbit = `<b>Mitchell's Completeness.</b> Each value of the tadpole <b>N = FᵀJH</b> is a single Sp-orbit — shown here as a hyperboloid sheet (a slice of the level set). The invariant <b>labels</b> the orbit: nothing else distinguishes vacua on the same sheet.`;
+const legendCone = `<b>The LCS cone.</b> The complex-structure moduli's convergence region, as a hedgehog of extreme rays (actual double-description count on the KS model). The facet count explodes <b>3 → 26 → 35,610</b> as h12 goes 5 → 10 → 15 — the geometric reason "sample then test the cone" becomes a lottery.`;
 legend.innerHTML = legendSymp;
 
+const legendMap = { symplectic:legendSymp, kpv:legendKPV, orbit:legendOrbit, cone:legendCone };
 function showScene(name){
-  const symp = name === 'symplectic';
-  groupSymp.visible = symp;
-  groupKPV.visible = !symp;
-  legend.innerHTML = symp ? legendSymp : legendKPV;
+  groupSymp.visible = name === 'symplectic';
+  groupKPV.visible = name === 'kpv';
+  groupOrbit.visible = name === 'orbit';
+  groupCone.visible = name === 'cone';
+  legend.innerHTML = legendMap[name];
   controls.target.set(0,0,0);
-  if (symp) camera.position.set(4.2, 3.2, 6.5); else { camera.position.set(5, 4, 6); }
+  if (name === 'symplectic') camera.position.set(4.2, 3.2, 6.5);
+  else if (name === 'kpv') camera.position.set(5, 4, 6);
+  else camera.position.set(3.5, 2.6, 5.2);
 }
 tabs.forEach(t => t.addEventListener('click', () => {
   tabs.forEach(x => x.classList.remove('active'));
@@ -216,7 +296,7 @@ tabs.forEach(t => t.addEventListener('click', () => {
 
 /* ---------------- animation ---------------- */
 const clock = new THREE.Clock();
-let t = 0;
+let t = 0, curConeState = -1;
 function animate(){
   requestAnimationFrame(animate);
   const dt = clock.getDelta();
@@ -228,17 +308,29 @@ function animate(){
     const H = new THREE.Vector2(H0.x + s*H0.y, H0.y);
     const N = F.x*H.y - F.y*H.x;
     const N0 = F0.x*H0.y - F0.y*H0.x;
-    cur = updatePara(F, H);
+    updatePara(F, H);
     readout.innerHTML =
       `<div><span class="k">tadpole N = F₁H₂ − F₂H₁</span> = <span class="v">${N.toFixed(4)}</span></div>` +
       `<div><span class="k">shear parameter s =</span> <span class="v">${s.toFixed(3)}</span> &nbsp;·&nbsp; <span class="k">det(S) = 1</span></div>` +
       `<div><span class="k">N₀ (initial) =</span> <span class="v">${N0.toFixed(4)}</span> &nbsp;·&nbsp; <span class="k">ΔN =</span> <span class="v">${(N-N0).toExponential(1)}</span></div>`;
-  } else {
+  } else if (groupKPV.visible){
     readout.innerHTML =
       `<div><span class="k">V(ψ) = p + (M/π)[√(b₀⁴sin⁴ψ + (pπ/M − ψ + ½sin2ψ)²) − ψ + ½sin2ψ]</span></div>` +
       `<div><span class="k">metastable (dS)</span> <span class="v">iff p/M &lt; 0.08</span> · <span class="k">white line = the boundary</span></div>`;
-    // gentle auto-rotate
     groupKPV.rotation.y += dt*0.12;
+  } else if (groupOrbit.visible){
+    groupOrbit.rotation.y += dt*0.25;
+    readout.innerHTML =
+      `<div><span class="k">N = F₁H₂ − F₂H₁ = c</span> · <span class="v">each sheet is one Sp-orbit</span></div>` +
+      `<div><span class="k">the invariant labels the orbit — nothing else distinguishes vacua on the same sheet</span></div>`;
+  } else if (groupCone.visible){
+    const si = Math.floor(t/3.5) % 3;
+    const st = coneStates[si];
+    if (curConeState !== si){ renderCone(st); curConeState = si; }
+    groupCone.rotation.y += dt*0.2;
+    readout.innerHTML =
+      `<div><span class="k">LCS cone</span> · <span class="v">${st.label}</span> · <span class="v">${st.count}</span> <span class="k">extreme rays</span>${st.schematic ? ' <span class="k">(illustrative — full set too dense)</span>' : ''}</div>` +
+      `<div><span class="k">facet count explodes 3 → 26 → 35,610 with h12</span></div>`;
   }
   controls.update();
   renderer.render(scene, camera);
