@@ -198,3 +198,22 @@ physical effect (fewer land in the cone). The fix is a **Newton iteration, not a
 redesign**; the `initial_guesses_ISD` proposal is still impractically slow (vmapped JIT, 20+ min
 CPU at h12=5), so a fast cone sampler + iterated shift is the working path.
 
+## 2026-10-23 — the falling in-cone fraction has a geometric face: the cone's facet count explodes
+
+The LCS cone (`model.lcs_tree.hyperplanes` — the complex-structure moduli's convergence region)
+becomes astronomically more faceted as h12 rises. A complete double-description enumeration (all
+`(n−1)`-subsets of the hyperplanes → SVD nullspace → in-cone check → dedupe, run on `pacland-rog`):
+
+| h12 | hyperplanes | extreme rays | sampled in-cone check |
+|---|---|---|---|
+| 5 | 12 | **3** | 500/500 |
+| 10 | 13 | **26** | 500/500 |
+| 15 | 22 | **35,610** | 500/500 |
+
+The 500/500 check (positive combinations of the rays stay inside the cone) confirms the ray
+description is valid. The jump from 26 to 35,610 (hyperplanes 13→22, dimension 10→15) is the
+geometric reason "sample then test the cone" becomes a lottery at higher h12: the feasible
+region's boundary has tens of thousands of facets, so a random point rarely lands inside. This is
+*distinct* from the ISD `cond(M)` rounding wall (the flux sector) — but it is the same "higher
+h12 is harder" statement seen from the moduli geometry.
+
