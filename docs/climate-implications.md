@@ -104,6 +104,18 @@ None of that reverses the headline: **trust the conserving models, and the
 answer is ~3 °C / ~5 °C — alarming, defensible, and it says the fix is
 measurement, not more models.**
 
+## The findings, linked (so every claim traces to its evidence)
+
+- The deficit `m = 4`, radius ~68% — [climate-verification-deficit.md](docs/climate-verification-deficit.md)
+- The conservation drift, 12/19 energy · 6/19 mass · 2/19 salt — [climate-cmip6-drift.md](docs/climate-cmip6-drift.md)
+- The independent second source of the drift — [climate-drift-second-source.md](docs/climate-drift-second-source.md)
+- ACE's reference-fidelity ≠ reality-fidelity — [climate-ace-report.md](docs/climate-ace-report.md)
+- The trust-gated ECS, bracket 2.71–3.08 K — [climate-ecs-model.md](docs/climate-ecs-model.md)
+- The per-model trust board, 14 trusted of 53 — [climate-trust-board.md](docs/climate-trust-board.md)
+- The verified reference model GISS-E2-1-G — [climate-reference-model.md](docs/climate-reference-model.md)
+- The 5-angle gap analysis that opened the discipline — [climate-gap-analysis.md](docs/climate-gap-analysis.md)
+- The plain-English brief for non-experts — [climate-verified.md](docs/climate-verified.md)
+
 ## Reproduce the numbers
 
 ```sh
