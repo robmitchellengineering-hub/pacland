@@ -15,6 +15,11 @@ literally one theory described twice.
 | **IV** | the moduli law | the complex-structure moduli are inert at degree 0 |
 | **V** | the counting law | 19 = the Standard-Model orbit-space dimension (exact as a count, free as values) |
 
+**Verified at h12 = 2 (100 primitive SUSY vacua) and h12 = 5 (12 in-cone SUSY vacua, found by
+the iterated linearised shift).** Laws II, IIb, III hold *exactly* at both: `|W_S|/|W| =
+1.000000` (std 3.7e-15), `arg(W_S/W) = −arg τ` (residual 7.4e-16), `g_s` ratio `1.000000`
+(std 1.8e-16). Law I is symbolic (h12-independent); Law V is the SM orbit-space dimension.
+
 A result earns the name **Mitchell's Law** only when all four hold:
 
 1. **stated precisely** — symbols defined, no hedge words ("approximately", "appears to");

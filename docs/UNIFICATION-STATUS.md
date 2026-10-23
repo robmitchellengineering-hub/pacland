@@ -55,9 +55,9 @@ everything else is covariance + counting."
 
 | # | assertion | falsifier | how |
 |---|---|---|---|
-| A | the h12≥5 wall is a sampler bug — a robust iterated shift finds SUSY vacua at h12=5..25 in-cone | iterated shift finds 0 in-cone vacua | measurement |
+| A | the h12≥5 wall is a sampler bug — a robust iterated shift finds SUSY vacua at h12=5..25 in-cone | iterated shift finds 0 in-cone vacua | measurement — **confirmed at h12=5** (12/24 in-cone) |
 | B | the SUSY-fraction collapse (27.9%→19.7%→1.1%) is a landscape fact, not a proposal curve | collapse vanishes with the fix | measurement |
-| C | the covariance laws (II, IIb, III) hold at h12=5..10 | a law scatters at higher h12 | measurement |
+| C | the covariance laws (II, IIb, III) hold at h12=5..10 | a law scatters at higher h12 | measurement — **h12=5 confirmed** (laws exact) |
 | D | the ℤ₂ torsion correspondence — Freed–Witten ≡ Witten SU(2) global anomaly | the two Z₂'s are provably distinct | math + literature |
 | E | the counting (19) is stable — no new relation appears at higher h12 | a 20th relation | rank test |
 
