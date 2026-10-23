@@ -70,7 +70,7 @@ Everything is reproducible:
 github.com/robmitchellengineering-hub/pacland
 
 If you have ten minutes to look at the short statement
-(docs/constraint-first-theorem.md), I'd be grateful for a yes/no on whether it's sound.
+(attached), I'd be grateful for a yes/no on whether it's sound.
 If it holds, an arXiv endorsement would mean a great deal — but a comment on the
 correctness is what I'm really asking for.
 

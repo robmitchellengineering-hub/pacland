@@ -45,7 +45,7 @@ degrees 1–4, kernel-checked, no axioms), and measured on real flux vacua sampl
 Everything is reproducible: github.com/robmitchellengineering-hub/pacland
 
 If you have ten minutes to look at the short statement
-(docs/constraint-first-theorem.md in that repo), I'd be grateful for a yes/no on
+(attached — Mitchell's Principle of Constraint-First Unification), I'd be grateful for a yes/no on
 whether it's sound. If it holds, an arXiv endorsement would mean a great deal — but a
 comment on the correctness is what I'm really asking for.
 
@@ -73,7 +73,7 @@ degrees 1–4, kernel-checked, no axioms).
 Everything is reproducible: github.com/robmitchellengineering-hub/pacland
 
 If you have ten minutes to look at the short statement
-(docs/constraint-first-theorem.md), I'd be grateful for a yes/no on whether it's
+(attached), I'd be grateful for a yes/no on whether it's
 sound. If it holds, an arXiv endorsement would mean a great deal — but a comment on
 the correctness is what I'm really asking for.
 
@@ -101,7 +101,7 @@ axioms), and measured on real JAXVacua flux vacua.
 Everything is reproducible: github.com/robmitchellengineering-hub/pacland
 
 If you have ten minutes to look at the short statement
-(docs/constraint-first-theorem.md), I'd be grateful for a yes/no on whether it's
+(attached), I'd be grateful for a yes/no on whether it's
 sound. If it holds, an arXiv endorsement would mean a great deal — but a comment on
 the correctness is what I'm really asking for.
 
@@ -129,7 +129,7 @@ samples.
 Everything is reproducible: github.com/robmitchellengineering-hub/pacland
 
 If you have ten minutes to look at the short statement
-(docs/constraint-first-theorem.md), I'd be grateful for a yes/no on whether it's
+(attached), I'd be grateful for a yes/no on whether it's
 sound. If it holds, an arXiv endorsement would mean a great deal — but a comment on
 the correctness is what I'm really asking for.
 
