@@ -17,7 +17,19 @@ import urllib.request
 import numpy as np
 import xarray as xr
 
+try:
+    import aiohttp
+    _STORAGE = {"client_kwargs": {"timeout": aiohttp.ClientTimeout(total=1800)}}
+except ImportError:
+    _STORAGE = {}
+
 CATALOG = "https://storage.googleapis.com/cmip6/pangeo-cmip6.csv"
+CHUNK = 60          # months per zarr chunk (small enough for a slow network)
+MAX_YEARS = 50      # the drift mean converges in ~50 years; no need for the full run
+
+
+def _months():
+    return MAX_YEARS * 12
 
 
 def load_targets():
@@ -44,30 +56,30 @@ def catalog_paths():
 
 
 def global_mean_series(url):
-    ds = xr.open_zarr(url, consolidated=True, decode_times=False, chunks={"time": 120})
+    ds = xr.open_zarr(url, consolidated=True, decode_times=False, chunks={"time": CHUNK}, storage_options=_STORAGE)
     v = next(iter(ds.data_vars.values()))
     lat = np.asarray(ds["lat"].values, dtype=float)
     w = np.cos(np.deg2rad(lat))
     w = w / w.sum()
     wda = xr.DataArray(w, dims="lat")
     parts = []
-    for t0 in range(0, v.shape[0], 120):
-        slab = v.isel(time=slice(t0, t0 + 120))
+    for t0 in range(0, min(v.shape[0], _months()), CHUNK):
+        slab = v.isel(time=slice(t0, t0 + CHUNK))
         parts.append(np.asarray((slab * wda).sum(dim="lat").mean(dim="lon").compute().values))
     return np.concatenate(parts)
 
 
 def zonal_mean_series(url):
     """Time-mean zonal-mean flux -> (lat, flux): the SPATIAL pattern of the drift."""
-    ds = xr.open_zarr(url, consolidated=True, decode_times=False, chunks={"time": 120})
+    ds = xr.open_zarr(url, consolidated=True, decode_times=False, chunks={"time": CHUNK}, storage_options=_STORAGE)
     v = next(iter(ds.data_vars.values()))
     lat = np.asarray(ds["lat"].values, dtype=float)
     w = np.cos(np.deg2rad(lat))
     w = w / w.sum()
     wda = xr.DataArray(w, dims="lat")
     parts = []
-    for t0 in range(0, v.shape[0], 120):
-        slab = v.isel(time=slice(t0, t0 + 120))
+    for t0 in range(0, min(v.shape[0], _months()), CHUNK):
+        slab = v.isel(time=slice(t0, t0 + CHUNK))
         parts.append(np.asarray((slab * wda).mean(dim="lon").compute().values))
     zonal = np.concatenate(parts, axis=0)   # (time, lat)
     return lat, zonal.mean(axis=0)          # (lat,)
