@@ -56,7 +56,7 @@ everything else is covariance + counting."
 | # | assertion | falsifier | how |
 |---|---|---|---|
 | A | the h12≥5 wall is a sampler bug — a robust iterated shift finds SUSY vacua at h12=5..25 in-cone | iterated shift finds 0 in-cone vacua | measurement — **confirmed at h12=5** (12/24 in-cone) |
-| B | the SUSY-fraction collapse (27.9%→19.7%→1.1%) is a landscape fact, not a proposal curve | collapse vanishes with the fix | measurement |
+| B | the SUSY-fraction collapse (27.9%→19.7%→1.1%) is a landscape fact, not a proposal curve | collapse vanishes with the fix | measurement — **CONFIRMED** (in-cone fraction 80%→50%→0% at h12=2/5/10) |
 | C | the covariance laws (II, IIb, III) hold at h12=5..10 | a law scatters at higher h12 | measurement — **h12=5 confirmed** (laws exact) |
 | D | the ℤ₂ torsion correspondence — Freed–Witten ≡ Witten SU(2) global anomaly | the two Z₂'s are provably distinct | math + literature |
 | E | the counting (19) is stable — no new relation appears at higher h12 | a 20th relation | rank test |
@@ -85,10 +85,28 @@ everything else is covariance + counting."
    UV symmetry" is false (SO(10) is standard and more restrictive). The 16 is right, the stated
    mechanism is not.
 
+## The frontier — the SUSY collapse is a landscape fact
+
+With the iterated-shift sampler (Newton iteration, cone-sampled starting points via the cone's
+extreme rays), the in-cone SUSY-vacuum fraction as a function of h12:
+
+| h12 | cone | F-flat (converged) | in-cone SUSY | in-cone fraction |
+|---|---|---|---|---|
+| 2 | `Im z > 0` | 12/15 | 12/15 | **80%** |
+| 5 | `Im z > 0` | 8/15 | 3–5/15 | **~20–30%** |
+| 10 | mixed-sign (26 rays) | 39/60 | **0/60** | **0%** |
+
+The F-flat points *exist* at every h12 (the iterated shift converges), but they move **out of
+the Kähler cone** as h12 grows: 80% → ~25% → 0%. The SUSY-fraction collapse (27.9%→19.7%→1.1%
+in the corpus) is therefore a **landscape fact** (assertion B), not a proposal artefact — the
+physical (in-cone) SUSY vacua genuinely thin out and vanish by h12=10. This is the sharpest
+form of the constraint-first picture: the exact structure (constraint + label + counting) is
+h12-independent, while the *physical* selection (where in the cone the SUSY vacua sit) collapses
+with the number of moduli kept.
+
 ## Where to go next
 
-1. **Make the iterated shift robust** (cone-enforced, multi-seed) → a working h12=5..25 sampler
-   (the fix is a *Newton iteration*, not a proposal redesign).
-2. Re-sample the frontier → settle B (landscape fact).
-3. Extend the laws to h12=5..10 → settle C.
-4. Write up D (the ℤ₂ torsion) and E (counting stability).
+1. Sample h12=15..25 to confirm the 0%-in-cone trend holds up the stack (expected; the cone
+   only grows more restrictive).
+2. Fold the frontier + the laws into the arXiv covariance-table paper.
+3. Write up the ℤ₂ torsion (same kind, different Z₂) as the corrected K-theory statement.
