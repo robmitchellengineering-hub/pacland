@@ -1,5 +1,29 @@
 # PACLAND — operating rules (read before working in this repo)
 
+## Multi-discipline workflow — one branch per discipline, `main` is the spine only
+
+PACLAND is several disciplines built in **parallel** (landscape, climate, drugs, economics, …).
+`main` is **not** the working surface. When every discipline pushes to `main` they collide on
+the shared files (`README.md`, `src/pacland/disciplines.py`, `docs/arxiv-submission.md`, the
+site) and `main` becomes a moving target — a merge conflict and a wrong-attribution every time.
+This has happened repeatedly; these rules stop it.
+
+1. **`main` = stable trunk.** Always green, **PR-only, no direct push**. It holds the shared
+   spine (`src/pacland/` core, the CLI, the verification discipline) plus a discipline **only
+   once that discipline's change is a complete, reviewed, green unit** — never in-progress work.
+2. **One long-lived branch per discipline** — `discipline/<slug>` (`physics`, `climate`,
+   `drugs`, `economics`). Work on it via
+   `git worktree add <path> -b <feature> origin/discipline/<slug>`, PR back into the discipline
+   branch, and the discipline branch PRs into `main` only when complete.
+3. **File ownership.** A discipline owns `src/pacland/<slug>/**`, `docs/<slug>-*`,
+   `data/<slug>/`, `scripts/*<slug>*`, `tests/test_<slug>*.py` — and touches nothing else.
+   Shared files (`README.md`, `src/pacland/disciplines.py`, `docs/arxiv-submission.md`) are
+   edited in a **separate one-entry PR**, never mixed into a discipline PR.
+4. **One PR = one discipline** (or one spine change). Never mix two disciplines in one commit.
+5. **Before touching `main`, read the board** — `git log origin/main` and the registry
+   (`src/pacland/disciplines.py`). If another discipline landed since you branched, rebase;
+   don't push over it.
+
 ## The Rule of Three — no result from one test (Rob: "we need at least 3")
 
 Never claim "structured" or "random" from a single measurement. Every such claim
