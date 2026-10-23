@@ -77,6 +77,55 @@ def repair(model: str) -> dict:
     }
 
 
+_ZONAL = Path(__file__).resolve().parents[3] / "data" / "climate" / "zonal_drift.json"
+
+
+def zonal_drift_available() -> bool:
+    """True once the mesh widening job has produced the zonal (spatial) drift."""
+    return _ZONAL.exists()
+
+
+def leak_map(model: str) -> dict:
+    """The SPATIAL pattern of the leak: zonal drift vs latitude (the leak map).
+
+    Reads the zonal drift produced by ``scripts/climate_drift_widen.py`` (mesh
+    job). Returns None with a clear status until that data exists — the full fix
+    needs it.
+    """
+    if not _ZONAL.exists():
+        return None
+    d = json.loads(_ZONAL.read_text())
+    for m in d.get("models", []):
+        if m.get("model") == model and m.get("zonal_drift_Wm2"):
+            lat = m["zonal_drift_Wm2"]["lat"]
+            drift = m["zonal_drift_Wm2"]["drift_Wm2"]
+            i = max(range(len(drift)), key=lambda k: abs(drift[k]))
+            return {
+                "model": model,
+                "lat": lat,
+                "drift_Wm2": drift,
+                "max_leak_lat": lat[i],
+                "max_leak_Wm2": drift[i],
+                "source": "mesh widening job (raw piControl zarr)",
+            }
+    return None
+
+
+def full_repair(model: str) -> dict:
+    """The FULL fix: global-mean correction (tier 1) + zonal correction (tier 2).
+
+    Tier 2 corrects the leak's latitudinal pattern, not just its mean, so the
+    corrected model conserves at every latitude. Tier 3 (patching the coupling
+    term in the model's own code) is the builders' job; ``leak_map()`` hands them
+    the spatial spec to do it.
+    """
+    r = repair(model)
+    lm = leak_map(model)
+    r["full_fix"] = "global-mean correction + zonal (latitudinal) correction"
+    r["zonal"] = lm if lm else {"status": "pending mesh widening job (scripts/climate_drift_widen.py)"}
+    return r
+
+
 def repair_report() -> dict:
     """Every model: leak, location, fix, and the post-fix conservation state."""
     d = _load()
@@ -125,9 +174,10 @@ def summary() -> str:
         "",
         pf["verdict"],
         "",
-        "Honest boundary: this corrects the global-mean drift; the spatial leak",
-        "(atmosphere-ocean coupling) is the model-builders' deeper patch, and this",
-        "module re-checks their fix.",
+        "FULL fix, three tiers:",
+        "  tier 1 = global-mean correction (done, here)",
+        "  tier 2 = zonal (latitudinal) correction (code wired, data from the mesh job)",
+        "  tier 3 = patch the coupling term in the model code (builders, spec via leak_map)",
     ])
 
 

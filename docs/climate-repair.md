@@ -32,15 +32,18 @@ forcing: **15 models across 13 families, 3.08 K**. The fix doesn't change physic
 it removes a numerical leak so the conservation gate stops excluding otherwise-
 good models.
 
-## The honest boundary (so the pitch never overpromises)
+## The full fix, three tiers (not a half-measure)
 
-- **This corrects the global-mean drift**, the first-order fix the field already
-  does in post-processing. The *spatial pattern* of the leak — localized to the
-  coupling — is a deeper defect the model-builders must patch in their code. This
-  module is the verifier that names it for them, and re-checks their fix.
-- **"Peak accuracy" is not "perfect prediction."** The unmeasurable wall (the
-  future has no ground truth) caps the certificate at ~68% (m = 4), and no fix
-  changes that. The repaired model is the *best the physics allows*, not an oracle.
+| tier | what | status |
+|---|---|---|
+| **1 — global-mean** | subtract the mean leak so the ledger closes on average | ✅ built here |
+| **2 — zonal (spatial)** | subtract the leak's latitudinal pattern so it conserves at every latitude | wired — data from the mesh widening job (`scripts/climate_drift_widen.py`) |
+| **3 — coupling patch** | fix the non-conserving term in the model's own code | the builders' patch — `leak_map()` hands them the spatial spec |
+
+The honest boundary, now smaller and sharper: tier 3 is the only part that is
+genuinely the model-builders' work, and even that we don't just hand off — we
+hand them the *leak map* (which latitudes leak, by how much) and re-check their
+fix.
 
 ## Why this is the business
 

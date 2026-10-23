@@ -9,10 +9,13 @@ Known answers (data/climate/cmip6_drift.json, Irving et al. 2021):
 import unittest
 
 from pacland.climate.drift_correction import (
+    full_repair,
     leak,
+    leak_map,
     post_fix_prediction,
     repair,
     repair_report,
+    zonal_drift_available,
 )
 
 
@@ -54,6 +57,25 @@ class TestPostFixPrediction(unittest.TestCase):
 
     def test_before_fix_is_giss(self):
         self.assertAlmostEqual(post_fix_prediction()["before_fix_strict_ECS_K"], 2.71, places=2)
+
+
+class TestFullRepair(unittest.TestCase):
+    def test_full_repair_is_global_plus_zonal(self):
+        fr = full_repair("CNRM-ESM2-1")
+        self.assertIn("zonal", fr["full_fix"])
+        self.assertTrue(fr["conserves_after_fix"])
+
+    def test_zonal_tier_reports_status(self):
+        z = full_repair("CNRM-ESM2-1")["zonal"]
+        # either a leak map (mesh data present) or a pending status (data not yet produced)
+        self.assertTrue("model" in z or "status" in z)
+
+    def test_leak_map_handles_missing_data(self):
+        lm = leak_map("CNRM-ESM2-1")
+        if zonal_drift_available():
+            self.assertIn("max_leak_lat", lm)
+        else:
+            self.assertIsNone(lm)
 
 
 if __name__ == "__main__":

@@ -57,6 +57,22 @@ def global_mean_series(url):
     return np.concatenate(parts)
 
 
+def zonal_mean_series(url):
+    """Time-mean zonal-mean flux -> (lat, flux): the SPATIAL pattern of the drift."""
+    ds = xr.open_zarr(url, consolidated=True, decode_times=False, chunks={"time": 120})
+    v = next(iter(ds.data_vars.values()))
+    lat = np.asarray(ds["lat"].values, dtype=float)
+    w = np.cos(np.deg2rad(lat))
+    w = w / w.sum()
+    wda = xr.DataArray(w, dims="lat")
+    parts = []
+    for t0 in range(0, v.shape[0], 120):
+        slab = v.isel(time=slice(t0, t0 + 120))
+        parts.append(np.asarray((slab * wda).mean(dim="lon").compute().values))
+    zonal = np.concatenate(parts, axis=0)   # (time, lat)
+    return lat, zonal.mean(axis=0)          # (lat,)
+
+
 def drift_of(model, paths):
     missing = [v for v in ("rsdt", "rsut", "rlut") if (model, v) not in paths]
     if missing:
@@ -65,7 +81,16 @@ def drift_of(model, paths):
     net = net - global_mean_series(paths[(model, "rsut")]) - global_mean_series(paths[(model, "rlut")])
     yrs = np.arange(net.size) // 12
     ann = np.array([net[yrs == y].mean() for y in np.unique(yrs)])
-    return float(ann.mean()), None
+    # zonal (spatial) drift
+    lat, zrsdt = zonal_mean_series(paths[(model, "rsdt")])
+    _, zrsut = zonal_mean_series(paths[(model, "rsut")])
+    _, zrlut = zonal_mean_series(paths[(model, "rlut")])
+    znet = zrsdt - zrsut - zrlut
+    return {
+        "mean_Wm2": float(ann.mean()),
+        "zonal": {"lat": [round(float(x), 2) for x in lat],
+                  "drift_Wm2": [round(float(x), 4) for x in znet]},
+    }, None
 
 
 def main():
@@ -80,13 +105,14 @@ def main():
     print(f"catalog: {len(paths)} (model,var) rows", file=sys.stderr)
     out = []
     for m in targets:
-        mean, err = drift_of(m, paths)
+        res, err = drift_of(m, paths)
         if err:
             out.append({"model": m, "status": "skipped", "reason": err})
             print(f"{m:24s} SKIP {err}", file=sys.stderr, flush=True)
         else:
-            out.append({"model": m, "netTOA_drift_Wm2": round(mean, 4), "status": "ok"})
-            print(f"{m:24s} {mean:+.4f} W/m2", file=sys.stderr, flush=True)
+            out.append({"model": m, "netTOA_drift_Wm2": round(res["mean_Wm2"], 4),
+                        "zonal_drift_Wm2": res["zonal"], "status": "ok"})
+            print(f"{m:24s} {res['mean_Wm2']:+.4f} W/m2 (zonal computed)", file=sys.stderr, flush=True)
     print(json.dumps({"source": "raw CMIP6 piControl zarr (pangeo-cmip6)",
                       "models": out}, indent=2))
 
