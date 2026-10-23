@@ -176,7 +176,25 @@ Three rounding fixes were tried, and all fail at h12=5 for the same reason:
 
 **Conclusion.** The h12=5 wall is *not* a rounding bug and *not* a completion bug — it is the
 spread of the flat direction across the integer lattice, which no local integer adjustment can
-cancel. The fix is the wall-doc's **option 3**: a different proposal that never inverts the flat
-direction — sample in the well-conditioned subspace of `M` and lift, rather than rounding the
-full `f_cont`. This is a proposal redesign, not a patch.
+cancel.
+
+**CORRECTION (same day, follow-up) — the fix is simpler than option 3.** The one thing the
+rounding analysis missed is that the *moduli* can absorb the rounding error, not just the flux.
+The library's linearised shift (`A @ shift = b`, with `b = f − f_cont`) is a **Newton step** for
+finding the moduli where the *rounded* flux is F-flat — and **iterating it converges**:
+
+| h12 | `\|DW\|` after round | after 1 shift | after 2 shifts | after 3–6 shifts |
+|---|---|---|---|---|
+| 2 | 1.8e1 | 7.9 | 2.4e-1 | **1e-8 … 1e-13** |
+| 5 | 8.7e3 | 4.0e1 | 2.2e-2 | **~1e-8** |
+| 10 | — | — | — | ~1e-11 (converges) |
+
+So the wall-doc's "one shift + stuck scipy solver" is the failure — **a single shift is not
+enough, and iterating it reaches F-flat at h12=5 and 10.** On 15 cone-sampled candidates at
+h12=5, the damped Newton finds **8/15 F-flat points, 3 in-cone SUSY vacua** (vs the wall-doc's
+0/13,311), while h12=2 gives 12/15 in-cone. The in-cone fraction falls 80% → ~20–30% with h12 —
+so the SUSY collapse is *both* a sampler bug (iterating the shift finds the points) *and* a
+physical effect (fewer land in the cone). The fix is a **Newton iteration, not a proposal
+redesign**; the `initial_guesses_ISD` proposal is still impractically slow (vmapped JIT, 20+ min
+CPU at h12=5), so a fast cone sampler + iterated shift is the working path.
 
