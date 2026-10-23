@@ -1,7 +1,7 @@
 # The verified reference model — GISS-E2-1-G
 
 Status: **computed and guarded** — `src/pacland/climate/reference_model.py` +
-`tests/test_climate_reference_model.py` (5 tests, green).
+`tests/test_climate_reference_model.py` (9 tests, green).
 
 ## The finding, in one sentence
 
@@ -34,6 +34,24 @@ pathway**, and the pathway is a *scenario input* (a label), not a model output.
 So the verified reference model pins the physics; the scenario is chosen by the
 question you ask.
 
+## Its own 2100 projection (Nazarenko et al. 2022)
+
+The model's own SSP runs ([Nazarenko et al. 2022](https://doi.org/10.1029/2021MS002871),
+JAMES 14, e2021MS002871) give the verified model's answer to "how bad does it
+get", by 2100 relative to 1850–1880:
+
+| scenario | 2100 warming |
+|---|---|
+| **SSP5-8.5** (high emissions) | **4.6–5.2 °C** |
+| SSP1-2.6 (strong mitigation) | below 2 °C (one variant 2.2 °C) |
+| SSP1-1.9 (aggressive mitigation) | below 2 °C |
+
+**Note the ECS method-dependence, stated rather than hidden:** the model's own
+paper reports its effective sensitivity as **2.9–3.0 °C**, while our gate uses
+Zelinka's cross-model-consistent **2.71 K**. Both sit inside the IPCC likely
+range; the gap is estimation method (the Gregory regression vs the model's own
+2×CO₂ run), not an error.
+
 ## Honest limits
 
 - **One family is one family.** GISS-E2-1-G's 2.71 K is a single model's value,
@@ -51,7 +69,7 @@ question you ask.
 ```sh
 cd pacland
 PYTHONPATH=src python3 -m pacland.climate.reference_model
-PYTHONPATH=src python3 -m unittest tests.test_climate_reference_model -v   # 5 tests
+PYTHONPATH=src python3 -m unittest tests.test_climate_reference_model -v   # 9 tests
 ```
 
 Data: `data/climate/cmip6_drift.json` (Irving 2021) × `data/climate/cmip6_ecs.json`

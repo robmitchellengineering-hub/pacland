@@ -1,4 +1,4 @@
-"""The verified reference model — GISS-E2-1-G.
+"""The verified reference model — GISS-E2-1-G, and its own 2100 projection.
 
 Of 19 CMIP6 models with full conservation drift data, exactly ONE passes all
 three verification gates — conservation (energy + mass + salt), sensitivity
@@ -8,6 +8,10 @@ the number from the one model we can fully verify, rather than the ensemble
 average. The ensemble cross-check (the widened 15-model gate) gives 3.08 K, and
 the IPCC best estimate is ~3.0 K; GISS's 2.71 K sits inside the same likely
 range, reached by the strictest possible gate.
+
+The model's own 21st-century projections (Nazarenko et al. 2022) are carried
+alongside: 4.6-5.2 C of 2100 warming under SSP5-8.5, and below 2 C under the
+mitigation scenarios — the verified model's answer to "how bad does it get".
 
 Pure stdlib + pacland.climate.sensitivity_crosscheck.
 """
@@ -43,11 +47,37 @@ def reference_model() -> dict:
     }
 
 
+def projections() -> dict:
+    """GISS-E2.1's own 21st-century projections, verified from the source abstract.
+
+    Nazarenko et al. 2022, "Future Climate Change Under SSP Emission Scenarios
+    With GISS-E2.1", J. Adv. Model. Earth Syst. 14, e2021MS002871.
+    Warming is relative to the 1850-1880 mean. Note the ECS method-dependence:
+    the model's own reported effective sensitivity (2.9-3.0 C) is higher than
+    the cross-model-consistent Zelinka value (2.71 K) our gate uses.
+    """
+    return {
+        "source": "Nazarenko et al. 2022, JAMES 14, e2021MS002871",
+        "doi": "10.1029/2021MS002871",
+        "baseline": "1850-1880",
+        "warming_2100_C": {
+            "SSP5-8.5": {"lo": 4.6, "hi": 5.2},
+            "SSP1-2.6": {"lo": None, "hi": 2.0},   # below 2 C (one variant 2.2 C)
+            "SSP1-1.9": {"lo": None, "hi": 2.0},   # below 2 C
+        },
+        "full_scenario_range_C": (1.5, 5.2),
+        "ecs_model_own_C": (2.9, 3.0),             # NINT 3.0 / OMA 2.9
+        "ecs_zelinka_C": reference_model()["ecs_K"],
+    }
+
+
 def summary() -> str:
     """One plain-text block for the record (and the report's headline)."""
     r = reference_model()
+    p = projections()
     d = load()
     lo, hi = d["likely_range_K"]
+    ssp = p["warming_2100_C"]["SSP5-8.5"]
     return "\n".join([
         "VERIFIED REFERENCE MODEL — GISS-E2-1-G",
         "=" * 40,
@@ -60,6 +90,10 @@ def summary() -> str:
         "",
         "The single-model best prediction: ECS = 2.71 K, from the one CMIP6",
         "model we can fully verify.",
+        "",
+        "Its own 2100 projection (Nazarenko et al. 2022):",
+        f"  SSP5-8.5 warming  {ssp['lo']}-{ssp['hi']} C",
+        f"  SSP1-2.6 warming  below {p['warming_2100_C']['SSP1-2.6']['hi']} C",
     ])
 
 
