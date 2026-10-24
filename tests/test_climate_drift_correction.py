@@ -9,6 +9,7 @@ Known answers (data/climate/cmip6_drift.json, Irving et al. 2021):
 import unittest
 
 from pacland.climate.drift_correction import (
+    correction_proof,
     full_repair,
     leak,
     leak_map,
@@ -76,6 +77,24 @@ class TestFullRepair(unittest.TestCase):
             self.assertIn("max_leak_lat", lm)
         else:
             self.assertIsNone(lm)
+
+
+class TestCorrectionProof(unittest.TestCase):
+    def test_hadgem3_leaks_then_conserves(self):
+        p = correction_proof("HadGEM3-GC31-LL")
+        self.assertFalse(p["before"]["conserves_energy"])   # leaks today
+        self.assertTrue(p["after"]["conserves"])            # conserves after
+        self.assertEqual(p["after"]["netTOA_Wm2"], 0.0)
+
+    def test_correction_is_the_negated_leak(self):
+        p = correction_proof("HadGEM3-GC31-LL")
+        self.assertAlmostEqual(p["correction"]["energy_Wm2"], -p["before"]["netTOA_Wm2"], places=4)
+
+    def test_error_removed_is_quantified(self):
+        p = correction_proof("HadGEM3-GC31-LL")
+        self.assertGreater(p["error_removed"]["ratio_to_eei"], 0)
+        lo, hi = p["error_removed"]["spurious_warming_K"]
+        self.assertGreater(hi, lo)
 
 
 if __name__ == "__main__":

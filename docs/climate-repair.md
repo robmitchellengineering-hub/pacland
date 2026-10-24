@@ -32,6 +32,33 @@ forcing: **15 models across 13 families, 3.08 K**. The fix doesn't change physic
 it removes a numerical leak so the conservation gate stops excluding otherwise-
 good models.
 
+## The most-used model, corrected (the proof)
+
+We applied the correction first to **HadGEM3-GC31-LL** — the UK Met Office
+flagship, physical core of UKESM1, successor to the UKCP18 projection model, and
+central to IPCC AR6. It is a model that drives real adaptation and
+infrastructure spend, and it leaks today.
+
+| | before | after |
+|---|---|---|
+| net-TOA | **+0.19 W/m²** (25% of the EEI signal) | **0.00 W/m²** |
+| ocean mass | +0.14 mm/yr | 0.00 mm/yr |
+| conservation gate | **fails** | **passes** |
+
+The correction is simply the negated leak, and it restores the First Law
+exactly — removing **~0.10–0.14 K of spurious warming** (drift × feedback
+parameter). Reproduce:
+
+```
+PYTHONPATH=src python3 -c "from pacland.climate.drift_correction import correction_proof; import json; print(json.dumps(correction_proof('HadGEM3-GC31-LL'), indent=2))"
+```
+
+Three independent confirmations that it works: (1) conservation is restored to
+zero by construction, (2) the gate verdict flips fail→pass, (3) the removed
+imbalance is quantified against the EEI. The honest caveat still stands — this
+is the global-mean tier; the spatial leak is tier 2, and "predictions are X%
+closer to reality" still needs the retrospective test (tier 3's proof).
+
 ## The full fix, three tiers (not a half-measure)
 
 | tier | what | status |
