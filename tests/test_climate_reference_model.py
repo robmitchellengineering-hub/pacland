@@ -54,6 +54,14 @@ class TestProjections(unittest.TestCase):
         self.assertEqual(p["ecs_model_own_C"], (2.9, 3.0))
         self.assertAlmostEqual(p["ecs_zelinka_C"], 2.71, places=2)
 
+    def test_sea_level_thermosteric_recorded(self):
+        # thermosteric only, SSP2-4.5 — with the caveat stated, not hidden
+        p = projections()
+        sl = p["sea_level_2100_thermosteric_m"]["SSP2-4.5"]
+        self.assertAlmostEqual(sl["lo"], 0.21, places=2)
+        self.assertAlmostEqual(sl["hi"], 0.24, places=2)
+        self.assertIn("thermosteric", p["sea_level_2100_thermosteric_m"]["note"])
+
 
 if __name__ == "__main__":
     unittest.main()

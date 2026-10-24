@@ -9,6 +9,13 @@ from __future__ import annotations
 from .ace_fidelity import anchor_deficit as ace_anchor, channel_summary as ace_channels
 from .cmip6_drift import summary as drift_summary
 from .deficit import climate_deficit_report
+from .drift_correction import (
+    conservation_deficit,
+    correction_proof,
+    post_fix_prediction as fix_prediction,
+    repair_report as fix_report,
+    retrospective,
+)
 from .ecs_model import ecs_estimates
 from .energy_budget import closure
 from .reference_model import projections, reference_model
@@ -27,6 +34,10 @@ def content() -> list[tuple[str, str]]:
     rp = projections()
     ssp585 = rp["warming_2100_C"]["SSP5-8.5"]
     mass_ratio = abs(ds["worst_mass_mm_per_yr"]) / ds["slr_reference_mm_per_yr"]
+    fx = fix_prediction()
+    frp = fix_report()
+    cd = conservation_deficit()
+    rx = retrospective()
     return [
         ("title", "PACLAND · Climate"),
         ("subtitle", "The verification discipline applied to climate modelling — a plain-English brief"),
@@ -39,6 +50,8 @@ def content() -> list[tuple[str, str]]:
         ("headline", f"Skillful ≠ true — ACE's '>90% of tracked variables' is {ace_cs['reference_fidelity_pct']:.0%} model-vs-model ({ace_cs['n_beats_baseline']}/{ace_cs['n_outputs']} vs a coarser GCM); against the Earth it is certified only to ~{ace_a.radius:.0%} on m={ace_a.n_validation} observables."),
         ("headline", f"The best-prediction ECS: {ecs['widened_naive']['mean_K']:.2f} K naive ({ecs['widened_naive']['n']} models) → {ecs['sens_forc_gated']['mean_K']:.2f} K gated ({ecs['sens_forc_gated']['n']} models, {ecs['sens_forc_families']} families) — the verification gates remove {ecs['widened_naive']['mean_K'] - ecs['sens_forc_gated']['mean_K']:.2f} K and land at the IPCC best estimate."),
         ("headline", f"The verified model {rm['model']} projects {ssp585['lo']}-{ssp585['hi']}°C of 2100 warming on SSP5-8.5 and below 2°C on SSP1-2.6 — the best prediction, from the one model that passes all three gates."),
+        ("headline", f"The fix is drift-correction, not a new model: {frp['n_leaking']} of {frp['n_models']} leakers are correctable, and correcting the leak widens the verified answer from {fx['before_fix_strict_ECS_K']:.2f} K (conservation-collapsed, 2 models) to {fx['after_fix_ECS_K']:.2f} K ({fx['after_fix_models']} models, {fx['after_fix_families']} families)."),
+        ("headline", f"Climate Constraint-First: conservation is the only exact content — m climbs to {cd['m_total']} (4 observables + 3 exact conservation ledgers), saturated at 3 exactly as the flux tadpole saturates at 1."),
         ("headline", "Trust by verdict, not by reputation — a machine-checked pass/fail, not a paper footnote."),
         ("h", "1 · What we are measuring"),
         ("p", "Climate projections are the most consequential predictions we make. The discipline asks the question the field has never answered in numbers: how much of a projection is verified, versus extrapolated?"),
@@ -60,8 +73,17 @@ def content() -> list[tuple[str, str]]:
         ("h", "6 · The verified model's own prediction"),
         ("b", f"{rm['model']} — the one model that passes conservation + sensitivity + forcing — projects {ssp585['lo']}-{ssp585['hi']}°C of 2100 warming on SSP5-8.5 and below 2°C on SSP1-2.6 (Nazarenko et al. 2022)."),
         ("b", f"Its own reported sensitivity (2.9-3.0°C) differs from our cross-model gate value ({rm['ecs_K']} K) — an estimation-method difference, stated not hidden."),
-        ("h", "7 · Reproduce"),
-        ("p", "pacland climate · python3 scripts/climate_cmip6_drift.py · docs/climate-cmip6-drift.md"),
+        ("h", "7 · The fix — drift-correction, not a new model"),
+        ("p", "We are not building a rival model. We fix the one that is broken, at the exact point it is broken. The leak is in the atmosphere-ocean coupling, and the field's own repair is drift-correction: subtract the measured leak."),
+        ("b", f"{frp['n_leaking']} of {frp['n_models']} models leak, {frp['n_coupling_leak']} localized to the coupling — and all are correctable by drift-correction."),
+        ("b", fx["verdict"]),
+        ("b", "Honest boundary: this corrects the global-mean drift; the spatial leak (the coupling) is the model-builders' deeper patch, and leak_map() hands them the exact spec."),
+        ("h", "8 · The Climate Constraint-First theorem"),
+        ("b", "Conservation is the only exact content: a model that does not close energy/mass/salt is broken, not 'approximately wrong' — the climate analog of the flux tadpole."),
+        ("b", f"ECS spans 1.83-5.64 K across the 53 models — a range, not a value, so no exact ECS exists; the 2100 projection has m = 0."),
+        ("b", f"The deficit climbs to m = {cd['m_total']} ({cd['m_observables']} observables + {cd['m_constraints']} exact conservation ledgers), saturated at 3 — {cd['ceiling']}"),
+        ("h", "9 · Reproduce"),
+        ("p", "pacland climate · python3 scripts/climate_cmip6_drift.py · docs/climate-cmip6-drift.md · docs/climate-repair.md · docs/climate-constraint-first.md"),
     ]
 
 

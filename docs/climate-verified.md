@@ -60,6 +60,19 @@ authority, but by physics.
 - **The fix was never "trust us."** It is "check the physics." And the physics
   is on the side of the warning.
 
+## And we can fix the broken ones
+
+The leak is not a mystery — it is in the **atmosphere-ocean coupling** (the
+ocean model itself conserves; the energy and mass that cross the air-sea
+boundary leak). That is a named, fixable defect, and the field's own repair is
+**drift-correction** — subtract the measured leak.
+
+Correcting the leak changes the verified answer: the strict test collapses from
+2 models (**2.71 °C**) to the repaired 15-model ensemble (**3.08 °C**) — still
+in the middle of the range the honest models give. So the finding is not "the
+models are doomed"; it is *"the broken ones can be fixed, and the fixed ones
+agree with the warning."*
+
 ## The fine print (so this is checkable, not just asserted)
 
 The conservation test is the First Law of Thermodynamics applied to each

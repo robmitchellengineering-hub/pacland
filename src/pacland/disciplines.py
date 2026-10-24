@@ -34,10 +34,10 @@ DISCIPLINES: tuple[Discipline, ...] = (
     Discipline(
         slug="climate",
         name="Climate / Earth-system",
-        status="built — deficit + guard-suite",
+        status="built — constraint-first + trust board + paper",
         package="pacland.climate",
-        docs="docs/climate-verification-deficit.md",
-        blurb="m = 4 on the historical record (≈68% radius), m = 0 for 2100 projections — extrapolation, not verification.",
+        docs="docs/climate-constraint-first.md",
+        blurb="Conservation is the only exact content (the climate tadpole); m = 7 (4 observables + 3 conservation ledgers, saturated at 3).",
     ),
     Discipline(
         slug="drugs",

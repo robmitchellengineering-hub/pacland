@@ -58,6 +58,19 @@ it in climate, and will find it in drugs, economics, AI. The reusable asset is
 the **trust board** — per-model trust scores you can point at *any* quantity.
 The numbers will move; the way we get the trustworthy number is what transfers.
 
+### 6. The fix: we repair the model, not replace it
+The conservation leak is a **fixable defect**, localized to the atmosphere-ocean
+coupling, and the field's own repair — drift-correction — removes it. The
+product is not "a rival climate model"; it is *"your model, analyzed, verified,
+and fixed"*. See `docs/climate-repair.md` and
+`src/pacland/climate/drift_correction.py`:
+
+- **14 of 19 models leak** (energy/mass at the air-sea boundary), all correctable.
+- **Correcting the leak changes the answer**: the strict three-axis gate collapses
+  from 2 models (2.71 K) to the repaired 15-model, 13-family gate (**3.08 K**).
+- **Honest boundary**: this corrects the global-mean drift; the spatial leak (the
+  coupling) is the builders' deeper patch, and `leak_map()` hands them the spec.
+
 ## Where the work goes next — with the compute split
 
 Rob's rule: **if we can do the compute, we do it and figure it out; if we
