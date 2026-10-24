@@ -71,28 +71,20 @@ and fixed"*. See `docs/climate-repair.md` and
 - **Honest boundary**: this corrects the global-mean drift; the spatial leak (the
   coupling) is the builders' deeper patch, and `leak_map()` hands them the spec.
 
-## Where the work goes next — with the compute split
+## Where the work stands (updated 2026-10-24)
 
-Rob's rule: **if we can do the compute, we do it and figure it out; if we
-cannot, we name the wall and the way around it.** Every next step is tagged
-with its compute requirement and its verdict.
+| # | item | status |
+|---|---|---|
+| **#1** | GISS-E2.1 sea-level by 2100 | **done** — ~0.21–0.24 m thermosteric (SSP2-4.5); the ice-sheet term is excluded and stated |
+| **#2** | 2100 warming for the full trusted set (14 models) | **open** — only GISS's own 2100 is in; no per-model table yet |
+| **#3** | Widen conservation to all 53 models | **tool done, run deferred** — `climate_drift_widen.py` exists; the 36-model run has not landed (the ROG is on MorpheOS), so `data/climate/` has no widened drift file yet |
+| **#4** | Second-source the drift to all 19 | **done** — confirmed by an independent raw-output recompute (`climate-drift-second-source.md`) |
+| **#5** | The citable climate paper | **done (draft)** — `docs/climate-paper.md` |
+| **#6** | The string-landscape h12≥5 sampling | other discipline, owned by `main` |
 
-- **#1 · GISS-E2.1 sea-level by 2100** (finish the board) — compute: fetch the
-  full Nazarenko paper body. Verdict: **doable now** (no compute, a text fetch).
-- **#2 · 2100 warming for the full trusted set** (14 models, not just GISS) —
-  compute: compile per-model SSP warming from CMIP6 archives. Verdict: **doable**
-  (a fetch + small table, no heavy compute).
-- **#3 · Widen conservation to all 53 models** (trust board 17→53 with drift
-  data) — compute: recompute energy/mass/salt drift from raw CMIP6 piControl
-  zarr. Verdict: **doable — mesh job** (studio-linux; xarray/zarr/dask).
-- **#4 · Second-source the drift to all 19** (the documented "natural next
-  step") — compute: raw CMIP6 zarr recompute. Verdict: **doable — mesh job**,
-  same toolchain as #3.
-- **#5 · The citable climate paper** (deficit + drift + ACE + ECS + predictions)
-  — compute: writing + the existing PDF renderer. Verdict: **doable now**.
-- **#6 · The string-landscape h12≥5 sampling** (the physics frontier) — compute:
-  JAXVacua on the mesh (~96 GB / speed problem). Verdict: **other discipline**,
-  owned by `main`, not this branch.
+The core is finished: **#1, #4 and #5 have landed.** #2 and #3 are extensions
+that widen the sample — they do not change the findings, and the discipline can
+PR to `main` without them.
 
 ### The walls, and the way around each (so "cannot" is never a stop)
 
