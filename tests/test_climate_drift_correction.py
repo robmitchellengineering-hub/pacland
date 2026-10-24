@@ -18,6 +18,7 @@ from pacland.climate.drift_correction import (
     repair,
     repair_report,
     retrospective,
+    retrospective_rule_of_three,
     zonal_drift_available,
 )
 
@@ -126,6 +127,18 @@ class TestRetrospective(unittest.TestCase):
     def test_correction_reduces_ecs_bias(self):
         r = retrospective()
         self.assertLess(abs(r["ecs_corrected_bias_K"]), abs(r["ecs_naive_bias_K"]))
+
+
+class TestRetrospectiveRuleOfThree(unittest.TestCase):
+    def test_three_independent_arms(self):
+        r = retrospective_rule_of_three()
+        self.assertEqual(r["n_arms"], 3)
+        sources = {a["source"] for a in r["arms"]}
+        self.assertEqual(len(sources), 3)   # three distinct observational sources
+
+    def test_each_arm_has_a_finding(self):
+        r = retrospective_rule_of_three()
+        self.assertTrue(all(a["finding"] for a in r["arms"]))
 
 
 if __name__ == "__main__":
