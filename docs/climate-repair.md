@@ -92,6 +92,22 @@ The finding: the correction lands the ensemble **inside the observed range**
 2.71 K — so *fixing* the leak (not dropping the models) is what restores
 agreement with the observational record. `retrospective()` reproduces this.
 
+## The verification, in 3D
+
+Interactive (rotate · zoom · hover a dot for the model name):
+**[PACLAND-climate-3d.html](../PACLAND-climate-3d.html)** — or the static
+`PACLAND-climate-3d.png` beside it.
+
+Three scenes, each titled with what to look for:
+
+1. **The leak** — 19 models in energy × mass × salt drift space. The red dots
+   *float out* from the conserved origin; the green ones stay put.
+2. **The trust gate** — 53 models in ECS × forcing × conservation. Orange passes
+   all three axes; the dashed box is where a model must land.
+3. **The fix** — drift-correction pulls every red dot back to (0,0,0).
+
+Regenerate: `PYTHONPATH=src python3 scripts/climate_3d.py`.
+
 ## The full fix, three tiers (not a half-measure)
 
 | tier | what | status |

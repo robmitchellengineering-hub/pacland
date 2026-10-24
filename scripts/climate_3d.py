@@ -14,6 +14,8 @@ Outputs: PACLAND-climate-3d.html (open in any browser — rotate, zoom, hover).
 from __future__ import annotations
 
 import json
+import sys
+
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -44,14 +46,13 @@ def leak_cube(fig, row, col):
         idx = [i for i in range(len(xs)) if colr[i] == c]
         fig.add_trace(go.Scatter3d(
             x=[xs[i] for i in idx], y=[ys[i] for i in idx], z=[zs[i] for i in idx],
-            mode="markers+text", text=[list(dr)[i] for i in idx],
-            textposition="top center", textfont=dict(size=9),
-            marker=dict(size=7, color=c, opacity=0.9),
+            mode="markers", text=[list(dr)[i] for i in idx],
+            marker=dict(size=8, color=c, opacity=0.9),
             name=name, hovertemplate="%{text}<br>energy %{x:.2f} W/m²<br>mass %{y:.2f} mm/yr<br>salt %{z:.2e} g/kg<extra></extra>",
         ), row=row, col=col)
     # the conserved origin
     fig.add_trace(go.Scatter3d(x=[0], y=[0], z=[0], mode="markers",
-                               marker=dict(size=6, color="black", symbol="diamond"),
+                               marker=dict(size=7, color="black", symbol="diamond"),
                                name="conserved (0,0,0)", showlegend=False), row=row, col=col)
 
 
@@ -105,9 +106,11 @@ def main():
     fig = make_subplots(
         rows=1, cols=3,
         specs=[[{"type": "scene"}, {"type": "scene"}, {"type": "scene"}]],
-        subplot_titles=("The leak cube — 19 models, 3 conservation ledgers",
-                        "The trust gate — ECS × forcing × conservation",
-                        "The fix — drift-correction collapses the leak to zero"),
+        subplot_titles=(
+            "<b>1 · The leak</b> — red dots float OUT of the conserved origin; green stays put",
+            "<b>2 · The trust gate</b> — orange passes all 3 axes; the dashed box is where a model must land",
+            "<b>3 · The fix</b> — drift-correction pulls every red dot back to (0,0,0)",
+        ),
     )
     leak_cube(fig, 1, 1)
     trust_gate(fig, 1, 2)
@@ -119,11 +122,17 @@ def main():
     )
     fig.update_layout(
         title=dict(text="<b>PACLAND · Climate — the verification, in 3D</b><br>"
-                        "<span style='font-size:12px'>rotate · zoom · hover a point for the model name</span>"),
-        height=560, margin=dict(l=10, r=10, t=70, b=10), **axes,
-        legend=dict(orientation="h", y=-0.05),
+                        "<span style='font-size:12px'>rotate · zoom · hover a dot for the model name — "
+                        "each scene's title says what to look for</span>"),
+        height=680, margin=dict(l=10, r=10, t=90, b=10), **axes,
+        legend=dict(orientation="h", y=-0.02),
     )
     fig.write_html("PACLAND-climate-3d.html", include_plotlyjs="cdn")
+    try:
+        fig.write_image("PACLAND-climate-3d.png", width=2000, height=720, scale=2)
+        print("wrote PACLAND-climate-3d.png")
+    except Exception as e:
+        print(f"PNG skipped ({type(e).__name__})", file=sys.stderr)
     print("wrote PACLAND-climate-3d.html")
 
 
