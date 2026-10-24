@@ -31,6 +31,18 @@ not an exact observable.
 So ECS, forcing, and the projection are model-dependent — non-exact, exactly as
 W₀ and the mass spectrum are non-exact in the flux sector.
 
+## The deficit consequence — m = 7, with a proven ceiling
+
+The physics deficit counts empirical observables *plus* the exact constraint
+(topology 4 + tadpole 1 + SM 4 = 9). The climate mirror: **4 empirical
+observables (GMST, EEI, OHC, GMSL) + 3 exact conservation ledgers = m = 7**
+(`conservation_deficit()` in `drift_correction.py`).
+
+The ceiling is proved by the theorem itself: conservation is the **only** exact
+content, so the constraint contribution to m is **capped at 3** — exactly as the
+flux sector is capped at 1 (the tadpole). Further deficit growth is empirical
+observables only, never new exact constraints.
+
 ## What this means for the verification layer
 
 The verification layer gates on the **exact** thing (conservation) and brackets

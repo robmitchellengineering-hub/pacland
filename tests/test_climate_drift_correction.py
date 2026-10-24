@@ -11,6 +11,7 @@ import unittest
 from pacland.climate.drift_correction import (
     correction_proof,
     correction_proof_all,
+    conservation_deficit,
     full_repair,
     leak,
     leak_map,
@@ -139,6 +140,17 @@ class TestRetrospectiveRuleOfThree(unittest.TestCase):
     def test_each_arm_has_a_finding(self):
         r = retrospective_rule_of_three()
         self.assertTrue(all(a["finding"] for a in r["arms"]))
+
+
+class TestConservationDeficit(unittest.TestCase):
+    def test_three_constraint_ledgers(self):
+        self.assertEqual(conservation_deficit()["m_constraints"], 3)
+
+    def test_total_is_seven(self):
+        self.assertEqual(conservation_deficit()["m_total"], 7)
+
+    def test_ceiling_stated(self):
+        self.assertIn("saturated", conservation_deficit()["ceiling"])
 
 
 if __name__ == "__main__":

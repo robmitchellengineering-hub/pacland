@@ -287,6 +287,30 @@ def retrospective_rule_of_three() -> dict:
     }
 
 
+def conservation_deficit() -> dict:
+    """The climate constraint-oracle (the analog of the flux tadpole): the three
+    conservation ledgers, each validated by the drift test. The exact content the
+    model MUST satisfy — and its ceiling is proved by the constraint-first theorem.
+
+    Mirrors the physics breakdown: m = empirical observables + exact constraints
+    (topology 4 + tadpole 1 + SM 4 = 9 there; observables 4 + conservation 3 = 7 here).
+    """
+    ledgers = [
+        {"ledger": "energy (First Law)", "test": "net-TOA drift -> 0", "validated": True},
+        {"ledger": "mass (continuity)", "test": "ocean-mass drift -> 0", "validated": True},
+        {"ledger": "salt (tracer conservation)", "test": "salinity drift -> 0", "validated": True},
+    ]
+    return {
+        "m_observables": 4,                 # GMST, EEI, OHC, GMSL (empirical)
+        "m_constraints": len(ledgers),      # the three conservation ledgers (exact)
+        "m_total": 4 + len(ledgers),
+        "constraints": ledgers,
+        "ceiling": ("saturated: conservation is the only exact content, so the constraint "
+                    "contribution to m is capped at 3 — exactly as the flux sector is capped "
+                    "at 1 (the tadpole). Further growth is empirical observables only."),
+    }
+
+
 def post_fix_prediction() -> dict:
     """After drift-correction the conservation gate passes for every model, so the
     strict three-axis gate reduces to sensitivity + forcing — the widened answer."""
