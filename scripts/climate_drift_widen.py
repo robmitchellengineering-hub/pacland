@@ -55,47 +55,36 @@ def catalog_paths():
     return out
 
 
-def global_mean_series(url):
-    # Fetch the first 50 years in ONE slice (no re-chunk): matches the stored
-    # chunks, so dask reads each chunk once instead of re-reading full chunks.
+def fetch_fluxes(url):
+    """ONE fetch per variable: returns (lat, flux_time) — the RAW zonal-mean flux
+    time series (time, lat). Fetches the first 50 years in a single slice (no
+    re-chunk), so dask reads each stored chunk once."""
     ds = xr.open_zarr(url, consolidated=True, decode_times=False, storage_options=_STORAGE)
     v = next(iter(ds.data_vars.values())).isel(time=slice(0, _months()))
     lat = np.asarray(ds["lat"].values, dtype=float)
-    w = np.cos(np.deg2rad(lat))
-    w = w / w.sum()
-    wda = xr.DataArray(w, dims="lat")
-    return np.asarray((v * wda).sum(dim="lat").mean(dim="lon").compute().values)
-
-
-def zonal_mean_series(url):
-    """Time-mean zonal-mean flux -> (lat, flux): the SPATIAL pattern of the drift."""
-    ds = xr.open_zarr(url, consolidated=True, decode_times=False, storage_options=_STORAGE)
-    v = next(iter(ds.data_vars.values())).isel(time=slice(0, _months()))
-    lat = np.asarray(ds["lat"].values, dtype=float)
-    w = np.cos(np.deg2rad(lat))
-    w = w / w.sum()
-    wda = xr.DataArray(w, dims="lat")
-    zonal = np.asarray((v * wda).mean(dim="lon").compute().values)  # (time, lat)
-    return lat, zonal.mean(axis=0)                                   # (lat,)
+    zonal = np.asarray(v.mean(dim="lon").compute().values)   # (time, lat) raw zonal-mean
+    return lat, zonal
 
 
 def drift_of(model, paths):
     missing = [v for v in ("rsdt", "rsut", "rlut") if (model, v) not in paths]
     if missing:
         return None, f"missing {','.join(missing)}"
-    net = global_mean_series(paths[(model, "rsdt")])
-    net = net - global_mean_series(paths[(model, "rsut")]) - global_mean_series(paths[(model, "rlut")])
+    lat, zrsdt = fetch_fluxes(paths[(model, "rsdt")])
+    _, zrsut = fetch_fluxes(paths[(model, "rsut")])
+    _, zrlut = fetch_fluxes(paths[(model, "rlut")])
+    znet = zrsdt - zrsut - zrlut                        # (time, lat) net TOA
+    # global-mean series = area-weighted sum over latitude
+    w = np.cos(np.deg2rad(lat))
+    w = w / w.sum()
+    net = (znet * w).sum(axis=1)                        # (time,) global mean
     yrs = np.arange(net.size) // 12
     ann = np.array([net[yrs == y].mean() for y in np.unique(yrs)])
-    # zonal (spatial) drift
-    lat, zrsdt = zonal_mean_series(paths[(model, "rsdt")])
-    _, zrsut = zonal_mean_series(paths[(model, "rsut")])
-    _, zrlut = zonal_mean_series(paths[(model, "rlut")])
-    znet = zrsdt - zrsut - zrlut
+    zonal = znet.mean(axis=0)                            # (lat,) time-mean zonal drift
     return {
         "mean_Wm2": float(ann.mean()),
         "zonal": {"lat": [round(float(x), 2) for x in lat],
-                  "drift_Wm2": [round(float(x), 4) for x in znet]},
+                  "drift_Wm2": [round(float(x), 4) for x in zonal]},
     }, None
 
 
