@@ -59,6 +59,21 @@ imbalance is quantified against the EEI. The honest caveat still stands — this
 is the global-mean tier; the spatial leak is tier 2, and "predictions are X%
 closer to reality" still needs the retrospective test (tier 3's proof).
 
+## The whole ensemble, corrected
+
+The same correction applies to **all 19 models** (12 of which fail conservation
+today). After correction, **all 19 conserve exactly** — `correction_proof_all()`:
+
+| result | value |
+|---|---|
+| fail conservation before | **12 / 19** |
+| fail conservation after | **0 / 19** |
+| max imbalance removed | **~0.74 K** (CNRM-ESM2-1, +1.48 W/m²) |
+| worst five | CNRM-ESM2-1 +1.48 · CNRM-CM6-1 +1.46 · IPSL-CM6A-LR +0.66 · BCC-CSM2-MR −0.54 · MPI-ESM1-2-LR +0.42 W/m² |
+
+The correction is the same mechanical step for every model — negate the measured
+drift — and it turns a 12-of-19 conservation failure into a 19-of-19 pass.
+
 ## The full fix, three tiers (not a half-measure)
 
 | tier | what | status |

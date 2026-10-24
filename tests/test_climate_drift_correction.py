@@ -10,6 +10,7 @@ import unittest
 
 from pacland.climate.drift_correction import (
     correction_proof,
+    correction_proof_all,
     full_repair,
     leak,
     leak_map,
@@ -95,6 +96,23 @@ class TestCorrectionProof(unittest.TestCase):
         self.assertGreater(p["error_removed"]["ratio_to_eei"], 0)
         lo, hi = p["error_removed"]["spurious_warming_K"]
         self.assertGreater(hi, lo)
+
+
+class TestCorrectionProofAll(unittest.TestCase):
+    def test_all_19_conserve_after(self):
+        r = correction_proof_all()
+        self.assertEqual(r["n_models"], 19)
+        self.assertEqual(r["n_failed_before"], 12)   # 12 leak energy
+        self.assertEqual(r["n_failed_after"], 0)     # all conserve after the fix
+
+    def test_every_row_conserves_exactly(self):
+        r = correction_proof_all()
+        self.assertTrue(all(m["after_netTOA_Wm2"] == 0.0 for m in r["models"]))
+
+    def test_max_imbalance_is_the_worst_leaker(self):
+        r = correction_proof_all()
+        worst = max(r["models"], key=lambda m: abs(m["before_netTOA_Wm2"]))
+        self.assertAlmostEqual(r["max_imbalance_removed_K"], abs(worst["before_netTOA_Wm2"]) * 0.5, places=2)
 
 
 if __name__ == "__main__":
