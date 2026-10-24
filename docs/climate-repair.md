@@ -55,9 +55,9 @@ PYTHONPATH=src python3 -c "from pacland.climate.drift_correction import correcti
 
 Three independent confirmations that it works: (1) conservation is restored to
 zero by construction, (2) the gate verdict flips fail→pass, (3) the removed
-imbalance is quantified against the EEI. The honest caveat still stands — this
-is the global-mean tier; the spatial leak is tier 2, and "predictions are X%
-closer to reality" still needs the retrospective test (tier 3's proof).
+imbalance is quantified against the EEI. The honest caveat still stands: this
+is the global-mean tier, and "predictions are X% closer to reality" still needs
+the retrospective test.
 
 ## The whole ensemble, corrected
 
@@ -108,18 +108,19 @@ Three scenes, each titled with what to look for:
 
 Regenerate: `PYTHONPATH=src python3 scripts/climate_3d.py`.
 
-## The full fix, three tiers (not a half-measure)
+## The fix, honestly scoped (no phantom tiers)
 
-| tier | what | status |
+| step | what | status |
 |---|---|---|
-| **1 — global-mean** | subtract the mean leak so the ledger closes on average | done — built here |
-| **2 — zonal (spatial)** | subtract the leak's latitudinal pattern so it conserves at every latitude | wired — data from the mesh widening job (`scripts/climate_drift_widen.py`) |
-| **3 — coupling patch** | fix the non-conserving term in the model's own code | the builders' patch — `leak_map()` hands them the spatial spec |
+| **1 — global-mean correction** | subtract the mean leak so the ledger closes | **complete** — the leak is *global* (the net-TOA integral), so this is the whole conservation fix |
+| **2 — zonal self-check** | the zonal net-TOA, whose area-weighted integral equals the leak | done — 27 widened models; it *confirms* the leak, it is not a separate leak to correct |
 
-The honest boundary, now smaller and sharper: tier 3 is the only part that is
-genuinely the model-builders' work, and even that we don't just hand off — we
-hand them the *leak map* (which latitudes leak, by how much) and re-check their
-fix.
+The honest finding from the widening: the zonal net-TOA's pole-to-tropics swing
+(−125..+70 W/m²) is the model's **real radiative structure**, not a leak. The
+leak is the **area-weighted integral** of that structure (≈0.3–1.2 W/m²), which
+tier 1 already removes. So there is no separate "spatial leak" to correct — the
+next genuine step is **radiative tuning** (correcting the zonal structure against
+CERES observations) and the **coupling-patch spec** for the model-builders.
 
 ## Why this is the business
 

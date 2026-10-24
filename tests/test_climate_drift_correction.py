@@ -65,9 +65,9 @@ class TestPostFixPrediction(unittest.TestCase):
 
 
 class TestFullRepair(unittest.TestCase):
-    def test_full_repair_is_global_plus_zonal(self):
+    def test_full_repair_is_global(self):
         fr = full_repair("CNRM-ESM2-1")
-        self.assertIn("zonal", fr["full_fix"])
+        self.assertIn("global", fr["full_fix"])
         self.assertTrue(fr["conserves_after_fix"])
 
     def test_zonal_tier_reports_status(self):
@@ -76,11 +76,18 @@ class TestFullRepair(unittest.TestCase):
         self.assertTrue("model" in z or "status" in z)
 
     def test_leak_map_handles_missing_data(self):
-        lm = leak_map("CNRM-ESM2-1")
+        lm = leak_map("CESM2")
         if zonal_drift_available():
-            self.assertIn("max_leak_lat", lm)
+            self.assertIn("leak_Wm2", lm)
+            self.assertIn("zonal_netTOA_Wm2", lm)
         else:
             self.assertIsNone(lm)
+
+    def test_leak_is_the_global_integral_not_the_pole(self):
+        # the leak is the area-weighted integral (global), NOT the pole's radiative deficit
+        lm = leak_map("CESM2")
+        if lm:
+            self.assertLess(abs(lm["leak_Wm2"]), 2.0)   # ~0.7 W/m2, not -124 at the pole
 
 
 class TestCorrectionProof(unittest.TestCase):

@@ -98,30 +98,28 @@ def leak_map(model: str) -> dict:
     for m in d.get("models", []):
         if m.get("model") == model and m.get("zonal_drift_Wm2"):
             lat = m["zonal_drift_Wm2"]["lat"]
-            drift = m["zonal_drift_Wm2"]["drift_Wm2"]
-            i = max(range(len(drift)), key=lambda k: abs(drift[k]))
+            nettoa = m["zonal_drift_Wm2"]["drift_Wm2"]
             return {
                 "model": model,
-                "lat": lat,
-                "drift_Wm2": drift,
-                "max_leak_lat": lat[i],
-                "max_leak_Wm2": drift[i],
-                "source": "mesh widening job (raw piControl zarr)",
+                "leak_Wm2": m["netTOA_drift_Wm2"],   # the GLOBAL leak (area-weighted integral)
+                "zonal_netTOA_Wm2": {"lat": lat, "value": nettoa},  # radiative structure
+                "note": ("the zonal net-TOA is the model's radiative structure (pole deficit "
+                         "~-125 W/m2, tropics surplus); its area-weighted integral is the leak. "
+                         "The leak is GLOBAL, not spatial — the pole deficit is real, not a leak."),
+                "source": "raw piControl zarr (recomputed)",
             }
     return None
 
 
 def full_repair(model: str) -> dict:
-    """The FULL fix: global-mean correction (tier 1) + zonal correction (tier 2).
-
-    Tier 2 corrects the leak's latitudinal pattern, not just its mean, so the
-    corrected model conserves at every latitude. Tier 3 (patching the coupling
-    term in the model's own code) is the builders' job; ``leak_map()`` hands them
-    the spatial spec to do it.
+    """The fix, honestly scoped: the leak is GLOBAL (the net-TOA integral), so the
+    global-mean correction (tier 1) is the complete conservation fix. The zonal
+    data is a self-consistency check (its integral equals the global leak), not a
+    separate 'spatial leak' to correct.
     """
     r = repair(model)
     lm = leak_map(model)
-    r["full_fix"] = "global-mean correction + zonal (latitudinal) correction"
+    r["full_fix"] = "global-mean drift-correction (the leak is global, so this is complete)"
     r["zonal"] = lm if lm else {"status": "pending mesh widening job (scripts/climate_drift_widen.py)"}
     return r
 
@@ -354,10 +352,10 @@ def summary() -> str:
         "-" * 46,
         retrospective()["verdict"],
         "",
-        "FULL fix, three tiers:",
-        "  tier 1 = global-mean correction (done, here)",
-        "  tier 2 = zonal (latitudinal) correction (code wired, data from the mesh job)",
-        "  tier 3 = patch the coupling term in the model code (builders, spec via leak_map)",
+        "THE FIX, honestly scoped:",
+        "  tier 1 = global-mean drift-correction — COMPLETE (the leak is global, not spatial)",
+        "  the zonal data = a self-consistency check (its integral equals the leak), not a separate fix",
+        "  next = radiative tuning against CERES (a different, bigger task) + the coupling-patch spec",
     ])
 
 
