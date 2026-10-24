@@ -17,6 +17,7 @@ from pacland.climate.drift_correction import (
     post_fix_prediction,
     repair,
     repair_report,
+    retrospective,
     zonal_drift_available,
 )
 
@@ -113,6 +114,18 @@ class TestCorrectionProofAll(unittest.TestCase):
         r = correction_proof_all()
         worst = max(r["models"], key=lambda m: abs(m["before_netTOA_Wm2"]))
         self.assertAlmostEqual(r["max_imbalance_removed_K"], abs(worst["before_netTOA_Wm2"]) * 0.5, places=2)
+
+
+class TestRetrospective(unittest.TestCase):
+    def test_correction_lands_inside_observed_range(self):
+        self.assertTrue(retrospective()["ecs_corrected_in_range"])
+
+    def test_naive_ensemble_is_hot_biased(self):
+        self.assertGreater(retrospective()["ecs_naive_bias_K"], 0.5)
+
+    def test_correction_reduces_ecs_bias(self):
+        r = retrospective()
+        self.assertLess(abs(r["ecs_corrected_bias_K"]), abs(r["ecs_naive_bias_K"]))
 
 
 if __name__ == "__main__":

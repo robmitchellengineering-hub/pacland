@@ -214,6 +214,45 @@ def correction_proof_all() -> dict:
     }
 
 
+def retrospective() -> dict:
+    """Retrospective test: does the correction bring the ensemble into agreement
+    with the observational record?
+
+    Anchors: ECS (Sherwood et al. 2020, the IPCC AR6 basis: 66% range 2.6-3.9 K,
+    best 3.0 K) and the EEI (Loeb et al. 2021: 0.77 W/m2). Attribution is stated,
+    not hidden: the sensitivity+forcing gates remove the hot-model bias, and the
+    drift-correction keeps conservation from wrongly collapsing the answer.
+    """
+    e = ecs_estimates()
+    naive = e["widened_naive"]["mean_K"]
+    gated = e["sens_forc_gated"]["mean_K"]
+    strict = e["trust_gated"]["mean_K"]
+    obs_best, obs_lo, obs_hi = 3.0, 2.6, 3.9
+    obs_eei = 0.77
+    d = _load()
+    worst = max(abs(m["netTOA_J_per_yr"]) for m in d["models"]) / (SEC * AREA)
+    return {
+        "ecs_observed": {"best_K": obs_best, "range_K": (obs_lo, obs_hi)},
+        "ecs_naive_K": round(naive, 2),
+        "ecs_naive_bias_K": round(naive - obs_best, 2),
+        "ecs_sens_forc_gated_K": round(gated, 2),
+        "ecs_corrected_bias_K": round(gated - obs_best, 2),
+        "ecs_strict_3axis_K": round(strict, 2),
+        "ecs_corrected_in_range": obs_lo <= gated <= obs_hi,
+        "eei_observed_Wm2": obs_eei,
+        "worst_leak_Wm2": round(worst, 3),
+        "worst_leak_ratio_to_eei": round(worst / obs_eei, 2),
+        "verdict": (
+            f"Naive ensemble ECS {naive:.2f} K is {naive - obs_best:+.2f} K above the "
+            f"observed best ({obs_best} K, Sherwood {obs_lo}-{obs_hi} K). The "
+            f"sensitivity+forcing gates land at {gated:.2f} K ({gated - obs_best:+.2f} K "
+            f"bias), inside the observed range; the raw conservation gate over-collapses "
+            f"to {strict:.2f} K, and the drift-correction restores the {gated:.2f} K answer "
+            f"by fixing the leak instead of dropping the models."
+        ),
+    }
+
+
 def post_fix_prediction() -> dict:
     """After drift-correction the conservation gate passes for every model, so the
     strict three-axis gate reduces to sensitivity + forcing — the widened answer."""
@@ -252,6 +291,10 @@ def summary() -> str:
         cp["verdict"],
         "",
         pf["verdict"],
+        "",
+        "RETROSPECTIVE — against the observational record",
+        "-" * 46,
+        retrospective()["verdict"],
         "",
         "FULL fix, three tiers:",
         "  tier 1 = global-mean correction (done, here)",
