@@ -56,33 +56,27 @@ def catalog_paths():
 
 
 def global_mean_series(url):
-    ds = xr.open_zarr(url, consolidated=True, decode_times=False, chunks={"time": CHUNK}, storage_options=_STORAGE)
-    v = next(iter(ds.data_vars.values()))
+    # Fetch the first 50 years in ONE slice (no re-chunk): matches the stored
+    # chunks, so dask reads each chunk once instead of re-reading full chunks.
+    ds = xr.open_zarr(url, consolidated=True, decode_times=False, storage_options=_STORAGE)
+    v = next(iter(ds.data_vars.values())).isel(time=slice(0, _months()))
     lat = np.asarray(ds["lat"].values, dtype=float)
     w = np.cos(np.deg2rad(lat))
     w = w / w.sum()
     wda = xr.DataArray(w, dims="lat")
-    parts = []
-    for t0 in range(0, min(v.shape[0], _months()), CHUNK):
-        slab = v.isel(time=slice(t0, t0 + CHUNK))
-        parts.append(np.asarray((slab * wda).sum(dim="lat").mean(dim="lon").compute().values))
-    return np.concatenate(parts)
+    return np.asarray((v * wda).sum(dim="lat").mean(dim="lon").compute().values)
 
 
 def zonal_mean_series(url):
     """Time-mean zonal-mean flux -> (lat, flux): the SPATIAL pattern of the drift."""
-    ds = xr.open_zarr(url, consolidated=True, decode_times=False, chunks={"time": CHUNK}, storage_options=_STORAGE)
-    v = next(iter(ds.data_vars.values()))
+    ds = xr.open_zarr(url, consolidated=True, decode_times=False, storage_options=_STORAGE)
+    v = next(iter(ds.data_vars.values())).isel(time=slice(0, _months()))
     lat = np.asarray(ds["lat"].values, dtype=float)
     w = np.cos(np.deg2rad(lat))
     w = w / w.sum()
     wda = xr.DataArray(w, dims="lat")
-    parts = []
-    for t0 in range(0, min(v.shape[0], _months()), CHUNK):
-        slab = v.isel(time=slice(t0, t0 + CHUNK))
-        parts.append(np.asarray((slab * wda).mean(dim="lon").compute().values))
-    zonal = np.concatenate(parts, axis=0)   # (time, lat)
-    return lat, zonal.mean(axis=0)          # (lat,)
+    zonal = np.asarray((v * wda).mean(dim="lon").compute().values)  # (time, lat)
+    return lat, zonal.mean(axis=0)                                   # (lat,)
 
 
 def drift_of(model, paths):
