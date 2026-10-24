@@ -47,8 +47,9 @@ class TestTrustBoard(unittest.TestCase):
         fams = {re.split(r"\d", m)[0].rstrip("-") for m in trusted()}
         self.assertGreaterEqual(len(fams), 4)
 
-    def test_summary_flags_the_caveat(self):
-        self.assertIn("RAW second-source", summary())
+    def test_summary_flags_the_validation(self):
+        self.assertIn("VALIDATION", summary())
+        self.assertIn("energy-only", summary())
 
 
 if __name__ == "__main__":
