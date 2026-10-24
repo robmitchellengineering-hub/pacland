@@ -109,6 +109,9 @@ def build() -> str:
 {drift_rows}
 </tbody></table>
 
+<h2>The Climate Constraint-First Theorem</h2>
+<div class="callout"><p><strong>Conservation is the only exact content.</strong> A model must close three ledgers — energy (First Law), mass (continuity), salt — and a model that does not is <em>broken</em>, not "approximately wrong". ECS spans {rx['ecs_naive_K']:.2f}–5.64 K across the ensemble (a range, not a value), and the 2100 projection has m = 0. So the verification layer gates on the exact thing (conservation) and brackets the non-exact thing (ECS) — exactly as physics gates on the tadpole and brackets W₀.</p></div>
+
 <h2>The retrospective — what the correction does and does not do</h2>
 <div class="callout"><p>{rx['verdict']}</p></div>
 <p class="muted">Separately: the drift-correction restores <strong>conservation</strong> (the First Law); the <strong>trust gate</strong> (sensitivity + forcing) fixes the hot-model temperature bias. Two different tools, now both measured.</p>
