@@ -4,6 +4,8 @@
 
 **Status:** draft for publication (Zenodo, CC BY 4.0, as the physics paper is).
 
+**TODO (Rob):** create the Zenodo token (https://zenodo.org/account/settings/applications/tokens/new/, scopes `deposit:write` + `deposit:actions`) and save it to `~/.zenodo_token` — then submit `paper/climate-constraint-first.pdf` for the DOI.
+
 ---
 
 ## Abstract
