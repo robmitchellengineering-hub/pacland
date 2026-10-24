@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from pacland.climate import trust_board
 from pacland.climate.deficit import climate_deficit_report
 from pacland.climate.drift_correction import (
+    conservation_deficit,
     correction_proof,
     correction_proof_all,
     repair_report,
@@ -39,6 +40,7 @@ def build() -> str:
     cpa = correction_proof_all()
     rx = retrospective()
     cp = correction_proof("HadGEM3-GC31-LL")
+    cd = conservation_deficit()
     tb = trust_board.board()
     trusted = [m for m in tb if len(m["axes_failed"]) == 0 and m["axes_available"] == 3]
     n_trusted = len(trusted)
@@ -91,8 +93,8 @@ def build() -> str:
 
 <h2>Headlines</h2>
 <div class="grid">
-  <div class="card"><h3>Verification deficit</h3><div class="big">m = {hist.n_validation} → {round(hist.radius*100)}% · m = {proj.n_validation}</div>
-    <p>Only {hist.n_validation} historical observables are measured + computable + validated; the 2100 projection has m = {proj.n_validation} — extrapolation, not verification.</p></div>
+  <div class="card"><h3>Verification deficit</h3><div class="big">m = {cd['m_total']} → {round(hist.radius*100)}% · m = {proj.n_validation}</div>
+    <p>{cd['m_observables']} empirical observables (GMST, EEI, OHC, GMSL) + {cd['m_constraints']} exact conservation ledgers = {cd['m_total']}; the 2100 projection has m = {proj.n_validation}. Ceiling: {cd['ceiling']}</p></div>
   <div class="card"><h3>Conservation leak</h3><div class="big">{rp['n_leaking']} / {rp['n_models']} leak</div>
     <p>{rp['n_leaking']} models leak energy/mass/salt in their control run — localized to the atmosphere–ocean coupling, not the ocean.</p></div>
   <div class="card"><h3>The fix</h3><div class="big">{cpa['n_failed_before']} → {cpa['n_failed_after']} fail</div>
@@ -119,7 +121,7 @@ def build() -> str:
 <h2>The trust gate</h2>
 <p>{n_trusted} of {len(tb)} models pass all three axes (conservation + sensitivity + forcing). Interactive: <a href="PACLAND-climate-3d.html">the 3D graphs</a>.</p>
 
-<p class="muted">Full findings: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-repair.md">climate-repair.md</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">CMIP6 drift</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">explainer (PDF)</a>. Reproduce: <code>pacland climate</code> · <code>python3 scripts/make_site.py</code>.</p>
+<p class="muted">Full findings: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-paper.md">the paper (draft)</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-repair.md">climate-repair.md</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-constraint-first.md">constraint-first</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">CMIP6 drift</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">explainer (PDF)</a>. Reproduce: <code>pacland climate</code> · <code>python3 scripts/make_site.py</code>.</p>
 
 </div></main>
 <footer>PACLAND · a verification discipline · generated live from <code>pacland.climate</code></footer>
