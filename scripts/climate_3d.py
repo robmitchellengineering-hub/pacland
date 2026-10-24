@@ -32,6 +32,15 @@ def _trust_rows():
     return trust_board.board()
 
 
+def _energy_drift():
+    """Energy drift for every model with data: Irving (19) + widened (27)."""
+    out = {m: _drift_rows()[m]["energy_Wm2"] for m in _drift_rows()}
+    z = json.load(open("data/climate/zonal_drift.json"))
+    for m in z.get("models", []):
+        out.setdefault(m["model"], m["netTOA_drift_Wm2"])
+    return out
+
+
 def leak_cube(fig, row, col):
     dr = _drift_rows()
     xs = [dr[m]["energy_Wm2"] for m in dr]
@@ -58,10 +67,10 @@ def leak_cube(fig, row, col):
 
 def trust_gate(fig, row, col):
     tb = _trust_rows()
-    dr = _drift_rows()
+    ed = _energy_drift()
     xs = [m["ecs_K"] for m in tb]
     ys = [m["erf2x_Wm2"] for m in tb]
-    zs = [dr[m["model"]]["energy_Wm2"] if m["model"] in dr else 0.0 for m in tb]
+    zs = [ed.get(m["model"], 0.0) for m in tb]
     trusted = [len(m["axes_failed"]) == 0 and m["axes_available"] == 3 for m in tb]
     colr = ["#f28e2b" if t else "#76b7b2" for t in trusted]
     for c, name in (("#f28e2b", "trusted (all 3 axes)"), ("#76b7b2", "fails ≥1 axis")):
