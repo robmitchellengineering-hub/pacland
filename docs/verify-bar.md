@@ -98,6 +98,23 @@ shortcut rather than certifying it.
 
 Climate now owes **one** slot per model: `falsifiable_prediction`. GISS-E2-1-G is at 8 of 9.
 
+### The rank, measured (`climate/constraint_set.py`)
+
+Economics answers "how many constraints are independent?" with a Jacobian rank. Climate now
+answers it too, and the answer is the one economics found in itself:
+
+| | |
+|---|---|
+| written down | **19** |
+| state constraints | **14** (5 invariants + 6 guards + 3 calibration bands) |
+| process constraints (excluded by kind) | **5** — "data ≤ y₀", "CO₂ extrapolated", "target outside the window", "units °C", "emulator ≠ model" |
+| **independent state rank** | **9 of 14** |
+| redundant | **5** — the guards restating the invariants |
+
+The five duplicates are not waste: a guard is what *fails loudly* on a model, an invariant is
+what the physics *says*. But they are not independent, and a count that treated eleven physics
+statements as eleven constraints would be inflating the number by five.
+
 The bar also reproduces the trust board's own distinction without being told it: GISS-E2-1-G
 claims the conservation Rule of Three, MPI-ESM1-2-HR **cannot** (it leaks a ledger), and
 UKESM1-0-LL claims only the two things true of it.
