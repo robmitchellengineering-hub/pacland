@@ -295,6 +295,45 @@ rate) joined to a closed set of accounts, so the set is consistent at a point th
 picked. `guard_default_state_is_admissible` fails if a constraint and a model ever drift
 apart.
 
+### The estimation (slice 10): what the data will and will not identify
+
+Rob funded the estimation the roster's last two SW slots need. It ran, and its answer is a
+**refusal, twice over** — which is the useful kind of answer.
+
+**What the data identifies: the policy rule.** A linear regression of the federal funds
+rate on inflation and the trend gap, on 338 real-time observations from the vintage paths:
+
+```
+static   i = +3.444 +0.461*pi -0.449*x     SEs 0.061 / 0.067 · R² 0.287
+smoothed i = rho 0.900, long-run phi_pi 0.985, long-run phi_y 1.365 · R² 0.796
+```
+
+The fitted rule is **passive** — `φπ = 0.46` static, long-run `0.99` once smoothing is
+included — where SW's *structural* estimate is `φπ = 2.04`. That gap is not a mistake in
+either: the regression has no expectations, a crude trend gap, and smoothing the model does
+not carry (which biases `φπ` down hard — the classic result). It is exactly why
+structural estimation exists. The estimator is validated on synthetic data with a known
+rule before its real-data numbers are believed.
+
+**What the data does not identify: the Phillips slope.** Running the moment-matching
+estimator on the model's own simulated data at a known `κ = 0.18` recovers **1.00** — a
+bound. The four-parameter fit is rank-deficient (3 of 4). With two shocks and their
+variances free, `κ` mostly rescales responses that the variances absorb. This is the
+classic weak-identification problem in the NKPC, reproduced on our own machinery rather
+than cited — and it means no `κ` estimated from this sample would mean anything.
+
+**What the constraint set does with the fitted rule: refuses it.** A passive rule admits
+sunspots, so `taylor_principle` fails and `estimate.estimated_calibration()` raises
+`InadmissibleFit` instead of handing out a forecast. The eight independent constraints are
+now doing real work: they are the reason an unusable fit cannot be laundered into an
+out-of-sample table.
+
+**So SW's last two slots stay open, and the reason is now measured.** Not "we ran out of
+time": the sample cannot identify the slope, and the identifiable part (the rule) violates
+the discipline's own constraint. Taking the slots would require a full-information
+estimation of the 20-condition model — the project this slice has now scoped and priced
+rather than guessed.
+
 ## 5. The one hard precondition: real-time vintages — **met**
 
 - **Current-vintage data is keyless.** All seven Smets–Wouters observables pull from

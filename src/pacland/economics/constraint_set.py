@@ -74,7 +74,7 @@ def _s(**kw) -> dict:
     return base
 
 
-def _default_state() -> dict:
+def _default_state(**overrides) -> dict:
     """A state that satisfies every constraint **by construction** — the model's own
     steady state joined to a closed set of accounts.
 
@@ -91,12 +91,15 @@ def _default_state() -> dict:
     i_over_y = delta * k_over_y
     g_over_y = 0.18
     return _s(
-        beta=beta, kappa=kappa, pi=pi,
+        beta=beta if "beta" not in overrides else overrides["beta"],
+        kappa=kappa if "kappa" not in overrides else overrides["kappa"],
+        pi=pi,
         r_star=nk3.R_STAR, i=nk3.R_STAR + pi,
-        x=nk3.lrpc_slope(beta, kappa) * pi,
+        x=nk3.lrpc_slope(overrides.get("beta", beta), overrides.get("kappa", kappa)) * pi,
         mc=mc, alpha=alpha, delta=delta, rental=rental,
         k_over_y=k_over_y, i_over_y=i_over_y, g_over_y=g_over_y,
         c_over_y=1.0 - i_over_y - g_over_y,
+        **{k: v for k, v in overrides.items() if k not in ("beta", "kappa")},
     )
 
 
