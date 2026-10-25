@@ -378,6 +378,40 @@ estimate, so this measures a good reconstruction — not a year-ahead forecast.
 **1.36** at 5%. However well the model does, a single series cannot certify anything
 narrowly — the deficit is a property of the observable set, not of the model's skill.
 
+### GDPNow's exact half — the national accounts (slice 12)
+
+The last slot GDPNow owed was `exact_structure`. It is an **accounting bridge**: monthly
+source data are mapped onto the expenditure components, and the components are added up.
+So its exact content is the national-accounts identity, and its specification is the
+bridge. Both are now named, and the first is proved on 32 quarters of real BEA data
+(2018Q1–2025Q4, `src/pacland/economics/national_accounts.py`):
+
+| condition | status | measured |
+|---|---|---|
+| `GDP = C + I + G + NX` | **proved** | max residual 0.038 bn = **1.2 × 10⁻⁴ % of GDP** |
+| nominal contributions sum to nominal growth | **proved** | worst gap **2.7 × 10⁻⁴ pp** |
+| nominal shares sum to 1 | **proved** | worst gap **1.8 × 10⁻⁶** |
+| the **real** decomposition closes | **specification** | chain-link residual mean **−1.77 pp**, max **24.9 pp** |
+| the bridge equations | **specification** | the Atlanta Fed's engineering, not re-derived |
+| BEA's chained aggregation | **specification** | the source of the leak above |
+
+**Tolerances are publication rounding, not floating point.** BEA publishes components to
+0.001 bn, so the identity closes to ~10⁻⁴ of a percentage point — a thousand times smaller
+than any economic effect. Demanding 10⁻¹² would have been a claim about BEA's rounding,
+not about the accounts, and the guards say which gap they measured.
+
+**The real side does not close, and that is the finding.** Chained-dollar components are
+not additive — real GDP is a chain aggregate — so summing real component changes divided
+by real GDP leaves a residual that averages −1.8 pp and reaches **−24.9 pp** in 2020.
+Excluding 2020 it still averages −2.2 pp with a 5.2 pp worst case. That residual is the
+*measured deficit* of the real decomposition; no arithmetic removes it, and a page that
+presented `GDP = C + I + G + NX` as exact for *real* GDP would be wrong.
+
+**Board effect: GDPNow is the first model from outside this repo to go `clean`** — all nine
+slots, outcome `beats_null` (0.25x MAE on the advance estimate, 0.31x on the revised
+value). Two of six roster rows now pass the bar on their own merits; three are clean
+overall.
+
 ## 5. The one hard precondition: real-time vintages — **met**
 
 - **Current-vintage data is keyless.** All seven Smets–Wouters observables pull from
