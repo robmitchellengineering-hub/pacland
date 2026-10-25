@@ -1,0 +1,1409 @@
+{
+ "commands": [
+  {
+   "summary": "the verification deficit (unchanged default)",
+   "title": "pacland economics"
+  },
+  {
+   "summary": "the roster, scored, with what each row owes",
+   "title": "pacland economics --models"
+  },
+  {
+   "summary": "the constraint set and its measured independent rank",
+   "title": "pacland economics --constraints"
+  },
+  {
+   "summary": "every model against its null, on published data",
+   "title": "pacland economics --realtime"
+  },
+  {
+   "summary": "the climate verification deficit",
+   "title": "pacland climate"
+  },
+  {
+   "summary": "the trust board \u2014 every artifact, ranked",
+   "title": "pacland trust"
+  },
+  {
+   "summary": "the discipline registry",
+   "title": "pacland disciplines"
+  }
+ ],
+ "generated_from": "scripts/build_site_index.py",
+ "items": [
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MITCHELLS-LAWS.md",
+   "kind": "doc",
+   "path": "docs/MITCHELLS-LAWS.md",
+   "summary": "The duality covariance table of the flux landscape: five laws specifying how the observables of a flux vacuum transform under the duality group Sp(b\u2083,\u2124) \u00d7 SL(2,\u2124) and under flux rescaling\u2026",
+   "title": "MITCHELL'S LAWS OF DUALITY COVARIANCE"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOLVING-STRING-THEORY.md",
+   "kind": "doc",
+   "path": "docs/SOLVING-STRING-THEORY.md",
+   "summary": "This is the founding specification. docs/unification-claim.md states the claim; docs/MITCHELLS-LAWS.md records the laws that hold; this document states what \"solved\" means, what the objects\u2026",
+   "title": "Solving string theory \u2014 the programme, specified"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOP-FIGURING-SYSTEMS-OUT.md",
+   "kind": "doc",
+   "path": "docs/SOP-FIGURING-SYSTEMS-OUT.md",
+   "summary": "A worked method, written down after applying it to macro-finance for nine merged slices ([the roster](economics-model-roster.md)). It is the generalisation, not the case study: the case\u2026",
+   "title": "SOP \u2014 figuring a complex system out"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/UNIFICATION-METHOD-v2.md",
+   "kind": "doc",
+   "path": "docs/UNIFICATION-METHOD-v2.md",
+   "summary": "correction. This supersedes the G1\u2013G5 gap list in SOLVING-STRING-THEORY.md; the three-object table and the standards there still bind. unification-claim.md (C1\u2013C4) and\u2026",
+   "title": "UNIFICATION METHOD v2 \u2014 the method that works"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/UNIFICATION-STATUS.md",
+   "kind": "doc",
+   "path": "docs/UNIFICATION-STATUS.md",
+   "summary": "One document: everything proven, everything measured, and the sharper picture they form. Status is tiered \u2014 proven (symbolic, machine-checked) vs measured (node, with a control) vs asserted\u2026",
+   "title": "UNIFICATION \u2014 where we are, and the path (2026-10-23)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/adversarial-review.md",
+   "kind": "doc",
+   "path": "docs/adversarial-review.md",
+   "summary": "Six agents were told to attack six pieces of the constraint-first result before publication. They found two fatal flaws, three serious, one held. This is the Rule of Three at the level of\u2026",
+   "title": "Adversarial review \u2014 the verification system broke its own result"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ai-verified-badge.md",
+   "kind": "doc",
+   "path": "docs/ai-verified-badge.md",
+   "summary": "The ai discipline is the verified-badge lane: the Valiant Verification SDK applied to software, models, and AI systems. It is the same discipline the other fields use \u2014 guards, mutation\u2026",
+   "title": "The verified badge \u2014 the AI discipline (Valiant Verification)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/architecture.md",
+   "kind": "doc",
+   "path": "docs/architecture.md",
+   "summary": "Each layer is independently buildable; they are ordered so that the verification core (L3) is pure and testable without the physics-heavy oracle being complete first.",
+   "title": "Architecture \u2014 six layers"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/arxiv-submission.md",
+   "kind": "doc",
+   "path": "docs/arxiv-submission.md",
+   "summary": "Five technical papers plus one flagship synthesis are ready. This is everything arXiv needs, so the only remaining steps are things only Rob can do (create/own the account, receive the\u2026",
+   "title": "arXiv submission package \u2014 turn-key"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/autonomous-climb.md",
+   "kind": "doc",
+   "path": "docs/autonomous-climb.md",
+   "summary": "mesh, and reports the Mitchell Verification Deficit as it closes.",
+   "title": "The autonomous deficit climber \u2014 \"run it and it hones in\""
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/boundary-map.md",
+   "kind": "doc",
+   "path": "docs/boundary-map.md",
+   "summary": "The thing we actually want \u2014 pin down the compactification \u2014 is, in several distinct senses, uncomputable. The mistake is to treat \"uncomputable\" as one wall. It is four different walls\u2026",
+   "title": "Computing the uncomputable \u2014 a cartography of the boundary"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/cc-distribution.md",
+   "kind": "doc",
+   "path": "docs/cc-distribution.md",
+   "summary": "flight). Read tier labels \u2014 proven / measured / conjectured \u2014 and never read one into another.",
+   "title": "The cosmological-constant distribution \u2014 flux vs uplift"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-ace-reference-fidelity.md",
+   "kind": "doc",
+   "path": "docs/climate-ace-reference-fidelity.md",
+   "summary": "ACE (AI2 Climate Emulator, [arXiv:2310.02074](https://arxiv.org/abs/2310.02074)) is a 200M-parameter, autoregressive ML emulator of a 100-km global atmospheric model (FV3GFS). Its headline\u2026",
+   "title": "The ACE worked example \u2014 reference-fidelity is not reality-fidelity"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-ace-report.md",
+   "kind": "doc",
+   "path": "docs/climate-ace-report.md",
+   "summary": "report the gap analysis flagged as the sharpest single finding (docs/climate-gap-analysis.md \u00a76, target 2).",
+   "title": "The ACE worked example \u2014 reference-fidelity is not reality-fidelity"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md",
+   "kind": "doc",
+   "path": "docs/climate-cmip6-drift.md",
+   "summary": "of the climate discipline's first real-data guard run.",
+   "title": "The CMIP6 conservation deficit \u2014 a three-ledger machine-checked guard"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-drift-second-source.md",
+   "kind": "doc",
+   "path": "docs/climate-drift-second-source.md",
+   "summary": "survives an independent recomputation from raw CMIP6 piControl model output.",
+   "title": "The CMIP6 drift, recomputed from raw model output \u2014 a second independent source"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-ecs-model.md",
+   "kind": "doc",
+   "path": "docs/climate-ecs-model.md",
+   "summary": "model that works\": not a certified future (impossible), but the best possible ECS estimate built from the reliable content only.",
+   "title": "Best-prediction ECS \u2014 the trust-gated, conservation-gated estimate (widened)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-gap-analysis.md",
+   "kind": "doc",
+   "path": "docs/climate-gap-analysis.md",
+   "summary": "results section fills in as agents return (2026-10-22).",
+   "title": "Climate gap analysis \u2014 does (\u03b5,\u03b4) certification exist in Earth-system modelling?"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-observables.md",
+   "kind": "doc",
+   "path": "docs/climate-observables.md",
+   "summary": "The pacland deficit needs a finite observable measure D: the list of quantities that define \"close to reality.\" For string theory it was the Standard Model's ~19 free parameters; for\u2026",
+   "title": "Climate observable measure \u2014 the candidate `D` for the deficit"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-reference-model.md",
+   "kind": "doc",
+   "path": "docs/climate-reference-model.md",
+   "summary": "The three gates are conservation (energy + mass + salt), sensitivity (ECS inside 2.5\u20134.0 K), and forcing (ERF2x inside 3.3\u20134.1 W/m\u00b2). Only GISS-E2-1-G \u2014 and its variant GISS-E2-1-G-CC\u2026",
+   "title": "The verified reference model \u2014 GISS-E2-1-G"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-trust-board.md",
+   "kind": "doc",
+   "path": "docs/climate-trust-board.md",
+   "summary": "asset of \"the model that works\": a per-model trust score the sector can apply to any quantity (ECS today; 2100 warming and sea level next).",
+   "title": "PACLAND climate trust board \u2014 every CMIP6 model, scored"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md",
+   "kind": "doc",
+   "path": "docs/climate-verification-deficit.md",
+   "summary": "(3 tests, green). The reusable pacland machinery (certificate.py, deficit.py) is imported unchanged; this file records the climate result and its honest limits.",
+   "title": "Climate verification deficit \u2014 the first climate report (playbook item #1)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/colibri-evaluation.md",
+   "kind": "doc",
+   "path": "docs/colibri-evaluation.md",
+   "summary": "Rob's idea (2026-10-20): use [Colibri](https://github.com/JustVugg/colibri) to run the research LLMs on a machine we own, removing the graphics-card cost \u2014 and develop it further (RAID0\u2026",
+   "title": "Colibri evaluation \u2014 run frontier LLMs locally on RAM + NVMe (no GPU)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/complete-exact-structure.md",
+   "kind": "doc",
+   "path": "docs/complete-exact-structure.md",
+   "summary": "This assembles the four proven theorems into a single statement about what a theory of everything can possibly say exactly, and what it provably cannot.",
+   "title": "Complete Exact Structure Theorem \u2014 the ToE's exact content is constraints + topology"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/compute-plan.md",
+   "kind": "doc",
+   "path": "docs/compute-plan.md",
+   "summary": "What hardware the PACLAND work actually needs, what it costs, and the turn-key cloud-GPU rental that unblocks the \"bigger machine\" (h12=25\u2192272 flux-vacua sampling) today. Companion script\u2026",
+   "title": "Compute plan \u2014 the dream machine, and the GPU rental for now"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/constraint-first-conjecture.md",
+   "kind": "doc",
+   "path": "docs/constraint-first-conjecture.md",
+   "summary": "This is the theoretical statement behind the measured structure map (docs/structure-map.md, paper/structure-map.pdf). It turns a measurement into a claim the field can break, which is what\u2026",
+   "title": "The constraint-first conjecture \u2014 what PACLAND claims, and how to refute it"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/constraint-first-theorem.md",
+   "kind": "doc",
+   "path": "docs/constraint-first-theorem.md",
+   "summary": "Mitchell's Uniqueness Theorem only begins. It verifies, symbolically and exactly (5/5 degrees), that the D3 tadpole generates the entire ring of symplectic invariants of the flux pair.",
+   "title": "Constraint-First Theorem \u2014 the tadpole is the ONLY exact structure"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/constraint-learnability.md",
+   "kind": "doc",
+   "path": "docs/constraint-learnability.md",
+   "summary": "The first build of the new approach (docs/new-approach.md \u00a7\"The first build\") was a non-linear structure miner whose fork was: either some observable carries the flux's information (a\u2026",
+   "title": "The constraint/observable split \u2014 the structure miner's answer"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/darboux-connection.md",
+   "kind": "doc",
+   "path": "docs/darboux-connection.md",
+   "summary": "Two different theorems force the same sentence. This is a strengthening, not a duplication.",
+   "title": "Darboux's theorem and the constraint-first result \u2014 two foundations, one conclusion"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/denef-douglas-test.md",
+   "kind": "doc",
+   "path": "docs/denef-douglas-test.md",
+   "summary": "The negative result (W\u2080 uniform \u2192 not evolvable) rests on Denef\u2013Douglas, which says flux vacua have W\u2080 uniform in the complex plane, hence |W\u2080|\u00b2 uniform, hence a linear empirical CDF. This\u2026",
+   "title": "Testing Denef\u2013Douglas uniformity \u2014 first empirical pass"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/deployment.md",
+   "kind": "doc",
+   "path": "docs/deployment.md",
+   "summary": "Live surfaces (both serving web/index.html, the same static demo):",
+   "title": "Deployment \u2014 where PACLAND lives"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-gap-analysis.md",
+   "kind": "doc",
+   "path": "docs/drugs-gap-analysis.md",
+   "summary": "The same 5-angle method that produced docs/climate-gap-analysis.md.",
+   "title": "Drug-discovery gap analysis \u2014 does (\u03b5,\u03b4) certification exist in computational chemistry?"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-verification-deficit.md",
+   "kind": "doc",
+   "path": "docs/drugs-verification-deficit.md",
+   "summary": "(11 tests, green). The reusable pacland machinery (certificate.py, deficit.py) is imported unchanged; this file records the drug result and its honest limits.",
+   "title": "Drug-discovery verification deficit \u2014 discipline #2 (playbook item #2)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ds-conjecture-test.md",
+   "kind": "doc",
+   "path": "docs/ds-conjecture-test.md",
+   "summary": "The de Sitter conjecture forbids stable de Sitter vacua (V > 0 with positive-definite Hessian) in quantum gravity. Its refined form (Garg\u2013Krishnan / Ooguri\u2013Palti\u2013Shiu\u2013Vafa) replaces \"no dS\"\u2026",
+   "title": "De Sitter conjecture test \u2014 first falsification benchmark"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-accounting-closure.md",
+   "kind": "doc",
+   "path": "docs/economics-accounting-closure.md",
+   "summary": "The economics Rule of Three, run on actual US national-accounts data the way docs/climate-cmip6-drift.md ran climate's three conservation ledgers on CMIP6.",
+   "title": "Economics accounting closure \u2014 the real-data run (recipe step 6)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-gap-analysis.md",
+   "kind": "doc",
+   "path": "docs/economics-gap-analysis.md",
+   "summary": "The same 5-angle method that produced docs/climate-gap-analysis.md and docs/drugs-gap-analysis.md.",
+   "title": "Economics gap analysis \u2014 does (\u03b5,\u03b4) certification exist in macroeconomics?"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-model-roster.md",
+   "kind": "doc",
+   "path": "docs/economics-model-roster.md",
+   "summary": "Method: [SOP \u2014 figuring a complex system out](SOP-FIGURING-SYSTEMS-OUT.md). This page is that method's worked example.",
+   "title": "The physics-level bar for a macro-finance model \u2014 and the roster"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-verification-deficit.md",
+   "kind": "doc",
+   "path": "docs/economics-verification-deficit.md",
+   "summary": "(13 tests, green). The reusable pacland machinery (certificate.py, deficit.py) is imported unchanged; this file records the economics result and its honest limits.",
+   "title": "Economics verification deficit \u2014 discipline #3 (playbook item #3)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/educability.md",
+   "kind": "doc",
+   "path": "docs/educability.md",
+   "summary": "This formalizes the meta-loop: how verified knowledge accumulates and transfers across generations \u2014 and across sources \u2014 without redoing the search that produced it. It is the PACLAND\u2026",
+   "title": "L5 formalization \u2014 educability as verified knowledge transfer"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/encoding.md",
+   "kind": "doc",
+   "path": "docs/encoding.md",
+   "summary": "A concrete, honest encoding for a starting subclass, not the whole landscape. The principle: get one small, well-defined genotype in hand before generalizing.",
+   "title": "Encoding \u2014 the genotype (L1)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/evolvability.md",
+   "kind": "doc",
+   "path": "docs/evolvability.md",
+   "summary": "This formalizes the search layer. It maps Valiant's evolvability model onto the L1 genotype and the L3 certificate, and states the one theorem that governs whether L4 can work at all.",
+   "title": "L4 formalization \u2014 evolvability over the landscape"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/expansion-map.md",
+   "kind": "doc",
+   "path": "docs/expansion-map.md",
+   "summary": "Catch-up question: \"what other areas of science can we apply this method to, where it will be of most benefit to the world?\"",
+   "title": "PACLAND expansion map \u2014 where the method applies next"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/falsifiable-predictions.md",
+   "kind": "doc",
+   "path": "docs/falsifiable-predictions.md",
+   "summary": "A verification discipline earns its keep by predicting something checkable, not just by certifying what is already known. This doc lists the claims PACLAND makes that a future measurement\u2026",
+   "title": "Falsifiable predictions \u2014 what PACLAND claims that can be checked"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/falsification-status.md",
+   "kind": "doc",
+   "path": "docs/falsification-status.md",
+   "summary": "Principle, what has been actively checked versus what remains open.",
+   "title": "Falsification status \u2014 what is checked, and the two honest gaps"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/five-pillars.md",
+   "kind": "doc",
+   "path": "docs/five-pillars.md",
+   "summary": "The fan-out asked: what other theorems (like Darboux) independently strengthen the constraint-first result? Six domains answered. Together they turn \"constraint-first\" from one theorem +\u2026",
+   "title": "The Five Pillars \u2014 the complete scaffolding of constraint-first"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/grounding.md",
+   "kind": "doc",
+   "path": "docs/grounding.md",
+   "summary": "The question: how do we know we are measuring the right things? The honest answer is that only part of the string-theory verification kit transfers. The rest was built for one physics\u2026",
+   "title": "The grounding \u2014 what transfers to every discipline, and what was physics-specific"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/h12-25-sampling-wall.md",
+   "kind": "doc",
+   "path": "docs/h12-25-sampling-wall.md",
+   "summary": "The overnight h12=25 run on pacland-rog (first-ever h12=25 sampling) found 0 critical points in 13,311 valid candidates (16,000 tried, 8h42m). This is a measured negative result, not a\u2026",
+   "title": "h12=25 sampling wall \u2014 the ISD proposal degrades (measured 2026-10-21)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/learnability-negative.md",
+   "kind": "doc",
+   "path": "docs/learnability-negative.md",
+   "summary": "This connects three known pieces \u2014 Denef\u2013Douglas uniformity, Valiant's evolvability theorem, and real flux-vacua data \u2014 into a statement that, to this project's knowledge, has not been made\u2026",
+   "title": "The flux landscape is not evolvable \u2014 a negative result, assembled from existing work"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/linux-node-spec.md",
+   "kind": "doc",
+   "path": "docs/linux-node-spec.md",
+   "summary": "Why this exists: the flux sampler (JAXVacua + cytools) is Linux-only, and the mesh's only Linux today is two 4 vCPU / 4 GB VMs on win-2. Dual-boot was considered and rejected (manual\u2026",
+   "title": "Dedicated Linux compute nodes \u2014 the cheap path to native Linux on the mesh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mitchell-completeness-theorem.md",
+   "kind": "doc",
+   "path": "docs/mitchell-completeness-theorem.md",
+   "summary": "constraint-first program from \"we could not find a fingerprint\" into \"no exact polynomial invariant selector can exist\". It says the D3 tadpole is the unique duality-invariant of the flux\u2026",
+   "title": "Mitchell's Completeness Theorem \u2014 no exact invariant selector"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mitchell-uniqueness-theorem.md",
+   "kind": "doc",
+   "path": "docs/mitchell-uniqueness-theorem.md",
+   "summary": "tolerance, 6/6 checks), the mathematical backbone of the constraint-first conjecture.",
+   "title": "Mitchell's Uniqueness Theorem \u2014 the conjecture's core, proved"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mitchells-principle.md",
+   "kind": "doc",
+   "path": "docs/mitchells-principle.md",
+   "summary": "In its simplest form, one line of mathematics:",
+   "title": "Mitchell's Principle of Constraint-First Unification"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/narrowing-the-field.md",
+   "kind": "doc",
+   "path": "docs/narrowing-the-field.md",
+   "summary": "The constraint-first program says the only navigable move is elimination by verified constraint. This doc records the out-of-the-box reading of the structure map that makes that concrete\u2026",
+   "title": "Narrowing the field \u2014 using the structure map to collapse the search"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/new-approach.md",
+   "kind": "doc",
+   "path": "docs/new-approach.md",
+   "summary": "The synthesis of this project plus the leading research, stated as one program.",
+   "title": "A New Approach: Constraint-First String Theory"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/observable-measure.md",
+   "kind": "doc",
+   "path": "docs/observable-measure.md",
+   "summary": "This makes the certificate in verification-formal.md concrete. D is the measure over observables that defines what \"close to our universe\" means; until it is pinned down, every certificate\u2026",
+   "title": "The observable measure D \u2014 a toy definition"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/one-object-thesis.md",
+   "kind": "doc",
+   "path": "docs/one-object-thesis.md",
+   "summary": "plus one node measurement all refuted its three sub-claims. The refined, honest result is a catalog, not one object. Read the tier labels \u2014 proven / measured / conjectured \u2014 and never read\u2026",
+   "title": "The Universal-Structure Catalog (was: the \"One-Object\" Thesis)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/open-questions.md",
+   "kind": "doc",
+   "path": "docs/open-questions.md",
+   "summary": "Ranked roughly by \"what must be true for the program to have legs.\"",
+   "title": "Open questions and honest limits"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/oracle.md",
+   "kind": "doc",
+   "path": "docs/oracle.md",
+   "summary": "This is the engineering-facing contract for the layer that turns a genotype into observables. It is the last unformalized layer, and the bridge from the math (docs/) to a prototype.",
+   "title": "L2 \u2014 the physics oracle and its error model (spec)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/orbit-space-unification.md",
+   "kind": "doc",
+   "path": "docs/orbit-space-unification.md",
+   "summary": "check that proves it and was reproduced on 2026-10-22 (python3 scripts/validatealltheorems.py, all 6 PASS). Every \"conjectured\" line is marked as such, because the difference between the\u2026",
+   "title": "The orbit-space path to unification"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/outreach-emails.md",
+   "kind": "doc",
+   "path": "docs/outreach-emails.md",
+   "summary": "Ready to copy-paste. Order: Zenodo first (priority), then the four emails one at a time.",
+   "title": "Outreach \u2014 Zenodo metadata and the four endorsement emails"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/partner-appeals.md",
+   "kind": "doc",
+   "path": "docs/partner-appeals.md",
+   "summary": "The program has a machine-checked core and a short list of things it cannot yet compute. Each of those is a sharp, falsifiable problem a partner with the right expertise can advance \u2014 and\u2026",
+   "title": "Partner appeals \u2014 the open problems, framed as collaborations"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/physics-compute-roadmap.md",
+   "kind": "doc",
+   "path": "docs/physics-compute-roadmap.md",
+   "summary": "Rob's questions (2026-10-20): can we do for the hard physics compute (JAX flux-vacua sampling) what Colibri does for LLM inference \u2014 drop the expensive graphics card \u2014 and would pooling\u2026",
+   "title": "Physics compute \u2014 removing the GPU, and whether pooling cheap machines works"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/publication-plan.md",
+   "kind": "doc",
+   "path": "docs/publication-plan.md",
+   "summary": "The goal is not \"publish\" first \u2014 it is get the work in front of the people who can check it. Everything else (endorsement, arXiv, citation) follows from one expert saying \"yes, this is\u2026",
+   "title": "Publication plan \u2014 the independent-researcher path to being checked"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/research-fanout.md",
+   "kind": "doc",
+   "path": "docs/research-fanout.md",
+   "summary": "Parallel independent passes are how this project avoids single-angle overreach (the same discipline as the Rule of Three, applied to ideas rather than measurements). This doc is the recipe\u2026",
+   "title": "Research fan-out \u2014 the reusable \"compare notes\" tool"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sampling-frontier.md",
+   "kind": "doc",
+   "path": "docs/sampling-frontier.md",
+   "summary": "The \"bigger systems\" run at h12=25 returned 0 vacua; the question was whether that is a bug or the physics. It is the physics, and the boundary is now measured.",
+   "title": "Sampling frontier \u2014 the stabilised regime ends at h12 = 4 (measured 2026-10-22)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/selection.md",
+   "kind": "doc",
+   "path": "docs/selection.md",
+   "summary": "The measure problem is the half of \"unified string theory\" that verification does not touch: why this vacuum, and not one of the other 10^500? This doc separates what we can build from what\u2026",
+   "title": "Selection (L6) \u2014 what is buildable, and what is not"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sm-boundary-map.md",
+   "kind": "doc",
+   "path": "docs/sm-boundary-map.md",
+   "summary": "The boundary map (docs/boundary-map.md, src/pacland/limits.py) classified the flux sector's uncomputability into four walls. This extends it one sector up, to the Standard Model \u2014 so we\u2026",
+   "title": "The four-wall map for the Standard Model"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sm-conjecture-notes.md",
+   "kind": "doc",
+   "path": "docs/sm-conjecture-notes.md",
+   "summary": "Five independent agents attacked the same claim from five angles. The spread is the result \u2014 and it refines the conjecture in a way a single angle would have missed.",
+   "title": "Compare-notes: the SM \"unpredicable\" conjecture \u2014 first fan-out"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sm-floor-notes.md",
+   "kind": "doc",
+   "path": "docs/sm-floor-notes.md",
+   "summary": "The first fan-out refined the SM conjecture to \"a ToE predicts relations, never values.\" That named a sharper question \u2014 what is the minimum number of free parameters any consistent UV\u2026",
+   "title": "Compare-notes: the SM \"floor\" question \u2014 second fan-out"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sm-frontier.md",
+   "kind": "doc",
+   "path": "docs/sm-frontier.md",
+   "summary": "The Complete Exact Structure Theorem proved that the flux sector's only exact structure is its constraint (the D3 tadpole) plus its label (CY topology). This doc extends the same\u2026",
+   "title": "The Standard-Model frontier \u2014 constraint-first, one sector up"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sm-rank-test.md",
+   "kind": "doc",
+   "path": "docs/sm-rank-test.md",
+   "summary": "The floor question (docs/sm-floor-notes.md) asks: is the SM's 19 free parameters a real floor (irreducible), or dynamically reducible \u2014 does some symmetry force them to be functions of\u2026",
+   "title": "The rank test \u2014 the SM \"floor\" question, computed as an exact Jacobian rank"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sm-rule-of-three.md",
+   "kind": "doc",
+   "path": "docs/sm-rule-of-three.md",
+   "summary": "Each SM exact result was one confirmation (sympy). The Rule of Three requires three independent confirmations that agree. This note records the three arms for the two headline SM results\u2026",
+   "title": "Rule of Three on the Standard-Model results"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/statistical-selection.md",
+   "kind": "doc",
+   "path": "docs/statistical-selection.md",
+   "summary": "Read tier labels \u2014 proven / measured / conjectured \u2014 and never read one into another.",
+   "title": "Statistical selection over the flux landscape \u2014 first pass"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/structure-map.md",
+   "kind": "doc",
+   "path": "docs/structure-map.md",
+   "summary": "Each row is a flux-determined observable, tested with the joint ridge-quadratic CV r on the natural (ISD, wide-flux) measure, plus the narrow-flux number where it exists. \"Uniform\" = r <\u2026",
+   "title": "The structure map \u2014 every observable classified (Rule-of-Three verified)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/swampland-connection.md",
+   "kind": "doc",
+   "path": "docs/swampland-connection.md",
+   "summary": "This doc records the bridge between the measured structure map and the swampland program, and the runnable system that tests it: pacland.swampland + scripts/testswampland.py (pure stdlib +\u2026",
+   "title": "The swampland connection \u2014 the constraint-first conjecture as a swampland test"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/t6-exact-oracle.md",
+   "kind": "doc",
+   "path": "docs/t6-exact-oracle.md",
+   "summary": "on T\u2076 = (T\u00b2)\u00b3, replacing the toy exacttoric (whose tadpole was a placeholder). Every observable is a closed form, so the oracle's systematic error is identically zero \u2014 the verifier is\u2026",
+   "title": "The exact T\u2076 toroidal orbifold oracle \u2014 build #2 done properly"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/three-machines-plan.md",
+   "kind": "doc",
+   "path": "docs/three-machines-plan.md",
+   "summary": "Build order: 3 \u2192 1 \u2192 2. Each machine turns a \"can't\" (a verification wall) into a computable/falsifiable positive. Status tiered: built / in progress / spec.",
+   "title": "The Three Machines \u2014 dissolving the remaining \"can'ts\""
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/toolchain.md",
+   "kind": "doc",
+   "path": "docs/toolchain.md",
+   "summary": "The adapters are written; this is only about getting the dependencies onto a suitable node. Status as of 2026-10-18.",
+   "title": "Toolchain \u2014 installing the oracle stack (CYTools)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/tooling.md",
+   "kind": "doc",
+   "path": "docs/tooling.md",
+   "summary": "Existing public work that shortens the path. Each entry maps to a PACLAND layer (docs/architecture.md) and says whether it is directly integrable (a library with a pip install) or\u2026",
+   "title": "Prior art and tooling \u2014 what to build on"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-sessions-synthesis.md",
+   "kind": "doc",
+   "path": "docs/two-sessions-synthesis.md",
+   "summary": "Two parallel sessions attacked the same problem from different angles and landed on the same core insight. This doc merges them, because the combined picture is stronger than either alone.",
+   "title": "Two sessions, one result \u2014 synthesis"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/unification-claim.md",
+   "kind": "doc",
+   "path": "docs/unification-claim.md",
+   "summary": "this document fixes the claim, its tiers, and the test ladder. Any job that does not test a line of this document is off the programme.",
+   "title": "The unification claim \u2014 one statement, with its truth value"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/unification-synthesis.md",
+   "kind": "doc",
+   "path": "docs/unification-synthesis.md",
+   "summary": "A four-pass research fan-out asked: is the flux tadpole the same object as the SM anomaly cancellation? It returned a sharpened claim, not a flat yes/no \u2014 and the disagreement between two\u2026",
+   "title": "The unification synthesis \u2014 fan-out results (2026-10-22)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/uplift-resolution.md",
+   "kind": "doc",
+   "path": "docs/uplift-resolution.md",
+   "summary": "The question is the single most contested step in the CC story: the KKLT anti-D3 uplift.",
+   "title": "Resolving the uplift \u2014 is \"small positive \u039b via uplift\" valid?"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/usage.md",
+   "kind": "doc",
+   "path": "docs/usage.md",
+   "summary": "PACLAND is a verification discipline for string-theory computation \u2014 a toolset, not a physics solver. You feed it flux-vacua data (or a candidate computation), and it returns certified\u2026",
+   "title": "Using PACLAND"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verification-config.md",
+   "kind": "doc",
+   "path": "docs/verification-config.md",
+   "summary": "necessary-conditions, the deficit as a lower bound, mutation-tested guards) and what does not (the flux trio of tests, the Calabi-Yau oracles). It ends on the right principle \u2014 \"name its\u2026",
+   "title": "Verification Config \u2014 the sweep that finds the minimal set of checks for a claim"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verification-deficit-explainer.md",
+   "kind": "doc",
+   "path": "docs/verification-deficit-explainer.md",
+   "summary": "People have said string theory is untestable for decades. We didn't discover that. We built the instrument that turns the criticism into a number.",
+   "title": "The Mitchell Verification Deficit"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verification-deficit.md",
+   "kind": "doc",
+   "path": "docs/verification-deficit.md",
+   "summary": "\"How far is string theory from being verifiable?\" is today answerable as a number \u2014 and the number is worse than the earlier ~31% estimate suggested.",
+   "title": "The Verification Deficit Report \u2014 approach #6"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verification-formal.md",
+   "kind": "doc",
+   "path": "docs/verification-formal.md",
+   "summary": "This is the rigorous companion to [verification.md](verification.md). It turns the loose statement into bounds you could actually implement and, more importantly, compute costs from.",
+   "title": "L3 formalization \u2014 the two-level Valiant certificate"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verification.md",
+   "kind": "doc",
+   "path": "docs/verification.md",
+   "summary": "This document is the intellectual core of PACLAND. It defines what \"verified\" means in a regime where (a) exact verification is physically and computationally impossible, and (b) the\u2026",
+   "title": "The Valiant certificate \u2014 verification semantics (L3)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verify-bar.md",
+   "kind": "doc",
+   "path": "docs/verify-bar.md",
+   "summary": "Extracted from the macro-finance work (docs/economics-model-roster.md) because what transfers between fields is the machine, not the answer. src/pacland/bar.py holds it; each discipline\u2026",
+   "title": "The verification bar \u2014 one machine, any discipline"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/viability-polytope.md",
+   "kind": "doc",
+   "path": "docs/viability-polytope.md",
+   "summary": "Constraint-first (docs/new-approach.md) says the answer to \"which vacuum?\" is not a point but the feasible region: the intersection of verified constraints. This document makes that region\u2026",
+   "title": "The viability polytope \u2014 the answer is a region, not a point"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/w0-refinement.md",
+   "kind": "doc",
+   "path": "docs/w0-refinement.md",
+   "summary": "A correction to the structure map, measured with the Rule of Three on the 174-SUSY wide-flux sample (data/richsample.json).",
+   "title": "W\u2080's weak structure is its own flux dependence \u2014 not the tadpole's scale"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_site_index.py",
+   "kind": "script",
+   "path": "scripts/build_site_index.py",
+   "summary": "Build the site's searchable index \u2014 one place to find everything.",
+   "title": "build_site_index.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check-site-links.py",
+   "kind": "script",
+   "path": "scripts/check-site-links.py",
+   "summary": "Guard the claims the pacland site makes about itself.",
+   "title": "check-site-links.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_cmip6_drift.py",
+   "kind": "script",
+   "path": "scripts/climate_cmip6_drift.py",
+   "summary": "Run the CMIP6 conservation-drift guard on real data and print the result as JSON.",
+   "title": "climate_cmip6_drift.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_conservation.py",
+   "kind": "script",
+   "path": "scripts/climate_conservation.py",
+   "summary": "Verify climate's conservation inventory \u2014 and say exactly how much the algebra proves.",
+   "title": "climate_conservation.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_constraint_rank.py",
+   "kind": "script",
+   "path": "scripts/climate_constraint_rank.py",
+   "summary": "Reproduce climate's constraint rank.",
+   "title": "climate_constraint_rank.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_drift_second_source.py",
+   "kind": "script",
+   "path": "scripts/climate_drift_second_source.py",
+   "summary": "Second-source confirmation of the CMIP6 conservation drift.",
+   "title": "climate_drift_second_source.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_energy_budget.py",
+   "kind": "script",
+   "path": "scripts/climate_energy_budget.py",
+   "summary": "Run the energy-budget guard on real cited data and print the result as JSON.",
+   "title": "climate_energy_budget.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_model_deficit.py",
+   "kind": "script",
+   "path": "scripts/climate_model_deficit.py",
+   "summary": "Reproduce the per-model climate deficit.",
+   "title": "climate_model_deficit.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_null.py",
+   "kind": "script",
+   "path": "scripts/climate_null.py",
+   "summary": "Reproduce climate's no-change null and the hindcast against it.",
+   "title": "climate_null.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climb_deficit.py",
+   "kind": "script",
+   "path": "scripts/climb_deficit.py",
+   "summary": "The autonomous deficit climber \u2014 run the oracle over a corpus and hone m.",
+   "title": "climb_deficit.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/crosscheck_sm_float.py",
+   "kind": "script",
+   "path": "scripts/crosscheck_sm_float.py",
+   "summary": "Rule of Three, arm 2 \u2014 an INDEPENDENT float re-derivation of the two SM exact results.",
+   "title": "crosscheck_sm_float.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/demo_certificate_t6.py",
+   "kind": "script",
+   "path": "scripts/demo_certificate_t6.py",
+   "summary": "Run the two-level Valiant certificate on the exact T^6 oracle (build #2 -> #3 seam).",
+   "title": "demo_certificate_t6.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/deploy-pages.sh",
+   "kind": "script",
+   "path": "scripts/deploy-pages.sh",
+   "summary": "deploy-pages.sh \u2014 mirror `web/` onto the GitHub Pages branch.",
+   "title": "deploy-pages.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/diag_transformation_laws.py",
+   "kind": "script",
+   "path": "scripts/diag_transformation_laws.py",
+   "summary": "The transformation table \u2014 piece 3 of the unification description.",
+   "title": "diag_transformation_laws.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/diagnose_isd_conditioning.py",
+   "kind": "script",
+   "path": "scripts/diagnose_isd_conditioning.py",
+   "summary": "Diagnose the ISD conditioning wall \u2014 the measurement behind `docs/h12-25-sampling-wall.md`.",
+   "title": "diagnose_isd_conditioning.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/diagnose_truncation.py",
+   "kind": "script",
+   "path": "scripts/diagnose_truncation.py",
+   "summary": "G3 \u2014 truncation vs hierarchy, measured FAST at generic (proposal-stage) moduli.",
+   "title": "diagnose_truncation.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_accounting_closure.py",
+   "kind": "script",
+   "path": "scripts/economics_accounting_closure.py",
+   "summary": "Economics accounting closure on REAL US national-accounts data (recipe step 6).",
+   "title": "economics_accounting_closure.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_accounts.py",
+   "kind": "script",
+   "path": "scripts/economics_accounts.py",
+   "summary": "Reproduce the national-accounts check.",
+   "title": "economics_accounts.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_constraint_set.py",
+   "kind": "script",
+   "path": "scripts/economics_constraint_set.py",
+   "summary": "Reproduce the constraint-set report.",
+   "title": "economics_constraint_set.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_estimate.py",
+   "kind": "script",
+   "path": "scripts/economics_estimate.py",
+   "summary": "Reproduce the estimation result.",
+   "title": "economics_estimate.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_gdpnow.py",
+   "kind": "script",
+   "path": "scripts/economics_gdpnow.py",
+   "summary": "Reproduce the GDPNow real-time record.",
+   "title": "economics_gdpnow.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_nk3_oos.py",
+   "kind": "script",
+   "path": "scripts/economics_nk3_oos.py",
+   "summary": "Reproduce the NK3 real-time out-of-sample run.",
+   "title": "economics_nk3_oos.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_realtime_forecast.py",
+   "kind": "script",
+   "path": "scripts/economics_realtime_forecast.py",
+   "summary": "Reproduce the real-time Meese\u2013Rogoff run (the committed vintage fixture).",
+   "title": "economics_realtime_forecast.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_three_way.py",
+   "kind": "script",
+   "path": "scripts/economics_three_way.py",
+   "summary": "Reproduce the three-way comparison.",
+   "title": "economics_three_way.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/extract_observables.py",
+   "kind": "script",
+   "path": "scripts/extract_observables.py",
+   "summary": "Extract a richer per-vacuum observable vector (L2 stage 5, partial).",
+   "title": "extract_observables.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_climate_baseline.py",
+   "kind": "script",
+   "path": "scripts/fetch_climate_baseline.py",
+   "summary": "Fetch the two series a climate null needs: observed GMST and global CO2.",
+   "title": "fetch_climate_baseline.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_economics_accounts.py",
+   "kind": "script",
+   "path": "scripts/fetch_economics_accounts.py",
+   "summary": "Fetch the national-accounts components the expenditure identity needs.",
+   "title": "fetch_economics_accounts.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_economics_vintages.py",
+   "kind": "script",
+   "path": "scripts/fetch_economics_vintages.py",
+   "summary": "Fetch real-time vintages from ALFRED and write the committed fixture.",
+   "title": "fetch_economics_vintages.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_gdpnow.py",
+   "kind": "script",
+   "path": "scripts/fetch_gdpnow.py",
+   "summary": "Fetch the GDPNow real-time record: nowcast vs advance estimate vs the null.",
+   "title": "fetch_gdpnow.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/find_flux_vacua.py",
+   "kind": "script",
+   "path": "scripts/find_flux_vacua.py",
+   "summary": "Find SUSY flux vacua for a bundled KS model (JAXVacua quickstart workflow).",
+   "title": "find_flux_vacua.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/gpu_bootstrap.sh",
+   "kind": "script",
+   "path": "scripts/gpu_bootstrap.sh",
+   "summary": "Bootstrap a rented cloud GPU (Ubuntu 22.04/24.04 + NVIDIA CUDA 12 image) into a",
+   "title": "gpu_bootstrap.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/install_cytools.sh",
+   "kind": "script",
+   "path": "scripts/install_cytools.sh",
+   "summary": "Install CYTools + its C++ prerequisites, then verify against the quintic.",
+   "title": "install_cytools.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_explainer_pdf.py",
+   "kind": "script",
+   "path": "scripts/make_explainer_pdf.py",
+   "summary": "Generate the PACLAND explainer PDF (repo root).",
+   "title": "make_explainer_pdf.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_explainers.py",
+   "kind": "script",
+   "path": "scripts/make_explainers.py",
+   "summary": "Auto-generate the plain-English explainer PDF for every discipline.",
+   "title": "make_explainers.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_startalk_pdf.py",
+   "kind": "script",
+   "path": "scripts/make_startalk_pdf.py",
+   "summary": "Generate the PACLAND StarTalk-style explainer PDF (repo root).",
+   "title": "make_startalk_pdf.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_constraint_learnability.py",
+   "kind": "script",
+   "path": "scripts/measure_constraint_learnability.py",
+   "summary": "Measure the constraint/observable learnability split (the fork's answer).",
+   "title": "measure_constraint_learnability.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_constraints.py",
+   "kind": "script",
+   "path": "scripts/measure_constraints.py",
+   "summary": "Measure which constraints eliminate the most vacua (Q2).",
+   "title": "measure_constraints.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_covariance_table.py",
+   "kind": "script",
+   "path": "scripts/measure_covariance_table.py",
+   "summary": "The covariance table, rows 2 and 3 \u2014 |W| and g_s under S and T (Law III + the T-row).",
+   "title": "measure_covariance_table.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_elimination_curve.py",
+   "kind": "script",
+   "path": "scripts/measure_elimination_curve.py",
+   "summary": "Test the central structural claim: is |W0|^2 uniformly distributed?",
+   "title": "measure_elimination_curve.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_flux_learnability.py",
+   "kind": "script",
+   "path": "scripts/measure_flux_learnability.py",
+   "summary": "Empirical attack on the learnability conjecture \u2014 first datum.",
+   "title": "measure_flux_learnability.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_learnability.py",
+   "kind": "script",
+   "path": "scripts/measure_learnability.py",
+   "summary": "Measure learnability + selection statistics on the real flux-vacua sample.",
+   "title": "measure_learnability.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_phase_law.py",
+   "kind": "script",
+   "path": "scripts/measure_phase_law.py",
+   "summary": "Law IIb \u2014 the PHASE of W under S (the open half of Law II).",
+   "title": "measure_phase_law.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_w0_tuning.py",
+   "kind": "script",
+   "path": "scripts/measure_w0_tuning.py",
+   "summary": "Turn the measured log-uniform |W0| prior into the KKLT tuning probability.",
+   "title": "measure_w0_tuning.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/mine_structure.py",
+   "kind": "script",
+   "path": "scripts/mine_structure.py",
+   "summary": "Mine every flux-paired observable for structure + learnability.",
+   "title": "mine_structure.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/orbit_content_slice.py",
+   "kind": "script",
+   "path": "scripts/orbit_content_slice.py",
+   "summary": "The orbit-content slice \u2014 does the integer content d = gcd(F,H) carry physics?",
+   "title": "orbit_content_slice.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/render_pdf.py",
+   "kind": "script",
+   "path": "scripts/render_pdf.py",
+   "summary": "Render a PACLAND markdown doc to PDF (fpdf2 + Arial Unicode).",
+   "title": "render_pdf.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_ds_test.py",
+   "kind": "script",
+   "path": "scripts/sample_ds_test.py",
+   "summary": "De Sitter conjecture test \u2014 do any critical points have V>0 with a minimum?",
+   "title": "sample_ds_test.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_h12.py",
+   "kind": "script",
+   "path": "scripts/sample_h12.py",
+   "summary": "Sample SUSY flux vacua at any h12 with the memory-safe ``scipy`` solver.",
+   "title": "sample_h12.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_h12_25.py",
+   "kind": "script",
+   "path": "scripts/sample_h12_25.py",
+   "summary": "Sample h12=25 SUSY flux vacua with the memory-safe ``scipy`` solver.",
+   "title": "sample_h12_25.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_h12_gen.py",
+   "kind": "script",
+   "path": "scripts/sample_h12_gen.py",
+   "summary": "Sample SUSY flux vacua at a given h12 + model_ID (memory-safe scipy + ISD-).",
+   "title": "sample_h12_gen.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_isd.py",
+   "kind": "script",
+   "path": "scripts/sample_isd.py",
+   "summary": "ISD (natural-measure) sampling + W0 uniformity test.",
+   "title": "sample_isd.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_isd_large.py",
+   "kind": "script",
+   "path": "scripts/sample_isd_large.py",
+   "summary": "Large ISD (natural-measure) SUSY sampling to test Denef-Douglas uniformity.",
+   "title": "sample_isd_large.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_mass_test.py",
+   "kind": "script",
+   "path": "scripts/sample_mass_test.py",
+   "summary": "Mass spectrum with instanton corrections (maximum_degree=1).",
+   "title": "sample_mass_test.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_uniformity.py",
+   "kind": "script",
+   "path": "scripts/sample_uniformity.py",
+   "summary": "Sample log|W0| at multiple flux-bound widths to test Denef-Douglas uniformity.",
+   "title": "sample_uniformity.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_vacua.py",
+   "kind": "script",
+   "path": "scripts/sample_vacua.py",
+   "summary": "Sample SUSY flux vacua across bundled KS models and emit trimmed observables.",
+   "title": "sample_vacua.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/scan_isd_conditioning.py",
+   "kind": "script",
+   "path": "scripts/scan_isd_conditioning.py",
+   "summary": "G3 \u2014 the truncation scan: how conditioning of the ISD matrix behaves with h12.",
+   "title": "scan_isd_conditioning.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/scan_kpv.py",
+   "kind": "script",
+   "path": "scripts/scan_kpv.py",
+   "summary": "Machine 1, Phase 1 \u2014 the KPV uplift-control scan.",
+   "title": "scan_kpv.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/shard_vacua.sh",
+   "kind": "script",
+   "path": "scripts/shard_vacua.sh",
+   "summary": "shard_vacua.sh \u2014 shard the h12=25 flux-vacua sampling across the mesh's Linux nodes.",
+   "title": "shard_vacua.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_g2_sdual_stability.py",
+   "kind": "script",
+   "path": "scripts/test_g2_sdual_stability.py",
+   "summary": "G2 of the programme \u2014 is the S-dual of a stable vacuum itself stable?",
+   "title": "test_g2_sdual_stability.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_orbit_injectivity.py",
+   "kind": "script",
+   "path": "scripts/test_orbit_injectivity.py",
+   "summary": "Test 2 of the unification claim (C3, injectivity) \u2014 do distinct orbits share physics?",
+   "title": "test_orbit_injectivity.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_swampland.py",
+   "kind": "script",
+   "path": "scripts/test_swampland.py",
+   "summary": "Run the swampland-connection report against the data we already hold.",
+   "title": "test_swampland.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_all_theorems.py",
+   "kind": "script",
+   "path": "scripts/validate_all_theorems.py",
+   "summary": "Run the entire PACLAND theorem tower and report one green/red verdict.",
+   "title": "validate_all_theorems.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_constraint_first.py",
+   "kind": "script",
+   "path": "scripts/validate_constraint_first.py",
+   "summary": "Constraint-First Theorem \u2014 the tadpole F^T J H generates the ENTIRE ring of",
+   "title": "validate_constraint_first.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_cytools.py",
+   "kind": "script",
+   "path": "scripts/validate_cytools.py",
+   "summary": "Run CYTools on a Linux node and check the quintic through the Hodge guard.",
+   "title": "validate_cytools.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_economics_forecast.py",
+   "kind": "script",
+   "path": "scripts/validate_economics_forecast.py",
+   "summary": "Economics forecast failure \u2014 the empirical axis (axis 1), the runnable check.",
+   "title": "validate_economics_forecast.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_economics_identification.py",
+   "kind": "script",
+   "path": "scripts/validate_economics_identification.py",
+   "summary": "Economics set-identification \u2014 the theoretical axis (axis 2), validated exactly.",
+   "title": "validate_economics_identification.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_economics_nk3.py",
+   "kind": "script",
+   "path": "scripts/validate_economics_nk3.py",
+   "summary": "Proof arm for the New Keynesian 3-equation model \u2014 exact, zero tolerance.",
+   "title": "validate_economics_nk3.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_economics_sw.py",
+   "kind": "script",
+   "path": "scripts/validate_economics_sw.py",
+   "summary": "Proof arm for the Smets\u2013Wouters (2007) record \u2014 provenance, not recollection.",
+   "title": "validate_economics_sw.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_flux_guards.py",
+   "kind": "script",
+   "path": "scripts/validate_flux_guards.py",
+   "summary": "Validate the flux guards on real JAXVacua-sampled flux vacua (local, no jax).",
+   "title": "validate_flux_guards.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_flux_scaling_lemma.py",
+   "kind": "script",
+   "path": "scripts/validate_flux_scaling_lemma.py",
+   "summary": "Flux-scaling lemma \u2014 why the content d is bookkeeping, not physics.",
+   "title": "validate_flux_scaling_lemma.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_full_duality.py",
+   "kind": "script",
+   "path": "scripts/validate_full_duality.py",
+   "summary": "Full-duality completion \u2014 the tadpole F^T J H is the unique invariant of the",
+   "title": "validate_full_duality.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_gut_parameter_count.py",
+   "kind": "script",
+   "path": "scripts/validate_gut_parameter_count.py",
+   "summary": "GUT parameter ladder \u2014 unification *shuffles* free parameters, it does not reduce them.",
+   "title": "validate_gut_parameter_count.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_jaxvacua.py",
+   "kind": "script",
+   "path": "scripts/validate_jaxvacua.py",
+   "summary": "Run JAXVacua on a Linux node and check flux-vacua invariants through guards.",
+   "title": "validate_jaxvacua.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_ktheory_torsion.py",
+   "kind": "script",
+   "path": "scripts/validate_ktheory_torsion.py",
+   "summary": "K-theory torsion correspondence \u2014 the rational (characteristic-class) half, exact.",
+   "title": "validate_ktheory_torsion.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_mitchell_completeness.py",
+   "kind": "script",
+   "path": "scripts/validate_mitchell_completeness.py",
+   "summary": "Mitchell's Completeness Theorem \u2014 the tadpole is the UNIQUE duality-invariant of the",
+   "title": "validate_mitchell_completeness.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_mitchell_uniqueness.py",
+   "kind": "script",
+   "path": "scripts/validate_mitchell_uniqueness.py",
+   "summary": "Mitchell's Uniqueness Theorem \u2014 F^T J H is the unique exact (symplectic-invariant)",
+   "title": "validate_mitchell_uniqueness.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_molien_weyl.py",
+   "kind": "script",
+   "path": "scripts/validate_molien_weyl.py",
+   "summary": "Law V \u2014 the counting law, certified by Molien\u2013Weyl / Hilbert\u2013Serre.",
+   "title": "validate_molien_weyl.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_s_duality_vacua.py",
+   "kind": "script",
+   "path": "scripts/validate_s_duality_vacua.py",
+   "summary": "S-duality on real vacuua \u2014 the first direct test of the unification mechanism.",
+   "title": "validate_s_duality_vacua.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_anomaly.py",
+   "kind": "script",
+   "path": "scripts/validate_sm_anomaly.py",
+   "summary": "Standard-Model anomaly cancellation \u2014 the gauge-sector constraint (exact).",
+   "title": "validate_sm_anomaly.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_hypercharge_uniqueness.py",
+   "kind": "script",
+   "path": "scripts/validate_sm_hypercharge_uniqueness.py",
+   "summary": "Standard-Model hypercharge uniqueness \u2014 the gauge-sector analog of Mitchell's Uniqueness.",
+   "title": "validate_sm_hypercharge_uniqueness.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_invariant_ring.py",
+   "kind": "script",
+   "path": "scripts/validate_sm_invariant_ring.py",
+   "summary": "Standard-Model invariant ring \u2014 why the 19 parameters are *exactly* the independent",
+   "title": "validate_sm_invariant_ring.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_parameter_count.py",
+   "kind": "script",
+   "path": "scripts/validate_sm_parameter_count.py",
+   "summary": "Standard-Model free-parameter count \u2014 the \"parameter\" class, made exact.",
+   "title": "validate_sm_parameter_count.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_rank_test.py",
+   "kind": "script",
+   "path": "scripts/validate_sm_rank_test.py",
+   "summary": "The rank test \u2014 the SM \"floor\" question, as an exact Jacobian-rank computation.",
+   "title": "validate_sm_rank_test.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sw_structure.py",
+   "kind": "script",
+   "path": "scripts/validate_sw_structure.py",
+   "summary": "Proof arm for the Smets\u2013Wouters equilibrium conditions \u2014 derived, not transcribed.",
+   "title": "validate_sw_structure.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_swampland_bound.py",
+   "kind": "script",
+   "path": "scripts/validate_swampland_bound.py",
+   "summary": "Swampland bound \u2014 does the D3 tadpole give a lower bound (N >= 1) or only an upper bound?",
+   "title": "validate_swampland_bound.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_t6.py",
+   "kind": "script",
+   "path": "scripts/validate_t6.py",
+   "summary": "Self-assert the exact T^6 toroidal orbifold oracle (build #2 done properly).",
+   "title": "validate_t6.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_t6_sympy.py",
+   "kind": "script",
+   "path": "scripts/validate_t6_sympy.py",
+   "summary": "Exact symbolic verification of the T^6 toroidal orbifold (build #2, sympy).",
+   "title": "validate_t6_sympy.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_tadpole.py",
+   "kind": "script",
+   "path": "scripts/validate_tadpole.py",
+   "summary": "Validate the flux oracle's tadpole: N_flux is EXACTLY the symplectic pairing.",
+   "title": "validate_tadpole.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_uv_completions.py",
+   "kind": "script",
+   "path": "scripts/validate_uv_completions.py",
+   "summary": "Validate the UV-completion catalog (Machine 3) against the literature collapse",
+   "title": "validate_uv_completions.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify_deficit_numbers.py",
+   "kind": "script",
+   "path": "scripts/verify_deficit_numbers.py",
+   "summary": "Pin the verification-deficit arithmetic (guards the headline numbers).",
+   "title": "verify_deficit_numbers.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify_flux_scaling_numeric.py",
+   "kind": "script",
+   "path": "scripts/verify_flux_scaling_numeric.py",
+   "summary": "Numeric control for the flux-scaling lemma, on real committed vacua.",
+   "title": "verify_flux_scaling_numeric.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify_results.py",
+   "kind": "script",
+   "path": "scripts/verify_results.py",
+   "summary": "Regenerate every headline number from the committed data (self-asserting).",
+   "title": "verify_results.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify_sw_mod.py",
+   "kind": "script",
+   "path": "scripts/verify_sw_mod.py",
+   "summary": "Verify SW's linearised model against the authors' own Dynare file.",
+   "title": "verify_sw_mod.py"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-climate-explainer.pdf",
+   "summary": "explainer PDF",
+   "title": "climate explainer"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-drugs-explainer.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-drugs-explainer.pdf",
+   "summary": "explainer PDF",
+   "title": "drugs explainer"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-economics-explainer.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-economics-explainer.pdf",
+   "summary": "explainer PDF",
+   "title": "economics explainer"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-explainer.pdf",
+   "summary": "explainer PDF",
+   "title": "explainer"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-startalk.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-startalk.pdf",
+   "summary": "explainer PDF",
+   "title": "startalk"
+  }
+ ],
+ "start": [
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verify-bar.md",
+   "path": "docs/verify-bar.md",
+   "summary": "the method, and the climate transfer test",
+   "title": "The bar \u2014 nine slots, three refusals"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOP-FIGURING-SYSTEMS-OUT.md",
+   "path": "docs/SOP-FIGURING-SYSTEMS-OUT.md",
+   "summary": "the general method, learned the hard way",
+   "title": "How a field gets figured out"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-model-roster.md",
+   "path": "docs/economics-model-roster.md",
+   "summary": "six models scored; four clean; what each owes",
+   "title": "Economics \u2014 the model roster"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-trust-board.md",
+   "path": "docs/climate-trust-board.md",
+   "summary": "53 CMIP6 models scored; 14 trusted",
+   "title": "Climate \u2014 the trust board"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-verification-deficit.md",
+   "path": "docs/economics-verification-deficit.md",
+   "summary": "m = 4 backcast, m = 0 forecast",
+   "title": "The verification deficit"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-economics-explainer.pdf",
+   "path": "PACLAND-economics-explainer.pdf",
+   "summary": "plain English, for sending to someone",
+   "title": "Economics explainer (PDF)"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf",
+   "path": "PACLAND-climate-explainer.pdf",
+   "summary": "plain English, for sending to someone",
+   "title": "Climate explainer (PDF)"
+  }
+ ]
+}
