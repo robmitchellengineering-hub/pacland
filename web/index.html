@@ -404,7 +404,7 @@ python3 scripts/validate_all_theorems.py</code></pre>
       <div class="card">
         <h3>Climate / Earth-system <span class="tag">built</span></h3>
         <p class="muted">Five conservation invariants, three of them measured — and a <em>per-model</em> certificate: <span class="nw">GISS-E2-1-G</span> is verified against m = 3 observables (radius 0.78), <span class="nw">MPI-ESM1-2-HR</span> 2, <span class="nw">UKESM1-0-LL</span> 1, because a failed test costs an observable rather than a fraction. Against the no-change null the observed trend survives: ECS emulators beat persistence but not the trend.</p>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-trust-board.md">trust board</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verify-bar.md">the bar</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">deficit report</a> · <code>pacland climate</code></p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-trust-board.md">trust board</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verify-bar.md">the bar</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">explainer (PDF)</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">deficit report</a> · <code>pacland climate</code></p>
       </div>
       <div class="card">
         <h3>Drug discovery <span class="tag">built</span></h3>
@@ -426,6 +426,32 @@ python3 scripts/validate_all_theorems.py</code></pre>
         <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ai-verified-badge.md">the badge</a></p>
       </div>
     </div>
+
+    <h2 id="solutions">What is possible — and where to look</h2>
+    <p class="lead">Every finding on this page lands in one of three <strong>gates</strong>. These are the solutions this work produces: not forecasts, but refusals that stop an unverified number reaching a decision.</p>
+    <div class="grid grid--2">
+      <div class="card">
+        <h3>The null gate</h3>
+        <p class="muted">No forecast ships without its no-change ratio in the same table, and losing to the null is stated in the model's tier rather than buried.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/src/pacland/economics/meese_rogoff.py">economics</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/src/pacland/climate/baseline.py">climate</a></p>
+      </div>
+      <div class="card">
+        <h3>The identification gate</h3>
+        <p class="muted">No estimate is published unless the estimator can first recover a known truth from synthetic data. It has already said no to our own Phillips-slope estimate — 0.18 in, 1.00 out.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/src/pacland/economics/estimate.py">estimate.py</a></p>
+      </div>
+      <div class="card">
+        <h3>The admissibility gate</h3>
+        <p class="muted">No fitted model enters a forecast table if it violates the constraint set. It has already refused a data-fitted passive policy rule, which would have admitted sunspots.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verify-bar.md">the bar</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOP-FIGURING-SYSTEMS-OUT.md">the method</a></p>
+      </div>
+      <div class="card">
+        <h3>The label this enables</h3>
+        <p class="muted">A verified-forecast label any macro model can carry: its m observables, its constraint pass/fail, and its real-time ratio to the null. Nobody publishes that today — the pieces all exist here.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-model-roster.md">roster</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-economics-explainer.pdf">economics explainer (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">climate explainer (PDF)</a></p>
+      </div>
+    </div>
+    <p class="muted">What is <em>not</em> possible on this evidence: a certified quarter-ahead inflation number, or a certified 2100 projection. In both fields the exact content is definitional and the behavioural parameters are not identified from aggregates — so the honest output is the deficit, not the number.</p>
 
     <h2 id="climate">Climate — the verification deficit, measured</h2>
     <p class="lead">The first expansion. Applied to climate modelling, the discipline produces a number the field has never had: how much of a projection is <em>verified</em> versus <em>extrapolated</em>.</p>
