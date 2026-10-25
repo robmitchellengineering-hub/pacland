@@ -253,7 +253,9 @@ def _sw() -> Model:
         done=frozenset({"exact_structure", "deficit", "rule_of_three", "guard_suite",
                         "trust_entry", "falsifiable_prediction", "reproduce"}),
         evidence={
-            "exact_structure": "scripts/validate_sw_structure.py",
+            # the nonlinear derivation AND the authors' own linearised file (34/34
+            # equilibrium conditions vanish at the steady state)
+            "exact_structure": "scripts/verify_sw_mod.py",
             "deficit": "src/pacland/economics/sw2007.py",
             "rule_of_three": "scripts/validate_economics_sw.py",
             "trust_entry": "src/pacland/trust.py",

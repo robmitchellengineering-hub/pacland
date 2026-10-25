@@ -412,6 +412,40 @@ slots, outcome `beats_null` (0.25x MAE on the advance estimate, 0.31x on the rev
 value). Two of six roster rows now pass the bar on their own merits; three are clean
 overall.
 
+### The linearised model, from the authors' own file (slice 13)
+
+The objective asked for **the ~20 linearised equilibrium conditions machine-checked**. The
+paper's technical appendix is not openly posted — but the **authors' own Dynare
+implementation** of the linearised model is, maintained by Johannes Pfeifer in the
+`DSGE_mod` replication library. That file *is* the linearised system, machine-readable, and
+it is a better source than any transcription of mine.
+
+`scripts/verify_sw_mod.py` fetches it (pinned URL, **sha256
+`662d1e82…1ffddb`**, never committed — it is GPL and this repo is MIT), parses the model
+block, and checks the two things that can be settled mechanically:
+
+| check | result |
+|---|---|
+| the model block parses into statements | **40 equations = 34 equilibrium + 6 measurement** |
+| every equilibrium condition vanishes at the steady state | **34/34** |
+| every measurement equation carries its steady-state constant | **6/6** |
+| the implied real rate vs the paper's "about 3%" | **3.02 %/yr** |
+| the implied nominal rate vs the paper's "about 6%" | **6.16 %/yr** |
+| agreement with this repo's independent derivation | **6.16 vs 6.14 %/yr** (the Fisher cross term) |
+| the expenditure shares sum to one | **0.649 + 0.171 + 0.18 = 1.000** |
+
+**Why "vanishes at the steady state" is a real test, not a formality.** A linearised model
+is an expansion about a point where every deviation is zero, so each behavioural equation
+must reduce to `0 = 0` there. If a steady-state ratio and an equation disagree, the residual
+is non-zero and the transcription is wrong — caught without knowing any economics, which is
+the point. The six that do *not* vanish are the measurement equations (`dy`, `dc`, `dinve`,
+`dw`, `pinfobs`, `robs`): they carry `ctrend`, `constepinf` and `conster` because they map
+deviations to observables. Separating them is part of the check, not an exemption from it.
+
+**Two sources agreeing is the Rule of Three on the derivation:** the nonlinear appendix
+derived by hand (`validate_sw_structure.py`, 12/12), the authors' linearised file
+(34/34 here), and the paper's own reported rates. All three land on 3.0 and 6.1–6.2 %.
+
 ## 5. The one hard precondition: real-time vintages — **met**
 
 - **Current-vintage data is keyless.** All seven Smets–Wouters observables pull from
