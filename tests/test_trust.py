@@ -7,10 +7,12 @@ from pacland.trust import board, summary
 class TestTrustBoard(unittest.TestCase):
     def test_board_counts(self):
         s = summary()
-        self.assertEqual(s["n_artifacts"], 32)
+        # +6 macro-finance model rows (docs/economics-model-roster.md): 2 clean,
+        # 4 weak (named, not built) — the roster posts its own honest state.
+        self.assertEqual(s["n_artifacts"], 38)
         self.assertEqual(s["n_broken"], 14)
-        self.assertEqual(s["n_weak"], 4)
-        self.assertEqual(s["n_clean"], 14)
+        self.assertEqual(s["n_weak"], 8)
+        self.assertEqual(s["n_clean"], 16)
 
     def test_broken_are_the_double_flagged(self):
         broken = summary()["broken"]
