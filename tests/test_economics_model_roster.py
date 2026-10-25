@@ -121,8 +121,9 @@ class TestStartingSet(unittest.TestCase):
         for slot in ("exact_structure", "deficit", "rule_of_three", "guard_suite",
                      "falsifiable_prediction", "reproduce"):
             self.assertIn(slot, nk.done, f"NK3 does not claim {slot}")
-        # ...and it does not claim what it has not done.
-        self.assertEqual(set(nk.missing()), {"out_of_sample", "benchmark", "trust_entry"})
+        # ...and now it owes no slot at all; it is weak only because the run it passed
+        # lost to the null (see TestOutcomeRule).
+        self.assertEqual(set(nk.missing()), set())
 
     def test_the_workhorse_forecast_model_owes_the_rest_of_the_bar(self):
         sw = next(m for m in ROSTER if m.name.startswith("Smets–Wouters"))
@@ -147,6 +148,26 @@ class TestStartingSet(unittest.TestCase):
         sw = next(m for m in ROSTER if m.name.startswith("Smets–Wouters"))
         self.assertNotIn("out_of_sample", sw.done)
         self.assertNotIn("benchmark", sw.done)
+
+
+class TestOutcomeRule(unittest.TestCase):
+    def test_every_slot_earned_but_lost_still_means_weak(self):
+        # the board must not reward having taken the test
+        done = frozenset(REQUIRED["forecast"])
+        ev = {slot: "src/pacland/economics/nk3.py" for slot in done}
+        ev["out_of_sample"] = "ALFRED real-time vintages"
+        lost = Model(name="lost", kind="forecast", role="probe", exact_content="c",
+                     free="f", done=done, evidence=ev, outcome="loses_to_null")
+        won = Model(name="won", kind="forecast", role="probe", exact_content="c",
+                    free="f", done=done, evidence=ev, outcome="beats_null")
+        self.assertEqual(lost.tier(ROOT), "weak")
+        self.assertEqual(won.tier(ROOT), "clean")
+
+    def test_nk3_owes_no_slot_and_is_still_weak(self):
+        nk = next(m for m in ROSTER if m.name.startswith("New Keynesian"))
+        self.assertEqual(nk.missing(), ())
+        self.assertEqual(nk.outcome, "loses_to_null")
+        self.assertEqual(nk.tier(ROOT), "weak")
 
 
 class TestSmetsWoutersObservables(unittest.TestCase):
