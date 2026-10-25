@@ -473,3 +473,12 @@ overall.
 cd pacland && PYTHONPATH=src python3 -m unittest tests.test_economics_model_roster -v
 PYTHONPATH=src python3 -c "from pacland.economics.model_roster import summary; [print(r) for r in summary()]"
 ```
+
+Or from the CLI — three views, each rendering what the modules have already verified:
+
+```
+pacland economics              # the verification deficit (unchanged)
+pacland economics --models     # the roster, scored, with what each row owes
+pacland economics --constraints # the constraint set and its measured independent rank
+pacland economics --realtime   # every model against its null, on data as it was published
+```
