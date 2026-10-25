@@ -78,6 +78,11 @@ def _economics_entries() -> list[TrustEntry]:
         TrustEntry("economics", "forecast-failure guard (empirical axis)", "clean",
                    "guard_forecast_is_extrapolation: red on a model that beats the no-change benchmark",
                    "src/pacland/economics/forecast.py"),
+        TrustEntry("economics", "constraint set (11 constraints, 8 independent)", "clean",
+                   "plural by design: the independent rank is measured by Jacobian rank at a "
+                   "generic point, every constraint is sourced, and a duplicate is detected "
+                   "as dependent",
+                   "src/pacland/economics/constraint_set.py"),
     ] + _roster_entries()
 
 

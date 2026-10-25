@@ -9,11 +9,11 @@ class TestTrustBoard(unittest.TestCase):
         s = summary()
         # +6 macro-finance model rows (docs/economics-model-roster.md): 2 clean,
         # 4 weak (named, not built) — the roster posts its own honest state.
-        self.assertEqual(s["n_artifacts"], 38)
+        self.assertEqual(s["n_artifacts"], 39)
         self.assertEqual(s["n_broken"], 14)
         # VAR(1) went clean: it now has a real-time out-of-sample run against the null
         self.assertEqual(s["n_weak"], 7)
-        self.assertEqual(s["n_clean"], 17)
+        self.assertEqual(s["n_clean"], 18)
 
     def test_broken_are_the_double_flagged(self):
         broken = summary()["broken"]
