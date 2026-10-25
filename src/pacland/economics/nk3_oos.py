@@ -83,7 +83,10 @@ def _series(vintage: vintages.Vintage, series: str) -> dict[str, float]:
     return quarterly(vintage.series.get(series, {}))
 
 
-def evaluate(data: dict | None = None, horizons: tuple[int, ...] = (1, 2, 4)) -> dict:
+def evaluate(
+    data: dict | None = None, horizons: tuple[int, ...] = (1, 2, 4),
+    cal: dict | None = None,
+) -> dict:
     data = data or vintages.load()
     cur = vintages.current(data)
     cur_gdp, cur_cpi = quarterly(cur["GDPC1"]), quarterly(cur["CPIAUCSL"])
@@ -120,7 +123,7 @@ def evaluate(data: dict | None = None, horizons: tuple[int, ...] = (1, 2, 4)) ->
                 continue
             if math.isnan(truth_gap) or math.isnan(truth_pi):
                 continue
-            xh, pih = nk3.forecast_from_state(x0, pi0, h)
+            xh, pih = nk3.forecast_from_state(x0, pi0, h, cal)
             fc = {
                 "pi": {"no-change": pi0, "AR(1)": _ar1(pi_hist, h), "NK3": pih},
                 "gap": {"no-change": x0, "AR(1)": _ar1(x_hist, h), "NK3": xh},
@@ -146,6 +149,7 @@ def evaluate(data: dict | None = None, horizons: tuple[int, ...] = (1, 2, 4)) ->
         out[m]["wins"] = wins[m]
     out["_meta"] = {"vintages": len(vintages.vintages(data)), "skipped": skipped,
                     "forecasts": n_forecasts, "calibration": "stated, not estimated",
+                    "params": dict(cal or nk3.CALIBRATION),
                     "unit": "inflation: annualised pp; gap: pp"}
     ok, msg = vintages.guard_benchmark_present({m: out[m] for m in MODELS})
     if not ok:

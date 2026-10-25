@@ -230,6 +230,37 @@ log difference taken within one vintage for the forecast and within today's vint
 the truth — cancels it. `guard_growth_not_levels` now refuses a table whose error scale
 is level-sized, so that mistake cannot be published quietly.
 
+### The three-way, as far as it goes (slice 8)
+
+The objective asked for **SW vs BVAR vs the null**. SW's full model is 20 conditions and
+~40 parameters; estimating it is a project. So the comparison is run at the level the
+published record supports — SW's *published parameters* in a three-equation reduction,
+named as such everywhere it appears:
+
+| inflation, real-time | h=1 | h=2 | h=4 | ratio to the null |
+|---|---|---|---|---|
+| no-change | 2.730 | 1.876 | 1.843 | 1.00 / 1.00 / 1.00 |
+| AR(1) | 2.235 | 1.549 | 2.070 | 0.82 / 0.83 / 1.12 |
+| textbook NK3 | 2.823 | 1.940 | 2.353 | 1.03 / 1.03 / 1.28 |
+| **SW subsystem** (κ = 0.178, φπ = 2.04, φy = 0.08) | 2.806 | 1.922 | 2.243 | **1.03 / 1.02 / 1.22** |
+
+| output gap | h=1 | h=2 | h=4 |
+|---|---|---|---|
+| NK3 | 1.03x | 0.81x | **0.71x** |
+| SW subsystem | 1.04x | 0.80x | **0.69x** |
+
+**The finding worth keeping: SW's own parameters do not rescue the inflation forecast.**
+Going from the textbook calibration (κ = 0.10, φπ = 1.5, φy = 0.5) to SW's published
+values (κ = 0.178 from their Calvo estimate, φπ = 2.04, φy = 0.08) moves the
+one-quarter ratio from 1.03x to 1.03x. The loss is not a parameter accident — it is the
+mechanism, on this data, at these horizons. Meanwhile the VAR(1) — no structure at all —
+beats the null by 0.86x / 0.79x / 0.63x.
+
+**What this is not.** It is not SW. No capital, no Calvo wages, no partial indexation, no
+seven shocks; ρ_r and ρ_u are borrowed from the textbook run and labelled as borrowed.
+SW itself still owes `out_of_sample` and `benchmark`, and the registered prediction
+(§9) says what it will find when it is estimated.
+
 ## 5. The one hard precondition: real-time vintages — **met**
 
 - **Current-vintage data is keyless.** All seven Smets–Wouters observables pull from
@@ -264,8 +295,10 @@ is level-sized, so that mistake cannot be published quietly.
    fixture, and the loss recorded in the tier rather than hidden.
 7. ~~**SW inventory closed**~~ — **done**: 16/20 proved, 4 specifications, 0 unresolved;
    `exact_structure`, `trust_entry` and a registered falsifiable prediction claimed.
-8. **SW out of sample** — estimate the model (or a defensible reduced form) and run it
-   against the null on the vintage fixture, completing the three-way. The registered
+8. ~~**Three-way at the supportable level**~~ — **done**: SW's published parameters in a
+   three-equation reduction, four arms, one null, and the label honest.
+9. **SW out of sample** — estimate the model itself (or a defensible reduced form) and
+   run it against the null on the vintage fixture, completing the literal three-way. The registered
    prediction (falsifiable-predictions §9) says it beats the VAR(1) but not the null on
    inflation at h ≤ 2.
 7. **The asset-pricing arm** *(only if "finance" means markets rather than macro)* —
