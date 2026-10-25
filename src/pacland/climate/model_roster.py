@@ -17,9 +17,10 @@ The three rows are chosen to show the scoring doing real work:
   model the climate trust board excludes, seen through the bar.
 - **UKESM1-0-LL** — fails sensitivity and conservation. It claims only what is true of it.
 
-What none of them can claim, and why: `exact_structure` (the invariants are physical
-conservation laws, measured not proved in symbols) and `falsifiable_prediction` (none
-registered per model). `deficit` is now claimed **per model**:
+What none of them can claim, and why: only `falsifiable_prediction` (none
+registered per model). `exact_structure` is now claimed: `climate/structure.py` inventories
+five conservation invariants, proves the algebraic half and *labels it bookkeeping*, and
+reports that only three are measured here. `deficit` is now claimed **per model**:
 `climate/model_deficit.py` counts how many observables *this* model survives — GISS 3,
 MPI-ESM1-2-HR 2, UKESM1-0-LL 1 — with the radius moving accordingly.
 
@@ -45,6 +46,8 @@ COMMON = ("trust_entry", "reproduce", "benchmark", "out_of_sample")
 
 #: Per-model deficit: how many observables THIS model is validated against.
 DEFICIT = "src/pacland/climate/model_deficit.py"
+#: The invariant inventory: five conservation laws, three of them measured here.
+STRUCTURE = "scripts/climate_conservation.py"
 
 #: Evidence for the two slots the null now fills: a real-time hindcast, data as of each
 #: start year, scored against observations published later.
@@ -60,10 +63,11 @@ def _giss() -> Model:
         exact_content="energy, mass and salt conservation (exact physical invariants, measured)",
         free="the model's own 100+ tuned parameters",
         observables=("ECS", "ERF2x", "energy/mass/salt drift"),
-        done=frozenset(COMMON + ("rule_of_three", "guard_suite", "deficit")),
+        done=frozenset(COMMON + ("rule_of_three", "guard_suite", "deficit", "exact_structure")),
         evidence={"rule_of_three": DRIFT, "guard_suite": GUARDS, "trust_entry": TRUST_BOARD,
                   "reproduce": REPRODUCE, "benchmark": HINDCAST,
-                  "out_of_sample": HINDCAST, "deficit": DEFICIT},
+                  "out_of_sample": HINDCAST, "deficit": DEFICIT,
+                  "exact_structure": STRUCTURE},
         priority=0,
     )
 
@@ -78,9 +82,12 @@ def _mpi() -> Model:
         free="the model's own 100+ tuned parameters",
         observables=("ECS", "ERF2x", "energy/mass/salt drift"),
         # it LEAKS a ledger, so it cannot claim the conservation checks
-        done=frozenset(COMMON + ("deficit",)),
+        # the invariant inventory is the same physics for every model; what differs is
+        # compliance (captured by rule_of_three / guard_suite, which this one fails)
+        done=frozenset(COMMON + ("deficit", "exact_structure")),
         evidence={"trust_entry": TRUST_BOARD, "reproduce": REPRODUCE,
-                  "benchmark": HINDCAST, "out_of_sample": HINDCAST, "deficit": DEFICIT},
+                  "benchmark": HINDCAST, "out_of_sample": HINDCAST, "deficit": DEFICIT,
+                  "exact_structure": STRUCTURE},
         priority=1,
     )
 
@@ -93,9 +100,10 @@ def _ukesm() -> Model:
         exact_content="energy, mass and salt conservation (exact physical invariants, measured)",
         free="the model's own 100+ tuned parameters",
         observables=("ECS", "ERF2x", "energy/mass/salt drift"),
-        done=frozenset(COMMON + ("deficit",)),
+        done=frozenset(COMMON + ("deficit", "exact_structure")),
         evidence={"trust_entry": TRUST_BOARD, "reproduce": REPRODUCE,
-                  "benchmark": HINDCAST, "out_of_sample": HINDCAST, "deficit": DEFICIT},
+                  "benchmark": HINDCAST, "out_of_sample": HINDCAST, "deficit": DEFICIT,
+                  "exact_structure": STRUCTURE},
         priority=2,
     )
 

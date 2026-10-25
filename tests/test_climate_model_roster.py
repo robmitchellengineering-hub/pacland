@@ -34,16 +34,19 @@ class TestTheDiscriminator(unittest.TestCase):
         u = next(m for m in R.CLIMATE_ROSTER if "UKESM" in m.name)
         # scored on the board, reproduced, and now measured against the null — but NOT
         # credited with the conservation checks it fails
+        # it keeps the shared invariant inventory and its own deficit, and is NOT
+        # credited with the conservation checks it fails
         self.assertEqual(set(u.done),
                          {"trust_entry", "reproduce", "benchmark", "out_of_sample",
-                          "deficit"})
+                          "deficit", "exact_structure"})
+        self.assertIn("rule_of_three", u.missing())
+        self.assertIn("guard_suite", u.missing())
 
 
 class TestTheFinding(unittest.TestCase):
-    def test_the_same_two_slots_are_owed_by_every_model(self):
+    def test_one_slot_is_still_owed_by_every_model(self):
         f = R.transfer_finding()
-        self.assertEqual(f["owed_by_every_model"],
-                         ["exact_structure", "falsifiable_prediction"])
+        self.assertEqual(f["owed_by_every_model"], ["falsifiable_prediction"])
 
     def test_the_null_slots_are_now_claimed(self):
         for m in R.CLIMATE_ROSTER:
