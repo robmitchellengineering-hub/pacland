@@ -22,7 +22,8 @@ expansion. Live: [pacland.morpheus.nz](https://pacland.morpheus.nz) · `pip inst
 Each discipline is its own thing — own subpackage, docs, and CLI command — sharing one
 spine (two-level certificate, verification deficit, constraint-first, four-walls map).
 
-**How a new field gets figured out:** [`docs/SOP-FIGURING-SYSTEMS-OUT.md`](docs/SOP-FIGURING-SYSTEMS-OUT.md)
+**How a new field gets figured out:** [`docs/verify-bar.md`](docs/verify-bar.md) (the bar, and
+the climate transfer test) and [`docs/SOP-FIGURING-SYSTEMS-OUT.md`](docs/SOP-FIGURING-SYSTEMS-OUT.md)
 — the method, written after applying it to macro-finance: count constraints by rank rather
 than by list, source and classify every one, derive the reference point, fetch the source,
 seed a fault under every guard, and put the null in every table.
@@ -113,7 +114,7 @@ pacland climb             # run the deficit climber on the mesh
 ## Tests
 
 ```sh
-python3 -m unittest discover -s tests   # 485 tests
+python3 -m unittest discover -s tests   # 506 tests
 ```
 
 ## Honest frontier
