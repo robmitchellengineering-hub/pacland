@@ -32,22 +32,29 @@ class TestTheDiscriminator(unittest.TestCase):
 
     def test_the_failing_model_claims_only_what_is_true_of_it(self):
         u = next(m for m in R.CLIMATE_ROSTER if "UKESM" in m.name)
-        self.assertEqual(set(u.done), {"trust_entry", "reproduce"})
+        # scored on the board, reproduced, and now measured against the null — but NOT
+        # credited with the conservation checks it fails
+        self.assertEqual(set(u.done),
+                         {"trust_entry", "reproduce", "benchmark", "out_of_sample"})
 
 
 class TestTheFinding(unittest.TestCase):
-    def test_the_same_five_slots_are_owed_by_every_model(self):
+    def test_the_same_three_slots_are_owed_by_every_model(self):
         f = R.transfer_finding()
         self.assertEqual(
             f["owed_by_every_model"],
-            ["benchmark", "deficit", "exact_structure", "falsifiable_prediction",
-             "out_of_sample"],
+            ["deficit", "exact_structure", "falsifiable_prediction"],
         )
 
-    def test_the_verdict_names_the_missing_null(self):
+    def test_the_null_slots_are_now_claimed(self):
+        for m in R.CLIMATE_ROSTER:
+            self.assertIn("benchmark", m.done, m.name)
+            self.assertIn("out_of_sample", m.done, m.name)
+
+    def test_the_verdict_says_the_null_exists_and_wins(self):
         f = R.transfer_finding()
-        self.assertIn("no-change null", f["verdict"])
-        self.assertIn("real-time", f["verdict"])
+        self.assertIn("trend", f["verdict"])
+        self.assertIn("per-model deficit", f["verdict"])
 
     def test_no_climate_row_is_clean(self):
         self.assertEqual(R.transfer_finding()["n_clean"], 0)

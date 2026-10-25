@@ -19,10 +19,12 @@ The three rows are chosen to show the scoring doing real work:
 
 What none of them can claim, and why: `exact_structure` (the invariants are physical
 conservation laws, measured not proved in symbols), `deficit` (climate's `m` is computed for
-the discipline, not per model), `out_of_sample` and `benchmark` (nobody has run these models
-against a no-change projection on real-time data), and `falsifiable_prediction` (none
-registered per model). Those are gaps in the field, surfaced by a bar it has never been
-scored on.
+the discipline, not per model), and `falsifiable_prediction` (none registered per model).
+
+The other two — `benchmark` and `out_of_sample` — **are now claimed**: `climate/baseline.py`
+builds the no-change null (observed trend continued) and runs a real-time hindcast against
+it. The result is not flattering to the models, and that is the point: **the trend null
+wins**, with the ECS emulators beating persistence but not the trend.
 """
 from __future__ import annotations
 
@@ -37,7 +39,12 @@ REPRODUCE = "scripts/climate_drift_second_source.py"
 #: Slots a CMIP6 model can claim *today*, given what the repo holds: the trust board scores
 #: it, the conservation ledgers are measured for 17 of 53, and the guard-suite is the
 #: discipline's. Nothing else exists at the per-model level.
-COMMON = ("trust_entry", "reproduce")
+COMMON = ("trust_entry", "reproduce", "benchmark", "out_of_sample")
+
+#: Evidence for the two slots the null now fills: a real-time hindcast, data as of each
+#: start year, scored against observations published later.
+HINDCAST = "src/pacland/climate/baseline.py (real-time hindcast, data as of each start year)"
+HINDCAST_REPRO = "scripts/climate_null.py"
 
 
 def _giss() -> Model:
@@ -50,7 +57,8 @@ def _giss() -> Model:
         observables=("ECS", "ERF2x", "energy/mass/salt drift"),
         done=frozenset(COMMON + ("rule_of_three", "guard_suite")),
         evidence={"rule_of_three": DRIFT, "guard_suite": GUARDS, "trust_entry": TRUST_BOARD,
-                  "reproduce": REPRODUCE},
+                  "reproduce": REPRODUCE, "benchmark": HINDCAST,
+                  "out_of_sample": HINDCAST},
         priority=0,
     )
 
@@ -66,7 +74,8 @@ def _mpi() -> Model:
         observables=("ECS", "ERF2x", "energy/mass/salt drift"),
         # it LEAKS a ledger, so it cannot claim the conservation checks
         done=frozenset(COMMON),
-        evidence={"trust_entry": TRUST_BOARD, "reproduce": REPRODUCE},
+        evidence={"trust_entry": TRUST_BOARD, "reproduce": REPRODUCE,
+                  "benchmark": HINDCAST, "out_of_sample": HINDCAST},
         priority=1,
     )
 
@@ -80,7 +89,8 @@ def _ukesm() -> Model:
         free="the model's own 100+ tuned parameters",
         observables=("ECS", "ERF2x", "energy/mass/salt drift"),
         done=frozenset(COMMON),
-        evidence={"trust_entry": TRUST_BOARD, "reproduce": REPRODUCE},
+        evidence={"trust_entry": TRUST_BOARD, "reproduce": REPRODUCE,
+                  "benchmark": HINDCAST, "out_of_sample": HINDCAST},
         priority=2,
     )
 
@@ -107,9 +117,9 @@ def transfer_finding() -> dict:
         "n_clean": sum(1 for r in rows if r["tier"] == "clean"),
         "n_weak": sum(1 for r in rows if r["tier"] == "weak"),
         "verdict": (
-            "climate's exact content is stronger than macro-finance's, but its verification "
-            "surface is thinner: no no-change null and no real-time out-of-sample test exist "
-            "at the per-model level"
+            "the null now exists — observed trend continued — and on a real-time hindcast it "
+            "wins: the ECS emulators beat persistence but not the trend. What climate still "
+            "lacks is a per-model deficit and a per-model exact-structure inventory"
         ),
     }
 
