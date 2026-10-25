@@ -40,7 +40,7 @@ not having started.
 | 0 | **random walk (no change)** | control | none — it asserts tomorrow equals today | none | — | **clean** |
 | 1 | **Godley–Lavoie SFC (SIM/SIMEX)** | oracle | every sectoral + stock-flow identity, the budget constraint | behavioural propensities (α₁, α₂, θ) | — | **clean** |
 | 2 | **New Keynesian 3-equation** (Taylor 1993; Clarida–Galí–Gertler) | forecast | Fisher exact; long-run Phillips slope (1−β)/κ; determinacy boundary; the zero-inflation domain | 5 (β, κ, σ, φπ, φy) | 3 | **weak — 3 owed** |
-| 3 | **Smets–Wouters (2007) DSGE** | forecast | the published conditions — **inventory not yet built**; what *is* checked is the parameter record, the Calvo slope and the policy rule | ~40 (published posterior) | **7** | weak — 5 owed |
+| 3 | **Smets–Wouters (2007) DSGE** | forecast | the 20-condition inventory: **13 established** at the steady state, 3 dynamic-only, 4 cited (Table 1a record + Calvo slope + policy rule check) | ~40 (published posterior) | **7** | weak — 5 owed |
 | 4 | **VAR(1) (statistical benchmark)** | statistical | none — pure fit, no identity imposed | all coefficients | 3 | **clean** — real-time run done |
 | 5 | **GDPNow (Atlanta Fed)** | forecast | national-accounts identities + the bridge equations | bridge coefficients, re-estimated quarterly | 1 | weak — 9 owed |
 
@@ -137,6 +137,40 @@ Meese–Rogoff question is genuinely open, and it is exactly what slice 4 runs. 
 correction sharpens the plan instead of weakening it: the field's best-known
 out-of-sample table benchmarks a VAR(1), not "tomorrow equals today".
 
+### What the conditions inventory established (slice 5)
+
+The objective was to machine-check the model's ~20 linearised conditions. The honest way
+to do that without transcribing a technical appendix is to go the other way: take the
+paper's **nonlinear** decision problems (appendix 1, pp. 47–53) and *derive* the steady
+state in sympy, then record verdicts. `src/pacland/economics/sw_structure.py` carries the
+inventory; `scripts/validate_sw_structure.py` derives it, **9/9**.
+
+| derivation | result |
+|---|---|
+| Euler → Fisher | `R = π̄/β̃` → **1.5407 %/q = 6.16 %/yr** |
+| Tobin's Q = 1 | `R^k = 1/β̃ − 1 + δ` → **3.25 %/q** |
+| capital accumulation | `i = δk` |
+| production + FOCs | `y+φ = k^α(ΓL)^{1−α}`, `k/L = α/(1−α)·w/R^k` |
+| cost identity | eq. (6) reproduces `mc` from the FOCs — true because production is CRS (Euler's theorem) |
+| resource constraint | `k/(y+φ) = α·mc/R^k`, so `i/y = δk/y = 0.122`, `c/y = 0.698` |
+| policy rule | satisfied by `R = R*` at **any** target |
+
+**The result worth keeping:** SW's rule is written in deviations from *its own* steady
+state, so `π = π*`, `R = R*` satisfies it identically for any target. The NK three-equation
+model has no steady state at a non-zero target (`nk3.guard_steady_state_admissible`); SW
+does not inherit that bug — it is designed out. That is the model-design lesson the two
+slices now carry together.
+
+**Scope, stated not implied:** 13 of 20 conditions are established, 3 are dynamic-only by
+construction (the Calvo reset-price and wage recursions, and the utilisation FOC — their
+content is the recursion, not a steady-state number), and 4 are cited as given (the
+Kimball aggregator, the demand curve, the government-spending and shock processes). The
+`exact_structure` slot therefore stays **unclaimed**, and a roster test asserts that:
+coverage is not total, so the model does not get the tick.
+
+δ = 0.025 is a **calibration**, not a Table 1a estimate, and is labelled as such wherever
+it appears.
+
 ### The real-time run (slice 4): does anything beat "no change"?
 
 Slice 3 found that the field's best-known out-of-sample table (SW 2007, Table 3)
@@ -197,7 +231,11 @@ is level-sized, so that mistake cannot be published quietly.
    and no-target-leak guards, and the null-vs-AR(1)-vs-VAR(1) run. Still open from the
    original wording: **SW's own model is not estimated**, so the three-way is
    null/AR/VAR today and null/SW next.
-5. **The asset-pricing arm** *(only if "finance" means markets rather than macro)* —
+5. ~~**SW conditions inventory**~~ — **done**: 13/20 established symbolically, 7
+   scoped out with reasons, and the model-design contrast with NK3 recorded.
+6. **SW out of sample** — estimate the model (or a defensible reduced form) and run it
+   against the null on the vintage fixture, completing the three-way.
+7. **The asset-pricing arm** *(only if "finance" means markets rather than macro)* —
    put–call parity, the Hansen–Jagannathan bound, Black–Scholes. Their exact content is
    stronger than macro's (no-arbitrage is a theorem), so they may belong first if that is
    the intended meaning; they are held back until the roster's macro half is green.
