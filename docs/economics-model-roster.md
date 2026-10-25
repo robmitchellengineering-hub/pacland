@@ -261,6 +261,37 @@ seven shocks; ρ_r and ρ_u are borrowed from the textbook run and labelled as b
 SW itself still owes `out_of_sample` and `benchmark`, and the registered prediction
 (§9) says what it will find when it is estimated.
 
+### The constraint set — plural, by design (slice 9)
+
+Physics gave the *shape* of the machine, not a licence to insist on one constraint. The
+landscape has a single invariant because it has a duality group and a finite-generation
+theorem; macro-finance has neither, and forcing the analogy would have been the overclaim.
+What macro-finance has is a **set** — and a set has to be measured, not asserted.
+
+`src/pacland/economics/constraint_set.py` holds **11 constraints**, each with a kind, a
+statement, a source and a residual function:
+
+| kind | count | examples |
+|---|---|---|
+| **identity** (true by construction) | 4 | circular flow · sectoral balances · stock-flow · the budget constraint |
+| **model** (true of the model's solution) | 5 | Fisher · Taylor principle · long-run Phillips · resource shares · capital–output relation |
+| **domain** (where the model is defined) | 2 | non-negative prices · the zero-inflation domain |
+
+Two numbers matter, and neither is "how many we wrote down":
+
+- **Independent rank = 8 of 8 equalities**, measured as the rank of the constraint
+  Jacobian at a *generic* point. A dependent constraint is one constraint wearing two
+  hats, and the test proves the detector works: duplicating Fisher as `2·(i − r* − π)`
+  lifts the count to 9 and leaves the rank at 8.
+- **Slack ordering** — which constraints actually bind. A constraint the data never
+  approaches is decoration; the one with the smallest slack is doing the work.
+
+The reference state is **derived**, not hand-tuned: it is the model's own steady state
+(Fisher at `r* + π`, the long-run Phillips gap, the capital–output ratio at the rental
+rate) joined to a closed set of accounts, so the set is consistent at a point that no one
+picked. `guard_default_state_is_admissible` fails if a constraint and a model ever drift
+apart.
+
 ## 5. The one hard precondition: real-time vintages — **met**
 
 - **Current-vintage data is keyless.** All seven Smets–Wouters observables pull from
