@@ -294,9 +294,26 @@ def _gdpnow() -> Model:
         role="a real, published, replicable nowcast — the cleanest test of the word 'verified'",
         exact_content="national-accounts identities + the bridge equations from source data to GDP",
         free="bridge-equation coefficients, re-estimated each quarter",
-        observables=("GDP growth (advance estimate)",),
-        done=frozenset(),
-        evidence={},
+        observables=("GDP growth, advance estimate",),
+        # Scored on the real-time record (37 quarters, 2016Q2-2025Q4): the nowcast
+        # precedes the vintage carrying its target, the null shares its vintage, the
+        # targets are first publications, and the edge survives excluding 2020.
+        done=frozenset({
+            "deficit", "rule_of_three", "guard_suite", "benchmark", "out_of_sample",
+            "trust_entry", "falsifiable_prediction", "reproduce",
+        }),
+        evidence={
+            "deficit": "src/pacland/economics/gdpnow.py",
+            "rule_of_three": "scripts/economics_gdpnow.py",
+            "guard_suite": "src/pacland/economics/gdpnow.py",
+            "benchmark": "src/pacland/economics/gdpnow.py",
+            "out_of_sample": "data/economics/gdpnow.json (ALFRED real-time vintages)",
+            "trust_entry": "src/pacland/trust.py",
+            "falsifiable_prediction": "docs/falsifiable-predictions.md",
+            "reproduce": "scripts/economics_gdpnow.py",
+        },
+        # measured and it won: 0.25x MAE, 0.14x RMSE, 28/37 paired wins
+        outcome="beats_null",
         priority=5,
     )
 

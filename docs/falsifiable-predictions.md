@@ -178,6 +178,26 @@ that *is* identified comes out passive (`φπ = 0.46`, long-run 0.99), which the
 set refuses. The prediction therefore stays untested, and the route to testing it is now
 priced: full-information estimation of the 20-condition model, not a reduction.
 
+## 11. GDPNow's edge shrinks on the final value
+
+**Claim.** The Atlanta Fed's nowcast beats "last quarter's growth" by a wide margin when
+the target is the **advance estimate** — measured here on 37 real-time quarters:
+0.25x the null's MAE, 0.14x its RMSE, 28/37 paired wins (0.51x MAE excluding 2020). When
+the same nowcasts are scored against the **final revised** value instead, the margin will
+shrink below half of that edge.
+
+**Grounds.** The advance estimate is built from the same monthly source data GDPNow
+consumes, so the model is being scored on a number it can largely reconstruct. The final
+revision adds information that arrives *later* — annual benchmarks, seasonal re-estimation,
+source-data corrections — which no nowcast made four weeks after quarter end can contain.
+
+**Falsification.** Re-score the same fixture against GDPC1's current (revised) values. If
+the MAE ratio stays at or below 0.25x, this prediction dies and the nowcast's edge is real
+against the revised world too, not just against the first print.
+
+**Status — registered, untested, 2026-10-26.** The narrow claim is what is published; this
+is the wider one that the data has not yet been asked.
+
 ## What this is for
 
 The whole program — the deficit, the boundary map, the constraint-first solver —
