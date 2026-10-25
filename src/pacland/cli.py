@@ -329,10 +329,19 @@ def _cmd_drugs(args) -> None:
 
 
 def _cmd_economics(args) -> None:
-    """Economics discipline: the verification deficit (playbook item #3)."""
-    from .economics.deficit import summary
+    """Economics discipline: the deficit, the model roster, the constraints, real time."""
+    from .economics import report
 
-    print(summary(delta_e=args.delta))
+    if getattr(args, "models", False):
+        print(report.models_report())
+    elif getattr(args, "constraints", False):
+        print(report.constraints_report())
+    elif getattr(args, "realtime", False):
+        print(report.realtime_report())
+    else:
+        from .economics.deficit import summary
+
+        print(summary(delta_e=args.delta))
 
 
 def _cmd_trust(_args) -> None:
@@ -405,8 +414,11 @@ def main(argv=None) -> None:
     dm.add_argument("--delta", type=float, default=0.025, help="confidence budget delta_e")
     dm.set_defaults(func=_cmd_drugs)
 
-    em = sub.add_parser("economics", help="economics discipline: the verification deficit")
+    em = sub.add_parser("economics", help="economics discipline: deficit, roster, constraints, real time")
     em.add_argument("--delta", type=float, default=0.025, help="confidence budget delta_e")
+    em.add_argument("--models", action="store_true", help="the model roster, scored on the bar")
+    em.add_argument("--constraints", action="store_true", help="the constraint set and its rank")
+    em.add_argument("--realtime", action="store_true", help="real-time results against the null")
     em.set_defaults(func=_cmd_economics)
 
     t = sub.add_parser("trust", help="the trust board — ranked artifacts across disciplines")
