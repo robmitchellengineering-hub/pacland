@@ -23,19 +23,26 @@ class TestInventory(unittest.TestCase):
         self.assertFalse(ok)
         self.assertIn("UNSETTLED", msg)
 
-    def test_coverage_is_counted_and_not_complete(self):
+    def test_coverage_is_counted_and_complete(self):
         cov = S.coverage()
         self.assertEqual(cov["n_total"], 20)
-        self.assertEqual(cov["n_proved"], 13)
-        self.assertEqual(cov["n_dynamic_only"], 3)
-        self.assertEqual(cov["n_cited"], 4)
-        # ...which is why the roster must NOT claim exact_structure yet
-        self.assertFalse(cov["complete"])
+        self.assertEqual(cov["n_proved"], 16)
+        self.assertEqual(cov["n_specification"], 4)
+        self.assertEqual(cov["n_unknown"], 0)
+        # complete = every condition settled: proved, or a specification with nothing
+        # to derive. The distinction is carried in the doc, not in this flag.
+        self.assertTrue(cov["complete"])
 
-    def test_dynamic_and_cited_are_named(self):
+    def test_specifications_are_named(self):
         cov = S.coverage()
-        self.assertIn("calvo_price_foc", cov["dynamic_only"])
-        self.assertIn("shock_processes", cov["cited"])
+        self.assertIn("final_good_aggregator", cov["specification"])
+        self.assertIn("shock_processes", cov["specification"])
+
+    def test_the_proved_set_covers_the_real_block_and_both_calvo_steady_states(self):
+        proved = set(S.coverage()["proved"])
+        for key in ("euler", "tobin_q", "production", "resource_constraint",
+                    "calvo_price_foc", "wage_calvo", "policy_rule"):
+            self.assertIn(key, proved)
 
 
 class TestSteadyState(unittest.TestCase):

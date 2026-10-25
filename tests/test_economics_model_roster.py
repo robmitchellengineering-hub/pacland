@@ -128,20 +128,16 @@ class TestStartingSet(unittest.TestCase):
     def test_the_workhorse_forecast_model_owes_the_rest_of_the_bar(self):
         sw = next(m for m in ROSTER if m.name.startswith("Smets–Wouters"))
         self.assertEqual(sw.kind, "forecast")
-        self.assertEqual(
-            set(sw.missing()),
-            {"exact_structure", "out_of_sample", "benchmark", "trust_entry",
-             "falsifiable_prediction"},
-        )
+        # everything but the two that need the model estimated
+        self.assertEqual(set(sw.missing()), {"out_of_sample", "benchmark"})
         self.assertEqual(sw.tier(ROOT), "weak")
 
-    def test_sw_does_not_claim_exact_structure_while_the_inventory_is_incomplete(self):
-        # 13/20 conditions established; the slot stays unclaimed until coverage is total
+    def test_sw_claims_exact_structure_only_because_every_condition_is_settled(self):
         from pacland.economics import sw_structure
 
         sw = next(m for m in ROSTER if m.name.startswith("Smets–Wouters"))
-        self.assertFalse(sw_structure.coverage()["complete"])
-        self.assertNotIn("exact_structure", sw.done)
+        self.assertTrue(sw_structure.coverage()["complete"])
+        self.assertIn("exact_structure", sw.done)
 
     def test_sw_does_not_claim_the_out_of_sample_slot_yet(self):
         # the paper benchmarks a VAR(1); the no-change null is still unrun

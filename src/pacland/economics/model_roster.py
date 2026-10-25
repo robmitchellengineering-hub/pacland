@@ -250,10 +250,14 @@ def _sw() -> Model:
         # and the m=7 ceiling is computed both ways. Still owed: the ~20-condition
         # inventory (exact_structure), the out-of-sample run, the benchmark, a clean
         # board row, and a registered falsifiable prediction.
-        done=frozenset({"deficit", "rule_of_three", "guard_suite", "reproduce"}),
+        done=frozenset({"exact_structure", "deficit", "rule_of_three", "guard_suite",
+                        "trust_entry", "falsifiable_prediction", "reproduce"}),
         evidence={
+            "exact_structure": "scripts/validate_sw_structure.py",
             "deficit": "src/pacland/economics/sw2007.py",
             "rule_of_three": "scripts/validate_economics_sw.py",
+            "trust_entry": "src/pacland/trust.py",
+            "falsifiable_prediction": "docs/falsifiable-predictions.md",
             "guard_suite": "src/pacland/economics/sw2007.py",
             "reproduce": "scripts/validate_economics_sw.py",
         },

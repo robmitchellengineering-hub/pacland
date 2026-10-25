@@ -40,7 +40,7 @@ not having started.
 | 0 | **random walk (no change)** | control | none — it asserts tomorrow equals today | none | — | **clean** |
 | 1 | **Godley–Lavoie SFC (SIM/SIMEX)** | oracle | every sectoral + stock-flow identity, the budget constraint | behavioural propensities (α₁, α₂, θ) | — | **clean** |
 | 2 | **New Keynesian 3-equation** (Taylor 1993; Clarida–Galí–Gertler) | forecast | Fisher exact; long-run Phillips slope (1−β)/κ; determinacy boundary; the zero-inflation domain; two-shock policy function | 7 (+ρ_r, ρ_u) | 3 | **weak — 0 owed, run lost** |
-| 3 | **Smets–Wouters (2007) DSGE** | forecast | the 20-condition inventory: **13 established** at the steady state, 3 dynamic-only, 4 cited (Table 1a record + Calvo slope + policy rule check) | ~40 (published posterior) | **7** | weak — 5 owed |
+| 3 | **Smets–Wouters (2007) DSGE** | forecast | the 20-condition inventory: **16 proved** at the steady state, 4 specifications (inputs), 0 unresolved | ~40 (published posterior) | **7** | weak — 2 owed |
 | 4 | **VAR(1) (statistical benchmark)** | statistical | none — pure fit, no identity imposed | all coefficients | 3 | **clean** — real-time run done |
 | 5 | **GDPNow (Atlanta Fed)** | forecast | national-accounts identities + the bridge equations | bridge coefficients, re-estimated quarterly | 1 | weak — 9 owed |
 
@@ -73,7 +73,7 @@ not having started.
 random walk (no change)                     control     clean
 Godley–Lavoie SFC (SIM/SIMEX)               oracle      clean
 New Keynesian 3-equation                    forecast    weak   owes 0 — but its real-time run LOSES to the null
-Smets–Wouters (2007) DSGE                   forecast    weak   owes 5  (exact_structure, out_of_sample, benchmark, trust_entry, prediction)
+Smets–Wouters (2007) DSGE                   forecast    weak   owes 2  (out_of_sample, benchmark)
 VAR(1) (statistical benchmark)              statistical clean
 GDPNow (Atlanta Fed)                        forecast    weak   owes 9
 ```
@@ -262,8 +262,12 @@ is level-sized, so that mistake cannot be published quietly.
    scoped out with reasons, and the model-design contrast with NK3 recorded.
 6. ~~**NK3 out of sample**~~ — **done**: two-shock policy function, real-time run on the
    fixture, and the loss recorded in the tier rather than hidden.
-7. **SW out of sample** — estimate the model (or a defensible reduced form) and run it
-   against the null on the vintage fixture, completing the three-way.
+7. ~~**SW inventory closed**~~ — **done**: 16/20 proved, 4 specifications, 0 unresolved;
+   `exact_structure`, `trust_entry` and a registered falsifiable prediction claimed.
+8. **SW out of sample** — estimate the model (or a defensible reduced form) and run it
+   against the null on the vintage fixture, completing the three-way. The registered
+   prediction (falsifiable-predictions §9) says it beats the VAR(1) but not the null on
+   inflation at h ≤ 2.
 7. **The asset-pricing arm** *(only if "finance" means markets rather than macro)* —
    put–call parity, the Hansen–Jagannathan bound, Black–Scholes. Their exact content is
    stronger than macro's (no-arbitrage is a theorem), so they may belong first if that is

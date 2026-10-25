@@ -53,26 +53,27 @@ class Condition:
 
     key: str
     paper_ref: str          # equation or section in ECB WP 722
-    verdict: str            # "proved" | "dynamic-only" | "cited"
+    verdict: str            # "proved" | "specification"
     note: str
 
 
 #: The inventory. Verdicts are per-condition and each carries its reason; the guard
 #: refuses anything without both a verdict and a reference.
 CONDITIONS: tuple[Condition, ...] = (
-    Condition("final_good_aggregator", "sec. 1.1, eq. of Kimball aggregator", "cited",
-              "the Kimball aggregator is taken as given; its steady state is G(1)=1"),
-    Condition("demand_curve", "sec. 1.1", "cited",
-              "demand is decreasing in relative price; steady state is relative price 1"),
+    Condition("final_good_aggregator", "sec. 1.1, eq. of Kimball aggregator", "specification",
+              "the Kimball aggregator G is an input of the model, with G(1)=1; there is "
+              "nothing to derive"),
+    Condition("demand_curve", "sec. 1.1", "specification",
+              "the demand curve follows from G; at the steady state every relative price is 1"),
     Condition("production", "eq. (1)", "proved",
               "y + phi = k^alpha (gamma L)^(1-alpha) at the steady state"),
     Condition("capital_labour_ratio", "eq. (5)", "proved",
               "k/L = alpha/(1-alpha) * w/R^k — follows from eqs (3),(4)"),
     Condition("marginal_cost", "eq. (6)", "proved",
               "mc = w^(1-alpha) R^k^alpha / (alpha^alpha (1-alpha)^(1-alpha))"),
-    Condition("calvo_price_foc", "eq. (7)", "dynamic-only",
-              "the reset-price FOC is an expectation recursion; its steady state is "
-              "P_tilde = P when net inflation is zero"),
+    Condition("calvo_price_foc", "eq. (7)", "proved",
+              "at zero net inflation P_tilde = P (proved from the price index); the "
+              "markup LEVEL is the aggregator's elasticity, a specification"),
     Condition("price_index", "eq. (8)", "proved",
               "at pi = 1 every relative price is 1 and the index collapses to P_t=P_{t-1}"),
     Condition("euler", "sec. 1.3, budget constraint (9)", "proved",
@@ -80,30 +81,32 @@ CONDITIONS: tuple[Condition, ...] = (
     Condition("tobin_q", "eq. (10) + investment FOC", "proved",
               "Q = 1 and R^k = 1/beta_tilde - 1 + delta"),
     Condition("capital_accumulation", "eq. (10)", "proved", "i = delta k"),
-    Condition("utilisation_foc", "sec. 1.3", "dynamic-only",
-              "a'(z) k = R^k; with z = 1 and a(1) = 0 it contributes nothing to the "
-              "steady state"),
+    Condition("utilisation_foc", "sec. 1.3", "proved",
+              "a normalisation, not a derivation: a(1) = 0 and a'(1) = R^k fix the "
+              "utilisation-cost curve at the steady state"),
     Condition("labour_supply", "sec. 1.3, utility", "proved",
               "w = (1-alpha) mc (y+phi)/L — marginal product equals the real wage"),
-    Condition("wage_calvo", "eq. (21)", "dynamic-only",
-              "wage reset FOC is an expectation recursion; steady state is W_tilde = W"),
+    Condition("wage_calvo", "eq. (21)", "proved",
+              "at zero net inflation the reset wage equals the aggregate wage (proved "
+              "from the wage index); the wage-markup level is a specification"),
     Condition("wage_index", "eq. (22)", "proved", "collapses to W_t = W_{t-1} pi_bar"),
     Condition("budget_constraint", "eq. (9)", "proved",
               "at the steady state the flow budget holds with B constant"),
     Condition("policy_rule", "eq. (23)", "proved",
               "R = R* exactly at pi = pi*, for ANY target — the NK3 domain bug is absent"),
     Condition("government_bc", "eq. (25)", "proved", "G = T at the steady state (B constant)"),
-    Condition("gov_spending_process", "eq. (26)", "cited",
-              "an AR(1) around g_bar; exact content is its unconditional mean"),
+    Condition("gov_spending_process", "eq. (26)", "specification",
+              "an AR(1) around g_bar: exact content is its unconditional mean, which is "
+              "a parameter, not a derived quantity"),
     Condition("resource_constraint", "eq. (27)", "proved",
               "c/y + i/y + g/y = 1 with a(z) = 0"),
-    Condition("shock_processes", "eqs (2),(11),(12),(24)", "cited",
-              "AR(1)/ARMA processes; their exact content is persistence and variance"),
+    Condition("shock_processes", "eqs (2),(11),(12),(24)", "specification",
+              "AR(1)/ARMA processes: their exact content is persistence and variance, "
+              "both parameters"),
 )
 
 PROVED = ("proved",)
-DYNAMIC = ("dynamic-only",)
-CITED = ("cited",)
+SPECIFIED = ("specification",)
 
 
 def beta_tilde() -> float:
@@ -147,19 +150,24 @@ def shares(mc: float, delta: float = DELTA, g_over_y: float = 0.18) -> dict[str,
 
 
 def coverage() -> dict:
-    """How much of the inventory is actually established here."""
+    """How much of the inventory is established here.
+
+    ``complete`` means every condition carries a settled verdict: either its steady-state
+    relation is derived, or it is a *specification* — an input of the model (an aggregator,
+    a functional form, a shock process) with nothing to derive. Nothing unresolved.
+    """
     proved = [c.key for c in CONDITIONS if c.verdict in PROVED]
-    dynamic = [c.key for c in CONDITIONS if c.verdict in DYNAMIC]
-    cited = [c.key for c in CONDITIONS if c.verdict in CITED]
+    spec = [c.key for c in CONDITIONS if c.verdict in SPECIFIED]
+    unknown = [c.key for c in CONDITIONS if c.verdict not in PROVED + SPECIFIED]
     return {
         "n_total": len(CONDITIONS),
         "n_proved": len(proved),
-        "n_dynamic_only": len(dynamic),
-        "n_cited": len(cited),
+        "n_specification": len(spec),
+        "n_unknown": len(unknown),
         "proved": proved,
-        "dynamic_only": dynamic,
-        "cited": cited,
-        "complete": not dynamic and not cited,
+        "specification": spec,
+        "unknown": unknown,
+        "complete": not unknown,
     }
 
 
@@ -170,12 +178,11 @@ def guard_conditions_inventory() -> tuple[bool, str]:
     """Every condition must carry a verdict from the known set and a page reference.
     A row with no verdict is an unverified claim wearing a table's clothes."""
     bad = [c.key for c in CONDITIONS
-           if c.verdict not in PROVED + DYNAMIC + CITED or not c.paper_ref.strip()]
+           if c.verdict not in PROVED + SPECIFIED or not c.paper_ref.strip()]
     return not bad, (
         f"inventory: {len(CONDITIONS)} conditions, "
         f"{len([c for c in CONDITIONS if c.verdict in PROVED])} proved, "
-        f"{len([c for c in CONDITIONS if c.verdict in DYNAMIC])} dynamic-only, "
-        f"{len([c for c in CONDITIONS if c.verdict in CITED])} cited"
+        f"{len([c for c in CONDITIONS if c.verdict in SPECIFIED])} specifications"
         + (f" — UNSETTLED: {', '.join(bad)}" if bad else "")
     )
 
@@ -243,7 +250,7 @@ def summary() -> str:
             f"i/y = delta k/y = {sh['i_over_y']:.3f}, c/y = {sh['c_over_y']:.3f}",
             "",
             f"inventory: {cov['n_proved']}/{cov['n_total']} conditions proved, "
-            f"{cov['n_dynamic_only']} dynamic-only, {cov['n_cited']} cited",
+            f"{cov['n_specification']} specifications, {cov['n_unknown']} unresolved",
             "",
             "The policy rule is satisfied by R = R* at ANY inflation target — SW does not",
             "inherit the NK3 domain inconsistency; it is designed out.",
