@@ -4,6 +4,9 @@ Status: **roster scored and audited** — `src/pacland/economics/model_roster.py
 `tests/test_economics_model_roster.py`. Two of six models are at the bar; four are
 **named but not built**, and the roster says so instead of implying otherwise.
 
+Method: [SOP — figuring a complex system out](SOP-FIGURING-SYSTEMS-OUT.md). This page is
+that method's worked example.
+
 The landscape core never argues for its claims: it publishes a command and the command
 exits 0. Climate added the second idea — score **every named model** on hard axes rather
 than average a crowd (`docs/climate-trust-board.md`: 53 CMIP6 models in, 14 trusted out).

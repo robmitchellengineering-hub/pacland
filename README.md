@@ -21,6 +21,11 @@ expansion. Live: [pacland.morpheus.nz](https://pacland.morpheus.nz) · `pip inst
 
 Each discipline is its own thing — own subpackage, docs, and CLI command — sharing one
 spine (two-level certificate, verification deficit, constraint-first, four-walls map).
+
+**How a new field gets figured out:** [`docs/SOP-FIGURING-SYSTEMS-OUT.md`](docs/SOP-FIGURING-SYSTEMS-OUT.md)
+— the method, written after applying it to macro-finance: count constraints by rank rather
+than by list, source and classify every one, derive the reference point, fetch the source,
+seed a fault under every guard, and put the null in every table.
 The registry is `src/pacland/disciplines.py`; list them with `pacland disciplines`.
 
 ## The result, in one sentence
