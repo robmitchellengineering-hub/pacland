@@ -87,6 +87,32 @@ def main() -> int:
     d7 = resid == 0
     check("D7  policy rule holds at R=R*, pi=pi* for any target", f"residual = {resid}", d7)
 
+    # --- D9 the Calvo price index pins the reset price at zero inflation ------
+    xi_p, Ptilde, P, iota_p = sp.symbols("xi_p P_tilde P iota_p", positive=True)
+    # P = (1-xi) P_tilde * G'^-1 + xi * pi_bar^iota * pi_bar^(1-iota) * P, with pi_bar = 1
+    # and G'^-1(1) = 1 (Kimball normalisation)
+    price_index = sp.Eq(P, (1 - xi_p) * Ptilde + xi_p * P)
+    Ptilde_sol = sp.solve(price_index, Ptilde)[0]
+    d9 = sp.simplify(Ptilde_sol - P) == 0
+    check("D9  price index -> reset price equals the aggregate (pi_bar=1)",
+          f"P_tilde = {Ptilde_sol}", d9)
+
+    # --- D10 the wage index does the same ------------------------------------
+    xi_w, Wtilde, W = sp.symbols("xi_w W_tilde W", positive=True)
+    wage_index = sp.Eq(W, (1 - xi_w) * Wtilde + xi_w * W)
+    Wtilde_sol = sp.solve(wage_index, Wtilde)[0]
+    d10 = sp.simplify(Wtilde_sol - W) == 0
+    check("D10 wage index -> reset wage equals the aggregate (pi_bar=1)",
+          f"W_tilde = {Wtilde_sol}", d10)
+
+    # --- D11 the utilisation FOC is a normalisation --------------------------
+    aprime1 = sp.symbols("aprime1", real=True)
+    # a'(z) = R^k at z = 1: it fixes the utilisation-cost curve, it does not derive it
+    util = sp.solve(sp.Eq(aprime1, Rk), aprime1)[0]
+    d11 = sp.simplify(util - Rk) == 0
+    check("D11 utilisation: a(1)=0 and a'(1)=Rk are normalisations, not results",
+          "a'(1) = Rk", d11)
+
     # --- D8 the module's closed forms agree with the derivations -------------
     subs = {
         beta: 1 / (1 + sw2007.PUBLISHED_STRUCTURAL["tau"] / 100),
@@ -109,15 +135,16 @@ def main() -> int:
     # --- the inventory -------------------------------------------------------
     cov = sw_structure.coverage()
     print()
-    print(f"inventory: {cov['n_proved']}/{cov['n_total']} conditions established; "
-          f"{cov['n_dynamic_only']} are dynamic-only, {cov['n_cited']} are cited as given")
+    print(f"inventory: {cov['n_proved']}/{cov['n_total']} conditions proved at the steady "
+          f"state; {cov['n_specification']} are specifications (inputs), "
+          f"{cov['n_unknown']} unresolved")
     ok, msg = sw_structure.guard_conditions_inventory()
     print(f"guard:     {msg}")
     if not ok:
         FAIL += 1
 
     print()
-    total = 9
+    total = 12
     print(f"SW structure: {total - FAIL}/{total} — "
           f"{'the steady state is derived, and its scope is stated' if FAIL == 0 else 'FAILURES ABOVE'}")
     return 0 if FAIL == 0 else 1

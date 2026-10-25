@@ -146,6 +146,31 @@ search on six calibrations to `3e-15` and is **sigma-free**. The empirical arm i
 yet run — it needs an estimated reaction function and the vintage work (slice 4 of
 `docs/economics-model-roster.md`).
 
+## 9. The workhorse will beat the VAR but not the null on inflation
+
+**Claim.** When Smets–Wouters (2007) is *estimated* rather than calibrated and run on the
+same real-time vintage fixture, it will **beat the VAR(1)** on output, consumption and
+investment growth at horizons 1–4 — and it will **not** beat the no-change null on
+inflation at horizons 1–2.
+
+**Grounds.** SW's own Table 3 has the DSGE ahead of a VAR(1) at every horizon
+(+3.06 at 1q to +13.51 at 12q), so the VAR comparison is theirs to lose. The inflation
+prediction is the one this repository has *measured* for a structural model: the
+textbook-calibrated NK three-equation model loses to the null on real-time inflation at
+every horizon (1.03x / 1.03x / 1.28x, `scripts/economics_nk3_oos.py`). SW adds Calvo
+wages, indexation and seven shocks, which is the machinery a structural inflation
+forecast needs — so if any structural model beats the null on inflation here, SW is the
+candidate. The prediction says: not at 1–2 quarters.
+
+**Falsification.** Estimate SW (or a defensible reduced form) on the vintage fixture and
+run the table. If it beats the null on inflation at h ≤ 2, this prediction dies and the
+"structure does not help inflation at short horizons" line dies with it. If it fails to
+beat the VAR(1) on the real activity series, the first half dies instead.
+
+**Status — registered, untested, 2026-10-26.** This is the prediction that would make
+the estimation project worth its cost: it is checkable, it is not a formality, and either
+answer is informative.
+
 ## What this is for
 
 The whole program — the deficit, the boundary map, the constraint-first solver —
