@@ -358,11 +358,21 @@ must be growth rates, not levels. All four are checked per quarter, and each has
 fault in the tests. The second one actually fired on the first fetch — the benchmark had
 drifted a release — which is why it exists.
 
-**The narrow claim, stated in the module and the doc:** GDPNow beats "last quarter's
-growth" at nowcasting the **advance estimate** — a number built from the same monthly
-source data the nowcast consumes. It says nothing yet about forecasting the **final
-revised** value; that is registered as prediction §11, which expects the margin to shrink
-below half.
+**The advance-estimate claim, and the prediction it survived.** GDPNow beats "last
+quarter's growth" at nowcasting the **advance estimate** — a number built from the same
+monthly source data. That invited the obvious objection: is the edge just an artifact of
+targeting the first print? Prediction §11 said the edge would shrink below half when
+scored against the **revised** value. **It was falsified in the same slice that registered
+it:**
+
+| target | MAE ratio | edge | paired wins |
+|---|---|---|---|
+| advance | 0.25x | 0.75 | 28/37 |
+| **revised** | **0.31x** | **0.69** | **24/37** |
+
+The edge survives revision with most of its force, so the caution was too cautious and is
+retracted. What stays true: the nowcast is built from the same source data as the advance
+estimate, so this measures a good reconstruction — not a year-ahead forecast.
 
 **And the deficit does its job:** `m = 1`. One observable buys a certificate radius of
 **1.36** at 5%. However well the model does, a single series cannot certify anything

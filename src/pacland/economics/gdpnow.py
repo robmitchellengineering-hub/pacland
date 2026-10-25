@@ -41,14 +41,26 @@ def records(data: dict | None = None, exclude_2020: bool = False) -> list[dict]:
     return out
 
 
-def evaluate(data: dict | None = None, exclude_2020: bool = False) -> dict:
-    """Errors against the advance estimate, in each model's favour only where earned."""
-    recs = records(data, exclude_2020)
+TARGETS = ("advance", "final")
+
+
+def evaluate(data: dict | None = None, exclude_2020: bool = False,
+             target: str = "advance") -> dict:
+    """Errors against a chosen target.
+
+    ``advance`` — the first published number (what the nowcast is *for*).
+    ``final``  — the same quarter from the current vintage, i.e. after every revision.
+    Scoring both is the only way to know whether the edge is an artifact of targeting the
+    first print (prediction §11 asked exactly that).
+    """
+    if target not in TARGETS:
+        raise ValueError(f"target must be one of {TARGETS}")
+    recs = [r for r in records(data, exclude_2020) if target in r]
     if not recs:
         raise ValueError("no usable quarters in the fixture")
     err = {
-        "no-change": [r["benchmark_growth"] - r["advance"] for r in recs],
-        "GDPNow": [r["nowcast"] - r["advance"] for r in recs],
+        "no-change": [r["benchmark_growth"] - r[target] for r in recs],
+        "GDPNow": [r["nowcast"] - r[target] for r in recs],
     }
 
     def rmse(e: list[float]) -> float:
@@ -65,7 +77,30 @@ def evaluate(data: dict | None = None, exclude_2020: bool = False) -> dict:
         "n": len(recs),
         "ratio": {k: summary["GDPNow"][k] / summary["no-change"][k] for k in ("mae", "rmse")},
         "exclude_2020": exclude_2020,
+        "target": target,
         "span": (recs[0]["quarter"], recs[-1]["quarter"]),
+    }
+
+
+def revision_answer() -> dict:
+    """The answer to prediction §11: does the edge survive revision?
+
+    Registered before the test: *the edge will shrink below half* when the target is the
+    revised value — i.e. ``edge_final < 0.5 * edge_advance``. It did not: the edge moved
+    from 0.75 to 0.69, so the prediction is **falsified** and the corrected claim is that
+    the nowcast's advantage is **not** an artifact of targeting the first print.
+    """
+    adv = evaluate(target="advance")
+    fin = evaluate(target="final")
+    edge_adv = 1.0 - adv["ratio"]["mae"]
+    edge_fin = 1.0 - fin["ratio"]["mae"]
+    return {
+        "advance_ratio": adv["ratio"]["mae"], "final_ratio": fin["ratio"]["mae"],
+        "edge_advance": edge_adv, "edge_final": edge_fin,
+        "advance_wins": adv["wins"], "final_wins": fin["wins"],
+        "predicted_half": 0.5,
+        "falsified": edge_fin >= 0.5 * edge_adv,
+        "survives_revision": fin["ratio"]["mae"] < 0.5,
     }
 
 
@@ -133,6 +168,7 @@ def deficit(delta_e: float = 0.025):
 def summary() -> str:
     r = evaluate()
     r20 = evaluate(exclude_2020=True)
+    rev = revision_answer()
     n = r["models"]["no-change"]
     g = r["models"]["GDPNow"]
     lines = [
@@ -147,6 +183,10 @@ def summary() -> str:
         "",
         f"paired wins {r['wins']}/{r['n']} · excluding 2020: "
         f"{r20['wins']}/{r20['n']} wins, {r20['ratio']['mae']:.2f}x MAE",
+        "",
+        f"against the REVISED value: MAE ratio {rev['final_ratio']:.2f}x, "
+        f"{rev['advance_wins']} -> {rev['final_wins']} wins "
+        f"-> prediction §11 {'FALSIFIED' if rev['falsified'] else 'held'}",
         "",
         f"deficit: m = {deficit().n_validation} observable -> radius "
         f"{deficit().radius:.2f} at delta=0.025",

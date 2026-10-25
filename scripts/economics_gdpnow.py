@@ -39,8 +39,17 @@ def main() -> int:
     check("G6  and the edge survives without 2020",
           f"{r20['wins']}/{r20['n']} wins, MAE {r20['ratio']['mae']:.2f}x",
           r20["ratio"]["mae"] < 1)
+    rev = G.revision_answer()
+    check("G7  the edge survives the revision test",
+          f"advance {rev['advance_ratio']:.2f}x -> revised {rev['final_ratio']:.2f}x, "
+          f"{rev['final_wins']}/{G.evaluate(target='final')['n']} wins",
+          rev["survives_revision"])
+    check("G8  prediction §11 is falsified, and the module reports it",
+          f"edge {rev['edge_advance']:.2f} -> {rev['edge_final']:.2f} (halving needed < "
+          f"{0.5*rev['edge_advance']:.2f})",
+          rev["falsified"] and "FALSIFIED" in G.summary())
     print()
-    total = 6
+    total = 8
     print(f"gdpnow: {total - FAIL}/{total} — "
           f"{'a fair real-time test with a real result' if FAIL == 0 else 'FAILURES ABOVE'}")
     return 0 if FAIL == 0 else 1
