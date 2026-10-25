@@ -79,11 +79,34 @@ class TestEvaluation(unittest.TestCase):
         self.assertAlmostEqual(d.radius, 1.359, places=2)
 
 
+class TestRevision(unittest.TestCase):
+    def test_both_targets_run(self):
+        for target in ("advance", "final"):
+            r = G.evaluate(target=target)
+            self.assertEqual(r["target"], target)
+            self.assertEqual(r["n"], 37)
+
+    def test_the_edge_survives_revision(self):
+        rev = G.revision_answer()
+        self.assertLess(rev["final_ratio"], 0.5)
+        self.assertGreater(rev["final_wins"], 37 / 2)
+
+    def test_prediction_11_is_falsified_and_says_so(self):
+        rev = G.revision_answer()
+        self.assertTrue(rev["falsified"])
+        self.assertGreater(rev["edge_final"], 0.5 * rev["edge_advance"])
+        self.assertIn("FALSIFIED", G.summary())
+
+    def test_an_unknown_target_is_refused(self):
+        with self.assertRaises(ValueError):
+            G.evaluate(target="first")
+
+
 class TestSummary(unittest.TestCase):
-    def test_it_states_the_narrow_claim(self):
+    def test_it_states_the_claim_and_the_retraction(self):
         s = G.summary()
         self.assertIn("ADVANCE estimate", s)
-        self.assertIn("final revised value", s)
+        self.assertIn("REVISED", s)
 
 
 if __name__ == "__main__":

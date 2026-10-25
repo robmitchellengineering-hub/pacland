@@ -195,8 +195,20 @@ source-data corrections — which no nowcast made four weeks after quarter end c
 the MAE ratio stays at or below 0.25x, this prediction dies and the nowcast's edge is real
 against the revised world too, not just against the first print.
 
-**Status — registered, untested, 2026-10-26.** The narrow claim is what is published; this
-is the wider one that the data has not yet been asked.
+**Status — FALSIFIED, 2026-10-26, in the same slice that registered it.** Re-scored
+against the revised value: the MAE ratio moved from **0.25x to 0.31x**, and the edge from
+0.75 to **0.69** — nowhere near the predicted halving (which needed the edge to fall below
+0.375). Paired wins 28 → 24 of 37.
+
+**Corrected claim.** GDPNow's advantage is **not** an artifact of targeting the first
+print: it survives the revision with most of its force. The caveat that "this says nothing
+about the revised world" was too cautious, and it is retracted here rather than left to
+flatter the caution.
+
+What remains true and narrower: the nowcast is *built* from the same source data as the
+advance estimate, so this is still a nowcast of a number it can largely reconstruct — the
+revision test shows the reconstruction is good enough to beat the null after revisions
+too, not that the model forecasts a year ahead.
 
 ## What this is for
 
