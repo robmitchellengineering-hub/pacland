@@ -29,8 +29,9 @@ class TrustEntry:
 
 
 def _climate_entries() -> list[TrustEntry]:
+    from .climate.model_roster import trust_entries as roster_entries
     from .climate.sensitivity_crosscheck import trust_entries
-    entries = trust_entries()
+    entries = trust_entries() + roster_entries()
     # The AI-emulator worked example: ACE is "verified" against a reference GCM,
     # not the Earth (reference-fidelity, not reality-fidelity).
     entries.append(TrustEntry(

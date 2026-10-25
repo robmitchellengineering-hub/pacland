@@ -19,127 +19,17 @@ computed. That is the honest state, and the tests pin it.
 """
 from __future__ import annotations
 
-import os
-from dataclasses import dataclass, field
-from pathlib import Path
-
-_REPO_ROOT = str(Path(__file__).resolve().parents[3])
-
-
-def _root(root: str | None) -> str:
-    """Repo root, so evidence paths resolve the same from any cwd."""
-    return root or _REPO_ROOT
-
-# ---------------------------------------------------------------------------
-# The bar. Eight slots, in the order a model earns them.
-# ---------------------------------------------------------------------------
-
-SLOTS = (
-    "exact_structure",        # constraints + labels, proven not asserted
-    "deficit",                # m computed two-tier (backcast / forecast)
-    "rule_of_three",          # N independent checks, distinct failure modes, agreeing
-    "guard_suite",            # what the model forbids, each mutation-proven
-    "out_of_sample",          # measured vs a real-time vintage, benchmarked
-    "benchmark",              # the no-change null it must beat
-    "trust_entry",            # a board tier with named evidence
-    "falsifiable_prediction", # a registered claim that could die
-    "reproduce",              # one command, green
+from ..bar import (  # the machinery is shared: one bar, any discipline
+    KINDS,
+    REQUIRED,
+    SLOTS,
+    Model,
+    audit_model,
 )
-
-# A model's *kind* decides which slots it owes. An oracle is not a forecaster; a
-# benchmark is not a model; a statistical model has no exact content to inventory.
-REQUIRED = {
-    "control": ("benchmark", "guard_suite", "reproduce"),
-    "oracle": ("exact_structure", "rule_of_three", "guard_suite", "trust_entry", "reproduce"),
-    "forecast": SLOTS,
-    "statistical": ("benchmark", "out_of_sample", "reproduce"),
-}
-
-KINDS = tuple(REQUIRED)
-
-
-@dataclass(frozen=True)
-class Model:
-    """One named model, with the bar-slots it satisfies and the evidence for each."""
-
-    name: str
-    kind: str
-    role: str                     # one line: why it is on the roster
-    exact_content: str            # what is exact (constraints + labels) — or "none"
-    free: str                     # the parameters that are free
-    observables: tuple[str, ...] = ()   # the measured series a deficit would count
-    done: frozenset[str] = frozenset()
-    evidence: dict[str, str] = field(default_factory=dict)
-    priority: int = 0             # build order; lower starts first
-    #: What the out-of-sample run *found*, when there is one: "beats_null" or
-    #: "loses_to_null". Passing every slot does not make a model trusted if the run it
-    #: passed says the null won — the board must not reward having taken the test.
-    outcome: str | None = None
-
-    def missing(self) -> tuple[str, ...]:
-        return tuple(s for s in REQUIRED[self.kind] if s not in self.done)
-
-    def tier(self, root: str | None = None) -> str:
-        """broken if any claim lacks evidence; clean if every owed slot is done;
-        weak otherwise. Overclaiming is worse than not having started."""
-        violations = audit_model(self, root)
-        if violations:
-            return "broken"
-        if self.missing():
-            return "weak"
-        # every slot earned, but the run it passed lost to the null: still weak
-        if self.outcome == "loses_to_null":
-            return "weak"
-        return "clean"
-
-
-def _repo_path(evidence: str, root: str) -> str | None:
-    """Evidence is a repo-relative path when it looks like one; None if it is a
-    citation (a URL, or prose naming a published result)."""
-    if "://" in evidence or " " in evidence.strip():
-        return None
-    if "/" not in evidence and "." not in evidence:
-        return None
-    return os.path.join(root, evidence)
-
-
-def audit_model(model: Model, root: str | None = None) -> list[str]:
-    """Refuse the overclaim. A claimed slot must carry evidence; evidence that is a
-    repo path must exist. Out-of-sample evidence must name a real-time vintage source,
-    because a current-vintage backtest is not an out-of-sample test (Meese–Rogoff)."""
-    root = _root(root)
-    out: list[str] = []
-    if model.kind not in REQUIRED:
-        out.append(f"{model.name}: unknown kind {model.kind!r}")
-        return out
-    for slot in sorted(model.done):
-        if slot not in SLOTS:
-            out.append(f"{model.name}: unknown slot {slot!r}")
-            continue
-        ev = model.evidence.get(slot, "")
-        if not ev:
-            out.append(f"{model.name}: claims {slot} with no evidence")
-            continue
-        path = _repo_path(ev, root)
-        if path is not None and not os.path.exists(path):
-            out.append(f"{model.name}: claims {slot} but {ev} does not exist")
-        if slot == "out_of_sample" and not any(
-            k in ev.lower() for k in ("vintage", "real-time", "realtime", "alfred", "rtdsm")
-        ):
-            out.append(
-                f"{model.name}: claims out_of_sample but {ev!r} names no real-time vintage "
-                "source — a current-vintage backtest is not out of sample"
-            )
-    return out
-
-
-def audit(models: list[Model] | None = None, root: str | None = None) -> list[str]:
-    root = _root(root)
-    out: list[str] = []
-    for m in models if models is not None else ROSTER:
-        out.extend(audit_model(m, root))
-    return out
-
+from ..bar import audit as _audit
+from ..bar import build_order as _build_order
+from ..bar import models_sorted as _models_sorted
+from ..bar import summary as _summary
 
 # ---------------------------------------------------------------------------
 # The roster. Six named models, three of which we start with.
@@ -326,24 +216,22 @@ def _gdpnow() -> Model:
 ROSTER: list[Model] = [_random_walk(), _sfc(), _nk3(), _sw(), _bvar(), _gdpnow()]
 
 
-def build_order(models: list[Model] | None = None) -> list[str]:
-    """Start order: the benchmark, then the oracle, then the smallest forecast model,
-    then the workhorse, then the baselines."""
-    return [m.name for m in sorted(models or ROSTER, key=lambda m: m.priority)]
+def audit(models: list[Model] | None = None, root: str | None = None) -> list[str]:
+    """The economics roster's audit — no unsupported claim survives."""
+    return _audit(models if models is not None else ROSTER, root)
 
 
-def summary(models: list[Model] | None = None, root: str | None = None) -> list[dict]:
-    models = models or ROSTER
-    return [
-        {
-            "name": m.name,
-            "kind": m.kind,
-            "tier": m.tier(root),
-            "missing": list(m.missing()),
-            "observables": len(m.observables),
-        }
-        for m in models
-    ]
+def summary(root: str | None = None) -> list[dict]:
+    """The roster scored — economics' own rows, rendered by the shared bar."""
+    return _summary(ROSTER, root)
+
+
+def build_order() -> list[str]:
+    return _build_order(ROSTER)
+
+
+def models_sorted() -> list[Model]:
+    return _models_sorted(ROSTER)
 
 
 def trust_entries(root: str | None = None) -> list:
