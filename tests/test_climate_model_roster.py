@@ -35,16 +35,15 @@ class TestTheDiscriminator(unittest.TestCase):
         # scored on the board, reproduced, and now measured against the null — but NOT
         # credited with the conservation checks it fails
         self.assertEqual(set(u.done),
-                         {"trust_entry", "reproduce", "benchmark", "out_of_sample"})
+                         {"trust_entry", "reproduce", "benchmark", "out_of_sample",
+                          "deficit"})
 
 
 class TestTheFinding(unittest.TestCase):
-    def test_the_same_three_slots_are_owed_by_every_model(self):
+    def test_the_same_two_slots_are_owed_by_every_model(self):
         f = R.transfer_finding()
-        self.assertEqual(
-            f["owed_by_every_model"],
-            ["deficit", "exact_structure", "falsifiable_prediction"],
-        )
+        self.assertEqual(f["owed_by_every_model"],
+                         ["exact_structure", "falsifiable_prediction"])
 
     def test_the_null_slots_are_now_claimed(self):
         for m in R.CLIMATE_ROSTER:

@@ -57,9 +57,24 @@ The emulators are **not** the CMIP6 runs — they are one-box energy balances at
 published ECS and ERF2x. That is stated in the module, the report and the doc, because the
 difference is the whole claim.
 
-Climate's remaining owed slots are now `deficit`, `exact_structure` and
-`falsifiable_prediction` — a per-model `m` and a per-model invariant inventory are the two
-concrete jobs.
+### The per-model deficit (`climate/model_deficit.py`)
+
+The discipline-level deficit hid the thing a reader needs — *which* model is validated
+against *how many* measurements:
+
+| model | ECS | ERF2x | conservation | m | radius |
+|---|---|---|---|---|---|
+| GISS-E2-1-G | + | + | + | **3** | **0.78** |
+| MPI-ESM1-2-HR | + | + | ✗ | 2 | 0.96 |
+| UKESM1-0-LL | ✗ | + | ✗ | 1 | 1.36 |
+
+**A failed test costs an observable, not a fraction.** The radius is set by how many
+independent measured things a model survives, so MPI-ESM1-2-HR — which passes sensitivity
+and forcing but leaks a ledger — is verified against one fewer of them. That is the
+difference between a score and a certificate.
+
+Climate now owes only `exact_structure` and `falsifiable_prediction` per model: an invariant
+inventory proved rather than measured, and a registered claim.
 
 The bar also reproduces the trust board's own distinction without being told it: GISS-E2-1-G
 claims the conservation Rule of Three, MPI-ESM1-2-HR **cannot** (it leaks a ledger), and

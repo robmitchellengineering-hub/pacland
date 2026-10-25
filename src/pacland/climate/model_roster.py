@@ -18,8 +18,10 @@ The three rows are chosen to show the scoring doing real work:
 - **UKESM1-0-LL** — fails sensitivity and conservation. It claims only what is true of it.
 
 What none of them can claim, and why: `exact_structure` (the invariants are physical
-conservation laws, measured not proved in symbols), `deficit` (climate's `m` is computed for
-the discipline, not per model), and `falsifiable_prediction` (none registered per model).
+conservation laws, measured not proved in symbols) and `falsifiable_prediction` (none
+registered per model). `deficit` is now claimed **per model**:
+`climate/model_deficit.py` counts how many observables *this* model survives — GISS 3,
+MPI-ESM1-2-HR 2, UKESM1-0-LL 1 — with the radius moving accordingly.
 
 The other two — `benchmark` and `out_of_sample` — **are now claimed**: `climate/baseline.py`
 builds the no-change null (observed trend continued) and runs a real-time hindcast against
@@ -41,6 +43,9 @@ REPRODUCE = "scripts/climate_drift_second_source.py"
 #: discipline's. Nothing else exists at the per-model level.
 COMMON = ("trust_entry", "reproduce", "benchmark", "out_of_sample")
 
+#: Per-model deficit: how many observables THIS model is validated against.
+DEFICIT = "src/pacland/climate/model_deficit.py"
+
 #: Evidence for the two slots the null now fills: a real-time hindcast, data as of each
 #: start year, scored against observations published later.
 HINDCAST = "src/pacland/climate/baseline.py (real-time hindcast, data as of each start year)"
@@ -55,10 +60,10 @@ def _giss() -> Model:
         exact_content="energy, mass and salt conservation (exact physical invariants, measured)",
         free="the model's own 100+ tuned parameters",
         observables=("ECS", "ERF2x", "energy/mass/salt drift"),
-        done=frozenset(COMMON + ("rule_of_three", "guard_suite")),
+        done=frozenset(COMMON + ("rule_of_three", "guard_suite", "deficit")),
         evidence={"rule_of_three": DRIFT, "guard_suite": GUARDS, "trust_entry": TRUST_BOARD,
                   "reproduce": REPRODUCE, "benchmark": HINDCAST,
-                  "out_of_sample": HINDCAST},
+                  "out_of_sample": HINDCAST, "deficit": DEFICIT},
         priority=0,
     )
 
@@ -73,9 +78,9 @@ def _mpi() -> Model:
         free="the model's own 100+ tuned parameters",
         observables=("ECS", "ERF2x", "energy/mass/salt drift"),
         # it LEAKS a ledger, so it cannot claim the conservation checks
-        done=frozenset(COMMON),
+        done=frozenset(COMMON + ("deficit",)),
         evidence={"trust_entry": TRUST_BOARD, "reproduce": REPRODUCE,
-                  "benchmark": HINDCAST, "out_of_sample": HINDCAST},
+                  "benchmark": HINDCAST, "out_of_sample": HINDCAST, "deficit": DEFICIT},
         priority=1,
     )
 
@@ -88,9 +93,9 @@ def _ukesm() -> Model:
         exact_content="energy, mass and salt conservation (exact physical invariants, measured)",
         free="the model's own 100+ tuned parameters",
         observables=("ECS", "ERF2x", "energy/mass/salt drift"),
-        done=frozenset(COMMON),
+        done=frozenset(COMMON + ("deficit",)),
         evidence={"trust_entry": TRUST_BOARD, "reproduce": REPRODUCE,
-                  "benchmark": HINDCAST, "out_of_sample": HINDCAST},
+                  "benchmark": HINDCAST, "out_of_sample": HINDCAST, "deficit": DEFICIT},
         priority=2,
     )
 

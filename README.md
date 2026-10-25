@@ -114,7 +114,7 @@ pacland climb             # run the deficit climber on the mesh
 ## Tests
 
 ```sh
-python3 -m unittest discover -s tests   # 521 tests
+python3 -m unittest discover -s tests   # 528 tests
 ```
 
 ## Honest frontier
