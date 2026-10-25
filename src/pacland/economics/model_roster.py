@@ -299,10 +299,13 @@ def _gdpnow() -> Model:
         # precedes the vintage carrying its target, the null shares its vintage, the
         # targets are first publications, and the edge survives excluding 2020.
         done=frozenset({
-            "deficit", "rule_of_three", "guard_suite", "benchmark", "out_of_sample",
-            "trust_entry", "falsifiable_prediction", "reproduce",
+            "exact_structure", "deficit", "rule_of_three", "guard_suite", "benchmark",
+            "out_of_sample", "trust_entry", "falsifiable_prediction", "reproduce",
         }),
         evidence={
+            # the accounting half is proved (additivity, contributions, shares); the bridge
+            # equations are its specification and are named as such, not implemented
+            "exact_structure": "scripts/economics_accounts.py",
             "deficit": "src/pacland/economics/gdpnow.py",
             "rule_of_three": "scripts/economics_gdpnow.py",
             "guard_suite": "src/pacland/economics/gdpnow.py",
