@@ -41,7 +41,7 @@ not having started.
 | 1 | **Godley–Lavoie SFC (SIM/SIMEX)** | oracle | every sectoral + stock-flow identity, the budget constraint | behavioural propensities (α₁, α₂, θ) | — | **clean** |
 | 2 | **New Keynesian 3-equation** (Taylor 1993; Clarida–Galí–Gertler) | forecast | Fisher exact; long-run Phillips slope (1−β)/κ; determinacy boundary; the zero-inflation domain | 5 (β, κ, σ, φπ, φy) | 3 | **weak — 3 owed** |
 | 3 | **Smets–Wouters (2007) DSGE** | forecast | the published conditions — **inventory not yet built**; what *is* checked is the parameter record, the Calvo slope and the policy rule | ~40 (published posterior) | **7** | weak — 5 owed |
-| 4 | **Bayesian VAR** | statistical | none — pure fit, no identity imposed | all coefficients + prior | 3–7 | weak — 3 owed |
+| 4 | **VAR(1) (statistical benchmark)** | statistical | none — pure fit, no identity imposed | all coefficients | 3 | **clean** — real-time run done |
 | 5 | **GDPNow (Atlanta Fed)** | forecast | national-accounts identities + the bridge equations | bridge coefficients, re-estimated quarterly | 1 | weak — 9 owed |
 
 ## 3. Why this order
@@ -74,7 +74,7 @@ random walk (no change)                     control     clean
 Godley–Lavoie SFC (SIM/SIMEX)               oracle      clean
 New Keynesian 3-equation                    forecast    weak   owes 3  (out_of_sample, benchmark, trust_entry)
 Smets–Wouters (2007) DSGE                   forecast    weak   owes 5  (exact_structure, out_of_sample, benchmark, trust_entry, prediction)
-Bayesian VAR                                statistical weak   owes 3
+VAR(1) (statistical benchmark)              statistical clean
 GDPNow (Atlanta Fed)                        forecast    weak   owes 9
 ```
 
@@ -137,18 +137,53 @@ Meese–Rogoff question is genuinely open, and it is exactly what slice 4 runs. 
 correction sharpens the plan instead of weakening it: the field's best-known
 out-of-sample table benchmarks a VAR(1), not "tomorrow equals today".
 
-## 5. The one hard precondition: real-time vintages
+### The real-time run (slice 4): does anything beat "no change"?
 
-- **Current-vintage data is keyless and verified.** All seven Smets–Wouters observables
-  pull from FRED's `fredgraph.csv` endpoint with no API key (checked 2026-10-25).
-- **Out-of-sample needs vintages**, and that is a different dataset: the value of GDP
-  *as first published*, not as revised. ALFRED requires a free FRED API key; the
-  Philadelphia Fed's Real-Time Data Set for Macroeconomists (Croushore–Stark) is the
-  keyless alternative and its landing page is up.
-- **Until a vintage source is connected, every "beats the benchmark" number here is a
-  backtest.** That is why the audit refuses the `out_of_sample` slot without a named
-  vintage source: the refusal is the protection against shipping exactly the error the
-  discipline exists to name.
+Slice 3 found that the field's best-known out-of-sample table (SW 2007, Table 3)
+benchmarks a **VAR(1)**, never the no-change null. This slice asks the missing question
+on data *as it was published* — ALFRED's graph endpoint takes an explicit
+`vintage_date` and needs **no API key** (verified 2026-10-26), so
+`scripts/fetch_economics_vintages.py` commits a fixture of 10 vintages × 4 series and
+the suite runs offline.
+
+| model | h=1 | h=2 | h=4 | ratio to the null (1,2,4) | paired wins |
+|---|---|---|---|---|---|
+| no-change | 0.0208 | 0.0292 | 0.0574 | 1.00x / 1.00x / 1.00x | — |
+| AR(1) | 0.0191 | 0.0256 | 0.0399 | 0.92x / 0.88x / 0.69x | 20/27 · 22/27 · 22/24 |
+| **VAR(1)** | **0.0179** | **0.0230** | **0.0364** | **0.86x / 0.79x / 0.63x** | **21/27 · 23/27 · 22/24** |
+
+Errors are log-growth (rebasing-invariant), scored against today's revised values. The
+VAR beats the null at every horizon and wins more paired comparisons than it loses.
+
+**Two caveats, and they matter.** The sample is 26 forecasts from 9 usable vintages — a
+direction, not a verdict. And this is *not* the three-way test: SW's own model is not
+estimated here (that is the next slice), so what is established today is that the null
+is beatable on these three series at these horizons by a plain VAR — which makes the
+SW-vs-null comparison the interesting one, not a formality.
+
+**The trap this slice hit, and the guard that now exists.** The first run reported
+RMSE ≈ 0.50 — a 50% error on a one-quarter forecast. The cause was not the models: an
+old vintage is not on today's base (GDPC1 reads ~10,493 in the 2003 vintage and ~15,163
+today — a *rebasing*, not a revision), so level errors measure the rebasing. Growth — a
+log difference taken within one vintage for the forecast and within today's vintage for
+the truth — cancels it. `guard_growth_not_levels` now refuses a table whose error scale
+is level-sized, so that mistake cannot be published quietly.
+
+## 5. The one hard precondition: real-time vintages — **met**
+
+- **Current-vintage data is keyless.** All seven Smets–Wouters observables pull from
+  FRED's `fredgraph.csv` endpoint with no API key.
+- **Real-time vintages are keyless too.** ALFRED's graph endpoint
+  (`alfredgraph.csv?vintage_date=…`) returns a series *as published on a date*, with no
+  key — so the Meese–Rogoff test needs no credential, no scrape, and no RTDSM
+  spreadsheet. Fixture: `data/economics/vintages.json`; fetcher:
+  `scripts/fetch_economics_vintages.py`.
+- **Vintage coverage is series-specific.** GDPC1, PCECC96, GPDIC1 and CPIAUCSL have
+  usable vintages; FEDFUNDS, HOANBS and COMPRNFB returned nothing at the dates tried,
+  so the real-time panel is three quarterly series until that is chased.
+- **The audit still refuses the `out_of_sample` slot without a named vintage source** —
+  that is the protection against shipping a current-vintage backtest as if it were a
+  forecast.
 
 ## 6. The slices, and what each leaves behind
 
@@ -158,8 +193,10 @@ out-of-sample table benchmarks a VAR(1), not "tomorrow equals today".
    Still owes out-of-sample, benchmark and a clean row.
 3. **Smets–Wouters** — the ~20-condition inventory machine-checked, `m = 7` computed
    two-tier, a determinacy guard. The workhorse scored where policy acts.
-4. **Vintages** — connect ALFRED (or RTDSM) and run the real Meese–Rogoff test:
-   SW vs BVAR vs the null, on data as it was known at the time.
+4. ~~**Vintages**~~ — **done**: keyless ALFRED vintages, the fixture, the no-look-ahead
+   and no-target-leak guards, and the null-vs-AR(1)-vs-VAR(1) run. Still open from the
+   original wording: **SW's own model is not estimated**, so the three-way is
+   null/AR/VAR today and null/SW next.
 5. **The asset-pricing arm** *(only if "finance" means markets rather than macro)* —
    put–call parity, the Hansen–Jagannathan bound, Black–Scholes. Their exact content is
    stronger than macro's (no-arbitrage is a theorem), so they may belong first if that is

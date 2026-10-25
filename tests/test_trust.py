@@ -11,8 +11,9 @@ class TestTrustBoard(unittest.TestCase):
         # 4 weak (named, not built) — the roster posts its own honest state.
         self.assertEqual(s["n_artifacts"], 38)
         self.assertEqual(s["n_broken"], 14)
-        self.assertEqual(s["n_weak"], 8)
-        self.assertEqual(s["n_clean"], 16)
+        # VAR(1) went clean: it now has a real-time out-of-sample run against the null
+        self.assertEqual(s["n_weak"], 7)
+        self.assertEqual(s["n_clean"], 17)
 
     def test_broken_are_the_double_flagged(self):
         broken = summary()["broken"]
