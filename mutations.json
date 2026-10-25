@@ -1,0 +1,7 @@
+{
+  "note": "Recorded by `valiant mutate` on 2026-10-25: 2/2 mutations caught, working tree untouched. Each proof is a seeded fault that makes the named guard go red.",
+  "proofs": [
+    { "guard": "site-verification-link", "mutation": "replace the verification link with '#'", "result": "red", "at": "2026-10-25" },
+    { "guard": "site-honest-line", "mutation": "replace 'seeking design partners' with 'seeking customers'", "result": "red", "at": "2026-10-25" }
+  ]
+}
