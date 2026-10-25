@@ -40,7 +40,7 @@ not having started.
 | 0 | **random walk (no change)** | control | none — it asserts tomorrow equals today | none | — | **clean** |
 | 1 | **Godley–Lavoie SFC (SIM/SIMEX)** | oracle | every sectoral + stock-flow identity, the budget constraint | behavioural propensities (α₁, α₂, θ) | — | **clean** |
 | 2 | **New Keynesian 3-equation** (Taylor 1993; Clarida–Galí–Gertler) | forecast | Fisher exact; long-run Phillips slope (1−β)/κ; determinacy boundary; the zero-inflation domain | 5 (β, κ, σ, φπ, φy) | 3 | **weak — 3 owed** |
-| 3 | **Smets–Wouters (2007) DSGE** | forecast | ~20 linearized equilibrium conditions (Euler, NKPC, Taylor, Fisher, capital accumulation, resource constraint, AR shocks) | ~40 (published posterior) | **7** | weak — 9 slots owed |
+| 3 | **Smets–Wouters (2007) DSGE** | forecast | the published conditions — **inventory not yet built**; what *is* checked is the parameter record, the Calvo slope and the policy rule | ~40 (published posterior) | **7** | weak — 5 owed |
 | 4 | **Bayesian VAR** | statistical | none — pure fit, no identity imposed | all coefficients + prior | 3–7 | weak — 3 owed |
 | 5 | **GDPNow (Atlanta Fed)** | forecast | national-accounts identities + the bridge equations | bridge coefficients, re-estimated quarterly | 1 | weak — 9 owed |
 
@@ -73,7 +73,7 @@ not having started.
 random walk (no change)                     control     clean
 Godley–Lavoie SFC (SIM/SIMEX)               oracle      clean
 New Keynesian 3-equation                    forecast    weak   owes 3  (out_of_sample, benchmark, trust_entry)
-Smets–Wouters (2007) DSGE                   forecast    weak   owes 9
+Smets–Wouters (2007) DSGE                   forecast    weak   owes 5  (exact_structure, out_of_sample, benchmark, trust_entry, prediction)
 Bayesian VAR                                statistical weak   owes 3
 GDPNow (Atlanta Fed)                        forecast    weak   owes 9
 ```
@@ -101,6 +101,41 @@ that than a tier it has not earned.
   refuses the out-of-domain use instead of averaging it in.
 - **A ceiling, not a gap:** three observables, so the best the model can ever score is
   `m = 3` → a 78% certificate at δ = 0.025. A 1% certificate would need m ≈ 18,000.
+
+### What the SW record established (slice 3)
+
+Source **fetched, not recalled**: Smets & Wouters (2007), ECB Working Paper 722 — Tables
+1a/1b (pp. 34–35), Table 3 (p. 37), policy rule eq. 23 (p. 52). The published posterior
+means are recorded verbatim in `src/pacland/economics/sw2007.py`; the risk with a
+published model is transcription, not algebra, so every derived quantity is checked
+against what the paper says in prose:
+
+| derived | from | paper says | check |
+|---|---|---|---|
+| β = 0.99840 | `100(1/β − 1) = 0.16` %/q | — | exact |
+| β̃ = 0.99251 | `β · γ^(−σ_c)`, γ = 0.43%, σ_c = 1.38 | — | exact |
+| real rate **3.02%**/yr | `1/β̃ − 1` | "about 3%" | 0.02pp |
+| inflation **3.12%**/yr | π̄ = 0.78 %/q | "about 3%" | 0.12pp |
+| nominal **6.14%**/yr | Fisher | "about 6%" | 0.14pp |
+| Calvo slope κ = **0.1777** | ξ_p = 0.66 | — | exact |
+
+Eleven checks, `scripts/validate_economics_sw.py`, 11/11. The Taylor boundary at the
+published output response is **0.9966**; their published inflation response is
+**2.04**, so the rule is comfortably determinate — with the caveat that smoothing
+(ρ = 0.81) leaves the *contemporaneous* response at only **0.39** while the long-run
+response stays 2.04. Two things sit outside the three-equation reduction and are named
+rather than buried: the r_Δy = 0.22 growth term, and the smoothing itself.
+
+**The correction this slice forced on our own narrative.** The roster said the
+workhorse "fails to beat a VAR out of sample" (Gürkaynak–Kısacıkoğlu–Rossi). SW's own
+Table 3 says otherwise for *their* model: against a VAR(1) over 1990:1–2004:4 the DSGE
+gains **+3.06 (1q) … +13.51 (12q)** on the overall measure. The claim was wrong as
+stated and is retracted here.
+
+What that table does **not** contain is the no-change (random-walk) null — so the
+Meese–Rogoff question is genuinely open, and it is exactly what slice 4 runs. The
+correction sharpens the plan instead of weakening it: the field's best-known
+out-of-sample table benchmarks a VAR(1), not "tomorrow equals today".
 
 ## 5. The one hard precondition: real-time vintages
 

@@ -124,11 +124,21 @@ class TestStartingSet(unittest.TestCase):
         # ...and it does not claim what it has not done.
         self.assertEqual(set(nk.missing()), {"out_of_sample", "benchmark", "trust_entry"})
 
-    def test_the_workhorse_forecast_model_owes_the_bar(self):
+    def test_the_workhorse_forecast_model_owes_the_rest_of_the_bar(self):
         sw = next(m for m in ROSTER if m.name.startswith("Smets–Wouters"))
         self.assertEqual(sw.kind, "forecast")
-        self.assertEqual(sw.missing(), SLOTS)
+        self.assertEqual(
+            set(sw.missing()),
+            {"exact_structure", "out_of_sample", "benchmark", "trust_entry",
+             "falsifiable_prediction"},
+        )
         self.assertEqual(sw.tier(ROOT), "weak")
+
+    def test_sw_does_not_claim_the_out_of_sample_slot_yet(self):
+        # the paper benchmarks a VAR(1); the no-change null is still unrun
+        sw = next(m for m in ROSTER if m.name.startswith("Smets–Wouters"))
+        self.assertNotIn("out_of_sample", sw.done)
+        self.assertNotIn("benchmark", sw.done)
 
 
 class TestSmetsWoutersObservables(unittest.TestCase):

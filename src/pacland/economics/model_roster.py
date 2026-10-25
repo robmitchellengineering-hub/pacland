@@ -228,10 +228,19 @@ def _sw() -> Model:
         ),
         free="~40 (published posterior means; 7 shocks + 3 structural)",
         observables=tuple(SW_OBSERVABLES),
-        # Named, not built. All 7 observables pull keyless from FRED today (verified),
-        # so the data precondition for its deficit is already met.
-        done=frozenset(),
-        evidence={},
+        # Built to the point the source permits: the published posterior record is
+        # re-derived and cross-checked against the paper's own prose (11/11), the
+        # Calvo-implied slope and the published policy rule give a determinacy check,
+        # and the m=7 ceiling is computed both ways. Still owed: the ~20-condition
+        # inventory (exact_structure), the out-of-sample run, the benchmark, a clean
+        # board row, and a registered falsifiable prediction.
+        done=frozenset({"deficit", "rule_of_three", "guard_suite", "reproduce"}),
+        evidence={
+            "deficit": "src/pacland/economics/sw2007.py",
+            "rule_of_three": "scripts/validate_economics_sw.py",
+            "guard_suite": "src/pacland/economics/sw2007.py",
+            "reproduce": "scripts/validate_economics_sw.py",
+        },
         priority=3,
     )
 
