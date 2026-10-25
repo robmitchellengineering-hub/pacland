@@ -23,6 +23,13 @@ def content() -> list[tuple[str, str]]:
     ace_a = ace_anchor()
     ecs = ecs_estimates()
     mass_ratio = abs(ds["worst_mass_mm_per_yr"]) / ds["slr_reference_mm_per_yr"]
+    from . import baseline, constraint_set, model_deficit
+    md = {r.model: r for r in model_deficit.board_rows()}
+    nb = baseline.evaluate()
+    null_trend = nb["methods"]["trend"]["mae"]
+    emul = [v["mae"] for k, v in nb["methods"].items() if k.startswith("emulator:")]
+    null_emul, null_emul_hi = min(emul), max(emul)
+    rank = constraint_set.independence()["rank"]
     return [
         ("title", "PACLAND · Climate"),
         ("subtitle", "The verification discipline applied to climate modelling — a plain-English brief"),
@@ -50,9 +57,14 @@ def content() -> list[tuple[str, str]]:
         ("b", f"Mass: {ds['n_failing_mass']} models leak ocean mass — {ds['worst_mass_model']} at {ds['worst_mass_mm_per_yr']:+.2f} mm/yr, {mass_ratio:.0%} of observed sea-level rise."),
         ("b", f"Salt: only {ds['n_failing_salt']} models leak — salt is conserved orders of magnitude better."),
         ("b", f"So the leak lives in the atmosphere-ocean coupling, not the ocean model: {ds['n_conserving_all']} of {ds['n_models']} models conserve all three ledgers."),
-        ("h", "5 · Why it matters"),
+        ("h", "5 · What the models are verified against — per model"),
+        ("b", f"Per-model certificates: GISS-E2-1-G is verified against {md['GISS-E2-1-G'].m} observables (radius {md['GISS-E2-1-G'].radius:.2f}), MPI-ESM1-2-HR against {md['MPI-ESM1-2-HR'].m} (radius {md['MPI-ESM1-2-HR'].radius:.2f}), UKESM1-0-LL against {md['UKESM1-0-LL'].m} (radius {md['UKESM1-0-LL'].radius:.2f}). A failed test costs an observable, not a fraction."),
+        ("b", f"A no-change null now exists — the observed trend, continued. On a real-time hindcast it scores MAE {null_trend:.3f} °C against {null_emul:.3f}–{null_emul_hi:.3f} °C for the ECS emulators: persistence loses, and the trend is hard to beat."),
+        ("b", f"Nineteen constraints, {rank} independent: five conservation invariants, six guards that restate them, three calibration bands, plus five process constraints excluded by kind (data ≤ start year, CO2 extrapolated, target outside the window, units, emulator ≠ model)."),
+        ("p", "The emulators are not the CMIP6 model runs — they are one-box energy balances at each model's published ECS and ERF2x. That distinction is stated wherever the number appears."),
+        ("h", "6 · Why it matters"),
         ("p", "A model leaking heat at ~2× the signal it is projecting carries an error the size of the projection. Conservation is not a solved detail — it is a hard, quantified defect in most models, invisible to skill scores and to ensemble spread. And because salt (purely ocean) is conserved far better than energy and mass (which cross the air-sea boundary), the defect is in the coupling, not the ocean."),
-        ("h", "6 · Reproduce"),
+        ("h", "7 · Reproduce"),
         ("p", "pacland climate · python3 scripts/climate_cmip6_drift.py · docs/climate-cmip6-drift.md"),
     ]
 
