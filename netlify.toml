@@ -1,4 +1,10 @@
 # Netlify deploy config for the PACLAND static site.
 # Publish the web/ directory as a standalone static site.
+#
+# Publish-only: there is no build command, so a merge to main IS the deploy trigger.
+# If a merged change does not appear on pacland.morpheus.nz, the deploy did not run —
+# check the site's Deploys list rather than re-editing the page. (2026-10-26: the card
+# update in #127 went live only after this file changed, because deploys queued while
+# the account was over its usage cap and were not replayed when it was lifted.)
 [build]
   publish = "web/"
