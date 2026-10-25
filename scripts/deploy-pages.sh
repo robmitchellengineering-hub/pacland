@@ -27,7 +27,9 @@ git -C "$ROOT" worktree add --quiet --detach "$WT" "origin/$BRANCH"
 trap 'git -C "$ROOT" worktree remove --force "$WT" 2>/dev/null || true' EXIT
 
 changed=0
-for f in "$ROOT"/web/*.html; do
+# *.html AND *.json: the find page fetches index.json, so shipping the page without the
+# data reproduces the bug the vision review caught ("index.json failed to load").
+for f in "$ROOT"/web/*.html "$ROOT"/web/*.json; do
   name="$(basename "$f")"
   if ! cmp -s "$f" "$WT/$name"; then
     cp "$f" "$WT/$name"
