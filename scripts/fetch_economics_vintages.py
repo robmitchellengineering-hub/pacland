@@ -71,6 +71,13 @@ def main() -> int:
             data["vintages"].setdefault(vintage, {})[series] = obs
             print(f"{series:9} {vintage}  {len(obs)} obs")
     data["current"] = {s: (fetch(s, None) or {}) for s in SERIES}
+    # The policy rate is needed to estimate the rule. It is not revised — 1999-01-01 reads
+    # 4.63 in both the 2001-01-01 vintage and the current series — so the current vintage is
+    # used, with the check recorded in the fixture.
+    data["rates"] = fetch("FEDFUNDS", None) or {}
+    data["rates_note"] = (
+        "FEDFUNDS, current vintage; unrevised (1999-01-01 = 4.63 in the 2001 vintage and now)"
+    )
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(data, sort_keys=True, separators=(",", ":")))
     kb = OUT.stat().st_size / 1024

@@ -171,6 +171,13 @@ beat the VAR(1) on the real activity series, the first half dies instead.
 the estimation project worth its cost: it is checkable, it is not a formality, and either
 answer is informative.
 
+**Update, same day (estimation slice).** The first estimation attempt did not reach this
+test: the sample cannot identify the Phillips slope (synthetic recovery of a known
+`κ = 0.18` returns 1.00, and the four-parameter fit is rank-deficient 3/4), and the rule
+that *is* identified comes out passive (`φπ = 0.46`, long-run 0.99), which the constraint
+set refuses. The prediction therefore stays untested, and the route to testing it is now
+priced: full-information estimation of the 20-condition model, not a reduction.
+
 ## What this is for
 
 The whole program — the deficit, the boundary map, the constraint-first solver —
