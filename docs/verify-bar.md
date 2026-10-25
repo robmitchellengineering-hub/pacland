@@ -73,8 +73,30 @@ independent measured things a model survives, so MPI-ESM1-2-HR — which passes 
 and forcing but leaks a ledger — is verified against one fewer of them. That is the
 difference between a score and a certificate.
 
-Climate now owes only `exact_structure` and `falsifiable_prediction` per model: an invariant
-inventory proved rather than measured, and a registered claim.
+### The invariant inventory (`climate/structure.py`)
+
+Five conservation laws, each an invariant of the equations and each with a measurement that
+can fail — and the honest split is stated inside the artifact:
+
+| invariant | status |
+|---|---|
+| energy (TOA flux = Σ heat uptake) | identity + **measured** (CERES vs the reservoir sum) |
+| ocean mass (Δmass = sources) | identity + **measured** (gravimetry drift) |
+| salinity (no source, no sink) | identity + **measured** (Argo drift) |
+| water (P = E + Δstorage) | identity, **unmeasured here** — named, not counted |
+| carbon (emissions = growth + sinks) | identity, **unmeasured here** — named, not counted |
+
+**The algebra is bookkeeping; the physics is conservation; the measurement is what fails.**
+The script says that in as many words, because "we proved the sum equals the total" is a
+definition of the total and would be a fake theorem.
+
+The finding that has force: **the energy budget closes only when all five reservoirs are
+counted.** Upper ocean alone is **0.15 W/m² short** of the CERES imbalance; the deep ocean,
+atmosphere, land and cryosphere carry the rest. A model — or a paper — that closes the budget
+on the upper ocean alone has quietly dropped most of the system, and the guard refuses that
+shortcut rather than certifying it.
+
+Climate now owes **one** slot per model: `falsifiable_prediction`. GISS-E2-1-G is at 8 of 9.
 
 The bar also reproduces the trust board's own distinction without being told it: GISS-E2-1-G
 claims the conservation Rule of Three, MPI-ESM1-2-HR **cannot** (it leaks a ledger), and
