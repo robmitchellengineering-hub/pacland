@@ -134,6 +134,14 @@ class TestStartingSet(unittest.TestCase):
         )
         self.assertEqual(sw.tier(ROOT), "weak")
 
+    def test_sw_does_not_claim_exact_structure_while_the_inventory_is_incomplete(self):
+        # 13/20 conditions established; the slot stays unclaimed until coverage is total
+        from pacland.economics import sw_structure
+
+        sw = next(m for m in ROSTER if m.name.startswith("Smets–Wouters"))
+        self.assertFalse(sw_structure.coverage()["complete"])
+        self.assertNotIn("exact_structure", sw.done)
+
     def test_sw_does_not_claim_the_out_of_sample_slot_yet(self):
         # the paper benchmarks a VAR(1); the no-change null is still unrun
         sw = next(m for m in ROSTER if m.name.startswith("Smets–Wouters"))
