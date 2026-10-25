@@ -71,6 +71,10 @@ class Model:
     done: frozenset[str] = frozenset()
     evidence: dict[str, str] = field(default_factory=dict)
     priority: int = 0             # build order; lower starts first
+    #: What the out-of-sample run *found*, when there is one: "beats_null" or
+    #: "loses_to_null". Passing every slot does not make a model trusted if the run it
+    #: passed says the null won — the board must not reward having taken the test.
+    outcome: str | None = None
 
     def missing(self) -> tuple[str, ...]:
         return tuple(s for s in REQUIRED[self.kind] if s not in self.done)
@@ -81,7 +85,12 @@ class Model:
         violations = audit_model(self, root)
         if violations:
             return "broken"
-        return "clean" if not self.missing() else "weak"
+        if self.missing():
+            return "weak"
+        # every slot earned, but the run it passed lost to the null: still weak
+        if self.outcome == "loses_to_null":
+            return "weak"
+        return "clean"
 
 
 def _repo_path(evidence: str, root: str) -> str | None:
@@ -203,7 +212,8 @@ def _nk3() -> Model:
         # falsifiable register. Still owed: out_of_sample, benchmark, trust_entry.
         done=frozenset({
             "exact_structure", "deficit", "rule_of_three", "guard_suite",
-            "falsifiable_prediction", "reproduce",
+            "benchmark", "out_of_sample", "trust_entry", "falsifiable_prediction",
+            "reproduce",
         }),
         evidence={
             "exact_structure": "scripts/validate_economics_nk3.py",
@@ -211,8 +221,14 @@ def _nk3() -> Model:
             "rule_of_three": "scripts/validate_economics_nk3.py",
             "guard_suite": "src/pacland/economics/nk3.py",
             "falsifiable_prediction": "docs/falsifiable-predictions.md",
-            "reproduce": "scripts/validate_economics_nk3.py",
+            "benchmark": "src/pacland/economics/nk3_oos.py",
+            "out_of_sample": "data/economics/vintages.json (ALFRED real-time vintages)",
+            "trust_entry": "src/pacland/trust.py",
+            "reproduce": "scripts/economics_nk3_oos.py",
         },
+        # measured, and it lost: the calibrated model is worse than "no change" on
+        # real-time inflation at every horizon (1.03x, 1.03x, 1.28x)
+        outcome="loses_to_null",
         priority=2,
     )
 
@@ -262,6 +278,7 @@ def _bvar() -> Model:
             "out_of_sample": "data/economics/vintages.json (ALFRED real-time vintages)",
             "reproduce": "scripts/economics_realtime_forecast.py",
         },
+        outcome="beats_null",
         priority=4,
     )
 
@@ -321,8 +338,11 @@ def trust_entries(root: str | None = None) -> list:
                 discipline="economics",
                 artifact=m.name,
                 tier=m.tier(root),
-                detail=f"{m.kind}: {len(m.observables)} observables, {len(m.missing())} bar slots owed"
-                       f" — {notes[m.kind]}",
+                detail=(
+                    f"{m.kind}: {len(m.observables)} observables, {len(m.missing())} bar slots owed"
+                    + (f"; out-of-sample run {m.outcome.replace('_', ' ')}" if m.outcome else "")
+                    + f" — {notes[m.kind]}"
+                ),
                 evidence=m.evidence.get("reproduce", "—"),
             )
         )

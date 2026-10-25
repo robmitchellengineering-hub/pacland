@@ -39,7 +39,7 @@ not having started.
 |---|---|---|---|---|---|---|
 | 0 | **random walk (no change)** | control | none — it asserts tomorrow equals today | none | — | **clean** |
 | 1 | **Godley–Lavoie SFC (SIM/SIMEX)** | oracle | every sectoral + stock-flow identity, the budget constraint | behavioural propensities (α₁, α₂, θ) | — | **clean** |
-| 2 | **New Keynesian 3-equation** (Taylor 1993; Clarida–Galí–Gertler) | forecast | Fisher exact; long-run Phillips slope (1−β)/κ; determinacy boundary; the zero-inflation domain | 5 (β, κ, σ, φπ, φy) | 3 | **weak — 3 owed** |
+| 2 | **New Keynesian 3-equation** (Taylor 1993; Clarida–Galí–Gertler) | forecast | Fisher exact; long-run Phillips slope (1−β)/κ; determinacy boundary; the zero-inflation domain; two-shock policy function | 7 (+ρ_r, ρ_u) | 3 | **weak — 0 owed, run lost** |
 | 3 | **Smets–Wouters (2007) DSGE** | forecast | the 20-condition inventory: **13 established** at the steady state, 3 dynamic-only, 4 cited (Table 1a record + Calvo slope + policy rule check) | ~40 (published posterior) | **7** | weak — 5 owed |
 | 4 | **VAR(1) (statistical benchmark)** | statistical | none — pure fit, no identity imposed | all coefficients | 3 | **clean** — real-time run done |
 | 5 | **GDPNow (Atlanta Fed)** | forecast | national-accounts identities + the bridge equations | bridge coefficients, re-estimated quarterly | 1 | weak — 9 owed |
@@ -72,7 +72,7 @@ not having started.
 ```
 random walk (no change)                     control     clean
 Godley–Lavoie SFC (SIM/SIMEX)               oracle      clean
-New Keynesian 3-equation                    forecast    weak   owes 3  (out_of_sample, benchmark, trust_entry)
+New Keynesian 3-equation                    forecast    weak   owes 0 — but its real-time run LOSES to the null
 Smets–Wouters (2007) DSGE                   forecast    weak   owes 5  (exact_structure, out_of_sample, benchmark, trust_entry, prediction)
 VAR(1) (statistical benchmark)              statistical clean
 GDPNow (Atlanta Fed)                        forecast    weak   owes 9
@@ -136,6 +136,33 @@ What that table does **not** contain is the no-change (random-walk) null — so 
 Meese–Rogoff question is genuinely open, and it is exactly what slice 4 runs. The
 correction sharpens the plan instead of weakening it: the field's best-known
 out-of-sample table benchmarks a VAR(1), not "tomorrow equals today".
+
+### The NK model, out of sample (slice 6): the null wins on inflation
+
+The three-equation model is now fully specified — two AR(1) shocks (demand at ρ_r = 0.9,
+cost-push at ρ_u = 0.8) solved by undetermined coefficients, so an observed state yields
+a forecast. `scripts/economics_nk3_oos.py` runs it on the same vintage fixture, against
+the null and an AR(1), on the two things it actually forecasts:
+
+| | h=1 | h=2 | h=4 | ratio to the null |
+|---|---|---|---|---|
+| **inflation** no-change | 2.730 | 1.876 | 1.843 | 1.00 / 1.00 / 1.00 |
+| inflation AR(1) | 2.235 | 1.549 | 2.070 | 0.82 / 0.83 / 1.12 |
+| inflation **NK3** | 2.823 | 1.940 | 2.353 | **1.03 / 1.03 / 1.28** |
+| **gap** no-change | 0.523 | 0.732 | 1.219 | 1.00 / 1.00 / 1.00 |
+| gap **NK3** | 0.537 | 0.591 | 0.861 | 1.03 / 0.81 / **0.71** |
+
+**The calibrated NK model loses to "no change" on inflation at every horizon** and wins
+on the output gap only at 4 quarters (0.71x). Nine forecasts per cell — a direction, not
+a verdict — and the calibration is *stated, not estimated*, so this measures the textbook
+model rather than the best-fitted one. It is still the result the field's own debate
+needs stated plainly: for a structural model, beating the null is not automatic.
+
+**The board rule this forced.** NK3 now owes no slot, but a model that has taken the
+test and *lost* must not be trusted more for having taken it. So `Model.outcome`
+(`beats_null` / `loses_to_null`) is now part of the tier: every slot earned **and**
+`loses_to_null` is still `weak`. VAR(1), which won (0.86x / 0.79x / 0.63x), is `clean`.
+The contrast is exactly the point of a trust board.
 
 ### What the conditions inventory established (slice 5)
 
@@ -233,7 +260,9 @@ is level-sized, so that mistake cannot be published quietly.
    null/AR/VAR today and null/SW next.
 5. ~~**SW conditions inventory**~~ — **done**: 13/20 established symbolically, 7
    scoped out with reasons, and the model-design contrast with NK3 recorded.
-6. **SW out of sample** — estimate the model (or a defensible reduced form) and run it
+6. ~~**NK3 out of sample**~~ — **done**: two-shock policy function, real-time run on the
+   fixture, and the loss recorded in the tier rather than hidden.
+7. **SW out of sample** — estimate the model (or a defensible reduced form) and run it
    against the null on the vintage fixture, completing the three-way.
 7. **The asset-pricing arm** *(only if "finance" means markets rather than macro)* —
    put–call parity, the Hansen–Jagannathan bound, Black–Scholes. Their exact content is

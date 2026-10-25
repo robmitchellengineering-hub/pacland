@@ -264,3 +264,71 @@ def summary(delta_e: float = 0.025) -> str:
 
 if __name__ == "__main__":
     print(summary())
+
+
+# ---------------------------------------------------------------------------
+# The stochastic version: two AR(1) shocks, solved by undetermined coefficients.
+# ---------------------------------------------------------------------------
+#
+#   IS      x_t = E_t x_{t+1} - sigma (i_t - E_t pi_{t+1} - r_t)      r_t = rho_r r_{t-1} + e
+#   NKPC    pi_t = beta E_t pi_{t+1} + kappa x_t + u_t               u_t = rho_u u_{t-1} + e
+#   Taylor  i_t = phi_pi pi_t + phi_y x_t
+#
+# With x_t = a s_t and pi_t = b s_t the system is two 2x2 linear solves, one per shock:
+#
+#   (1 - rho + sigma*phi_y) a + sigma*(phi_pi - rho) b = c1
+#                     -kappa a + (1 - beta*rho) b     = c2
+#
+# where (c1, c2) = (sigma, 0) for the demand shock and (0, 1) for the cost-push shock.
+# Solved in closed form (Cramer), and checked against sympy in
+# ``scripts/validate_economics_nk3_oos.py``.
+
+#: Calibrated, NOT estimated: the textbook quarterly calibration plus typical shock
+#: persistence. The out-of-sample run says so rather than implying an estimate.
+CALIBRATION = {
+    "beta": BETA, "kappa": KAPPA, "sigma": SIGMA,
+    "phi_pi": 1.5, "phi_y": 0.5, "rho_r": 0.9, "rho_u": 0.8,
+}
+
+
+def policy_function(
+    beta: float = CALIBRATION["beta"], kappa: float = CALIBRATION["kappa"],
+    sigma: float = CALIBRATION["sigma"], phi_pi: float = CALIBRATION["phi_pi"],
+    phi_y: float = CALIBRATION["phi_y"], rho_r: float = CALIBRATION["rho_r"],
+    rho_u: float = CALIBRATION["rho_u"],
+) -> dict[str, float]:
+    """The policy function coefficients ``(a_r, b_r, a_u, b_u)``: the response of the
+    output gap (a) and inflation (b) to each AR(1) shock."""
+    def solve(rho: float, c1: float, c2: float) -> tuple[float, float]:
+        m11 = 1.0 - rho + sigma * phi_y
+        m12 = sigma * (phi_pi - rho)
+        m22 = 1.0 - beta * rho
+        det = m11 * m22 + kappa * m12
+        if abs(det) < 1e-12:
+            raise ValueError("policy function is singular — the shock responses are undefined")
+        a = (c1 * m22 - m12 * c2) / det
+        b = (m11 * c2 + kappa * c1) / det
+        return a, b
+
+    a_r, b_r = solve(rho_r, sigma, 0.0)
+    a_u, b_u = solve(rho_u, 0.0, 1.0)
+    return {"a_r": a_r, "b_r": b_r, "a_u": a_u, "b_u": b_u,
+            "determinant": a_r * b_u - b_r * a_u}
+
+
+def forecast_from_state(
+    x0: float, pi0: float, h: int = 1, cal: dict | None = None
+) -> tuple[float, float]:
+    """Invert the policy function at the observed state to recover the two shocks, then
+    project them ``h`` steps: ``s_{t+h} = rho**h * s_t``."""
+    cal = {**CALIBRATION, **(cal or {})}
+    pf = policy_function(cal["beta"], cal["kappa"], cal["sigma"],
+                         cal["phi_pi"], cal["phi_y"], cal["rho_r"], cal["rho_u"])
+    det = pf["determinant"]
+    if abs(det) < 1e-12:
+        raise ValueError("policy function is singular — cannot recover the shocks")
+    s_r = (x0 * pf["b_u"] - pi0 * pf["a_u"]) / det
+    s_u = (pi0 * pf["a_r"] - x0 * pf["b_r"]) / det
+    xh = pf["a_r"] * (cal["rho_r"] ** h) * s_r + pf["a_u"] * (cal["rho_u"] ** h) * s_u
+    pih = pf["b_r"] * (cal["rho_r"] ** h) * s_r + pf["b_u"] * (cal["rho_u"] ** h) * s_u
+    return xh, pih
