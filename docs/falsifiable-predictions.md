@@ -113,6 +113,39 @@ the proxy signal is a CS-moduli effect, not the distance conjecture.
 machine.** Measured once on 174 SUSY vacua (`pacland.swampland.distance_conjecture_test`);
 not yet reproduced on a second sample.
 
+## 8. The three-equation model's domain is zero net inflation
+
+**Claim.** The linearised New Keynesian three-equation model (IS + NKPC + Taylor rule)
+has **no jointly self-consistent steady state at a non-zero inflation target**. The
+NKPC puts the output gap at `(1-beta)/kappa * pi*`; the IS curve and the Taylor rule
+put it at zero; the contradiction is exactly `phi_y * (1-beta)/kappa * pi*`. The
+model's admissible domain is therefore `pi* = 0` (or `beta = 1`, or `phi_y = 0`), and a
+2% target sits outside it. Proven in `scripts/validate_economics_nk3.py` (8/8 exact,
+sympy, zero tolerance), not cited.
+
+**Grounds.** The simple NKPC `pi = beta*pi^e + kappa*x` is a linearisation *about zero
+inflation*; at a positive steady-state inflation rate, relative prices drift and the
+Calvo derivation carries an extra term. The trivial reading of the linear form is what
+produces the non-vertical long-run Phillips curve, slope `(1-beta)/kappa` — 0.1 at
+beta = 0.99, kappa = 0.1, i.e. a permanent 2pp rise in inflation is worth 0.2pp of
+output gap on the model's own terms, and is simultaneously a contradiction with its own
+policy rule.
+
+**Falsification.** Two arms, either sufficient:
+1. **Analytic** — a derivation in which the simple NKPC and the Taylor rule (with
+   `phi_y > 0`) hold jointly at `pi* != 0` *without* indexation, `beta = 1`, or a
+   target-consistent intercept. That would scope the claim down, not confirm it.
+2. **Empirical** — an estimated policy rule that sits persistently inside the passive
+   region, `phi_pi + (1-beta)/kappa * phi_y < 1`, while inflation stays anchored. The
+   determinacy claim says such a rule admits sunspots, so persistent anchored inflation
+   under it would falsify the model's account of policy.
+
+**Status — proven, 2026-10-25.** Exact in sympy; the determinacy boundary
+`phi_pi > 1 - (1-beta)/kappa * phi_y` is reproduced by the module's own eigenvalue
+search on six calibrations to `3e-15` and is **sigma-free**. The empirical arm is not
+yet run — it needs an estimated reaction function and the vintage work (slice 4 of
+`docs/economics-model-roster.md`).
+
 ## What this is for
 
 The whole program — the deficit, the boundary map, the constraint-first solver —

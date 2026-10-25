@@ -39,7 +39,7 @@ not having started.
 |---|---|---|---|---|---|---|
 | 0 | **random walk (no change)** | control | none — it asserts tomorrow equals today | none | — | **clean** |
 | 1 | **Godley–Lavoie SFC (SIM/SIMEX)** | oracle | every sectoral + stock-flow identity, the budget constraint | behavioural propensities (α₁, α₂, θ) | — | **clean** |
-| 2 | **New Keynesian 3-equation** (Taylor 1993; Clarida–Galí–Gertler) | forecast | Fisher; steady-state neutrality; long-run Phillips; Taylor's long-run coefficients | 5 (κ, σ, φπ, φy, ρ) | 3 named | weak — 9 slots owed |
+| 2 | **New Keynesian 3-equation** (Taylor 1993; Clarida–Galí–Gertler) | forecast | Fisher exact; long-run Phillips slope (1−β)/κ; determinacy boundary; the zero-inflation domain | 5 (β, κ, σ, φπ, φy) | 3 | **weak — 3 owed** |
 | 3 | **Smets–Wouters (2007) DSGE** | forecast | ~20 linearized equilibrium conditions (Euler, NKPC, Taylor, Fisher, capital accumulation, resource constraint, AR shocks) | ~40 (published posterior) | **7** | weak — 9 slots owed |
 | 4 | **Bayesian VAR** | statistical | none — pure fit, no identity imposed | all coefficients + prior | 3–7 | weak — 3 owed |
 | 5 | **GDPNow (Atlanta Fed)** | forecast | national-accounts identities + the bridge equations | bridge coefficients, re-estimated quarterly | 1 | weak — 9 owed |
@@ -72,15 +72,35 @@ not having started.
 ```
 random walk (no change)                     control     clean
 Godley–Lavoie SFC (SIM/SIMEX)               oracle      clean
-New Keynesian 3-equation                    forecast    weak   owes 9
+New Keynesian 3-equation                    forecast    weak   owes 3  (out_of_sample, benchmark, trust_entry)
 Smets–Wouters (2007) DSGE                   forecast    weak   owes 9
 Bayesian VAR                                statistical weak   owes 3
 GDPNow (Atlanta Fed)                        forecast    weak   owes 9
 ```
 
-Four `weak` rows are the work: they are named, their exact content is known, their data
-is reachable — and their deficits are **not computed**. The roster would rather print
+The NK three-equation model now earns six of the nine slots: exact structure (8/8
+sympy), the deficit and its ceiling, the Rule of Three on determinacy, five
+mutation-tested guards, a registered falsifiable prediction, and a one-command
+reproduce. It still owes the out-of-sample run, the benchmark comparison and a clean
+board row — so it prints `weak`, which is what it is.
+
+The other `weak` rows are named-but-not-built: their exact content is known, their data
+is reachable, and their deficits are **not computed**. The roster would rather print
 that than a tier it has not earned.
+
+### What the NK model actually established (slice 2)
+
+- **Exact:** `x = (1−β)/κ · π` from the NKPC; `i = r* + π` (Fisher); `d(i−π)/dπ = 0`
+  (superneutrality); the long-run Phillips slope `(1−β)/κ`; the determinacy boundary
+  `φπ > 1 − (1−β)/κ · φy`, which is **σ-free**.
+- **Uncomfortable, and the reason it was worth building:** with `β < 1` and `φy > 0`
+  the three equations have **no jointly consistent steady state at a non-zero inflation
+  target** — the NKPC puts the gap at `(1−β)/κ · π*`, the IS curve and the Taylor rule
+  put it at zero, and the contradiction is exactly `φy · (1−β)/κ · π*`. The model's
+  domain is zero net inflation; a 2% target is outside it. `guard_steady_state_admissible`
+  refuses the out-of-domain use instead of averaging it in.
+- **A ceiling, not a gap:** three observables, so the best the model can ever score is
+  `m = 3` → a 78% certificate at δ = 0.025. A 1% certificate would need m ≈ 18,000.
 
 ## 5. The one hard precondition: real-time vintages
 
@@ -98,8 +118,9 @@ that than a tier it has not earned.
 ## 6. The slices, and what each leaves behind
 
 1. **This slice** — the bar, the roster, the honesty gate, and per-model board rows.
-2. **NK 3-equation** — exact content proven in sympy (steady state, neutrality, Fisher),
-   `m` computed, five guards mutation-tested. First `forecast` row at the bar.
+2. ~~**NK 3-equation**~~ — **done** (this round): 8/8 sympy proofs, the deficit ceiling,
+   five mutation-tested guards, two registered falsifications, one-command reproduce.
+   Still owes out-of-sample, benchmark and a clean row.
 3. **Smets–Wouters** — the ~20-condition inventory machine-checked, `m = 7` computed
    two-tier, a determinacy guard. The workhorse scored where policy acts.
 4. **Vintages** — connect ALFRED (or RTDSM) and run the real Meese–Rogoff test:

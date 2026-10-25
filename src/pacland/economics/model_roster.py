@@ -196,11 +196,23 @@ def _nk3() -> Model:
             "long-run Phillips π = π^e; the Taylor rule's long-run coefficients"
         ),
         free="5 — κ (slope), σ (IS), φπ, φy, ρ (rate smoothing)",
-        observables=("output gap", "inflation", "policy rate"),
-        # Named, not built: no slot is claimed. The deficit, the theorem arm and the
-        # out-of-sample run are the three slices that make this model physics-level.
-        done=frozenset(),
-        evidence={},
+        observables=("output gap", "CPI inflation", "policy rate"),
+        # Built: the exact structure is proven (7/7 sympy), the deficit ceiling and
+        # today's validated count are computed, five guards are mutation-tested, the
+        # determinacy boundary is reproduced by eigen-search, and two claims are on the
+        # falsifiable register. Still owed: out_of_sample, benchmark, trust_entry.
+        done=frozenset({
+            "exact_structure", "deficit", "rule_of_three", "guard_suite",
+            "falsifiable_prediction", "reproduce",
+        }),
+        evidence={
+            "exact_structure": "scripts/validate_economics_nk3.py",
+            "deficit": "src/pacland/economics/nk3.py",
+            "rule_of_three": "scripts/validate_economics_nk3.py",
+            "guard_suite": "src/pacland/economics/nk3.py",
+            "falsifiable_prediction": "docs/falsifiable-predictions.md",
+            "reproduce": "scripts/validate_economics_nk3.py",
+        },
         priority=2,
     )
 

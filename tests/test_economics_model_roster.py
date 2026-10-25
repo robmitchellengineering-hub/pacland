@@ -116,6 +116,14 @@ class TestStartingSet(unittest.TestCase):
         self.assertEqual(by_name["random walk (no change)"].tier(ROOT), "clean")
         self.assertEqual(by_name["Godley–Lavoie SFC (SIM/SIMEX)"].tier(ROOT), "clean")
 
+    def test_nk3_earns_its_proven_slots(self):
+        nk = next(m for m in ROSTER if m.name.startswith("New Keynesian"))
+        for slot in ("exact_structure", "deficit", "rule_of_three", "guard_suite",
+                     "falsifiable_prediction", "reproduce"):
+            self.assertIn(slot, nk.done, f"NK3 does not claim {slot}")
+        # ...and it does not claim what it has not done.
+        self.assertEqual(set(nk.missing()), {"out_of_sample", "benchmark", "trust_entry"})
+
     def test_the_workhorse_forecast_model_owes_the_bar(self):
         sw = next(m for m in ROSTER if m.name.startswith("Smets–Wouters"))
         self.assertEqual(sw.kind, "forecast")
