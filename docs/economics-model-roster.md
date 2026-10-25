@@ -334,6 +334,40 @@ the discipline's own constraint. Taking the slots would require a full-informati
 estimation of the 20-condition model — the project this slice has now scoped and priced
 rather than guessed.
 
+### GDPNow (slice 11): a published nowcast, and a real result
+
+The Atlanta Fed's GDPNow is the cleanest test of what "verified" may mean: a model run by
+professionals, published, updated through the quarter, targeting a number that appears
+about four weeks after the quarter ends. The record is real-time (ALFRED vintages,
+keyless), 37 quarters, 2016Q2–2025Q4.
+
+| model | MAE | RMSE | ratio to the null |
+|---|---|---|---|
+| no-change | 5.055 | 13.200 | 1.00x |
+| **GDPNow** | **1.262** | **1.906** | **0.25x MAE · 0.14x RMSE** |
+
+28/37 paired wins. **Excluding 2020 — whose collapse dominates the null's RMSE — the edge
+survives: 24/33 wins, 0.51x MAE.** That robustness line is the result; the headline 0.25x
+is a number COVID made.
+
+**Four guards, because this test could lie three ways.** The nowcast vintage must
+*strictly* predate the vintage carrying its target (else the "forecast" reads the answer);
+the null must be built from the **same vintage** as the nowcast (else the model gets data
+the benchmark never had); the target must be the **first published** value; and both series
+must be growth rates, not levels. All four are checked per quarter, and each has a seeded
+fault in the tests. The second one actually fired on the first fetch — the benchmark had
+drifted a release — which is why it exists.
+
+**The narrow claim, stated in the module and the doc:** GDPNow beats "last quarter's
+growth" at nowcasting the **advance estimate** — a number built from the same monthly
+source data the nowcast consumes. It says nothing yet about forecasting the **final
+revised** value; that is registered as prediction §11, which expects the margin to shrink
+below half.
+
+**And the deficit does its job:** `m = 1`. One observable buys a certificate radius of
+**1.36** at 5%. However well the model does, a single series cannot certify anything
+narrowly — the deficit is a property of the observable set, not of the model's skill.
+
 ## 5. The one hard precondition: real-time vintages — **met**
 
 - **Current-vintage data is keyless.** All seven Smets–Wouters observables pull from
