@@ -247,14 +247,21 @@ def _sw() -> Model:
 
 def _bvar() -> Model:
     return Model(
-        name="Bayesian VAR",
+        name="VAR(1) (statistical benchmark)",
         kind="statistical",
-        role="the baseline the DSGE fails to beat out of sample (Gürkaynak–Kısacıkoğlu–Rossi)",
+        role="the baseline the structural model is measured against — now run out of sample on real-time vintages",
         exact_content="none — pure fit; no identity is imposed",
-        free="all coefficients and the prior",
-        observables=("the same 3–7 series, as a VAR of them",),
-        done=frozenset(),
-        evidence={},
+        free="all coefficients (a BVAR prior would add more)",
+        observables=("GDPC1, PCECC96, GPDIC1 — levels, jointly",),
+        # Run on ALFRED real-time vintages (1990–2006) against today's revised values,
+        # with the no-change null in the same table: beats the null at every horizon and
+        # wins more paired comparisons than it loses (21/27, 23/27, 22/24).
+        done=frozenset({"benchmark", "out_of_sample", "reproduce"}),
+        evidence={
+            "benchmark": "src/pacland/economics/meese_rogoff.py",
+            "out_of_sample": "data/economics/vintages.json (ALFRED real-time vintages)",
+            "reproduce": "scripts/economics_realtime_forecast.py",
+        },
         priority=4,
     )
 
