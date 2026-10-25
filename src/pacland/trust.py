@@ -78,7 +78,15 @@ def _economics_entries() -> list[TrustEntry]:
         TrustEntry("economics", "forecast-failure guard (empirical axis)", "clean",
                    "guard_forecast_is_extrapolation: red on a model that beats the no-change benchmark",
                    "src/pacland/economics/forecast.py"),
-    ]
+    ] + _roster_entries()
+
+
+def _roster_entries() -> list[TrustEntry]:
+    # Every *named* macro-finance model, scored on the same bar as the landscape
+    # theorems and the 53 CMIP6 models (docs/economics-model-roster.md).
+    from .economics.model_roster import trust_entries
+
+    return trust_entries()
 
 
 def _system_entries() -> list[TrustEntry]:
