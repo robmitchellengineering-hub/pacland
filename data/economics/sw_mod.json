@@ -1,0 +1,18 @@
+{
+ "equilibrium_bad": [],
+ "fetched": "2026-10-26",
+ "n_equations": 40,
+ "n_equilibrium": 34,
+ "n_measurement": 6,
+ "rates": {
+  "capital_output": 5.837470218146951,
+  "consumption_share": 0.6489621226082948,
+  "inflation_annual_pct": 3.1200000000000117,
+  "investment_share": 0.1710378773917053,
+  "nominal_annual_pct": 6.162889210174605,
+  "real_annual_pct": 3.01933837088173,
+  "shares_sum": 1.0000000000000002
+ },
+ "sha256": "662d1e826bd7b013d2670a59bc6e5f8f9a32927635a16c15c6c3dbb7701ffddb",
+ "source": "https://raw.githubusercontent.com/rui-q/DSGE_mod/master/Smets_Wouters_2007/Smets_Wouters_2007.mod"
+}
