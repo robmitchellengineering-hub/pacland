@@ -1,7 +1,51 @@
 {
-  "note": "Recorded by `valiant mutate` on 2026-10-25: 2/2 mutations caught, working tree untouched. Each proof is a seeded fault that makes the named guard go red.",
+  "note": "Written by `valiant mutate` — one row per guard, with the verdict the check actually produced. result red means the check went red when the thing it protects was broken.",
+  "writtenBy": "valiant mutate",
+  "commit": "b869cd191ab1af4057395e358ab237f05764f3cc",
+  "at": "2026-10-26T21:05:53.390Z",
+  "red": 6,
   "proofs": [
-    { "guard": "site-verification-link", "mutation": "replace the verification link with '#'", "result": "red", "at": "2026-10-25" },
-    { "guard": "site-honest-line", "mutation": "replace 'seeking design partners' with 'seeking customers'", "result": "red", "at": "2026-10-25" }
+    {
+      "guard": "site-verification-link",
+      "file": "web/index.html",
+      "site": "460cbe2ab3d2",
+      "verdict": "caught",
+      "result": "red"
+    },
+    {
+      "guard": "site-honest-line",
+      "file": "web/index.html",
+      "site": "1cae3b785089",
+      "verdict": "caught",
+      "result": "red"
+    },
+    {
+      "guard": "conservation-unit-scale",
+      "file": "src/pacland/climate/cmip6_drift.py",
+      "site": "538cd324c109",
+      "verdict": "caught",
+      "result": "red"
+    },
+    {
+      "guard": "worst-energy-offender-zeroed",
+      "file": "data/climate/cmip6_drift.json",
+      "site": "4e99ed2b96d9",
+      "verdict": "caught",
+      "result": "red"
+    },
+    {
+      "guard": "giss-ecs-out-of-range",
+      "file": "data/climate/cmip6_ecs.json",
+      "site": "32966fcabaa6",
+      "verdict": "caught",
+      "result": "red"
+    },
+    {
+      "guard": "giss-erf2x-out-of-band",
+      "file": "data/climate/cmip6_ecs.json",
+      "site": "9c5d2648649c",
+      "verdict": "caught",
+      "result": "red"
+    }
   ]
 }
