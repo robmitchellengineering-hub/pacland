@@ -134,6 +134,7 @@ def pages() -> list[dict]:
         "index.html": "The front page — what PACLAND is",
         "all.html": "Find anything — every doc, script and explainer",
         "climate.html": "Climate figures — the four graphs drawn from the data",
+        "climate-3d.html": "Climate in 3D — the verification, rotatable",
         "viz.html": "The constraint, visualised — 3D geometry",
     }
     return [{"kind": "page", "title": titles.get(p.name, p.stem),

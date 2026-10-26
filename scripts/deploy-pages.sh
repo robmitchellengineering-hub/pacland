@@ -38,6 +38,16 @@ for f in "$ROOT"/web/*.html "$ROOT"/web/*.json; do
   fi
 done
 
+# vendored assets (plotly for the 3D view) are part of the site, not of the HTML
+if [ -d "$ROOT/web/vendor" ]; then
+  mkdir -p "$WT/vendor"
+  if ! diff -rq "$ROOT/web/vendor" "$WT/vendor" >/dev/null 2>&1; then
+    cp -R "$ROOT"/web/vendor/. "$WT/vendor/"
+    echo "update  vendor/"
+    changed=1
+  fi
+fi
+
 if [ "$changed" = 0 ]; then
   echo "gh-pages already matches web/ — nothing to deploy"
   exit 0
