@@ -29,6 +29,48 @@
   .topnav a{color:var(--muted);text-decoration:none}
   .topnav a:hover{color:var(--ink)}
   .topnav a.find{color:var(--accent);font-weight:600;margin-left:auto}
+  @media (max-width:600px){ .topnav{flex-wrap:nowrap;overflow-x:auto;gap:.7rem;
+    scrollbar-width:none} .topnav a{white-space:nowrap} .topnav::-webkit-scrollbar{display:none} }
+  .fold{margin:.6rem 0;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .fold>summary{cursor:pointer;padding:.75rem .9rem;font-weight:600;list-style:none}
+  .fold>summary::-webkit-details-marker{display:none}
+  .fold>summary::before{content:'▸';color:var(--muted);margin-right:.5rem;display:inline-block}
+  .fold[open]>summary::before{content:'▾'}
+  .fold>*:not(summary){margin-left:.9rem;margin-right:.9rem;overflow-x:auto}
+  .fold code{overflow-wrap:anywhere}
+  img{max-width:100%}
+  .wrap table{display:block;overflow-x:auto;max-width:100%}
+  td,th{overflow-wrap:anywhere}
+  .hero{padding:.4rem 0 1rem}
+  .kicker{margin:0;font:600 .72rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .hero h1{font-size:2.4rem;margin:.2rem 0 .4rem}
+  .lede{font-size:1.1rem;max-width:46rem;margin:.2rem 0 1rem}
+  .hero-actions{display:flex;gap:.6rem;flex-wrap:wrap}
+  .btn{display:inline-block;padding:.55rem .95rem;border-radius:8px;background:var(--accent);color:#fff;
+       text-decoration:none;font-weight:600;font-size:.92rem}
+  .btn.ghost{background:var(--chip);color:var(--ink);border:1px solid var(--line)}
+  .grid--3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .strip{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1.2rem 0;padding:.9rem 0;
+         border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .strip div{display:flex;flex-direction:column}
+  .strip strong{font-size:1.4rem}
+  .strip span{color:var(--muted);font-size:.82rem}
+  .calc{display:flex;flex-direction:column}
+  .calc .out{margin-top:auto}
+  .card{border-color:#ccd3e0;box-shadow:0 1px 2px rgba(20,33,46,.06),0 8px 24px rgba(20,33,46,.05)}
+  .card h3{text-wrap:balance}
+  .calc label{display:block;font-size:.85rem;color:var(--muted);margin:.45rem 0}
+  .calc input{width:100%;margin-top:.2rem;padding:.45rem .55rem;border:1px solid #c3cbd9;
+              border-radius:6px;font:inherit;font-size:.95rem;background:#f7f9fc}
+  .out{margin:.6rem 0 .1rem;font-size:1.05rem}
+  .small{font-size:.8rem}
+  .searchbox{width:100%;padding:.7rem .9rem;border:1px solid var(--line);border-radius:8px;font:inherit}
+  .results{list-style:none;padding:0;margin:.6rem 0}
+  .results li{padding:.45rem 0;border-bottom:1px solid var(--line);font-size:.92rem}
+  .results a{color:var(--accent);text-decoration:none;font-weight:600}
+  .results .s{color:var(--muted);font-size:.84rem}
+  .grid.grid--3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:820px){ .grid.grid--3{grid-template-columns:1fr} .hero h1{font-size:1.9rem} }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.2rem 0; }
   .grid.grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .card p a, .card p code { white-space: nowrap; }
@@ -51,54 +93,91 @@
 </head>
 <body>
 
-<header>
+<main>
   <div class="wrap">
   <nav class="topnav" aria-label="sections">
+    <a href="#what">what it is</a>
+    <a href="#calculators">calculators</a>
     <a href="#disciplines">disciplines</a>
     <a href="#solutions">solutions</a>
     <a href="#climate">climate</a>
     <a href="#trust">trust board</a>
     <a class="find" href="./all.html">find anything →</a>
   </nav>
+<section class="hero">
+  <p class="kicker">a verification discipline</p>
+  <h1>PACLAND</h1>
+  <p class="lede">Most claims — in physics, economics, climate, or the software an AI just wrote for you — cannot be checked. PACLAND measures <strong>how much of a claim can be checked</strong>, and refuses the rest.</p>
+  <p class="muted">Mitchell’s Principle of Constraint-First Unification: a theory of everything predicts <em>relations</em>, never <em>values</em> — applied one field at a time, starting with the string landscape.</p>
+  <p class="hero-actions">
+    <a class="btn" href="#what">What it is</a>
+    <a class="btn" href="#calculators">Try the calculators</a>
+    <a class="btn ghost" href="./all.html">Find anything →</a>
+  </p>
+</section>
 
-    <h1>PACLAND</h1>
-    <div class="sub"><strong>Mitchell's Principle of Constraint-First Unification</strong> — a theory of everything predicts <em>relations</em>, never <em>values</em>. The verification discipline that proved it, applied one field at a time: the string landscape first, then climate, drug discovery, and more.</div>
-    <div class="links">
-      <a class="primary" href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/paper/pacland-marketing.pdf">Download the one-pager (PDF)</a>
-      <a href="#unification">The unification</a>
-      <a href="#index">Everything</a>
-      <a href="#disciplines">Disciplines</a>
-      <a href="#climate">Climate</a>
-      <a href="#trust">Trust board</a>
-      <a href="#published">Published</a>
-      <a href="#arc">The arc</a>
-      <a href="#theorems">The theorems</a>
-      <a href="#sm">SM frontier</a>
-      <a href="#results">Key results</a>
-      <a href="#boundary">Boundary map</a>
-      <a href="#swampland">Swampland</a>
-      <a href="#lean">Lean proofs</a>
-      <a href="#use">Use it</a>
-      <a href="https://github.com/robmitchellengineering-hub/pacland">GitHub</a>
-    </div>
+<div class="grid grid--3" id="what">
+  <div class="card">
+    <h3>What it is</h3>
+    <p class="muted">One discipline applied field by field: <strong>ask for the constraints, the count, and the deficit</strong> — never the values. It scores named models on the same nine-slot bar, and publishes the score whether the model passes or not.</p>
+    <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verify-bar.md">the bar</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOP-FIGURING-SYSTEMS-OUT.md">the method</a></p>
   </div>
-</header>
+  <div class="card">
+    <h3>What it does</h3>
+    <p class="muted">Three gates that stop an unverified number reaching a decision: the <strong>null gate</strong> (beat “tomorrow equals today” or say you didn't), the <strong>identification gate</strong> (an estimate must be recoverable before it is published), and the <strong>admissibility gate</strong> (a fitted model that breaks a constraint does not get a table).</p>
+    <p><a href="#solutions">the three gates</a></p>
+  </div>
+  <div class="card">
+    <h3>Why it matters</h3>
+    <p class="muted"><strong>Valiant Verification Systems (VVS)</strong> is the product: a machine-checked badge for software, models and forecasts. It is what lets a stranger trust a claim without trusting the person who made it — and the same machinery already runs in this repo, in two disciplines.</p>
+    <p><a href="https://vvs.morpheus.nz">vvs.morpheus.nz — the product</a> · <a href="https://morpheus.nz/verification">what “certified” certifies</a></p>
+  </div>
+</div>
 
-<main>
-  <div class="wrap">
+<section class="strip">
+  <div><strong>190</strong><span>artifacts indexed</span></div>
+  <div><strong>6</strong><span>models scored</span></div>
+  <div><strong>2</strong><span>disciplines running the same bar</span></div>
+  <div><strong>3</strong><span>gates, all three have refused something</span></div>
+</section>
 
-    <p class="lead">String theory is ~10<sup>500</sup> vacua and no experiment that tells most of them apart. "Unified string theory" fuses two questions — <em>does some vacuum match us?</em> and <em>why that one?</em> — and the field has <strong>no verification layer</strong> for either. PACLAND is that layer, built with Valiant's probably-approximately-correct learning: a certificate that bounds a candidate's error even when the verifier is itself approximate, a measured prior, a negative result, and a map of the computable.</p>
+<h2 id="calculators">Calculators — for a quick reference, and for confidence</h2>
+<p class="lead">Three things you can check in a browser, no install. They are the same arithmetic the repo runs.</p>
+<div class="grid grid--3">
+  <div class="card calc">
+    <h3>What does your m buy you?</h3>
+    <p class="muted">The certificate radius from the count of validated observables and your confidence budget.</p>
+    <label>validated observables (m) <input id="c-m" type="number" value="4" min="1" step="1"></label>
+    <label>confidence budget (δ) <input id="c-d" type="number" value="0.025" min="0.0001" max="0.5" step="0.005"></label>
+    <p class="out"><strong id="c-radius">—</strong></p>
+    <p class="muted small" id="c-note"></p>
+  </div>
+  <div class="card calc">
+    <h3>Does it beat the null?</h3>
+    <p class="muted">Enter your forecast error and the no-change benchmark's. The gate is the ratio.</p>
+    <label>your RMSE <input id="c-mine" type="number" value="1.26" step="0.01"></label>
+    <label>null RMSE <input id="c-null" type="number" value="5.06" step="0.01"></label>
+    <p class="out"><strong id="c-ratio">—</strong></p>
+    <p class="muted small" id="c-verdict"></p>
+  </div>
+  <div class="card calc">
+    <h3>Is the claim verifiable at all?</h3>
+    <p class="muted">A model's exact content is its constraints. Pick how many it has and how many are independent.</p>
+    <label>constraints written down <input id="c-n" type="number" value="19" min="1" step="1"></label>
+    <label>independently measured <input id="c-r" type="number" value="9" min="0" step="1"></label>
+    <p class="out"><strong id="c-indep">—</strong></p>
+    <p class="muted small" id="c-inflation"></p>
+  </div>
+</div>
 
-    <div class="callout">
-      <p><strong>Mitchell's Principle of Constraint-First Unification:</strong> don't ask a complex system for its values — ask for its constraints, its count, and its deficit. Everything else is covariance, not knowledge.</p>
-      <p>In one line: <code>ℂ[F,H]<sup>Sp×SL(2,ℤ)</sup> = ℂ[N]</code>, <code>N = FᵀJH</code> — the invariant ring has a single generator (the constraint); the free content is the orbit-space dimension (<strong>19</strong>); everything else transforms covariantly (<strong>Mitchell's Laws of Duality Covariance</strong>). A theory of everything predicts <em>relations</em>, never <em>values</em>. <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/paper/mitchells-principle.pdf">Read the flagship paper (PDF)</a> · <a href="viz.html">See it in 3D</a>.</p>
-    </div>
+<h2 id="search">Find anything</h2>
+<input id="q" type="search" class="searchbox" placeholder="search 190 docs, scripts and explainers — try “null”, “roster”, “ECS”…">
+<ul id="q-results" class="results"></ul>
+<p class="muted">Or open the full searchable index: <a href="./all.html">find anything →</a></p>
 
-    <div class="callout">
-      <p><strong>New — the plain-English overview.</strong> What this work did for the landscape, why it matters, and where it goes next, in a few pages and no equations. <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/paper/pacland-marketing.pdf">Download the PDF</a> (tap to open on a phone).</p>
-    </div>
-
-    <h2 id="unification">The unification, stated correctly</h2>
+<details class="fold">
+<summary>The unification, stated correctly</summary>
+<h2 id="unification">The unification, stated correctly</h2>
     <p>Three things are true at once — and they are not the same claim. The difference between them is the whole result.</p>
     <div class="grid">
       <div class="card">
@@ -114,8 +193,10 @@
         <p class="muted">The no-go is on <em>exact invariant</em> selectors only. <strong>Statistical selection</strong> — the measure over vacua, "why <em>this</em> one" — is <em>not</em> ruled out. We killed the equation; we did not kill the statistics.</p>
       </div>
     </div>
-
-    <h2 id="index">Everything — linked</h2>
+</details>
+<details class="fold">
+<summary>Everything — linked</summary>
+<h2 id="index">Everything — linked</h2>
     <div class="grid grid--2">
       <div class="card">
         <h3>String landscape</h3>
@@ -142,8 +223,10 @@
         <p><a href="https://github.com/robmitchellengineering-hub/pacland">GitHub repo</a> — every doc, the code, the tests</p>
       </div>
     </div>
-
-    <h2 id="published">Published</h2>
+</details>
+<details class="fold">
+<summary>Published</summary>
+<h2 id="published">Published</h2>
     <div class="card">
       <h3>Mitchell's Completeness Theorem: no exact invariant selector in the flux landscape</h3>
       <p>Rob Mitchell · Zenodo · 20 Oct 2026 · open access, CC BY 4.0</p>
@@ -165,8 +248,10 @@
         <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/constraint-first-explainer.pdf">constraint-first-explainer.pdf</a></td><td>the plain-English explainer</td></tr>
       </tbody>
     </table>
-
-    <h2 id="arc">The arc — measure, then prove, then redeploy</h2>
+</details>
+<details class="fold">
+<summary>The arc — measure, then prove, then redeploy</summary>
+<h2 id="arc">The arc — measure, then prove, then redeploy</h2>
     <p>The project ran in three acts, and this page is ordered so you can follow the whole arc while every original piece stays put.</p>
     <div class="grid">
       <div class="card">
@@ -190,8 +275,10 @@
         <p><a href="#sm">the Standard-Model frontier</a> · <a href="#disciplines">the disciplines</a></p>
       </div>
     </div>
-
-    <h2 id="theorems">The theorem tower — "the only exact structure is the constraint" is now proved</h2>
+</details>
+<details class="fold">
+<summary>The theorem tower — "the only exact structure is the constraint" is now proved</summary>
+<h2 id="theorems">The theorem tower — "the only exact structure is the constraint" is now proved</h2>
     <p>The constraint-first claim began as a measurement (the structure map: the tadpole comes back r = 1.0, every other observable uniform). It is now a <strong>tower of five theorems</strong>, each verified symbolically with sympy at zero tolerance, plus a machine-checked Lean arm. One command reproduces the whole tower: <code>python3 scripts/validate_all_theorems.py</code>.</p>
     <table>
       <thead><tr><th>theorem</th><th>statement</th><th>grade</th></tr></thead>
@@ -221,8 +308,10 @@
       </tbody>
     </table>
     <p class="muted">The four walls are what you can't do; the five pillars are what makes the claim stand. Three pillars sharpen the result: the vacuum count is <em>bounded, not fixed</em> by topology; the constraint is a <em>K-theory vanishing</em> (total charge = 0 in K(X)); the vacuum space is a <em>symplectic quotient</em> (Marsden–Weinstein). See <code>docs/five-pillars.md</code>.</p>
-
-    <h2 id="sm">The Standard-Model frontier — constraint-first, one sector up</h2>
+</details>
+<details class="fold">
+<summary>The Standard-Model frontier — constraint-first, one sector up</summary>
+<h2 id="sm">The Standard-Model frontier — constraint-first, one sector up</h2>
     <p>The Complete Exact Structure Theorem proved the <strong>flux sector's</strong> only exact structure is its constraint plus its label. The same classification extends one sector up to the <strong>Standard Model</strong> — the m = 0 frontier the theorem named as its open question.</p>
     <table>
       <thead><tr><th>type</th><th>flux sector (proven)</th><th>Standard Model</th></tr></thead>
@@ -240,8 +329,10 @@
     </div>
     <p><strong>The refined claim (from two research fan-outs).</strong> The first fan-out split "unpredicable" and found the honest form: <strong>a ToE predicts <em>relations</em> (invariants), never <em>values</em></strong> — GUTs and string geometry <em>relate</em> the parameters but never derive their absolute values. The second fan-out split "free parameter" and found the floor is a structure, not a number: <strong>0 continuous, 1 discrete (the tadpole), 19 relations</strong>. See <code>docs/sm-conjecture-notes.md</code> and <code>docs/sm-floor-notes.md</code>.</p>
     <p>The falsifiable test: <em>derive any one of the SM's ~19 free parameters from first principles</em> and the constraint-first generalization is falsified. Reproduce: <code>python3 scripts/validate_sm_anomaly.py</code> (5/5), <code>validate_sm_hypercharge_uniqueness.py</code> (4/4), <code>validate_sm_invariant_ring.py</code>, <code>validate_gut_parameter_count.py</code>. Full doc: <code>docs/sm-frontier.md</code>.</p>
-
-    <h2 id="results">What we measured</h2>
+</details>
+<details class="fold">
+<summary>What we measured</summary>
+<h2 id="results">What we measured</h2>
     <div class="grid">
       <div class="card"><h3>The Mitchell Verification Deficit</h3><div class="big">m = 9, closing</div><p>Started total (m = 0, certificate vacuous). Climbed with real computation: topology h11·h21·c2·κ (m = 4), the flux tadpole N_flux = FᵀJH exactly (m = 1), and the SM's exact structure (m = 4: anomaly cancellation 5/5, hypercharge uniqueness 4/4, N_gen = 3, 19 = orbit-space dim). Completeness proves the flux sector is <em>saturated</em> at 1 — growth from here is branes + SM.</p></div>
       <div class="card"><h3>W₀ prior</h3><div class="big">log-uniform, R² = 0.92</div><p>Measured on 380 SUSY flux vacua (natural measure). The KKLT log-uniform prior — measured, not assumed.</p></div>
@@ -249,8 +340,10 @@
       <div class="card"><h3>Small W₀</h3><div class="big">43% of vacua</div><p>P(|W₀| &lt; 1) ≈ 43% on the natural measure — not the ~5% that biased sampling suggested.</p></div>
       <div class="card"><h3>Mass spectrum — no fingerprint</h3><div class="big">shape random, r &lt; 0.25</div><p>On 133 SUSY vacua the mass spectrum's <em>shape</em> (scale-free ratios) is uniform in flux — the long-hoped-for geometric fingerprint is <strong>not</strong> there. Only its scale is flux-set. Completeness now shows why: it could never have been there.</p></div>
     </div>
-
-    <h2 id="structure">The structure map — the measured evidence behind the theorem</h2>
+</details>
+<details class="fold">
+<summary>The structure map — the measured evidence behind the theorem</summary>
+<h2 id="structure">The structure map — the measured evidence behind the theorem</h2>
     <p>Every flux-determined observable is classified by a joint learnability test, gated by a positive control (the tadpole must come back r = 1.0):</p>
     <table>
       <thead><tr><th>observable</th><th>r (wide flux)</th><th>verdict</th></tr></thead>
@@ -265,12 +358,16 @@
       </tbody>
     </table>
     <p><strong>The landscape's only exact structure is what it <em>forbids</em> — the constraint. Everything it produces is noise plus a weak scale; the geometric fingerprint is absent everywhere except the constraint.</strong> The theorem tower above turns that measured sentence into a proof. Paper: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/structure-map.pdf">structure-map.pdf</a>.</p>
-
-    <h2 id="method">The Rule of Three — no result from one test</h2>
+</details>
+<details class="fold">
+<summary>The Rule of Three — no result from one test</summary>
+<h2 id="method">The Rule of Three — no result from one test</h2>
     <p>No "structured vs. random" claim is made from a single measurement. Every such claim needs three independent confirmations that <em>agree</em>: single-coordinate mutual information, the joint ridge-quadratic test, and a permutation null. The tadpole (r = 1.0 on all three) is the positive control proving the tests work. This rule is what caught and corrected our own W₀ over-reach — "zero-information" was a single-coordinate artifact; the joint test gives r = 0.62.</p>
     <p class="muted">Also confirmed from data: the <strong>no-scale theorem</strong> — SUSY flux vacua sit at V = 0 to machine precision (10⁻³¹), before Kähler-moduli stabilization. The honest wall chain: SUSY (86.8%) × stability (4.6%) = 87.2% of critical points ruled out.</p>
-
-    <h2 id="deficit">The Mitchell Verification Deficit — real, and working</h2>
+</details>
+<details class="fold">
+<summary>The Mitchell Verification Deficit — real, and working</summary>
+<h2 id="deficit">The Mitchell Verification Deficit — real, and working</h2>
     <p>The deficit is the count <code>m</code> of observables that are simultaneously <em>measured</em>, <em>computable</em>, and <em>validated</em>. The certificate's oracle term is <code>√(ln 1/δ / 2m)</code>, so at <code>m = 0</code> the certificate is vacuous (infinite radius), and every validated observable shrinks it. It is not a slogan — it is a number we have moved, by building and validating oracles.</p>
     <table>
       <thead><tr><th>rung</th><th>observable</th><th>oracle</th><th>how it was validated</th></tr></thead>
@@ -283,8 +380,10 @@
       </tbody>
     </table>
     <p>The radius fell <code>∞ → 0.679</code> in the topology sector as m went 0 → 4, and the flux sector opened at m = 1. Every rung came from a real computation — CYTools on the harness mesh, an exact bilinear fit on 107 real SUSY vacua — never from assumption. That is the significance: <strong>the Mitchell Verification Deficit is a working instrument.</strong> It reads "vacuous" when there is no verification layer, and it closes one validated oracle at a time as we build that layer. Completeness gives it a hard ceiling: the flux sector is done at 1; growth from here is branes and the Standard Model.</p>
-
-    <h2 id="boundary">The boundary map — what's computable, what isn't</h2>
+</details>
+<details class="fold">
+<summary>The boundary map — what's computable, what isn't</summary>
+<h2 id="boundary">The boundary map — what's computable, what isn't</h2>
     <table>
       <thead><tr><th>Question</th><th>Sense of "uncomputable"</th><th>What remains computable</th></tr></thead>
       <tbody>
@@ -298,8 +397,10 @@
       </tbody>
     </table>
     <p class="muted">None of these is <em>undecidable</em> — the landscape problem is an epistemic and underdetermination limit, not a Turing limit. That's itself a finding: the path forward is "build the missing oracles" and "compute the invariants of the underdetermined set," not "invent a faster computer."</p>
-
-    <h2 id="swampland">The swampland connection — the constraint, measured <em>and</em> proven exactly on T⁶</h2>
+</details>
+<details class="fold">
+<summary>The swampland connection — the constraint, measured and proven exactly on T⁶</summary>
+<h2 id="swampland">The swampland connection — the constraint, measured <em>and</em> proven exactly on T⁶</h2>
     <p>The constraint-first theorem <em>is</em> the swampland program as a measurement: every swampland conjecture says "consistency <strong>forbids</strong> X" — the structure lives in the constraints, not in what the theory produces. So each conjecture becomes a falsifiable prediction on our samples:</p>
     <table>
       <thead><tr><th>conjecture</th><th>quantity</th><th>ridge r</th><th>verdict</th></tr></thead>
@@ -313,8 +414,10 @@
     </table>
     <p>The Weak-Gravity scale Λ = g·M_pl depends on g_s through the stabilized moduli → uniform in flux (r &lt; 0.25), exactly as constraint-first predicts. The distance-conjecture proxy is a <strong>real signal</strong> (Pearson −0.68, z −9.2; survives flux control), directionally what the distance conjecture predicts — but the clean CY test needs the full Kähler sector (the bigger-machine chase). Run it with <code>scripts/test_swampland.py</code>; 127 tests green.</p>
     <p>On the <strong>exact T⁶ toroidal orbifold</strong> (the exactly-solvable IIB model, closed forms everywhere) the conjectures become theorems on the <em>correct</em> moduli: the KK/winding tower mass falls exactly as <code>m = m₀ e<sup>−d</sup></code> along the Kähler-moduli geodesic (the <strong>distance conjecture, proven</strong>), and the KK mode saturates the extremal bound <code>z = g_KK / m_KK = 1</code> (the <strong>Weak Gravity Conjecture, saturated</strong>). Det Σ = 1 gives no global symmetries. See <code>docs/t6-exact-oracle.md</code>.</p>
-
-    <h2 id="lean">The Lean machine-checked arm</h2>
+</details>
+<details class="fold">
+<summary>The Lean machine-checked arm</summary>
+<h2 id="lean">The Lean machine-checked arm</h2>
     <p>The sympy scripts give <em>exact symbolic</em> proofs at fixed cases. <code>pacland-proof/</code> (Lean 4 + Mathlib) is the <strong>machine-checked</strong> arm — the statement is verified by Lean's kernel, not by a computation.</p>
     <table>
       <thead><tr><th>result</th><th>file</th><th>status</th></tr></thead>
@@ -331,8 +434,10 @@
       </tbody>
     </table>
     <p class="muted">The "bigger machine" was a false wall: the 16 GB Mac runs <code>lake build</code> via the mathlib cache. Reproduce: <code>cd pacland-proof &amp;&amp; lake build</code>. A green build means Lean's kernel accepted every theorem — <strong>no <code>sorry</code>, no <code>axiom</code>, no <code>native_decide</code></strong>; every theorem is kernel-checked. The FFT slices are now machine-checked at <strong>degrees 1, 2, 3, and 4</strong> (no linear, only the tadpole, no cubic, only N²); the <em>general-degree</em> statement remains Weyl's 1939 FFT, cited + sympy-verified at degrees 1–5.</p>
-
-    <h2 id="machines">The three verification machines</h2>
+</details>
+<details class="fold">
+<summary>The three verification machines</summary>
+<h2 id="machines">The three verification machines</h2>
     <p>Three of the program's "can'ts" were dissolved by building a machine for each — a code artifact that turns a negative into a falsifiable positive, each verified on <code>main</code>.</p>
     <table>
       <thead><tr><th>machine</th><th>the "can't" it dissolved</th><th>result</th></tr></thead>
@@ -343,8 +448,10 @@
       </tbody>
     </table>
     <p class="muted">Each machine answers a question reproducibly with a named falsifier, rather than a hand-waved claim. Reproduce: <code>python3 scripts/validate_uv_completions.py</code>, <code>python3 scripts/scan_kpv.py</code>, and <code>cd pacland-proof &amp;&amp; lake build</code>.</p>
-
-    <h2 id="solidity">How solid is it? — the falsifiers, in plain English</h2>
+</details>
+<details class="fold">
+<summary>How solid is it? — the falsifiers, in plain English</summary>
+<h2 id="solidity">How solid is it? — the falsifiers, in plain English</h2>
     <p>The theorem is consolidated five independent ways, and it names exactly what would break it. <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/paper/theorem-solidity.pdf">Full plain-English write-up (PDF)</a>.</p>
     <table>
       <thead><tr><th>way it's checked</th><th>what it establishes</th></tr></thead>
@@ -367,8 +474,10 @@
       </tbody>
     </table>
     <p class="muted">Defense in depth: the most likely falsifier (#2) attacks the <em>conjectured</em> Standard-Model extension, not the proven core. The one error found (a GUT collapse count) was caught and corrected — the verification working as designed.</p>
-
-    <h2 id="use">Use it</h2>
+</details>
+<details class="fold">
+<summary>Use it</summary>
+<h2 id="use">Use it</h2>
     <p>The whole discipline is a pip-installable, pure-stdlib Python library with a CLI:</p>
     <pre style="background:#f0f2f7;padding:1rem;border-radius:8px;overflow-x:auto;"><code>pip install -e git+https://github.com/robmitchellengineering-hub/pacland.git#egg=pacland
 pacland limits                 # the boundary map
@@ -384,8 +493,10 @@ pacland climb                  # run the deficit climber on the mesh
 # the theorem tower, all six proofs in one command:
 python3 scripts/validate_all_theorems.py</code></pre>
     <p class="muted">Full docs: <code>docs/usage.md</code>. The paper: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/PACLAND-preprint.pdf">PACLAND-preprint.pdf</a>. The theorem docs: <code>docs/mitchell-uniqueness-theorem.md</code>, <code>docs/constraint-first-theorem.md</code>, <code>docs/mitchell-completeness-theorem.md</code>, <code>docs/complete-exact-structure.md</code>.</p>
-
-    <h2 id="try">Try the two verification acts</h2>
+</details>
+<details class="fold">
+<summary>Try the two verification acts</summary>
+<h2 id="try">Try the two verification acts</h2>
     <div class="grid">
       <div class="card">
         <h3>① The certificate (two-level bound)</h3>
@@ -407,7 +518,7 @@ python3 scripts/validate_all_theorems.py</code></pre>
         <p class="muted">Non-computable observables rule nothing out — they sit in the prediction zone and are falsifiable later, not now.</p>
       </div>
     </div>
-
+</details>
 <h2 id="disciplines">Disciplines — one verification spine, many fields</h2>
     <p>PACLAND is one verification discipline — the two-level certificate, the verification deficit, the constraint-first decomposition, the four-walls map — applied one field at a time. Each discipline is its own thing: its own code, docs, and commands, inside this one repo. <code>pacland disciplines</code> lists them.</p>
     <div class="grid">
@@ -441,8 +552,9 @@ python3 scripts/validate_all_theorems.py</code></pre>
         <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ai-verified-badge.md">the badge</a></p>
       </div>
     </div>
-
-    <h2 id="solutions">What is possible — and where to look</h2>
+<details class="fold">
+<summary>What is possible — and where to look</summary>
+<h2 id="solutions">What is possible — and where to look</h2>
     <p class="lead">Every finding on this page lands in one of three <strong>gates</strong>. These are the solutions this work produces: not forecasts, but refusals that stop an unverified number reaching a decision.</p>
     <div class="grid grid--2">
       <div class="card">
@@ -467,8 +579,10 @@ python3 scripts/validate_all_theorems.py</code></pre>
       </div>
     </div>
     <p class="muted">What is <em>not</em> possible on this evidence: a certified quarter-ahead inflation number, or a certified 2100 projection. In both fields the exact content is definitional and the behavioural parameters are not identified from aggregates — so the honest output is the deficit, not the number.</p>
-
-    <h2 id="climate">Climate — the verification deficit, measured</h2>
+</details>
+<details class="fold">
+<summary>Climate — the verification deficit, measured</summary>
+<h2 id="climate">Climate — the verification deficit, measured</h2>
     <p class="lead">The first expansion. Applied to climate modelling, the discipline produces a number the field has never had: how much of a projection is <em>verified</em> versus <em>extrapolated</em>.</p>
 
     <div class="grid">
@@ -490,8 +604,10 @@ python3 scripts/validate_all_theorems.py</code></pre>
       <p><strong>The CMIP6 conservation drift (real data, three ledgers).</strong> A conserving model must close three independent ledgers — energy, mass, salt. Measured: <strong>12 of 19 leak energy</strong> (two — CNRM-ESM2-1 at 1.485 W/m², CNRM-CM6-1 at 1.46 — at ~1.9× the Earth's energy imbalance), <strong>6 of 19 leak mass</strong> (ACCESS-ESM1-5 at −1.03 mm/yr, ~30% of sea-level rise), but <strong>only 2 of 19 leak salt</strong>. Salt — the purely-ocean ledger — is conserved orders of magnitude better, so the leak lives in the <em>atmosphere-ocean coupling</em>, not the ocean model. Crossed with the field's two other quality axes — climate sensitivity (ECS) and effective forcing (ERF2x) — <strong>only 2 of 19 survive all three axes — the GISS family</strong>.</p>
     </div>
     <p class="muted">Full write-up: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">the CMIP6 conservation deficit</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-ace-reference-fidelity.md">the ACE emulator example</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">explainer (PDF)</a> · reproduce: <code>pacland climate</code> · <code>python3 scripts/climate_cmip6_drift.py</code>.</p>
-
-    <h2 id="trust">Trust board — every discipline, one ranked output</h2>
+</details>
+<details class="fold">
+<summary>Trust board — every discipline, one ranked output</summary>
+<h2 id="trust">Trust board — every discipline, one ranked output</h2>
     <p>The monetisation surface: each discipline drops its artifacts into one ranked board, machine-checked and cited. <code>pacland trust</code> ranks 29 artifacts today — <strong>14 broken, 4 weak, 11 clean</strong>.</p>
     <div class="callout">
       <p><strong>The flagship finding.</strong> 12 of 19 CMIP6 models fail an energy-conservation guard; two leak heat at ~1.9× the Earth's energy imbalance, and the leak lives in the atmosphere, not the ocean. Crossed with ECS and forcing, only the GISS family survives all three axes.</p>
@@ -508,7 +624,7 @@ python3 scripts/validate_all_theorems.py</code></pre>
 
   </div>
     </main>
-
+</details>
 <footer>
   PACLAND · github.com/robmitchellengineering-hub/pacland · a verification discipline, not a physics solver
   <p class="muted">Stated honestly: pre-revenue, seeking design partners. The verification layer is what we
@@ -562,5 +678,58 @@ document.querySelectorAll('input').forEach(function(i){ i.addEventListener('inpu
 update();
 </script>
 
+<script>
+(function () {
+  // ---- calculators: the same arithmetic the repo runs -------------------------
+  const R = Math.sqrt, LN = Math.log;
+  const $ = id => document.getElementById(id);
+  function radius() {
+    const m = Math.max(1, parseInt($('c-m').value || '1', 10));
+    const d = Math.min(0.5, Math.max(1e-4, parseFloat($('c-d').value || '0.025')));
+    const r = R(LN(1 / d) / (2 * m));
+    $('c-radius').textContent = 'radius ' + r.toFixed(3) + '  (' + (100 * r).toFixed(0) + '%)';
+    $('c-note').textContent = 'm = ' + m + ' validated observables; a 1% certificate needs m ≈ ' +
+      Math.round(LN(1 / d) / (2 * 0.0001)).toLocaleString() + '.';
+  }
+  function nullGate() {
+    const mine = parseFloat($('c-mine').value || '0'), nul = parseFloat($('c-null').value || '0');
+    if (!(nul > 0)) { $('c-ratio').textContent = '—'; return; }
+    const q = mine / nul;
+    $('c-ratio').textContent = q.toFixed(2) + '× the null';
+    $('c-verdict').textContent = q >= 1
+      ? 'fails the null gate — the forecast is no better than “tomorrow equals today”.'
+      : (q < 0.5 ? 'passes, and by a wide margin.' : 'passes — but the margin is thin.');
+  }
+  function indep() {
+    const n = Math.max(1, parseInt($('c-n').value || '1', 10));
+    const r = Math.min(n, Math.max(0, parseInt($('c-r').value || '0', 10)));
+    $('c-indep').textContent = r + ' of ' + n + ' independent';
+    $('c-inflation').textContent = (n - r) === 0
+      ? 'every constraint you wrote is doing work.'
+      : (n - r) + ' of them restate another one — counting ' + n + ' would inflate the count by ' + (n - r) + '.';
+  }
+  ['c-m','c-d'].forEach(id => $(id).addEventListener('input', radius));
+  ['c-mine','c-null'].forEach(id => $(id).addEventListener('input', nullGate));
+  ['c-n','c-r'].forEach(id => $(id).addEventListener('input', indep));
+  radius(); nullGate(); indep();
+
+  // ---- the search box: same index.json as /all.html ---------------------------
+  const q = $('q'), out = $('q-results');
+  let items = [];
+  const esc = t => (t || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function render() {
+    const term = q.value.trim().toLowerCase();
+    if (!term) { out.innerHTML = ''; return; }
+    const hits = items.filter(i => (i.title + ' ' + (i.summary || '')).toLowerCase().includes(term)).slice(0, 12);
+    out.innerHTML = hits.length
+      ? hits.map(i => `<li><a href="${esc(i.href)}">${esc(i.title)}</a>` +
+                      `<span class="k">${esc(i.kind)}</span>` +
+                      (i.summary ? `<div class="s">${esc(i.summary)}</div>` : '') + '</li>').join('')
+      : '<li class="s">nothing matches — try a shorter word.</li>';
+  }
+  q.addEventListener('input', render);
+  fetch('./index.json').then(r => r.json()).then(d => { items = d.items; }).catch(() => {});
+})();
+</script>
 </body>
 </html>
