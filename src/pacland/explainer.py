@@ -17,33 +17,44 @@ FONT = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 DEFAULT_FOOTER = "github.com/robmitchellengineering-hub/pacland"
 
 
+#: A one-page sheet needs smaller type than a multi-page brief, and it must not spill.
+#: ``compact`` scales every size and gap by this factor (tuned to keep ~500 words on A4).
+COMPACT_SCALE = 0.82
+
+
 def render(entries: list[tuple[str, str]], out_path: str,
-           footer: str = DEFAULT_FOOTER) -> str:
-    """Render ``entries`` to ``out_path`` (A4). Returns ``out_path``."""
+           footer: str = DEFAULT_FOOTER, compact: bool = False) -> str:
+    """Render ``entries`` to ``out_path`` (A4). Returns ``out_path``.
+
+    ``compact=True`` is for one-pagers: everything scales by ``COMPACT_SCALE`` so the page
+    still fits when the text is aimed at a general reader rather than a specialist.
+    """
     from fpdf import FPDF
 
+    k = COMPACT_SCALE if compact else 1.0
+    margin = 18 * k
     pdf = FPDF(format="A4")
-    pdf.set_margins(18, 18, 18)
+    pdf.set_margins(margin, margin, margin)
     pdf.add_font("uni", "", FONT)
-    pdf.set_auto_page_break(auto=True, margin=18)
+    pdf.set_auto_page_break(auto=True, margin=14 * k)
 
     pdf.add_page()
     for kind, text in entries:
         if kind == "title":
-            pdf.set_font("uni", "", 22)
+            pdf.set_font("uni", "", 22 * k)
             pdf.set_text_color(20, 40, 90)
-            pdf.multi_cell(0, 10, text, align="L")
+            pdf.multi_cell(0, 10 * k, text, align="L")
             pdf.ln(1)
         elif kind == "subtitle":
-            pdf.set_font("uni", "", 11)
+            pdf.set_font("uni", "", 11 * k)
             pdf.set_text_color(100, 100, 100)
-            pdf.multi_cell(0, 5.5, text, align="L")
+            pdf.multi_cell(0, 5.5 * k, text, align="L")
             pdf.ln(4)
         elif kind == "h":
-            pdf.set_font("uni", "", 14)
+            pdf.set_font("uni", "", 14 * k)
             pdf.set_text_color(20, 40, 90)
-            pdf.ln(3)
-            pdf.multi_cell(0, 7, text, align="L")
+            pdf.ln(3 * k)
+            pdf.multi_cell(0, 7 * k, text, align="L")
             pdf.ln(1)
         elif kind == "headline":
             pdf.set_font("uni", "", 12.5)
@@ -52,22 +63,25 @@ def render(entries: list[tuple[str, str]], out_path: str,
             pdf.multi_cell(0, 7, "▸  " + text, align="L")
             pdf.ln(1.5)
         elif kind == "p":
-            pdf.set_font("uni", "", 10.5)
+            pdf.set_font("uni", "", 10.5 * k)
             pdf.set_text_color(25, 25, 25)
-            pdf.multi_cell(0, 5.5, text, align="L")
+            pdf.multi_cell(0, 5.5 * k, text, align="L")
             pdf.ln(1.5)
         elif kind == "b":
-            pdf.set_font("uni", "", 10.5)
+            pdf.set_font("uni", "", 10.5 * k)
             pdf.set_text_color(25, 25, 25)
-            pdf.set_x(20)
-            pdf.multi_cell(0, 5.5, "•  " + text, align="L")
+            pdf.set_x(20 * k)
+            pdf.multi_cell(0, 5.5 * k, "•  " + text, align="L")
             pdf.ln(1)
         else:
             raise ValueError(f"unknown explainer kind: {kind!r}")
 
+    # stamping a footer must not trigger a page break: at the bottom margin every write
+    # counts as overflow, which added a phantom final page to any full sheet (2026-10-26)
+    pdf.set_auto_page_break(auto=False)
     for page in range(1, pdf.pages_count + 1):
         pdf.page = page
-        pdf.set_y(-14)
+        pdf.set_y(-12 * k)
         pdf.set_font("uni", "", 8)
         pdf.set_text_color(140, 140, 140)
         pdf.cell(0, 5, f"{footer}  ·  page {page}/{pdf.pages_count}", align="C")
