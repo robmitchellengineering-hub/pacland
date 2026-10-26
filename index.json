@@ -914,6 +914,13 @@
    "title": "make_explainers.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_plain_speak.py",
+   "kind": "script",
+   "path": "scripts/make_plain_speak.py",
+   "summary": "Render the plain-speak one-pagers.",
+   "title": "make_plain_speak.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_startalk_pdf.py",
    "kind": "script",
    "path": "scripts/make_startalk_pdf.py",
@@ -1334,6 +1341,13 @@
    "title": "climate explainer"
   },
   {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-plain-speak.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-climate-plain-speak.pdf",
+   "summary": "explainer PDF",
+   "title": "climate plain speak"
+  },
+  {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-drugs-explainer.pdf",
    "kind": "pdf",
    "path": "PACLAND-drugs-explainer.pdf",
@@ -1346,6 +1360,13 @@
    "path": "PACLAND-economics-explainer.pdf",
    "summary": "explainer PDF",
    "title": "economics explainer"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-economics-plain-speak.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-economics-plain-speak.pdf",
+   "summary": "explainer PDF",
+   "title": "economics plain speak"
   },
   {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf",
