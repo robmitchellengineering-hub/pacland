@@ -26,11 +26,12 @@ class TestIndexIsCurrent(unittest.TestCase):
     def test_every_item_has_a_title_and_a_destination(self):
         for item in json.loads((ROOT / "web" / "index.json").read_text())["items"]:
             self.assertTrue(item["title"].strip(), item)
-            self.assertTrue(item["href"].startswith("http"), item)
+            # docs/scripts/pdfs live on GitHub; site pages are relative to this site
+            self.assertTrue(item["href"].startswith(("http", "./")), item)
 
     def test_the_kinds_are_the_ones_the_page_filters(self):
         kinds = {i["kind"] for i in json.loads((ROOT / "web" / "index.json").read_text())["items"]}
-        self.assertEqual(kinds, {"doc", "script", "pdf"})
+        self.assertEqual(kinds, {"doc", "script", "pdf", "page"})
 
     def test_start_here_points_at_real_paths(self):
         for entry in json.loads((ROOT / "web" / "index.json").read_text())["start"]:
