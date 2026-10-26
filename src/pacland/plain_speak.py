@@ -25,12 +25,12 @@ def landscape() -> list[tuple[str, str]]:
 
         ("h", "2 · What we found"),
         ("b", "There is exactly ONE exact number, and it is a total. Picture a household budget: the total "
-              "spend is fixed, the individual receipts are free. The total flux is exact; how it is split "
+              "spend is fixed, but the individual receipts are not. The total flux is exact; how it is split "
               "between hidden dimensions is not."),
         ("b", "That is provable, not a hunch. Every quantity that survives the theory's symmetries is a power "
               "of that one number. We machine-checked the proof step by step, so it is \u201cthe computer "
               "verified it\u201d, not \u201cwe believe\u201d."),
-        ("b", "The 19 free numbers of particle physics stay free. Nobody derives the electron mass; a final "
+        ("b", "The 19 open numbers of particle physics stay open. Nobody derives the electron mass; a final "
               "theory supplies relations between numbers, not the numbers."),
 
         ("h", "3 · The best we have right now"),
@@ -42,7 +42,7 @@ def landscape() -> list[tuple[str, str]]:
         ("h", "4 · How we refine it"),
         ("b", "Finish the proofs: most are checked only to low orders, and the general case is the next slice "
               "of work."),
-        ("b", "Use free checks: a shape and its mirror carry swapped labels, so every mirror pair is a known "
+        ("b", "Use checks that cost nothing: a shape and its mirror carry swapped labels, so every mirror pair is a known "
               "answer to test the tools against — no new data, no new experiment."),
         ("b", "Count the deficit upward only where it can grow: the flux side is saturated at one, so the next "
               "rungs must come from branes and the Standard Model."),
@@ -51,11 +51,11 @@ def landscape() -> list[tuple[str, str]]:
         ("p", "It tells physicists where a final theory can deliver numbers and where it cannot. That is worth "
               "money: a detector built to measure a number the theory can never give is a detector built on a "
               "misreading. And the method — machine-check the invariants, count what is verified, state the "
-              "rest as free — is what we now apply to climate, medicines and economics."),
+              "rest as not yet determined — is what we now apply to climate, medicines and economics."),
 
         ("h", "6 · What this cannot do"),
         ("p", "It cannot say which universe is ours, or what the masses are. Nobody can, yet. What it can do is "
-              "say exactly where the free choices are — and that is the part that can be checked."),
+              "say exactly which choices are still open — and that is the part that can be checked."),
     ]
 
 
