@@ -1,5 +1,5 @@
 {
-  "what": "THE GUARANTEED BASELINE. Ours, shipped with the SDK, and not the customer's to change. Every rule here is software-enforceable or it would not be in the file: each names an internal check the SDK ships, so it holds on any machine, in any repo, without the customer configuring anything.",
+  "what": "THE GUARANTEED BASELINE. Ours, shipped with the SDK, and not the customer's to change. Every rule names a check the SDK ships, so it runs on any machine with nothing configured. Two of the six (B4 provenance, B5 counting) are true the moment the baseline is installed; the other four are about EVIDENCE and stay unsatisfied \u2014 visibly, with the reason \u2014 until the repo has produced some. That is deliberate: a rule that reported itself satisfied with no evidence would be the failure this product exists to catch.",
   "immutable": true,
   "version": 1,
   "rules": [
@@ -12,7 +12,7 @@
     {
       "id": "B2-evidence-names-its-subject",
       "title": "Every proof names a real file in the repo",
-      "why": "A proof whose guard cannot be pointed at is a row about nothing — a name in a comment counted as evidence until an independent review broke it.",
+      "why": "A proof whose guard cannot be pointed at is a row about nothing \u2014 a name in a comment counted as evidence until an independent review broke it.",
       "enforcedBy": "sdk:evidence-subject"
     },
     {
