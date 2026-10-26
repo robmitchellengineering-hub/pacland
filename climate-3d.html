@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Climate in 3D — PACLAND</title>
+<style>
+  :root{--ink:#15181f;--muted:#5a6072;--line:#e3e6ee;--accent:#1b4fd8;--bg:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:960px;margin:0 auto;padding:1.6rem 1.2rem 3rem}
+  h1{font-size:1.55rem;margin:.2rem 0 .1rem}
+  .sub{color:var(--muted);margin:0 0 1.2rem}
+  h2{font-size:1.05rem;margin:2rem 0 .2rem}
+  p.note{color:var(--muted);font-size:.93rem;margin:.1rem 0 .5rem;max-width:60ch}
+  .plot{width:100%;height:560px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .back{font-size:.9rem}
+  .back a{color:var(--accent);text-decoration:none}
+  @media (max-width:640px){ .plot{height:420px} }
+</style>
+</head>
+<body><div class="wrap">
+  <p class="back"><a href="./index.html">← back to PACLAND</a></p>
+  <h1>Climate — the verification, in 3D</h1>
+  <p class="sub">Same data as <a href="./climate.html">the 2D figures</a>, drawn as three scenes you can
+  rotate: drag to turn, scroll to zoom, hover a dot for the model. Each scene says what to look for.</p>
+
+  <section class="scene">
+    <h2 id="leak">1 · The leak</h2>
+    <p class="note">Axes are the three conservation ledgers, each in its own units. A model in a world with no forcing should sit at the origin. Red dots are the ones that drift away — 14 of 19; green ones hold.</p>
+    <div class="plot" id="plot-leak" data-plot='{"data":[{"type":"scatter3d","mode":"markers","name":"leaks","text":["ACCESS-CM2","ACCESS-ESM1-5","BCC-CSM2-MR","BCC-ESM1","CNRM-CM6-1","CNRM-ESM2-1","IPSL-CM6A-LR","MPI-ESM-1-2-HAM","MPI-ESM1-2-HR","MPI-ESM1-2-LR","UKESM1-0-LL"],"x":[0.189,-0.242,-0.642,-0.423,1.336,1.399,0.754,0.35,0.197,0.421,0.049],"y":[-0.174,-1.032,0.175,0.386,0.303,0.444,0.099,0.02,0.027,0.017,0.558],"z":[1.4,8.74,-40.3,-41.2,-0.23,-1.94,-0.92,-0.18,-0.25,-0.15,-2.83],"marker":{"size":9,"color":"#c0392b","opacity":0.95,"line":{"width":1.2,"color":"#ffffff"}},"hovertemplate":"%{text}<br>energy %{x:.2f} W/m\u00b2<br>mass %{y:.2f} mm/yr<br>salt %{z:.1f} \u00b5g/kg<extra></extra>"},{"type":"scatter3d","mode":"markers","name":"conserves","text":["E3SM-1-0","E3SM-1-1","EC-Earth3","EC-Earth3-Veg","GFDL-CM4","GISS-E2-1-G","GISS-E2-1-G-CC","HadGEM3-GC31-LL"],"x":[-0.016,-0.069,-0.049,-0.067,0.04,0.016,0.018,0.068],"y":[-0.486,0.08,0.064,0.071,-0.009,-0.018,-0.002,0.136],"z":[4.45,-0.71,-0.57,-0.58,0.07,0.17,0.02,0.67],"marker":{"size":9,"color":"#1e7b34","opacity":0.95,"line":{"width":1.2,"color":"#ffffff"}},"hovertemplate":"%{text}<br>energy %{x:.2f} W/m\u00b2<br>mass %{y:.2f} mm/yr<br>salt %{z:.1f} \u00b5g/kg<extra></extra>"},{"type":"scatter3d","mode":"markers","name":"conserved (0,0,0)","showlegend":false,"x":[0],"y":[0],"z":[0],"marker":{"size":6,"color":"#15181f","symbol":"diamond"}}],"layout":{"margin":{"l":60,"r":60,"t":10,"b":30},"paper_bgcolor":"#ffffff","scene":{"xaxis":{"title":{"text":"energy drift (W/m\u00b2)","font":{"size":12}},"backgroundcolor":"#f7f9fc","gridcolor":"#ffffff"},"yaxis":{"title":{"text":"ocean mass (mm/yr)","font":{"size":12}},"backgroundcolor":"#f7f9fc","gridcolor":"#ffffff"},"zaxis":{"title":{"text":"salt drift (\u00b5g/kg/yr)","font":{"size":12}},"backgroundcolor":"#f7f9fc","gridcolor":"#ffffff"},"camera":{"eye":{"x":1.55,"y":1.55,"z":1.15},"center":{"x":0,"y":0,"z":0}},"aspectmode":"cube","aspectratio":{"x":1,"y":1,"z":0.85}},"legend":{"orientation":"h","y":0.02,"x":0.5,"xanchor":"center","font":{"size":12}},"font":{"family":"system-ui, -apple-system, Segoe UI, Roboto, sans-serif","size":13}}}'></div>
+  </section>
+  <section class="scene">
+    <h2 id="gate">2 · The trust gate</h2>
+    <p class="note">Climate sensitivity against heat trapping, with conservation drift as the third axis — the 19 models that have a conservation test, since a model with no drift data has not been tested. The dashed box is where a model has to land: plausible sensitivity is not enough, it has to survive all three axes.</p>
+    <div class="plot" id="plot-gate" data-plot='{"data":[{"type":"scatter3d","mode":"markers","name":"passes all three","text":["GISS-E2-1-G","GISS-E2-1-G-CC"],"x":[2.71,2.71],"y":[3.95,3.95],"z":[0.016,0.018],"marker":{"size":7,"color":"#1e7b34"},"hovertemplate":"%{text}<br>ECS %{x:.2f} K<br>ERF2x %{y:.2f} W/m\u00b2<br>energy drift %{z:.2f} W/m\u00b2<extra></extra>"},{"type":"scatter3d","mode":"markers","name":"fails at least one","text":["ACCESS-CM2","ACCESS-ESM1-5","BCC-CSM2-MR","BCC-ESM1","CNRM-CM6-1","CNRM-ESM2-1","E3SM-1-0","EC-Earth3","EC-Earth3-Veg","GFDL-CM4","HadGEM3-GC31-LL","IPSL-CM6A-LR","MPI-ESM-1-2-HAM","MPI-ESM1-2-HR","MPI-ESM1-2-LR","UKESM1-0-LL","E3SM-1-1"],"x":[4.66,3.88,3.02,3.25,4.9,4.79,5.31,4.26,4.33,3.89,5.55,4.7,2.95,2.98,3.03,5.36,5.31],"y":[3.43,2.83,3.11,3.01,3.64,2.97,3.33,3.22,3.37,3.19,3.49,3.58,4.16,3.65,4.22,3.61,3.33],"z":[0.189,-0.242,-0.642,-0.423,1.336,1.399,-0.016,-0.049,-0.067,0.04,0.068,0.754,0.35,0.197,0.421,0.049,-0.069],"marker":{"size":5,"color":"#8a93a6","opacity":0.75},"hovertemplate":"%{text}<br>ECS %{x:.2f} K<br>ERF2x %{y:.2f} W/m\u00b2<br>energy drift %{z:.2f} W/m\u00b2<extra></extra>"},{"type":"scatter3d","mode":"lines","name":"the gate","showlegend":false,"x":[2.5,4.0,4.0,2.5,2.5],"y":[3.3,3.3,4.1,4.1,3.3],"z":[0,0,0,0,0],"line":{"color":"#b45309","width":4,"dash":"dash"}}],"layout":{"margin":{"l":60,"r":60,"t":10,"b":30},"paper_bgcolor":"#ffffff","scene":{"xaxis":{"title":{"text":"ECS (K)","font":{"size":12}},"backgroundcolor":"#f7f9fc","gridcolor":"#ffffff"},"yaxis":{"title":{"text":"ERF2x (W/m\u00b2)","font":{"size":12}},"backgroundcolor":"#f7f9fc","gridcolor":"#ffffff"},"zaxis":{"title":{"text":"energy drift (W/m\u00b2)","font":{"size":12}},"backgroundcolor":"#f7f9fc","gridcolor":"#ffffff"},"camera":{"eye":{"x":1.55,"y":1.55,"z":1.15},"center":{"x":0,"y":0,"z":0}},"aspectmode":"cube","aspectratio":{"x":1,"y":1,"z":0.85}},"legend":{"orientation":"h","y":0.02,"x":0.5,"xanchor":"center","font":{"size":12}},"font":{"family":"system-ui, -apple-system, Segoe UI, Roboto, sans-serif","size":13}}}'></div>
+  </section>
+  <section class="scene">
+    <h2 id="fix">3 · The fix</h2>
+    <p class="note">Drift correction subtracts each model's own leak: every red dot returns to the origin. That is what a repaired model looks like — and it is why the repair is computable instead of a research programme.</p>
+    <div class="plot" id="plot-fix" data-plot='{"data":[{"type":"scatter3d","mode":"markers","name":"before (leaking)","text":["ACCESS-CM2","ACCESS-ESM1-5","BCC-CSM2-MR","BCC-ESM1","CNRM-CM6-1","CNRM-ESM2-1","IPSL-CM6A-LR","MPI-ESM-1-2-HAM","MPI-ESM1-2-HR","MPI-ESM1-2-LR","UKESM1-0-LL"],"x":[0.189,-0.242,-0.642,-0.423,1.336,1.399,0.754,0.35,0.197,0.421,0.049],"y":[-0.174,-1.032,0.175,0.386,0.303,0.444,0.099,0.02,0.027,0.017,0.558],"z":[1.4,8.74,-40.3,-41.2,-0.23,-1.94,-0.92,-0.18,-0.25,-0.15,-2.83],"marker":{"size":9,"color":"#c0392b","opacity":0.95,"line":{"width":1.2,"color":"#ffffff"}},"hovertemplate":"%{text}<br>energy %{x:.2f} W/m\u00b2<br>mass %{y:.2f} mm/yr<br>salt %{z:.1f} \u00b5g/kg<extra></extra>"},{"type":"scatter3d","mode":"markers","name":"after (corrected)","text":["ACCESS-CM2","ACCESS-ESM1-5","BCC-CSM2-MR","BCC-ESM1","CNRM-CM6-1","CNRM-ESM2-1","IPSL-CM6A-LR","MPI-ESM-1-2-HAM","MPI-ESM1-2-HR","MPI-ESM1-2-LR","UKESM1-0-LL"],"x":[0,0,0,0,0,0,0,0,0,0,0],"y":[0,0,0,0,0,0,0,0,0,0,0],"z":[0,0,0,0,0,0,0,0,0,0,0],"marker":{"size":5,"color":"#1e7b34"}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[0.189,0],"y":[-0.174,0],"z":[1.4,0],"line":{"color":"#b9c0cc","width":2}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[-0.242,0],"y":[-1.032,0],"z":[8.74,0],"line":{"color":"#b9c0cc","width":2}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[-0.642,0],"y":[0.175,0],"z":[-40.3,0],"line":{"color":"#b9c0cc","width":2}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[-0.423,0],"y":[0.386,0],"z":[-41.2,0],"line":{"color":"#b9c0cc","width":2}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[1.336,0],"y":[0.303,0],"z":[-0.23,0],"line":{"color":"#b9c0cc","width":2}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[1.399,0],"y":[0.444,0],"z":[-1.94,0],"line":{"color":"#b9c0cc","width":2}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[0.754,0],"y":[0.099,0],"z":[-0.92,0],"line":{"color":"#b9c0cc","width":2}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[0.35,0],"y":[0.02,0],"z":[-0.18,0],"line":{"color":"#b9c0cc","width":2}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[0.197,0],"y":[0.027,0],"z":[-0.25,0],"line":{"color":"#b9c0cc","width":2}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[0.421,0],"y":[0.017,0],"z":[-0.15,0],"line":{"color":"#b9c0cc","width":2}},{"type":"scatter3d","mode":"lines","showlegend":false,"hoverinfo":"skip","x":[0.049,0],"y":[0.558,0],"z":[-2.83,0],"line":{"color":"#b9c0cc","width":2}}],"layout":{"margin":{"l":60,"r":60,"t":10,"b":30},"paper_bgcolor":"#ffffff","scene":{"xaxis":{"title":{"text":"energy drift (W/m\u00b2)","font":{"size":12}},"backgroundcolor":"#f7f9fc","gridcolor":"#ffffff"},"yaxis":{"title":{"text":"ocean mass (mm/yr)","font":{"size":12}},"backgroundcolor":"#f7f9fc","gridcolor":"#ffffff"},"zaxis":{"title":{"text":"salt drift (\u00b5g/kg/yr)","font":{"size":12}},"backgroundcolor":"#f7f9fc","gridcolor":"#ffffff"},"camera":{"eye":{"x":1.55,"y":1.55,"z":1.15},"center":{"x":0,"y":0,"z":0}},"aspectmode":"cube","aspectratio":{"x":1,"y":1,"z":0.85}},"legend":{"orientation":"h","y":0.02,"x":0.5,"xanchor":"center","font":{"size":12}},"font":{"family":"system-ui, -apple-system, Segoe UI, Roboto, sans-serif","size":13}}}'></div>
+  </section>
+  <p class="back" style="margin-top:2rem">Generated by <code>scripts/build_climate_3d.py</code> from
+  <code>data/climate/*.json</code>. The 2D version needs no JavaScript: <a href="./climate.html">the figures</a>.</p>
+</div>
+<script src="./vendor/plotly-2.35.2.min.js"></script>
+<script>
+(function () {
+  if (!window.Plotly) {
+    document.querySelectorAll('.plot').forEach(function (el) {
+      el.innerHTML = '<p style="padding:1rem;color:#5a6072">The 3D view needs the Plotly library, ' +
+                     'which did not load. The 2D figures work without it: <a href="./climate.html">see the figures</a>.</p>';
+    });
+    return;
+  }
+  var opts = {responsive: true, displayModeBar: false};
+  document.querySelectorAll('.plot').forEach(function (el) {
+    var spec = JSON.parse(el.getAttribute('data-plot'));
+    Plotly.newPlot(el, spec.data, spec.layout, opts);
+  });
+})();
+</script>
+</body></html>

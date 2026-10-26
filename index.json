@@ -676,6 +676,13 @@
    "title": "W\u2080's weak structure is its own flux dependence \u2014 not the tadpole's scale"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
+   "kind": "script",
+   "path": "scripts/build_climate_3d.py",
+   "summary": "Build the 3D view of the climate verification.",
+   "title": "build_climate_3d.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_charts.py",
    "kind": "script",
    "path": "scripts/build_climate_charts.py",
@@ -1010,6 +1017,13 @@
    "path": "scripts/render_pdf.py",
    "summary": "Render a PACLAND markdown doc to PDF (fpdf2 + Arial Unicode).",
    "title": "render_pdf.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/run-tests.sh",
+   "kind": "script",
+   "path": "scripts/run-tests.sh",
+   "summary": "run-tests.sh \u2014 the test suite, as a gate, in a checkout that was never pip-installed.",
+   "title": "run-tests.sh"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_ds_test.py",
@@ -1402,6 +1416,13 @@
    "path": "web/all.html",
    "summary": "page on this site",
    "title": "Find anything \u2014 every doc, script and explainer"
+  },
+  {
+   "href": "./climate-3d.html",
+   "kind": "page",
+   "path": "web/climate-3d.html",
+   "summary": "page on this site",
+   "title": "Climate in 3D \u2014 the verification, rotatable"
   },
   {
    "href": "./climate.html",
