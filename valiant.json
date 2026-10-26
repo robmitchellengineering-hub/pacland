@@ -19,7 +19,7 @@
     {
       "name": "site-verification-link",
       "file": "web/index.html",
-      "find": "<a href=\"https://morpheus.nz/verification\">",
+      "find": "<a href=\"https://vvs.morpheus.nz\">",
       "replace": "<a href=\"#\">",
       "check": [
         "python3",

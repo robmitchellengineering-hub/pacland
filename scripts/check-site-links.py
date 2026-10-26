@@ -24,7 +24,7 @@ def main() -> int:
         return 2
 
     checks = {
-        "the page reaches the verification page": "morpheus.nz/verification" in html,
+        "the page reaches Valiant Verification Systems": "vvs.morpheus.nz" in html,
         "the page states the verification discipline": "Valiant Verification" in html,
         "the page keeps its honest, pre-revenue line": "design partner" in html.lower(),
     }
