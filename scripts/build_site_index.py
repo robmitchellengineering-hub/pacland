@@ -128,6 +128,19 @@ def scripts() -> list[dict]:
     return out
 
 
+def pages() -> list[dict]:
+    """The HTML pages themselves — a reader looks for 'the graphs', not climate.html."""
+    titles = {
+        "index.html": "The front page — what PACLAND is",
+        "all.html": "Find anything — every doc, script and explainer",
+        "climate.html": "Climate figures — the four graphs drawn from the data",
+        "viz.html": "The constraint, visualised — 3D geometry",
+    }
+    return [{"kind": "page", "title": titles.get(p.name, p.stem),
+             "summary": "page on this site", "path": f"web/{p.name}", "href": f"./{p.name}"}
+            for p in sorted((ROOT / "web").glob("*.html"))]
+
+
 def pdfs() -> list[dict]:
     return [{"kind": "pdf", "title": p.stem.replace("PACLAND-", "").replace("-", " "),
              "summary": "explainer PDF", "path": p.name,
@@ -144,16 +157,17 @@ def build() -> dict:
                             else f"https://github.com/robmitchellengineering-hub/pacland/blob/main/{p}")}
                   for t, p, s in START_HERE],
         "commands": [{"title": c, "summary": s} for c, s in COMMANDS],
-        "items": docs() + scripts() + pdfs(),
+        "items": docs() + scripts() + pdfs() + pages(),
     }
 
 
 def main() -> int:
     data = build()
     OUT_JSON.write_text(json.dumps(data, indent=1, sort_keys=True))
-    n = {k: sum(1 for i in data["items"] if i["kind"] == k) for k in ("doc", "script", "pdf")}
+    n = {k: sum(1 for i in data["items"] if i["kind"] == k) for k in ("doc", "script", "pdf", "page")}
     print(f"wrote {OUT_JSON.relative_to(ROOT)}: {n['doc']} docs, {n['script']} scripts, "
-          f"{n['pdf']} pdfs, {len(data['start'])} start-here, {len(data['commands'])} commands")
+          f"{n['pdf']} pdfs, {n['page']} pages, {len(data['start'])} start-here, "
+          f"{len(data['commands'])} commands")
     return 0
 
 
