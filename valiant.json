@@ -7,6 +7,24 @@
         "scripts/run-tests.sh"
       ],
       "expectStderr": true
+    },
+    {
+      "name": "conservation-gate",
+      "expectStderr": true,
+      "cmd": [
+        "sh",
+        "-c",
+        "PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift -q"
+      ]
+    },
+    {
+      "name": "reference-model-gate",
+      "expectStderr": true,
+      "cmd": [
+        "sh",
+        "-c",
+        "PYTHONPATH=src python3 -m unittest tests.test_climate_reference_model -q"
+      ]
     }
   ],
   "ledger": false,
@@ -29,6 +47,50 @@
       "check": [
         "python3",
         "scripts/check-site-links.py"
+      ]
+    },
+    {
+      "name": "conservation-unit-scale",
+      "file": "src/pacland/climate/cmip6_drift.py",
+      "find": "_EARTH_AREA_M2 = 5.101e14",
+      "replace": "_EARTH_AREA_M2 = 5.101e8",
+      "check": [
+        "sh",
+        "-c",
+        "PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift tests.test_climate_reference_model -q"
+      ]
+    },
+    {
+      "name": "worst-energy-offender-zeroed",
+      "file": "data/climate/cmip6_drift.json",
+      "find": "\"netTOA_J_per_yr\": 2.39e+22",
+      "replace": "\"netTOA_J_per_yr\": 0.0",
+      "check": [
+        "sh",
+        "-c",
+        "PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift tests.test_climate_reference_model -q"
+      ]
+    },
+    {
+      "name": "giss-ecs-out-of-range",
+      "file": "data/climate/cmip6_ecs.json",
+      "find": "\"GISS-E2-1-G\": 2.71",
+      "replace": "\"GISS-E2-1-G\": 4.2",
+      "check": [
+        "sh",
+        "-c",
+        "PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift tests.test_climate_reference_model -q"
+      ]
+    },
+    {
+      "name": "giss-erf2x-out-of-band",
+      "file": "data/climate/cmip6_ecs.json",
+      "find": "\"GISS-E2-1-G\": 3.95",
+      "replace": "\"GISS-E2-1-G\": 5.0",
+      "check": [
+        "sh",
+        "-c",
+        "PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift tests.test_climate_reference_model -q"
       ]
     }
   ]
