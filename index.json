@@ -676,6 +676,13 @@
    "title": "W\u2080's weak structure is its own flux dependence \u2014 not the tadpole's scale"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_charts.py",
+   "kind": "script",
+   "path": "scripts/build_climate_charts.py",
+   "summary": "Build the climate figure page \u2014 charts drawn from the checked-in data.",
+   "title": "build_climate_charts.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_site_index.py",
    "kind": "script",
    "path": "scripts/build_site_index.py",
@@ -1388,6 +1395,34 @@
    "path": "PACLAND-startalk.pdf",
    "summary": "explainer PDF",
    "title": "startalk"
+  },
+  {
+   "href": "./all.html",
+   "kind": "page",
+   "path": "web/all.html",
+   "summary": "page on this site",
+   "title": "Find anything \u2014 every doc, script and explainer"
+  },
+  {
+   "href": "./climate.html",
+   "kind": "page",
+   "path": "web/climate.html",
+   "summary": "page on this site",
+   "title": "Climate figures \u2014 the four graphs drawn from the data"
+  },
+  {
+   "href": "./index.html",
+   "kind": "page",
+   "path": "web/index.html",
+   "summary": "page on this site",
+   "title": "The front page \u2014 what PACLAND is"
+  },
+  {
+   "href": "./viz.html",
+   "kind": "page",
+   "path": "web/viz.html",
+   "summary": "page on this site",
+   "title": "The constraint, visualised \u2014 3D geometry"
   }
  ],
  "start": [
