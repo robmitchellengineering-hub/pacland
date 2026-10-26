@@ -1012,6 +1012,13 @@
    "title": "render_pdf.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/run-tests.sh",
+   "kind": "script",
+   "path": "scripts/run-tests.sh",
+   "summary": "run-tests.sh \u2014 the test suite, as a gate, in a checkout that was never pip-installed.",
+   "title": "run-tests.sh"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_ds_test.py",
    "kind": "script",
    "path": "scripts/sample_ds_test.py",
