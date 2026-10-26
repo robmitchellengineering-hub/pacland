@@ -108,5 +108,59 @@ def economics() -> list[tuple[str, str]]:
     ]
 
 
+def landscape() -> list[tuple[str, str]]:
+    """One page: the string landscape (physics), in words a 15-year-old can follow."""
+    return [
+        ("title", "PACLAND · Physics, in plain words"),
+        ("subtitle", "The string landscape: what we checked, what we found, and what it means. "
+                     "One page, no jargon."),
+
+        ("h", "1 · The question"),
+        ("p", "String theory says the universe could have about 10^500 different shapes — far more "
+              "than there are atoms in the part of the universe we can see. Each shape would give "
+              "different particle masses. So how would you ever tell which one is ours? The usual "
+              "answer is: you can't. That is the question we took seriously."),
+
+        ("h", "2 · What we did"),
+        ("p", "We stopped asking the theory for its answer and asked what it forbids. Every shape has "
+              "to obey one rule: the total amount of flux — a kind of electric charge smeared across "
+              "hidden dimensions — cannot exceed a limit that the shape itself sets. That limit is a "
+              "single number, and it is exact. No measurement needed, no approximation."),
+
+        ("h", "3 · What we found"),
+        ("b", "There is exactly ONE exact number, and it is a total. Picture a household budget: the "
+              "total spend is fixed, but the individual receipts are not. Here the total flux is exact, "
+              "and how it is split between the hidden dimensions is completely free."),
+        ("b", "That is provable, not a hunch. A theorem says every quantity that survives the theory's "
+              "symmetries is a power of that one number — so there is nothing else exact to find. We "
+              "machine-checked the proof with a computer, step by step. It is not “we believe”; "
+              "it is “the computer verified it”."),
+        ("b", "The 19 free numbers of particle physics stay free. The electron's mass, the strength of "
+              "the forces — nobody has ever derived those values without measuring them, and this work "
+              "says why: a final theory can supply relations between numbers, not the numbers."),
+        ("b", "So one sentence is always wrong. “The theory predicts the electron mass is X” is "
+              "either a fit in disguise or a mistake. The correct sentence is: the theory fixes the "
+              "rules and the counts, and leaves the values free."),
+
+        ("h", "4 · How we score it"),
+        ("p", "We count what can be checked exactly: the labels the shape carries (its topology), the "
+              "one constraint (the total flux), and the exact counts (the 19 free parameters). That "
+              "count is nine today, and every rung is machine-checked rather than argued. A claim that "
+              "cannot be checked is not counted at all — which is the whole discipline in one line."),
+
+        ("h", "5 · What it means"),
+        ("p", "A theory of everything predicts relations, never values. That sounds like a weakness and "
+              "is actually why it can be tested: relations can be checked against a table, values can "
+              "only be checked against an experiment you may never be able to run. So: don't build a "
+              "detector to measure a number the theory cannot give you, and don't believe a claim that "
+              "a theory has derived one."),
+
+        ("h", "6 · What this cannot do"),
+        ("p", "It cannot tell you which vacuum is ours, or what the masses are. Nobody can, yet. What it "
+              "can do is say precisely where the free choices are — and that is the part that can be "
+              "checked, which is more than the field had before."),
+    ]
+
+
 def all_pages() -> dict[str, list[tuple[str, str]]]:
-    return {"climate": climate(), "economics": economics()}
+    return {"landscape": landscape(), "climate": climate(), "economics": economics()}
