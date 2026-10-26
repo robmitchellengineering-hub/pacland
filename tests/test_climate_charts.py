@@ -13,6 +13,23 @@ def _builder():
     return mod
 
 
+class TestThreeDee(unittest.TestCase):
+    def test_committed_3d_page_matches_the_data(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("bc3", ROOT / "scripts" / "build_climate_3d.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        committed = (ROOT / "web" / "climate-3d.html").read_text()
+        self.assertEqual(committed, mod.page(),
+                         "web/climate-3d.html is stale — run python3 scripts/build_climate_3d.py")
+
+    def test_3d_page_uses_the_vendored_plotly_not_a_cdn(self):
+        html = (ROOT / "web" / "climate-3d.html").read_text()
+        self.assertIn("./vendor/plotly-", html)
+        self.assertNotIn("cdn.plot.ly", html, "a figure must not depend on someone else's server")
+        self.assertTrue((ROOT / "web" / "vendor").exists())
+
+
 class TestFiguresAreCurrent(unittest.TestCase):
     def test_committed_page_matches_the_data(self):
         committed = (ROOT / "web" / "climate.html").read_text()
