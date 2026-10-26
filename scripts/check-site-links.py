@@ -23,8 +23,13 @@ def main() -> int:
         print(f"cannot read {PAGE}: {e}", file=sys.stderr)
         return 2
 
+    # The first check used to be "vvs.morpheus.nz" in html. That is true if ANY of the page's three
+    # links to the verification site survives, so when the SDK sabotaged one of them the guard still
+    # passed — a mutation that SURVIVED, which means the guard was proving nothing. It now names the
+    # exact anchor, so removing or breaking THAT link fails the check.
     checks = {
-        "the page reaches Valiant Verification Systems": "vvs.morpheus.nz" in html,
+        "the page carries the named Valiant Verification link":
+            '<a href="https://vvs.morpheus.nz">Valiant Verification Systems &rarr;</a>' in html,
         "the page states the verification discipline": "Valiant Verification" in html,
         "the page keeps its honest, pre-revenue line": "design partner" in html.lower(),
     }

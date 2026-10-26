@@ -3,13 +3,8 @@
     {
       "name": "unit-tests",
       "cmd": [
-        "python3",
-        "-m",
-        "unittest",
-        "discover",
-        "-s",
-        "tests",
-        "-q"
+        "sh",
+        "scripts/run-tests.sh"
       ],
       "expectStderr": true
     }
@@ -19,8 +14,8 @@
     {
       "name": "site-verification-link",
       "file": "web/index.html",
-      "find": "<a href=\"https://vvs.morpheus.nz\">",
-      "replace": "<a href=\"#\">",
+      "find": "<a href=\"https://vvs.morpheus.nz\">Valiant Verification Systems &rarr;</a>",
+      "replace": "<a href=\"#\">Valiant Verification Systems &rarr;</a>",
       "check": [
         "python3",
         "scripts/check-site-links.py"
