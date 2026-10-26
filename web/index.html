@@ -142,8 +142,8 @@
 </section>
 
 <h2 id="calculators">Calculators — for a quick reference, and for confidence</h2>
-<p class="lead">Three things you can check in a browser, no install. They are the same arithmetic the repo runs.</p>
-<div class="grid grid--3">
+<p class="lead">Two things you can check in a browser, no install. Both are the same arithmetic the repo runs.</p>
+<div class="grid grid--2">
   <div class="card calc">
     <h3>What does your m buy you?</h3>
     <p class="muted">The certificate radius from the count of validated observables and your confidence budget.</p>
@@ -159,14 +159,6 @@
     <label>null RMSE <input id="c-null" type="number" value="5.06" step="0.01"></label>
     <p class="out"><strong id="c-ratio">—</strong></p>
     <p class="muted small" id="c-verdict"></p>
-  </div>
-  <div class="card calc">
-    <h3>Is the claim verifiable at all?</h3>
-    <p class="muted">A model's exact content is its constraints. Pick how many it has and how many are independent.</p>
-    <label>constraints written down <input id="c-n" type="number" value="19" min="1" step="1"></label>
-    <label>independently measured <input id="c-r" type="number" value="9" min="0" step="1"></label>
-    <p class="out"><strong id="c-indep">—</strong></p>
-    <p class="muted small" id="c-inflation"></p>
   </div>
 </div>
 
@@ -697,7 +689,7 @@ update();
     const m = Math.max(1, parseInt($('c-m').value || '1', 10));
     const d = Math.min(0.5, Math.max(1e-4, parseFloat($('c-d').value || '0.025')));
     const r = R(LN(1 / d) / (2 * m));
-    $('c-radius').textContent = 'radius ' + r.toFixed(3) + '  (' + (100 * r).toFixed(0) + '%)';
+    $('c-radius').textContent = 'radius ' + r.toFixed(3) + ' — within ' + (100 * r).toFixed(0) + '% of the true value';
     $('c-note').textContent = 'm = ' + m + ' validated observables; a 1% certificate needs m ≈ ' +
       Math.round(LN(1 / d) / (2 * 0.0001)).toLocaleString() + '.';
   }
@@ -710,18 +702,9 @@ update();
       ? 'fails the null gate — the forecast is no better than “tomorrow equals today”.'
       : (q < 0.5 ? 'passes, and by a wide margin.' : 'passes — but the margin is thin.');
   }
-  function indep() {
-    const n = Math.max(1, parseInt($('c-n').value || '1', 10));
-    const r = Math.min(n, Math.max(0, parseInt($('c-r').value || '0', 10)));
-    $('c-indep').textContent = r + ' of ' + n + ' independent';
-    $('c-inflation').textContent = (n - r) === 0
-      ? 'every constraint you wrote is doing work.'
-      : (n - r) + ' of them restate another one — counting ' + n + ' would inflate the count by ' + (n - r) + '.';
-  }
   ['c-m','c-d'].forEach(id => $(id).addEventListener('input', radius));
   ['c-mine','c-null'].forEach(id => $(id).addEventListener('input', nullGate));
-  ['c-n','c-r'].forEach(id => $(id).addEventListener('input', indep));
-  radius(); nullGate(); indep();
+  radius(); nullGate();
 
   // ---- the search box: same index.json as /all.html ---------------------------
   const q = $('q'), out = $('q-results');
