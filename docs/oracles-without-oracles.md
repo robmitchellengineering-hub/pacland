@@ -231,6 +231,26 @@ That is the honest form of the gap: two named datasets and the reason each is ou
 today. It is the same shape as the class-5 vintage gap — tested around where possible, left open
 where not, and written down so the next session does not rediscover it.
 
+## Worked example 9 — epidemiology: the wall, measured instead of mourned
+
+Epidemiology was the last discipline on the site still labelled *"queued"*. Its wall is
+identifiability, and `src/pacland/epidemiology/recovery.py` measures it rather than naming it.
+
+| class | check | result |
+|---|---|---|
+| **4** | a cohort with a relative risk we wrote (**RR = 2.00**) and a confounder (exposure and baseline risk both rise with age) | the **crude** estimate says **RR = 4.98 — 149% too high**; the **stratified** (Mantel–Haenszel) estimate returns **2.000000** |
+| **1** | persons are conserved: every case in exactly one stratum, strata rebuilding the cohort | holds, and a table that **repeats a stratum is refused** |
+| **2** | re-bin the population more finely | homogeneous effect: drift **0.0** (invariant); effect modification present: drift **50% of the estimate** |
+
+The third row is the wall in one number. With a homogeneous effect, how you bin cannot matter —
+and the check proves it does not. With effect modification, **half the answer is the analyst's
+binning choice**, and no confidence interval on a single estimate discloses that. This is the
+honest form of an observational result: report the movement across binnings, not just the point.
+
+Meanwhile the first row is what the cheap oracles buy: a 149% error is visible on day one, in
+synthetic data, before anyone recruits a participant — because we wrote the truth and asked the
+method to find it.
+
 ## Why this transfers to every oracle-poor field
 
 Epidemiology, drug discovery, nutrition, education, criminology, macro-finance and any model of a

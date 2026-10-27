@@ -907,6 +907,13 @@
    "title": "economics_vintage_sensitivity.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/epidemiology_identifiability.py",
+   "kind": "script",
+   "path": "scripts/epidemiology_identifiability.py",
+   "summary": "The identifiability wall, measured: classes 4, 1 and 2 in epidemiology.",
+   "title": "epidemiology_identifiability.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/extract_observables.py",
    "kind": "script",
    "path": "scripts/extract_observables.py",
