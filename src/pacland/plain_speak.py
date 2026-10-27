@@ -155,5 +155,62 @@ def economics() -> list[tuple[str, str]]:
     ]
 
 
+def oracles() -> list[tuple[str, str]]:
+    """One page: how to check a field that has nothing to check against."""
+    return [
+        ("title", "PACLAND · Checking a field that has nothing to check against"),
+        ("subtitle", "The oracles method, in plain words — for economics, climate, medicine, "
+                     "or any field whose future has not happened yet."),
+
+        ("h", "1 · The question"),
+        ("p", "Physics can compare a claim with a measurement. Economics cannot measure the "
+              "future it forecasts. So is a field like that simply unverifiable? No — and the "
+              "mistake is assuming an oracle means “a measurement you go and find”."),
+
+        ("h", "2 · What we found"),
+        ("b", "An oracle is anything that can tell you a claim is wrong without you knowing the "
+              "answer first. There are five kinds; measurement is only the most expensive."),
+        ("b", "The bookkeeping kind: money has to add up, energy cannot vanish. A claim that "
+              "breaks the arithmetic is wrong before anyone collects data."),
+        ("b", "The relabelling kind: units, base years, price deflators, how you group the data. "
+              "Change the description and the claim must not move. If it moves, it was about the "
+              "description, not the world."),
+        ("b", "The simplest-guess kind: “nothing changes”. Expensive models must beat it, "
+              "and often they do not. On real-time data a textbook inflation forecast lost to the "
+              "guess by 3%."),
+        ("b", "The invented-world kind, and the sharpest: build a world where *you* wrote the "
+              "answer, then demand the method find it. Ours couldn't — asked to recover a known "
+              "value of 0.18, it answered 1.00."),
+
+        ("h", "3 · The best we have right now"),
+        ("p", "Both of the cheap gates run green, on real data, with a deliberate fault proving "
+              "each one can fail: the economics one on units, base years, deflators and "
+              "parametrisation (4 of 4), the climate one on baselines, units and the choice of "
+              "start years (3 of 3), and five invented-world checks on our own estimators (5 of "
+              "5). One of those checks corrected us: it showed our claim that a simple trend "
+              "beats every climate model does not survive changing the start years."),
+
+        ("h", "4 · How we refine it"),
+        ("b", "Name the gap instead of papering over it: we have one archive of historical "
+              "revisions, so we test around it rather than close it, and the report says so."),
+        ("b", "When a field asks for more data, first ask which kind of problem it has. Sampling "
+              "error shrinks with data. A mis-measured input does not: our check shows the same "
+              "wrong answer at 1,600, 6,400 and 25,600 observations."),
+
+        ("h", "5 · What this means for the world"),
+        ("p", "A field with no ground truth can still certify that its claims are "
+              "internally consistent, do not depend on how the data was written down, and beat the "
+              "simplest guess. That is a real label a regulator or a reader can "
+              "use — and nobody issues it today."),
+
+        ("h", "6 · What this cannot do"),
+        ("p", "It cannot produce a value that was never in the data. The interesting numbers in "
+              "economics are not recoverable from totals, and no oracle among the five can "
+              "conjure them. The honest output is the size of what is unchecked, not a number dressed up as "
+              "knowledge."),
+    ]
+
+
 def all_pages() -> dict[str, list[tuple[str, str]]]:
-    return {"landscape": landscape(), "climate": climate(), "economics": economics()}
+    return {"landscape": landscape(), "climate": climate(), "economics": economics(),
+            "oracles": oracles()}
