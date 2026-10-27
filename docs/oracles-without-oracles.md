@@ -314,10 +314,12 @@ exists in this repo**. The McCracken–Ng **FRED-MD historical vintages** are an
 real-time archive, keyless, one CSV per vintage; `src/pacland/economics/second_archive.py` compares
 it with the ALFRED vintages month by month on the unemployment rate.
 
-**2,906 overlapping months across four vintages, and the two archives agree exactly** — the same
-number to the last decimal, every month (worst gap **0.000**). The seeded fault is an as-of control:
-against the vintage one year earlier, 29 months disagree, so the check is sensitive to the date
-rather than to the series.
+**8,718 series-months across three series and four vintages, and the two archives agree exactly** —
+the same number to the last decimal, every month, every series (worst gap **0.000**). The series are
+unemployment, industrial production and the CPI, each verified to be a level in FRED-MD before the
+column was trusted. The seeded fault is an as-of control: against the vintage one year earlier,
+**2,302** series-months disagree (worst 2.0 pp), so the check is sensitive to the date rather than to
+the series.
 
 Honest scope: this is a second **pipeline**, not a second **release**. It catches a wrong vintage, a
 transcribed column, or an API returning the wrong as-of date. It cannot catch an error made by the
@@ -379,7 +381,7 @@ the honest output of this work is the deficit, not the number.
   obvious climate version is invariance under regridding, area weighting and the choice of
   baseline period.
 - **Class 5 now has a second archive in economics** (worked example 12: FRED-MD vintages vs ALFRED,
-  2,906 months agreeing exactly) — with the scope stated: a second *pipeline*, not a second
+  8,718 series-months across three series agreeing exactly) — with the scope stated: a second *pipeline*, not a second
   *release*. What remains open is a second **release**, which no free source provides.
 - **Class 4 now covers five subjects in economics** (VAR, policy rule, attenuation, scorer,
   sampling law) and **one** in climate (the trend-versus-emulator ranking, which is what the

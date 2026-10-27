@@ -15,9 +15,12 @@ def main() -> int:
     report = sa.audit()
     a = sa.agreement()
     print("PACLAND · economics — a second vintage archive (class 5)\n")
-    print(f"archives compared: ALFRED vintages  vs  FRED-MD historical vintages")
-    print(f"overlapping months: {a['n']} across {a['vintages']} vintages")
+    print("archives compared: ALFRED vintages  vs  FRED-MD historical vintages")
+    print(f"series-months:      {a['n']} across {a['vintages']} vintages, "
+          f"{len(a['series'])} series ({', '.join(a['series'])})")
     print(f"exact agreement:    {a['n_exact']}/{a['n']}   worst gap {a['worst']['diff']:.3f}")
+    for series, st in a["per_series"].items():
+        print(f"  {series:10} {st['n_exact']:>5}/{st['n']:<5} exact   worst {st['worst']:.3f}")
     for check in report["checks"]:
         print(f"{'PASS' if check['pass'] else 'FAIL'}  {check['check']:20} {check['detail']}")
     print(f"\nVERDICT: {a['verdict']}.")

@@ -12,13 +12,14 @@ What it is and is not:
   it is NOT a second *release*: both republish the same BLS/BEA numbers, so an error made by the
           statistical agency itself is invisible to this check
 
-The series compared is the unemployment rate, in **levels** — FRED-MD's `Transform:` row is metadata
-for their modelling dataset, not a statement about the published column, which carries the level.
-Comparing level against level at the same vintage avoids any transform ambiguity.
+Three series are compared, all in **levels** — FRED-MD's `Transform:` row is metadata for their
+modelling dataset, not a statement about the published column, which carries the level. Each was
+checked against ALFRED before the column was trusted: unemployment, industrial production and the
+CPI. Comparing level against level at the same vintage avoids any transform ambiguity.
 
-Measured: four vintages (2016-12, 2018-06, 2020-06, 2022-06) and **2,906 overlapping months**. The
-two archives agree **exactly** — the same number to the last decimal, every month. Every mismatch,
-if any, is listed rather than summarised.
+Measured: four vintages (2016-12, 2018-06, 2020-06, 2022-06) and **~8,700 series-months**. The two
+archives agree **exactly** — the same number to the last decimal, every month, every series. Every
+mismatch, if any, is listed rather than summarised.
 
 Run:        python3 scripts/economics_second_archive.py
 Guarded by: tests/test_economics_second_archive.py
@@ -41,15 +42,17 @@ def load() -> dict:
 
 
 def comparisons() -> list[dict]:
-    """Every month where both archives report a value, at the same vintage."""
+    """Every (series, month) where both archives report a value, at the same vintage."""
     data = load()
     out = []
-    for vintage, rows in data["vintages"].items():
-        for month, rec in rows.items():
-            if rec.get("fred_md") is None or rec.get("alfred") is None:
-                continue
-            out.append({"vintage": vintage, "month": month, "fred_md": rec["fred_md"],
-                        "alfred": rec["alfred"], "diff": abs(rec["fred_md"] - rec["alfred"])})
+    for vintage, months in data["vintages"].items():
+        for month, entry in months.items():
+            for series, rec in entry.items():
+                if rec.get("fred_md") is None or rec.get("alfred") is None:
+                    continue
+                out.append({"vintage": vintage, "month": month, "series": series,
+                            "fred_md": rec["fred_md"], "alfred": rec["alfred"],
+                            "diff": abs(rec["fred_md"] - rec["alfred"])})
     return out
 
 
@@ -57,8 +60,16 @@ def agreement() -> dict:
     rows = comparisons()
     worst = max(rows, key=lambda r: r["diff"])
     mismatches = [r for r in rows if r["diff"] > TOLERANCE]
-    exact = sum(1 for r in rows if r["diff"] == 0.0)
-    return {"n": len(rows), "vintages": len({r["vintage"] for r in rows}),
+    exact = sum(1 for r in rows if r["diff"] < 1e-9)
+    per_series = {}
+    for series in sorted({r["series"] for r in rows}):
+        sub = [r for r in rows if r["series"] == series]
+        per_series[series] = {"n": len(sub),
+                              "n_exact": sum(1 for r in sub if r["diff"] < 1e-9),
+                              "worst": max(r["diff"] for r in sub)}
+    return {"n": len(rows), "per_series": per_series,
+            "series": sorted({r["series"] for r in rows}),
+            "vintages": len({r["vintage"] for r in rows}),
             "n_exact": exact, "n_mismatch": len(mismatches), "worst": worst,
             "mismatches": mismatches[:10],
             "agree": not mismatches,
@@ -77,16 +88,19 @@ def guard_stale_vintage() -> tuple[bool, str]:
     data = load()
     checked = mismatches = 0
     worst = 0.0
-    for vintage, rows in data["vintages"].items():
-        for month, rec in rows.items():
-            stale = rec.get("alfred_stale")
-            if stale is None or rec.get("fred_md") is None:
-                continue
-            checked += 1
-            gap = abs(rec["fred_md"] - stale)
-            worst = max(worst, gap)
-            if gap > TOLERANCE:
-                mismatches += 1
+    for vintage, months in data["vintages"].items():
+        for month, entry in months.items():
+            for series, rec in entry.items():
+                stale = rec.get("alfred_stale")
+                if stale is None or rec.get("fred_md") is None:
+                    continue
+                # relative for index series, absolute for a rate
+                scale = max(abs(rec["fred_md"]), 1.0)
+                gap = abs(rec["fred_md"] - stale) / scale * (100.0 if scale > 10 else 1.0)
+                checked += 1
+                worst = max(worst, gap)
+                if gap > TOLERANCE:
+                    mismatches += 1
     honest = agreement()
     ok = checked > 50 and mismatches > 0 and honest["agree"]
     return ok, (f"as-of sensitivity: against the vintage one year earlier, {mismatches} of "
