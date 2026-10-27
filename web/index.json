@@ -830,6 +830,13 @@
    "title": "drugs_recovery.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/drugs_second_source.py",
+   "kind": "script",
+   "path": "scripts/drugs_second_source.py",
+   "summary": "Class 5 for drug discovery: the same potency, from two independent databases.",
+   "title": "drugs_second_source.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_accounting_closure.py",
    "kind": "script",
    "path": "scripts/economics_accounting_closure.py",
@@ -933,6 +940,13 @@
    "path": "scripts/fetch_climate_baseline.py",
    "summary": "Fetch the two series a climate null needs: observed GMST and global CO2.",
    "title": "fetch_climate_baseline.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_drug_second_source.py",
+   "kind": "script",
+   "path": "scripts/fetch_drug_second_source.py",
+   "summary": "Fetch the same compound's published potency from TWO independent databases.",
+   "title": "fetch_drug_second_source.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_economics_accounts.py",
