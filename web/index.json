@@ -438,6 +438,13 @@
    "title": "L2 \u2014 the physics oracle and its error model (spec)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/oracles-without-oracles.md",
+   "kind": "doc",
+   "path": "docs/oracles-without-oracles.md",
+   "summary": "(identity + invariance). The invariance gate it describes is implemented at src/pacland/economics/invariance.py and runs green with four seeded faults (python3\u2026",
+   "title": "Oracles without oracles"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/orbit-space-unification.md",
    "kind": "doc",
    "path": "docs/orbit-space-unification.md",
@@ -835,6 +842,13 @@
    "path": "scripts/economics_gdpnow.py",
    "summary": "Reproduce the GDPNow real-time record.",
    "title": "economics_gdpnow.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_invariance.py",
+   "kind": "script",
+   "path": "scripts/economics_invariance.py",
+   "summary": "The invariance gate \u2014 the oracle a field has when it has no ground truth.",
+   "title": "economics_invariance.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_nk3_oos.py",
