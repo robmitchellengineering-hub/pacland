@@ -33,7 +33,9 @@ ZIP_URL = ("https://www.stlouisfed.org/-/media/project/frbstl/stlouisfed/researc
 
 #: Six vintages spread across the archive, plus the months each one is asked about.
 VINTAGES = ["2016-12", "2018-06", "2020-06", "2022-06", "2024-06", "2025-06"]
-SERIES = "UNRATE"          # transform 2 (first difference) in FRED-MD
+#: Three series, all stored as LEVELS in FRED-MD (checked against ALFRED before trusting the
+#: column): the unemployment rate, industrial production, and the CPI.
+SERIES = ("UNRATE", "INDPRO", "CPIAUCSL")
 
 
 def _curl(url: str, dest: pathlib.Path) -> None:
@@ -74,26 +76,27 @@ def fred_md_values(zip_path: pathlib.Path) -> dict[str, dict[str, float]]:
             text = z.read(name).decode("utf-8", "replace")
             rows = list(csv.reader(io.StringIO(text)))
             header = rows[0]
-            if SERIES not in header:
-                continue
-            col = header.index(SERIES)
+            cols = {s: header.index(s) for s in SERIES if s in header}
             obs = {}
             for row in rows[1:]:
                 if not row or not row[0] or "/" not in row[0]:
                     continue
-                date, value = row[0], row[col]
-                if not value:
-                    continue
-                mm = date.split("/")
-                obs[f"{int(mm[2]):04d}-{int(mm[0]):02d}"] = float(value)
+                mm = row[0].split("/")
+                month = f"{int(mm[2]):04d}-{int(mm[0]):02d}"
+                rec = {}
+                for name, col in cols.items():
+                    if len(row) > col and row[col]:
+                        rec[name] = float(row[col])
+                if rec:
+                    obs[month] = rec
             out[vintage] = obs
     return out
 
 
-def alfred_values(vintage_date: str) -> dict[str, float]:
-    """ALFRED monthly UNRATE levels at one vintage, via the keyless CSV endpoint."""
+def alfred_values(vintage_date: str, series: str) -> dict[str, float]:
+    """ALFRED monthly levels for one series at one vintage, via the keyless CSV endpoint."""
     url = ("https://alfred.stlouisfed.org/graph/alfredgraph.csv"
-           f"?id={SERIES}&vintage_date={vintage_date}")
+           f"?id={series}&vintage_date={vintage_date}")
     text = subprocess.run(["curl", "-sS", "--max-time", "120", "-L", url],
                           capture_output=True, text=True, check=True).stdout
     rows = list(csv.reader(io.StringIO(text)))
@@ -115,7 +118,7 @@ def main() -> int:
     payload = {"source": {"product": "FRED-MD historical vintages (McCracken–Ng)",
                           "url": ZIP_URL,
                           "note": "second real-time archive; transformed series"},
-               "series": SERIES,
+               "series": list(SERIES),
                "value_note": "FRED-MD ships UNRATE as a LEVEL (its Transform row is metadata for "
                              "their modelling dataset, not the published column), so the "
                              "comparison is level against level at the same vintage. "
@@ -125,17 +128,20 @@ def main() -> int:
     for vintage in VINTAGES:
         if vintage not in md:
             continue
-        alfred = alfred_values(weeks_before(vintage, 1))
-        stale = alfred_values(months_shift(vintage, -12))
+        live = {s: alfred_values(weeks_before(vintage, 1), s) for s in SERIES}
+        stale = {s: alfred_values(months_shift(vintage, -12), s) for s in SERIES}
         rows = {}
-        for mdy_month, md_value in md[vintage].items():
-            level = alfred.get(mdy_month)
-            if level is None:
-                continue
-            rows[mdy_month] = {"fred_md": md_value, "alfred": level,
-                               "alfred_stale": stale.get(mdy_month)}
+        for month, rec in md[vintage].items():
+            entry = {}
+            for name in SERIES:
+                if name not in rec or live[name].get(month) is None:
+                    continue
+                entry[name] = {"fred_md": rec[name], "alfred": live[name][month],
+                               "alfred_stale": stale[name].get(month)}
+            if entry:
+                rows[month] = entry
         payload["vintages"][vintage] = rows
-        print(f"{vintage}: {len(rows)} overlapping months")
+        print(f"{vintage}: {len(rows)} overlapping months x {len(SERIES)} series")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(payload, indent=1, sort_keys=True))
