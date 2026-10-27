@@ -516,3 +516,21 @@ pacland economics --models     # the roster, scored, with what each row owes
 pacland economics --constraints # the constraint set and its measured independent rank
 pacland economics --realtime   # every model against its null, on data as it was published
 ```
+
+## What the first print is worth (2026-10-27)
+
+A real result, and a correction to our own headline. On the 37 quarters in `gdpnow.json`:
+
+| question | answer |
+|---|---|
+| is the advance GDP print biased? | **yes, upward**: mean revision **+0.565 pp**, t = 2.39, **24/37** quarters upward (exact sign test p = 0.099) |
+| do revisions have memory? | **no**: AR(1) = **0.017**, so there is nothing to condition on |
+| is the bias exploitable? | **no**: a correction fitted on 18 quarters is **1.22× worse** out of sample (0.729 vs 0.596 pp) |
+| does the nowcast beat the print? | **not against the final number**: official first print **0.92 pp**, nowcast **1.54 pp** |
+
+**"GDPNow beats the no-change null 4:1" is true and stays true.** What it does not license is
+"GDPNow is the best available estimate of GDP": scored against the number everyone ultimately
+wants, the official first print is closer, and the nowcast's own target (the advance estimate) is a
+different question. Both beat a zero-growth null (4.58 pp), and beating a naive null is a low bar.
+
+Reproduce: `python3 scripts/economics_revisions.py`.
