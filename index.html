@@ -50,6 +50,8 @@
   .hero h1{font-size:2.4rem;margin:.2rem 0 .4rem}
   .lede{font-size:1.1rem;max-width:46rem;margin:.2rem 0 1rem}
   .hero-actions{display:flex;gap:.6rem;flex-wrap:wrap}
+  .links a + a { margin-left: 1.15rem; position: relative; }
+  .links a + a::before { content: '·'; position: absolute; left: -.72rem; color: var(--muted); }
   .btn{display:inline-block;padding:.55rem .95rem;border-radius:8px;background:var(--accent);color:#fff;
        text-decoration:none;font-weight:600;font-size:.92rem}
   .btn.ghost{background:var(--chip);color:var(--ink);border:1px solid var(--line)}
@@ -134,8 +136,8 @@
   </div>
   <div class="card">
     <h3>Why it matters</h3>
-    <p class="muted"><strong>Valiant Verification Systems (VVS)</strong> is the product: a machine-checked badge for software, models and forecasts. It is what lets a stranger trust a claim without trusting the person who made it — and the same machinery already runs in this repo, in two disciplines.</p>
-    <p><a href="https://vvs.morpheus.nz">Valiant Verification Systems</a> · <a href="https://vvs.morpheus.nz">what certification means</a></p>
+    <p class="muted"><strong>Valiant Verification Systems (VVS)</strong> is the product: a machine-checked badge for software, models and forecasts. <strong>The SDK that issues it is running</strong> — this repo is the first to adopt it, in two disciplines and one economics model roster. It is what lets a stranger trust a claim without trusting the person who made it.</p>
+    <p class="links"><a href="https://vvs.morpheus.nz">Valiant Verification Systems</a><a href="https://github.com/robmitchellengineering-hub/valiant-verification">the open specification</a></p>
   </div>
 </div>
 
