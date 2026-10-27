@@ -307,6 +307,39 @@ wrong for two days**: the data was free, in text, and the only thing standing in
 assumption about the format. A named gap should carry the *exact* access path, not a category —
 which is now how the remaining gaps are written.
 
+## Worked example 12 — economics class 5, and the target that changes the answer
+
+The vintage gap was recorded as open. It closes in the only sense available: **a second archive now
+exists in this repo**. The McCracken–Ng **FRED-MD historical vintages** are an independently assembled
+real-time archive, keyless, one CSV per vintage; `src/pacland/economics/second_archive.py` compares
+it with the ALFRED vintages month by month on the unemployment rate.
+
+**2,906 overlapping months across four vintages, and the two archives agree exactly** — the same
+number to the last decimal, every month (worst gap **0.000**). The seeded fault is an as-of control:
+against the vintage one year earlier, 29 months disagree, so the check is sensitive to the date
+rather than to the series.
+
+Honest scope: this is a second **pipeline**, not a second **release**. It catches a wrong vintage, a
+transcribed column, or an API returning the wrong as-of date. It cannot catch an error made by the
+statistical agency itself, and the doctrine says so wherever the result is used.
+
+### And the result it found on the way
+
+Testing the archives led to the first GDP print, and to a number this repo was getting wrong by
+omission. On 37 quarters (`src/pacland/economics/revisions.py`):
+
+| question | answer |
+|---|---|
+| biased? | **yes, upward** — mean revision **+0.565 pp**, t = 2.39, 24/37 upward (sign-test p = 0.099) |
+| memory? | **no** — AR(1) = **0.017** |
+| exploitable? | **no** — a bias correction is **1.22× worse** out of sample |
+| does the nowcast beat the print? | **no, against the final number** — print **0.92 pp**, nowcast **1.54 pp** |
+
+So *"GDPNow beats the no-change null 4:1"* stays true, and *"GDPNow is the best estimate of GDP"*
+does not follow. Beating a naive null is a low bar; the thing to beat is the official first print,
+and against the final number it wins. That correction is now on the site card, in the roster and in
+the doctrine — in the same commit as the evidence.
+
 ## Why this transfers to every oracle-poor field
 
 Epidemiology, drug discovery, nutrition, education, criminology, macro-finance and any model of a
@@ -345,10 +378,9 @@ the honest output of this work is the deficit, not the number.
 - **The invariance gate covers economics only.** Climate and drugs have no equivalent yet; the
   obvious climate version is invariance under regridding, area weighting and the choice of
   baseline period.
-- **Class 5 is thin everywhere, and still open for economics.** Climate has one second source.
-  Economics has none for the real-time vintages — the archive gap was *tested around* (worked
-  example 6: the conclusion survives both revision regimes) but not closed. Two sources remain
-  the only thing that closes it.
+- **Class 5 now has a second archive in economics** (worked example 12: FRED-MD vintages vs ALFRED,
+  2,906 months agreeing exactly) — with the scope stated: a second *pipeline*, not a second
+  *release*. What remains open is a second **release**, which no free source provides.
 - **Class 4 now covers five subjects in economics** (VAR, policy rule, attenuation, scorer,
   sampling law) and **one** in climate (the trend-versus-emulator ranking, which is what the
   window check turned out to be). Physics has none beyond its symbolic proofs.
