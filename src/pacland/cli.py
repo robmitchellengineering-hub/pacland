@@ -338,6 +338,15 @@ def _cmd_economics(args) -> None:
         print(report.constraints_report())
     elif getattr(args, "realtime", False):
         print(report.realtime_report())
+    elif getattr(args, "invariance", False):
+        from .economics import invariance
+
+        r = invariance.audit()
+        print("PACLAND · economics — the invariance gate\n")
+        for c in r["checks"]:
+            print(f"{'PASS' if c['pass'] else 'FAIL'}  {c['check']:16} {c['detail']}")
+        print(f"\n{r['n_pass']}/{r['n']} checks pass, each with its seeded fault fired")
+        return 0 if r["all_pass"] else 1
     else:
         from .economics.deficit import summary
 
@@ -419,6 +428,8 @@ def main(argv=None) -> None:
     em.add_argument("--models", action="store_true", help="the model roster, scored on the bar")
     em.add_argument("--constraints", action="store_true", help="the constraint set and its rank")
     em.add_argument("--realtime", action="store_true", help="real-time results against the null")
+    em.add_argument("--invariance", action="store_true",
+                    help="the invariance gate: units, base year, deflator, parametrisation")
     em.set_defaults(func=_cmd_economics)
 
     t = sub.add_parser("trust", help="the trust board — ranked artifacts across disciplines")
