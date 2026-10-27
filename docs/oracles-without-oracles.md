@@ -251,6 +251,35 @@ Meanwhile the first row is what the cheap oracles buy: a 149% error is visible o
 synthetic data, before anyone recruits a participant — because we wrote the truth and asked the
 method to find it.
 
+## Worked example 10 — drug discovery's class-5 answer: the centre is reproducible, the value is not
+
+Class 5 asks whether an independent pipeline reports the same thing. For drug discovery the
+candidate is obvious — an IC50 is published, numeric, and supposedly *the same quantity* in every
+database. Two independent curation pipelines were queried keylessly
+(`src/pacland/drugs/second_source.py`, `scripts/fetch_drug_second_source.py`):
+
+| source | IC50s for imatinib | median | 10th–90th percentile | fold range |
+|---|---|---|---|---|
+| **ChEMBL** (EMBL-EBI) | 1,016 | **10,872 nM** | 8 – 19,000 nM | **2,293×** |
+| **PubChem BioAssay** (NCBI) | 1,120 | **10,000 nM** | 4 – 10,000 nM | **2,526×** |
+
+**Cross-source agreement on the median: 1.09×.** Two independent pipelines agree on the central
+value to within 9% — that is a real, positive class-5 result, and it is what makes the second
+number worth stating.
+
+**Within-source spread: 2,293× and 2,526×.** Each database disagrees with *itself* by three
+orders of magnitude across its own assays, because the assays are not measuring the same thing:
+different targets, different ATP concentrations, different cell lines, one label.
+
+So the honest statement about a single IC50 is not "this compound has potency X". It is:
+
+> **the centre of the distribution is reproducible across independent curation; an individual
+> value is not.**
+
+That is the kind of sentence a certificate can carry and a press release cannot. It also explains
+why class 5 is worth running even when it agrees: the agreement is only interpretable next to the
+spread it sits inside.
+
 ## Why this transfers to every oracle-poor field
 
 Epidemiology, drug discovery, nutrition, education, criminology, macro-finance and any model of a
