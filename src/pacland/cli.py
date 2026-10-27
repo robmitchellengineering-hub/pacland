@@ -338,6 +338,18 @@ def _cmd_economics(args) -> None:
         print(report.constraints_report())
     elif getattr(args, "realtime", False):
         print(report.realtime_report())
+    elif getattr(args, "recovery", False):
+        from .economics import recovery
+
+        r = recovery.audit()
+        print("PACLAND · economics — synthetic recovery (the class-4 oracle)\n")
+        for c in r["checks"]:
+            print(f"{'PASS' if c['pass'] else 'FAIL'}  {c['check']:14} {c['detail']}")
+        law = recovery.sampling_law()
+        print(f"\n{law['n_for_1pct']:,} observations for a 1% VAR estimate "
+              f"(error falls as n^{law['exponent']:+.2f})")
+        print(f"{r['n_pass']}/{r['n']} checks pass, each with its seeded fault fired")
+        return 0 if r["all_pass"] else 1
     elif getattr(args, "invariance", False):
         from .economics import invariance
 
@@ -428,6 +440,8 @@ def main(argv=None) -> None:
     em.add_argument("--models", action="store_true", help="the model roster, scored on the bar")
     em.add_argument("--constraints", action="store_true", help="the constraint set and its rank")
     em.add_argument("--realtime", action="store_true", help="real-time results against the null")
+    em.add_argument("--recovery", action="store_true",
+                    help="synthetic recovery: can each estimator recover a truth we invented?")
     em.add_argument("--invariance", action="store_true",
                     help="the invariance gate: units, base year, deflator, parametrisation")
     em.set_defaults(func=_cmd_economics)

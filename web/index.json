@@ -872,6 +872,13 @@
    "title": "economics_realtime_forecast.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_recovery.py",
+   "kind": "script",
+   "path": "scripts/economics_recovery.py",
+   "summary": "Class-4 oracle: can each of our estimators recover a truth we invented?",
+   "title": "economics_recovery.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_three_way.py",
    "kind": "script",
    "path": "scripts/economics_three_way.py",
