@@ -115,6 +115,30 @@ card, the figures page, the model roster and the plain-speak one-pager in the sa
 
 **A method that only ever confirms is not a method.**
 
+## Worked example 5 — economics: the class-4 suite, and what it says about each estimator
+
+`src/pacland/economics/recovery.py` puts every estimator the roster publishes against a truth
+that we wrote, and asks two different questions: **is it correct** (noiseless recovery), and
+**how much data would fix it** (the sampling law).
+
+| estimator | noiseless recovery | what that means |
+|---|---|---|
+| **VAR(1)** | exact to **3.3e-14** at n = 400 | the estimator is right; only sampling error remains |
+| **policy rule** | exact to **3.1e-15** at n = 600 | recoverable **when the regressor is exogenous** |
+| **scorer** (MAE, null ratio) | perfect forecast → **0.0**, offset of 1.0 → **1.0** | the convention is honest at the edges, so the verdicts built on it are |
+| **sampling law** | error falls as **n^-0.43**, so a 1% estimate needs **n ≈ 27,700** | the price of precision, in observations |
+| **measurement error** | estimate sits at **0.50 of a true 1.0 at every n** | the bias does **not** shrink with data — an identification failure, not a noise problem |
+
+The last row is the one worth the module, and it is the κ result generalised. Sampling error
+falls as n^-1/2 and can be bought with data. **Attenuation from an error-ridden regressor does
+not fall at all** — 1600, 6400 and 25600 observations all return ≈0.50 for a true 1.0. So when a
+field says *"we need more data"*, the first question is **which of those two regimes it is in**.
+If it is the second, the answer is not a larger sample; it is different evidence.
+
+That distinction is now machinery rather than an argument, and it is the sharpest thing this
+whole document has to offer: **a number that does not move as n grows is telling you it is
+measuring the wrong thing.**
+
 ## Why this transfers to every oracle-poor field
 
 Epidemiology, drug discovery, nutrition, education, criminology, macro-finance and any model of a
@@ -155,8 +179,9 @@ the honest output of this work is the deficit, not the number.
   baseline period.
 - **Class 5 is thin everywhere.** Climate has one second source; economics has none for the
   real-time vintages.
-- **No field has a class-4 suite beyond a single parameter.** Economics has κ; every other
-  estimator it publishes is untested against an invented truth.
+- **Class 4 now covers five subjects in economics** (VAR, policy rule, attenuation, scorer,
+  sampling law) and **one** in climate (the trend-versus-emulator ranking, which is what the
+  window check turned out to be). Physics has none beyond its symbolic proofs.
 
 Each of those is a slice of work with a number attached, which is the only kind this project
 accepts.
