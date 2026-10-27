@@ -222,10 +222,9 @@ screening data would have.
 Climate's fifth invariant — `precipitation = evaporation + d(storage)/dt` — remains **named and
 unmeasured**, and it is now a single specific dependency rather than a missing idea:
 
-| needed | what it is | why it is not done here |
-|---|---|---|
-| a global precipitation field | GPCP v2.3 (monthly means, 1979–present) | distributed as **netCDF**, reached by OPeNDAP; the repo has no netCDF client and adding one is a dependency decision, not a coding one |
-| a global evaporation field | ERA5-class reanalysis | needs a **Copernicus CDS API key**, i.e. an account and a credential — the repo takes none |
+**Closed** (worked example 11): both fields are available as **OPeNDAP ASCII text**, so no netCDF
+client and no API key were ever needed. The earlier "blocked on a dependency" note was wrong, and is
+kept here only as a reminder that a gap must record its *exact access path*.
 
 That is the honest form of the gap: two named datasets and the reason each is out of reach
 today. It is the same shape as the class-5 vintage gap — tested around where possible, left open
@@ -279,6 +278,34 @@ So the honest statement about a single IC50 is not "this compound has potency X"
 That is the kind of sentence a certificate can carry and a press release cannot. It also explains
 why class 5 is worth running even when it agrees: the agreement is only interpretable next to the
 spread it sits inside.
+
+## Worked example 11 — water: the last named invariant, closed with free data
+
+The water gap was recorded as blocked on two dependencies: GPCP precipitation is netCDF behind
+OPeNDAP, and ERA5 evaporation needs an API key. **Both were avoidable.** NOAA/PSL serves the fields
+through OPeNDAP's **ASCII** interface — plain text over HTTPS — so water closes with no credential
+and no client library (`scripts/fetch_water_budget.py`, `src/pacland/climate/water.py`).
+
+| | product | measured |
+|---|---|---|
+| **precipitation** | GPCP v2.3 monthly mean | **2.84 – 3.10 mm/day** |
+| **evaporation** | NCEP/NCAR latent heat flux, converted at 2.5×10⁶ J/kg | **2.67 – 2.94 mm/day** |
+
+Five Januarys across four decades, area-weighted by cos(latitude). **P/E within 8.4% in every
+sampled month**, which is what the published global water budget gives — and it takes the climate
+checklist to **5 of 5**: energy, water, carbon, ocean mass, salinity, every one measured.
+
+Two guards, both about the measurement rather than the physics:
+
+- **weighting** — an unweighted grid mean sits **14.9–16.1% below** the area-weighted one. Without
+  the guard, a missing cos(latitude) would look like a 15% disagreement between products.
+- **units** — leaving the flux in W/m² makes the balance read **0.037 instead of ~1.0**, a 29×
+  error with no physical meaning anywhere in the output.
+
+The lesson for the framework is not that water was hard. It is that **"blocked on a dependency" was
+wrong for two days**: the data was free, in text, and the only thing standing in the way was an
+assumption about the format. A named gap should carry the *exact* access path, not a category —
+which is now how the remaining gaps are written.
 
 ## Why this transfers to every oracle-poor field
 

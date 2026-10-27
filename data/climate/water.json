@@ -1,0 +1,59 @@
+{
+ "note": "Global water balance: precipitation must equal evaporation plus storage change. One observation product and one reanalysis, both free and keyless.",
+ "samples": {
+  "1979-01": {
+   "evap_mm_day": 2.672917753681976,
+   "latent_flux_wm2": 77.34137018755717,
+   "precip_mm_day": 2.898200333854032,
+   "precip_unweighted_mm_day": 2.4559616770751447
+  },
+  "1989-01": {
+   "evap_mm_day": 2.9429379673069342,
+   "latent_flux_wm2": 85.15445507253861,
+   "precip_mm_day": 3.100092892727112,
+   "precip_unweighted_mm_day": 2.599673388844036
+  },
+  "1999-01": {
+   "evap_mm_day": 2.8961716321904447,
+   "latent_flux_wm2": 83.80126250551055,
+   "precip_mm_day": 2.8421299628784054,
+   "precip_unweighted_mm_day": 2.419524436483186
+  },
+  "2009-01": {
+   "evap_mm_day": 2.822474177474402,
+   "latent_flux_wm2": 81.66881300562505,
+   "precip_mm_day": 2.996000780408342,
+   "precip_unweighted_mm_day": 2.53189456480307
+  },
+  "2019-01": {
+   "evap_mm_day": 2.7476726945645553,
+   "latent_flux_wm2": 79.50441824550218,
+   "precip_mm_day": 2.968521766307808,
+   "precip_unweighted_mm_day": 2.4954845816635
+  }
+ },
+ "sampling": {
+  "lat_stride": 5,
+  "lon_stride": 9,
+  "months": [
+   "1979-01",
+   "1989-01",
+   "1999-01",
+   "2009-01",
+   "2019-01"
+  ],
+  "weighting": "cos(latitude) area weights"
+ },
+ "sources": {
+  "evaporation": {
+   "product": "NCEP/NCAR reanalysis latent heat flux, monthly mean",
+   "units": "W/m2 -> mm/day at 2.5e6 J/kg",
+   "url": "https://psl.noaa.gov/thredds/dodsC/Datasets/ncep.reanalysis.derived/surface_gauss/"
+  },
+  "precipitation": {
+   "product": "GPCP v2.3 monthly mean",
+   "units": "mm/day",
+   "url": "https://psl.noaa.gov/thredds/dodsC/Datasets/gpcp/"
+  }
+ }
+}

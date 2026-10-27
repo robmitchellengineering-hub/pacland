@@ -774,6 +774,13 @@
    "title": "climate_null.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_water.py",
+   "kind": "script",
+   "path": "scripts/climate_water.py",
+   "summary": "Water \u2014 the fifth conservation invariant, with free data (no key, no netCDF).",
+   "title": "climate_water.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climb_deficit.py",
    "kind": "script",
    "path": "scripts/climb_deficit.py",
@@ -968,6 +975,13 @@
    "path": "scripts/fetch_gdpnow.py",
    "summary": "Fetch the GDPNow real-time record: nowcast vs advance estimate vs the null.",
    "title": "fetch_gdpnow.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_water_budget.py",
+   "kind": "script",
+   "path": "scripts/fetch_water_budget.py",
+   "summary": "Fetch the global water budget \u2014 no credentials, no client library.",
+   "title": "fetch_water_budget.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/find_flux_vacua.py",
