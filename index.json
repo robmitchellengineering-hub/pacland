@@ -823,6 +823,13 @@
    "title": "diagnose_truncation.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/drugs_recovery.py",
+   "kind": "script",
+   "path": "scripts/drugs_recovery.py",
+   "summary": "Drug discovery: can the assay fit recover a potency we invented, and does it survive a",
+   "title": "drugs_recovery.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_accounting_closure.py",
    "kind": "script",
    "path": "scripts/economics_accounting_closure.py",
@@ -898,6 +905,13 @@
    "path": "scripts/economics_vintage_sensitivity.py",
    "summary": "Is our forecasting finding about forecasting, or about one archive's revisions?",
    "title": "economics_vintage_sensitivity.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/epidemiology_identifiability.py",
+   "kind": "script",
+   "path": "scripts/epidemiology_identifiability.py",
+   "summary": "The identifiability wall, measured: classes 4, 1 and 2 in epidemiology.",
+   "title": "epidemiology_identifiability.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/extract_observables.py",
