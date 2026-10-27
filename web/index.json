@@ -823,6 +823,13 @@
    "title": "diagnose_truncation.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/drugs_recovery.py",
+   "kind": "script",
+   "path": "scripts/drugs_recovery.py",
+   "summary": "Drug discovery: can the assay fit recover a potency we invented, and does it survive a",
+   "title": "drugs_recovery.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_accounting_closure.py",
    "kind": "script",
    "path": "scripts/economics_accounting_closure.py",

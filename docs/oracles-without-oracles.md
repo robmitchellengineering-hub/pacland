@@ -198,6 +198,39 @@ emitted tonne staying airborne, fraction 1.0 — which the check refuses.
 Water remains the one named-but-unmeasured invariant, and that is now a single, specific ask: a
 global precipitation and evaporation pair (GPCP and an ERA5-class product) at annual resolution.
 
+## Worked example 8 — drug discovery: the method transfers, and the assay trap
+
+A third discipline, and the first where the verifying truth is not merely unmeasured but
+**unmeasurable at the price anyone will pay**: whether a compound works in humans. That is
+exactly where classes 2 and 4 earn their keep, because both run before a single dose is given.
+
+`src/pacland/drugs/recovery.py` — 3/3 with three seeded faults:
+
+| check | result |
+|---|---|
+| **class 4** dose-response recovery | invent a curve with IC50 = 50 nM, Hill = 1.0, asymptotes 10–90; the fit returns **50.0000 / 1.0000** |
+| **class 4** the assay trap | pin the asymptotes at the textbook **0/100** when the truth is 10/90 → IC50 comes out **43.6% high**, while looking precisely fitted |
+| **class 2** units | express concentrations in a 1000× finer unit: IC50 scales **exactly**, Hill slope moves by **0.000000** |
+
+The middle row is the one to carry into a lab meeting. A pinned-asymptote fit is not *slightly*
+off — it is off by nearly half, with a tight-looking confidence interval, and nothing in the
+output says so. The invention of a known truth is what makes that visible; no amount of real
+screening data would have.
+
+## The one gap still open: water
+
+Climate's fifth invariant — `precipitation = evaporation + d(storage)/dt` — remains **named and
+unmeasured**, and it is now a single specific dependency rather than a missing idea:
+
+| needed | what it is | why it is not done here |
+|---|---|---|
+| a global precipitation field | GPCP v2.3 (monthly means, 1979–present) | distributed as **netCDF**, reached by OPeNDAP; the repo has no netCDF client and adding one is a dependency decision, not a coding one |
+| a global evaporation field | ERA5-class reanalysis | needs a **Copernicus CDS API key**, i.e. an account and a credential — the repo takes none |
+
+That is the honest form of the gap: two named datasets and the reason each is out of reach
+today. It is the same shape as the class-5 vintage gap — tested around where possible, left open
+where not, and written down so the next session does not rediscover it.
+
 ## Why this transfers to every oracle-poor field
 
 Epidemiology, drug discovery, nutrition, education, criminology, macro-finance and any model of a
