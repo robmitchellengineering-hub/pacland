@@ -173,6 +173,31 @@ The seeded fault is the one that matters: score each forecast against **the vint
 from** and every model predicts the present perfectly, collapsing the error to zero. The check
 notices and refuses it, which is what makes the two honest regimes worth anything.
 
+## Worked example 7 — climate's fourth measured invariant: carbon
+
+`structure.py` names five conservation laws. Three were measured (energy, ocean mass, salinity)
+and two were **named but unmeasured**: water and carbon. Carbon is now measured, at
+`src/pacland/climate/carbon.py`, which takes the count from **3 of 5** to **4 of 5**.
+
+The identity, over 1979–2023 (45 paired years, two independent inputs — emissions from the
+Global Carbon Budget via OWID, concentrations from NOAA GML):
+
+| | |
+|---|---|
+| emitted | **1,518 GtCO2** |
+| stayed airborne | **669 GtCO2** — a fraction of **0.441** |
+| taken up by oceans and land | **849 GtCO2** |
+| per-year fraction | 0.186 – 0.700 (s.d. 0.111) |
+
+The mean airborne fraction, **0.44**, is the published value; the per-year swing is the El Niño
+signal, and the check reports it rather than smoothing it away. What the gate demands is only
+what physics demands: the fraction must be **between none and all** of emissions every year, and
+its mean must sit in 0.35–0.60. The seeded fault is a budget with **no sink term** — every
+emitted tonne staying airborne, fraction 1.0 — which the check refuses.
+
+Water remains the one named-but-unmeasured invariant, and that is now a single, specific ask: a
+global precipitation and evaporation pair (GPCP and an ERA5-class product) at annual resolution.
+
 ## Why this transfers to every oracle-poor field
 
 Epidemiology, drug discovery, nutrition, education, criminology, macro-finance and any model of a

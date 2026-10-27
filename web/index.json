@@ -711,6 +711,13 @@
    "title": "check-site-links.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_carbon.py",
+   "kind": "script",
+   "path": "scripts/climate_carbon.py",
+   "summary": "The carbon budget \u2014 the fourth measured conservation law.",
+   "title": "climate_carbon.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_cmip6_drift.py",
    "kind": "script",
    "path": "scripts/climate_cmip6_drift.py",
@@ -898,6 +905,13 @@
    "path": "scripts/extract_observables.py",
    "summary": "Extract a richer per-vacuum observable vector (L2 stage 5, partial).",
    "title": "extract_observables.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_carbon_budget.py",
+   "kind": "script",
+   "path": "scripts/fetch_carbon_budget.py",
+   "summary": "Fetch the global carbon accounting series and keep only what the check needs.",
+   "title": "fetch_carbon_budget.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_climate_baseline.py",

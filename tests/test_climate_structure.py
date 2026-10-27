@@ -43,17 +43,17 @@ class TestClosure(unittest.TestCase):
 
 
 class TestCoverage(unittest.TestCase):
-    def test_three_of_five_are_measured_here(self):
+    def test_four_of_five_are_measured_here(self):
         cov = S.coverage()
-        self.assertEqual(cov["n_measured"], 3)
-        self.assertEqual(cov["n_unmeasured"], 2)
+        self.assertEqual(cov["n_measured"], 4)   # carbon measured as of the carbon module
+        self.assertEqual(cov["n_unmeasured"], 1)   # water
         self.assertFalse(cov["complete"])
 
     def test_the_unmeasured_ones_are_named(self):
         ok, msg = S.guard_unmeasured_invariants_are_named()
         self.assertTrue(ok, msg)
         self.assertIn("water", S.coverage()["unmeasured"])
-        self.assertIn("carbon", S.coverage()["unmeasured"])
+        self.assertIn("water", S.coverage()["unmeasured"])
 
     def test_summary_states_the_split(self):
         s = S.summary()

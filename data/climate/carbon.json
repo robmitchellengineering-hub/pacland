@@ -1,0 +1,1909 @@
+{
+ "note": "World rows only. Concentrations are NOT taken from here \u2014 they come from data/climate/baseline.json (NOAA GML), so the two are independent inputs.",
+ "source": "Our World in Data CO2 dataset (CC BY 4.0), republishing the Global Carbon Budget: fossil CO2, CO2 including land-use change, and annual growth.",
+ "unit": "million tonnes CO2 (MtCO2); growth in MtCO2/yr",
+ "url": "https://raw.githubusercontent.com/owid/co2-data/master/owid-co2-data.csv",
+ "world": {
+  "1750": {
+   "co2": 9.306
+  },
+  "1751": {
+   "co2": 9.407,
+   "co2_growth_abs": 0.101
+  },
+  "1752": {
+   "co2": 9.505,
+   "co2_growth_abs": 0.098
+  },
+  "1753": {
+   "co2": 9.61,
+   "co2_growth_abs": 0.105
+  },
+  "1754": {
+   "co2": 9.734,
+   "co2_growth_abs": 0.123
+  },
+  "1755": {
+   "co2": 9.793,
+   "co2_growth_abs": 0.06
+  },
+  "1756": {
+   "co2": 9.91,
+   "co2_growth_abs": 0.116
+  },
+  "1757": {
+   "co2": 10.094,
+   "co2_growth_abs": 0.184
+  },
+  "1758": {
+   "co2": 10.216,
+   "co2_growth_abs": 0.122
+  },
+  "1759": {
+   "co2": 10.339,
+   "co2_growth_abs": 0.122
+  },
+  "1760": {
+   "co2": 10.514,
+   "co2_growth_abs": 0.175
+  },
+  "1761": {
+   "co2": 10.748,
+   "co2_growth_abs": 0.234
+  },
+  "1762": {
+   "co2": 10.952,
+   "co2_growth_abs": 0.204
+  },
+  "1763": {
+   "co2": 11.192,
+   "co2_growth_abs": 0.239
+  },
+  "1764": {
+   "co2": 11.397,
+   "co2_growth_abs": 0.205
+  },
+  "1765": {
+   "co2": 11.643,
+   "co2_growth_abs": 0.247
+  },
+  "1766": {
+   "co2": 11.876,
+   "co2_growth_abs": 0.233
+  },
+  "1767": {
+   "co2": 12.153,
+   "co2_growth_abs": 0.276
+  },
+  "1768": {
+   "co2": 12.467,
+   "co2_growth_abs": 0.314
+  },
+  "1769": {
+   "co2": 12.78,
+   "co2_growth_abs": 0.313
+  },
+  "1770": {
+   "co2": 13.097,
+   "co2_growth_abs": 0.317
+  },
+  "1771": {
+   "co2": 13.369,
+   "co2_growth_abs": 0.272
+  },
+  "1772": {
+   "co2": 13.624,
+   "co2_growth_abs": 0.254
+  },
+  "1773": {
+   "co2": 13.808,
+   "co2_growth_abs": 0.185
+  },
+  "1774": {
+   "co2": 14.012,
+   "co2_growth_abs": 0.204
+  },
+  "1775": {
+   "co2": 14.339,
+   "co2_growth_abs": 0.327
+  },
+  "1776": {
+   "co2": 14.654,
+   "co2_growth_abs": 0.315
+  },
+  "1777": {
+   "co2": 14.96,
+   "co2_growth_abs": 0.305
+  },
+  "1778": {
+   "co2": 15.243,
+   "co2_growth_abs": 0.284
+  },
+  "1779": {
+   "co2": 15.535,
+   "co2_growth_abs": 0.292
+  },
+  "1780": {
+   "co2": 15.879,
+   "co2_growth_abs": 0.343
+  },
+  "1781": {
+   "co2": 16.234,
+   "co2_growth_abs": 0.356
+  },
+  "1782": {
+   "co2": 16.581,
+   "co2_growth_abs": 0.347
+  },
+  "1783": {
+   "co2": 17.063,
+   "co2_growth_abs": 0.482
+  },
+  "1784": {
+   "co2": 17.471,
+   "co2_growth_abs": 0.408
+  },
+  "1785": {
+   "co2": 17.965,
+   "co2_growth_abs": 0.494
+  },
+  "1786": {
+   "co2": 18.447,
+   "co2_growth_abs": 0.482
+  },
+  "1787": {
+   "co2": 18.859,
+   "co2_growth_abs": 0.412
+  },
+  "1788": {
+   "co2": 19.286,
+   "co2_growth_abs": 0.427
+  },
+  "1789": {
+   "co2": 19.863,
+   "co2_growth_abs": 0.577
+  },
+  "1790": {
+   "co2": 20.398,
+   "co2_growth_abs": 0.535
+  },
+  "1791": {
+   "co2": 20.932,
+   "co2_growth_abs": 0.534
+  },
+  "1792": {
+   "co2": 21.929,
+   "co2_growth_abs": 0.997
+  },
+  "1793": {
+   "co2": 22.297,
+   "co2_growth_abs": 0.368
+  },
+  "1794": {
+   "co2": 22.52,
+   "co2_growth_abs": 0.222
+  },
+  "1795": {
+   "co2": 22.315,
+   "co2_growth_abs": -0.204
+  },
+  "1796": {
+   "co2": 22.121,
+   "co2_growth_abs": -0.194
+  },
+  "1797": {
+   "co2": 22.09,
+   "co2_growth_abs": -0.031
+  },
+  "1798": {
+   "co2": 23.106,
+   "co2_growth_abs": 1.016
+  },
+  "1799": {
+   "co2": 27.485,
+   "co2_growth_abs": 4.379
+  },
+  "1800": {
+   "co2": 32.798,
+   "co2_growth_abs": 5.313
+  },
+  "1801": {
+   "co2": 31.986,
+   "co2_growth_abs": -0.812
+  },
+  "1802": {
+   "co2": 40.31,
+   "co2_growth_abs": 8.324
+  },
+  "1803": {
+   "co2": 29.539,
+   "co2_growth_abs": -10.772
+  },
+  "1804": {
+   "co2": 31.769,
+   "co2_growth_abs": 2.231
+  },
+  "1805": {
+   "co2": 31.252,
+   "co2_growth_abs": -0.517
+  },
+  "1806": {
+   "co2": 32.705,
+   "co2_growth_abs": 1.453
+  },
+  "1807": {
+   "co2": 36.201,
+   "co2_growth_abs": 3.496
+  },
+  "1808": {
+   "co2": 35.498,
+   "co2_growth_abs": -0.703
+  },
+  "1809": {
+   "co2": 36.334,
+   "co2_growth_abs": 0.836
+  },
+  "1810": {
+   "co2": 39.492,
+   "co2_growth_abs": 3.158
+  },
+  "1811": {
+   "co2": 40.177,
+   "co2_growth_abs": 0.684
+  },
+  "1812": {
+   "co2": 40.815,
+   "co2_growth_abs": 0.638
+  },
+  "1813": {
+   "co2": 41.206,
+   "co2_growth_abs": 0.392
+  },
+  "1814": {
+   "co2": 42.227,
+   "co2_growth_abs": 1.021
+  },
+  "1815": {
+   "co2": 43.587,
+   "co2_growth_abs": 1.361
+  },
+  "1816": {
+   "co2": 45.497,
+   "co2_growth_abs": 1.909
+  },
+  "1817": {
+   "co2": 49.276,
+   "co2_growth_abs": 3.779
+  },
+  "1818": {
+   "co2": 51.392,
+   "co2_growth_abs": 2.116
+  },
+  "1819": {
+   "co2": 50.93,
+   "co2_growth_abs": -0.462
+  },
+  "1820": {
+   "co2": 50.733,
+   "co2_growth_abs": -0.197
+  },
+  "1821": {
+   "co2": 52.059,
+   "co2_growth_abs": 1.326
+  },
+  "1822": {
+   "co2": 54.022,
+   "co2_growth_abs": 1.962
+  },
+  "1823": {
+   "co2": 56.358,
+   "co2_growth_abs": 2.336
+  },
+  "1824": {
+   "co2": 57.584,
+   "co2_growth_abs": 1.226
+  },
+  "1825": {
+   "co2": 60.731,
+   "co2_growth_abs": 3.147
+  },
+  "1826": {
+   "co2": 61.382,
+   "co2_growth_abs": 0.651
+  },
+  "1827": {
+   "co2": 65.739,
+   "co2_growth_abs": 4.356
+  },
+  "1828": {
+   "co2": 66.682,
+   "co2_growth_abs": 0.943
+  },
+  "1829": {
+   "co2": 66.307,
+   "co2_growth_abs": -0.374
+  },
+  "1830": {
+   "co2": 88.988,
+   "co2_growth_abs": 22.681
+  },
+  "1831": {
+   "co2": 83.251,
+   "co2_growth_abs": -5.738
+  },
+  "1832": {
+   "co2": 82.092,
+   "co2_growth_abs": -1.159
+  },
+  "1833": {
+   "co2": 83.249,
+   "co2_growth_abs": 1.157
+  },
+  "1834": {
+   "co2": 88.763,
+   "co2_growth_abs": 5.514
+  },
+  "1835": {
+   "co2": 97.4,
+   "co2_growth_abs": 8.636
+  },
+  "1836": {
+   "co2": 106.894,
+   "co2_growth_abs": 9.495
+  },
+  "1837": {
+   "co2": 106.199,
+   "co2_growth_abs": -0.695
+  },
+  "1838": {
+   "co2": 105.845,
+   "co2_growth_abs": -0.354
+  },
+  "1839": {
+   "co2": 109.653,
+   "co2_growth_abs": 3.808
+  },
+  "1840": {
+   "co2": 118.809,
+   "co2_growth_abs": 9.155
+  },
+  "1841": {
+   "co2": 122.166,
+   "co2_growth_abs": 3.357
+  },
+  "1842": {
+   "co2": 129.389,
+   "co2_growth_abs": 7.223
+  },
+  "1843": {
+   "co2": 132.369,
+   "co2_growth_abs": 2.981
+  },
+  "1844": {
+   "co2": 141.966,
+   "co2_growth_abs": 9.597
+  },
+  "1845": {
+   "co2": 155.073,
+   "co2_growth_abs": 13.107
+  },
+  "1846": {
+   "co2": 157.702,
+   "co2_growth_abs": 2.628
+  },
+  "1847": {
+   "co2": 170.797,
+   "co2_growth_abs": 13.095
+  },
+  "1848": {
+   "co2": 173.643,
+   "co2_growth_abs": 2.847
+  },
+  "1849": {
+   "co2": 185.048,
+   "co2_growth_abs": 11.405
+  },
+  "1850": {
+   "co2": 196.848,
+   "co2_growth_abs": 11.8,
+   "co2_including_luc": 2910.87,
+   "land_use_change_co2": 2714.022,
+   "methane": 1239.419
+  },
+  "1851": {
+   "co2": 198.779,
+   "co2_growth_abs": 1.931,
+   "co2_including_luc": 3019.546,
+   "land_use_change_co2": 2820.767,
+   "methane": 1244.062
+  },
+  "1852": {
+   "co2": 207.595,
+   "co2_growth_abs": 8.817,
+   "co2_including_luc": 3124.945,
+   "land_use_change_co2": 2917.35,
+   "methane": 1250.699
+  },
+  "1853": {
+   "co2": 217.237,
+   "co2_growth_abs": 9.642,
+   "co2_including_luc": 3152.687,
+   "land_use_change_co2": 2935.45,
+   "methane": 1258.197
+  },
+  "1854": {
+   "co2": 255.039,
+   "co2_growth_abs": 37.802,
+   "co2_including_luc": 3230.597,
+   "land_use_change_co2": 2975.559,
+   "methane": 1270.693
+  },
+  "1855": {
+   "co2": 260.26,
+   "co2_growth_abs": 5.221,
+   "co2_including_luc": 3288.08,
+   "land_use_change_co2": 3027.82,
+   "methane": 1277.153
+  },
+  "1856": {
+   "co2": 278.246,
+   "co2_growth_abs": 17.986,
+   "co2_including_luc": 3322.114,
+   "land_use_change_co2": 3043.868,
+   "methane": 1285.795
+  },
+  "1857": {
+   "co2": 281.181,
+   "co2_growth_abs": 2.935,
+   "co2_including_luc": 3372.865,
+   "land_use_change_co2": 3091.683,
+   "methane": 1291.702
+  },
+  "1858": {
+   "co2": 285.548,
+   "co2_growth_abs": 4.367,
+   "co2_including_luc": 3397.97,
+   "land_use_change_co2": 3112.421,
+   "methane": 1297.422
+  },
+  "1859": {
+   "co2": 302.572,
+   "co2_growth_abs": 17.024,
+   "co2_including_luc": 3458.485,
+   "land_use_change_co2": 3155.913,
+   "methane": 1306.546
+  },
+  "1860": {
+   "co2": 332.298,
+   "co2_growth_abs": 29.726,
+   "co2_including_luc": 3228.275,
+   "land_use_change_co2": 2895.977,
+   "methane": 1317.403
+  },
+  "1861": {
+   "co2": 349.19,
+   "co2_growth_abs": 16.892,
+   "co2_including_luc": 3115.803,
+   "land_use_change_co2": 2766.613,
+   "methane": 1325.747
+  },
+  "1862": {
+   "co2": 355.991,
+   "co2_growth_abs": 6.801,
+   "co2_including_luc": 3048.249,
+   "land_use_change_co2": 2692.258,
+   "methane": 1332.229
+  },
+  "1863": {
+   "co2": 379.535,
+   "co2_growth_abs": 23.544,
+   "co2_including_luc": 3042.359,
+   "land_use_change_co2": 2662.824,
+   "methane": 1343.454
+  },
+  "1864": {
+   "co2": 409.525,
+   "co2_growth_abs": 29.991,
+   "co2_including_luc": 3096.068,
+   "land_use_change_co2": 2686.542,
+   "methane": 1354.044
+  },
+  "1865": {
+   "co2": 434.851,
+   "co2_growth_abs": 25.326,
+   "co2_including_luc": 3043.131,
+   "land_use_change_co2": 2608.28,
+   "methane": 1363.89
+  },
+  "1866": {
+   "co2": 449.067,
+   "co2_growth_abs": 14.216,
+   "co2_including_luc": 3070.036,
+   "land_use_change_co2": 2620.969,
+   "methane": 1374.183
+  },
+  "1867": {
+   "co2": 480.814,
+   "co2_growth_abs": 31.747,
+   "co2_including_luc": 3055.824,
+   "land_use_change_co2": 2575.01,
+   "methane": 1382.202
+  },
+  "1868": {
+   "co2": 494.494,
+   "co2_growth_abs": 13.68,
+   "co2_including_luc": 3057.755,
+   "land_use_change_co2": 2563.261,
+   "methane": 1389.073
+  },
+  "1869": {
+   "co2": 524.731,
+   "co2_growth_abs": 30.238,
+   "co2_including_luc": 3080.701,
+   "land_use_change_co2": 2555.97,
+   "methane": 1399.244
+  },
+  "1870": {
+   "co2": 536.123,
+   "co2_growth_abs": 11.392,
+   "co2_including_luc": 3447.55,
+   "land_use_change_co2": 2911.427,
+   "methane": 1406.298
+  },
+  "1871": {
+   "co2": 569.777,
+   "co2_growth_abs": 33.653,
+   "co2_including_luc": 3566.819,
+   "land_use_change_co2": 2997.042,
+   "methane": 1419.828
+  },
+  "1872": {
+   "co2": 630.961,
+   "co2_growth_abs": 61.185,
+   "co2_including_luc": 3788.768,
+   "land_use_change_co2": 3157.806,
+   "methane": 1438.484
+  },
+  "1873": {
+   "co2": 670.467,
+   "co2_growth_abs": 39.506,
+   "co2_including_luc": 3879.655,
+   "land_use_change_co2": 3209.188,
+   "methane": 1453.71
+  },
+  "1874": {
+   "co2": 628.662,
+   "co2_growth_abs": -41.805,
+   "co2_including_luc": 3939.355,
+   "land_use_change_co2": 3310.693,
+   "methane": 1458.43
+  },
+  "1875": {
+   "co2": 681.048,
+   "co2_growth_abs": 52.386,
+   "co2_including_luc": 4013.273,
+   "land_use_change_co2": 3332.225,
+   "methane": 1474.561
+  },
+  "1876": {
+   "co2": 690.583,
+   "co2_growth_abs": 9.535,
+   "co2_including_luc": 4078.097,
+   "land_use_change_co2": 3387.515,
+   "methane": 1485.312
+  },
+  "1877": {
+   "co2": 704.033,
+   "co2_growth_abs": 13.45,
+   "co2_including_luc": 4180.692,
+   "land_use_change_co2": 3476.66,
+   "methane": 1496.818
+  },
+  "1878": {
+   "co2": 709.65,
+   "co2_growth_abs": 5.617,
+   "co2_including_luc": 4241.147,
+   "land_use_change_co2": 3531.498,
+   "methane": 1506.982
+  },
+  "1879": {
+   "co2": 759.794,
+   "co2_growth_abs": 50.145,
+   "co2_including_luc": 4348.402,
+   "land_use_change_co2": 3588.607,
+   "methane": 1522.503
+  },
+  "1880": {
+   "co2": 858.228,
+   "co2_growth_abs": 98.433,
+   "co2_including_luc": 4481.337,
+   "land_use_change_co2": 3623.11,
+   "methane": 1544.166
+  },
+  "1881": {
+   "co2": 888.173,
+   "co2_growth_abs": 29.945,
+   "co2_including_luc": 4491.63,
+   "land_use_change_co2": 3603.458,
+   "methane": 1561.769
+  },
+  "1882": {
+   "co2": 938.158,
+   "co2_growth_abs": 49.986,
+   "co2_including_luc": 4621.833,
+   "land_use_change_co2": 3683.676,
+   "methane": 1579.738
+  },
+  "1883": {
+   "co2": 997.862,
+   "co2_growth_abs": 59.704,
+   "co2_including_luc": 4742.019,
+   "land_use_change_co2": 3744.156,
+   "methane": 1599.377
+  },
+  "1884": {
+   "co2": 1009.762,
+   "co2_growth_abs": 11.9,
+   "co2_including_luc": 4759.06,
+   "land_use_change_co2": 3749.298,
+   "methane": 1611.351
+  },
+  "1885": {
+   "co2": 1017.489,
+   "co2_growth_abs": 7.727,
+   "co2_including_luc": 4772.625,
+   "land_use_change_co2": 3755.136,
+   "methane": 1623.198
+  },
+  "1886": {
+   "co2": 1032.987,
+   "co2_growth_abs": 15.498,
+   "co2_including_luc": 4783.079,
+   "land_use_change_co2": 3750.092,
+   "methane": 1636.286
+  },
+  "1887": {
+   "co2": 1084.283,
+   "co2_growth_abs": 51.296,
+   "co2_including_luc": 4893.109,
+   "land_use_change_co2": 3808.826,
+   "methane": 1654.795
+  },
+  "1888": {
+   "co2": 1201.342,
+   "co2_growth_abs": 117.058,
+   "co2_including_luc": 5001.777,
+   "land_use_change_co2": 3800.435,
+   "methane": 1679.947
+  },
+  "1889": {
+   "co2": 1202.098,
+   "co2_growth_abs": 0.756,
+   "co2_including_luc": 5037.133,
+   "land_use_change_co2": 3835.035,
+   "methane": 1692.237
+  },
+  "1890": {
+   "co2": 1307.255,
+   "co2_growth_abs": 105.158,
+   "co2_including_luc": 5423.613,
+   "land_use_change_co2": 4116.357,
+   "methane": 1718.415
+  },
+  "1891": {
+   "co2": 1369.598,
+   "co2_growth_abs": 62.343,
+   "co2_including_luc": 5575.736,
+   "land_use_change_co2": 4206.138,
+   "methane": 1737.446
+  },
+  "1892": {
+   "co2": 1380.536,
+   "co2_growth_abs": 10.938,
+   "co2_including_luc": 5562.223,
+   "land_use_change_co2": 4181.686,
+   "methane": 1750.336
+  },
+  "1893": {
+   "co2": 1363.18,
+   "co2_growth_abs": -17.357,
+   "co2_including_luc": 5582.068,
+   "land_use_change_co2": 4218.889,
+   "methane": 1757.747
+  },
+  "1894": {
+   "co2": 1412.227,
+   "co2_growth_abs": 49.048,
+   "co2_including_luc": 5715.95,
+   "land_use_change_co2": 4303.722,
+   "methane": 1777.388
+  },
+  "1895": {
+   "co2": 1495.964,
+   "co2_growth_abs": 83.737,
+   "co2_including_luc": 5786.031,
+   "land_use_change_co2": 4290.067,
+   "methane": 1800.448
+  },
+  "1896": {
+   "co2": 1545.451,
+   "co2_growth_abs": 49.487,
+   "co2_including_luc": 5850.712,
+   "land_use_change_co2": 4305.261,
+   "methane": 1817.2
+  },
+  "1897": {
+   "co2": 1618.405,
+   "co2_growth_abs": 72.954,
+   "co2_including_luc": 5993.856,
+   "land_use_change_co2": 4375.451,
+   "methane": 1838.674
+  },
+  "1898": {
+   "co2": 1706.967,
+   "co2_growth_abs": 88.561,
+   "co2_including_luc": 6098.222,
+   "land_use_change_co2": 4391.255,
+   "methane": 1861.349
+  },
+  "1899": {
+   "co2": 1864.424,
+   "co2_growth_abs": 157.458,
+   "co2_including_luc": 6291.44,
+   "land_use_change_co2": 4427.016,
+   "methane": 1892.905
+  },
+  "1900": {
+   "co2": 1962.884,
+   "co2_growth_abs": 98.46,
+   "co2_including_luc": 6423.621,
+   "land_use_change_co2": 4460.737,
+   "methane": 1919.446
+  },
+  "1901": {
+   "co2": 2025.628,
+   "co2_growth_abs": 62.744,
+   "co2_including_luc": 6611.075,
+   "land_use_change_co2": 4585.447,
+   "methane": 1940.271
+  },
+  "1902": {
+   "co2": 2076.956,
+   "co2_growth_abs": 51.328,
+   "co2_including_luc": 6704.71,
+   "land_use_change_co2": 4627.754,
+   "methane": 1957.994
+  },
+  "1903": {
+   "co2": 2264.592,
+   "co2_growth_abs": 187.636,
+   "co2_including_luc": 6927.692,
+   "land_use_change_co2": 4663.1,
+   "methane": 1993.062
+  },
+  "1904": {
+   "co2": 2290.255,
+   "co2_growth_abs": 25.663,
+   "co2_including_luc": 7062.163,
+   "land_use_change_co2": 4771.908,
+   "methane": 2008.754
+  },
+  "1905": {
+   "co2": 2440.571,
+   "co2_growth_abs": 150.316,
+   "co2_including_luc": 7244.465,
+   "land_use_change_co2": 4803.895,
+   "methane": 2034.716
+  },
+  "1906": {
+   "co2": 2548.978,
+   "co2_growth_abs": 108.408,
+   "co2_including_luc": 7420.486,
+   "land_use_change_co2": 4871.508,
+   "methane": 2067.422
+  },
+  "1907": {
+   "co2": 2904.949,
+   "co2_growth_abs": 355.971,
+   "co2_including_luc": 7778.838,
+   "land_use_change_co2": 4873.889,
+   "methane": 2118.715
+  },
+  "1908": {
+   "co2": 2790.395,
+   "co2_growth_abs": -114.554,
+   "co2_including_luc": 7711.734,
+   "land_use_change_co2": 4921.338,
+   "methane": 2118.962
+  },
+  "1909": {
+   "co2": 2907.112,
+   "co2_growth_abs": 116.717,
+   "co2_including_luc": 7906.798,
+   "land_use_change_co2": 4999.687,
+   "methane": 2148.511
+  },
+  "1910": {
+   "co2": 3050.273,
+   "co2_growth_abs": 143.161,
+   "co2_including_luc": 7848.428,
+   "land_use_change_co2": 4798.155,
+   "methane": 2176.739
+  },
+  "1911": {
+   "co2": 3097.207,
+   "co2_growth_abs": 46.934,
+   "co2_including_luc": 7862.826,
+   "land_use_change_co2": 4765.618,
+   "methane": 2199.417
+  },
+  "1912": {
+   "co2": 3253.929,
+   "co2_growth_abs": 156.721,
+   "co2_including_luc": 7921.23,
+   "land_use_change_co2": 4667.301,
+   "methane": 2224.523
+  },
+  "1913": {
+   "co2": 3524.846,
+   "co2_growth_abs": 270.917,
+   "co2_including_luc": 8145.113,
+   "land_use_change_co2": 4620.268,
+   "methane": 2267.487
+  },
+  "1914": {
+   "co2": 3197.75,
+   "co2_growth_abs": -327.096,
+   "co2_including_luc": 7824.466,
+   "land_use_change_co2": 4626.716,
+   "methane": 2242.119
+  },
+  "1915": {
+   "co2": 3148.031,
+   "co2_growth_abs": -49.719,
+   "co2_including_luc": 7701.369,
+   "land_use_change_co2": 4553.338,
+   "methane": 2252.633
+  },
+  "1916": {
+   "co2": 3400.232,
+   "co2_growth_abs": 252.201,
+   "co2_including_luc": 7941.577,
+   "land_use_change_co2": 4541.345,
+   "methane": 2295.854
+  },
+  "1917": {
+   "co2": 3556.499,
+   "co2_growth_abs": 156.266,
+   "co2_including_luc": 8015.733,
+   "land_use_change_co2": 4459.234,
+   "methane": 2328.266
+  },
+  "1918": {
+   "co2": 3506.085,
+   "co2_growth_abs": -50.414,
+   "co2_including_luc": 7922.89,
+   "land_use_change_co2": 4416.805,
+   "methane": 2320.688
+  },
+  "1919": {
+   "co2": 3041.113,
+   "co2_growth_abs": -464.972,
+   "co2_including_luc": 7426.347,
+   "land_use_change_co2": 4385.234,
+   "methane": 2289.866
+  },
+  "1920": {
+   "co2": 3546.758,
+   "co2_growth_abs": 505.645,
+   "co2_including_luc": 8323.49,
+   "land_use_change_co2": 4776.732,
+   "methane": 2355.954
+  },
+  "1921": {
+   "co2": 3114.994,
+   "co2_growth_abs": -431.764,
+   "co2_including_luc": 8100.611,
+   "land_use_change_co2": 4985.617,
+   "methane": 2312.747
+  },
+  "1922": {
+   "co2": 3264.717,
+   "co2_growth_abs": 149.723,
+   "co2_including_luc": 8321.306,
+   "land_use_change_co2": 5056.589,
+   "methane": 2362.89
+  },
+  "1923": {
+   "co2": 3702.996,
+   "co2_growth_abs": 438.279,
+   "co2_including_luc": 8871.153,
+   "land_use_change_co2": 5168.157,
+   "methane": 2442.978
+  },
+  "1924": {
+   "co2": 3716.143,
+   "co2_growth_abs": 13.147,
+   "co2_including_luc": 8830.048,
+   "land_use_change_co2": 5113.906,
+   "methane": 2471.417
+  },
+  "1925": {
+   "co2": 3740.633,
+   "co2_growth_abs": 24.49,
+   "co2_including_luc": 8989.484,
+   "land_use_change_co2": 5248.851,
+   "methane": 2494.91
+  },
+  "1926": {
+   "co2": 3677.407,
+   "co2_growth_abs": -63.226,
+   "co2_including_luc": 8943.637,
+   "land_use_change_co2": 5266.23,
+   "methane": 2503.082
+  },
+  "1927": {
+   "co2": 4012.947,
+   "co2_growth_abs": 335.54,
+   "co2_including_luc": 9284.173,
+   "land_use_change_co2": 5271.226,
+   "methane": 2576.853
+  },
+  "1928": {
+   "co2": 3996.311,
+   "co2_growth_abs": -16.636,
+   "co2_including_luc": 9322.984,
+   "land_use_change_co2": 5326.674,
+   "methane": 2593.703
+  },
+  "1929": {
+   "co2": 4288.21,
+   "co2_growth_abs": 291.899,
+   "co2_including_luc": 9670.662,
+   "land_use_change_co2": 5382.453,
+   "methane": 2652.586
+  },
+  "1930": {
+   "co2": 3958.094,
+   "co2_growth_abs": -330.115,
+   "co2_including_luc": 9396.154,
+   "land_use_change_co2": 5438.06,
+   "methane": 2655.139
+  },
+  "1931": {
+   "co2": 3539.319,
+   "co2_growth_abs": -418.776,
+   "co2_including_luc": 9063.629,
+   "land_use_change_co2": 5524.311,
+   "methane": 2641.023
+  },
+  "1932": {
+   "co2": 3192.59,
+   "co2_growth_abs": -346.729,
+   "co2_including_luc": 8757.925,
+   "land_use_change_co2": 5565.335,
+   "methane": 2637.263
+  },
+  "1933": {
+   "co2": 3362.682,
+   "co2_growth_abs": 170.092,
+   "co2_including_luc": 8883.585,
+   "land_use_change_co2": 5520.903,
+   "methane": 2681.514
+  },
+  "1934": {
+   "co2": 3656.186,
+   "co2_growth_abs": 293.503,
+   "co2_including_luc": 9230.619,
+   "land_use_change_co2": 5574.434,
+   "methane": 2747.974
+  },
+  "1935": {
+   "co2": 3835.741,
+   "co2_growth_abs": 179.555,
+   "co2_including_luc": 9347.265,
+   "land_use_change_co2": 5511.523,
+   "methane": 2798.582
+  },
+  "1936": {
+   "co2": 4207.929,
+   "co2_growth_abs": 372.188,
+   "co2_including_luc": 9852.772,
+   "land_use_change_co2": 5644.844,
+   "methane": 2877.57
+  },
+  "1937": {
+   "co2": 4496.713,
+   "co2_growth_abs": 288.784,
+   "co2_including_luc": 10122.65,
+   "land_use_change_co2": 5625.938,
+   "methane": 2940.399
+  },
+  "1938": {
+   "co2": 4229.617,
+   "co2_growth_abs": -267.097,
+   "co2_including_luc": 9895.467,
+   "land_use_change_co2": 5665.851,
+   "methane": 2947.51
+  },
+  "1939": {
+   "co2": 4470.132,
+   "co2_growth_abs": 240.516,
+   "co2_including_luc": 10105.731,
+   "land_use_change_co2": 5635.598,
+   "methane": 3004.825
+  },
+  "1940": {
+   "co2": 4884.662,
+   "co2_growth_abs": 414.53,
+   "co2_including_luc": 10628.067,
+   "land_use_change_co2": 5743.406,
+   "methane": 3070.731
+  },
+  "1941": {
+   "co2": 4999.09,
+   "co2_growth_abs": 114.428,
+   "co2_including_luc": 10890.24,
+   "land_use_change_co2": 5891.15,
+   "methane": 3122.709
+  },
+  "1942": {
+   "co2": 4982.523,
+   "co2_growth_abs": -16.567,
+   "co2_including_luc": 10887.828,
+   "land_use_change_co2": 5905.305,
+   "methane": 3158.67
+  },
+  "1943": {
+   "co2": 5075.272,
+   "co2_growth_abs": 92.749,
+   "co2_including_luc": 10969.573,
+   "land_use_change_co2": 5894.301,
+   "methane": 3221.97
+  },
+  "1944": {
+   "co2": 5162.486,
+   "co2_growth_abs": 87.213,
+   "co2_including_luc": 10988.551,
+   "land_use_change_co2": 5826.065,
+   "methane": 3267.549
+  },
+  "1945": {
+   "co2": 4289.312,
+   "co2_growth_abs": -873.174,
+   "co2_including_luc": 10152.701,
+   "land_use_change_co2": 5863.389,
+   "methane": 3229.961
+  },
+  "1946": {
+   "co2": 4608.545,
+   "co2_growth_abs": 319.234,
+   "co2_including_luc": 10436.161,
+   "land_use_change_co2": 5827.616,
+   "methane": 3323.815
+  },
+  "1947": {
+   "co2": 5165.204,
+   "co2_growth_abs": 556.658,
+   "co2_including_luc": 10943.44,
+   "land_use_change_co2": 5778.238,
+   "methane": 3433.029
+  },
+  "1948": {
+   "co2": 5447.883,
+   "co2_growth_abs": 282.679,
+   "co2_including_luc": 11172.639,
+   "land_use_change_co2": 5724.756,
+   "methane": 3481.768
+  },
+  "1949": {
+   "co2": 5204.033,
+   "co2_growth_abs": -243.85,
+   "co2_including_luc": 10887.349,
+   "land_use_change_co2": 5683.316,
+   "methane": 3522.194
+  },
+  "1950": {
+   "co2": 5930.406,
+   "co2_growth_abs": 726.373,
+   "co2_including_luc": 12584.438,
+   "land_use_change_co2": 6654.031,
+   "methane": 3607.457
+  },
+  "1951": {
+   "co2": 6381.651,
+   "co2_growth_abs": 451.245,
+   "co2_including_luc": 13578.992,
+   "land_use_change_co2": 7197.342,
+   "methane": 3723.34
+  },
+  "1952": {
+   "co2": 6467.7,
+   "co2_growth_abs": 86.049,
+   "co2_including_luc": 13718.915,
+   "land_use_change_co2": 7251.215,
+   "methane": 3800.598
+  },
+  "1953": {
+   "co2": 6651.039,
+   "co2_growth_abs": 183.34,
+   "co2_including_luc": 14034.659,
+   "land_use_change_co2": 7383.62,
+   "methane": 3889.637
+  },
+  "1954": {
+   "co2": 6789.734,
+   "co2_growth_abs": 138.695,
+   "co2_including_luc": 14596.57,
+   "land_use_change_co2": 7806.836,
+   "methane": 3988.856
+  },
+  "1955": {
+   "co2": 7444.103,
+   "co2_growth_abs": 654.369,
+   "co2_including_luc": 15438.17,
+   "land_use_change_co2": 7994.067,
+   "methane": 4180.018
+  },
+  "1956": {
+   "co2": 7926.275,
+   "co2_growth_abs": 482.172,
+   "co2_including_luc": 15986.904,
+   "land_use_change_co2": 8060.629,
+   "methane": 4309.005
+  },
+  "1957": {
+   "co2": 8185.976,
+   "co2_growth_abs": 259.701,
+   "co2_including_luc": 16466.127,
+   "land_use_change_co2": 8280.151,
+   "methane": 4435.85
+  },
+  "1958": {
+   "co2": 8417.517,
+   "co2_growth_abs": 231.54,
+   "co2_including_luc": 16629.943,
+   "land_use_change_co2": 8212.429,
+   "methane": 4525.489
+  },
+  "1959": {
+   "co2": 8855.112,
+   "co2_growth_abs": 437.596,
+   "co2_including_luc": 17547.879,
+   "land_use_change_co2": 8692.767,
+   "methane": 4725.665
+  },
+  "1960": {
+   "co2": 9386.951,
+   "co2_growth_abs": 531.839,
+   "co2_including_luc": 16997.52,
+   "land_use_change_co2": 7610.568,
+   "methane": 4861.831
+  },
+  "1961": {
+   "co2": 9414.99,
+   "co2_growth_abs": 28.038,
+   "co2_including_luc": 17045.148,
+   "land_use_change_co2": 7630.158,
+   "methane": 4904.216
+  },
+  "1962": {
+   "co2": 9747.241,
+   "co2_growth_abs": 332.251,
+   "co2_including_luc": 16885.641,
+   "land_use_change_co2": 7138.4,
+   "methane": 4981.43
+  },
+  "1963": {
+   "co2": 10266.777,
+   "co2_growth_abs": 519.537,
+   "co2_including_luc": 17220.107,
+   "land_use_change_co2": 6953.332,
+   "methane": 5105.29
+  },
+  "1964": {
+   "co2": 10824.47,
+   "co2_growth_abs": 557.692,
+   "co2_including_luc": 17484.389,
+   "land_use_change_co2": 6659.918,
+   "methane": 5205.581
+  },
+  "1965": {
+   "co2": 11310.603,
+   "co2_growth_abs": 486.133,
+   "co2_including_luc": 17696.027,
+   "land_use_change_co2": 6385.424,
+   "methane": 5343.486
+  },
+  "1966": {
+   "co2": 11862.625,
+   "co2_growth_abs": 552.023,
+   "co2_including_luc": 17779.766,
+   "land_use_change_co2": 5917.141,
+   "methane": 5545.599
+  },
+  "1967": {
+   "co2": 12237.371,
+   "co2_growth_abs": 374.746,
+   "co2_including_luc": 18487.898,
+   "land_use_change_co2": 6250.528,
+   "methane": 5608.186
+  },
+  "1968": {
+   "co2": 12905.273,
+   "co2_growth_abs": 667.902,
+   "co2_including_luc": 19232.404,
+   "land_use_change_co2": 6327.129,
+   "methane": 5702.289
+  },
+  "1969": {
+   "co2": 13761.798,
+   "co2_growth_abs": 856.525,
+   "co2_including_luc": 20702.344,
+   "land_use_change_co2": 6940.544,
+   "methane": 5885.07
+  },
+  "1970": {
+   "co2": 14899.139,
+   "co2_growth_abs": 1137.34,
+   "co2_including_luc": 21588.809,
+   "land_use_change_co2": 6689.67,
+   "methane": 6036.888
+  },
+  "1971": {
+   "co2": 15503.862,
+   "co2_growth_abs": 604.724,
+   "co2_including_luc": 21643.262,
+   "land_use_change_co2": 6139.398,
+   "methane": 6056.77
+  },
+  "1972": {
+   "co2": 16224.579,
+   "co2_growth_abs": 720.717,
+   "co2_including_luc": 22662.668,
+   "land_use_change_co2": 6438.088,
+   "methane": 6183.963
+  },
+  "1973": {
+   "co2": 17077.285,
+   "co2_growth_abs": 852.705,
+   "co2_including_luc": 23331.549,
+   "land_use_change_co2": 6254.265,
+   "methane": 6345.583
+  },
+  "1974": {
+   "co2": 16997.912,
+   "co2_growth_abs": -79.372,
+   "co2_including_luc": 23310.912,
+   "land_use_change_co2": 6312.999,
+   "methane": 6363.316
+  },
+  "1975": {
+   "co2": 16988.477,
+   "co2_growth_abs": -9.436,
+   "co2_including_luc": 23111.973,
+   "land_use_change_co2": 6123.497,
+   "methane": 6448.271
+  },
+  "1976": {
+   "co2": 17862.492,
+   "co2_growth_abs": 874.016,
+   "co2_including_luc": 23922.773,
+   "land_use_change_co2": 6060.281,
+   "methane": 6544.579
+  },
+  "1977": {
+   "co2": 18358.039,
+   "co2_growth_abs": 495.546,
+   "co2_including_luc": 24978.129,
+   "land_use_change_co2": 6620.091,
+   "methane": 6627.559
+  },
+  "1978": {
+   "co2": 19024.742,
+   "co2_growth_abs": 666.704,
+   "co2_including_luc": 25588.641,
+   "land_use_change_co2": 6563.897,
+   "methane": 6657.352
+  },
+  "1979": {
+   "co2": 19508.59,
+   "co2_growth_abs": 483.848,
+   "co2_including_luc": 25364.418,
+   "land_use_change_co2": 5855.829,
+   "methane": 6825.825
+  },
+  "1980": {
+   "co2": 19409.793,
+   "co2_growth_abs": -98.798,
+   "co2_including_luc": 25411.107,
+   "land_use_change_co2": 6001.314,
+   "methane": 6785.667
+  },
+  "1981": {
+   "co2": 18879.756,
+   "co2_growth_abs": -530.037,
+   "co2_including_luc": 24716.338,
+   "land_use_change_co2": 5836.581,
+   "methane": 6610.78
+  },
+  "1982": {
+   "co2": 18729.742,
+   "co2_growth_abs": -150.014,
+   "co2_including_luc": 24261.297,
+   "land_use_change_co2": 5531.553,
+   "methane": 6683.251
+  },
+  "1983": {
+   "co2": 18901.775,
+   "co2_growth_abs": 172.034,
+   "co2_including_luc": 24741.631,
+   "land_use_change_co2": 5839.854,
+   "methane": 6684.616
+  },
+  "1984": {
+   "co2": 19457.25,
+   "co2_growth_abs": 555.473,
+   "co2_including_luc": 25882.049,
+   "land_use_change_co2": 6424.799,
+   "methane": 6767.443
+  },
+  "1985": {
+   "co2": 20144.863,
+   "co2_growth_abs": 687.614,
+   "co2_including_luc": 26932.607,
+   "land_use_change_co2": 6787.743,
+   "methane": 6857.225
+  },
+  "1986": {
+   "co2": 20438.045,
+   "co2_growth_abs": 293.181,
+   "co2_including_luc": 27381.361,
+   "land_use_change_co2": 6943.316,
+   "methane": 6942.08
+  },
+  "1987": {
+   "co2": 21106.189,
+   "co2_growth_abs": 668.146,
+   "co2_including_luc": 27604.137,
+   "land_use_change_co2": 6497.945,
+   "methane": 7003.95
+  },
+  "1988": {
+   "co2": 21918.756,
+   "co2_growth_abs": 812.567,
+   "co2_including_luc": 28075.438,
+   "land_use_change_co2": 6156.68,
+   "methane": 7115.852
+  },
+  "1989": {
+   "co2": 22200.213,
+   "co2_growth_abs": 281.457,
+   "co2_including_luc": 28181.033,
+   "land_use_change_co2": 5980.82,
+   "methane": 7274.316
+  },
+  "1990": {
+   "co2": 22732.145,
+   "co2_growth_abs": 531.931,
+   "co2_including_luc": 28561.215,
+   "land_use_change_co2": 5829.07,
+   "methane": 7320.985
+  },
+  "1991": {
+   "co2": 23205.592,
+   "co2_growth_abs": 473.446,
+   "co2_including_luc": 28925.889,
+   "land_use_change_co2": 5720.298,
+   "methane": 7265.909
+  },
+  "1992": {
+   "co2": 22520.424,
+   "co2_growth_abs": -685.167,
+   "co2_including_luc": 28488.322,
+   "land_use_change_co2": 5967.898,
+   "methane": 7268.79
+  },
+  "1993": {
+   "co2": 22749.873,
+   "co2_growth_abs": 229.448,
+   "co2_including_luc": 28483.164,
+   "land_use_change_co2": 5733.292,
+   "methane": 7261.674
+  },
+  "1994": {
+   "co2": 22974.598,
+   "co2_growth_abs": 224.725,
+   "co2_including_luc": 29643.506,
+   "land_use_change_co2": 6668.908,
+   "methane": 7336.296
+  },
+  "1995": {
+   "co2": 23516.639,
+   "co2_growth_abs": 542.042,
+   "co2_including_luc": 29794.719,
+   "land_use_change_co2": 6278.081,
+   "methane": 7426.246
+  },
+  "1996": {
+   "co2": 24233.477,
+   "co2_growth_abs": 716.837,
+   "co2_including_luc": 30775.305,
+   "land_use_change_co2": 6541.828,
+   "methane": 7512.808
+  },
+  "1997": {
+   "co2": 24380.322,
+   "co2_growth_abs": 146.846,
+   "co2_including_luc": 32399.938,
+   "land_use_change_co2": 8019.617,
+   "methane": 7485.23
+  },
+  "1998": {
+   "co2": 24295.713,
+   "co2_growth_abs": -84.609,
+   "co2_including_luc": 31087.949,
+   "land_use_change_co2": 6792.238,
+   "methane": 7419.233
+  },
+  "1999": {
+   "co2": 24837.771,
+   "co2_growth_abs": 542.058,
+   "co2_including_luc": 31399.629,
+   "land_use_change_co2": 6561.857,
+   "methane": 7436.038
+  },
+  "2000": {
+   "co2": 25511.482,
+   "co2_growth_abs": 673.712,
+   "co2_including_luc": 31657.244,
+   "land_use_change_co2": 6145.762,
+   "methane": 7544.741
+  },
+  "2001": {
+   "co2": 25692.994,
+   "co2_growth_abs": 181.51,
+   "co2_including_luc": 31153.697,
+   "land_use_change_co2": 5460.704,
+   "methane": 7523.762
+  },
+  "2002": {
+   "co2": 26265.332,
+   "co2_growth_abs": 572.338,
+   "co2_including_luc": 32359.027,
+   "land_use_change_co2": 6093.696,
+   "methane": 7480.677
+  },
+  "2003": {
+   "co2": 27652.691,
+   "co2_growth_abs": 1387.36,
+   "co2_including_luc": 34973.902,
+   "land_use_change_co2": 7321.209,
+   "methane": 7668.747
+  },
+  "2004": {
+   "co2": 28610.023,
+   "co2_growth_abs": 957.331,
+   "co2_including_luc": 35053.887,
+   "land_use_change_co2": 6443.865,
+   "methane": 7809.036
+  },
+  "2005": {
+   "co2": 29598.951,
+   "co2_growth_abs": 988.928,
+   "co2_including_luc": 35530.062,
+   "land_use_change_co2": 5931.112,
+   "methane": 7929.648
+  },
+  "2006": {
+   "co2": 30594.152,
+   "co2_growth_abs": 995.201,
+   "co2_including_luc": 36627.895,
+   "land_use_change_co2": 6033.741,
+   "methane": 8057.693
+  },
+  "2007": {
+   "co2": 31499.256,
+   "co2_growth_abs": 905.103,
+   "co2_including_luc": 37092.461,
+   "land_use_change_co2": 5593.206,
+   "methane": 8108.338
+  },
+  "2008": {
+   "co2": 32049.66,
+   "co2_growth_abs": 550.404,
+   "co2_including_luc": 38000.68,
+   "land_use_change_co2": 5951.02,
+   "methane": 8177.437
+  },
+  "2009": {
+   "co2": 31513.014,
+   "co2_growth_abs": -536.646,
+   "co2_including_luc": 38047.828,
+   "land_use_change_co2": 6534.817,
+   "methane": 8124.256
+  },
+  "2010": {
+   "co2": 33317.672,
+   "co2_growth_abs": 1804.657,
+   "co2_including_luc": 39835.5,
+   "land_use_change_co2": 6517.829,
+   "methane": 8257.109
+  },
+  "2011": {
+   "co2": 34479.988,
+   "co2_growth_abs": 1162.318,
+   "co2_including_luc": 40872.547,
+   "land_use_change_co2": 6392.556,
+   "methane": 8498.255
+  },
+  "2012": {
+   "co2": 34954.734,
+   "co2_growth_abs": 474.747,
+   "co2_including_luc": 41636.855,
+   "land_use_change_co2": 6682.122,
+   "methane": 8568.392
+  },
+  "2013": {
+   "co2": 35275.82,
+   "co2_growth_abs": 321.085,
+   "co2_including_luc": 41595.344,
+   "land_use_change_co2": 6319.521,
+   "methane": 8520.598
+  },
+  "2014": {
+   "co2": 35465.695,
+   "co2_growth_abs": 189.874,
+   "co2_including_luc": 41875.609,
+   "land_use_change_co2": 6409.911,
+   "methane": 8601.788
+  },
+  "2015": {
+   "co2": 35403.527,
+   "co2_growth_abs": -62.169,
+   "co2_including_luc": 41916.152,
+   "land_use_change_co2": 6512.625,
+   "methane": 8616.349
+  },
+  "2016": {
+   "co2": 35392.832,
+   "co2_growth_abs": -10.695,
+   "co2_including_luc": 40769.383,
+   "land_use_change_co2": 5376.553,
+   "methane": 8652.835
+  },
+  "2017": {
+   "co2": 35974.609,
+   "co2_growth_abs": 581.779,
+   "co2_including_luc": 41282.379,
+   "land_use_change_co2": 5307.768,
+   "methane": 8797.017
+  },
+  "2018": {
+   "co2": 36734.004,
+   "co2_growth_abs": 759.394,
+   "co2_including_luc": 41616.027,
+   "land_use_change_co2": 4882.023,
+   "methane": 8935.43
+  },
+  "2019": {
+   "co2": 37086.566,
+   "co2_growth_abs": 352.563,
+   "co2_including_luc": 41973.746,
+   "land_use_change_co2": 4887.178,
+   "methane": 9008.441
+  },
+  "2020": {
+   "co2": 35158.23,
+   "co2_growth_abs": -1928.339,
+   "co2_including_luc": 39674.77,
+   "land_use_change_co2": 4516.54,
+   "methane": 8903.343
+  },
+  "2021": {
+   "co2": 36866.863,
+   "co2_growth_abs": 1708.634,
+   "co2_including_luc": 41523.965,
+   "land_use_change_co2": 4657.103,
+   "methane": 9089.303
+  },
+  "2022": {
+   "co2": 37527.773,
+   "co2_growth_abs": 660.91,
+   "co2_including_luc": 42313.164,
+   "land_use_change_co2": 4785.392,
+   "methane": 9278.556
+  },
+  "2023": {
+   "co2": 38094.039,
+   "co2_growth_abs": 566.268,
+   "co2_including_luc": 42839.594,
+   "land_use_change_co2": 4745.551,
+   "methane": 9416.93
+  },
+  "2024": {
+   "co2": 38598.578,
+   "co2_growth_abs": 504.537,
+   "co2_including_luc": 43184.086,
+   "land_use_change_co2": 4585.508,
+   "methane": 9498.914
+  }
+ },
+ "years": [
+  1750,
+  1751,
+  1752,
+  1753,
+  1754,
+  1755,
+  1756,
+  1757,
+  1758,
+  1759,
+  1760,
+  1761,
+  1762,
+  1763,
+  1764,
+  1765,
+  1766,
+  1767,
+  1768,
+  1769,
+  1770,
+  1771,
+  1772,
+  1773,
+  1774,
+  1775,
+  1776,
+  1777,
+  1778,
+  1779,
+  1780,
+  1781,
+  1782,
+  1783,
+  1784,
+  1785,
+  1786,
+  1787,
+  1788,
+  1789,
+  1790,
+  1791,
+  1792,
+  1793,
+  1794,
+  1795,
+  1796,
+  1797,
+  1798,
+  1799,
+  1800,
+  1801,
+  1802,
+  1803,
+  1804,
+  1805,
+  1806,
+  1807,
+  1808,
+  1809,
+  1810,
+  1811,
+  1812,
+  1813,
+  1814,
+  1815,
+  1816,
+  1817,
+  1818,
+  1819,
+  1820,
+  1821,
+  1822,
+  1823,
+  1824,
+  1825,
+  1826,
+  1827,
+  1828,
+  1829,
+  1830,
+  1831,
+  1832,
+  1833,
+  1834,
+  1835,
+  1836,
+  1837,
+  1838,
+  1839,
+  1840,
+  1841,
+  1842,
+  1843,
+  1844,
+  1845,
+  1846,
+  1847,
+  1848,
+  1849,
+  1850,
+  1851,
+  1852,
+  1853,
+  1854,
+  1855,
+  1856,
+  1857,
+  1858,
+  1859,
+  1860,
+  1861,
+  1862,
+  1863,
+  1864,
+  1865,
+  1866,
+  1867,
+  1868,
+  1869,
+  1870,
+  1871,
+  1872,
+  1873,
+  1874,
+  1875,
+  1876,
+  1877,
+  1878,
+  1879,
+  1880,
+  1881,
+  1882,
+  1883,
+  1884,
+  1885,
+  1886,
+  1887,
+  1888,
+  1889,
+  1890,
+  1891,
+  1892,
+  1893,
+  1894,
+  1895,
+  1896,
+  1897,
+  1898,
+  1899,
+  1900,
+  1901,
+  1902,
+  1903,
+  1904,
+  1905,
+  1906,
+  1907,
+  1908,
+  1909,
+  1910,
+  1911,
+  1912,
+  1913,
+  1914,
+  1915,
+  1916,
+  1917,
+  1918,
+  1919,
+  1920,
+  1921,
+  1922,
+  1923,
+  1924,
+  1925,
+  1926,
+  1927,
+  1928,
+  1929,
+  1930,
+  1931,
+  1932,
+  1933,
+  1934,
+  1935,
+  1936,
+  1937,
+  1938,
+  1939,
+  1940,
+  1941,
+  1942,
+  1943,
+  1944,
+  1945,
+  1946,
+  1947,
+  1948,
+  1949,
+  1950,
+  1951,
+  1952,
+  1953,
+  1954,
+  1955,
+  1956,
+  1957,
+  1958,
+  1959,
+  1960,
+  1961,
+  1962,
+  1963,
+  1964,
+  1965,
+  1966,
+  1967,
+  1968,
+  1969,
+  1970,
+  1971,
+  1972,
+  1973,
+  1974,
+  1975,
+  1976,
+  1977,
+  1978,
+  1979,
+  1980,
+  1981,
+  1982,
+  1983,
+  1984,
+  1985,
+  1986,
+  1987,
+  1988,
+  1989,
+  1990,
+  1991,
+  1992,
+  1993,
+  1994,
+  1995,
+  1996,
+  1997,
+  1998,
+  1999,
+  2000,
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024
+ ]
+}
