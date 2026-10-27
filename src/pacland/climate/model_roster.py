@@ -27,7 +27,7 @@ MPI-ESM1-2-HR 2, UKESM1-0-LL 1 — with the radius moving accordingly.
 The other two — `benchmark` and `out_of_sample` — **are now claimed**: `climate/baseline.py`
 builds the no-change null (observed trend continued) and runs a real-time hindcast against
 it. The result is not flattering to the models, and that is the point: **the trend null
-wins**, with the ECS emulators beating persistence but not the trend.
+wins**, with the trend beating persistence in every window tested — and no claim about its ranking against the ECS emulators, which flips with the window.
 """
 from __future__ import annotations
 
@@ -131,7 +131,8 @@ def transfer_finding() -> dict:
         "n_weak": sum(1 for r in rows if r["tier"] == "weak"),
         "verdict": (
             "the null now exists — observed trend continued — and on a real-time hindcast it "
-            "wins: the ECS emulators beat persistence but not the trend. What climate still "
+            "wins: in every window tested the trend beats persistence, though its ranking against the ECS "
+            "emulators flips with the choice of start years, so that ranking is not claimed. What climate still "
             "lacks is a per-model deficit and a per-model exact-structure inventory"
         ),
     }

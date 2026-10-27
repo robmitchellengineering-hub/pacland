@@ -63,8 +63,11 @@ The Earth's energy budget closes to 0.01 W/m² **only with all reservoirs**, and
 0.15 W/m² on the upper ocean alone. Fifteen of nineteen CMIP6 models leak heat, one at nearly
 twice the signal it is predicting. That is **class 1** — physics cannot be voted away.
 
-The trend — *continue the warming already measured in a straight line* — is **class 3**, and it
-embarrasses every emulator built from a published climate sensitivity (0.165 °C vs 0.178–0.192).
+The trend — *continue the warming already measured in a straight line* — is **class 3**, and it beats
+persistence in every window tested. It does **not** reliably beat the emulators built from published
+climate sensitivities: which of the two wins flips with the choice of start years (0.165 vs 0.178–0.192
+on one window; the trend loses on two of four). That is the climate invariance gate doing its job —
+see check 3 below, whose first draft failed and then narrowed the claim.
 The per-model certificate (`m = 3 / 2 / 1`) is the deficit attached to class-1 checks.
 
 ## Worked example 3 — economics: the oracle is the bookkeeping, then the description
@@ -93,6 +96,24 @@ structural inflation forecasts **lose** to the no-change null (1.03×); the Phil
 recovered from the model's own synthetic data (truth 0.18 → estimate 1.00); a VAR **beats** the
 null (0.86×) and GDPNow beats it 4:1 — which is what makes the null a real test rather than a
 ritual.
+
+## Worked example 4 — the same gate on climate, where it corrected us
+
+`src/pacland/climate/invariance.py` runs three checks, each with a seeded fault:
+
+| check | what it proved |
+|---|---|
+| **baseline period** | move the 1951-80 reference to 1900-1930: anomaly offsets move, the trend rate does not (drift **0.0**) |
+| **units** | Celsius to Kelvin: levels move by 273.15, skill scores move by **4e-14** |
+| **window** | shift the hindcast start years: the trend beats persistence in **every** window; the trend-versus-emulator ranking is **not stable** and is therefore **not claimed** |
+
+The third check is the one worth the module. It was written to assert *"the trend beats the emulators,
+and it survives a one-year shift."* The first draft **failed** — moving the start years by one flips
+the winner between the trend and two different emulators, and an emulator wins two of four windows.
+The claim was therefore narrowed to what survives, and the narrowing was propagated into the site
+card, the figures page, the model roster and the plain-speak one-pager in the same commit.
+
+**A method that only ever confirms is not a method.**
 
 ## Why this transfers to every oracle-poor field
 
