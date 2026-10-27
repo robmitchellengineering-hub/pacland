@@ -746,6 +746,13 @@
    "title": "climate_energy_budget.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_invariance.py",
+   "kind": "script",
+   "path": "scripts/climate_invariance.py",
+   "summary": "The climate invariance gate \u2014 the economics gate, on a second discipline.",
+   "title": "climate_invariance.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_model_deficit.py",
    "kind": "script",
    "path": "scripts/climate_model_deficit.py",

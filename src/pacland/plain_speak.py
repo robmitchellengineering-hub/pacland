@@ -83,8 +83,9 @@ def climate() -> list[tuple[str, str]]:
         ("h", "3 · The best we have right now"),
         ("p", "The model GISS-E2-1-G passes all three checks we can run — how warm it says the world gets, how "
               "strongly it traps heat, and whether it leaks. Three out of three, and its certificate says three "
-              "things checked. But the strongest predictor we found is not a model at all: it is the ruler, at "
-              "0.17 °C mean error where the model equivalents scored 0.18-0.19."),
+              "things checked. On the simplest comparison, the ruler (the warming so far, continued) beats "
+              "guessing that nothing changes, every time we tried. Whether the ruler or one of the better models "
+              "wins depends on which years you start from, so we claim the first and not the second."),
 
         ("h", "4 · How we refine it"),
         ("b", "Fix the join first. Heat and mass leak and salt does not, so the defect sits where the model "
