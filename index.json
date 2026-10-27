@@ -907,6 +907,20 @@
    "title": "economics_recovery.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_revisions.py",
+   "kind": "script",
+   "path": "scripts/economics_revisions.py",
+   "summary": "What the first GDP print is worth: biased, un-exploitable, and still the best guess.",
+   "title": "economics_revisions.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_second_archive.py",
+   "kind": "script",
+   "path": "scripts/economics_second_archive.py",
+   "summary": "Class 5 for economics: a second real-time vintage archive, compared month by month.",
+   "title": "economics_second_archive.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_three_way.py",
    "kind": "script",
    "path": "scripts/economics_three_way.py",
@@ -975,6 +989,13 @@
    "path": "scripts/fetch_gdpnow.py",
    "summary": "Fetch the GDPNow real-time record: nowcast vs advance estimate vs the null.",
    "title": "fetch_gdpnow.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_second_vintage_archive.py",
+   "kind": "script",
+   "path": "scripts/fetch_second_vintage_archive.py",
+   "summary": "Fetch a SECOND real-time vintage archive \u2014 the class-5 answer for economics.",
+   "title": "fetch_second_vintage_archive.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_water_budget.py",
