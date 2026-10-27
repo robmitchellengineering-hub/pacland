@@ -886,6 +886,13 @@
    "title": "economics_three_way.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_vintage_sensitivity.py",
+   "kind": "script",
+   "path": "scripts/economics_vintage_sensitivity.py",
+   "summary": "Is our forecasting finding about forecasting, or about one archive's revisions?",
+   "title": "economics_vintage_sensitivity.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/extract_observables.py",
    "kind": "script",
    "path": "scripts/extract_observables.py",

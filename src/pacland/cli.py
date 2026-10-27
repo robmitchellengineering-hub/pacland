@@ -338,6 +338,19 @@ def _cmd_economics(args) -> None:
         print(report.constraints_report())
     elif getattr(args, "realtime", False):
         print(report.realtime_report())
+    elif getattr(args, "vintages", False):
+        from .economics import vintage_sensitivity as vs
+
+        s = vs.stability()
+        print("PACLAND · economics — vintage sensitivity\n")
+        for model, per_h in s["verdict"].items():
+            for h, v in per_h.items():
+                print(f"{model:8} h={h}  latest {v['latest']:.2f}  next {v['next']:.2f}  "
+                      f"{'stable' if v['beats_null_both'] else 'REGIME-DEPENDENT'}")
+        print(f"\nworst ratio shift {s['worst_ratio_shift']:.3f}; "
+              f"forecasts {s['forecasts']}")
+        print("verdict:", "ROBUST to the revision regime" if s["pass"] else "REGIME-DEPENDENT")
+        return 0 if s["pass"] else 1
     elif getattr(args, "recovery", False):
         from .economics import recovery
 
@@ -440,6 +453,8 @@ def main(argv=None) -> None:
     em.add_argument("--models", action="store_true", help="the model roster, scored on the bar")
     em.add_argument("--constraints", action="store_true", help="the constraint set and its rank")
     em.add_argument("--realtime", action="store_true", help="real-time results against the null")
+    em.add_argument("--vintages", action="store_true",
+                    help="vintage sensitivity: latest vs first-revision truth")
     em.add_argument("--recovery", action="store_true",
                     help="synthetic recovery: can each estimator recover a truth we invented?")
     em.add_argument("--invariance", action="store_true",

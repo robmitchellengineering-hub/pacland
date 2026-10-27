@@ -139,6 +139,40 @@ That distinction is now machinery rather than an argument, and it is the sharpes
 whole document has to offer: **a number that does not move as n grows is telling you it is
 measuring the wrong thing.**
 
+## Worked example 6 — what one archive can still tell you (and the gap it leaves)
+
+The class-5 gap in this repo is real: the real-time vintages come from **one** archive (ALFRED).
+The Philadelphia Fed's real-time set is behind a form, DBnomics does not serve the vintages, and
+inventing a second source would be the exact failure this document is written against.
+
+So the gap stays on the record as **open**. What can be done with one archive is nearly as
+useful, and it is what `src/pacland/economics/vintage_sensitivity.py` does: hold the forecast
+fixed and change **what counts as having happened**.
+
+| regime | truth | forecasts scored |
+|---|---|---|
+| **latest** | the newest vintage — what the data says now | 26 |
+| **next** | the vintage published immediately after the forecast — the **first revision** | 23 |
+
+| model | ratio to the null, latest | ratio to the null, next revision |
+|---|---|---|
+| AR(1) | 0.92 / 0.88 / 0.69 | 0.89 / 0.79 / 0.74 |
+| **VAR(1)** | **0.86 / 0.79 / 0.63** | **0.77 / 0.67 / 0.60** |
+
+Both models beat the null at **every horizon in both regimes**, and the worst change in the VAR's
+advantage across regimes is **0.111**. So the finding — *a plain VAR beats "tomorrow equals
+today" on real-time data* — is a statement about **forecasting**, not about this archive's
+revision pattern. It is also *stronger* under first revisions than under final ones, which is the
+opposite of what a revision artefact would look like.
+
+**What this is not.** It is not class 5. It is a class-2 check — the same claim under a different
+*description of the target* — and it is labelled that way in the module, the script output and
+here. Two sources remain the only way to close the gap, and that work is still to do.
+
+The seeded fault is the one that matters: score each forecast against **the vintage it was made
+from** and every model predicts the present perfectly, collapsing the error to zero. The check
+notices and refuses it, which is what makes the two honest regimes worth anything.
+
 ## Why this transfers to every oracle-poor field
 
 Epidemiology, drug discovery, nutrition, education, criminology, macro-finance and any model of a
@@ -177,8 +211,10 @@ the honest output of this work is the deficit, not the number.
 - **The invariance gate covers economics only.** Climate and drugs have no equivalent yet; the
   obvious climate version is invariance under regridding, area weighting and the choice of
   baseline period.
-- **Class 5 is thin everywhere.** Climate has one second source; economics has none for the
-  real-time vintages.
+- **Class 5 is thin everywhere, and still open for economics.** Climate has one second source.
+  Economics has none for the real-time vintages — the archive gap was *tested around* (worked
+  example 6: the conclusion survives both revision regimes) but not closed. Two sources remain
+  the only thing that closes it.
 - **Class 4 now covers five subjects in economics** (VAR, policy rule, attenuation, scorer,
   sampling law) and **one** in climate (the trend-versus-emulator ranking, which is what the
   window check turned out to be). Physics has none beyond its symbolic proofs.

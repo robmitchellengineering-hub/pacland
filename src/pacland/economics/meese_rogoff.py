@@ -114,17 +114,29 @@ def _balanced(vintage: vintages.Vintage) -> tuple[list[str], list[list[float]]] 
     return common, [[math.log(per[s][d]) for d in common] for s in PANEL]
 
 
-def evaluate(data: dict | None = None, horizons: tuple[int, ...] = (1, 2, 4)) -> dict:
-    """Real-time out-of-sample errors, per model and horizon (log-level RMSE)."""
+def evaluate(data: dict | None = None, horizons: tuple[int, ...] = (1, 2, 4),
+             truth: str = "latest") -> dict:
+    """Real-time out-of-sample errors, per model and horizon (log-level RMSE).
+
+    ``truth`` chooses what counts as "what actually happened":
+
+      "latest"   the newest vintage in the archive (the default; what the data says now)
+      "next"     the vintage published immediately after the forecast vintage — the FIRST
+                 revision, not the final number
+
+    The pair is the vintage-sensitivity check: a finding that only survives one revision
+    regime is a finding about revisions, not about forecasting.
+    """
     data = data or vintages.load()
-    truth = vintages.current(data)
+    truth = vintages.current(data) if truth == "latest" else None
+    all_vintages = list(vintages.vintages(data))
     errs: dict[str, dict[int, list[float]]] = {m: {h: [] for h in horizons} for m in MODELS}
     #: paired comparisons against the null: how often is a model closer than no-change?
     wins: dict[str, dict[int, int]] = {m: {h: 0 for h in horizons} for m in MODELS if m != "no-change"}
     n_forecasts = 0
     skipped = 0
 
-    for vintage in vintages.vintages(data):
+    for vi, vintage in enumerate(all_vintages):
         ok, _ = vintages.guard_no_lookahead(vintage)
         if not ok:
             raise ValueError(f"look-ahead in vintage {vintage.as_of}")
@@ -137,10 +149,21 @@ def evaluate(data: dict | None = None, horizons: tuple[int, ...] = (1, 2, 4)) ->
         for h in horizons:
             target = next_quarter(t0, h)
             # growth, not levels: rebasing-invariant (see the module docstring)
+            source = truth
+            if source is None:
+                # first revision: the next vintage in the archive that carries the target
+                source = None
+                for nxt in all_vintages[vi + 1:]:
+                    obs = {s: dict(nxt.observations(s)) for s in PANEL}
+                    if all(obs[s].get(target) is not None for s in PANEL):
+                        source = obs
+                        break
+                if source is None:
+                    continue
             realised, base_level = [], []
             for s in PANEL:
-                val = truth.get(s, {}).get(target)
-                b0 = truth.get(s, {}).get(t0)
+                val = source.get(s, {}).get(target)
+                b0 = source.get(s, {}).get(t0)
                 if val is None or b0 is None or val <= 0 or b0 <= 0:
                     realised = []
                     break
