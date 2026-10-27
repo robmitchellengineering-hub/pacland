@@ -711,6 +711,13 @@
    "title": "check-site-links.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_carbon.py",
+   "kind": "script",
+   "path": "scripts/climate_carbon.py",
+   "summary": "The carbon budget \u2014 the fourth measured conservation law.",
+   "title": "climate_carbon.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_cmip6_drift.py",
    "kind": "script",
    "path": "scripts/climate_cmip6_drift.py",
@@ -872,6 +879,13 @@
    "title": "economics_realtime_forecast.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_recovery.py",
+   "kind": "script",
+   "path": "scripts/economics_recovery.py",
+   "summary": "Class-4 oracle: can each of our estimators recover a truth we invented?",
+   "title": "economics_recovery.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_three_way.py",
    "kind": "script",
    "path": "scripts/economics_three_way.py",
@@ -879,11 +893,25 @@
    "title": "economics_three_way.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_vintage_sensitivity.py",
+   "kind": "script",
+   "path": "scripts/economics_vintage_sensitivity.py",
+   "summary": "Is our forecasting finding about forecasting, or about one archive's revisions?",
+   "title": "economics_vintage_sensitivity.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/extract_observables.py",
    "kind": "script",
    "path": "scripts/extract_observables.py",
    "summary": "Extract a richer per-vacuum observable vector (L2 stage 5, partial).",
    "title": "extract_observables.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_carbon_budget.py",
+   "kind": "script",
+   "path": "scripts/fetch_carbon_budget.py",
+   "summary": "Fetch the global carbon accounting series and keep only what the check needs.",
+   "title": "fetch_carbon_budget.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_climate_baseline.py",
