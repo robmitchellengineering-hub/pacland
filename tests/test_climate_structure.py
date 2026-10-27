@@ -43,22 +43,22 @@ class TestClosure(unittest.TestCase):
 
 
 class TestCoverage(unittest.TestCase):
-    def test_four_of_five_are_measured_here(self):
+    def test_all_five_are_measured_here(self):
         cov = S.coverage()
-        self.assertEqual(cov["n_measured"], 4)   # carbon measured as of the carbon module
-        self.assertEqual(cov["n_unmeasured"], 1)   # water
-        self.assertFalse(cov["complete"])
+        self.assertEqual(cov["n_measured"], 5)   # all five: carbon and water both measured now
+        self.assertEqual(cov["n_unmeasured"], 0)
+        self.assertTrue(cov["complete"])
 
     def test_the_unmeasured_ones_are_named(self):
+        """The guard's job is that nothing is silently unmeasured. With none left, it still has
+        to pass — an empty list is a *result*, not a missing entry."""
         ok, msg = S.guard_unmeasured_invariants_are_named()
         self.assertTrue(ok, msg)
-        self.assertIn("water", S.coverage()["unmeasured"])
-        self.assertIn("water", S.coverage()["unmeasured"])
+        self.assertEqual(S.coverage()["unmeasured"], [])
 
     def test_summary_states_the_split(self):
         s = S.summary()
-        self.assertIn("unmeasured here", s)
-        self.assertIn("short by", s)
+        self.assertIn("5 of 5", s)
 
 
 if __name__ == "__main__":
