@@ -914,6 +914,13 @@
    "title": "economics_release_archive.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_release_cross.py",
+   "kind": "script",
+   "path": "scripts/economics_release_cross.py",
+   "summary": "Class 5 at the release level: the Fed's first print against the one we recorded.",
+   "title": "economics_release_cross.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_revisions.py",
    "kind": "script",
    "path": "scripts/economics_revisions.py",
