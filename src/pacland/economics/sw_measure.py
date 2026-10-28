@@ -100,8 +100,13 @@ def measurement(use_posterior: bool = True) -> dict:
     for eq in (sw_linear.to_python(e) for e in parsed.measurement):
         obs = eq.split("=", 1)[0].strip()
         constant = evaluate(eq, {})
-        row = [evaluate(eq, {name: 1.0}) - constant for name in endo]
-        rows[obs] = {"constant": constant, "row": row}
+        # three rows, because `dy = y_t - y_{t-1} + ctrend` is not a contemporaneous map alone
+        rows[obs] = {
+            "constant": constant,
+            "row": [evaluate(eq, {name: 1.0}) - constant for name in endo],
+            "row_lag": [evaluate(eq, {name + "_lag": 1.0}) - constant for name in endo],
+            "row_lead": [evaluate(eq, {name + "_lead": 1.0}) - constant for name in endo],
+        }
     return {"endo": endo, "observables": rows,
             "steady_state": {k: v["constant"] for k, v in rows.items()}}
 
