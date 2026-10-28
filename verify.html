@@ -34,6 +34,13 @@
   th { font-weight:600; color:var(--muted); font-size:.8rem; text-transform:uppercase;
         letter-spacing:.03em; }
   td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  table.finance { table-layout:fixed; }
+  table.finance th:nth-child(1) { width:22%; }
+  table.finance th:nth-child(2) { width:3rem; }
+  table.finance th:nth-child(3) { width:5rem; }
+  table.finance th:nth-child(4) { width:8rem; }
+  table.finance th:nth-child(5) { width:auto; }
+  table.finance td { font-size:.86rem; }
   td.ev { font-variant-numeric:tabular-nums; }
   /* fixed layout so every card's columns land in the same place: without it each card sized its
      own columns by content and the status rail moved card to card */
@@ -122,6 +129,16 @@ the <strong>worst</strong> finding, not an average.</p>
 opinion. Read it as a matrix, not a verdict: each estimator wins the design it was built for and
 loses the others.</p>
 <table class='battery'><thead><tr><th>design</th><th>estimator</th><th>median</th><th>planted</th><th>recover</th><th></th></tr></thead><tbody><tr><td>clean DiD</td><td>did_two_by_two</td><td class='num'>+1.028</td><td class='num'>1.00</td><td class='num'>70%</td><td><span class='pill ok'>recovers</span></td></tr><tr><td>broken trends</td><td>did_two_by_two</td><td class='num'>+1.830</td><td class='num'>1.00</td><td class='num'>0%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>staggered adoption</td><td>twfe</td><td class='num'>+1.106</td><td class='num'>1.00</td><td class='num'>57%</td><td><span class='pill ok'>recovers</span></td></tr><tr><td>staggered adoption</td><td>not_yet_treated</td><td class='num'>+0.994</td><td class='num'>1.00</td><td class='num'>75%</td><td><span class='pill ok'>recovers</span></td></tr><tr><td>weak instrument</td><td>iv_2sls</td><td class='num'>+1.053</td><td class='num'>1.00</td><td class='num'>10%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>weak instrument</td><td>ols_slope</td><td class='num'>+1.799</td><td class='num'>1.00</td><td class='num'>0%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>measurement error</td><td>ols_slope</td><td class='num'>+0.504</td><td class='num'>1.00</td><td class='num'>0%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>measurement error</td><td>iv_2sls</td><td class='num'>+0.999</td><td class='num'>1.00</td><td class='num'>100%</td><td><span class='pill ok'>recovers</span></td></tr></tbody></table><p class='note'>4 of 8 cells recover the planted effect in at least half of 60 replications.</p>
+
+
+<section id="finance">
+<h2>The finance sector, claim by claim</h2>
+<p>A desk does not act on "the model". It acts on a <strong>claim</strong>. For each one: how many
+independent constraints were satisfied (<em>m</em>), the honest error bar that buys
+(<code>sqrt(ln(1/&delta;) / 2m)</code>), whether the claim lives inside the region that was measured,
+and the independent reference it is checked against. Then what it is worth to act on.</p>
+<table class='finance'><thead><tr><th>claim</th><th>m</th><th>radius</th><th>region</th><th>verified reference</th><th class='st'>worth</th></tr></thead><tbody><tr><td>The first published GDP estimate is biased upward.</td><td class='num'>5</td><td class='num'>±0.55</td><td>measured region</td><td>the Fed's own First/Second/Third/Most-Recent release ladder, 239 quarters</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>That bias cannot be traded.</td><td class='num'>5</td><td class='num'>±0.55</td><td>measured region</td><td>AR(1) of the revision is -0.07: past revisions do not predict the next</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>GDPNow beats a no-change forecast at a one-quarter horizon.</td><td class='num'>4</td><td class='num'>±0.61</td><td>measured region</td><td>no-change benchmark on the same vintage, 37 quarters</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>GDPNow beats a no-change forecast at the settled GDP number.</td><td class='num'>0</td><td class='num'>vacuous</td><td>extrapolation</td><td>none — the evaluation targets the advance estimate, not the final one</td><td class='st'><span class='pill bad'>do not act</span></td></tr><tr><td>Our own recorded 'first release' is the first release.</td><td class='num'>4</td><td class='num'>±0.61</td><td>measured region</td><td>the Fed's First Release against the advance we recorded from ALFRED</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>Smets–Wouters can be scored out of sample on its own observables.</td><td class='num'>0</td><td class='num'>vacuous</td><td>extrapolation</td><td>none — the state is only 41% observable from its own series</td><td class='st'><span class='pill bad'>do not act</span></td></tr><tr><td>The GDP expenditure identity closes exactly.</td><td class='num'>4</td><td class='num'>exact</td><td>measured region</td><td>BEA annual/quarterly identity, checked to 1e-16 of GDP</td><td class='st'><span class='pill ok'>act</span></td></tr><tr><td>A 37-quarter revision measurement generalises to the whole record.</td><td class='num'>0</td><td class='num'>vacuous</td><td>extrapolation</td><td>the 239-quarter ladder, which gives a different and more stable answer</td><td class='st'><span class='pill bad'>do not act</span></td></tr></tbody></table><p class='note'>8 claims: 1 act, 4 act with a hedge, 3 do not act; 3 are extrapolation. Rule: outside the measured region, do not act, whatever m is; inside with no constraints, do not act; inside with a radius above 0.25, act with a hedge its size; inside with a radius at or below 0.25, act.</p>
+</section>
 
 <footer>
   <p>Generated by <code>scripts/build_verify_index.py</code> from <code>certificates/*.json</code> and

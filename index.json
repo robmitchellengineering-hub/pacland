@@ -347,6 +347,13 @@
    "title": "Falsification status \u2014 what is checked, and the two honest gaps"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/finance-claims.md",
+   "kind": "doc",
+   "path": "docs/finance-claims.md",
+   "summary": "The aggregate deficit says a macro model's decision surface is validated over about four backcast series and its forecast is extrapolation. That is true and it is not actionable, because\u2026",
+   "title": "The finance sector, claim by claim"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/five-pillars.md",
    "kind": "doc",
    "path": "docs/five-pillars.md",
@@ -1080,6 +1087,13 @@
    "path": "scripts/fetch_water_budget.py",
    "summary": "Fetch the global water budget \u2014 no credentials, no client library.",
    "title": "fetch_water_budget.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/finance_claims.py",
+   "kind": "script",
+   "path": "scripts/finance_claims.py",
+   "summary": "The finance sector, claim by claim: deficit, extrapolation, verified reference, and worth.",
+   "title": "finance_claims.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/find_flux_vacua.py",
