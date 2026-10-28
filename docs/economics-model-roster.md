@@ -517,20 +517,26 @@ pacland economics --constraints # the constraint set and its measured independen
 pacland economics --realtime   # every model against its null, on data as it was published
 ```
 
-## What the first print is worth (2026-10-27)
+## What the first print is worth — replicated on 239 quarters
 
-A real result, and a correction to our own headline. On the 37 quarters in `gdpnow.json`:
+A real result, measured twice: first on 37 quarters of BEA advances, then on the Philadelphia Fed's
+own **First/Second/Third/Most-Recent** release ladder back to 1965 — a different assembly, 6.5× the
+history.
 
-| question | answer |
-|---|---|
-| is the advance GDP print biased? | **yes, upward**: mean revision **+0.565 pp**, t = 2.39, **24/37** quarters upward (exact sign test p = 0.099) |
-| do revisions have memory? | **no**: AR(1) = **0.017**, so there is nothing to condition on |
-| is the bias exploitable? | **no**: a correction fitted on 18 quarters is **1.22× worse** out of sample (0.729 vs 0.596 pp) |
-| does the nowcast beat the print? | **not against the final number**: official first print **0.92 pp**, nowcast **1.54 pp** |
+| question | 37 quarters (BEA) | **239 quarters (Fed ladder)** |
+|---|---|---|
+| biased upward? | +0.565 pp, t = 2.39, 24/37 upward (p = 0.099) | **+0.469 pp, t = 3.68, 62% upward** |
+| memory in revisions? | AR(1) = 0.017 | **AR(1) = −0.066** |
+| exploitable? | 1.22× worse out of sample | **1.02× — a wash** |
+| beats the print? | no: print 0.92 pp vs nowcast 1.54 pp | — |
 
-**"GDPNow beats the no-change null 4:1" is true and stays true.** What it does not license is
-"GDPNow is the best available estimate of GDP": scored against the number everyone ultimately
-wants, the official first print is closer, and the nowcast's own target (the advance estimate) is a
-different question. Both beat a zero-growth null (4.58 pp), and beating a naive null is a low bar.
+Per release step, on the ladder: first→second **+0.115 pp** (t = 2.89), second→third **+0.057 pp**
+(t = 2.39), first→most recent **+0.469 pp** (t = 3.68). The bias arrives in pieces, not one jump.
 
-Reproduce: `python3 scripts/economics_revisions.py`.
+**"GDPNow beats the no-change null 4:1" stays true.** What it does not license is "GDPNow is the
+best estimate of GDP": against the final number the official first print is closer, and the first
+print's own upward bias cannot be traded — no memory (AR(1) = −0.07) and a fitted correction is a
+wash out of sample.
+
+Reproduce: `python3 scripts/economics_revisions.py` (37 quarters) and
+`python3 scripts/economics_release_archive.py` (239 quarters).
