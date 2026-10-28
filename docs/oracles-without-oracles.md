@@ -343,6 +343,13 @@ The same three questions give: **+0.469 pp** first→most recent (**t = 3.68**, 
 −0.066**, and a bias correction that is **1.02× worse** out of sample — a wash. The 37-quarter result
 was not a 2016–2025 artefact.
 
+**And the cross-check caught our own data.** Comparing the Fed's First Release with the `advance` we
+had recorded for the 36 overlapping quarters: 34 agree within 0.5 pp, and **2020Q2 is off by 7.00 pp**
+(2020Q3 by 4.50). One of the two records is not the first print, and the 37-quarter headline moves
+**0.311 pp** depending on how those two quarters are treated. So the 37-quarter figure is demoted to a
+cross-check and the 239-quarter ladder is the number quoted. *Two sources, and the disagreement lands
+on our own column.*
+
 So *"GDPNow beats the no-change null 4:1"* stays true, and *"GDPnow is the best estimate of GDP"*
 does not follow. Beating a naive null is a low bar; the thing to beat is the official first print,
 and against the final number it wins. That correction is now on the site card, in the roster and in

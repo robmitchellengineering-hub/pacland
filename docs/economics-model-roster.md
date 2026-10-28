@@ -525,13 +525,24 @@ history.
 
 | question | 37 quarters (BEA) | **239 quarters (Fed ladder)** |
 |---|---|---|
-| biased upward? | +0.565 pp, t = 2.39, 24/37 upward (p = 0.099) | **+0.469 pp, t = 3.68, 62% upward** |
+| biased upward? | +0.565 pp, t = 2.39 (***sensitive*** — see below) | **+0.469 pp, t = 3.68, 62% upward** |
 | memory in revisions? | AR(1) = 0.017 | **AR(1) = −0.066** |
 | exploitable? | 1.22× worse out of sample | **1.02× — a wash** |
 | beats the print? | no: print 0.92 pp vs nowcast 1.54 pp | — |
 
 Per release step, on the ladder: first→second **+0.115 pp** (t = 2.89), second→third **+0.057 pp**
 (t = 2.39), first→most recent **+0.469 pp** (t = 3.68). The bias arrives in pieces, not one jump.
+
+**The 37-quarter number is not stable, and a cross-source check is how we know.** Comparing the Fed's
+First Release against the `advance` we had recorded for the 36 overlapping quarters: **34 agree within
+0.5 pp**, and two do not — **2020Q2 at −7.00 pp** and 2020Q3 at −4.50 pp. Those are not noise; one of
+the two records is not the first print. The 37-quarter mean revision moves **+0.565 → +0.357**
+(excluding those quarters) or **+0.254** (using the Fed's values) — a **0.311 pp swing**. So the
+37-quarter figure is quoted as a cross-check, not as the headline. **The 239-quarter ladder is the
+headline**, because it never depends on our advance column.
+
+Reproduce: `python3 scripts/economics_release_archive.py` and
+`python3 scripts/economics_release_cross.py`.
 
 **"GDPNow beats the no-change null 4:1" stays true.** What it does not license is "GDPNow is the
 best estimate of GDP": against the final number the official first print is closer, and the first
