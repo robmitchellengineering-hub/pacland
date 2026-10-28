@@ -35,9 +35,9 @@ def load_certificates() -> list[dict]:
 def cert_card(c: dict) -> str:
     cls = GRADE_CLASS.get(c["grade"], "warn")
     rows = "".join(
-        f"<tr><td>{f['clause']}</td><td>{f['question']}</td>"
-        f"<td class='ev'>{f['answer']} "
-        f"<span class='pill {STATUS_CLASS.get(f['status'], 'warn')}'>{f['status']}</span></td></tr>"
+        f"<tr><td>{f['clause']}</td><td>{f['question']}</td><td class='ev'>{f['answer']}</td>"
+        f"<td class='st'><span class='pill {STATUS_CLASS.get(f['status'], 'warn')}'>"
+        f"{f['status']}</span></td></tr>"
         for f in c["findings"])
     return f"""
     <article class="card">
@@ -47,7 +47,7 @@ def cert_card(c: dict) -> str:
       </div>
       <p class="headline">{c['headline']}</p>
       <table class="findings">
-        <thead><tr><th>clause</th><th>question</th><th>what the evidence says</th></tr></thead>
+        <thead><tr><th>clause</th><th>question</th><th>what the evidence says</th><th class="st">status</th></tr></thead>
         <tbody>{rows}</tbody>
       </table>
       <p class="prov">evidence: {"; ".join(c['provenance'])}</p>
@@ -107,6 +107,8 @@ HTML = """<!DOCTYPE html>
         letter-spacing:.03em; }}
   td.num {{ text-align:right; font-variant-numeric:tabular-nums; }}
   td.ev {{ font-variant-numeric:tabular-nums; }}
+  td.st, th.st {{ width:7.5rem; text-align:right; white-space:nowrap; }}
+  td.st .pill {{ display:inline-block; min-width:6rem; text-align:center; }}
   .pill {{ font-size:.75rem; font-weight:600; padding:.15rem .5rem; border-radius:999px;
            white-space:nowrap; }}
   .pill.ok {{ color:var(--ok); background:var(--okbg); }}
@@ -119,6 +121,8 @@ HTML = """<!DOCTYPE html>
             font-size:.85rem; }}
   @media (max-width:640px) {{
     table.findings th:nth-child(1), table.findings td:nth-child(1) {{ display:none; }}
+    td.st, th.st {{ width:5.5rem; }}
+    td.st .pill {{ min-width:0; }}
     table.battery th:nth-child(2), table.battery td:nth-child(2) {{ display:none; }}
   }}
 </style>
