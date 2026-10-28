@@ -408,3 +408,23 @@ accepts.
 Reproduce: `python3 scripts/economics_invariance.py` · `PYTHONPATH=src python3 -m unittest
 tests.test_economics_invariance -q` · the bar itself: [`docs/verify-bar.md`](verify-bar.md) · the
 method this sits inside: [`docs/SOP-FIGURING-SYSTEMS-OUT.md`](SOP-FIGURING-SYSTEMS-OUT.md).
+
+## The control must be the same size as the claim
+
+A rule bought on 2026-10-28, computing the Riemann zeros' spacing statistics.
+
+The textbook value for the ratio statistic under GUE is **0.5307**. Comparing 201 computed spacings
+against it gave **0.6155** — a four-sigma "failure" of a computation that was exactly right (the same
+code reproduces the first five known zeros to 4.2e-11, and finds every zero below t = 400).
+
+**0.5307 is the asymptotic value.** The same estimator, run on synthetic GUE spacings of the *same
+size*, returns **0.6156 ± 0.0197**. Against that control the computed value is 0.04σ away.
+
+So: a reference constant is only a reference at the sample size where it was derived. Comparing a
+finite computation against an asymptotic constant measures **the estimator's finite-sample bias** and
+reports it as a property of the world. The zero case is the clean demonstration — the same failure
+mode as an unpaired test, a missing control arm, or a benchmark that shares a vintage with the model.
+
+**The rule:** every statistic gets a control generated at the size and in the shape of the computation,
+and the control is reported next to the number. A constant from the literature is a convenience, not a
+control.
