@@ -7,7 +7,7 @@ their authors' descriptions of them.
 |---|---|---|
 | **Atlanta Fed GDPNow** | **QUALIFIED** | beats the no-change null by 75% on MAE over 37 real-time quarters; qualified because that skill is against the *advance* estimate, not the settled number |
 | **Smets–Wouters (2007)** | **REFUSED** | solves correctly, but its state is 41% observable from its own series and its shock scales are unidentified, so it cannot be scored out of sample |
-| **CMIP6 BCC-ESM1 (BCC)** | **REFUSED** | drifts **+1.49 W/m²** in a pre-industrial control where the climate must be stationary — **1.9×** the Earth's energy imbalance its projections exist to represent |
+| **CMIP6 CNRM-ESM2-1 (CNRM-CERFACS)** | **REFUSED** | drifts **+1.49 W/m²** in a pre-industrial control where the climate must be stationary — **1.9×** the Earth's energy imbalance its projections exist to represent |
 
 Issued from `python3 scripts/issue_certificate.py --all`. Every certificate is regenerated from
 measurements, so a change in the evidence changes the certificate. The issued artefacts are committed
@@ -45,8 +45,11 @@ artefact from the evidence, in seconds, with a provenance trail a supervisor can
 
 - They do not claim the models are wrong in general — only that **specific questions** answer
   **specific ways** on **specific evidence**, and the evidence is named.
-- The CMIP6 certificate grades **conservation in a control run**, which is necessary and not
-  sufficient; a conserving model can still be wrong about feedbacks.
+- The CMIP6 certificate grades **energy** conservation on one model with the largest top-of-atmosphere
+  drift. The model that fails the most ledgers is a different one (**BCC-ESM1**, graded worst across
+  energy, mass and salt); the two are reported separately rather than conflated.
+- Conservation in a control run is necessary and not sufficient; a conserving model can still be
+  wrong about feedbacks.
 - The SW certificate grades **identifiability and observability**, not whether the model's economics
   is right.
 - The GDPNow certificate grades skill against the first publication; the settled-number comparison is
