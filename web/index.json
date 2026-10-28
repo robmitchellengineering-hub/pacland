@@ -109,6 +109,13 @@
    "title": "Computing the uncomputable \u2014 a cartography of the boundary"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/causal-battery.md",
+   "kind": "doc",
+   "path": "docs/causal-battery.md",
+   "summary": "Every method used to estimate a causal effect can be scored on data where the true effect is known by construction. Almost nobody publishes that as a standard. This does.",
+   "title": "The known-truth battery for causal estimators"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/cc-distribution.md",
    "kind": "doc",
    "path": "docs/cc-distribution.md",
@@ -702,6 +709,13 @@
    "path": "scripts/build_site_index.py",
    "summary": "Build the site's searchable index \u2014 one place to find everything.",
    "title": "build_site_index.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/causal_battery.py",
+   "kind": "script",
+   "path": "scripts/causal_battery.py",
+   "summary": "The known-truth battery: score causal estimators against effects that were planted.",
+   "title": "causal_battery.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check-site-links.py",
