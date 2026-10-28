@@ -48,3 +48,41 @@ class TestCorrection(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestMultiMic(unittest.TestCase):
+    """Rob's operating mode: several room mics on the PA, not one at front of house."""
+
+    SEATS = [(2.0, 1.5, 1.2), (1.0, 3.0, 2.0), (3.0, 2.2, 1.6), (4.5, 1.0, 0.9),
+             (5.2, 3.9, 2.4)]
+
+    def test_both_objectives_reduce_the_worst_seat(self):
+        c = R.compare_objectives(6.0, 4.5, 3.0, self.SEATS)
+        self.assertLess(c["worst_mean"], c["worst_before"])
+        self.assertLess(c["worst_minimax"], c["worst_before"])
+
+    def test_neither_objective_dominates_across_damping(self):
+        # the honest claim: the winner depends on damping, so no objective is declared the design
+        wins = []
+        for damp in (0.08, 0.15, 0.25):
+            freqs = [40 + 160 * i / 179 for i in range(180)]
+            raw = {s: R.modal_response(6.0, 4.5, 3.0, s, freqs, damping=damp) for s in self.SEATS}
+            mg = R.mean_gains(6.0, 4.5, 3.0, self.SEATS, 40, 200, 180)
+            xg = R.minimax_gains(6.0, 4.5, 3.0, self.SEATS, 40, 200, 180)
+            worst_mean = max(R.ripple_db(R.apply_correction(raw[s], mg)) for s in self.SEATS)
+            worst_x = max(R.ripple_db(R.apply_correction(raw[s], xg)) for s in self.SEATS)
+            wins.append(worst_mean < worst_x)
+        self.assertIn(True, wins)
+        self.assertIn(False, wins)
+
+    def test_gains_stay_bounded(self):
+        for g in R.minimax_gains(6.0, 4.5, 3.0, self.SEATS):
+            self.assertLessEqual(g, 12.0)
+            self.assertGreaterEqual(g, -18.0)
+
+    def test_derivation_survives_measurement_noise(self):
+        # a real capture is not noise-free; the gain vector must not change much with 3 dB of noise
+        clean = R.minimax_gains(6.0, 4.5, 3.0, self.SEATS, noise_db=0.0)
+        noisy = R.minimax_gains(6.0, 4.5, 3.0, self.SEATS, noise_db=3.0)
+        mean_shift = sum(abs(a - b) for a, b in zip(clean, noisy)) / len(clean)
+        self.assertLess(mean_shift, 1.0)

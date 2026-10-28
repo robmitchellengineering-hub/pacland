@@ -326,3 +326,72 @@ def spatial_report(lx: float, ly: float, lz: float,
                         f"{single_row['single_delta']:+.1f} dB but the worst seat by "
                         f"{max(r['single_delta'] for r in rows):+.1f} dB; multi-point EQ changes "
                         f"the worst seat by {max(r['multi_delta'] for r in rows):+.1f} dB")}
+
+
+def minimax_gains(lx: float, ly: float, lz: float, seats: list[tuple[float, float, float]],
+                  f_low: float = 30.0, f_high: float = 300.0, points: int = 180,
+                  noise_db: float = 0.0, seed: int = 5) -> list[float]:
+    """Per-band gains that centre the SPREAD across mics, rather than the average.
+
+    Rob's operating mode: several room mics listening to the PA, not one at front of house. With N
+    measurement points the objective stops being "flatten this curve" and becomes "minimise the worst
+    seat" — so each band's gain is set to the midpoint of that band's min/max across mics, not to its
+    mean. Both are one line; the difference at the worst seat is the point.
+
+    `noise_db` adds measurement noise to the responses before the gain is derived, because a real
+    capture is not a noise-free model.
+    """
+    import math as m
+    import random
+    rng = random.Random(seed)
+    freqs = [f_low + (f_high - f_low) * i / (points - 1) for i in range(points)]
+    curves = []
+    for s in seats:
+        db = [20.0 * m.log10(max(v, 1e-30)) for v in modal_response(lx, ly, lz, s, freqs)]
+        if noise_db:
+            db = [d + rng.gauss(0.0, noise_db) for d in db]
+        curves.append(db)
+    win = 9
+    smoothed = []
+    for db in curves:
+        smoothed.append([sum(db[max(0, i - win):i + win + 1]) / len(db[max(0, i - win):i + win + 1])
+                         for i in range(len(db))])
+    gains = []
+    for i in range(len(freqs)):
+        band = [s[i] for s in smoothed]
+        centre = 0.5 * (max(band) + min(band))
+        gains.append(-(centre - 0.0))
+    mean_level = sum(sum(s) / len(s) for s in smoothed) / len(smoothed)
+    gains = [g + mean_level for g in gains]
+    return [min(12.0, max(-18.0, g)) for g in gains]
+
+
+def mean_gains(lx: float, ly: float, lz: float, seats: list[tuple[float, float, float]],
+               f_low: float = 30.0, f_high: float = 300.0, points: int = 180) -> list[float]:
+    """The obvious approach: correct the spatial-average response (what a single-mic system does)."""
+    return gains_from_seats(lx, ly, lz, seats, f_low, f_high, points)
+
+
+def compare_objectives(lx: float, ly: float, lz: float, seats: list[tuple[float, float, float]],
+                       f_low: float = 30.0, f_high: float = 300.0, points: int = 180,
+                       noise_db: float = 0.0) -> dict:
+    """Mean-centring vs spread-centring, measured at every seat, with and without measurement noise."""
+    freqs = [f_low + (f_high - f_low) * i / (points - 1) for i in range(points)]
+    raw = {s: modal_response(lx, ly, lz, s, freqs) for s in seats}
+    mean_g = mean_gains(lx, ly, lz, seats, f_low, f_high, points)
+    mini_g = minimax_gains(lx, ly, lz, seats, f_low, f_high, points, noise_db=noise_db)
+    rows = []
+    for s in seats:
+        before = ripple_db(raw[s])
+        rows.append({"seat": s, "before": before,
+                     "mean_based": ripple_db(apply_correction(raw[s], mean_g)),
+                     "minimax": ripple_db(apply_correction(raw[s], mini_g))})
+    worst_before = max(r["before"] for r in rows)
+    worst_mean = max(r["mean_based"] for r in rows)
+    worst_minimax = max(r["minimax"] for r in rows)
+    return {"rows": rows, "noise_db": noise_db, "worst_before": worst_before,
+            "worst_mean": worst_mean, "worst_minimax": worst_minimax,
+            "minimax_wins_on_worst": worst_minimax < worst_mean,
+            "verdict": (f"worst seat {worst_before:.1f} dB before; mean-centring {worst_mean:.1f}; "
+                        f"spread-centring {worst_minimax:.1f}"
+                        + (f" (with {noise_db:.1f} dB measurement noise)" if noise_db else ""))}

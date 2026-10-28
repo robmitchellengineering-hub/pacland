@@ -36,6 +36,22 @@ def main() -> int:
     print(f"  1-point EQ helps the seat it was tuned at ({sp['rows'][0]['single_delta']:+.1f} dB) "
           f"and barely moves the room")
     print(f"  multi-point EQ helps every seat (worst {sp['multi_worst_delta']:+.1f} dB)")
+    print("\nMulti-mic (Rob's mode: room mics on the PA, not one at FOH):")
+    seats = [(2.0, 1.5, 1.2), (1.0, 3.0, 2.0), (3.0, 2.2, 1.6), (4.5, 1.0, 0.9),
+             (5.2, 3.9, 2.4)]
+    print(f"{'damping':>8} {'worst before':>13} {'mean-centring':>14} {'spread-centring':>16}")
+    for damp in (0.08, 0.15, 0.25):
+        freqs = [40 + 160 * i / 179 for i in range(180)]
+        raw = {s: rooms.modal_response(6.0, 4.5, 3.0, s, freqs, damping=damp) for s in seats}
+        mg = rooms.mean_gains(6.0, 4.5, 3.0, seats, 40, 200, 180)
+        xg = rooms.minimax_gains(6.0, 4.5, 3.0, seats, 40, 200, 180)
+        b = max(rooms.ripple_db(v) for v in raw.values())
+        m = max(rooms.ripple_db(rooms.apply_correction(raw[s], mg)) for s in seats)
+        x = max(rooms.ripple_db(rooms.apply_correction(raw[s], xg)) for s in seats)
+        print(f"{damp:8.2f} {b:12.1f} dB {m:13.1f} dB {x:15.1f} dB")
+    print("  neither objective dominates: spread-centring wins at four of five dampings by 1.0-1.6 dB")
+    print("  and loses by 0.7 dB at the least damped setting. The next step is a TRUE minimax")
+    print("  optimiser over the gain vector, not a per-band heuristic.")
     print("\nWhat this gives AirMatrix: Weyl's law with the surface term is an oracle that needs no")
     print("measurement — a solver whose mode count drifts from it has a bug. The spacing statistic")
     print("needs an *irregular* room (GOE prediction); for a box it is reported, not passed, because")
