@@ -35,8 +35,15 @@
         letter-spacing:.03em; }
   td.num { text-align:right; font-variant-numeric:tabular-nums; }
   td.ev { font-variant-numeric:tabular-nums; }
-  td.st, th.st { width:7.5rem; text-align:right; white-space:nowrap; }
-  td.st .pill { display:inline-block; min-width:6rem; text-align:center; }
+  /* fixed layout so every card's columns land in the same place: without it each card sized its
+     own columns by content and the status rail moved card to card */
+  table.findings { table-layout:fixed; }
+  table.findings th:nth-child(1) { width:20%; }
+  table.findings th:nth-child(2) { width:28%; }
+  table.findings th:nth-child(3) { width:auto; }
+  /* 9rem, because 'not demonstrated' is wider than the other pills and overflowed the rail */
+  td.st, th.st { width:9rem; text-align:right; white-space:nowrap; }
+  td.st .pill { display:inline-block; min-width:7rem; text-align:center; }
   .pill { font-size:.75rem; font-weight:600; padding:.15rem .5rem; border-radius:999px;
            white-space:nowrap; }
   .pill.ok { color:var(--ok); background:var(--okbg); }
