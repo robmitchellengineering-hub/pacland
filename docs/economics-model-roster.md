@@ -571,8 +571,26 @@ the RE solver verified in `resolve.py`. Four checks, each of which could have fa
 A cost-push shock raises inflation; a TFP shock raises output and lowers inflation. The signs are
 checked because a wrong matrix would pass the first three tests and still be wrong.
 
-**What this does not yet do:** the six observables are not mapped to the real-time vintages, so there
-is still no out-of-sample forecast and the two slots stay owed. What has changed is that the thing
-that blocked them — no way to project the model — is gone.
+**And the observables are now mapped to the data, with the units reconciled** (`sw_measure.py`).
+The six measurement equations carry the constants, and the constants carry the model's steady state:
+
+| observable | data mean (per quarter) | model steady state | on the data's clock | gap |
+|---|---|---|---|---|
+| dy — output growth | +0.780 | +0.430 | +0.430 | **+0.350** |
+| dc — consumption | +0.847 | +0.430 | +0.430 | +0.417 |
+| dinve — investment | +1.011 | +0.430 | +0.430 | +0.581 |
+| pinfobs — inflation | +0.740 | +0.780 | +0.780 | **−0.040** |
+| robs — policy rate | +5.102 | +1.541 | ×4 = +6.163 | −1.061 |
+
+**The model is right about inflation to four basis points a quarter** and low on growth by 0.35–0.58
+pp a quarter. That is the reconciliation a forecast has to be judged against, and it was worth doing
+before the forecast rather than after.
+
+**Wages (`dw`) are absent from our vintages** — named, not imputed. A five-observable variant is the
+honest route when the forecast is run.
+
+**What still does not exist:** the Kalman filter that turns five observables into a state estimate,
+and therefore the out-of-sample forecast itself. Both slots stay owed. What is gone is the blocker:
+the model solves, the units line up, and the gap to the data is measured.
 
 Reproduce: `python3 scripts/econ_sw_solve.py`.

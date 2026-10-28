@@ -851,6 +851,13 @@
    "title": "econ_resolve.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_sw_measure.py",
+   "kind": "script",
+   "path": "scripts/econ_sw_measure.py",
+   "summary": "SW's observables mapped to our data, with the units reconciled before anything is forecast.",
+   "title": "econ_sw_measure.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_sw_solve.py",
    "kind": "script",
    "path": "scripts/econ_sw_solve.py",
