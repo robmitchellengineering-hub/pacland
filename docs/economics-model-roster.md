@@ -624,6 +624,34 @@ plain filter on the observables. Reproducing that is a modelling programme, not 
 
 **The item is closed with a measured refusal**, and both slots stay owed.
 
+### The second route, also measured: minimum distance
+
+There is a way to test SW's reduced form without ever estimating a state — match the model's implied
+second moments of the five observables to the data's (`sw_distance.py`). No filter, so the
+observability wall does not apply.
+
+It produces the most useful kind of negative result:
+
+| | |
+|---|---|
+| control fit R² | **0.999** — the model reproduces its own moments, so the machinery is right |
+| recovered shock scales | **wrong by up to 36–42%** |
+| what that means | **a perfect fit with wrong parameters** — the scales are not identified at this sample size |
+
+Five series and two lags fit seven shock scales so well that a wide range of them is admissible.
+R² alone would have called this a success; the control — simulate with known scales, then recover
+them — is what exposed it.
+
+**So both routes are closed with measured reasons**, and neither yielded a number presented as a
+result:
+
+1. filter — state only **41% observable** (rank 14/34), one-step R² 0.10–0.41;
+2. minimum distance — **perfect moment fit, unidentified parameters** (36–42% scale error).
+
+What remains is what SW themselves did: full-information Bayesian estimation with priors over the
+parameter set, which turns unidentified directions into prior-weighted ones by construction. That is
+a modelling programme with a literature behind it, not a slice of this repo's work.
+
 What is established: the model solves, the units reconcile to four basis points on inflation, the gap
 to the data is measured, and the filter's failure is a number.
 

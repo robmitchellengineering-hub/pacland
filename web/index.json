@@ -851,6 +851,13 @@
    "title": "econ_resolve.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_sw_distance.py",
+   "kind": "script",
+   "path": "scripts/econ_sw_distance.py",
+   "summary": "Minimum distance on the observables: a perfect moment fit and unidentified parameters.",
+   "title": "econ_sw_distance.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_sw_filter.py",
    "kind": "script",
    "path": "scripts/econ_sw_filter.py",
