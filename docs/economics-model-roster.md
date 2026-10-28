@@ -589,8 +589,28 @@ before the forecast rather than after.
 **Wages (`dw`) are absent from our vintages** — named, not imputed. A five-observable variant is the
 honest route when the forecast is run.
 
-**What still does not exist:** the Kalman filter that turns five observables into a state estimate,
-and therefore the out-of-sample forecast itself. Both slots stay owed. What is gone is the blocker:
-the model solves, the units line up, and the gap to the data is measured.
+**The filter exists and is refused on a measured test** (`sw_filter.py`). It runs, and the block
+formulation — exploiting `A = [[P, 0], [I, 0]]` so only three 34×34 blocks are needed — made it
+**8× faster** (200 s → 24 s for a short run). But speed is not the point:
+
+| observable | one-step R² against the mean, on data the model generated itself |
+|---|---|
+| dy | **+0.10** |
+| dc | +0.11 |
+| dinve | +0.27 |
+| pinfobs | +0.16 |
+| robs | +0.41 |
+
+A filter that knows the exact model and is handed the observations **cannot explain variation it
+generated itself**. It would not explain real data either. So **no forecast is produced**, and both
+slots stay owed — with the reason measured rather than argued.
+
+Two candidate explanations, neither yet tested to resolution: five observables cannot pin 34 states
+(observability), and the latent initial condition is never learned (the model's states are highly
+persistent). Either fix — more series, or priors on the unobserved block — is modelling work, not
+tuning, and until it is done the honest output is the refusal.
+
+What is established: the model solves, the units reconcile to four basis points on inflation, the gap
+to the data is measured, and the filter's failure is a number.
 
 Reproduce: `python3 scripts/econ_sw_solve.py`.
