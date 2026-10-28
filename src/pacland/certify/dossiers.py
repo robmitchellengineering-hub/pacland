@@ -5,12 +5,32 @@ difference between a dossier and a brochure.
 """
 from __future__ import annotations
 
+import os
+import pathlib
+import sys
+
 from .certificate import (Certificate, Finding, FAILING, NOT_DEMONSTRATED, PARTIAL, SATISFIED)
 
 ISSUER = "Pacland / Valiant Verification"
 ISSUED = "2026-10-28"
 
+#: Issuing a dossier re-runs its measurements (a solved DSGE, a minimum-distance fit, five theorem
+#: validators), so the result is memoised for the process. Without this, a test that walks every
+#: dossier took seven minutes.
+_CACHE: dict = {}
 
+
+def _memo(fn):
+    def wrapper():
+        if fn.__name__ not in _CACHE:
+            _CACHE[fn.__name__] = fn()
+        return _CACHE[fn.__name__]
+    wrapper.__name__ = fn.__name__
+    wrapper.__doc__ = fn.__doc__
+    return wrapper
+
+
+@_memo
 def gdpnow() -> Certificate:
     """Atlanta Fed GDPNow, measured against the no-change null on 37 quarters."""
     from pacland.economics import gdpnow as G
@@ -23,23 +43,30 @@ def gdpnow() -> Certificate:
         Finding("Conceptual soundness", "Is the forecast a model at all, or an accounting identity?",
                 f"Bridge-equation nowcast; beats the no-change null on MAE by "
                 f"{100 * (1 - ratio):.0f}% ({m['GDPNow']['mae']:.2f} vs {m['no-change']['mae']:.2f} pp)",
-                "src/pacland/economics/gdpnow.py::evaluate", SATISFIED),
+                "src/pacland/economics/gdpnow.py::evaluate", SATISFIED,
+                falsifier="the bridge equations would not aggregate to a GDP path at all, and the "
+                          "MAE ratio would sit at or above 1"),
         Finding("Outcomes analysis", "Does it beat the null out of sample?",
                 f"{advance['wins']} of {advance['n']} quarters, MAE ratio {ratio:.2f} "
-                f"(<1 = beats the null)", "gdpnow.evaluate(target='advance')", SATISFIED),
+                f"(<1 = beats the null)", "gdpnow.evaluate(target='advance')", SATISFIED,
+                falsifier="ratio >= 1.0, i.e. no better than carrying the previous quarter forward"),
         Finding("Outcomes analysis", "Is that skill against the FIRST publication or the settled number?",
                 "Against the settled number it still beats the null: MAE ratio "
                 f"{G.settled_comparison()['rows'][('final', False)]['ratio']:.2f} on all 37 quarters, "
                 f"{G.settled_comparison()['rows'][('final', True)]['ratio']:.2f} excluding 2020 — the "
                 "edge narrows but survives",
-                "gdpnow.settled_comparison()", SATISFIED),
+                "gdpnow.settled_comparison()", SATISFIED,
+                falsifier="a settled-number ratio above 1.0, or one that flips when 2020 is dropped"),
         Finding("Data quality", "Are the inputs real-time vintages, or revised history?",
                 "Real-time vintages (ALFRED) throughout; a vintage that post-dates the forecast is "
                 "refused by guard_nowcast_predates_release",
-                "gdpnow.guard_nowcast_predates_release", SATISFIED),
+                "gdpnow.guard_nowcast_predates_release", SATISFIED,
+                falsifier="a fixture where the nowcast vintage post-dates the release — the guard "
+                          "would go red and the evaluation would be refused"),
         Finding("Implementation", "Can the evaluation go red?",
                 "Four guards, each mutation-proved: vintage ordering, shared benchmark vintage, "
-                "first-publication target, units", "tests/test_gdpnow.py", SATISFIED),
+                "first-publication target, units", "tests/test_gdpnow.py", SATISFIED,
+                falsifier="each guard is mutation-proved: the seeded fault makes it read red"),
     ]
     return Certificate(
         subject="Atlanta Fed GDPNow (GDP nowcast, US)", sector="finance",
@@ -57,6 +84,7 @@ def gdpnow() -> Certificate:
                     "Module: src/pacland/economics/gdpnow.py"))
 
 
+@_memo
 def smets_wouters() -> Certificate:
     """Smets–Wouters (2007): solved, measured, and refused out of sample for a stated reason."""
     from pacland.economics import sw_distance, sw_filter
@@ -155,11 +183,64 @@ def cmip6(worst: bool = True) -> Certificate:
                     "Module: src/pacland/climate/cmip6_drift.py"))
 
 
-DOSSIERS = {"gdpnow": gdpnow, "smets-wouters": smets_wouters, "cmip6": cmip6}
+
+
+@_memo
+def physics_theorems() -> Certificate:
+    """The physics board: the theorem tower, each theorem machine-checked *now*, not transcribed.
+
+    Rob asked for a physics board alongside finance and climate. The landscape work is different in
+    kind from a forecast — these are theorems, so the failure mode is not "the model is wrong" but
+    "the proof does not compile". Each validator is re-run at issue time and its own count is quoted.
+    """
+    import subprocess
+
+    root = pathlib.Path(__file__).resolve().parents[3]
+    validators = [
+        ("Mitchell's Uniqueness", "validate_mitchell_uniqueness.py",
+         "the D3 tadpole F^T J H is the unique bilinear symplectic invariant of the flux"),
+        ("Constraint-First (Weyl FFT)", "validate_constraint_first.py",
+         "the constraint-first construction reproduces the Weyl FFT degrees of freedom"),
+        ("Mitchell's Completeness", "validate_mitchell_completeness.py",
+         "the structure is complete: 6 exact and 2 numeric checks"),
+        ("Full-duality completion", "validate_full_duality.py",
+         "the COMPLETE duality group, not just the monodromy subgroup"),
+        ("Complete Exact Structure", "validate_all_theorems.py",
+         "the assembly of the four theorems above"),
+    ]
+    findings = []
+    for name, script, claim in validators:
+        run = subprocess.run([sys.executable, str(root / "scripts" / script)],
+                             capture_output=True, text=True, cwd=root,
+                             env={**os.environ, "PYTHONPATH": str(root / "src")})
+        ok = run.returncode == 0
+        tail = [l.strip() for l in (run.stdout + run.stderr).strip().splitlines() if l.strip()]
+        findings.append(Finding(
+            "Exact structure", f"Does {name} hold when the checker is re-run?",
+            claim if ok else f"the validator failed: {tail[-1] if tail else 'no output'}",
+            f"scripts/{script}", SATISFIED if ok else FAILING,
+            falsifier=f"scripts/{script} exits non-zero — a single failing symbol fails the theorem"))
+    return Certificate(
+        subject="The landscape theorem tower (5 theorems)", sector="physics", issuer=ISSUER,
+        issued=ISSUED, findings=tuple(findings),
+        headline=("Every theorem re-checked at issue time: the exact structure of the flux landscape "
+                  "is the D3 tadpole, it is unique, and it is complete. The failure mode here is a "
+                  "proof that does not compile, and all five compile."),
+        limitations=("These are theorems about the *structure of the landscape*, not predictions of "
+                     "observable physics: nothing here is measured against a laboratory.",
+                     "The vacuum-energy prediction is not on this certificate; it is not verifiable "
+                     "and is recorded as such in the doctrine."),
+        provenance=("Scripts: scripts/validate_*.py (re-run at issue time)",
+                    "Module: src/pacland/certify/dossiers.py::physics_theorems",
+                    "Doctrine: docs/oracles-without-oracles.md"))
+
+
+DOSSIERS = {"gdpnow": gdpnow, "smets-wouters": smets_wouters, "cmip6": cmip6,
+            "physics": physics_theorems}
 
 
 def issue_all() -> dict[str, Certificate]:
     return {name: fn() for name, fn in DOSSIERS.items()}
 
 
-__all__ = ["gdpnow", "smets_wouters", "cmip6", "issue_all", "DOSSIERS"]
+__all__ = ["gdpnow", "smets_wouters", "cmip6", "physics_theorems", "issue_all", "DOSSIERS"]

@@ -17,35 +17,40 @@
       "question": "Is the model's solution correct?",
       "answer": "34 equations, 34 endogenous variables; every equation vanishes at the steady state to 0.0e+00 and the solved policy satisfies the system to ~1e-13",
       "evidence": "src/pacland/economics/sw_solve.py::solve_model",
-      "status": "satisfied"
+      "status": "satisfied",
+      "falsifier": ""
     },
     {
       "clause": "Ongoing monitoring",
       "question": "Can the state be estimated from its own observables?",
       "answer": "No \u2014 observability rank 14 of 34 (41%), unchanged by adding the missing wage series",
       "evidence": "sw_filter.observability_rank",
-      "status": "failing"
+      "status": "failing",
+      "falsifier": ""
     },
     {
       "clause": "Outcomes analysis",
       "question": "Does a filter track data the model itself generated?",
       "answer": "One-step R^2 +0.10 to +0.41 \u2014 not usable",
       "evidence": "sw_filter.forecast_quality",
-      "status": "failing"
+      "status": "failing",
+      "falsifier": ""
     },
     {
       "clause": "Outcomes analysis",
       "question": "Can the reduced form be matched to the data without a state?",
       "answer": "Moment fit R^2 0.999 while the shock scales are recovered to only 36% \u2014 a perfect fit with unidentified parameters",
       "evidence": "sw_distance.recovery",
-      "status": "failing"
+      "status": "failing",
+      "falsifier": ""
     },
     {
       "clause": "Conceptual soundness",
       "question": "Is the model identified at all?",
       "answer": "The shock scales are not identified from five observables and two lags; the unidentified directions are structural, not a data-quantity problem",
       "evidence": "sw_distance.py",
-      "status": "not demonstrated"
+      "status": "not demonstrated",
+      "falsifier": ""
     }
   ],
   "limitations": [

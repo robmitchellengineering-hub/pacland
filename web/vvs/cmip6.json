@@ -1,0 +1,54 @@
+{
+  "format": "valiant-verification/named-gate@1",
+  "subject": "CMIP6 model CNRM-ESM2-1 (CNRM-CERFACS)",
+  "sector": "climate",
+  "issuer": "Pacland / Valiant Verification",
+  "issued": "2026-10-28",
+  "grade": "REFUSED",
+  "gates_required": 4,
+  "gates_passed": 1,
+  "verified": false,
+  "gates": [
+    {
+      "gate": "conceptual_soundness_does_the_model_conserve_energy_in_a_control",
+      "clause": "Conceptual soundness",
+      "result": "fail",
+      "evidence": "Net top-of-atmosphere drift +1.485 W/m2 against a 0.1 W/m2 tolerance \u2014 fails",
+      "evidence_path": "cmip6_drift.verdict_table",
+      "producer": "Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py",
+      "falsifier": "the failure is the finding"
+    },
+    {
+      "gate": "outcomes_analysis_is_the_leak_large_compared_with_the_signal_bei",
+      "clause": "Outcomes analysis",
+      "result": "fail",
+      "evidence": "Exceeds the Earth's energy imbalance of 0.77 W/m2 \u2014 the signal the model exists to project",
+      "evidence_path": "cmip6_drift.verdict_table",
+      "producer": "Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py",
+      "falsifier": "the failure is the finding"
+    },
+    {
+      "gate": "data_quality_does_the_model_conserve_mass_and_salt",
+      "clause": "Data quality",
+      "result": "fail",
+      "evidence": "Mass drift +0.44 mm/yr sea-level equivalent (fail); salt drift -1.94e-06 (pass)",
+      "evidence_path": "cmip6_drift.verdict_table",
+      "producer": "Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py",
+      "falsifier": "the failure is the finding"
+    },
+    {
+      "gate": "ongoing_monitoring_is_this_model_an_outlier_among_its_peers",
+      "clause": "Ongoing monitoring",
+      "result": "pass",
+      "evidence": "12 of 19 CMIP6 models fail the energy ledger and 5 conserve all three \u2014 the model is graded against a population, not a single threshold",
+      "evidence_path": "cmip6_drift.summary",
+      "producer": "Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py",
+      "falsifier": "not stated \u2014 this finding records a measurement without naming the failure it rules out"
+    }
+  ],
+  "limitations": [
+    "Conservation drift is necessary and not sufficient: a conserving model can still be wrong about feedbacks.",
+    "Drift is measured in the control run; behaviour under forcing is a separate test.",
+    "Grading uses the three ledgers published by Irving et al. (2021); other consistency tests exist and are not applied here."
+  ]
+}

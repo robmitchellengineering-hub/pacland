@@ -9,6 +9,14 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 
+def _slug(text: str) -> str:
+    keep = [c.lower() if c.isalnum() else "_" for c in text]
+    out = "".join(keep)
+    while "__" in out:
+        out = out.replace("__", "_")
+    return out.strip("_")[:64]
+
+
 SATISFIED = "satisfied"
 PARTIAL = "partial"
 NOT_DEMONSTRATED = "not demonstrated"
@@ -24,6 +32,14 @@ class Finding:
     answer: str
     evidence: str
     status: str
+    #: What a failure would have looked like. The Valiant Verification specification requires this
+    #: field of every gate: "a gate that reports pass without evidence is a fail", and evidence of a
+    #: *possible* failure is what separates a check from an assertion.
+    falsifier: str = ""
+
+    @property
+    def gate(self) -> str:
+        return _slug(f"{self.clause} {self.question}")
 
     @property
     def ok(self) -> bool:
@@ -86,6 +102,70 @@ class Certificate:
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict(), indent=2)
+
+    # ---------------------------------------------------------------------------------
+    # the Valiant Verification certificate format (spec.md §3, the named-gate contract)
+    # ---------------------------------------------------------------------------------
+    @property
+    def vvs_gates(self) -> list[dict]:
+        """One named gate per finding: name, result, evidence, producer, falsifier."""
+        return [{
+            "gate": f.gate,
+            "clause": f.clause,
+            "result": "pass" if f.ok else "fail",
+            "evidence": f.answer,
+            "evidence_path": f.evidence,
+            "producer": self.producer,
+            "falsifier": f.falsifier or _default_falsifier(f),
+        } for f in self.findings]
+
+    @property
+    def producer(self) -> str:
+        return "; ".join(self.provenance) if self.provenance else self.issuer
+
+    def to_vvs(self) -> dict:
+        """The certificate in the shape the VVS specification defines."""
+        gates = self.vvs_gates
+        n_pass = sum(1 for g in gates if g["result"] == "pass")
+        return {
+            "format": "valiant-verification/named-gate@1",
+            "subject": self.subject,
+            "sector": self.sector,
+            "issuer": self.issuer,
+            "issued": self.issued,
+            "grade": self.grade,
+            "gates_required": len(gates),
+            "gates_passed": n_pass,
+            "verified": n_pass == len(gates) and self.grade in ("VERIFIED", "QUALIFIED"),
+            "gates": gates,
+            "limitations": list(self.limitations),
+        }
+
+    def to_vvs_markdown(self) -> str:
+        v = self.to_vvs()
+        lines = [f"# Valiant Verification certificate — {v['subject']}", "",
+                 f"**Format:** `{v['format']}`  ",
+                 f"**Issuer:** {v['issuer']}  ",
+                 f"**Issued:** {v['issued']}  ",
+                 f"**Grade:** **{v['grade']}**  ",
+                 f"**Gates:** {v['gates_passed']} of {v['gates_required']} pass  ",
+                 f"**Verified:** {'yes' if v['verified'] else 'no'}", "",
+                 "| gate | result | evidence | falsifier |", "|---|---|---|---|"]
+        for g in v["gates"]:
+            lines.append(f"| `{g['gate']}` | **{g['result']}** | {g['evidence']} | {g['falsifier']} |")
+        lines += ["", "**Producer:** " + self.producer, "", "## Limitations", ""]
+        lines += [f"- {l}" for l in self.limitations]
+        return "\n".join(lines) + "\n"
+
+
+def _default_falsifier(f: Finding) -> str:
+    """If a finding does not name its own falsifier, say so rather than inventing one.
+
+    The specification calls a pass without a falsifier a weak pass; printing the gap is more honest
+    than filling it with a sentence that sounds like a check.
+    """
+    return ("not stated — this finding records a measurement without naming the failure it rules out"
+            if f.ok else "the failure is the finding")
 
 
 __all__ = ["Certificate", "Finding", "SATISFIED", "PARTIAL", "NOT_DEMONSTRATED", "FAILING"]

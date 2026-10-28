@@ -19,6 +19,12 @@ CERTS = ROOT / "certificates"
 # only a refusal is red. Findings keep their own colours: satisfied green, failing red.
 GRADE_CLASS = {"VERIFIED": "ok", "QUALIFIED": "ok", "RESTRICTED": "warn", "REFUSED": "bad"}
 
+#: subject -> vvs artifact slug. The certificate files are written by scripts/issue_vvs.py.
+SLUGS = {"climate": "cmip6", "finance": "", "physics": "physics",
+         "Atlanta Fed GDPNow (GDP nowcast, US)": "gdpnow",
+         "Smets–Wouters (2007) linearised DSGE": "smets-wouters",
+         "The landscape theorem tower (5 theorems)": "physics"}
+
 #: Findings have their own vocabulary — satisfied / partial / not demonstrated / failing — and their
 #: own colours. They were silently falling through to the grade map's default, so every pill came out
 #: amber; that is the bug this table fixes.
@@ -34,6 +40,8 @@ def load_certificates() -> list[dict]:
 
 def cert_card(c: dict) -> str:
     cls = GRADE_CLASS.get(c["grade"], "warn")
+    c["_slug"] = SLUGS.get(c["subject"]) or ("cmip6" if c.get("sector") == "climate" else
+                                             SLUGS.get(c.get("sector", ""), ""))
     rows = "".join(
         f"<tr><td>{f['clause']}</td><td>{f['question']}</td><td class='ev'>{f['answer']}</td>"
         f"<td class='st'><span class='pill {STATUS_CLASS.get(f['status'], 'warn')}'>"
@@ -51,6 +59,8 @@ def cert_card(c: dict) -> str:
         <tbody>{rows}</tbody>
       </table>
       <p class="prov">evidence: {"; ".join(c['provenance'])}</p>
+      <p class="vvs"><a href="./vvs/{c['_slug']}.md">Valiant Verification certificate &rarr;</a>
+      <span class="muted">named-gate format · {c.get('_gates', '')}</span></p>
     </article>"""
 
 
@@ -139,6 +149,10 @@ HTML = """<!DOCTYPE html>
   table.finance th:nth-child(5) {{ width:auto; }}
   table.finance td {{ font-size:.86rem; }}
   td.ev {{ font-variant-numeric:tabular-nums; }}
+  table.plain td {{ border-bottom:1px solid var(--line); }}
+  table.plain td:first-child {{ width:9rem; vertical-align:top; }}
+  .vvs {{ margin:.5rem 0 0; font-size:.84rem; }}
+  .vvs .muted, .muted {{ color:var(--muted); font-size:.8rem; }}
   /* fixed layout so every card's columns land in the same place: without it each card sized its
      own columns by content and the status rail moved card to card */
   table.findings {{ table-layout:fixed; }}
@@ -199,6 +213,11 @@ and the independent reference it is checked against — then what it is worth to
 {finance}
 </section>
 
+<section id="physics">
+<h3 class="sector">Physics</h3>
+{physics_certificates}
+</section>
+
 <section id="climate">
 <h3 class="sector">Climate</h3>
 {climate_certificates}
@@ -213,6 +232,55 @@ loses the others.</p>
 {battery}
 </section>
 
+<section id="plain-english">
+<h3 class="sector">Plain English</h3>
+<h2>What these boards mean, and how to use them</h2>
+
+<p>Every card above answers one question: <strong>has this claim been checked against something
+independent, and what happened?</strong> Not "is it a good model". Not "do we like it". Whether the
+evidence exists, and what it says.</p>
+
+<h3>What the grades mean</h3>
+<table class="plain">
+<tbody>
+<tr><td><span class="pill ok">VERIFIED</span></td><td>Every question we can ask has been asked and
+answered. The work reproduces. You can lean on it.</td></tr>
+<tr><td><span class="pill ok">QUALIFIED</span></td><td>It passes, but with a stated limit. Read the
+limitation before you act — it is the sentence that says where the evidence stops.</td></tr>
+<tr><td><span class="pill warn">RESTRICTED</span></td><td>It owes something. Part of what would make it
+trustworthy has not been shown.</td></tr>
+<tr><td><span class="pill bad">REFUSED</span></td><td>Something required fails. Not "we are unsure" —
+a specific check came back negative, and we can show you which one.</td></tr>
+</tbody></table>
+
+<h3>What the numbers mean</h3>
+<p><strong>m</strong> is the number of independent things that were actually measured. <strong>The
+radius</strong> is how wrong the answer could still be with that many checks — it shrinks as
+<code>sqrt(1/m)</code>, so four checks buy a wide error bar and twenty-four buy a narrow one.
+<strong>Extrapolation</strong> means the claim is about something that was never measured, and a
+confidence interval from a different region is not an error bar for it. <strong>Worth</strong> is the
+decision that follows: act, act with a hedge, or do not act.</p>
+
+<h3>How to use it</h3>
+<ul>
+<li><strong>Before you act on a forecast</strong> — find the claim, not the model. If its row says
+<em>do not act</em>, the number you were given is not the number you need.</li>
+<li><strong>When choosing between two models</strong> — compare the verified column, not the accuracy.
+A model with a smaller error and no verified claims is a coin with a nicer face.</li>
+<li><strong>When someone sends you a result</strong> — ask which gates it passed and what would have
+falsified them. If that sentence does not exist, neither does the evidence.</li>
+</ul>
+
+<h3>Why you can trust the certificate itself</h3>
+<p>Because it is not written, it is <strong>generated</strong>. Every card is rebuilt from this
+repository's own evidence by a script, and <code>python3 scripts/check_certificates_current.py</code>
+fails if a committed certificate differs by a byte from a fresh run. Here is the
+<a href="./vvs/MANIFEST.json">manifest with a sha256 for each artifact</a> — and here is what we
+<strong>refused</strong>: two of four parts fail the contract, and we publish those failures with the
+same prominence as the passes. A company willing to publish its refusals is the only kind worth hiring
+for analysis where being wrong is expensive.</p>
+</section>
+
 <footer>
   <p>Generated by <code>scripts/build_verify_index.py</code> from <code>certificates/*.json</code> and
   <code>src/pacland/causal/battery.py</code>. Reproduce every number:</p>
@@ -225,7 +293,7 @@ loses the others.</p>
 """
 
 
-SECTOR_ORDER = ("finance", "climate")
+SECTOR_ORDER = ("finance", "physics", "climate")
 
 
 def main() -> int:
@@ -238,6 +306,7 @@ def main() -> int:
     cards = {sector: "".join(cert_card(c) for c in by_sector.get(sector, []))
              for sector in SECTOR_ORDER}
     OUT.write_text(HTML.format(finance_certificates=cards.get("finance", ""),
+                               physics_certificates=cards.get("physics", ""),
                                climate_certificates=cards.get("climate", ""),
                                battery=battery_table(), finance=finance_table()))
     print(f"wrote {OUT.relative_to(ROOT)}: {len(certs)} certificates, battery table")

@@ -1,0 +1,41 @@
+{
+  "format": "valiant-verification/manifest@1",
+  "artifacts": {
+    "cmip6": {
+      "subject": "CMIP6 model CNRM-ESM2-1 (CNRM-CERFACS)",
+      "sector": "climate",
+      "grade": "REFUSED",
+      "verified": false,
+      "gates_passed": 1,
+      "gates_required": 4,
+      "sha256": "8d9296e5ec6a36514925c7fc2613621775493fbf492618483671a4fa6a1554fe"
+    },
+    "gdpnow": {
+      "subject": "Atlanta Fed GDPNow (GDP nowcast, US)",
+      "sector": "finance",
+      "grade": "VERIFIED",
+      "verified": true,
+      "gates_passed": 5,
+      "gates_required": 5,
+      "sha256": "42b0178bcf88c36a5fa412cdfce6f5ba4cb3c89cf1671016fd90f59720d273aa"
+    },
+    "physics": {
+      "subject": "The landscape theorem tower (5 theorems)",
+      "sector": "physics",
+      "grade": "VERIFIED",
+      "verified": true,
+      "gates_passed": 5,
+      "gates_required": 5,
+      "sha256": "408107f146562f94ac6999177062ce4570a66bb458c834927d07f1b92fc68e96"
+    },
+    "smets-wouters": {
+      "subject": "Smets\u2013Wouters (2007) linearised DSGE",
+      "sector": "finance",
+      "grade": "REFUSED",
+      "verified": false,
+      "gates_passed": 1,
+      "gates_required": 5,
+      "sha256": "64264a55d734f07b51d0e0f86b92309c088f98dbb1b28fcccf310ab6df24014a"
+    }
+  }
+}
