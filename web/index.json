@@ -1362,6 +1362,13 @@
    "title": "shard_vacua.sh"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_zeros.py",
+   "kind": "script",
+   "path": "scripts/spectral_zeros.py",
+   "summary": "The Riemann zeros, computed from scratch, against a GUE control and a Poisson control.",
+   "title": "spectral_zeros.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_g2_sdual_stability.py",
    "kind": "script",
    "path": "scripts/test_g2_sdual_stability.py",

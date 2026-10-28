@@ -57,10 +57,12 @@ class TestManifest(unittest.TestCase):
             self.assertRegex(rec["sha256"], r"^[0-9a-f]{64}$", name)
             self.assertIn(rec["grade"], ("VERIFIED", "QUALIFIED", "RESTRICTED", "REFUSED"))
 
-    def test_two_of_four_are_verified(self):
+    def test_three_of_five_are_verified(self):
+        # the set is asserted exactly, so a certificate that silently starts or stops passing is a
+        # test failure rather than a quiet change on the page
         manifest = json.loads((VVS / "MANIFEST.json").read_text())
         verified = [n for n, r in manifest["artifacts"].items() if r["verified"]]
-        self.assertEqual(sorted(verified), ["gdpnow", "physics"])
+        self.assertEqual(sorted(verified), ["gdpnow", "physics", "riemann-zeros"])
 
 
 if __name__ == "__main__":

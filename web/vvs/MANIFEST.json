@@ -28,6 +28,15 @@
       "gates_required": 5,
       "sha256": "408107f146562f94ac6999177062ce4570a66bb458c834927d07f1b92fc68e96"
     },
+    "riemann-zeros": {
+      "subject": "Riemann zeros and GUE statistics",
+      "sector": "physics",
+      "grade": "VERIFIED",
+      "verified": true,
+      "gates_passed": 4,
+      "gates_required": 4,
+      "sha256": "e4f674607cf264857cfc19f013f3bb2e0c9e311fd33ce900d92a2baaa44becad"
+    },
     "smets-wouters": {
       "subject": "Smets\u2013Wouters (2007) linearised DSGE",
       "sector": "finance",

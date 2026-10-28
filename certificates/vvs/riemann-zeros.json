@@ -1,0 +1,54 @@
+{
+  "format": "valiant-verification/named-gate@1",
+  "subject": "Riemann zeros and GUE statistics",
+  "sector": "physics",
+  "issuer": "Pacland / Valiant Verification",
+  "issued": "2026-10-28",
+  "grade": "VERIFIED",
+  "gates_required": 4,
+  "gates_passed": 4,
+  "verified": true,
+  "gates": [
+    {
+      "gate": "implementation_does_the_zeta_implementation_reproduce_known_valu",
+      "clause": "Implementation",
+      "result": "pass",
+      "evidence": "the first five zeros to 4.2e-11, on an engine written from scratch with no dependencies",
+      "evidence_path": "scripts/spectral_zeros.py; src/pacland/spectral/zeros.py",
+      "producer": "Module: src/pacland/spectral/zeros.py (zeta by Euler\u2013Maclaurin and Riemann\u2013Siegel); Script: python3 scripts/spectral_zeros.py; Doctrine: docs/external-claims-padgett.md",
+      "falsifier": "the first five zeros are 14.134725, 21.022040, 25.010858, 30.424876, 32.935062 \u2014 an implementation that misses them is wrong and knows it"
+    },
+    {
+      "gate": "data_quality_are_all_the_zeros_in_the_range_actually_found",
+      "clause": "Data quality",
+      "result": "pass",
+      "evidence": "202 zeros below t = 400 against a smooth count of 201.6 \u2014 no zeros missed",
+      "evidence_path": "zeros.audit()",
+      "producer": "Module: src/pacland/spectral/zeros.py (zeta by Euler\u2013Maclaurin and Riemann\u2013Siegel); Script: python3 scripts/spectral_zeros.py; Doctrine: docs/external-claims-padgett.md",
+      "falsifier": "a count that drifts from the counting formula means missed or spurious zeros"
+    },
+    {
+      "gate": "outcomes_analysis_do_the_zeros_obey_the_gue_statistics_or_poisso",
+      "clause": "Outcomes analysis",
+      "result": "pass",
+      "evidence": "ratio statistic 0.6155 against a synthetic GUE control 0.6163 \u00b1 0.0190, and Poisson 0.3810 \u2014 12.3 control standard deviations away",
+      "evidence_path": "zeros.gue_control(); zeros.poisson_ratio()",
+      "producer": "Module: src/pacland/spectral/zeros.py (zeta by Euler\u2013Maclaurin and Riemann\u2013Siegel); Script: python3 scripts/spectral_zeros.py; Doctrine: docs/external-claims-padgett.md",
+      "falsifier": "a ratio near the Poisson value would mean the zeros do not repel"
+    },
+    {
+      "gate": "conceptual_soundness_is_the_textbook_constant_the_right_referenc",
+      "clause": "Conceptual soundness",
+      "result": "pass",
+      "evidence": "no \u2014 0.5307 is the asymptotic GUE value; at 201 spacings the same estimator returns 0.6163 \u00b1 0.0190, so the zeros are compared against a finite-sample control",
+      "evidence_path": "zeros.gue_control()",
+      "producer": "Module: src/pacland/spectral/zeros.py (zeta by Euler\u2013Maclaurin and Riemann\u2013Siegel); Script: python3 scripts/spectral_zeros.py; Doctrine: docs/external-claims-padgett.md",
+      "falsifier": "comparing 201 spacings against 0.5307 would report a 4\u03c3 failure of a correct computation \u2014 which is exactly what the first run did"
+    }
+  ],
+  "limitations": [
+    "This is a numerical verification of a known result (Montgomery 1973; Odlyzko), not a new claim about the zeros.",
+    "The range is t < 400 (202 zeros); the statistics converge further up.",
+    "Nothing here says the zeros predict anything physical \u2014 it says a number-theoretic object has a spectrum with the same statistics as a physical one."
+  ]
+}

@@ -235,12 +235,67 @@ def physics_theorems() -> Certificate:
                     "Doctrine: docs/oracles-without-oracles.md"))
 
 
+
+def riemann_zeros() -> Certificate:
+    """The honest form of "prime oscillations": the explicit formula, and the zeros' statistics.
+
+    This is the one lead from Jason Padgett's preprints that touches real physics. His interference
+    sum runs over an undefined set of primes; the object with a measurable spectrum is the explicit
+    formula, where the primes appear as a sum over the Riemann zeros, and the zeros' spacing
+    statistics are a cross-source check we can run ourselves.
+    """
+    from pacland.spectral import zeros as Z
+
+    a = Z.audit()
+    findings = [
+        Finding("Implementation", "Does the zeta implementation reproduce known values?",
+                f"the first five zeros to {Z.validate()['max_error']:.1e}, on an engine written from "
+                f"scratch with no dependencies",
+                "scripts/spectral_zeros.py; src/pacland/spectral/zeros.py", SATISFIED,
+                falsifier="the first five zeros are 14.134725, 21.022040, 25.010858, 30.424876, "
+                          "32.935062 — an implementation that misses them is wrong and knows it"),
+        Finding("Data quality", "Are all the zeros in the range actually found?",
+                f"{a['n_zeros']} zeros below t = 400 against a smooth count of "
+                f"{Z.smooth_count(400.0):.1f} — no zeros missed",
+                "zeros.audit()", SATISFIED,
+                falsifier="a count that drifts from the counting formula means missed or spurious zeros"),
+        Finding("Outcomes analysis", "Do the zeros obey the GUE statistics, or Poisson?",
+                f"ratio statistic {a['ratio']:.4f} against a synthetic GUE control "
+                f"{a['gue']['mean']:.4f} ± {a['gue']['sd']:.4f}, and Poisson {a['poisson']:.4f} — "
+                f"{abs(a['ratio'] - a['poisson']) / a['gue']['sd']:.1f} control standard deviations "
+                f"away",
+                "zeros.gue_control(); zeros.poisson_ratio()", SATISFIED,
+                falsifier="a ratio near the Poisson value would mean the zeros do not repel"),
+        Finding("Conceptual soundness", "Is the textbook constant the right reference?",
+                "no — 0.5307 is the asymptotic GUE value; at 201 spacings the same estimator returns "
+                "0.6163 ± 0.0190, so the zeros are compared against a finite-sample control",
+                "zeros.gue_control()", SATISFIED,
+                falsifier="comparing 201 spacings against 0.5307 would report a 4σ failure of a "
+                          "correct computation — which is exactly what the first run did"),
+    ]
+    return Certificate(
+        subject="Riemann zeros and GUE statistics", sector="physics", issuer=ISSUER, issued=ISSUED,
+        findings=tuple(findings),
+        headline=(f"The zeros repel exactly as a Gaussian unitary ensemble does — ratio statistic "
+                  f"{a['ratio']:.4f} against a finite-sample GUE control of {a['gue']['mean']:.4f}, "
+                  f"and {abs(a['ratio'] - a['poisson']) / a['gue']['sd']:.0f} control standard "
+                  f"deviations from Poisson. Computed from scratch, no dependencies."),
+        limitations=("This is a numerical verification of a known result (Montgomery 1973; Odlyzko), "
+                     "not a new claim about the zeros.",
+                     "The range is t < 400 (202 zeros); the statistics converge further up.",
+                     "Nothing here says the zeros predict anything physical — it says a number-theoretic "
+                     "object has a spectrum with the same statistics as a physical one."),
+        provenance=("Module: src/pacland/spectral/zeros.py (zeta by Euler–Maclaurin and Riemann–Siegel)",
+                    "Script: python3 scripts/spectral_zeros.py",
+                    "Doctrine: docs/external-claims-padgett.md"))
+
 DOSSIERS = {"gdpnow": gdpnow, "smets-wouters": smets_wouters, "cmip6": cmip6,
-            "physics": physics_theorems}
+            "physics": physics_theorems, "riemann-zeros": riemann_zeros}
 
 
 def issue_all() -> dict[str, Certificate]:
     return {name: fn() for name, fn in DOSSIERS.items()}
 
 
-__all__ = ["gdpnow", "smets_wouters", "cmip6", "physics_theorems", "issue_all", "DOSSIERS"]
+__all__ = ["gdpnow", "smets_wouters", "cmip6", "physics_theorems", "riemann_zeros", "issue_all",
+           "DOSSIERS"]

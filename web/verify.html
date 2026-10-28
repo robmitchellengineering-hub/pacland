@@ -153,6 +153,20 @@ and the independent reference it is checked against — then what it is worth to
       <p class="vvs"><a href="./vvs/physics.md">Valiant Verification certificate &rarr;</a>
       <span class="muted">named-gate format · </span></p>
     </article>
+    <article class="card">
+      <div class="cardhead">
+        <h3>Riemann zeros and GUE statistics</h3>
+        <span class="grade ok">VERIFIED</span>
+      </div>
+      <p class="headline">The zeros repel exactly as a Gaussian unitary ensemble does — ratio statistic 0.6155 against a finite-sample GUE control of 0.6163, and 12 control standard deviations from Poisson. Computed from scratch, no dependencies.</p>
+      <table class="findings">
+        <thead><tr><th>clause</th><th>question</th><th>what the evidence says</th><th class="st">status</th></tr></thead>
+        <tbody><tr><td>Implementation</td><td>Does the zeta implementation reproduce known values?</td><td class='ev'>the first five zeros to 4.2e-11, on an engine written from scratch with no dependencies</td><td class='st'><span class='pill ok'>satisfied</span></td></tr><tr><td>Data quality</td><td>Are all the zeros in the range actually found?</td><td class='ev'>202 zeros below t = 400 against a smooth count of 201.6 — no zeros missed</td><td class='st'><span class='pill ok'>satisfied</span></td></tr><tr><td>Outcomes analysis</td><td>Do the zeros obey the GUE statistics, or Poisson?</td><td class='ev'>ratio statistic 0.6155 against a synthetic GUE control 0.6163 ± 0.0190, and Poisson 0.3810 — 12.3 control standard deviations away</td><td class='st'><span class='pill ok'>satisfied</span></td></tr><tr><td>Conceptual soundness</td><td>Is the textbook constant the right reference?</td><td class='ev'>no — 0.5307 is the asymptotic GUE value; at 201 spacings the same estimator returns 0.6163 ± 0.0190, so the zeros are compared against a finite-sample control</td><td class='st'><span class='pill ok'>satisfied</span></td></tr></tbody>
+      </table>
+      <p class="prov">evidence: Module: src/pacland/spectral/zeros.py (zeta by Euler–Maclaurin and Riemann–Siegel); Script: python3 scripts/spectral_zeros.py; Doctrine: docs/external-claims-padgett.md</p>
+      <p class="vvs"><a href="./vvs/riemann-zeros.md">Valiant Verification certificate &rarr;</a>
+      <span class="muted">named-gate format · </span></p>
+    </article>
 </section>
 
 <section id="climate">
