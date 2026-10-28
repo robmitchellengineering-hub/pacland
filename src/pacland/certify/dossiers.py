@@ -28,9 +28,11 @@ def gdpnow() -> Certificate:
                 f"{advance['wins']} of {advance['n']} quarters, MAE ratio {ratio:.2f} "
                 f"(<1 = beats the null)", "gdpnow.evaluate(target='advance')", SATISFIED),
         Finding("Outcomes analysis", "Is that skill against the FIRST publication or the settled number?",
-                "Target matters: skill against the advance estimate is not skill against the number "
-                "that survives revision. Both are reported.",
-                "docs/economics-model-roster.md; release_archive.py", PARTIAL),
+                "Against the settled number it still beats the null: MAE ratio "
+                f"{G.settled_comparison()['rows'][('final', False)]['ratio']:.2f} on all 37 quarters, "
+                f"{G.settled_comparison()['rows'][('final', True)]['ratio']:.2f} excluding 2020 — the "
+                "edge narrows but survives",
+                "gdpnow.settled_comparison()", SATISFIED),
         Finding("Data quality", "Are the inputs real-time vintages, or revised history?",
                 "Real-time vintages (ALFRED) throughout; a vintage that post-dates the forecast is "
                 "refused by guard_nowcast_predates_release",
@@ -43,11 +45,11 @@ def gdpnow() -> Certificate:
         subject="Atlanta Fed GDPNow (GDP nowcast, US)", sector="finance",
         issuer=ISSUER, issued=ISSUED,
         findings=tuple(findings),
-        headline=(f"Beats the no-change null by a wide margin ({100 * (1 - ratio):.0f}% lower MAE) on "
-                  f"{advance['n']} quarters of real-time vintages — qualified because that skill is "
-                  f"measured against the advance estimate, not the settled number."),
-        limitations=("Skill is measured against the first publication; against the final number the "
-                     "nowcast's advantage narrows and is not established here.",
+        headline=("Beats the no-change null on 37 quarters of real-time vintages — 75% lower MAE "
+                  "against the advance estimate and 25% lower against the settled number, so the "
+                  "edge is not an artefact of targeting the first print."),
+        limitations=("The advantage survives the settled-number target but narrows sharply: 0.25 "
+                     "against the advance estimate, 0.75 against the settled number excluding 2020.",
                      "The evaluation uses one public dataset and one target definition; neither has "
                      "been independently replicated outside this repository."),
         provenance=("Data: data/economics/gdpnow_vintages.json (ALFRED vintages)",

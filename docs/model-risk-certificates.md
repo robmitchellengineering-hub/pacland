@@ -5,7 +5,7 @@ their authors' descriptions of them.
 
 | model | grade | why |
 |---|---|---|
-| **Atlanta Fed GDPNow** | **QUALIFIED** | beats the no-change null by 75% on MAE over 37 real-time quarters; qualified because that skill is against the *advance* estimate, not the settled number |
+| **Atlanta Fed GDPNow** | **VERIFIED** | beats the no-change null on **both** targets: 75% lower MAE against the advance estimate (**0.25** ratio) and 25% lower against the settled number (**0.31**; **0.75** excluding 2020) — the edge is not an artefact of targeting the first print |
 | **Smets–Wouters (2007)** | **REFUSED** | solves correctly, but its state is 41% observable from its own series and its shock scales are unidentified, so it cannot be scored out of sample |
 | **CMIP6 CNRM-ESM2-1 (CNRM-CERFACS)** | **REFUSED** | drifts **+1.49 W/m²** in a pre-industrial control where the climate must be stationary — **1.9×** the Earth's energy imbalance its projections exist to represent |
 
@@ -52,8 +52,9 @@ artefact from the evidence, in seconds, with a provenance trail a supervisor can
   wrong about feedbacks.
 - The SW certificate grades **identifiability and observability**, not whether the model's economics
   is right.
-- The GDPNow certificate grades skill against the first publication; the settled-number comparison is
-  reported as a limitation rather than a verdict.
+- The GDPNow certificate grades skill against **both** targets. The settled-number edge is real but thin
+  when 2020 is dropped (ratio 0.75), and a thinning edge is the thing to watch as more quarters
+  accumulate.
 
 ## Reproduce
 
@@ -63,3 +64,22 @@ python3 scripts/issue_certificate.py --all
 
 Tests: `tests/test_certify.py` (9 tests) — the grade follows the findings, every dossier carries its
 own evidence and limitations, and the SW certificate's numbers match the roster's measurement.
+
+## The first VERIFIED certificate (2026-10-28)
+
+GDPNow was QUALIFIED because its skill was measured against the **advance** estimate — the number the
+nowcast was built to hit. Scoring the same 37 vintages against the **settled** number closes that gap:
+
+| target | sample | MAE ratio vs null | GDPNow MAE | null MAE | wins |
+|---|---|---|---|---|---|
+| advance | all | **0.25** | 1.262 | 5.055 | 28/37 |
+| settled | all | **0.31** | 1.544 | 4.927 | 24/37 |
+| advance | excl. 2020 | 0.51 | 0.833 | 1.639 | 24/33 |
+| settled | excl. 2020 | **0.75** | 1.250 | 1.675 | 20/33 |
+
+**It beats the null on both targets and both samples**, so the edge survives the harder question. The
+margin narrows sharply as the target hardens — 0.25 → 0.75 — and that narrowing is the finding, not a
+footnote: most of the apparent skill is nowcasting the *first print*, and only about a quarter of it
+survives to the number that is revised.
+
+All five findings are now satisfied, so the certificate is **VERIFIED** — the first on the board.

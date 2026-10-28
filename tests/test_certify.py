@@ -27,10 +27,13 @@ class TestGrade(unittest.TestCase):
 
 
 class TestDossiers(unittest.TestCase):
-    def test_gdpnow_is_qualified_and_beats_the_null(self):
+    def test_gdpnow_is_verified_and_beats_the_null_on_both_targets(self):
+        # it was QUALIFIED while only the advance estimate had been scored; the settled-number
+        # comparison closed the last finding, and this test now pins the stronger claim
         c = D.gdpnow()
-        self.assertEqual(c.grade, "QUALIFIED")
+        self.assertEqual(c.grade, "VERIFIED")
         self.assertIn("lower MAE", c.headline)
+        self.assertIn("settled", c.headline)
 
     def test_smets_wouters_is_refused_for_a_stated_reason(self):
         c = D.smets_wouters()
