@@ -1,0 +1,59 @@
+{
+  "subject": "Atlanta Fed GDPNow (GDP nowcast, US)",
+  "issuer": "Pacland / Valiant Verification",
+  "issued": "2026-10-28",
+  "grade": "QUALIFIED",
+  "headline": "Beats the no-change null by a wide margin (75% lower MAE) on 37 quarters of real-time vintages \u2014 qualified because that skill is measured against the advance estimate, not the settled number.",
+  "score": {
+    "satisfied": 4,
+    "partial": 1,
+    "not demonstrated": 0,
+    "failing": 0
+  },
+  "findings": [
+    {
+      "clause": "Conceptual soundness",
+      "question": "Is the forecast a model at all, or an accounting identity?",
+      "answer": "Bridge-equation nowcast; beats the no-change null on MAE by 75% (1.26 vs 5.05 pp)",
+      "evidence": "src/pacland/economics/gdpnow.py::evaluate",
+      "status": "satisfied"
+    },
+    {
+      "clause": "Outcomes analysis",
+      "question": "Does it beat the null out of sample?",
+      "answer": "28 of 37 quarters, MAE ratio 0.25 (<1 = beats the null)",
+      "evidence": "gdpnow.evaluate(target='advance')",
+      "status": "satisfied"
+    },
+    {
+      "clause": "Outcomes analysis",
+      "question": "Is that skill against the FIRST publication or the settled number?",
+      "answer": "Target matters: skill against the advance estimate is not skill against the number that survives revision. Both are reported.",
+      "evidence": "docs/economics-model-roster.md; release_archive.py",
+      "status": "partial"
+    },
+    {
+      "clause": "Data quality",
+      "question": "Are the inputs real-time vintages, or revised history?",
+      "answer": "Real-time vintages (ALFRED) throughout; a vintage that post-dates the forecast is refused by guard_nowcast_predates_release",
+      "evidence": "gdpnow.guard_nowcast_predates_release",
+      "status": "satisfied"
+    },
+    {
+      "clause": "Implementation",
+      "question": "Can the evaluation go red?",
+      "answer": "Four guards, each mutation-proved: vintage ordering, shared benchmark vintage, first-publication target, units",
+      "evidence": "tests/test_gdpnow.py",
+      "status": "satisfied"
+    }
+  ],
+  "limitations": [
+    "Skill is measured against the first publication; against the final number the nowcast's advantage narrows and is not established here.",
+    "The evaluation uses one public dataset and one target definition; neither has been independently replicated outside this repository."
+  ],
+  "provenance": [
+    "Data: data/economics/gdpnow_vintages.json (ALFRED vintages)",
+    "Script: python3 scripts/economics_gdpnow.py",
+    "Module: src/pacland/economics/gdpnow.py"
+  ]
+}
