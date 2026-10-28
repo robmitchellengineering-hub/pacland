@@ -19,6 +19,11 @@ CERTS = ROOT / "certificates"
 # only a refusal is red. Findings keep their own colours: satisfied green, failing red.
 GRADE_CLASS = {"VERIFIED": "ok", "QUALIFIED": "ok", "RESTRICTED": "warn", "REFUSED": "bad"}
 
+#: Findings have their own vocabulary — satisfied / partial / not demonstrated / failing — and their
+#: own colours. They were silently falling through to the grade map's default, so every pill came out
+#: amber; that is the bug this table fixes.
+STATUS_CLASS = {"satisfied": "ok", "partial": "warn", "not demonstrated": "warn", "failing": "bad"}
+
 
 def load_certificates() -> list[dict]:
     out = []
@@ -31,7 +36,8 @@ def cert_card(c: dict) -> str:
     cls = GRADE_CLASS.get(c["grade"], "warn")
     rows = "".join(
         f"<tr><td>{f['clause']}</td><td>{f['question']}</td>"
-        f"<td><span class='pill {GRADE_CLASS.get(f['status'].upper(), 'warn')}'>{f['status']}</span></td></tr>"
+        f"<td class='ev'>{f['answer']} "
+        f"<span class='pill {STATUS_CLASS.get(f['status'], 'warn')}'>{f['status']}</span></td></tr>"
         for f in c["findings"])
     return f"""
     <article class="card">
@@ -41,7 +47,7 @@ def cert_card(c: dict) -> str:
       </div>
       <p class="headline">{c['headline']}</p>
       <table class="findings">
-        <thead><tr><th>clause</th><th>question</th><th>status</th></tr></thead>
+        <thead><tr><th>clause</th><th>question</th><th>what the evidence says</th></tr></thead>
         <tbody>{rows}</tbody>
       </table>
       <p class="prov">evidence: {"; ".join(c['provenance'])}</p>
@@ -100,6 +106,7 @@ HTML = """<!DOCTYPE html>
   th {{ font-weight:600; color:var(--muted); font-size:.8rem; text-transform:uppercase;
         letter-spacing:.03em; }}
   td.num {{ text-align:right; font-variant-numeric:tabular-nums; }}
+  td.ev {{ font-variant-numeric:tabular-nums; }}
   .pill {{ font-size:.75rem; font-weight:600; padding:.15rem .5rem; border-radius:999px;
            white-space:nowrap; }}
   .pill.ok {{ color:var(--ok); background:var(--okbg); }}
