@@ -551,3 +551,28 @@ wash out of sample.
 
 Reproduce: `python3 scripts/economics_revisions.py` (37 quarters) and
 `python3 scripts/economics_release_archive.py` (239 quarters).
+
+## Smets–Wouters is now solved (2026-10-28)
+
+The bar has carried SW as `weak`, owing `out_of_sample` and `benchmark`, because the model was
+parsed but never projected. **The projection machinery now exists and the model solves.**
+
+`src/pacland/economics/sw_solve.py` extracts the coefficient matrices from the authors' own Dynare
+file — 34 equilibrium equations, 34 endogenous variables, seven innovations — and solves them with
+the RE solver verified in `resolve.py`. Four checks, each of which could have failed:
+
+| check | result |
+|---|---|
+| extraction faithful | 34 × 34, all equations vanish at the steady state to **0.0e+00** |
+| policy solves the system | residuals **1.1e-13 / 2.7e-15** |
+| policy is stable | forward simulation decays; peak ratio 3.04 |
+| economics holds | a contractionary monetary shock lowers output **−1.24** (trough −2.32) and inflation **−0.23** |
+
+A cost-push shock raises inflation; a TFP shock raises output and lowers inflation. The signs are
+checked because a wrong matrix would pass the first three tests and still be wrong.
+
+**What this does not yet do:** the six observables are not mapped to the real-time vintages, so there
+is still no out-of-sample forecast and the two slots stay owed. What has changed is that the thing
+that blocked them — no way to project the model — is gone.
+
+Reproduce: `python3 scripts/econ_sw_solve.py`.

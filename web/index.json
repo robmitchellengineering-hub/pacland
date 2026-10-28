@@ -851,6 +851,13 @@
    "title": "econ_resolve.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_sw_solve.py",
+   "kind": "script",
+   "path": "scripts/econ_sw_solve.py",
+   "summary": "Smets\u2013Wouters, solved from the authors' own file \u2014 and checked four ways.",
+   "title": "econ_sw_solve.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_accounting_closure.py",
    "kind": "script",
    "path": "scripts/economics_accounting_closure.py",
