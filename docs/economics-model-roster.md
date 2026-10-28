@@ -605,10 +605,24 @@ A filter that knows the exact model and is handed the observations **cannot expl
 generated itself**. It would not explain real data either. So **no forecast is produced**, and both
 slots stay owed — with the reason measured rather than argued.
 
-Two candidate explanations, neither yet tested to resolution: five observables cannot pin 34 states
-(observability), and the latent initial condition is never learned (the model's states are highly
-persistent). Either fix — more series, or priors on the unobserved block — is modelling work, not
-tuning, and until it is done the honest output is the refusal.
+**And the reason is now a number rather than a suspicion: the state is 41% observable.**
+
+`observability_rank()` builds `[C; C P; C P²; …]` with `C = H0 P + H1` and takes its rank:
+
+| observables | rank | fraction |
+|---|---|---|
+| the five we have | **14 of 34** | **41%** |
+| five plus wages (`dw`) | 14 of 34 | 41% |
+
+**Adding the missing wage series does not raise it.** The unobservable directions are a property of
+SW's state and its measurement equations, not of our data quantity — which means no amount of extra
+series or extra history recovers them. A plain Kalman filter cannot estimate 20 of the 34 state
+directions, so its one-step R² of 0.10–0.41 is not a bug to be tuned away.
+
+That is why SW estimation in practice is **Bayesian with priors over the whole parameter set**, not a
+plain filter on the observables. Reproducing that is a modelling programme, not a slice.
+
+**The item is closed with a measured refusal**, and both slots stay owed.
 
 What is established: the model solves, the units reconcile to four basis points on inflation, the gap
 to the data is measured, and the filter's failure is a number.

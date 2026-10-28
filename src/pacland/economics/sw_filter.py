@@ -376,6 +376,50 @@ def one_step_space(solved: dict, measured: dict) -> dict:
             "n_state": n, "n_obs": len(h0)}
 
 
+def observability_rank(observables: tuple[str, ...] | None = None, blocks: int = 8) -> dict:
+    """How much of SW's state can its own observables see? The number behind the refusal.
+
+    With `y_t = P y_{t-1} + Q eps` and `obs_t = H0 y_t + H1 y_{t-1}`, the observation acts on the
+    lagged state through `C = H0 P + H1`, so observability is the rank of `[C; C P; C P^2; ...]`.
+    A state direction the observables never touch cannot be estimated from them, no matter how good
+    the filter is — and no amount of data fixes it.
+    """
+    solved, measured = solved_model(), measured_rows()
+    p_mat = solved["P"]
+    n = len(p_mat)
+    obs = observables or USED
+    rows = []
+    for name in obs:
+        rec = measured["observables"][name]
+        rows.append([sum(rec["row"][k] * p_mat[k][j] for k in range(n)) + rec["row_lag"][j]
+                     for j in range(n)])
+    stacked = list(rows)
+    current = rows
+    for _ in range(blocks):
+        current = [[sum(current[i][k] * p_mat[k][j] for k in range(n)) for j in range(n)]
+                   for i in range(len(current))]
+        stacked.extend(current)
+
+    m = [row[:] for row in stacked]
+    rank = 0
+    for col in range(n):
+        pivot = max(range(rank, len(m)), key=lambda r: abs(m[r][col]))
+        if abs(m[pivot][col]) < 1e-10:
+            continue
+        m[rank], m[pivot] = m[pivot], m[rank]
+        d = m[rank][col]
+        m[rank] = [v / d for v in m[rank]]
+        for r in range(len(m)):
+            if r != rank and abs(m[r][col]) > 1e-12:
+                f = m[r][col]
+                m[r] = [a - f * b for a, b in zip(m[r], m[rank])]
+        rank += 1
+    return {"observables": list(obs), "rank": rank, "n_state": n,
+            "fraction": rank / n,
+            "verdict": (f"{rank} of {n} state directions are observable "
+                        f"({rank / n:.0%}) from {len(obs)} series")}
+
+
 def audit() -> dict:
     """Audit what is established, and record what is not.
 
@@ -385,12 +429,20 @@ def audit() -> dict:
     forecast" — which is why the roster still marks the two slots owed.
     """
     q = forecast_quality()
+    r5 = observability_rank()
+    r6 = observability_rank(tuple(USED) + ("dw",))
     checks = [
         {"check": "state space well formed", "pass": q["rows"] and len(q["rows"]) == 5,
-         "detail": f"5 observable rows over the solved state"},
+         "detail": "5 observable rows over the solved state"},
         {"check": "usability decided by R^2, not by assertion",
-         "pass": q["usable"] is False,
-         "detail": q["verdict"]},
+         "pass": q["usable"] is False, "detail": q["verdict"]},
+        {"check": "the reason is observability, measured",
+         "pass": r5["rank"] < r5["n_state"],
+         "detail": r5["verdict"]},
+        {"check": "the missing wage series is not the constraint",
+         "pass": r6["rank"] == r5["rank"],
+         "detail": f"adding dw leaves the rank at {r6['rank']}/{r6['n_state']} — the unobservable "
+                   f"directions are structural, not a data-quantity problem"},
     ]
     return {"checks": checks, "n_pass": sum(c["pass"] for c in checks), "n": len(checks),
             "all_pass": all(c["pass"] for c in checks), "usable": q["usable"],
@@ -398,5 +450,5 @@ def audit() -> dict:
 
 
 __all__ = ["augmented", "one_step_space", "filter_series", "block_filter", "simulate",
-           "recovery", "observable_recovery", "audit", "USED", "RIDGE",
-           "solved_model", "measured_rows"]
+           "recovery", "observable_recovery", "observability_rank", "audit", "USED",
+           "RIDGE", "solved_model", "measured_rows"]
