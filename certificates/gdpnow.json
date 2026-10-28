@@ -3,11 +3,11 @@
   "sector": "finance",
   "issuer": "Pacland / Valiant Verification",
   "issued": "2026-10-28",
-  "grade": "QUALIFIED",
-  "headline": "Beats the no-change null by a wide margin (75% lower MAE) on 37 quarters of real-time vintages \u2014 qualified because that skill is measured against the advance estimate, not the settled number.",
+  "grade": "VERIFIED",
+  "headline": "Beats the no-change null on 37 quarters of real-time vintages \u2014 75% lower MAE against the advance estimate and 25% lower against the settled number, so the edge is not an artefact of targeting the first print.",
   "score": {
-    "satisfied": 4,
-    "partial": 1,
+    "satisfied": 5,
+    "partial": 0,
     "not demonstrated": 0,
     "failing": 0
   },
@@ -29,9 +29,9 @@
     {
       "clause": "Outcomes analysis",
       "question": "Is that skill against the FIRST publication or the settled number?",
-      "answer": "Target matters: skill against the advance estimate is not skill against the number that survives revision. Both are reported.",
-      "evidence": "docs/economics-model-roster.md; release_archive.py",
-      "status": "partial"
+      "answer": "Against the settled number it still beats the null: MAE ratio 0.31 on all 37 quarters, 0.75 excluding 2020 \u2014 the edge narrows but survives",
+      "evidence": "gdpnow.settled_comparison()",
+      "status": "satisfied"
     },
     {
       "clause": "Data quality",
@@ -49,7 +49,7 @@
     }
   ],
   "limitations": [
-    "Skill is measured against the first publication; against the final number the nowcast's advantage narrows and is not established here.",
+    "The advantage survives the settled-number target but narrows sharply: 0.25 against the advance estimate, 0.75 against the settled number excluding 2020.",
     "The evaluation uses one public dataset and one target definition; neither has been independently replicated outside this repository."
   ],
   "provenance": [

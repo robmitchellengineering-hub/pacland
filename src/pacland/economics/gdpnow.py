@@ -200,3 +200,44 @@ def summary() -> str:
 
 if __name__ == "__main__":
     print(summary())
+
+def settled_comparison() -> dict:
+    """Is GDPNow's edge an artefact of targeting the FIRST print? Both targets, both samples.
+
+    The nowcast is built to hit the advance estimate, so beating the null *there* proves less than it
+    looks: the first print is the object it was optimised for. The question a user actually has is
+    whether the number survives revision — so the same vintages are scored against the settled number
+    as well, and against both samples, because two COVID quarters can carry a whole result.
+    """
+    rows = {}
+    for target in TARGETS:
+        for exclude in (False, True):
+            e = evaluate(target=target, exclude_2020=exclude)
+            rows[(target, exclude)] = {
+                "n": e["n"], "mae": e["models"]["GDPNow"]["mae"],
+                "null_mae": e["models"]["no-change"]["mae"],
+                "ratio": e["ratio"]["mae"], "wins": e["wins"],
+                "span": e["span"],
+            }
+    ratios = [r["ratio"] for r in rows.values()]
+    return {
+        "rows": rows,
+        "worst_ratio": max(ratios),
+        "beats_null_everywhere": all(r < 1.0 for r in ratios),
+        "narrowing": rows[("final", True)]["ratio"] - rows[("advance", False)]["ratio"],
+        "verdict": (
+            "beats the no-change null on BOTH targets and BOTH samples; "
+            f"the margin narrows from {rows[('advance', False)]['ratio']:.2f} against the advance "
+            f"estimate to {rows[('final', True)]['ratio']:.2f} against the settled number excluding "
+            "2020"
+        ),
+    }
+
+
+def guard_settled_skill_is_not_a_covid_artefact() -> tuple[bool, str]:
+    """MUTATION: the settled-number skill must survive dropping 2020, or it is two quarters talking."""
+    c = settled_comparison()
+    ok = c["beats_null_everywhere"]
+    return ok, (f"MAE ratio against GDPNow: advance {c['rows'][('advance', False)]['ratio']:.2f}, "
+                f"settled {c['rows'][('final', False)]['ratio']:.2f}, settled excl. 2020 "
+                f"{c['rows'][('final', True)]['ratio']:.2f} — all below 1 = {ok}")
