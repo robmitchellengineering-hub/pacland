@@ -333,6 +333,13 @@
    "title": "PACLAND expansion map \u2014 where the method applies next"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/external-claims-padgett.md",
+   "kind": "doc",
+   "path": "docs/external-claims-padgett.md",
+   "summary": "Asked to look at Jason Padgett's research. This is the record of what exists, what in it is checkable, and what the checks returned. It is not a judgement of the man \u2014 the machine is\u2026",
+   "title": "An outside claim through the same machine: Jason Padgett's QIH preprints"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/falsifiable-predictions.md",
    "kind": "doc",
    "path": "docs/falsifiable-predictions.md",
@@ -758,6 +765,13 @@
    "path": "scripts/check_certificates_current.py",
    "summary": "Reproducibility, checked mechanically: do the committed certificates match a fresh run?",
    "title": "check_certificates_current.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check_padgett_claims.py",
+   "kind": "script",
+   "path": "scripts/check_padgett_claims.py",
+   "summary": "An outside claim, put through the same machine: Jason Padgett's \"asymmetric prime\" interference.",
+   "title": "check_padgett_claims.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_carbon.py",
@@ -1346,6 +1360,13 @@
    "path": "scripts/shard_vacua.sh",
    "summary": "shard_vacua.sh \u2014 shard the h12=25 flux-vacua sampling across the mesh's Linux nodes.",
    "title": "shard_vacua.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_zeros.py",
+   "kind": "script",
+   "path": "scripts/spectral_zeros.py",
+   "summary": "The Riemann zeros, computed from scratch, against a GUE control and a Poisson control.",
+   "title": "spectral_zeros.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_g2_sdual_stability.py",
