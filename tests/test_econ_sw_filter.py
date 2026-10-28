@@ -36,6 +36,24 @@ class TestFilterRuns(unittest.TestCase):
         self.assertEqual(len(sim["truth"][0]), 34)
 
 
+class TestObservability(unittest.TestCase):
+    def test_the_state_is_only_partly_observable(self):
+        r = F.observability_rank()
+        self.assertEqual(r["rank"], 14)
+        self.assertEqual(r["n_state"], 34)
+        self.assertLess(r["fraction"], 0.5)
+
+    def test_wages_do_not_fix_it(self):
+        r5 = F.observability_rank()
+        r6 = F.observability_rank(tuple(F.USED) + ("dw",))
+        self.assertEqual(r5["rank"], r6["rank"])
+
+    def test_the_audit_carries_the_observability_reason(self):
+        a = F.audit()
+        self.assertTrue(any("observab" in c["check"] for c in a["checks"]))
+        self.assertTrue(all(c["pass"] for c in a["checks"]))
+
+
 class TestUsabilityIsMeasured(unittest.TestCase):
     def test_the_filter_is_documented_as_not_usable(self):
         q = F.forecast_quality(steps=30, seed=5)
