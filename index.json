@@ -753,6 +753,13 @@
    "title": "check-site-links.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check_certificates_current.py",
+   "kind": "script",
+   "path": "scripts/check_certificates_current.py",
+   "summary": "Reproducibility, checked mechanically: do the committed certificates match a fresh run?",
+   "title": "check_certificates_current.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_carbon.py",
    "kind": "script",
    "path": "scripts/climate_carbon.py",
@@ -1136,6 +1143,13 @@
    "path": "scripts/issue_certificate.py",
    "summary": "Issue model-risk certificates from this repository's own evidence.",
    "title": "issue_certificate.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/issue_vvs.py",
+   "kind": "script",
+   "path": "scripts/issue_vvs.py",
+   "summary": "Issue Valiant Verification certificates for every part that PASSES, and a freshness manifest.",
+   "title": "issue_vvs.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_explainer_pdf.py",
