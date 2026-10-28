@@ -106,6 +106,9 @@ def cmip6(worst: bool = True) -> Certificate:
 
     table = D.verdict_table()
     summary = D.summary()
+    # The certificate grades ENERGY conservation, so "worst" is the largest netTOA drift. The model
+    # that fails the most ledgers is a different one and is reported separately in the docs — naming
+    # one and quoting the other is how a documentation drift starts.
     row = (sorted(table, key=lambda r: -abs(r["netTOA_drift_wm2"]))[0] if worst
            else sorted(table, key=lambda r: r["netTOA_drift_wm2"])[0])
     findings = [
