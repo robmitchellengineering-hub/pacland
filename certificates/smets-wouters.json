@@ -1,0 +1,59 @@
+{
+  "subject": "Smets\u2013Wouters (2007) linearised DSGE",
+  "issuer": "Pacland / Valiant Verification",
+  "issued": "2026-10-28",
+  "grade": "REFUSED",
+  "headline": "The model solves and its units reconcile to the data, but its state is only 41% observable from its own series and its shock scales are unidentified. It cannot currently be scored out of sample, and that is the finding.",
+  "score": {
+    "satisfied": 1,
+    "partial": 0,
+    "not demonstrated": 1,
+    "failing": 3
+  },
+  "findings": [
+    {
+      "clause": "Conceptual soundness",
+      "question": "Is the model's solution correct?",
+      "answer": "34 equations, 34 endogenous variables; every equation vanishes at the steady state to 0.0e+00 and the solved policy satisfies the system to ~1e-13",
+      "evidence": "src/pacland/economics/sw_solve.py::solve_model",
+      "status": "satisfied"
+    },
+    {
+      "clause": "Ongoing monitoring",
+      "question": "Can the state be estimated from its own observables?",
+      "answer": "No \u2014 observability rank 14 of 34 (41%), unchanged by adding the missing wage series",
+      "evidence": "sw_filter.observability_rank",
+      "status": "failing"
+    },
+    {
+      "clause": "Outcomes analysis",
+      "question": "Does a filter track data the model itself generated?",
+      "answer": "One-step R^2 +0.10 to +0.41 \u2014 not usable",
+      "evidence": "sw_filter.forecast_quality",
+      "status": "failing"
+    },
+    {
+      "clause": "Outcomes analysis",
+      "question": "Can the reduced form be matched to the data without a state?",
+      "answer": "Moment fit R^2 0.999 while the shock scales are recovered to only 36% \u2014 a perfect fit with unidentified parameters",
+      "evidence": "sw_distance.recovery",
+      "status": "failing"
+    },
+    {
+      "clause": "Conceptual soundness",
+      "question": "Is the model identified at all?",
+      "answer": "The shock scales are not identified from five observables and two lags; the unidentified directions are structural, not a data-quantity problem",
+      "evidence": "sw_distance.py",
+      "status": "not demonstrated"
+    }
+  ],
+  "limitations": [
+    "No out-of-sample forecast exists, so no skill comparison against the null is possible.",
+    "Full-information Bayesian estimation with priors \u2014 what the authors used \u2014 is untested here and would change the identification result by construction."
+  ],
+  "provenance": [
+    "Model: authors' Dynare file, fetched at verification time (sha256 recorded)",
+    "Scripts: scripts/econ_sw_solve.py, scripts/econ_sw_filter.py, scripts/econ_sw_distance.py",
+    "Modules: src/pacland/economics/sw_solve.py, sw_filter.py, sw_distance.py"
+  ]
+}
