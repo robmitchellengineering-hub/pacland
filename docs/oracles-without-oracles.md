@@ -337,7 +337,13 @@ omission. On 37 quarters (`src/pacland/economics/revisions.py`):
 | exploitable? | **no** — a bias correction is **1.22× worse** out of sample |
 | does the nowcast beat the print? | **no, against the final number** — print **0.92 pp**, nowcast **1.54 pp** |
 
-So *"GDPNow beats the no-change null 4:1"* stays true, and *"GDPNow is the best estimate of GDP"*
+**And it replicates.** The Philadelphia Fed publishes its own First/Second/Third/Most-Recent release
+ladder for real GNP/GDP back to **1965** — a different assembly, **239 quarters**, 6.5× the history.
+The same three questions give: **+0.469 pp** first→most recent (**t = 3.68**, 62% upward), **AR(1) =
+−0.066**, and a bias correction that is **1.02× worse** out of sample — a wash. The 37-quarter result
+was not a 2016–2025 artefact.
+
+So *"GDPNow beats the no-change null 4:1"* stays true, and *"GDPnow is the best estimate of GDP"*
 does not follow. Beating a naive null is a low bar; the thing to beat is the official first print,
 and against the final number it wins. That correction is now on the site card, in the roster and in
 the doctrine — in the same commit as the evidence.

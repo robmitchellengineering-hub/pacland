@@ -907,6 +907,13 @@
    "title": "economics_recovery.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_release_archive.py",
+   "kind": "script",
+   "path": "scripts/economics_release_archive.py",
+   "summary": "The Fed's own release ladder: 239 quarters of first/second/third revisions.",
+   "title": "economics_release_archive.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_revisions.py",
    "kind": "script",
    "path": "scripts/economics_revisions.py",
@@ -1017,6 +1024,13 @@
    "path": "scripts/gpu_bootstrap.sh",
    "summary": "Bootstrap a rented cloud GPU (Ubuntu 22.04/24.04 + NVIDIA CUDA 12 image) into a",
    "title": "gpu_bootstrap.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ingest_rtdsm_releases.py",
+   "kind": "script",
+   "path": "scripts/ingest_rtdsm_releases.py",
+   "summary": "Ingest the Fed's own first/second/third release table into JSON.",
+   "title": "ingest_rtdsm_releases.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/install_cytools.sh",

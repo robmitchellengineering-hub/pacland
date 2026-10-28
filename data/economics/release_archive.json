@@ -1,0 +1,1686 @@
+{
+ "n": 239,
+ "note": "Not committed as a workbook: only these numbers. Re-run scripts/ingest_rtdsm_releases.py after downloading the file.",
+ "quarters": [
+  {
+   "first": 5.2206,
+   "most_recent": 9.1935,
+   "quarter": "1965:Q3",
+   "second": 5.6358,
+   "third": 5.6358
+  },
+  {
+   "first": 5.799,
+   "most_recent": 9.5456,
+   "quarter": "1965:Q4",
+   "second": 7.6489,
+   "third": 7.6489
+  },
+  {
+   "first": 6.1591,
+   "most_recent": 10.0937,
+   "quarter": "1966:Q1",
+   "second": 6.0252,
+   "third": 6.0252
+  },
+  {
+   "first": 2.3308,
+   "most_recent": 1.3679,
+   "quarter": "1966:Q2",
+   "second": 1.8867,
+   "third": 1.8867
+  },
+  {
+   "first": 4.5512,
+   "most_recent": 3.4386,
+   "quarter": "1966:Q3",
+   "second": 3.6543,
+   "third": 3.6543
+  },
+  {
+   "first": 4.442,
+   "most_recent": 3.3151,
+   "quarter": "1966:Q4",
+   "second": 4.5693,
+   "third": 4.5693
+  },
+  {
+   "first": 0.0,
+   "most_recent": 3.5938,
+   "quarter": "1967:Q1",
+   "second": -0.304,
+   "third": -0.304
+  },
+  {
+   "first": 2.3821,
+   "most_recent": 0.2466,
+   "quarter": "1967:Q2",
+   "second": 2.4438,
+   "third": 2.4438
+  },
+  {
+   "first": 4.2174,
+   "most_recent": 3.8379,
+   "quarter": "1967:Q3",
+   "second": 4.4659,
+   "third": 4.4659
+  },
+  {
+   "first": 4.4781,
+   "most_recent": 3.0509,
+   "quarter": "1967:Q4",
+   "second": 4.6011,
+   "third": 4.6011
+  },
+  {
+   "first": 6.0785,
+   "most_recent": 8.412,
+   "quarter": "1968:Q1",
+   "second": 6.0785,
+   "third": 6.0785
+  },
+  {
+   "first": 5.2992,
+   "most_recent": 6.8441,
+   "quarter": "1968:Q2",
+   "second": 5.6598,
+   "third": 6.3234
+  },
+  {
+   "first": 4.981,
+   "most_recent": 3.1402,
+   "quarter": "1968:Q3",
+   "second": 5.158,
+   "third": 5.158
+  },
+  {
+   "first": 3.8736,
+   "most_recent": 1.5762,
+   "quarter": "1968:Q4",
+   "second": 3.4698,
+   "third": 3.4698
+  },
+  {
+   "first": 2.9269,
+   "most_recent": 6.4073,
+   "quarter": "1969:Q1",
+   "second": 2.87,
+   "third": 2.87
+  },
+  {
+   "first": 2.3437,
+   "most_recent": 1.2168,
+   "quarter": "1969:Q2",
+   "second": 2.0063,
+   "third": 2.0063
+  },
+  {
+   "first": 2.0522,
+   "most_recent": 2.668,
+   "quarter": "1969:Q3",
+   "second": 2.164,
+   "third": 2.164
+  },
+  {
+   "first": -0.0547,
+   "most_recent": -1.9353,
+   "quarter": "1969:Q4",
+   "second": -0.4373,
+   "third": -0.4373
+  },
+  {
+   "first": -1.58,
+   "most_recent": -0.5939,
+   "quarter": "1970:Q1",
+   "second": -2.9806,
+   "third": -2.9806
+  },
+  {
+   "first": 0.2766,
+   "most_recent": 0.5672,
+   "quarter": "1970:Q2",
+   "second": 0.6093,
+   "third": 0.6093
+  },
+  {
+   "first": 1.4424,
+   "most_recent": 3.7361,
+   "quarter": "1970:Q3",
+   "second": 1.3867,
+   "third": 1.3867
+  },
+  {
+   "first": -3.3125,
+   "most_recent": -4.2175,
+   "quarter": "1970:Q4",
+   "second": -3.8475,
+   "third": -3.8475
+  },
+  {
+   "first": 6.4244,
+   "most_recent": 11.3114,
+   "quarter": "1971:Q1",
+   "second": 7.0659,
+   "third": 7.0659
+  },
+  {
+   "first": 3.6673,
+   "most_recent": 2.1854,
+   "quarter": "1971:Q2",
+   "second": 4.0621,
+   "third": 4.8551
+  },
+  {
+   "first": 2.8468,
+   "most_recent": 3.3296,
+   "quarter": "1971:Q3",
+   "second": 3.902,
+   "third": 3.902
+  },
+  {
+   "first": 6.074,
+   "most_recent": 0.9384,
+   "quarter": "1971:Q4",
+   "second": 5.8484,
+   "third": 5.8484
+  },
+  {
+   "first": 5.2653,
+   "most_recent": 7.5526,
+   "quarter": "1972:Q1",
+   "second": 5.5976,
+   "third": 5.5976
+  },
+  {
+   "first": 8.9483,
+   "most_recent": 9.3969,
+   "quarter": "1972:Q2",
+   "second": 9.3941,
+   "third": 9.3941
+  },
+  {
+   "first": 5.9452,
+   "most_recent": 3.8313,
+   "quarter": "1972:Q3",
+   "second": 6.3721,
+   "third": 6.3721
+  },
+  {
+   "first": 8.4449,
+   "most_recent": 6.863,
+   "quarter": "1972:Q4",
+   "second": 8.0184,
+   "third": 8.0184
+  },
+  {
+   "first": 7.8609,
+   "most_recent": 10.2717,
+   "quarter": "1973:Q1",
+   "second": 7.9652,
+   "third": 7.9652
+  },
+  {
+   "first": 2.581,
+   "most_recent": 4.4292,
+   "quarter": "1973:Q2",
+   "second": 2.4336,
+   "third": 2.4336
+  },
+  {
+   "first": 3.5461,
+   "most_recent": -2.0865,
+   "quarter": "1973:Q3",
+   "second": 3.3986,
+   "third": 3.3986
+  },
+  {
+   "first": 1.3379,
+   "most_recent": 3.8493,
+   "quarter": "1973:Q4",
+   "second": 1.5783,
+   "third": 1.5783
+  },
+  {
+   "first": -5.8351,
+   "most_recent": -3.3901,
+   "quarter": "1974:Q1",
+   "second": -6.287,
+   "third": -6.287
+  },
+  {
+   "first": -1.1987,
+   "most_recent": 0.9546,
+   "quarter": "1974:Q2",
+   "second": -0.8163,
+   "third": -1.6275
+  },
+  {
+   "first": -2.8703,
+   "most_recent": -3.7295,
+   "quarter": "1974:Q3",
+   "second": -2.111,
+   "third": -1.9205
+  },
+  {
+   "first": -9.0997,
+   "most_recent": -1.5437,
+   "quarter": "1974:Q4",
+   "second": -9.0544,
+   "third": -8.9639
+  },
+  {
+   "first": -10.3668,
+   "most_recent": -4.7868,
+   "quarter": "1975:Q1",
+   "second": -11.3253,
+   "third": -11.4162
+  },
+  {
+   "first": -0.3073,
+   "most_recent": 2.8913,
+   "quarter": "1975:Q2",
+   "second": 1.5992,
+   "third": 1.859
+  },
+  {
+   "first": 11.1584,
+   "most_recent": 7.0249,
+   "quarter": "1975:Q3",
+   "second": 13.2173,
+   "third": 13.3854
+  },
+  {
+   "first": 5.3994,
+   "most_recent": 5.498,
+   "quarter": "1975:Q4",
+   "second": 4.8809,
+   "third": 4.9844
+  },
+  {
+   "first": 7.5038,
+   "most_recent": 9.3048,
+   "quarter": "1976:Q1",
+   "second": 8.4793,
+   "third": 8.6893
+  },
+  {
+   "first": 4.3706,
+   "most_recent": 2.9675,
+   "quarter": "1976:Q2",
+   "second": 4.2712,
+   "third": 4.47
+  },
+  {
+   "first": 3.9296,
+   "most_recent": 2.2096,
+   "quarter": "1976:Q3",
+   "second": 3.7663,
+   "third": 3.9296
+  },
+  {
+   "first": 2.9563,
+   "most_recent": 2.923,
+   "quarter": "1976:Q4",
+   "second": 2.4431,
+   "third": 2.6032
+  },
+  {
+   "first": 5.2227,
+   "most_recent": 4.8283,
+   "quarter": "1977:Q1",
+   "second": 6.3632,
+   "third": 6.9206
+  },
+  {
+   "first": 6.435,
+   "most_recent": 7.9993,
+   "quarter": "1977:Q2",
+   "second": 6.1156,
+   "third": 6.1475
+  },
+  {
+   "first": 3.8107,
+   "most_recent": 7.4106,
+   "quarter": "1977:Q3",
+   "second": 4.7101,
+   "third": 5.1152
+  },
+  {
+   "first": 4.2214,
+   "most_recent": 0.0059,
+   "quarter": "1977:Q4",
+   "second": 4.0072,
+   "third": 3.8544
+  },
+  {
+   "first": -0.5576,
+   "most_recent": 1.2874,
+   "quarter": "1978:Q1",
+   "second": -0.4111,
+   "third": 0.0294
+  },
+  {
+   "first": 7.4043,
+   "most_recent": 16.3745,
+   "quarter": "1978:Q2",
+   "second": 7.9977,
+   "third": 8.6563
+  },
+  {
+   "first": 3.4281,
+   "most_recent": 4.0844,
+   "quarter": "1978:Q3",
+   "second": 3.3985,
+   "third": 2.5703
+  },
+  {
+   "first": 6.115,
+   "most_recent": 5.4897,
+   "quarter": "1978:Q4",
+   "second": 6.3557,
+   "third": 6.6872
+  },
+  {
+   "first": 0.7372,
+   "most_recent": 0.716,
+   "quarter": "1979:Q1",
+   "second": 0.4532,
+   "third": 0.8225
+  },
+  {
+   "first": -3.2587,
+   "most_recent": 0.4317,
+   "quarter": "1979:Q2",
+   "second": -2.3555,
+   "third": -2.3006
+  },
+  {
+   "first": 2.412,
+   "most_recent": 3.0029,
+   "quarter": "1979:Q3",
+   "second": 3.4466,
+   "third": 3.1297
+  },
+  {
+   "first": 1.4309,
+   "most_recent": 1.001,
+   "quarter": "1979:Q4",
+   "second": 2.0812,
+   "third": 1.9679
+  },
+  {
+   "first": 1.0875,
+   "most_recent": 1.2685,
+   "quarter": "1980:Q1",
+   "second": 0.6403,
+   "third": 1.2276
+  },
+  {
+   "first": -9.0608,
+   "most_recent": -7.9921,
+   "quarter": "1980:Q2",
+   "second": -9.035,
+   "third": -9.6267
+  },
+  {
+   "first": 0.9976,
+   "most_recent": -0.4776,
+   "quarter": "1980:Q3",
+   "second": 0.8832,
+   "third": 2.3717
+  },
+  {
+   "first": 5.0385,
+   "most_recent": 7.6749,
+   "quarter": "1980:Q4",
+   "second": 4.0271,
+   "third": 3.7754
+  },
+  {
+   "first": 6.5074,
+   "most_recent": 8.0684,
+   "quarter": "1981:Q1",
+   "second": 8.4399,
+   "third": 8.5544
+  },
+  {
+   "first": -1.9118,
+   "most_recent": -2.9327,
+   "quarter": "1981:Q2",
+   "second": -2.353,
+   "third": -1.5733
+  },
+  {
+   "first": -0.5814,
+   "most_recent": 4.879,
+   "quarter": "1981:Q3",
+   "second": 0.6371,
+   "third": 1.4378
+  },
+  {
+   "first": -5.2249,
+   "most_recent": -4.2858,
+   "quarter": "1981:Q4",
+   "second": -4.7169,
+   "third": -4.5132
+  },
+  {
+   "first": -3.8927,
+   "most_recent": -6.0745,
+   "quarter": "1982:Q1",
+   "second": -4.255,
+   "third": -3.6593
+  },
+  {
+   "first": 1.6694,
+   "most_recent": 1.8383,
+   "quarter": "1982:Q2",
+   "second": 1.257,
+   "third": 2.1107
+  },
+  {
+   "first": 0.7597,
+   "most_recent": -1.5195,
+   "quarter": "1982:Q3",
+   "second": 0.0,
+   "third": 0.7325
+  },
+  {
+   "first": -2.5146,
+   "most_recent": 0.159,
+   "quarter": "1982:Q4",
+   "second": -1.9304,
+   "third": -1.0491
+  },
+  {
+   "first": 3.0951,
+   "most_recent": 5.3792,
+   "quarter": "1983:Q1",
+   "second": 2.4594,
+   "third": 2.5974
+  },
+  {
+   "first": 8.6706,
+   "most_recent": 9.418,
+   "quarter": "1983:Q2",
+   "second": 9.2431,
+   "third": 9.7316
+  },
+  {
+   "first": 7.909,
+   "most_recent": 8.2337,
+   "quarter": "1983:Q3",
+   "second": 7.6871,
+   "third": 7.6316
+  },
+  {
+   "first": 4.4765,
+   "most_recent": 8.6124,
+   "quarter": "1983:Q4",
+   "second": 4.8495,
+   "third": 5.0097
+  },
+  {
+   "first": 8.3377,
+   "most_recent": 8.0486,
+   "quarter": "1984:Q1",
+   "second": 8.7977,
+   "third": 9.6946
+  },
+  {
+   "first": 7.4763,
+   "most_recent": 7.0963,
+   "quarter": "1984:Q2",
+   "second": 7.6337,
+   "third": 7.1099
+  },
+  {
+   "first": 2.6622,
+   "most_recent": 3.9124,
+   "quarter": "1984:Q3",
+   "second": 1.8927,
+   "third": 1.5713
+  },
+  {
+   "first": 3.9222,
+   "most_recent": 3.322,
+   "quarter": "1984:Q4",
+   "second": 4.8512,
+   "third": 4.2479
+  },
+  {
+   "first": 1.3543,
+   "most_recent": 3.9316,
+   "quarter": "1985:Q1",
+   "second": 0.7238,
+   "third": 0.2649
+  },
+  {
+   "first": 1.7426,
+   "most_recent": 3.5703,
+   "quarter": "1985:Q2",
+   "second": 1.962,
+   "third": 1.8888
+  },
+  {
+   "first": 3.2704,
+   "most_recent": 6.2488,
+   "quarter": "1985:Q3",
+   "second": 4.2793,
+   "third": 3.0362
+  },
+  {
+   "first": 2.353,
+   "most_recent": 3.0087,
+   "quarter": "1985:Q4",
+   "second": 1.1995,
+   "third": 0.7498
+  },
+  {
+   "first": 3.2014,
+   "most_recent": 3.7858,
+   "quarter": "1986:Q1",
+   "second": 3.6927,
+   "third": 2.9393
+  },
+  {
+   "first": 1.0766,
+   "most_recent": 1.8135,
+   "quarter": "1986:Q2",
+   "second": 0.6141,
+   "third": 0.6031
+  },
+  {
+   "first": 2.4141,
+   "most_recent": 3.883,
+   "quarter": "1986:Q3",
+   "second": 2.8597,
+   "third": 2.7593
+  },
+  {
+   "first": 1.7474,
+   "most_recent": 2.1633,
+   "quarter": "1986:Q4",
+   "second": 1.2975,
+   "third": 1.0567
+  },
+  {
+   "first": 4.2991,
+   "most_recent": 3.0018,
+   "quarter": "1987:Q1",
+   "second": 4.3773,
+   "third": 4.769
+  },
+  {
+   "first": 2.5909,
+   "most_recent": 4.3835,
+   "quarter": "1987:Q2",
+   "second": 2.2994,
+   "third": 2.4721
+  },
+  {
+   "first": 3.8377,
+   "most_recent": 3.511,
+   "quarter": "1987:Q3",
+   "second": 4.0764,
+   "third": 4.3481
+  },
+  {
+   "first": 4.1508,
+   "most_recent": 7.0464,
+   "quarter": "1987:Q4",
+   "second": 4.4521,
+   "third": 4.7649
+  },
+  {
+   "first": 2.266,
+   "most_recent": 2.0849,
+   "quarter": "1988:Q1",
+   "second": 3.8897,
+   "third": 3.6143
+  },
+  {
+   "first": 3.0887,
+   "most_recent": 5.361,
+   "quarter": "1988:Q2",
+   "second": 3.275,
+   "third": 2.9749
+  },
+  {
+   "first": 2.2367,
+   "most_recent": 2.364,
+   "quarter": "1988:Q3",
+   "second": 2.6046,
+   "third": 2.4512
+  },
+  {
+   "first": 1.99,
+   "most_recent": 5.4373,
+   "quarter": "1988:Q4",
+   "second": 2.0407,
+   "third": 2.416
+  },
+  {
+   "first": 5.5464,
+   "most_recent": 4.1271,
+   "quarter": "1989:Q1",
+   "second": 4.3433,
+   "third": 4.4457
+  },
+  {
+   "first": 1.676,
+   "most_recent": 3.0889,
+   "quarter": "1989:Q2",
+   "second": 2.6757,
+   "third": 2.5268
+  },
+  {
+   "first": 2.501,
+   "most_recent": 2.9946,
+   "quarter": "1989:Q3",
+   "second": 2.7083,
+   "third": 2.9752
+  },
+  {
+   "first": 0.5006,
+   "most_recent": 0.7927,
+   "quarter": "1989:Q4",
+   "second": 0.916,
+   "third": 1.0805
+  },
+  {
+   "first": 2.0958,
+   "most_recent": 4.4429,
+   "quarter": "1990:Q1",
+   "second": 1.3387,
+   "third": 1.8624
+  },
+  {
+   "first": 1.2198,
+   "most_recent": 1.461,
+   "quarter": "1990:Q2",
+   "second": 1.1809,
+   "third": 0.4344
+  },
+  {
+   "first": 1.7929,
+   "most_recent": 0.266,
+   "quarter": "1990:Q3",
+   "second": 1.7441,
+   "third": 1.4421
+  },
+  {
+   "first": -2.1314,
+   "most_recent": -3.5935,
+   "quarter": "1990:Q4",
+   "second": -1.952,
+   "third": -1.5828
+  },
+  {
+   "first": -2.8109,
+   "most_recent": -1.8591,
+   "quarter": "1991:Q1",
+   "second": -2.5656,
+   "third": -2.7921
+  },
+  {
+   "first": 0.4177,
+   "most_recent": 3.1557,
+   "quarter": "1991:Q2",
+   "second": -0.1066,
+   "third": -0.5034
+  },
+  {
+   "first": 2.3709,
+   "most_recent": 2.0374,
+   "quarter": "1991:Q3",
+   "second": 1.688,
+   "third": 1.8303
+  },
+  {
+   "first": 0.2965,
+   "most_recent": 1.4001,
+   "quarter": "1991:Q4",
+   "second": 0.7838,
+   "third": 0.4367
+  },
+  {
+   "first": 1.9784,
+   "most_recent": 4.8755,
+   "quarter": "1992:Q1",
+   "second": 2.3959,
+   "third": 2.7309
+  },
+  {
+   "first": 1.386,
+   "most_recent": 4.4085,
+   "quarter": "1992:Q2",
+   "second": 1.4274,
+   "third": 1.5436
+  },
+  {
+   "first": 2.6504,
+   "most_recent": 4.0137,
+   "quarter": "1992:Q3",
+   "second": 3.8984,
+   "third": 3.4197
+  },
+  {
+   "first": 3.7903,
+   "most_recent": 4.2342,
+   "quarter": "1992:Q4",
+   "second": 4.7691,
+   "third": 4.7104
+  },
+  {
+   "first": 1.7993,
+   "most_recent": 0.6722,
+   "quarter": "1993:Q1",
+   "second": 0.941,
+   "third": 0.7313
+  },
+  {
+   "first": 1.5773,
+   "most_recent": 2.3463,
+   "quarter": "1993:Q2",
+   "second": 1.808,
+   "third": 1.8959
+  },
+  {
+   "first": 2.8444,
+   "most_recent": 1.9239,
+   "quarter": "1993:Q3",
+   "second": 2.6683,
+   "third": 2.8684
+  },
+  {
+   "first": 5.8701,
+   "most_recent": 5.5534,
+   "quarter": "1993:Q4",
+   "second": 7.5044,
+   "third": 6.9712
+  },
+  {
+   "first": 2.5813,
+   "most_recent": 3.9372,
+   "quarter": "1994:Q1",
+   "second": 2.9798,
+   "third": 3.403
+  },
+  {
+   "first": 3.7075,
+   "most_recent": 5.534,
+   "quarter": "1994:Q2",
+   "second": 3.7856,
+   "third": 4.0909
+  },
+  {
+   "first": 3.4382,
+   "most_recent": 2.3584,
+   "quarter": "1994:Q3",
+   "second": 3.8867,
+   "third": 4.0417
+  },
+  {
+   "first": 4.5319,
+   "most_recent": 4.6595,
+   "quarter": "1994:Q4",
+   "second": 4.5627,
+   "third": 5.0723
+  },
+  {
+   "first": 2.8193,
+   "most_recent": 1.4296,
+   "quarter": "1995:Q1",
+   "second": 2.6915,
+   "third": 2.6991
+  },
+  {
+   "first": 0.5275,
+   "most_recent": 1.1961,
+   "quarter": "1995:Q2",
+   "second": 1.1088,
+   "third": 1.3006
+  },
+  {
+   "first": 4.2048,
+   "most_recent": 3.447,
+   "quarter": "1995:Q3",
+   "second": 4.2048,
+   "third": 3.2462
+  },
+  {
+   "first": 2.8093,
+   "most_recent": 3.0282,
+   "quarter": "1996:Q1",
+   "second": 2.322,
+   "third": 2.154
+  },
+  {
+   "first": 4.2212,
+   "most_recent": 6.8398,
+   "quarter": "1996:Q2",
+   "second": 4.7915,
+   "third": 4.676
+  },
+  {
+   "first": 2.1705,
+   "most_recent": 3.6394,
+   "quarter": "1996:Q3",
+   "second": 1.9642,
+   "third": 2.0938
+  },
+  {
+   "first": 4.7172,
+   "most_recent": 4.2182,
+   "quarter": "1996:Q4",
+   "second": 3.8652,
+   "third": 3.8177
+  },
+  {
+   "first": 5.611,
+   "most_recent": 2.607,
+   "quarter": "1997:Q1",
+   "second": 5.772,
+   "third": 5.9093
+  },
+  {
+   "first": 2.1633,
+   "most_recent": 6.8274,
+   "quarter": "1997:Q2",
+   "second": 3.6249,
+   "third": 3.3071
+  },
+  {
+   "first": 3.5206,
+   "most_recent": 5.089,
+   "quarter": "1997:Q3",
+   "second": 3.28,
+   "third": 3.0741
+  },
+  {
+   "first": 4.2983,
+   "most_recent": 3.4599,
+   "quarter": "1997:Q4",
+   "second": 3.8983,
+   "third": 3.7101
+  },
+  {
+   "first": 4.2417,
+   "most_recent": 4.0743,
+   "quarter": "1998:Q1",
+   "second": 4.7869,
+   "third": 5.3628
+  },
+  {
+   "first": 1.4168,
+   "most_recent": 3.7546,
+   "quarter": "1998:Q2",
+   "second": 1.6281,
+   "third": 1.829
+  },
+  {
+   "first": 3.2884,
+   "most_recent": 5.1345,
+   "quarter": "1998:Q3",
+   "second": 3.8635,
+   "third": 3.6715
+  },
+  {
+   "first": 5.5848,
+   "most_recent": 6.5932,
+   "quarter": "1998:Q4",
+   "second": 6.0536,
+   "third": 6.0094
+  },
+  {
+   "first": 4.4917,
+   "most_recent": 3.8102,
+   "quarter": "1999:Q1",
+   "second": 4.0724,
+   "third": 4.3357
+  },
+  {
+   "first": 2.2875,
+   "most_recent": 3.3794,
+   "quarter": "1999:Q2",
+   "second": 1.8008,
+   "third": 1.6076
+  },
+  {
+   "first": 4.8237,
+   "most_recent": 5.4124,
+   "quarter": "1999:Q3",
+   "second": 5.5383,
+   "third": 5.6759
+  },
+  {
+   "first": 5.798,
+   "most_recent": 6.7257,
+   "quarter": "1999:Q4",
+   "second": 6.9276,
+   "third": 7.281
+  },
+  {
+   "first": 5.3905,
+   "most_recent": 1.4571,
+   "quarter": "2000:Q1",
+   "second": 5.3951,
+   "third": 5.4642
+  },
+  {
+   "first": 5.1895,
+   "most_recent": 7.4878,
+   "quarter": "2000:Q2",
+   "second": 5.3116,
+   "third": 5.6468
+  },
+  {
+   "first": 2.7449,
+   "most_recent": 0.4082,
+   "quarter": "2000:Q3",
+   "second": 2.3643,
+   "third": 2.1897
+  },
+  {
+   "first": 1.3731,
+   "most_recent": 2.411,
+   "quarter": "2000:Q4",
+   "second": 1.0587,
+   "third": 1.0371
+  },
+  {
+   "first": 1.9818,
+   "most_recent": -1.3063,
+   "quarter": "2001:Q1",
+   "second": 1.318,
+   "third": 1.2449
+  },
+  {
+   "first": 0.7348,
+   "most_recent": 2.5223,
+   "quarter": "2001:Q2",
+   "second": 0.1672,
+   "third": 0.3089
+  },
+  {
+   "first": -0.3549,
+   "most_recent": -1.5936,
+   "quarter": "2001:Q3",
+   "second": -1.0619,
+   "third": -1.3335
+  },
+  {
+   "first": 0.2236,
+   "most_recent": 1.1048,
+   "quarter": "2001:Q4",
+   "second": 1.3949,
+   "third": 1.6513
+  },
+  {
+   "first": 5.8356,
+   "most_recent": 3.3873,
+   "quarter": "2002:Q1",
+   "second": 5.5769,
+   "third": 6.1261
+  },
+  {
+   "first": 1.0594,
+   "most_recent": 2.4717,
+   "quarter": "2002:Q2",
+   "second": 1.1326,
+   "third": 1.2533
+  },
+  {
+   "first": 3.1366,
+   "most_recent": 1.6364,
+   "quarter": "2002:Q3",
+   "second": 3.9585,
+   "third": 4.0286
+  },
+  {
+   "first": 0.7442,
+   "most_recent": 0.4968,
+   "quarter": "2002:Q4",
+   "second": 1.4372,
+   "third": 1.3818
+  },
+  {
+   "first": 1.598,
+   "most_recent": 2.1216,
+   "quarter": "2003:Q1",
+   "second": 1.8918,
+   "third": 1.428
+  },
+  {
+   "first": 2.37,
+   "most_recent": 3.5919,
+   "quarter": "2003:Q2",
+   "second": 3.1136,
+   "third": 3.2808
+  },
+  {
+   "first": 4.0238,
+   "most_recent": 4.725,
+   "quarter": "2003:Q4",
+   "second": 4.1063,
+   "third": 4.1417
+  },
+  {
+   "first": 4.1576,
+   "most_recent": 2.2854,
+   "quarter": "2004:Q1",
+   "second": 4.4458,
+   "third": 3.9049
+  },
+  {
+   "first": 3.0442,
+   "most_recent": 3.1368,
+   "quarter": "2004:Q2",
+   "second": 2.792,
+   "third": 3.3007
+  },
+  {
+   "first": 3.7113,
+   "most_recent": 3.8468,
+   "quarter": "2004:Q3",
+   "second": 3.9517,
+   "third": 4.0013
+  },
+  {
+   "first": 3.1473,
+   "most_recent": 4.1447,
+   "quarter": "2004:Q4",
+   "second": 3.8105,
+   "third": 3.8483
+  },
+  {
+   "first": 3.0876,
+   "most_recent": 4.5106,
+   "quarter": "2005:Q1",
+   "second": 3.4827,
+   "third": 3.7592
+  },
+  {
+   "first": 3.414,
+   "most_recent": 1.9863,
+   "quarter": "2005:Q2",
+   "second": 3.2872,
+   "third": 3.3096
+  },
+  {
+   "first": 3.8045,
+   "most_recent": 3.1722,
+   "quarter": "2005:Q3",
+   "second": 4.2839,
+   "third": 4.1425
+  },
+  {
+   "first": 1.1187,
+   "most_recent": 2.2395,
+   "quarter": "2005:Q4",
+   "second": 1.6274,
+   "third": 1.6527
+  },
+  {
+   "first": 4.8178,
+   "most_recent": 5.4911,
+   "quarter": "2006:Q1",
+   "second": 5.3086,
+   "third": 5.638
+  },
+  {
+   "first": 2.4577,
+   "most_recent": 1.0411,
+   "quarter": "2006:Q2",
+   "second": 2.9012,
+   "third": 2.5586
+  },
+  {
+   "first": 1.5829,
+   "most_recent": 0.599,
+   "quarter": "2006:Q3",
+   "second": 2.2098,
+   "third": 1.9601
+  },
+  {
+   "first": 3.4734,
+   "most_recent": 3.4842,
+   "quarter": "2006:Q4",
+   "second": 2.2204,
+   "third": 2.4515
+  },
+  {
+   "first": 1.2601,
+   "most_recent": 1.2082,
+   "quarter": "2007:Q1",
+   "second": 0.6513,
+   "third": 0.6897
+  },
+  {
+   "first": 3.3822,
+   "most_recent": 2.469,
+   "quarter": "2007:Q2",
+   "second": 3.9548,
+   "third": 3.8213
+  },
+  {
+   "first": 3.8959,
+   "most_recent": 2.3247,
+   "quarter": "2007:Q3",
+   "second": 4.9216,
+   "third": 4.9072
+  },
+  {
+   "first": 0.6362,
+   "most_recent": 2.5366,
+   "quarter": "2007:Q4",
+   "second": 0.6259,
+   "third": 0.5776
+  },
+  {
+   "first": 0.5974,
+   "most_recent": -1.6964,
+   "quarter": "2008:Q1",
+   "second": 0.9006,
+   "third": 0.9593
+  },
+  {
+   "first": 1.8886,
+   "most_recent": 2.4034,
+   "quarter": "2008:Q2",
+   "second": 3.2784,
+   "third": 2.8253
+  },
+  {
+   "first": -0.2522,
+   "most_recent": -2.0846,
+   "quarter": "2008:Q3",
+   "second": -0.514,
+   "third": -0.5106
+  },
+  {
+   "first": -3.8037,
+   "most_recent": -8.4718,
+   "quarter": "2008:Q4",
+   "second": -6.2481,
+   "third": -6.3424
+  },
+  {
+   "first": -6.1437,
+   "most_recent": -4.4631,
+   "quarter": "2009:Q1",
+   "second": -5.7192,
+   "third": -5.4932
+  },
+  {
+   "first": -1.0173,
+   "most_recent": -0.7147,
+   "quarter": "2009:Q2",
+   "second": -1.0143,
+   "third": -0.7376
+  },
+  {
+   "first": 3.5339,
+   "most_recent": 1.4138,
+   "quarter": "2009:Q3",
+   "second": 2.7817,
+   "third": 2.2353
+  },
+  {
+   "first": 5.7309,
+   "most_recent": 4.3949,
+   "quarter": "2009:Q4",
+   "second": 5.9271,
+   "third": 5.5541
+  },
+  {
+   "first": 3.2387,
+   "most_recent": 1.9508,
+   "quarter": "2010:Q1",
+   "second": 3.0364,
+   "third": 2.738
+  },
+  {
+   "first": 2.3866,
+   "most_recent": 3.9281,
+   "quarter": "2010:Q2",
+   "second": 1.6141,
+   "third": 1.7189
+  },
+  {
+   "first": 2.0097,
+   "most_recent": 3.1201,
+   "quarter": "2010:Q3",
+   "second": 2.5245,
+   "third": 2.5585
+  },
+  {
+   "first": 3.173,
+   "most_recent": 2.1171,
+   "quarter": "2010:Q4",
+   "second": 2.788,
+   "third": 3.1144
+  },
+  {
+   "first": 1.7482,
+   "most_recent": -0.947,
+   "quarter": "2011:Q1",
+   "second": 1.8421,
+   "third": 1.9148
+  },
+  {
+   "first": 1.2822,
+   "most_recent": 2.7344,
+   "quarter": "2011:Q2",
+   "second": 0.9894,
+   "third": 1.3341
+  },
+  {
+   "first": 2.4637,
+   "most_recent": -0.0892,
+   "quarter": "2011:Q3",
+   "second": 2.0041,
+   "third": 1.8145
+  },
+  {
+   "first": 2.7523,
+   "most_recent": 4.5692,
+   "quarter": "2011:Q4",
+   "second": 2.9822,
+   "third": 2.9546
+  },
+  {
+   "first": 2.2043,
+   "most_recent": 3.3961,
+   "quarter": "2012:Q1",
+   "second": 1.8596,
+   "third": 1.8717
+  },
+  {
+   "first": 1.5369,
+   "most_recent": 1.797,
+   "quarter": "2012:Q2",
+   "second": 1.7318,
+   "third": 1.2527
+  },
+  {
+   "first": 2.0138,
+   "most_recent": 0.5791,
+   "quarter": "2012:Q3",
+   "second": 2.6717,
+   "third": 3.106
+  },
+  {
+   "first": -0.1435,
+   "most_recent": 0.4633,
+   "quarter": "2012:Q4",
+   "second": 0.126,
+   "third": 0.3785
+  },
+  {
+   "first": 2.5024,
+   "most_recent": 4.0039,
+   "quarter": "2013:Q1",
+   "second": 2.3862,
+   "third": 1.7768
+  },
+  {
+   "first": 1.6737,
+   "most_recent": 1.0755,
+   "quarter": "2013:Q2",
+   "second": 2.5157,
+   "third": 2.4817
+  },
+  {
+   "first": 2.8463,
+   "most_recent": 3.4498,
+   "quarter": "2013:Q3",
+   "second": 3.6013,
+   "third": 4.1341
+  },
+  {
+   "first": 3.2279,
+   "most_recent": 3.5306,
+   "quarter": "2013:Q4",
+   "second": 2.3848,
+   "third": 2.6266
+  },
+  {
+   "first": 0.1079,
+   "most_recent": -1.3717,
+   "quarter": "2014:Q1",
+   "second": -0.9849,
+   "third": -2.9304
+  },
+  {
+   "first": 3.9481,
+   "most_recent": 5.2675,
+   "quarter": "2014:Q2",
+   "second": 4.1719,
+   "third": 4.592
+  },
+  {
+   "first": 3.549,
+   "most_recent": 4.9502,
+   "quarter": "2014:Q3",
+   "second": 3.8957,
+   "third": 4.9667
+  },
+  {
+   "first": 2.6422,
+   "most_recent": 2.0386,
+   "quarter": "2014:Q4",
+   "second": 2.1924,
+   "third": 2.2174
+  },
+  {
+   "first": 0.2482,
+   "most_recent": 3.6511,
+   "quarter": "2015:Q1",
+   "second": -0.7491,
+   "third": -0.1717
+  },
+  {
+   "first": 2.3219,
+   "most_recent": 2.5003,
+   "quarter": "2015:Q2",
+   "second": 3.6846,
+   "third": 3.921
+  },
+  {
+   "first": 1.4923,
+   "most_recent": 1.6112,
+   "quarter": "2015:Q3",
+   "second": 2.078,
+   "third": 1.9835
+  },
+  {
+   "first": 0.6914,
+   "most_recent": 0.7402,
+   "quarter": "2015:Q4",
+   "second": 1.0054,
+   "third": 1.3865
+  },
+  {
+   "first": 0.5378,
+   "most_recent": 2.3387,
+   "quarter": "2016:Q1",
+   "second": 0.8405,
+   "third": 1.0729
+  },
+  {
+   "first": 1.2182,
+   "most_recent": 1.2903,
+   "quarter": "2016:Q2",
+   "second": 1.0986,
+   "third": 1.4138
+  },
+  {
+   "first": 2.9014,
+   "most_recent": 2.8673,
+   "quarter": "2016:Q3",
+   "second": 3.158,
+   "third": 3.5164
+  },
+  {
+   "first": 1.8735,
+   "most_recent": 2.2375,
+   "quarter": "2016:Q4",
+   "second": 1.8565,
+   "third": 2.0798
+  },
+  {
+   "first": 0.6941,
+   "most_recent": 1.9599,
+   "quarter": "2017:Q1",
+   "second": 1.1541,
+   "third": 1.4231
+  },
+  {
+   "first": 2.5683,
+   "most_recent": 2.2582,
+   "quarter": "2017:Q2",
+   "second": 3.0345,
+   "third": 3.0612
+  },
+  {
+   "first": 2.9875,
+   "most_recent": 3.1933,
+   "quarter": "2017:Q3",
+   "second": 3.2952,
+   "third": 3.1557
+  },
+  {
+   "first": 2.555,
+   "most_recent": 4.5853,
+   "quarter": "2017:Q4",
+   "second": 2.536,
+   "third": 2.8879
+  },
+  {
+   "first": 2.3176,
+   "most_recent": 3.293,
+   "quarter": "2018:Q1",
+   "second": 2.1741,
+   "third": 1.9908
+  },
+  {
+   "first": 4.0595,
+   "most_recent": 2.1403,
+   "quarter": "2018:Q2",
+   "second": 4.226,
+   "third": 4.1585
+  },
+  {
+   "first": 3.5002,
+   "most_recent": 2.5187,
+   "quarter": "2018:Q3",
+   "second": 3.5046,
+   "third": 3.3561
+  },
+  {
+   "first": 3.1705,
+   "most_recent": 2.5194,
+   "quarter": "2019:Q1",
+   "second": 3.0658,
+   "third": 3.1268
+  },
+  {
+   "first": 2.055,
+   "most_recent": 3.384,
+   "quarter": "2019:Q2",
+   "second": 2.0379,
+   "third": 2.0143
+  },
+  {
+   "first": 1.9188,
+   "most_recent": 4.7618,
+   "quarter": "2019:Q3",
+   "second": 2.1238,
+   "third": 2.1024
+  },
+  {
+   "first": 2.0808,
+   "most_recent": 2.755,
+   "quarter": "2019:Q4",
+   "second": 2.0956,
+   "third": 2.1275
+  },
+  {
+   "first": -4.7832,
+   "most_recent": -5.1616,
+   "quarter": "2020:Q1",
+   "second": -5.0477,
+   "third": -4.9937
+  },
+  {
+   "first": -32.9038,
+   "most_recent": -27.9759,
+   "quarter": "2020:Q2",
+   "second": -31.7041,
+   "third": -31.3827
+  },
+  {
+   "first": 33.0826,
+   "most_recent": 34.8553,
+   "quarter": "2020:Q3",
+   "second": 33.0683,
+   "third": 33.441
+  },
+  {
+   "first": 4.0124,
+   "most_recent": 4.611,
+   "quarter": "2020:Q4",
+   "second": 4.0922,
+   "third": 4.3251
+  },
+  {
+   "first": 6.3877,
+   "most_recent": 6.1931,
+   "quarter": "2021:Q1",
+   "second": 6.3989,
+   "third": 6.361
+  },
+  {
+   "first": 6.5026,
+   "most_recent": 7.1487,
+   "quarter": "2021:Q2",
+   "second": 6.5554,
+   "third": 6.7251
+  },
+  {
+   "first": 2.0163,
+   "most_recent": 3.1586,
+   "quarter": "2021:Q3",
+   "second": 2.1044,
+   "third": 2.3038
+  },
+  {
+   "first": 6.8881,
+   "most_recent": 6.8198,
+   "quarter": "2021:Q4",
+   "second": 6.9874,
+   "third": 6.8946
+  },
+  {
+   "first": -1.4142,
+   "most_recent": -1.0124,
+   "quarter": "2022:Q1",
+   "second": -1.5101,
+   "third": -1.574
+  },
+  {
+   "first": -0.9335,
+   "most_recent": 0.5589,
+   "quarter": "2022:Q2",
+   "second": -0.5746,
+   "third": -0.5769
+  },
+  {
+   "first": 2.5656,
+   "most_recent": 2.723,
+   "quarter": "2022:Q3",
+   "second": 2.9288,
+   "third": 3.2435
+  },
+  {
+   "first": 2.891,
+   "most_recent": 2.7046,
+   "quarter": "2022:Q4",
+   "second": 2.6752,
+   "third": 2.5735
+  },
+  {
+   "first": 1.0626,
+   "most_recent": 3.3531,
+   "quarter": "2023:Q1",
+   "second": 1.2725,
+   "third": 2.0027
+  },
+  {
+   "first": 2.4137,
+   "most_recent": 2.1673,
+   "quarter": "2023:Q2",
+   "second": 2.0608,
+   "third": 2.0617
+  },
+  {
+   "first": 4.8777,
+   "most_recent": 4.5253,
+   "quarter": "2023:Q3",
+   "second": 5.154,
+   "third": 4.8609
+  },
+  {
+   "first": 3.28,
+   "most_recent": 3.6316,
+   "quarter": "2023:Q4",
+   "second": 3.209,
+   "third": 3.3967
+  },
+  {
+   "first": 1.5897,
+   "most_recent": 1.4439,
+   "quarter": "2024:Q1",
+   "second": 1.2492,
+   "third": 1.4095
+  },
+  {
+   "first": 2.8401,
+   "most_recent": 3.5788,
+   "quarter": "2024:Q2",
+   "second": 2.9514,
+   "third": 2.9895
+  },
+  {
+   "first": 2.8248,
+   "most_recent": 3.1532,
+   "quarter": "2024:Q3",
+   "second": 2.8336,
+   "third": 3.073
+  },
+  {
+   "first": 2.2512,
+   "most_recent": 2.4042,
+   "quarter": "2024:Q4",
+   "second": 2.3451,
+   "third": 2.4495
+  },
+  {
+   "first": -0.275,
+   "most_recent": 0.1422,
+   "quarter": "2025:Q1",
+   "second": -0.2427,
+   "third": -0.502
+  },
+  {
+   "first": 2.9688,
+   "most_recent": 4.0238,
+   "quarter": "2025:Q2",
+   "second": 3.2909,
+   "third": 3.8386
+  },
+  {
+   "first": 1.9901,
+   "most_recent": 2.4917,
+   "quarter": "2026:Q1",
+   "second": 1.6227,
+   "third": 2.0897
+  },
+  {
+   "first": 1.5005,
+   "most_recent": 2.2197,
+   "quarter": "2026:Q2",
+   "second": 1.4838,
+   "third": 2.2197
+  }
+ ],
+ "source": {
+  "columns": "First, Second, Third, Most_Recent releases",
+  "file": "routput_first_second_third.xlsx",
+  "product": "Philadelphia Fed Real-Time Data Set \u2014 Real GNP/GDP (ROUTPUT)",
+  "units": "quarter-over-quarter growth, annual rate, percentage points",
+  "url": "https://www.philadelphiafed.org/surveys-and-data/real-time-data-research/real-time-data-set-full-time-series-history"
+ }
+}
