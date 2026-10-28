@@ -15,7 +15,9 @@ from pacland.causal import battery as B  # noqa: E402
 OUT = ROOT / "web" / "verify.html"
 CERTS = ROOT / "certificates"
 
-GRADE_CLASS = {"VERIFIED": "ok", "QUALIFIED": "warn", "RESTRICTED": "bad", "REFUSED": "bad"}
+# Rob, 2026-10-28: a qualified model is a pass with a caveat, so it reads green;
+# only a refusal is red. Findings keep their own colours: satisfied green, failing red.
+GRADE_CLASS = {"VERIFIED": "ok", "QUALIFIED": "ok", "RESTRICTED": "warn", "REFUSED": "bad"}
 
 
 def load_certificates() -> list[dict]:
