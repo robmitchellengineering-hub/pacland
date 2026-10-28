@@ -81,6 +81,13 @@
    "title": "The verified badge \u2014 the AI discipline (Valiant Verification)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/airmatrix-room-correction.md",
+   "kind": "doc",
+   "path": "docs/airmatrix-room-correction.md",
+   "summary": "AirMatrix models rooms. This turns the spectral work into something it can act on, in three steps that each have to survive a check:",
+   "title": "Room correction from the mode spectrum: diagnose, fix, and check the fix away from the seat"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/architecture.md",
    "kind": "doc",
    "path": "docs/architecture.md",
@@ -1360,6 +1367,13 @@
    "path": "scripts/shard_vacua.sh",
    "summary": "shard_vacua.sh \u2014 shard the h12=25 flux-vacua sampling across the mesh's Linux nodes.",
    "title": "shard_vacua.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_rooms.py",
+   "kind": "script",
+   "path": "scripts/spectral_rooms.py",
+   "summary": "Room modes as a spectrum: the oracle an acoustic solver can be checked against.",
+   "title": "spectral_rooms.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_zeros.py",

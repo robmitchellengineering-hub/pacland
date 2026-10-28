@@ -101,15 +101,23 @@ def smets_wouters() -> Certificate:
         Finding("Ongoing monitoring", "Can the state be estimated from its own observables?",
                 f"No — observability rank {obs['rank']} of {obs['n_state']} ({obs['fraction']:.0%}), "
                 f"unchanged by adding the missing wage series",
-                "sw_filter.observability_rank", FAILING),
+                "sw_filter.observability_rank", FAILING,
+                remedy="estimate the unobserved block with PRIORS rather than from the data — "
+                        "full-information Bayesian estimation is what the authors themselves used, "
+                        "and it converts the 20 unidentified directions into prior-weighted ones"),
         Finding("Outcomes analysis", "Does a filter track data the model itself generated?",
                 f"One-step R^2 {min(r['r2'] for r in q['rows'].values()):+.2f} to "
                 f"{max(r['r2'] for r in q['rows'].values()):+.2f} — not usable",
-                "sw_filter.forecast_quality", FAILING),
+                "sw_filter.forecast_quality", FAILING,
+                remedy="do not run a plain filter on this model; the fix is a prior on the state, "
+                        "not a better filter"),
         Finding("Outcomes analysis", "Can the reduced form be matched to the data without a state?",
                 f"Moment fit R^2 {fit['r2']:.3f} while the shock scales are recovered to only "
                 f"{fit['worst_relative_error']:.0%} — a perfect fit with unidentified parameters",
-                "sw_distance.recovery", FAILING),
+                "sw_distance.recovery", FAILING,
+                remedy="add independent series (a 7-8 observable dataset) or shrink the shock scales "
+                        "toward the posterior — with five series the second moments cannot separate "
+                        "seven shocks"),
         Finding("Conceptual soundness", "Is the model identified at all?",
                 "The shock scales are not identified from five observables and two lags; the "
                 "unidentified directions are structural, not a data-quantity problem",
@@ -148,11 +156,17 @@ def cmip6(worst: bool = True) -> Certificate:
                 f"Net top-of-atmosphere drift {row['netTOA_drift_wm2']:+.3f} W/m2 against a "
                 f"{summary['tol_wm2']} W/m2 tolerance — "
                 f"{'fails' if not row['energy_pass'] else 'passes'}",
-                "cmip6_drift.verdict_table", FAILING if not row["energy_pass"] else SATISFIED),
+                "cmip6_drift.verdict_table", FAILING if not row["energy_pass"] else SATISFIED,
+                remedy="apply a conservation correction to the projections, or exclude the model and "
+                        "use the conserving five — the drift is a constant in the control run, so it "
+                        "is subtractable, and CMIP6 has models that do not need the correction"),
         Finding("Outcomes analysis", "Is the leak large compared with the signal being measured?",
                 f"{'Exceeds' if row['exceeds_eei'] else 'Does not exceed'} the Earth's energy "
                 f"imbalance of {summary['eei_wm2']} W/m2 — the signal the model exists to project",
-                "cmip6_drift.verdict_table", FAILING if row["exceeds_eei"] else SATISFIED),
+                "cmip6_drift.verdict_table", FAILING if row["exceeds_eei"] else SATISFIED,
+                remedy="for projections where the signal is smaller than the leak, weight the ensemble "
+                        "toward conserving models — a 1.9x-EEI drift is larger than the effect being "
+                        "attributed to it"),
         Finding("Data quality", "Does the model conserve mass and salt?",
                 f"Mass drift {row['mass_drift_mm_per_yr']:+.2f} mm/yr sea-level equivalent "
                 f"({'pass' if row['mass_pass'] else 'fail'}); salt drift "
@@ -219,7 +233,9 @@ def physics_theorems() -> Certificate:
             "Exact structure", f"Does {name} hold when the checker is re-run?",
             claim if ok else f"the validator failed: {tail[-1] if tail else 'no output'}",
             f"scripts/{script}", SATISFIED if ok else FAILING,
-            falsifier=f"scripts/{script} exits non-zero — a single failing symbol fails the theorem"))
+            falsifier=f"scripts/{script} exits non-zero — a single failing symbol fails the theorem",
+            remedy="none — a compiling proof is the fix; if one fails, the statement is false and the "
+                   "remedy is to change the claim, not to patch the proof"))
     return Certificate(
         subject="The landscape theorem tower (5 theorems)", sector="physics", issuer=ISSUER,
         issued=ISSUED, findings=tuple(findings),
@@ -252,6 +268,8 @@ def riemann_zeros() -> Certificate:
                 f"the first five zeros to {Z.validate()['max_error']:.1e}, on an engine written from "
                 f"scratch with no dependencies",
                 "scripts/spectral_zeros.py; src/pacland/spectral/zeros.py", SATISFIED,
+                remedy="none — re-run on any change to the zeta engine; the five known zeros are the "
+                       "regression test",
                 falsifier="the first five zeros are 14.134725, 21.022040, 25.010858, 30.424876, "
                           "32.935062 — an implementation that misses them is wrong and knows it"),
         Finding("Data quality", "Are all the zeros in the range actually found?",

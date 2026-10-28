@@ -16,7 +16,8 @@
       "evidence": "34 equations, 34 endogenous variables; every equation vanishes at the steady state to 0.0e+00 and the solved policy satisfies the system to ~1e-13",
       "evidence_path": "src/pacland/economics/sw_solve.py::solve_model",
       "producer": "Model: authors' Dynare file, fetched at verification time (sha256 recorded); Scripts: scripts/econ_sw_solve.py, scripts/econ_sw_filter.py, scripts/econ_sw_distance.py; Modules: src/pacland/economics/sw_solve.py, sw_filter.py, sw_distance.py",
-      "falsifier": "not stated \u2014 this finding records a measurement without naming the failure it rules out"
+      "falsifier": "not stated \u2014 this finding records a measurement without naming the failure it rules out",
+      "remedy": "none \u2014 the check passes; keep the evidence and re-run on change"
     },
     {
       "gate": "ongoing_monitoring_can_the_state_be_estimated_from_its_own_obser",
@@ -25,7 +26,8 @@
       "evidence": "No \u2014 observability rank 14 of 34 (41%), unchanged by adding the missing wage series",
       "evidence_path": "sw_filter.observability_rank",
       "producer": "Model: authors' Dynare file, fetched at verification time (sha256 recorded); Scripts: scripts/econ_sw_solve.py, scripts/econ_sw_filter.py, scripts/econ_sw_distance.py; Modules: src/pacland/economics/sw_solve.py, sw_filter.py, sw_distance.py",
-      "falsifier": "the failure is the finding"
+      "falsifier": "the failure is the finding",
+      "remedy": "estimate the unobserved block with PRIORS rather than from the data \u2014 full-information Bayesian estimation is what the authors themselves used, and it converts the 20 unidentified directions into prior-weighted ones"
     },
     {
       "gate": "outcomes_analysis_does_a_filter_track_data_the_model_itself_gene",
@@ -34,7 +36,8 @@
       "evidence": "One-step R^2 +0.10 to +0.41 \u2014 not usable",
       "evidence_path": "sw_filter.forecast_quality",
       "producer": "Model: authors' Dynare file, fetched at verification time (sha256 recorded); Scripts: scripts/econ_sw_solve.py, scripts/econ_sw_filter.py, scripts/econ_sw_distance.py; Modules: src/pacland/economics/sw_solve.py, sw_filter.py, sw_distance.py",
-      "falsifier": "the failure is the finding"
+      "falsifier": "the failure is the finding",
+      "remedy": "do not run a plain filter on this model; the fix is a prior on the state, not a better filter"
     },
     {
       "gate": "outcomes_analysis_can_the_reduced_form_be_matched_to_the_data_wi",
@@ -43,7 +46,8 @@
       "evidence": "Moment fit R^2 0.999 while the shock scales are recovered to only 36% \u2014 a perfect fit with unidentified parameters",
       "evidence_path": "sw_distance.recovery",
       "producer": "Model: authors' Dynare file, fetched at verification time (sha256 recorded); Scripts: scripts/econ_sw_solve.py, scripts/econ_sw_filter.py, scripts/econ_sw_distance.py; Modules: src/pacland/economics/sw_solve.py, sw_filter.py, sw_distance.py",
-      "falsifier": "the failure is the finding"
+      "falsifier": "the failure is the finding",
+      "remedy": "add independent series (a 7-8 observable dataset) or shrink the shock scales toward the posterior \u2014 with five series the second moments cannot separate seven shocks"
     },
     {
       "gate": "conceptual_soundness_is_the_model_identified_at_all",
@@ -52,7 +56,8 @@
       "evidence": "The shock scales are not identified from five observables and two lags; the unidentified directions are structural, not a data-quantity problem",
       "evidence_path": "sw_distance.py",
       "producer": "Model: authors' Dynare file, fetched at verification time (sha256 recorded); Scripts: scripts/econ_sw_solve.py, scripts/econ_sw_filter.py, scripts/econ_sw_distance.py; Modules: src/pacland/economics/sw_solve.py, sw_filter.py, sw_distance.py",
-      "falsifier": "the failure is the finding"
+      "falsifier": "the failure is the finding",
+      "remedy": "fix the failing check before relying on this claim; the falsifier names what to repair"
     }
   ],
   "limitations": [

@@ -18,7 +18,8 @@
       "answer": "the first five zeros to 4.2e-11, on an engine written from scratch with no dependencies",
       "evidence": "scripts/spectral_zeros.py; src/pacland/spectral/zeros.py",
       "status": "satisfied",
-      "falsifier": "the first five zeros are 14.134725, 21.022040, 25.010858, 30.424876, 32.935062 \u2014 an implementation that misses them is wrong and knows it"
+      "falsifier": "the first five zeros are 14.134725, 21.022040, 25.010858, 30.424876, 32.935062 \u2014 an implementation that misses them is wrong and knows it",
+      "remedy": "none \u2014 re-run on any change to the zeta engine; the five known zeros are the regression test"
     },
     {
       "clause": "Data quality",
@@ -26,7 +27,8 @@
       "answer": "202 zeros below t = 400 against a smooth count of 201.6 \u2014 no zeros missed",
       "evidence": "zeros.audit()",
       "status": "satisfied",
-      "falsifier": "a count that drifts from the counting formula means missed or spurious zeros"
+      "falsifier": "a count that drifts from the counting formula means missed or spurious zeros",
+      "remedy": ""
     },
     {
       "clause": "Outcomes analysis",
@@ -34,7 +36,8 @@
       "answer": "ratio statistic 0.6155 against a synthetic GUE control 0.6163 \u00b1 0.0190, and Poisson 0.3810 \u2014 12.3 control standard deviations away",
       "evidence": "zeros.gue_control(); zeros.poisson_ratio()",
       "status": "satisfied",
-      "falsifier": "a ratio near the Poisson value would mean the zeros do not repel"
+      "falsifier": "a ratio near the Poisson value would mean the zeros do not repel",
+      "remedy": ""
     },
     {
       "clause": "Conceptual soundness",
@@ -42,7 +45,8 @@
       "answer": "no \u2014 0.5307 is the asymptotic GUE value; at 201 spacings the same estimator returns 0.6163 \u00b1 0.0190, so the zeros are compared against a finite-sample control",
       "evidence": "zeros.gue_control()",
       "status": "satisfied",
-      "falsifier": "comparing 201 spacings against 0.5307 would report a 4\u03c3 failure of a correct computation \u2014 which is exactly what the first run did"
+      "falsifier": "comparing 201 spacings against 0.5307 would report a 4\u03c3 failure of a correct computation \u2014 which is exactly what the first run did",
+      "remedy": ""
     }
   ],
   "limitations": [
