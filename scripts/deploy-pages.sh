@@ -42,6 +42,17 @@ for f in "$ROOT"/web/*.html "$ROOT"/web/*.json; do
   fi
 done
 
+# the VVS certificates are linked from verify.html, so they must be mirrored too — a link to a file
+# that only exists in the repository is a 404 on the site
+if [ -d "$ROOT/web/vvs" ]; then
+  mkdir -p "$WT/vvs"
+  if ! diff -rq "$ROOT/web/vvs" "$WT/vvs" >/dev/null 2>&1; then
+    cp -R "$ROOT"/web/vvs/. "$WT/vvs/"
+    echo "update  vvs/"
+    changed=1
+  fi
+fi
+
 # vendored assets (plotly for the 3D view) are part of the site, not of the HTML
 if [ -d "$ROOT/web/vendor" ]; then
   mkdir -p "$WT/vendor"
