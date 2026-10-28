@@ -229,13 +229,28 @@ def physics_theorems() -> Certificate:
                              env={**os.environ, "PYTHONPATH": str(root / "src")})
         ok = run.returncode == 0
         tail = [l.strip() for l in (run.stdout + run.stderr).strip().splitlines() if l.strip()]
+        combined = run.stdout + run.stderr
+        # A missing dependency is not a false theorem. This distinction was forced by running the
+        # certificate on a bare Linux node, where numpy is absent and the tower read REFUSED —
+        # an accusation against the mathematics that was really an accusation against the machine.
+        dep_gap = ("ModuleNotFoundError" in combined or "ImportError" in combined)
+        if ok:
+            status, detail = SATISFIED, claim
+        elif dep_gap:
+            status = NOT_DEMONSTRATED
+            detail = ("could not be re-run here: a dependency is missing in this environment "
+                      f"({tail[-1][:120] if tail else 'no output'}). The theorem is not refuted; the "
+                      "check did not run")
+        else:
+            status, detail = FAILING, f"the validator failed: {tail[-1] if tail else 'no output'}"
         findings.append(Finding(
             "Exact structure", f"Does {name} hold when the checker is re-run?",
-            claim if ok else f"the validator failed: {tail[-1] if tail else 'no output'}",
-            f"scripts/{script}", SATISFIED if ok else FAILING,
+            detail, f"scripts/{script}", status,
             falsifier=f"scripts/{script} exits non-zero — a single failing symbol fails the theorem",
-            remedy="none — a compiling proof is the fix; if one fails, the statement is false and the "
-                   "remedy is to change the claim, not to patch the proof"))
+            remedy=("install the missing dependency and re-run — an environment gap is fixed in the "
+                    "environment" if dep_gap else
+                    "none — a compiling proof is the fix; if one fails, the statement is false and "
+                    "the remedy is to change the claim, not to patch the proof")))
     return Certificate(
         subject="The landscape theorem tower (5 theorems)", sector="physics", issuer=ISSUER,
         issued=ISSUED, findings=tuple(findings),
