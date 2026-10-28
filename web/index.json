@@ -718,6 +718,13 @@
    "title": "build_site_index.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_verify_index.py",
+   "kind": "script",
+   "path": "scripts/build_verify_index.py",
+   "summary": "Generate web/verify.html \u2014 the public verification index, from the certificates and the battery.",
+   "title": "build_verify_index.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/causal_battery.py",
    "kind": "script",
    "path": "scripts/causal_battery.py",
@@ -1640,6 +1647,13 @@
    "path": "web/index.html",
    "summary": "page on this site",
    "title": "The front page \u2014 what PACLAND is"
+  },
+  {
+   "href": "./verify.html",
+   "kind": "page",
+   "path": "web/verify.html",
+   "summary": "page on this site",
+   "title": "verify"
   },
   {
    "href": "./viz.html",
