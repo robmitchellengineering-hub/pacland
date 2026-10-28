@@ -1,4 +1,5 @@
 """The VVS named-gate certificate: five fields per gate, and a verified flag that cannot lie."""
+import importlib.util
 import json
 import pathlib
 import unittest
@@ -7,6 +8,12 @@ from pacland.certify import dossiers as D
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 VVS = ROOT / "certificates" / "vvs"
+
+#: The theorem validators import numpy. On a host without it the certificate correctly reports a
+#: dependency gap (NOT_DEMONSTRATED) rather than a false theorem — so a test that asserts the tower is
+#: VERIFIED must skip, not fail, where the check cannot run. Found by running the suite on the mesh
+#: node: three tests failed on a bare Linux host for a reason that was about the host, not the code.
+HAVE_NUMPY = importlib.util.find_spec("numpy") is not None
 
 
 class TestFormat(unittest.TestCase):
@@ -32,14 +39,24 @@ class TestFormat(unittest.TestCase):
                                Finding("c", "q2", "a", "e", FAILING)))
         v = made.to_vvs()
         self.assertEqual((v["gates_passed"], v["gates_required"], v["verified"]), (1, 2, False))
-        for name in ("gdpnow", "physics_theorems"):
+        names = ["gdpnow"] + (["physics_theorems"] if HAVE_NUMPY else [])
+        for name in names:
             v = getattr(D, name)().to_vvs()
             self.assertTrue(v["verified"], name)
             self.assertEqual(v["gates_required"], len(v["gates"]))
 
 
 class TestPhysics(unittest.TestCase):
+    def test_a_dependency_gap_is_not_a_false_theorem(self):
+        if HAVE_NUMPY:
+            self.skipTest("numpy present: the accepted path is the verified one")
+        c = D.physics_theorems()
+        self.assertNotEqual(c.grade, "REFUSED")
+        self.assertTrue(any("not refuted" in f.answer for f in c.findings))
+
     def test_the_theorem_tower_is_verified(self):
+        if not HAVE_NUMPY:
+            self.skipTest("validators need numpy; the dependence is reported by the certificate")
         c = D.physics_theorems()
         self.assertEqual(c.grade, "VERIFIED")
         self.assertTrue(c.to_vvs()["verified"])
