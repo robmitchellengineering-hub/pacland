@@ -1,5 +1,6 @@
 {
   "subject": "Atlanta Fed GDPNow (GDP nowcast, US)",
+  "sector": "finance",
   "issuer": "Pacland / Valiant Verification",
   "issued": "2026-10-28",
   "grade": "QUALIFIED",

@@ -40,7 +40,8 @@ def gdpnow() -> Certificate:
                 "first-publication target, units", "tests/test_gdpnow.py", SATISFIED),
     ]
     return Certificate(
-        subject="Atlanta Fed GDPNow (GDP nowcast, US)", issuer=ISSUER, issued=ISSUED,
+        subject="Atlanta Fed GDPNow (GDP nowcast, US)", sector="finance",
+        issuer=ISSUER, issued=ISSUED,
         findings=tuple(findings),
         headline=(f"Beats the no-change null by a wide margin ({100 * (1 - ratio):.0f}% lower MAE) on "
                   f"{advance['n']} quarters of real-time vintages — qualified because that skill is "
@@ -85,7 +86,8 @@ def smets_wouters() -> Certificate:
                 "sw_distance.py", NOT_DEMONSTRATED),
     ]
     return Certificate(
-        subject="Smets–Wouters (2007) linearised DSGE", issuer=ISSUER, issued=ISSUED,
+        subject="Smets–Wouters (2007) linearised DSGE", sector="finance",
+        issuer=ISSUER, issued=ISSUED,
         findings=tuple(findings),
         headline=("The model solves and its units reconcile to the data, but its state is only 41% "
                   "observable from its own series and its shock scales are unidentified. It cannot "
@@ -135,8 +137,8 @@ def cmip6(worst: bool = True) -> Certificate:
                 "cmip6_drift.summary", SATISFIED),
     ]
     return Certificate(
-        subject=f"CMIP6 model {row['model']} ({row['institution']})", issuer=ISSUER,
-        issued=ISSUED, findings=tuple(findings),
+        subject=f"CMIP6 model {row['model']} ({row['institution']})", sector="climate",
+        issuer=ISSUER, issued=ISSUED, findings=tuple(findings),
         headline=(f"In a pre-industrial control, where the climate must be stationary, this model "
                   f"drifts {row['netTOA_drift_wm2']:+.2f} W/m2 — "
                   f"{abs(row['netTOA_drift_wm2']) / summary['eei_wm2']:.1f}x the Earth's energy "

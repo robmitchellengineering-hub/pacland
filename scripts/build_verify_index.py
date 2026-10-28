@@ -113,6 +113,8 @@ HTML = """<!DOCTYPE html>
   header a {{ color:#fff; }}
   main {{ padding:2rem 0 4rem; }}
   h2 {{ font-size:1.35rem; color:var(--accent); margin:2.2rem 0 .5rem; }}
+  h3.sector {{ font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+               margin:2.4rem 0 -.2rem; padding-bottom:.4rem; border-bottom:2px solid var(--line); }}
   .card {{ border:1px solid var(--line); border-radius:14px; padding:1.1rem 1.2rem; margin:1rem 0;
            background:#fff; }}
   .cardhead {{ display:flex; align-items:center; gap:.8rem; flex-wrap:wrap; }}
@@ -172,7 +174,7 @@ HTML = """<!DOCTYPE html>
 </div></header>
 <main><div class="wrap">
 
-<h2>Institutional models</h2>
+<h2>Sector by sector</h2>
 <p>Each certificate answers five questions mapped to model-risk supervision (SR 11-7 concepts, PRA
 SS1/23 lifecycle), and every number is regenerated from a script rather than transcribed. The grade is
 the <strong>worst</strong> finding, not an average.</p>
@@ -181,22 +183,31 @@ the <strong>worst</strong> finding, not an average.</p>
   <span><span class="pill warn">partial / not demonstrated</span> limited</span>
   <span><span class="pill bad">failing</span> the model cannot currently be relied on for this</span>
 </div>
-{certificates}
 
+<section id="finance">
+<h3 class="sector">Finance</h3>
+{finance_certificates}
+
+<h2>The finance sector, claim by claim</h2>
+<p>A desk does not act on "the model". It acts on a <strong>claim</strong>. For each one: how many
+independent constraints were satisfied (<em>m</em>), the honest error bar that buys
+(<code>sqrt(ln(1/&delta;) / 2m)</code>), whether the claim lives inside the region that was measured,
+and the independent reference it is checked against — then what it is worth to act on.</p>
+{finance}
+</section>
+
+<section id="climate">
+<h3 class="sector">Climate</h3>
+{climate_certificates}
+</section>
+
+<section id="methods">
+<h3 class="sector">Methods</h3>
 <h2>The known-truth battery for causal estimators</h2>
 <p>Effects are <strong>planted</strong>, so recovering them is a checkable fact rather than an
 opinion. Read it as a matrix, not a verdict: each estimator wins the design it was built for and
 loses the others.</p>
 {battery}
-
-
-<section id="finance">
-<h2>The finance sector, claim by claim</h2>
-<p>A desk does not act on "the model". It acts on a <strong>claim</strong>. For each one: how many
-independent constraints were satisfied (<em>m</em>), the honest error bar that buys
-(<code>sqrt(ln(1/&delta;) / 2m)</code>), whether the claim lives inside the region that was measured,
-and the independent reference it is checked against. Then what it is worth to act on.</p>
-{finance}
 </section>
 
 <footer>
@@ -211,11 +222,21 @@ and the independent reference it is checked against. Then what it is worth to ac
 """
 
 
+SECTOR_ORDER = ("finance", "climate")
+
+
 def main() -> int:
     certs = load_certificates()
-    cards = "".join(cert_card(c) for c in certs)
-    OUT.write_text(HTML.format(certificates=cards, battery=battery_table(),
-                               finance=finance_table()))
+    by_sector: dict[str, list[dict]] = {}
+    for c in certs:
+        by_sector.setdefault(c.get("sector") or "other", []).append(c)
+    for group in by_sector.values():
+        group.sort(key=lambda c: c.get("grade") != "REFUSED")      # refusals first: they matter most
+    cards = {sector: "".join(cert_card(c) for c in by_sector.get(sector, []))
+             for sector in SECTOR_ORDER}
+    OUT.write_text(HTML.format(finance_certificates=cards.get("finance", ""),
+                               climate_certificates=cards.get("climate", ""),
+                               battery=battery_table(), finance=finance_table()))
     print(f"wrote {OUT.relative_to(ROOT)}: {len(certs)} certificates, battery table")
     return 0
 
