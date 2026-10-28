@@ -333,6 +333,13 @@
    "title": "PACLAND expansion map \u2014 where the method applies next"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/external-claims-padgett.md",
+   "kind": "doc",
+   "path": "docs/external-claims-padgett.md",
+   "summary": "Asked to look at Jason Padgett's research. This is the record of what exists, what in it is checkable, and what the checks returned. It is not a judgement of the man \u2014 the machine is\u2026",
+   "title": "An outside claim through the same machine: Jason Padgett's QIH preprints"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/falsifiable-predictions.md",
    "kind": "doc",
    "path": "docs/falsifiable-predictions.md",
@@ -758,6 +765,13 @@
    "path": "scripts/check_certificates_current.py",
    "summary": "Reproducibility, checked mechanically: do the committed certificates match a fresh run?",
    "title": "check_certificates_current.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check_padgett_claims.py",
+   "kind": "script",
+   "path": "scripts/check_padgett_claims.py",
+   "summary": "An outside claim, put through the same machine: Jason Padgett's \"asymmetric prime\" interference.",
+   "title": "check_padgett_claims.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_carbon.py",
