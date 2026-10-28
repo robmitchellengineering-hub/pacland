@@ -851,6 +851,13 @@
    "title": "econ_resolve.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_sw_filter.py",
+   "kind": "script",
+   "path": "scripts/econ_sw_filter.py",
+   "summary": "The Kalman filter for SW: implemented, 8x faster, and refused on a measured test.",
+   "title": "econ_sw_filter.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_sw_measure.py",
    "kind": "script",
    "path": "scripts/econ_sw_measure.py",
