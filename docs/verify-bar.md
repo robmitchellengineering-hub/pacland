@@ -128,3 +128,25 @@ deficit).
 **Does not establish:** that climate's gaps are as deep as macro-finance's. Climate has real
 invariants and a measurable oracle; macro-finance has definitional identities and a
 non-identified parameter set. The bar names the gap; it does not rank the fields.
+
+## One board, two renderings (2026-10-28)
+
+There were briefly two boards: the `pacland trust` tiers on the front page, and the certificates on
+`web/verify.html`. They graded the same artifacts in different vocabularies and **disagreed in public**
+— GDPNow was `clean` on the board and `QUALIFIED` in its certificate; CMIP6 CNRM-ESM2-1 was `broken`
+in one place and `REFUSED` in the other — and the front-page count had rotted to "29 artifacts" while
+the board held 42.
+
+The rule now: **`pacland.trust` is the single source**, and the two pages are views of it.
+
+| board tier | certificate grade | meaning |
+|---|---|---|
+| `clean` | VERIFIED / QUALIFIED | meets its obligations (QUALIFIED = meets them with a named limitation) |
+| `weak` | RESTRICTED | owes a slot, or loses to the null |
+| `broken` | REFUSED | a required constraint fails |
+
+- The front-page summary is generated from `trust.board()` by `scripts/build_trust_summary.py`, so the
+  count cannot rot again.
+- `web/verify.html` says on its face that it is the detail view of the same board.
+- Where a certificate exists, **its grade wins over the coarse tier**, because it is the deeper check —
+  and the board records which source the tier came from.

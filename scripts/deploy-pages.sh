@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+# the front-page trust count is generated, not typed (see docs/verify-bar.md)
+PYTHONPATH=src python3 scripts/build_trust_summary.py
 # deploy-pages.sh — mirror `web/` onto the GitHub Pages branch.
 #
 # The Pages mirror is a SEPARATE deploy target from Netlify:

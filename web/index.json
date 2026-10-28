@@ -725,6 +725,13 @@
    "title": "build_site_index.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_trust_summary.py",
+   "kind": "script",
+   "path": "scripts/build_trust_summary.py",
+   "summary": "Regenerate the trust-board summary line in web/index.html from `pacland.trust.board()`.",
+   "title": "build_trust_summary.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_verify_index.py",
    "kind": "script",
    "path": "scripts/build_verify_index.py",
@@ -840,7 +847,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/deploy-pages.sh",
    "kind": "script",
    "path": "scripts/deploy-pages.sh",
-   "summary": "deploy-pages.sh \u2014 mirror `web/` onto the GitHub Pages branch.",
+   "summary": "the front-page trust count is generated, not typed (see docs/verify-bar.md)",
    "title": "deploy-pages.sh"
   },
   {
