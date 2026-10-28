@@ -18,6 +18,8 @@
   header a { color:#fff; }
   main { padding:2rem 0 4rem; }
   h2 { font-size:1.35rem; color:var(--accent); margin:2.2rem 0 .5rem; }
+  h3.sector { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+               margin:2.4rem 0 -.2rem; padding-bottom:.4rem; border-bottom:2px solid var(--line); }
   .card { border:1px solid var(--line); border-radius:14px; padding:1.1rem 1.2rem; margin:1rem 0;
            background:#fff; }
   .cardhead { display:flex; align-items:center; gap:.8rem; flex-wrap:wrap; }
@@ -77,7 +79,7 @@
 </div></header>
 <main><div class="wrap">
 
-<h2>Institutional models</h2>
+<h2>Sector by sector</h2>
 <p>Each certificate answers five questions mapped to model-risk supervision (SR 11-7 concepts, PRA
 SS1/23 lifecycle), and every number is regenerated from a script rather than transcribed. The grade is
 the <strong>worst</strong> finding, not an average.</p>
@@ -87,17 +89,20 @@ the <strong>worst</strong> finding, not an average.</p>
   <span><span class="pill bad">failing</span> the model cannot currently be relied on for this</span>
 </div>
 
+<section id="finance">
+<h3 class="sector">Finance</h3>
+
     <article class="card">
       <div class="cardhead">
-        <h3>CMIP6 model CNRM-ESM2-1 (CNRM-CERFACS)</h3>
+        <h3>Smets–Wouters (2007) linearised DSGE</h3>
         <span class="grade bad">REFUSED</span>
       </div>
-      <p class="headline">In a pre-industrial control, where the climate must be stationary, this model drifts +1.49 W/m2 — 1.9x the Earth's energy imbalance that its projections are meant to represent.</p>
+      <p class="headline">The model solves and its units reconcile to the data, but its state is only 41% observable from its own series and its shock scales are unidentified. It cannot currently be scored out of sample, and that is the finding.</p>
       <table class="findings">
         <thead><tr><th>clause</th><th>question</th><th>what the evidence says</th><th class="st">status</th></tr></thead>
-        <tbody><tr><td>Conceptual soundness</td><td>Does the model conserve energy in a control climate?</td><td class='ev'>Net top-of-atmosphere drift +1.485 W/m2 against a 0.1 W/m2 tolerance — fails</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Outcomes analysis</td><td>Is the leak large compared with the signal being measured?</td><td class='ev'>Exceeds the Earth's energy imbalance of 0.77 W/m2 — the signal the model exists to project</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Data quality</td><td>Does the model conserve mass and salt?</td><td class='ev'>Mass drift +0.44 mm/yr sea-level equivalent (fail); salt drift -1.94e-06 (pass)</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Ongoing monitoring</td><td>Is this model an outlier among its peers?</td><td class='ev'>12 of 19 CMIP6 models fail the energy ledger and 5 conserve all three — the model is graded against a population, not a single threshold</td><td class='st'><span class='pill ok'>satisfied</span></td></tr></tbody>
+        <tbody><tr><td>Conceptual soundness</td><td>Is the model's solution correct?</td><td class='ev'>34 equations, 34 endogenous variables; every equation vanishes at the steady state to 0.0e+00 and the solved policy satisfies the system to ~1e-13</td><td class='st'><span class='pill ok'>satisfied</span></td></tr><tr><td>Ongoing monitoring</td><td>Can the state be estimated from its own observables?</td><td class='ev'>No — observability rank 14 of 34 (41%), unchanged by adding the missing wage series</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Outcomes analysis</td><td>Does a filter track data the model itself generated?</td><td class='ev'>One-step R^2 +0.10 to +0.41 — not usable</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Outcomes analysis</td><td>Can the reduced form be matched to the data without a state?</td><td class='ev'>Moment fit R^2 0.999 while the shock scales are recovered to only 36% — a perfect fit with unidentified parameters</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Conceptual soundness</td><td>Is the model identified at all?</td><td class='ev'>The shock scales are not identified from five observables and two lags; the unidentified directions are structural, not a data-quantity problem</td><td class='st'><span class='pill warn'>not demonstrated</span></td></tr></tbody>
       </table>
-      <p class="prov">evidence: Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py</p>
+      <p class="prov">evidence: Model: authors' Dynare file, fetched at verification time (sha256 recorded); Scripts: scripts/econ_sw_solve.py, scripts/econ_sw_filter.py, scripts/econ_sw_distance.py; Modules: src/pacland/economics/sw_solve.py, sw_filter.py, sw_distance.py</p>
     </article>
     <article class="card">
       <div class="cardhead">
@@ -111,33 +116,39 @@ the <strong>worst</strong> finding, not an average.</p>
       </table>
       <p class="prov">evidence: Data: data/economics/gdpnow_vintages.json (ALFRED vintages); Script: python3 scripts/economics_gdpnow.py; Module: src/pacland/economics/gdpnow.py</p>
     </article>
+
+<h2>The finance sector, claim by claim</h2>
+<p>A desk does not act on "the model". It acts on a <strong>claim</strong>. For each one: how many
+independent constraints were satisfied (<em>m</em>), the honest error bar that buys
+(<code>sqrt(ln(1/&delta;) / 2m)</code>), whether the claim lives inside the region that was measured,
+and the independent reference it is checked against — then what it is worth to act on.</p>
+<table class='finance'><thead><tr><th>claim</th><th>m</th><th>radius</th><th>region</th><th>verified reference</th><th class='st'>worth</th></tr></thead><tbody><tr><td>The first published GDP estimate is biased upward.</td><td class='num'>5</td><td class='num'>±0.55</td><td>measured region</td><td>the Fed's own First/Second/Third/Most-Recent release ladder, 239 quarters</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>That bias cannot be traded.</td><td class='num'>5</td><td class='num'>±0.55</td><td>measured region</td><td>AR(1) of the revision is -0.07: past revisions do not predict the next</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>GDPNow beats a no-change forecast at a one-quarter horizon.</td><td class='num'>4</td><td class='num'>±0.61</td><td>measured region</td><td>no-change benchmark on the same vintage, 37 quarters</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>GDPNow beats a no-change forecast at the settled GDP number.</td><td class='num'>0</td><td class='num'>vacuous</td><td>extrapolation</td><td>none — the evaluation targets the advance estimate, not the final one</td><td class='st'><span class='pill bad'>do not act</span></td></tr><tr><td>Our own recorded 'first release' is the first release.</td><td class='num'>4</td><td class='num'>±0.61</td><td>measured region</td><td>the Fed's First Release against the advance we recorded from ALFRED</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>Smets–Wouters can be scored out of sample on its own observables.</td><td class='num'>0</td><td class='num'>vacuous</td><td>extrapolation</td><td>none — the state is only 41% observable from its own series</td><td class='st'><span class='pill bad'>do not act</span></td></tr><tr><td>The GDP expenditure identity closes exactly.</td><td class='num'>4</td><td class='num'>exact</td><td>measured region</td><td>BEA annual/quarterly identity, checked to 1e-16 of GDP</td><td class='st'><span class='pill ok'>act</span></td></tr><tr><td>A 37-quarter revision measurement generalises to the whole record.</td><td class='num'>0</td><td class='num'>vacuous</td><td>extrapolation</td><td>the 239-quarter ladder, which gives a different and more stable answer</td><td class='st'><span class='pill bad'>do not act</span></td></tr></tbody></table><p class='note'>8 claims: 1 act, 4 act with a hedge, 3 do not act; 3 are extrapolation. Rule: outside the measured region, do not act, whatever m is; inside with no constraints, do not act; inside with a radius above 0.25, act with a hedge its size; inside with a radius at or below 0.25, act.</p>
+</section>
+
+<section id="climate">
+<h3 class="sector">Climate</h3>
+
     <article class="card">
       <div class="cardhead">
-        <h3>Smets–Wouters (2007) linearised DSGE</h3>
+        <h3>CMIP6 model CNRM-ESM2-1 (CNRM-CERFACS)</h3>
         <span class="grade bad">REFUSED</span>
       </div>
-      <p class="headline">The model solves and its units reconcile to the data, but its state is only 41% observable from its own series and its shock scales are unidentified. It cannot currently be scored out of sample, and that is the finding.</p>
+      <p class="headline">In a pre-industrial control, where the climate must be stationary, this model drifts +1.49 W/m2 — 1.9x the Earth's energy imbalance that its projections are meant to represent.</p>
       <table class="findings">
         <thead><tr><th>clause</th><th>question</th><th>what the evidence says</th><th class="st">status</th></tr></thead>
-        <tbody><tr><td>Conceptual soundness</td><td>Is the model's solution correct?</td><td class='ev'>34 equations, 34 endogenous variables; every equation vanishes at the steady state to 0.0e+00 and the solved policy satisfies the system to ~1e-13</td><td class='st'><span class='pill ok'>satisfied</span></td></tr><tr><td>Ongoing monitoring</td><td>Can the state be estimated from its own observables?</td><td class='ev'>No — observability rank 14 of 34 (41%), unchanged by adding the missing wage series</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Outcomes analysis</td><td>Does a filter track data the model itself generated?</td><td class='ev'>One-step R^2 +0.10 to +0.41 — not usable</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Outcomes analysis</td><td>Can the reduced form be matched to the data without a state?</td><td class='ev'>Moment fit R^2 0.999 while the shock scales are recovered to only 36% — a perfect fit with unidentified parameters</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Conceptual soundness</td><td>Is the model identified at all?</td><td class='ev'>The shock scales are not identified from five observables and two lags; the unidentified directions are structural, not a data-quantity problem</td><td class='st'><span class='pill warn'>not demonstrated</span></td></tr></tbody>
+        <tbody><tr><td>Conceptual soundness</td><td>Does the model conserve energy in a control climate?</td><td class='ev'>Net top-of-atmosphere drift +1.485 W/m2 against a 0.1 W/m2 tolerance — fails</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Outcomes analysis</td><td>Is the leak large compared with the signal being measured?</td><td class='ev'>Exceeds the Earth's energy imbalance of 0.77 W/m2 — the signal the model exists to project</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Data quality</td><td>Does the model conserve mass and salt?</td><td class='ev'>Mass drift +0.44 mm/yr sea-level equivalent (fail); salt drift -1.94e-06 (pass)</td><td class='st'><span class='pill bad'>failing</span></td></tr><tr><td>Ongoing monitoring</td><td>Is this model an outlier among its peers?</td><td class='ev'>12 of 19 CMIP6 models fail the energy ledger and 5 conserve all three — the model is graded against a population, not a single threshold</td><td class='st'><span class='pill ok'>satisfied</span></td></tr></tbody>
       </table>
-      <p class="prov">evidence: Model: authors' Dynare file, fetched at verification time (sha256 recorded); Scripts: scripts/econ_sw_solve.py, scripts/econ_sw_filter.py, scripts/econ_sw_distance.py; Modules: src/pacland/economics/sw_solve.py, sw_filter.py, sw_distance.py</p>
+      <p class="prov">evidence: Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py</p>
     </article>
+</section>
 
+<section id="methods">
+<h3 class="sector">Methods</h3>
 <h2>The known-truth battery for causal estimators</h2>
 <p>Effects are <strong>planted</strong>, so recovering them is a checkable fact rather than an
 opinion. Read it as a matrix, not a verdict: each estimator wins the design it was built for and
 loses the others.</p>
 <table class='battery'><thead><tr><th>design</th><th>estimator</th><th>median</th><th>planted</th><th>recover</th><th></th></tr></thead><tbody><tr><td>clean DiD</td><td>did_two_by_two</td><td class='num'>+1.028</td><td class='num'>1.00</td><td class='num'>70%</td><td><span class='pill ok'>recovers</span></td></tr><tr><td>broken trends</td><td>did_two_by_two</td><td class='num'>+1.830</td><td class='num'>1.00</td><td class='num'>0%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>staggered adoption</td><td>twfe</td><td class='num'>+1.106</td><td class='num'>1.00</td><td class='num'>57%</td><td><span class='pill ok'>recovers</span></td></tr><tr><td>staggered adoption</td><td>not_yet_treated</td><td class='num'>+0.994</td><td class='num'>1.00</td><td class='num'>75%</td><td><span class='pill ok'>recovers</span></td></tr><tr><td>weak instrument</td><td>iv_2sls</td><td class='num'>+1.053</td><td class='num'>1.00</td><td class='num'>10%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>weak instrument</td><td>ols_slope</td><td class='num'>+1.799</td><td class='num'>1.00</td><td class='num'>0%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>measurement error</td><td>ols_slope</td><td class='num'>+0.504</td><td class='num'>1.00</td><td class='num'>0%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>measurement error</td><td>iv_2sls</td><td class='num'>+0.999</td><td class='num'>1.00</td><td class='num'>100%</td><td><span class='pill ok'>recovers</span></td></tr></tbody></table><p class='note'>4 of 8 cells recover the planted effect in at least half of 60 replications.</p>
-
-
-<section id="finance">
-<h2>The finance sector, claim by claim</h2>
-<p>A desk does not act on "the model". It acts on a <strong>claim</strong>. For each one: how many
-independent constraints were satisfied (<em>m</em>), the honest error bar that buys
-(<code>sqrt(ln(1/&delta;) / 2m)</code>), whether the claim lives inside the region that was measured,
-and the independent reference it is checked against. Then what it is worth to act on.</p>
-<table class='finance'><thead><tr><th>claim</th><th>m</th><th>radius</th><th>region</th><th>verified reference</th><th class='st'>worth</th></tr></thead><tbody><tr><td>The first published GDP estimate is biased upward.</td><td class='num'>5</td><td class='num'>±0.55</td><td>measured region</td><td>the Fed's own First/Second/Third/Most-Recent release ladder, 239 quarters</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>That bias cannot be traded.</td><td class='num'>5</td><td class='num'>±0.55</td><td>measured region</td><td>AR(1) of the revision is -0.07: past revisions do not predict the next</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>GDPNow beats a no-change forecast at a one-quarter horizon.</td><td class='num'>4</td><td class='num'>±0.61</td><td>measured region</td><td>no-change benchmark on the same vintage, 37 quarters</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>GDPNow beats a no-change forecast at the settled GDP number.</td><td class='num'>0</td><td class='num'>vacuous</td><td>extrapolation</td><td>none — the evaluation targets the advance estimate, not the final one</td><td class='st'><span class='pill bad'>do not act</span></td></tr><tr><td>Our own recorded 'first release' is the first release.</td><td class='num'>4</td><td class='num'>±0.61</td><td>measured region</td><td>the Fed's First Release against the advance we recorded from ALFRED</td><td class='st'><span class='pill warn'>act with a hedge</span></td></tr><tr><td>Smets–Wouters can be scored out of sample on its own observables.</td><td class='num'>0</td><td class='num'>vacuous</td><td>extrapolation</td><td>none — the state is only 41% observable from its own series</td><td class='st'><span class='pill bad'>do not act</span></td></tr><tr><td>The GDP expenditure identity closes exactly.</td><td class='num'>4</td><td class='num'>exact</td><td>measured region</td><td>BEA annual/quarterly identity, checked to 1e-16 of GDP</td><td class='st'><span class='pill ok'>act</span></td></tr><tr><td>A 37-quarter revision measurement generalises to the whole record.</td><td class='num'>0</td><td class='num'>vacuous</td><td>extrapolation</td><td>the 239-quarter ladder, which gives a different and more stable answer</td><td class='st'><span class='pill bad'>do not act</span></td></tr></tbody></table><p class='note'>8 claims: 1 act, 4 act with a hedge, 3 do not act; 3 are extrapolation. Rule: outside the measured region, do not act, whatever m is; inside with no constraints, do not act; inside with a radius above 0.25, act with a hedge its size; inside with a radius at or below 0.25, act.</p>
 </section>
 
 <footer>
