@@ -1,0 +1,65 @@
+{
+  "subject": "The landscape theorem tower (5 theorems)",
+  "sector": "physics",
+  "issuer": "Pacland / Valiant Verification",
+  "issued": "2026-10-28",
+  "grade": "VERIFIED",
+  "headline": "Every theorem re-checked at issue time: the exact structure of the flux landscape is the D3 tadpole, it is unique, and it is complete. The failure mode here is a proof that does not compile, and all five compile.",
+  "score": {
+    "satisfied": 5,
+    "partial": 0,
+    "not demonstrated": 0,
+    "failing": 0
+  },
+  "findings": [
+    {
+      "clause": "Exact structure",
+      "question": "Does Mitchell's Uniqueness hold when the checker is re-run?",
+      "answer": "the D3 tadpole F^T J H is the unique bilinear symplectic invariant of the flux",
+      "evidence": "scripts/validate_mitchell_uniqueness.py",
+      "status": "satisfied",
+      "falsifier": "scripts/validate_mitchell_uniqueness.py exits non-zero \u2014 a single failing symbol fails the theorem"
+    },
+    {
+      "clause": "Exact structure",
+      "question": "Does Constraint-First (Weyl FFT) hold when the checker is re-run?",
+      "answer": "the constraint-first construction reproduces the Weyl FFT degrees of freedom",
+      "evidence": "scripts/validate_constraint_first.py",
+      "status": "satisfied",
+      "falsifier": "scripts/validate_constraint_first.py exits non-zero \u2014 a single failing symbol fails the theorem"
+    },
+    {
+      "clause": "Exact structure",
+      "question": "Does Mitchell's Completeness hold when the checker is re-run?",
+      "answer": "the structure is complete: 6 exact and 2 numeric checks",
+      "evidence": "scripts/validate_mitchell_completeness.py",
+      "status": "satisfied",
+      "falsifier": "scripts/validate_mitchell_completeness.py exits non-zero \u2014 a single failing symbol fails the theorem"
+    },
+    {
+      "clause": "Exact structure",
+      "question": "Does Full-duality completion hold when the checker is re-run?",
+      "answer": "the COMPLETE duality group, not just the monodromy subgroup",
+      "evidence": "scripts/validate_full_duality.py",
+      "status": "satisfied",
+      "falsifier": "scripts/validate_full_duality.py exits non-zero \u2014 a single failing symbol fails the theorem"
+    },
+    {
+      "clause": "Exact structure",
+      "question": "Does Complete Exact Structure hold when the checker is re-run?",
+      "answer": "the assembly of the four theorems above",
+      "evidence": "scripts/validate_all_theorems.py",
+      "status": "satisfied",
+      "falsifier": "scripts/validate_all_theorems.py exits non-zero \u2014 a single failing symbol fails the theorem"
+    }
+  ],
+  "limitations": [
+    "These are theorems about the *structure of the landscape*, not predictions of observable physics: nothing here is measured against a laboratory.",
+    "The vacuum-energy prediction is not on this certificate; it is not verifiable and is recorded as such in the doctrine."
+  ],
+  "provenance": [
+    "Scripts: scripts/validate_*.py (re-run at issue time)",
+    "Module: src/pacland/certify/dossiers.py::physics_theorems",
+    "Doctrine: docs/oracles-without-oracles.md"
+  ]
+}
