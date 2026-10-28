@@ -844,6 +844,13 @@
    "title": "drugs_second_source.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_resolve.py",
+   "kind": "script",
+   "path": "scripts/econ_resolve.py",
+   "summary": "The linear RE solver Smets\u2013Wouters needs \u2014 verified three ways before it touches SW.",
+   "title": "econ_resolve.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/economics_accounting_closure.py",
    "kind": "script",
    "path": "scripts/economics_accounting_closure.py",
