@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Verification Index — Pacland</title>
+<meta name="description" content="Institutional models and causal estimators, graded against evidence that was planted or measured rather than asserted.">
+<style>
+  :root { --ink:#1a1f2e; --muted:#5a6072; --accent:#142a5e; --line:#e3e6ee; --bg:#fbfbfd;
+           --ok:#0f6b3a; --okbg:#e6f5ec; --warn:#8a5a00; --warnbg:#fdf3dc; --bad:#8c1d1d; --badbg:#fdeaea; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+         color:var(--ink); background:var(--bg); line-height:1.6; }
+  .wrap { max-width:920px; margin:0 auto; padding:0 1.5rem; }
+  header { background:var(--accent); color:#fff; padding:3rem 0 2.4rem; }
+  header h1 { margin:0 0 .4rem; font-size:2rem; letter-spacing:-.02em; }
+  header p { color:#c7d2ee; margin:.3rem 0 0; }
+  header a { color:#fff; }
+  main { padding:2rem 0 4rem; }
+  h2 { font-size:1.35rem; color:var(--accent); margin:2.2rem 0 .5rem; }
+  .card { border:1px solid var(--line); border-radius:14px; padding:1.1rem 1.2rem; margin:1rem 0;
+           background:#fff; }
+  .cardhead { display:flex; align-items:center; gap:.8rem; flex-wrap:wrap; }
+  .cardhead h3 { margin:0; font-size:1.1rem; flex:1 1 auto; min-width:14rem; }
+  .grade { font-weight:700; font-size:.8rem; letter-spacing:.04em; padding:.25rem .6rem;
+            border-radius:999px; }
+  .grade.ok { color:var(--ok); background:var(--okbg); }
+  .grade.warn { color:var(--warn); background:var(--warnbg); }
+  .grade.bad { color:var(--bad); background:var(--badbg); }
+  .headline { margin:.6rem 0 .8rem; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  th,td { text-align:left; padding:.4rem .5rem; border-bottom:1px solid var(--line);
+           vertical-align:top; }
+  th { font-weight:600; color:var(--muted); font-size:.8rem; text-transform:uppercase;
+        letter-spacing:.03em; }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .pill { font-size:.75rem; font-weight:600; padding:.15rem .5rem; border-radius:999px;
+           white-space:nowrap; }
+  .pill.ok { color:var(--ok); background:var(--okbg); }
+  .pill.warn { color:var(--warn); background:var(--warnbg); }
+  .pill.bad { color:var(--bad); background:var(--badbg); }
+  .prov { color:var(--muted); font-size:.78rem; margin:.7rem 0 0; }
+  .note { color:var(--muted); font-size:.9rem; }
+  .legend { display:flex; gap:1.2rem; flex-wrap:wrap; color:var(--muted); font-size:.85rem; }
+  footer { border-top:1px solid var(--line); padding:1.5rem 0 3rem; color:var(--muted);
+            font-size:.85rem; }
+  @media (max-width:640px) {
+    table.findings th:nth-child(1), table.findings td:nth-child(1) { display:none; }
+    table.battery th:nth-child(2), table.battery td:nth-child(2) { display:none; }
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>The Verification Index</h1>
+  <p>Models and methods, graded against evidence that was planted or measured — not asserted.</p>
+  <p>Issued by Pacland · <a href="./index.html">pacland</a> · <a href="./all.html">find anything</a></p>
+</div></header>
+<main><div class="wrap">
+
+<h2>Institutional models</h2>
+<p>Each certificate answers five questions mapped to model-risk supervision (SR 11-7 concepts, PRA
+SS1/23 lifecycle), and every number is regenerated from a script rather than transcribed. The grade is
+the <strong>worst</strong> finding, not an average.</p>
+<div class="legend">
+  <span><span class="pill ok">satisfied</span> evidenced</span>
+  <span><span class="pill warn">partial / not demonstrated</span> limited</span>
+  <span><span class="pill bad">failing</span> the model cannot currently be relied on for this</span>
+</div>
+
+    <article class="card">
+      <div class="cardhead">
+        <h3>CMIP6 model CNRM-ESM2-1 (CNRM-CERFACS)</h3>
+        <span class="grade bad">REFUSED</span>
+      </div>
+      <p class="headline">In a pre-industrial control, where the climate must be stationary, this model drifts +1.49 W/m2 — 1.9x the Earth's energy imbalance that its projections are meant to represent.</p>
+      <table class="findings">
+        <thead><tr><th>clause</th><th>question</th><th>status</th></tr></thead>
+        <tbody><tr><td>Conceptual soundness</td><td>Does the model conserve energy in a control climate?</td><td><span class='pill warn'>failing</span></td></tr><tr><td>Outcomes analysis</td><td>Is the leak large compared with the signal being measured?</td><td><span class='pill warn'>failing</span></td></tr><tr><td>Data quality</td><td>Does the model conserve mass and salt?</td><td><span class='pill warn'>failing</span></td></tr><tr><td>Ongoing monitoring</td><td>Is this model an outlier among its peers?</td><td><span class='pill warn'>satisfied</span></td></tr></tbody>
+      </table>
+      <p class="prov">evidence: Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py</p>
+    </article>
+    <article class="card">
+      <div class="cardhead">
+        <h3>Atlanta Fed GDPNow (GDP nowcast, US)</h3>
+        <span class="grade warn">QUALIFIED</span>
+      </div>
+      <p class="headline">Beats the no-change null by a wide margin (75% lower MAE) on 37 quarters of real-time vintages — qualified because that skill is measured against the advance estimate, not the settled number.</p>
+      <table class="findings">
+        <thead><tr><th>clause</th><th>question</th><th>status</th></tr></thead>
+        <tbody><tr><td>Conceptual soundness</td><td>Is the forecast a model at all, or an accounting identity?</td><td><span class='pill warn'>satisfied</span></td></tr><tr><td>Outcomes analysis</td><td>Does it beat the null out of sample?</td><td><span class='pill warn'>satisfied</span></td></tr><tr><td>Outcomes analysis</td><td>Is that skill against the FIRST publication or the settled number?</td><td><span class='pill warn'>partial</span></td></tr><tr><td>Data quality</td><td>Are the inputs real-time vintages, or revised history?</td><td><span class='pill warn'>satisfied</span></td></tr><tr><td>Implementation</td><td>Can the evaluation go red?</td><td><span class='pill warn'>satisfied</span></td></tr></tbody>
+      </table>
+      <p class="prov">evidence: Data: data/economics/gdpnow_vintages.json (ALFRED vintages); Script: python3 scripts/economics_gdpnow.py; Module: src/pacland/economics/gdpnow.py</p>
+    </article>
+    <article class="card">
+      <div class="cardhead">
+        <h3>Smets–Wouters (2007) linearised DSGE</h3>
+        <span class="grade bad">REFUSED</span>
+      </div>
+      <p class="headline">The model solves and its units reconcile to the data, but its state is only 41% observable from its own series and its shock scales are unidentified. It cannot currently be scored out of sample, and that is the finding.</p>
+      <table class="findings">
+        <thead><tr><th>clause</th><th>question</th><th>status</th></tr></thead>
+        <tbody><tr><td>Conceptual soundness</td><td>Is the model's solution correct?</td><td><span class='pill warn'>satisfied</span></td></tr><tr><td>Ongoing monitoring</td><td>Can the state be estimated from its own observables?</td><td><span class='pill warn'>failing</span></td></tr><tr><td>Outcomes analysis</td><td>Does a filter track data the model itself generated?</td><td><span class='pill warn'>failing</span></td></tr><tr><td>Outcomes analysis</td><td>Can the reduced form be matched to the data without a state?</td><td><span class='pill warn'>failing</span></td></tr><tr><td>Conceptual soundness</td><td>Is the model identified at all?</td><td><span class='pill warn'>not demonstrated</span></td></tr></tbody>
+      </table>
+      <p class="prov">evidence: Model: authors' Dynare file, fetched at verification time (sha256 recorded); Scripts: scripts/econ_sw_solve.py, scripts/econ_sw_filter.py, scripts/econ_sw_distance.py; Modules: src/pacland/economics/sw_solve.py, sw_filter.py, sw_distance.py</p>
+    </article>
+
+<h2>The known-truth battery for causal estimators</h2>
+<p>Effects are <strong>planted</strong>, so recovering them is a checkable fact rather than an
+opinion. Read it as a matrix, not a verdict: each estimator wins the design it was built for and
+loses the others.</p>
+<table class='battery'><thead><tr><th>design</th><th>estimator</th><th>median</th><th>planted</th><th>recover</th><th></th></tr></thead><tbody><tr><td>clean DiD</td><td>did_two_by_two</td><td class='num'>+1.028</td><td class='num'>1.00</td><td class='num'>70%</td><td><span class='pill ok'>recovers</span></td></tr><tr><td>broken trends</td><td>did_two_by_two</td><td class='num'>+1.830</td><td class='num'>1.00</td><td class='num'>0%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>staggered adoption</td><td>twfe</td><td class='num'>+1.106</td><td class='num'>1.00</td><td class='num'>57%</td><td><span class='pill ok'>recovers</span></td></tr><tr><td>staggered adoption</td><td>not_yet_treated</td><td class='num'>+0.994</td><td class='num'>1.00</td><td class='num'>75%</td><td><span class='pill ok'>recovers</span></td></tr><tr><td>weak instrument</td><td>iv_2sls</td><td class='num'>+1.053</td><td class='num'>1.00</td><td class='num'>10%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>weak instrument</td><td>ols_slope</td><td class='num'>+1.799</td><td class='num'>1.00</td><td class='num'>0%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>measurement error</td><td>ols_slope</td><td class='num'>+0.504</td><td class='num'>1.00</td><td class='num'>0%</td><td><span class='pill bad'>FAILS</span></td></tr><tr><td>measurement error</td><td>iv_2sls</td><td class='num'>+0.999</td><td class='num'>1.00</td><td class='num'>100%</td><td><span class='pill ok'>recovers</span></td></tr></tbody></table><p class='note'>4 of 8 cells recover the planted effect in at least half of 60 replications.</p>
+
+<footer>
+  <p>Generated by <code>scripts/build_verify_index.py</code> from <code>certificates/*.json</code> and
+  <code>src/pacland/causal/battery.py</code>. Reproduce every number:</p>
+  <p><code>python3 scripts/issue_certificate.py --all</code><br>
+     <code>python3 scripts/causal_battery.py</code></p>
+</footer>
+</div></main>
+</body>
+</html>
