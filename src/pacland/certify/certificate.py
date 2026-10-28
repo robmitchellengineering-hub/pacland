@@ -39,6 +39,7 @@ class Certificate:
     headline: str
     limitations: tuple[str, ...]
     provenance: tuple[str, ...] = field(default_factory=tuple)
+    sector: str = ""
 
     @property
     def grade(self) -> str:
@@ -75,7 +76,8 @@ class Certificate:
         return "\n".join(lines) + "\n"
 
     def to_dict(self) -> dict:
-        return {"subject": self.subject, "issuer": self.issuer, "issued": self.issued,
+        return {"subject": self.subject, "sector": self.sector, "issuer": self.issuer,
+                "issued": self.issued,
                 "grade": self.grade, "headline": self.headline,
                 "score": self.score,
                 "findings": [f.__dict__ for f in self.findings],
