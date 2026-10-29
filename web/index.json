@@ -522,6 +522,13 @@
    "title": "Physics compute \u2014 removing the GPU, and whether pooling cheap machines works"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-exact-terms.md",
+   "kind": "doc",
+   "path": "docs/plan-exact-terms.md",
+   "summary": "Written 2026-10-29 in the planning room (~/Documents/DeepSeek), under D9 (the planning room owns intent, the repo owns code), D10 (job \u2192 plan \u2192 decision), D14 (pacland is the method at\u2026",
+   "title": "The exactness programme \u2014 what exact terms exist, and what each one can decide"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/publication-plan.md",
    "kind": "doc",
    "path": "docs/publication-plan.md",
