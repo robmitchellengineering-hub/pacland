@@ -109,6 +109,49 @@ The anti-feedback design (AirMatrix 34) needs the loop gain near the critical fr
 combination and survives this; a "here are your 36 modes" readout would be a confident lie at normal
 measurement noise.
 
+## Can a box stand in for a room? Yes — if you randomise it
+
+Rob: *"you can't test this in the box, like you did for a 1-D room?"* You can, and doing it properly
+changes the numbers twice.
+
+### First: break the symmetry
+
+A 6 × 4.5 × 3 m box has rational side ratios, so its modes are **exactly degenerate** — 38 of 104 modes
+below 200 Hz share a frequency. A real room's modes sit apart. Replacing the sides with incommensurate
+lengths (6 × 4.37 × 3.11 m) removes every degeneracy:
+
+| geometry | modes below 200 Hz | degenerate | usable at 3 mics |
+|---|---|---|---|
+| 6 × 4.5 × 3 | 104 | **38** | 3 / 36 |
+| 6 × 4.37 × 3.11 | 100 | **0** | 3 / 34 |
+
+**Degeneracy is not the limiting factor.** Making the room non-degenerate changes the count by nothing —
+the amplitude/damping trade-off is what limits it. That is worth knowing, because it was my first
+hypothesis and it was wrong.
+
+### Then: make the ensemble a room population
+
+A single geometry answers a question about that geometry. A customer asks about *a room like this*. So
+run the test across an **ensemble of rooms whose mode spacings follow GOE statistics** at the box's mean
+density — chaotic, repelling levels, which is what a real room has:
+
+| microphones | usable at 10% (median) | 10–90% across rooms |
+|---|---|---|
+| 2 | **4** | 4 – 4 |
+| 3 | **5** | 4 – 7 |
+| 5 | **7** | 6 – 7 |
+
+Two things fall out:
+
+1. **A chaotic room is *easier* than a box, not harder** — 5 usable directions at 3 mics against 3 in the
+   degenerate box. Resolvable modes are identifiable modes.
+2. **The answer is a spread, not a number.** Across eight rooms of the same size and the same microphone
+   count the usable count ranges 4–7. Quoting a single figure for "a room" would be quoting one draw.
+
+So the honest statement for the product becomes: **for a room of this size, at 3 microphones and −60 dB,
+expect about five combinable modal parameters, and between four and seven depending on the room.** That is
+a range a customer can use, and it is more informative than the number it replaces.
+
 ## What the 3-D run actually needed — and what it still needs
 
 It failed twice before it worked, and the failures are instructive:
