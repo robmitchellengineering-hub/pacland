@@ -240,3 +240,31 @@ class TestDocClaims(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestNoMergeResidue(unittest.TestCase):
+    """A conflict marker committed to a document is a defect that no other test can see.
+
+    Bought on 2026-10-29: a rebase conflict was resolved with `git checkout --theirs` plus a count
+    rewrite, and three documents went to main with conflict markers still in them — including
+    `docs/swampland-connection.md`, which the arXiv package quotes for paper 2's numbers.
+    """
+
+    def test_no_committed_text_file_contains_a_conflict_marker(self):
+        import pathlib
+        root = pathlib.Path(__file__).resolve().parents[1]
+        bad = []
+        for path in root.rglob("*"):
+            if not path.is_file() or ".git" in path.parts:
+                continue
+            if path.suffix not in {".md", ".tex", ".py", ".json", ".txt", ".toml", ".yml", ".yaml"}:
+                continue
+            try:
+                text = path.read_text(errors="ignore")
+            except OSError:
+                continue
+            for marker in ("<" * 7, ">" * 7):   # built, not written: the guard must not flag itself
+                if marker in text:
+                    bad.append(f"{path.relative_to(root)}: {marker}")
+                    break
+        self.assertEqual(bad, [], "committed conflict markers: " + ", ".join(bad))
