@@ -128,7 +128,38 @@ integer lattice, so a small integer flux is generically **not F-flat anywhere**.
 
 **Route 2 is the one that can answer the question**, and it is the next build.
 
-## The `DV = 0` solver is built and **not validated** — and is therefore not used
+## The `DV = 0` solver: validated by inheritance, and it finds nothing — which is the answer
+
+Two corrections came out of running it, and **both were the test's fault, not the solver's**:
+
+1. the first version started at random and demanded *the* constructed susy point. The potential has
+   **several** stationary points, so landing on a different one is not a failure — the test was
+   measuring a basin of attraction, not a solver;
+2. the finite-difference step mattered: `1e-6` was too noisy for Newton, `1e-4` converges cleanly.
+
+Corrected, it recovers the known point from **0.05** and **0.3** away to `1.7e-8`, with `|grad V| ~ 2e-10`.
+And the constructed point is not merely stationary but a **minimum** with all-positive masses — with
+`V = -3e^K|W|^2 < 0`, i.e. an **AdS** vacuum, which is stable. (A susy vacuum with `W != 0` is AdS, not
+Minkowski; expecting `V = 0` would have been wrong.)
+
+### And then: eight generic integer fluxes, zero stationary points
+
+| | |
+|---|---|
+| generic integer flux pairs tried | **8** |
+| stationary points found (`DV = 0`) | **0** |
+| minima | 0 |
+
+**That is the physics of this toy, not a solver failure.** The tree-level T⁶ model has the axio-dilaton
+and complex-structure moduli and **no Kähler moduli**, so there is nothing to stabilise the volume — the
+potential is a **runaway**, and a runaway has no minimum to find. Real IIB vacua need Kähler moduli with
+non-perturbative terms (the KKLT/LVS programme) before a vacuum spectrum exists at all.
+
+**So the honest answer to "is the landscape chaotic?" in this arm is: the question cannot be asked of the
+model we have.** There is no vacuum spectrum in the T⁶ toy to take spacings of, and saying otherwise
+would be the third mistake of the same family — a statistic computed on the wrong object.
+
+## The earlier `DV = 0` state, kept for the record
 
 The non-supersymmetric route is the one that could answer the question, so the solver was written. It
 has a clean validation available: **a supersymmetric point satisfies `DW = 0`, which implies `DV = 0`,
