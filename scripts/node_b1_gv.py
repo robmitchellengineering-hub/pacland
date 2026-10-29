@@ -67,8 +67,13 @@ def fit(model, ys, degs):
 def main(argv):
     h12 = int(argv[1]) if len(argv) > 1 else 2
     model_id = int(argv[2]) if len(argv) > 2 else 1
-    max_comp = 3
-    degs = degrees(h12, max_comp)
+    # LESSON FROM THE FIRST RUN, kept because it is the reason the numbers moved:
+    # fitting degrees up to 3 while suppressing them with y >= 0.8 makes the higher columns
+    # e^{-2 pi d.y} ~ 1e-7 — pure noise — and least squares then reports garbage as "non-integer n_d".
+    # The basis is now restricted to what the y window can actually resolve, and the window is chosen
+    # so the instantons are VISIBLE (q ~ e^{-2 pi 0.3} ~ 0.15), not so they are invisible.
+    max_comp = 2
+    degs = [d for d in degrees(h12, max_comp) if sum(d) <= 2]
     report = {"h12": h12, "model_id": model_id, "n_degrees": len(degs),
               "max_component": max_comp,
               "falsifier": "a non-integer n_d, or n_d that move with the point"}
@@ -82,7 +87,7 @@ def main(argv):
         model = jvc.FluxVacuaFinder(h12=h12, model_ID=model_id, model_type="KS",
                                     maximum_degree=degree, mirror_instanton=True)
         rng = np.random.default_rng(7)
-        all_ys = [rng.uniform(0.8, 2.6, h12) for _ in range(2 * len(degs) + 6)]
+        all_ys = [rng.uniform(0.30, 1.00, h12) for _ in range(2 * len(degs) + 10)]
         ys_a, ys_b = all_ys[0::2], all_ys[1::2]
         coef_a, res_a = fit(model, ys_a, degs)
         coef_b, res_b = fit(model, ys_b, degs)
