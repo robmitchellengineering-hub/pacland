@@ -4,7 +4,7 @@
   "issuer": "Pacland / Valiant Verification",
   "issued": "2026-10-28",
   "grade": "VERIFIED",
-  "headline": "The zeros repel exactly as a Gaussian unitary ensemble does \u2014 ratio statistic 0.6155 against a finite-sample GUE control of 0.6163, and 12 control standard deviations from Poisson. Computed from scratch, no dependencies.",
+  "headline": "1517 zeros computed from scratch: they repel exactly as a Gaussian unitary ensemble does \u2014 ratio statistic 0.6176 against a finite-sample GUE control of 0.6140 +- 0.0068, and 35 control standard deviations from Poisson.",
   "score": {
     "satisfied": 4,
     "partial": 0,
@@ -24,7 +24,7 @@
     {
       "clause": "Data quality",
       "question": "Are all the zeros in the range actually found?",
-      "answer": "202 zeros below t = 400 against a smooth count of 201.6 \u2014 no zeros missed",
+      "answer": "1517 zeros below t = 2000 against a smooth count of 1517.0 \u2014 no zeros missed",
       "evidence": "zeros.audit()",
       "status": "satisfied",
       "falsifier": "a count that drifts from the counting formula means missed or spurious zeros",
@@ -33,7 +33,7 @@
     {
       "clause": "Outcomes analysis",
       "question": "Do the zeros obey the GUE statistics, or Poisson?",
-      "answer": "ratio statistic 0.6155 against a synthetic GUE control 0.6163 \u00b1 0.0190, and Poisson 0.3810 \u2014 12.3 control standard deviations away",
+      "answer": "ratio statistic 0.6176 against a synthetic GUE control 0.6140 \u00b1 0.0068, and Poisson 0.3810 \u2014 34.6 control standard deviations away",
       "evidence": "zeros.gue_control(); zeros.poisson_ratio()",
       "status": "satisfied",
       "falsifier": "a ratio near the Poisson value would mean the zeros do not repel",
@@ -51,7 +51,7 @@
   ],
   "limitations": [
     "This is a numerical verification of a known result (Montgomery 1973; Odlyzko), not a new claim about the zeros.",
-    "The range is t < 400 (202 zeros); the statistics converge further up.",
+    "The range is t < 2000 (1517 zeros); the statistics tighten further up.",
     "Nothing here says the zeros predict anything physical \u2014 it says a number-theoretic object has a spectrum with the same statistics as a physical one."
   ],
   "provenance": [

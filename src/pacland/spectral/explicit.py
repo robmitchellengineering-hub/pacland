@@ -53,7 +53,7 @@ def explicit_formula(x: float, zeros: list[float]) -> float:
     return x - 2.0 * s.real - math.log(2 * math.pi) - 0.5 * math.log(1.0 - 1.0 / (x * x))
 
 
-def convergence(x: float, zeros: list[float], counts: tuple[int, ...] = (25, 100, 200)) -> dict:
+def convergence(x: float, zeros: list[float], counts: tuple[int, ...] = (100, 500, 1517)) -> dict:
     exact = chebyshev_psi(int(x))
     rows = []
     for n in counts:
@@ -65,7 +65,7 @@ def convergence(x: float, zeros: list[float], counts: tuple[int, ...] = (25, 100
 
 
 def audit() -> dict:
-    zeros = find_zeros(t_to=400.0)
+    zeros = find_zeros(t_to=2000.0)
     checks = []
     # 1. psi from the sieve must match the published values
     errs = {x: abs(chebyshev_psi(x) - v) for x, v in KNOWN_PSI.items()}
@@ -73,9 +73,9 @@ def audit() -> dict:
                    "pass": max(errs.values()) < 1e-3,
                    "detail": ", ".join(f"psi({x}) off by {e:.1e}" for x, e in errs.items())})
     # 2. the zeros reproduce psi
-    conv = [convergence(x, zeros) for x in (100.0, 1000.0)]
-    checks.append({"check": "the zeros reconstruct psi(x) to better than 1 unit",
-                   "pass": all(c["best_error"] < 1.0 for c in conv),
+    conv = [convergence(x, zeros) for x in (100.0, 1000.0, 10000.0, 100000.0)]
+    checks.append({"check": "the zeros reconstruct psi(x) to better than 2 units up to 10^5",
+                   "pass": all(c["best_error"] < 2.0 for c in conv),
                    "detail": "; ".join(f"x={c['x']:.0f}: best error {c['best_error']:+.3f} "
                                        f"with {c['rows'][-1]['n_zeros']} zeros" for c in conv)})
     # 3. and the reconstruction IMPROVES as zeros are added — a single number could be luck

@@ -20,14 +20,21 @@ class TestPsi(unittest.TestCase):
 
 class TestFormula(unittest.TestCase):
     def test_the_zeros_reconstruct_psi(self):
-        zs = E.find_zeros(t_to=400.0)
+        zs = E.find_zeros(t_to=1000.0)
         c = E.convergence(100.0, zs)
         self.assertLess(c["best_error"], 1.0)
 
     def test_more_zeros_do_not_make_it_worse_at_low_x(self):
-        zs = E.find_zeros(t_to=400.0)
+        zs = E.find_zeros(t_to=1000.0)
         c = E.convergence(100.0, zs)
         self.assertLess(abs(c["rows"][-1]["error"]), abs(c["rows"][0]["error"]))
+
+
+class TestReach(unittest.TestCase):
+    def test_the_formula_reaches_a_hundred_thousand(self):
+        zs = E.find_zeros(t_to=2000.0)
+        c = E.convergence(100000.0, zs)
+        self.assertLess(c["best_error"], 2.0)
 
 
 class TestAudit(unittest.TestCase):
