@@ -413,3 +413,70 @@ def conditioning_3d(f_high: float = 100.0, mic_counts: tuple[int, ...] = (1, 2, 
     return {"rows": rows, "modes": len(triples), "n_params": n_params, "f_high": f_high,
             "verdict": (f"{len(triples)} modes below {f_high:.0f} Hz, {n_params} parameters; "
                         + " -> ".join(f"{r['mics']}mic r{r['rank']} u{r['usable']}" for r in rows))}
+
+
+def binaural_conditioning(f_high: float = 100.0, separation: float = 0.17,
+                          positions: tuple[int, ...] = (1, 2, 3, 4),
+                          n_freqs: int = 60, damping: float = 0.06,
+                          axis: int = 0) -> dict:
+    """Does a 17 cm binaural pair beat an omni mic, and by how much?
+
+    Rob's rig: a head-spaced pair, walked around the room, sent over the wireless transport. The question
+    this answers is whether the second capsule actually buys conditioning, or whether the pair is so
+    correlated at low frequency that it behaves as one receiver.
+    """
+    box = Box3()
+    triples = box.modes_below(f_high)
+    params = []
+    for i, (_, _, _, _f) in enumerate(triples):
+        params += [damping, 1.0 / (1.0 + 0.1 * i)]
+    n_params = len(params)
+    freqs = [40.0 + (f_high - 40.0) * i / (n_freqs - 1) for i in range(n_freqs)]
+    base = []
+    for ix in range(4):
+        for iy in range(4):
+            for iz in range(2):
+                base.append((box.lx * (0.15 + 0.23 * ix), box.ly * (0.17 + 0.22 * iy),
+                             box.lz * (0.22 + 0.45 * iz)))
+
+    def seats_for(n_positions: int, binaural: bool):
+        out = []
+        for p in base[:n_positions]:
+            out.append(p)
+            if binaural:
+                q = list(p)
+                q[axis] = min(q[axis] + separation, (box.lx, box.ly, box.lz)[axis] - 0.01)
+                out.append(tuple(q))
+        return out
+
+    def run(seats):
+        obs = response_3d(box, triples, params, seats, freqs, False)
+        cols = []
+        for j in range(n_params):
+            h = 1e-6 * (abs(params[j]) or 1.0)
+            up = list(params); up[j] += h
+            dn = list(params); dn[j] -= h
+            ru = response_3d(box, triples, up, seats, freqs, False)
+            rd = response_3d(box, triples, dn, seats, freqs, False)
+            col = [(a - b) / (2 * h) for a, b in zip(ru, rd)]
+            nrm = math.sqrt(sum(v * v for v in col)) or 1.0
+            cols.append([v / nrm for v in col])
+        jac = [[cols[j][i] for j in range(n_params)] for i in range(len(obs))]
+        s_vals = singular_values(jac)
+        top = s_vals[0] if s_vals else 1.0
+        ratios = [x / top for x in s_vals]
+        return {"rank": sum(1 for x in ratios if x > 1e-12),
+                "usable": sum(1 for x in ratios if x > 1e-3),
+                "weakest": min(ratios) if ratios else 0.0,
+                "receivers": len(seats)}
+
+    rows = []
+    for n in positions:
+        omni = run(seats_for(n, False))
+        bina = run(seats_for(n, True))
+        rows.append({"positions": n, "omni": omni, "binaural": bina,
+                     "usable_gain": bina["usable"] - omni["usable"],
+                     "weakest_gain": bina["weakest"] - omni["weakest"]})
+    return {"rows": rows, "modes": len(triples), "n_params": n_params, "separation": separation,
+            "verdict": ("; ".join(f"{r['positions']} pos: omni {r['omni']['usable']}/{n_params}, "
+                                  f"pair {r['binaural']['usable']}/{n_params}" for r in rows))}

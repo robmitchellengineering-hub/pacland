@@ -28,3 +28,25 @@ class TestRank(unittest.TestCase):
 class TestAudit(unittest.TestCase):
     def test_all_checks_are_green(self):
         self.assertTrue(I.audit()["all_pass"])
+
+
+class TestBinaural(unittest.TestCase):
+    """Rob's rig: a 17 cm pair walked around, sent over the wireless transport."""
+
+    def test_one_binaural_position_beats_one_omni_position(self):
+        r = I.binaural_conditioning(positions=(1,))
+        row = r["rows"][0]
+        self.assertGreater(row["binaural"]["usable"], row["omni"]["usable"])
+        # and the weakest direction moves out of the noise floor
+        self.assertLess(row["omni"]["weakest"], 1e-6)
+        self.assertGreater(row["binaural"]["weakest"], 1e-4)
+
+    def test_beyond_one_position_the_pair_adds_margin_not_parameters(self):
+        r = I.binaural_conditioning(positions=(2,))
+        row = r["rows"][0]
+        self.assertEqual(row["omni"]["usable"], row["binaural"]["usable"])
+
+    def test_both_receivers_are_used(self):
+        r = I.binaural_conditioning(positions=(1, 2))
+        for row in r["rows"]:
+            self.assertEqual(row["binaural"]["receivers"], 2 * row["positions"])

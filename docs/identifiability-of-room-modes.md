@@ -48,6 +48,28 @@ Note how different this is from the naive answer. **Rank says one microphone ide
 Conditioning says one microphone is ten parameters short of usable. Rank is a yes/no answer to a
 question that is quantitative, and quoting rank alone would have been a confident, wrong claim.
 
+## A binaural pair, 17 cm apart — the rig Rob described
+
+> *"a binaural 17cm rig that gets walked around for capture — a wireless node on batteries, stereo in,
+> sent over the wifi."*
+
+The maths on that rig, using the same 3-D room:
+
+| positions | omni mic — usable directions | binaural pair — usable directions | weakest omni | weakest pair |
+|---|---|---|---|---|
+| **1** | **30 / 36** | **36 / 36** | 4.3e-11 | **5.9e-3** |
+| 2 | 36 / 36 | 36 / 36 | 3.5e-2 | 4.0e-2 |
+| 3 | 36 / 36 | 36 / 36 | 4.9e-2 | 5.0e-2 |
+| 4 | 36 / 36 | 36 / 36 | 6.2e-2 | 6.4e-2 |
+
+**One binaural position does what two omni positions do.** A single omni capture leaves six directions
+buried; a single head-spaced pair conditions all 36. Beyond one position the pair adds margin, not
+parameters.
+
+So the rig is justified by measurement, and it makes the walk **cheaper**: roughly half the positions for
+the same conditioning. The honest limit is that the advantage is specifically at one position — if you
+are already walking to three positions, the second capsule is buying robustness, not information.
+
 ## What the 3-D run actually needed — and what it still needs
 
 It failed twice before it worked, and the failures are instructive:
