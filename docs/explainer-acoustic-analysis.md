@@ -34,9 +34,25 @@ correction engine that targets *modes* rather than *bands*.
 graphic's Q of 4.32 spills **9.29 dB into the neighbouring third-octave**. Narrow it and the spill falls
 (0.68 dB at Q = 10, 0.18 dB at Q = 20) — but a graphic EQ cannot place a narrow notch at a mode.
 
-That single number decides the architecture: room correction is **parametric notches at identified modal
-frequencies with fitted Q**, plus a shallow shape for the broad tilt. And the parametric band is already
-in the tree — it was always there; nobody had measured that the graphic could not do the job.
+That single number decides the architecture — and it means the correction **cannot be a set figure**.
+Not a preset curve, not 31 fixed bands, not a factory "room" setting. What it has to be:
+
+| what | how it is set | why not a fixed figure |
+|---|---|---|
+| **how many bands** | one per identified mode, plus one shallow band for the broad tilt | the count is whatever the room has; a fixed 31 is 31 guesses |
+| **frequency** | the measured frequency of that mode | a mode sits where it sits; the nearest third-octave is a different frequency |
+| **Q (sharpness)** | from the mode's measured width: `Q = f / Δf` at half power | sharpness is a property of the mode's damping, not a taste — a wide mode wants a wide cut, a narrow one wants a narrow one |
+| **gain** | from the measured excess at that mode, always a **cut**; boosts only for broad dips, never for modes, never beyond +6 dB | a boost at a mode adds energy at the frequency that already rings |
+| **verification** | against the **realised** response, and against the **worst seat** — never against the requested band values | the filter's actual curve differs from the numbers you asked for; checking the request checks nothing |
+
+The parametric band already exists in the tree (`Band::peak(freq, gain, q)`, with `Eq::magnitude(hz)`
+reporting what was really applied). The work is not a new filter — it is **computing the set per room**,
+then verifying the result as a curve and as a per-seat outcome.
+
+**And the limit that keeps it honest:** the sharpness is bounded below by what the filter can actually
+place. Beyond roughly Q 25 a notch is so narrow in Hz that its own ringing and the realised-versus-requested
+difference start to matter, and below about 40 Hz the wavelength is longer than the room's smallest
+dimension. Where a mode is narrower than the filter can cut, the report says so — it does not pretend.
 
 ## What the analysis adds — three questions, and the honesty in each
 
