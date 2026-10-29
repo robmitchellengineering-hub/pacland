@@ -480,3 +480,106 @@ def binaural_conditioning(f_high: float = 100.0, separation: float = 0.17,
     return {"rows": rows, "modes": len(triples), "n_params": n_params, "separation": separation,
             "verdict": ("; ".join(f"{r['positions']} pos: omni {r['omni']['usable']}/{n_params}, "
                                   f"pair {r['binaural']['usable']}/{n_params}" for r in rows))}
+
+
+# ---------------------------------------------------------------------------------------
+# the rest of the maths: complex data, Cramér–Rao bounds, and a lossy room
+# ---------------------------------------------------------------------------------------
+def air_absorption_db_per_m(f: float) -> float:
+    """Atmospheric absorption, dB/m — a standard engineering approximation (ISO 9613-1 shape).
+
+    A room is not lossless. Air and wall absorption broaden the modes, and they broaden more at high
+    frequency, which is physical reality the rigid-box model does not have.
+    """
+    # 20 C, 50% RH, roughly: ~ (f/1000)^1.7 * 5 dB/km in the low band, growing steeply with frequency
+    return 5e-3 * (f / 1000.0) ** 1.7
+
+
+def modal_pressure_3d(box: "Box3", triples: list[tuple[int, int, int, float]],
+                      params: list[float], seat: tuple[float, float, float], f: float,
+                      fit_freqs: bool, lossy: bool = True) -> complex:
+    """Complex pressure at a seat, optionally with atmospheric absorption.
+
+    The `lossy` path adds the air term to each mode's damping — which is what makes the high-frequency
+    modes broad and overlapping rather than sharp, exactly as a real room behaves.
+    """
+    total = 0j
+    k = 0
+    for (nx, ny, nz, f0) in triples:
+        if fit_freqs:
+            fn = params[k]; k += 1
+        else:
+            fn = f0
+        gamma = params[k]; k += 1
+        amp = params[k]; k += 1
+        psi = box.shape((nx, ny, nz), seat)
+        if abs(psi) < 1e-15:
+            continue
+        g = gamma
+        if lossy:
+            # the air term is a decay per metre; a modal decay time is roughly 1/(pi gamma f)
+            g = math.hypot(gamma, air_absorption_db_per_m(f) / 8.686)
+        total += amp * psi / complex(fn * fn - f * f, g * f * fn)
+    return total
+
+
+def complex_observations(box: "Box3", triples: list[tuple[int, int, int, float]], params: list[float],
+                         seats: list[tuple[float, float, float]], freqs: list[float],
+                         fit_freqs: bool, lossy: bool = True) -> list[complex]:
+    out = []
+    for seat in seats:
+        for f in freqs:
+            out.append(modal_pressure_3d(box, triples, params, seat, f, fit_freqs, lossy))
+    return out
+
+
+def cramer_rao(box: "Box3", triples: list[tuple[int, int, int, float]], params: list[float],
+               seats: list[tuple[float, float, float]], freqs: list[float], fit_freqs: bool,
+               noise: float, complex_data: bool = True, lossy: bool = True) -> dict:
+    """Cramér–Rao bounds on the modal parameters — identifiability with a NOISE model.
+
+    A singular value tells you a direction is small; it does not tell you whether the estimate is
+    usable. The bound does: given the measurement noise, sigma_i = sqrt(CRB_ii) is the best achievable
+    standard deviation on parameter i. A parameter is usable when that bound is small against its own
+    scale.
+    """
+    import numpy as np
+
+    def jac_vec(p: list[float]) -> np.ndarray:
+        cols = []
+        for j in range(len(p)):
+            h = 1e-6 * (abs(p[j]) or 1.0)
+            up = list(p); up[j] += h
+            dn = list(p); dn[j] -= h
+            if complex_data:
+                ru = complex_observations(box, triples, up, seats, freqs, fit_freqs, lossy)
+                rd = complex_observations(box, triples, dn, seats, freqs, fit_freqs, lossy)
+                d = [(a - b) / (2 * h) for a, b in zip(ru, rd)]
+                col = np.concatenate([np.real(d), np.imag(d)])
+            else:
+                ru = response_3d(box, triples, up, seats, freqs, fit_freqs)
+                rd = response_3d(box, triples, dn, seats, freqs, fit_freqs)
+                col = np.asarray([(a - b) / (2 * h) for a, b in zip(ru, rd)])
+            cols.append(col)
+        return np.asarray(cols).T
+
+    j = jac_vec(params)
+    # scale to RELATIVE parameters: a damping of 0.06 and an amplitude of 1.0 cannot be compared in
+    # absolute units, and doing so makes every bound look hopeless
+    scale = np.abs(np.asarray(params))
+    j = j * scale[None, :]
+    f_mat = np.real(j.conj().T @ j) / (noise ** 2)
+    # inversion with a pseudo-inverse: unidentified directions get a huge bound, which is the point
+    cov = np.linalg.pinv(f_mat)
+    sd = np.sqrt(np.abs(np.diag(cov)))          # already in relative units after the scaling above
+    # the DIRECTIONS matter more than the individual parameters: amplitude and damping trade off, so
+    # single-parameter bounds are pessimistic while the combinations are pinned
+    eig = np.linalg.eigvalsh(f_mat)
+    eig = np.sort(eig)[::-1]
+    dir_sd = 1.0 / np.sqrt(np.maximum(eig, 1e-300))
+    return {"noise": noise, "n_params": len(params), "rel_sd": [float(x) for x in sd],
+            "median_rel_sd": float(np.median(sd)),
+            "usable_10pct": int(np.sum(dir_sd < 0.10)),
+            "usable_25pct": int(np.sum(dir_sd < 0.25)),
+            "median_dir_sd": float(np.median(dir_sd)),
+            "worst_dir_sd": float(np.max(dir_sd))}

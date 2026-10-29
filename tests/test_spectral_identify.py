@@ -50,3 +50,44 @@ class TestBinaural(unittest.TestCase):
         r = I.binaural_conditioning(positions=(1, 2))
         for row in r["rows"]:
             self.assertEqual(row["binaural"]["receivers"], 2 * row["positions"])
+
+
+class TestCramerRao(unittest.TestCase):
+    """The noise model: with real measurement noise the parameter table does not survive, and the
+    test says so rather than letting the rank result stand unqualified."""
+
+    def _setup(self):
+        box = I.Box3()
+        triples = box.modes_below(100.0)
+        params = []
+        for i, (_, _, _, _f) in enumerate(triples):
+            params += [0.06, 1.0 / (1.0 + 0.1 * i)]
+        grid = [(box.lx * (0.15 + 0.23 * ix), box.ly * (0.17 + 0.22 * iy), box.lz * (0.22 + 0.45 * iz))
+                for ix in range(4) for iy in range(4) for iz in range(2)]
+        freqs = [40.0 + 60.0 * i / 59 for i in range(60)]
+        return box, triples, params, grid, freqs
+
+    def test_less_noise_never_hurts(self):
+        box, triples, params, grid, freqs = self._setup()
+        lo = I.cramer_rao(box, triples, params, grid[:2], freqs, False, noise=1e-4)
+        hi = I.cramer_rao(box, triples, params, grid[:2], freqs, False, noise=1e-2)
+        self.assertGreaterEqual(lo["usable_10pct"], hi["usable_10pct"])
+
+    def test_more_microphones_never_hurt(self):
+        box, triples, params, grid, freqs = self._setup()
+        one = I.cramer_rao(box, triples, params, grid[:1], freqs, False, noise=1e-3)
+        three = I.cramer_rao(box, triples, params, grid[:3], freqs, False, noise=1e-3)
+        self.assertGreaterEqual(three["usable_10pct"], one["usable_10pct"])
+
+    def test_complex_data_beats_magnitude_only(self):
+        box, triples, params, grid, freqs = self._setup()
+        mag = I.cramer_rao(box, triples, params, grid[:2], freqs, False, noise=1e-3, complex_data=False)
+        cx = I.cramer_rao(box, triples, params, grid[:2], freqs, False, noise=1e-3, complex_data=True)
+        self.assertLess(cx["median_dir_sd"], mag["median_dir_sd"])
+
+    def test_at_ordinary_noise_the_parameter_table_does_not_survive(self):
+        # the honest finding: at -50 dB nothing is usable to 10%. If this ever flips, the claim checked
+        # in the doc has changed and the doc must change with it.
+        box, triples, params, grid, freqs = self._setup()
+        r = I.cramer_rao(box, triples, params, grid[:3], freqs, False, noise=3e-3)
+        self.assertEqual(r["usable_10pct"], 0)
