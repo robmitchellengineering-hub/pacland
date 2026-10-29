@@ -44,3 +44,20 @@ class TestHessian(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestVacuumSolver(unittest.TestCase):
+    """A root finder is proven by construct-and-recover, not by not crashing."""
+
+    def test_it_recovers_a_constructed_vacuum(self):
+        r = P.validation_by_construction()
+        self.assertLess(r["construction_residual"], 1e-9)
+        self.assertTrue(r["converged"])
+        self.assertLess(r["recovery_error"], 1e-4)
+
+    def test_generic_integer_fluxes_are_not_flat(self):
+        # the ISD condition is not automatic: a small integer flux is generically not F-flat anywhere
+        import numpy as np
+        F = np.zeros(8); H = np.zeros(8); F[0] = 1.0; H[1] = 1.0
+        f = P.f_terms(F, H, [1j, 1j, 1j, 1j])
+        self.assertGreater(float(np.linalg.norm(f)), 1e-6)

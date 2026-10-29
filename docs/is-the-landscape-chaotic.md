@@ -99,6 +99,35 @@ four complex equations per flux choice by Newton's method.
 
 That is the next build, and it is the last one between this arm and an answer to the chaos question.
 
+## The vacua solver is built and validated by construction
+
+`solve_supersymmetric` runs Newton on `DW = 0`. A root finder is proven by **constructing a root and
+recovering it**, not by not crashing — so the test picks a point in moduli space, solves the *linear*
+conditions for a flux that is F-flat there (the equations are linear in the flux and nonlinear in the
+moduli, which is the whole trick), and then asks Newton to find the point from a different start:
+
+| | |
+|---|---|
+| a flux made F-flat at the chosen point | **\|DW\| = 4.2e-16** |
+| Newton from a different start | **converged** |
+| recovered the chosen point to | **9.6e-10** |
+
+## And the integer lattice gives nothing — which is the finding
+
+Ten generic integer flux pairs in `[-2,2]^8`: **zero** admit a supersymmetric vacuum.
+
+**That zero is a result.** Supersymmetric vacua require **ISD fluxes**, a measure-zero condition on the
+integer lattice, so a small integer flux is generically **not F-flat anywhere**. Two routes follow:
+
+1. **work on the ISD locus** — fluxes are then real-valued, not integers; and there is a trap: a
+   supersymmetric Minkowski vacuum has **flat directions**, so its mass spectrum is full of zero modes,
+   and the spacing statistic would be a statement about degeneracies rather than chaos — **exactly the
+   `|W|` lattice problem again, one level deeper**;
+2. **look for non-supersymmetric vacua** with `DV = 0`, which do not require ISD and whose masses are
+   generically non-zero.
+
+**Route 2 is the one that can answer the question**, and it is the next build.
+
 ## Honest current status
 
 | | |
@@ -106,7 +135,7 @@ That is the next build, and it is the last one between this arm and an answer to
 | the machinery | **verified**, reused from the zeros work |
 | the spectrum | **`V` is built and validated 4/4**; masses need a stationary point, which is the remaining build |
 | the answer | **open** |
-| the next step | solve `DW = 0` per flux choice, then the Hessian spectrum at those vacua |
+| the next step | `DV = 0` (non-supersymmetric vacua): ISD is measure-zero on the integer lattice, and susy vacua have flat directions |
 
 This is what an honest research arm looks like from the inside: one question, one failed first
 approach that taught us what the observable has to be, and a named next build.
