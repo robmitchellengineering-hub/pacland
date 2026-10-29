@@ -893,6 +893,13 @@
    "title": "climb_deficit.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_exponents.py",
+   "kind": "script",
+   "path": "scripts/conifold_exponents.py",
+   "summary": "F2 M2a - the conifold's local exponents, computed exactly.",
+   "title": "conifold_exponents.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/crosscheck_sm_float.py",
    "kind": "script",
    "path": "scripts/crosscheck_sm_float.py",
@@ -1311,6 +1318,13 @@
    "path": "scripts/mine_structure.py",
    "summary": "Mine every flux-paired observable for structure + learnability.",
    "title": "mine_structure.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b2_applied.py",
+   "kind": "script",
+   "path": "scripts/node_b2_applied.py",
+   "summary": "B2 APPLIED \u2014 does degree 2 actually find vacua that degree 0/1 could not?",
+   "title": "node_b2_applied.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_potential.py",
