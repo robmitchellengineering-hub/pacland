@@ -208,6 +208,31 @@ The next attempt should solve the recursion **numerically at high precision** (t
 so `c_n = −Σ_{m<n} A[n][m] c_m / A[n][n]`), or keep the symbolic solution to a handful of terms and take
 the rest numerically. That is a two-line change in approach and it saves a day.
 
+### F2 M2c — the connection runs, and it says NOT YET (2026-10-29)
+
+`scripts/conifold_connection.py`. The numerical triangular solve from M2b works: the exponent-2
+conifold branch comes out as a genuine power series (`c₁ = 1.2333`, `c₂ = 1.2828`, `c₃ = 1.2732`, …), with
+the indicial equation satisfied identically at index −3 and no resonance on that branch.
+
+Then the one question both expansions can be held to: **is the conifold branch a constant linear
+combination of the four z = 0 branches?** Fit at `z = 0.3, 0.4, 0.5, 0.6 z_c`, predict at the rest:
+
+| z | predicted | conifold series | relative |
+|---|---|---|---|
+| 0.7 z_c | 0.12925 | 0.13806 | **6.4e-2** |
+| 0.8 z_c | 0.00461 | 0.05243 | 9.1e-1 |
+| 0.9 z_c | −0.16325 | 0.01138 | 15.4 |
+| 0.95 z_c | −0.32669 | 0.00266 | 124 |
+
+A constant combination would close to ~1e-20. **It does not, so one side is wrong — and this script is
+what catches it before a number gets published.** The LCS side is converged (identical to 12 digits at
+60, 140 and 300 terms) and its 4×4 system is well conditioned (1.4e7 at 60 digits), so the *unverified*
+ingredient is the log normalisation of `ω₁..ω₃`: only `ω₀` has ever been checked against `(5n)!/(n!)^5`.
+
+**Next step, precisely:** verify each `ω_k` against the operator in `z` using **complex-step**
+differentiation (not the nested finite differences that returned 1e78 in M1), then rebuild the
+connection. The diagnostic exits non-zero on purpose and nothing may be quoted from it.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

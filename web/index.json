@@ -900,6 +900,13 @@
    "title": "climb_deficit.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_connection.py",
+   "kind": "script",
+   "path": "scripts/conifold_connection.py",
+   "summary": "F2 M2c (in progress) - the connection between the z=0 and conifold expansions.",
+   "title": "conifold_connection.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_exponents.py",
    "kind": "script",
    "path": "scripts/conifold_exponents.py",
