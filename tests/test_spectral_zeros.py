@@ -53,3 +53,28 @@ class TestAudit(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestTheReferenceIsTheRightEnsemble(unittest.TestCase):
+    """#197: the constant this module called RATIO_GUE is the GOE value, and a VERIFIED certificate
+    repeated it as fact. These tests are the guard that could have caught it."""
+
+    def test_the_gue_reference_is_measured_not_quoted(self):
+        import random
+        rng = random.Random(11)
+        measured = Z.ratio_statistic(Z.wigner_sample(20000, rng))
+        self.assertLess(abs(measured - Z.RATIO_GUE_SURMISE), 0.01,
+                        f"GUE-surmise sampler gives {measured:.4f}, constant says {Z.RATIO_GUE_SURMISE}")
+
+    def test_the_goe_value_is_not_the_gue_value(self):
+        # the whole defect: 0.5307 is a real-symmetric asymptotic value, and it is FAR from GUE's
+        self.assertGreater(abs(Z.RATIO_GOE - Z.RATIO_GUE_SURMISE), 0.05)
+
+    def test_the_zeros_sit_near_gue_and_far_from_goe(self):
+        a = Z.audit()
+        self.assertLess(abs(a["ratio"] - Z.RATIO_GUE_SURMISE), 0.05)
+        self.assertGreater(abs(a["ratio"] - Z.RATIO_GOE), 0.05)
+
+    def test_the_deprecated_alias_still_points_at_the_goe_number(self):
+        # a constant that silently changes value is worse than one with a wrong name
+        self.assertEqual(Z.RATIO_GUE, Z.RATIO_GOE)

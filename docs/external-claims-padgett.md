@@ -173,12 +173,16 @@ enough. That is a finding rather than a failure: it says exactly how many zeros 
 
 All four gates pass; it is a VERIFIED certificate on the physics board.
 
-**The trap it caught — ours, not his.** The textbook GUE ratio is 0.5307. Comparing 201 computed
-spacings against it gives a **4σ "failure"** of a computation that is exactly right: 0.5307 is the
-*asymptotic* value, and the same estimator returns 0.6156 ± 0.0197 on synthetic GUE spacings of the
-same size. The right reference was a control of the same size, not a constant from a textbook. Every
-statistic needs a control at the size it is computed at, or it measures the estimator and calls it the
-world.
+**The trap it caught — ours, not his.** Comparing the zeros against 0.5307 gives a **4σ "failure"** of a
+computation that is exactly right — because **0.5307 is the GOE (real-symmetric) value and the zeros are
+a unitary system**. Measured with this repository's own estimator: GUE-surmise spacings give **0.6144**
+at n = 20,000 and **0.6136** at n = 200,000, while dim-200 GOE matrices give **0.5305**. So the fault was
+the **ensemble**, not the sample size — and the first run repeated it because the constant carried the
+wrong name.
+
+The rule it bought is still right and is now enforced by a test: **a reference constant is only a
+reference at the ensemble and the size where it was derived.** Compare a finite computation against a
+control of the same kind and size, or you measure the estimator and call it the world.
 
 **What this does and does not claim.** It verifies a known result numerically; it does not claim the
 zeros predict anything physical. What it does establish is the shape of the answer to Padgett's idea:

@@ -89,7 +89,11 @@ tadpole/gravity — is **proven exactly**, bookending the measured CY versions.
 ```
 python3 scripts/validate_t6.py          # 21/21 numerical self-assertions
 python3 scripts/validate_t6_sympy.py    # 8/8 exact symbolic checks
-python3 -m unittest discover -s tests   # 864 tests
+<<<<<<< HEAD
+python3 -m unittest discover -s tests   # 868 tests
+=======
+python3 -m unittest discover -s tests   # 868 tests
+>>>>>>> d14105b (fix(#197): 0.5307 is the GOE value, not GUE's — and a VERIFIED certificate repeated it as fact)
 ```
 
 ## Scope, tested at scale (2026-10-28)

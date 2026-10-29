@@ -10,7 +10,9 @@ So this module computes ζ(1/2 + it) itself (Euler–Maclaurin, no dependencies)
 unfolds them, and reports the statistics with a control:
 
   * the **ratio statistic** r = min(s_i, s_{i+1}) / max(s_i, s_{i+1}) has a known value for each
-    ensemble and needs no fitting: GUE 0.5307, Poisson 0.3863. A computed value near 0.53 with a
+    ensemble and needs no fitting: GUE ~0.61, Poisson ~0.386. (The 0.5307 this module used to quote is
+    the GOE, real-symmetric value — see `RATIO_GOE`; the zeros are unitary, so 0.61 is the reference.) A
+    computed value near 0.61 with a
     Poisson control ruled out is the verification.
   * the validation set is free and unforgiving: the first five zeros are 14.134725, 21.022040,
     25.010858, 30.424876, 32.935062. An implementation that does not reproduce them is wrong.
@@ -36,9 +38,25 @@ def _terms_for(t: float) -> tuple[int, int]:
 #: The five zeros every implementation must reproduce; used as the validation set.
 KNOWN_ZEROS = (14.1347251417, 21.0220396388, 25.0108575801, 30.4248761259, 32.9350615877)
 
-#: Reference values for the ratio statistic (Atas–Bogomolny for Poisson, exact for GUE).
+#: Reference values for the ratio statistic.
+#:
+#: `RATIO_GOE` is the value this repository used to call `RATIO_GUE`, and **the ensemble was wrong, not
+#: the number**: 0.5307 is the asymptotic ratio for REAL-SYMMETRIC (GOE, beta = 1) matrices, measured
+#: here at 0.5305 on dim-200 GOE matrices. The zeros are a unitary (beta = 2) system, so the right
+#: reference is the GUE one, which under this estimator is 0.6144 (surmise, 20k) / 0.6136 (200k).
+#:
+#: The value is kept under the name that describes it, because a constant silently changing value is a
+#: worse defect than a constant with a wrong name.
 RATIO_POISSON = 0.38629
-RATIO_GUE = 0.53070
+RATIO_GOE = 0.53070
+
+#: The GUE reference, measured from this module's own sampler at large n (`wigner_sample`), not quoted
+#: from a table. At n = 200,000 the estimator returns 0.61359; at 20,000 it returns 0.61440.
+RATIO_GUE_SURMISE = 0.6136
+
+#: Backwards-compatible alias. **Deprecated and wrong for GUE** — it names the GOE value. Use
+#: `RATIO_GOE` when you mean the real-symmetric asymptote, or `RATIO_GUE_SURMISE` when you mean GUE.
+RATIO_GUE = RATIO_GOE
 
 
 def zeta(s: complex, n_terms: int | None = None, corrections: int | None = None) -> complex:
@@ -188,10 +206,12 @@ def ratio_statistic(spacings: list[float]) -> float:
 def wigner_sample(n: int, rng) -> list[float]:
     """A finite sample from the GUE Wigner surmise P(s) = (32/pi^2) s^2 exp(-4 s^2 / pi).
 
-    This exists because the textbook ratio 0.5307 is the *asymptotic* value, and comparing 200
-    computed spacings against it measures the estimator's finite-sample bias rather than the zeros.
-    Measured: at n = 201 the estimator returns 0.6156 +- 0.0197 on synthetic GUE spacings, so that is
-    the number the zeros must be compared against.
+    This exists so the zeros are compared against the ensemble they belong to, at the size they were
+    computed at. Measured with this module's own estimator: GUE-surmise spacings give 0.6144 at
+    n = 20,000 and 0.6136 at n = 200,000, while REAL-SYMMETRIC (GOE) matrices give 0.5305.
+
+    The 0.5307 this module once quoted was the GOE asymptote — the wrong ensemble, not merely the wrong
+    sample size. Comparing zeros against it would report a failure of a correct computation.
     """
     out: list[float] = []
     while len(out) < n:
@@ -207,7 +227,7 @@ def gue_control(n: int, trials: int = 300, seed: int = 3) -> dict:
     rng = random.Random(seed)
     vals = [ratio_statistic(wigner_sample(n, rng)) for _ in range(trials)]
     return {"mean": st.mean(vals), "sd": st.pstdev(vals), "n": n, "trials": trials,
-            "asymptotic": RATIO_GUE}
+            "asymptotic": RATIO_GUE_SURMISE}
 
 
 def poisson_ratio(sample: int = 4000, seed: int = 7) -> float:
@@ -262,7 +282,7 @@ def audit(t_to: float = 2000.0) -> dict:
          "pass": abs(r - gue["mean"]) <= 2.0 * gue["sd"],
          "detail": f"ratio statistic {r:.4f} on {len(sp)} spacings vs a synthetic GUE control "
                    f"{gue['mean']:.4f} +- {gue['sd']:.4f} (the asymptotic value "
-                   f"{RATIO_GUE:.4f} is not the right reference at this sample size)"},
+                   f"{RATIO_GUE_SURMISE:.4f} is the GUE reference for this estimator)"},
         {"check": "and are not Poisson",
          "pass": abs(r - control) > 5.0 * gue["sd"],
          "detail": f"Poisson control {control:.4f}, {abs(r - control) / gue['sd']:.1f} control "
@@ -275,4 +295,5 @@ def audit(t_to: float = 2000.0) -> dict:
 
 __all__ = ["zeta", "theta", "hardy_z", "find_zeros", "zeros_euler_maclaurin", "smooth_count",
            "unfolded_spacings", "ratio_statistic", "poisson_ratio", "wigner_sample", "gue_control",
-           "null_model_zeros", "validate", "audit", "KNOWN_ZEROS", "RATIO_GUE", "RATIO_POISSON"]
+           "null_model_zeros", "validate", "audit", "KNOWN_ZEROS", "RATIO_GUE", "RATIO_GOE",
+           "RATIO_GUE_SURMISE", "RATIO_POISSON"]

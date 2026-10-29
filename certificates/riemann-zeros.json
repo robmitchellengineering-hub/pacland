@@ -42,10 +42,10 @@
     {
       "clause": "Conceptual soundness",
       "question": "Is the textbook constant the right reference?",
-      "answer": "no \u2014 0.5307 is the asymptotic GUE value; at 201 spacings the same estimator returns 0.6163 \u00b1 0.0190, so the zeros are compared against a finite-sample control",
+      "answer": "no \u2014 0.5307 is the GOE (real-symmetric) value and the zeros are unitary; the GUE reference under this estimator is 0.6136, and the control at the computed size is 0.6140 \u00b1 0.0068",
       "evidence": "zeros.gue_control()",
       "status": "satisfied",
-      "falsifier": "comparing 201 spacings against 0.5307 would report a 4\u03c3 failure of a correct computation \u2014 which is exactly what the first run did",
+      "falsifier": "comparing the zeros against 0.5307 \u2014 the GOE value \u2014 would report a failure of a correct computation, which is exactly what the first run did",
       "remedy": ""
     }
   ],

@@ -11,7 +11,7 @@
 | Implementation | Does the zeta implementation reproduce known values? | the first five zeros to 4.2e-11, on an engine written from scratch with no dependencies | **satisfied** |
 | Data quality | Are all the zeros in the range actually found? | 1517 zeros below t = 2000 against a smooth count of 1517.0 — no zeros missed | **satisfied** |
 | Outcomes analysis | Do the zeros obey the GUE statistics, or Poisson? | ratio statistic 0.6176 against a synthetic GUE control 0.6140 ± 0.0068, and Poisson 0.3810 — 34.6 control standard deviations away | **satisfied** |
-| Conceptual soundness | Is the textbook constant the right reference? | no — 0.5307 is the asymptotic GUE value; at 201 spacings the same estimator returns 0.6163 ± 0.0190, so the zeros are compared against a finite-sample control | **satisfied** |
+| Conceptual soundness | Is the textbook constant the right reference? | no — 0.5307 is the GOE (real-symmetric) value and the zeros are unitary; the GUE reference under this estimator is 0.6136, and the control at the computed size is 0.6140 ± 0.0068 | **satisfied** |
 
 ## Evidence
 

@@ -413,12 +413,14 @@ method this sits inside: [`docs/SOP-FIGURING-SYSTEMS-OUT.md`](SOP-FIGURING-SYSTE
 
 A rule bought on 2026-10-28, computing the Riemann zeros' spacing statistics.
 
-The textbook value for the ratio statistic under GUE is **0.5307**. Comparing 201 computed spacings
-against it gave **0.6155** — a four-sigma "failure" of a computation that was exactly right (the same
-code reproduces the first five known zeros to 4.2e-11, and finds every zero below t = 400).
+Comparing the computed zeros (**0.6155** at the time) against **0.5307** gave a four-sigma "failure" of a
+computation that was exactly right — the same code reproduces the first five known zeros to 4.2e-11 and
+finds every zero below t = 400.
 
-**0.5307 is the asymptotic value.** The same estimator, run on synthetic GUE spacings of the *same
-size*, returns **0.6156 ± 0.0197**. Against that control the computed value is 0.04σ away.
+**0.5307 is the GOE (real-symmetric) value, and the zeros are unitary.** Measured with this repository's
+own estimator: GUE-surmise spacings give **0.6144** at n = 20,000 and **0.6136** at n = 200,000; dim-200
+GOE matrices give **0.5305**. So the scare was the **wrong ensemble** — a mislabelled constant — with a
+small finite-size offset on top, not a sample-size bias of 0.09 as first recorded here.
 
 So: a reference constant is only a reference at the sample size where it was derived. Comparing a
 finite computation against an asymptotic constant measures **the estimator's finite-sample bias** and

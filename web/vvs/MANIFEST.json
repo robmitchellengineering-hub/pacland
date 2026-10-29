@@ -35,7 +35,7 @@
       "verified": true,
       "gates_passed": 4,
       "gates_required": 4,
-      "sha256": "f4880b00a9d52855309b0599f1804162eaaa0705aa06b94c977c2e8580197680"
+      "sha256": "11b461fe1a7ea18bea4c4e234a9db51e636aff95ff9f04c432e0b659ea4bb7b5"
     },
     "smets-wouters": {
       "subject": "Smets\u2013Wouters (2007) linearised DSGE",

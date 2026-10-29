@@ -300,11 +300,12 @@ def riemann_zeros() -> Certificate:
                 "zeros.gue_control(); zeros.poisson_ratio()", SATISFIED,
                 falsifier="a ratio near the Poisson value would mean the zeros do not repel"),
         Finding("Conceptual soundness", "Is the textbook constant the right reference?",
-                "no — 0.5307 is the asymptotic GUE value; at 201 spacings the same estimator returns "
-                "0.6163 ± 0.0190, so the zeros are compared against a finite-sample control",
+                "no — 0.5307 is the GOE (real-symmetric) value and the zeros are unitary; the GUE "
+                "reference under this estimator is 0.6136, and the control at the computed size is "
+                f"{a['gue']['mean']:.4f} ± {a['gue']['sd']:.4f}",
                 "zeros.gue_control()", SATISFIED,
-                falsifier="comparing 201 spacings against 0.5307 would report a 4σ failure of a "
-                          "correct computation — which is exactly what the first run did"),
+                falsifier="comparing the zeros against 0.5307 — the GOE value — would report a failure "
+                          "of a correct computation, which is exactly what the first run did"),
     ]
     return Certificate(
         subject="Riemann zeros and GUE statistics", sector="physics", issuer=ISSUER, issued=ISSUED,
