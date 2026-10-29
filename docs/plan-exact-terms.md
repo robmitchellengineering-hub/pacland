@@ -282,3 +282,44 @@ than certify one — it should not be starved.
 Every item names its exact term, its falsifier, and — before it runs — **how the falsifier could come
 out**. An item whose falsifier cannot fail is a demonstration, not a test, and belongs in the docs
 rather than in this plan.
+
+## 5b. B2 answered, provisionally — the falsifier fired at h12=10 and NOT at h12=25 (2026-10-29)
+
+Run on **pacland-rog** (the only node with jax/jaxvacua/cytools: `jax 0.12.0` imported clean), by
+`scripts/node_b2_truncation.py`. One fixed generic moduli point per h12, `maximum_degree` 0/1/2/3,
+`cond(M)` of the ISD matrix. **The falsifier was written into the script and printed before the run:**
+a move >10% between degrees 1/2/3 means the wall is series truncation, not geometry.
+
+| h12 | cond(M) @deg1 | @deg3 | move | verdict |
+|---|---|---|---|---|
+| 2 | 6.1347e3 | 6.1347e3 | **0.00%** | geometry |
+| 5 | 8.2173e9 | 8.2173e9 | **0.00%** | geometry |
+| 10 | 9.3210e5 | 1.1716e6 | **27.75%** | **TRUNCATION** |
+| 25 | 1.7287e6 | 1.7206e6 | **0.47%** | **geometry** |
+
+**The falsifier fired at h12 = 10 and not at h12 = 25.** If it had fired everywhere, the wall would be a
+degree bug and the fix would be one keyword. It did not: at h12 = 25 — the case the plan is about —
+carrying the series from degree 1 to 3 moves `cond(M)` by **0.47%**, eight times below the threshold.
+**So at this point, truncation is excluded for h12 = 25 and the near-null direction is geometry.**
+
+Two caveats, both recorded rather than smoothed:
+
+1. **one point per h12.** A single moduli point cannot separate a degree effect from where the point
+   landed, and the h12 = 10 pattern is non-monotone (deg1 → deg2 rises, deg2 → deg3 falls), which is
+   what a "first instanton order matters, then converges" looks like — but it could also be the point.
+   The 5-point follow-up is written (`scripts/node_b2_followup.py`) and queued.
+2. **jaxvacua warned:** *"Mirror worldsheet instanton corrections are disabled, but GV charges are
+   provided. This may lead to inconsistent results!"* If the instanton corrections are off, the degree
+   ladder is not measuring the series it claims to. The follow-up prints the constructor signature and
+   the warning's own source, and retries with any instanton flag the constructor accepts.
+
+**Also note:** `cond(M)` is not monotone in h12 (8.2e9 at h12=5 against 1.7e6 at h12=25), so a single
+number per h12 is not a ladder in h12 — only the *within-h12, across-degree* comparison is being claimed
+here, which is what the falsifier is about.
+
+### The node stopped polling, and why
+
+The B2 run wrote a `result.json` with `"summary": ,` — an empty summary — which is invalid JSON. The node
+recorded the job as **suspect** and has not polled since, so the B1/B3 probe and the B2 follow-up are
+queued and unrun. That is a mesh bug worth its own note: **a job whose stdout cannot be summarised should
+degrade to a plain "pass, no summary", not produce a result file that halts the loop.**
