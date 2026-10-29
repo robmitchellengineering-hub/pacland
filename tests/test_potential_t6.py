@@ -61,3 +61,18 @@ class TestVacuumSolver(unittest.TestCase):
         F = np.zeros(8); H = np.zeros(8); F[0] = 1.0; H[1] = 1.0
         f = P.f_terms(F, H, [1j, 1j, 1j, 1j])
         self.assertGreater(float(np.linalg.norm(f)), 1e-6)
+
+
+class TestStationarySolverIsNotYetTrusted(unittest.TestCase):
+    """The DV = 0 solver is implemented and NOT validated. Pinned so nobody builds on it by accident.
+
+    A supersymmetric point satisfies DW = 0, which implies DV = 0, so the stationary solver MUST recover
+    the constructed susy vacuum. It does not: it lands 0.9 away in moduli space. Finite-difference
+    gradients (step 1e-6) are almost certainly too noisy for Newton here, and the flat directions of a
+    susy vacuum make the test harder still. Until that is fixed, no mass spectrum from this solver is
+    reported.
+    """
+
+    def test_it_currently_fails_and_that_is_recorded(self):
+        r = P.validation_stationary()
+        self.assertFalse(r["pass"], "if this now passes, update docs/is-the-landscape-chaotic.md")

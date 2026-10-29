@@ -128,6 +128,27 @@ integer lattice, so a small integer flux is generically **not F-flat anywhere**.
 
 **Route 2 is the one that can answer the question**, and it is the next build.
 
+## The `DV = 0` solver is built and **not validated** — and is therefore not used
+
+The non-supersymmetric route is the one that could answer the question, so the solver was written. It
+has a clean validation available: **a supersymmetric point satisfies `DW = 0`, which implies `DV = 0`,
+so the stationary solver must recover the constructed susy vacuum.**
+
+It does not. It lands **0.9 away** in moduli space.
+
+| | |
+|---|---|
+| constructed susy vacuum | recovered exactly by `solve_supersymmetric` (9.6e-10) |
+| same point, sought with `DV = 0` | **missed by 0.9** |
+
+The likely cause is that the gradient is a **finite difference** with step 1e-6, which is far too noisy
+for Newton on a potential of this shape; the flat directions of a supersymmetric vacuum compound it.
+The fix is analytic gradients — a known, bounded piece of work — and until it is done **no mass spectrum
+from this solver is reported**, and a test pins the failure so nobody builds on it by accident.
+
+That is the difference between a research arm and a demo: the last piece is not finished, and the arm
+says so in its own repository rather than shipping a number.
+
 ## Honest current status
 
 | | |
@@ -135,7 +156,7 @@ integer lattice, so a small integer flux is generically **not F-flat anywhere**.
 | the machinery | **verified**, reused from the zeros work |
 | the spectrum | **`V` is built and validated 4/4**; masses need a stationary point, which is the remaining build |
 | the answer | **open** |
-| the next step | `DV = 0` (non-supersymmetric vacua): ISD is measure-zero on the integer lattice, and susy vacua have flat directions |
+| the next step | analytic gradients for `DV = 0`: the finite-difference version misses a known stationary point by 0.9 |
 
 This is what an honest research arm looks like from the inside: one question, one failed first
 approach that taught us what the observable has to be, and a named next build.
