@@ -51,7 +51,11 @@ class CyToolsAdapter:
             "h11": cy.h11(),
             "h21": cy.h21(),
             "intersection_numbers": cy.intersection_numbers(),
-            "second_chern_class": cy.second_chern_class,
+            # `second_chern_class` is a METHOD on the CYTools object (confirmed on pacland-rog
+            # 2026-10-29: it comes back as a bound method, not a value). Returning it uncalled hands
+            # every caller a function object -- found when F3 tried to use c2 as integers.
+            "second_chern_class": (cy.second_chern_class()
+                                   if callable(cy.second_chern_class) else cy.second_chern_class),
         }
 
     def fetch_polytopes(self, **kwargs):
