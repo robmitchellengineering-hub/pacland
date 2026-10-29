@@ -339,6 +339,40 @@ The single-point answer was **plausible, wrong, and consistent with a caveat alr
 it**. The correction cost one extra dispatch. The rule this repo already has — *a statistic needs a
 same-size control and more than one sample, or it is a draw* — is the rule that caught it.
 
+## 5c. B1 — GV integrality fires, and only on the NON-PRIMITIVE degrees (2026-10-29)
+
+`scripts/node_b1_gv.py` on pacland-rog, h12 = 2, `maximum_degree = 2`, `mirror_instanton = True`.
+`F_inst` is fitted against a basis of `Li_3` terms over 20 imaginary moduli points (y ∈ [0.30, 1.00]).
+**Falsifier, stated before the run:** a non-integer `n_d`, or `n_d` that move with the point.
+
+| degree d | fitted n_d | deviation from integer | verdict |
+|---|---|---|---|
+| (0,1) | **-3.0004** | 4e-04 | integer |
+| (1,0) | **-540.0009** | 9e-04 | integer |
+| (1,1) | **1080.009** | 9e-03 | integer |
+| (0,2) | **+5.6265** | **3.7e-01** | **NOT integer** |
+| (2,0) | **-607.48** | **4.8e-01** | **NOT integer** |
+
+**Every primitive class comes out integral. The two non-primitive classes do not.** The values are not
+noise: they recur between two disjoint point sets (drift 1.9e-02, against a fit residual of 2.5e-07), and
+`n_(0,2)` and `n_(2,0)` reproduce across `maximum_degree` 2 and 3 even when the rest of the fit does not.
+
+**So B1's falsifier fires, and it fires in a specific place.** That is the useful outcome: the period
+pipeline is integral on primitive curve classes and not on non-primitive ones, which points at the
+curve-class basis convention (a half-integral normalisation shows up exactly this way) rather than at the
+periods themselves. Until that is settled, **primitive-class `n_d` are usable and non-primitive ones are
+not**, and any GV table taken from this pipeline should say which classes it is quoting.
+
+### The first run of B1 was wrong, and the reason matters more than the fix
+
+It fitted degrees up to 3 over a window y ∈ [0.8, 2.6], where `e^{-2π d·y} ~ 1e-7`: the higher basis
+columns were **noise**, least squares was free to put anything in them, and it duly reported "non-integer
+n_d" — the falsifier firing on **my test**, not on the pipeline. The window is now chosen so the
+instantons are *visible* (`q ~ 0.15`), the basis is restricted to what the window can resolve, and the fit
+residual is checked first (2.5e-07 here) before any integer claim is made.
+
+**A fit whose basis outruns its data will always produce a finding. It just won't be about the physics.**
+
 ### The node stopped polling, and why
 
 The B2 run wrote a `result.json` with `"summary": ,` — an empty summary — which is invalid JSON. The node
