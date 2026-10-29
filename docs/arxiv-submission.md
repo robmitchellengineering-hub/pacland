@@ -1,6 +1,6 @@
 # arXiv submission package — turn-key
 
-Five technical papers plus one **flagship synthesis** are ready. This is everything arXiv
+Five technical papers plus one **flagship synthesis** are ready. **Edited 2026-10-29 before submission**: the theorem's scope note (one symplectic pair), and a worked-failure section in the preprint. This is everything arXiv
 needs, so the only remaining steps are things only Rob can do (create/own the account,
 receive the endorsement) — no content work is left.
 
