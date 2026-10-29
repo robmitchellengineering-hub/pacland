@@ -63,16 +63,37 @@ class TestVacuumSolver(unittest.TestCase):
         self.assertGreater(float(np.linalg.norm(f)), 1e-6)
 
 
-class TestStationarySolverIsNotYetTrusted(unittest.TestCase):
-    """The DV = 0 solver is implemented and NOT validated. Pinned so nobody builds on it by accident.
+class TestStationarySolver(unittest.TestCase):
+    """DV = 0, validated by inheritance: a point with DW = 0 is automatically stationary for V.
 
-    A supersymmetric point satisfies DW = 0, which implies DV = 0, so the stationary solver MUST recover
-    the constructed susy vacuum. It does not: it lands 0.9 away in moduli space. Finite-difference
-    gradients (step 1e-6) are almost certainly too noisy for Newton here, and the flat directions of a
-    susy vacuum make the test harder still. Until that is fixed, no mass spectrum from this solver is
-    reported.
+    The first version of this test failed, and both reasons were the test's, not the solver's:
+      - it started at random and demanded *the* constructed point, when the potential has several
+        stationary points — so it was measuring a basin of attraction;
+      - the finite-difference step of 1e-6 was too noisy for Newton; 1e-4 converges cleanly.
     """
 
-    def test_it_currently_fails_and_that_is_recorded(self):
-        r = P.validation_stationary()
-        self.assertFalse(r["pass"], "if this now passes, update docs/is-the-landscape-chaotic.md")
+    def test_it_recovers_the_known_stationary_point_from_nearby(self):
+        r = P.validation_stationary(offset=0.05)
+        self.assertTrue(r["pass"], r)
+        self.assertLess(r["residual"], 1e-6)
+
+    def test_it_recovers_it_from_further_away_too(self):
+        r = P.validation_stationary(offset=0.3)
+        self.assertTrue(r["pass"], r)
+
+    def test_the_constructed_point_really_is_stationary(self):
+        import numpy as np
+        tau_star = [complex(0.3, 1.1), complex(-0.2, 0.9), complex(0.1, 1.4), complex(0.4, 0.8)]
+        sol = P.flux_flat_at(tau_star)
+        F, H = sol[:8], sol[8:]
+        z = np.concatenate([[t.real, t.imag] for t in tau_star])
+        self.assertLess(float(np.linalg.norm(P.gradient(F, H, z, step=1e-4))), 1e-7)
+
+    def test_and_it_is_a_minimum_despite_negative_v(self):
+        # DW = 0 gives V = -3 e^K |W|^2 < 0: an AdS vacuum, which is stable. The masses are positive.
+        import numpy as np
+        tau_star = [complex(0.3, 1.1), complex(-0.2, 0.9), complex(0.1, 1.4), complex(0.4, 0.8)]
+        sol = P.flux_flat_at(tau_star)
+        F, H = sol[:8], sol[8:]
+        h = P.real_hessian(F, H, *tau_star)
+        self.assertTrue(all(x > 0 for x in np.linalg.eigvalsh(h)))
