@@ -389,6 +389,13 @@
    "title": "h12=25 sampling wall \u2014 the ISD proposal degrades (measured 2026-10-21)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/identifiability-of-room-modes.md",
+   "kind": "doc",
+   "path": "docs/identifiability-of-room-modes.md",
+   "summary": "The question the audio lab's correction engine depends on, and one nobody publishes an answer to. Answered the way we answered Smets\u2013Wouters: by the rank of the Jacobian of what is observed\u2026",
+   "title": "How many microphones identify how many modes?"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/learnability-negative.md",
    "kind": "doc",
    "path": "docs/learnability-negative.md",
@@ -1376,11 +1383,25 @@
    "title": "spectral_explicit.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_identify.py",
+   "kind": "script",
+   "path": "scripts/spectral_identify.py",
+   "summary": "How many microphones identify how many modes? Measured, not asserted.",
+   "title": "spectral_identify.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_rooms.py",
    "kind": "script",
    "path": "scripts/spectral_rooms.py",
    "summary": "Room modes as a spectrum: the oracle an acoustic solver can be checked against.",
    "title": "spectral_rooms.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_rooms_crb.py",
+   "kind": "script",
+   "path": "scripts/spectral_rooms_crb.py",
+   "summary": "Modal identifiability with a noise model: how many parameters survive real measurement noise.",
+   "title": "spectral_rooms_crb.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_zeros.py",
