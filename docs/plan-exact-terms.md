@@ -399,6 +399,37 @@ solution at the conifold point and the monodromy around it are the same computat
 established in this session. R1's instruction is explicit — *pin the conifold Γ(1/5) value from the
 literature before use* — and it has not been pinned from a citable source, so no R1 number is claimed.
 
+## 5e. B2 applied — the falsifier fires, and it NARROWS #208's claim (2026-10-29)
+
+#208 measured that `cond(M)` at h12 = 25 moves up to 88% between degree 1 and degree 2, and that degree 2
+is converged (`d2 = d3` at every point). That is a statement about **the series**. The question the series
+exists for is what the sampler **finds**.
+
+`scripts/node_b2_applied.py`, pacland-rog, same budget for both degrees (`n_target = 5`,
+`max_batches = 40`), `mirror_instanton = True`:
+
+| h12 | degree 0 | degree 2 |
+|---|---|---|
+| 5 | 2 critical points, **0 SUSY** (109 s) | 0 critical points, **0 SUSY** (208 s) |
+| 10 | 0 critical points, **0 SUSY** (327 s) | 0 critical points, **0 SUSY** (429 s) |
+
+**The falsifier, stated before the run, fires: degree 2 does not find vacua that degree 0 could not.**
+At this budget the sampler finds essentially nothing at h12 = 5 and 10 either way.
+
+**So #208's result has to be stated precisely, and this is the correction:** degree 2 fixes the
+**conditioning of the ISD matrix** — the series is converged, measured — and it does **not**, by itself,
+make the sampler produce vacua. The yield at these settings is **budget-limited**, not truncation-limited.
+
+Two claims that were in danger of merging into one sentence, now separated:
+
+| claim | evidence | status |
+|---|---|---|
+| the instanton series is unconverged at degree 1 and converged at degree 2 | `cond(M)`, 5 points per h12, `d2 = d3` everywhere | **supported** |
+| degree 2 therefore fixes the h12 ≥ 5 wall in the sampler | yield test at h12 = 5, 10 | **not supported at this budget** |
+
+That is a smaller claim than #208 alone suggests, and it is the true one. The next test, if it is worth
+the compute, is the yield at a budget large enough that degree 0 finds something.
+
 ### The node stopped polling, and why
 
 The B2 run wrote a `result.json` with `"summary": ,` — an empty summary — which is invalid JSON. The node
