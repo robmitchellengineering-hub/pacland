@@ -529,6 +529,13 @@
    "title": "The exactness programme \u2014 every kind of exactness we can use, and what each one decides"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-facts.md",
+   "kind": "doc",
+   "path": "docs/plan-facts.md",
+   "summary": "Planning room (~/Documents/DeepSeek), 2026-10-29. Decisions: D9 (this folder owns intent, the repo owns code), D10 (job \u2192 plan \u2192 decision), D14 (pacland is the method at maximum\u2026",
+   "title": "The fact-builds \u2014 what to build to get answers rather than pointers"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/publication-plan.md",
    "kind": "doc",
    "path": "docs/publication-plan.md",
