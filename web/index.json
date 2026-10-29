@@ -1271,6 +1271,13 @@
    "title": "measure_elimination_curve.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_engine.py",
+   "kind": "script",
+   "path": "scripts/measure_engine.py",
+   "summary": "F1 \u2014 the measure engine.",
+   "title": "measure_engine.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_flux_learnability.py",
    "kind": "script",
    "path": "scripts/measure_flux_learnability.py",
