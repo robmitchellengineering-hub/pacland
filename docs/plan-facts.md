@@ -51,6 +51,31 @@ window and its exactness flag is not a fact.
 
 ---
 
+### F1 — BUILT AND RUN (2026-10-29)
+
+`src/pacland/exactness/measures.py` · `python3 scripts/measure_engine.py` · 8 tests.
+
+| property | flux-uniform | primitive | tadpole-uniform | log-N | tadpole-weighted | ratio |
+|---|---|---|---|---|---|---|
+| `0 < N <= 1` | 0.2015 | 0.2015 | **0.0714** | **0.3609** | 0.1588 | **5.05x** |
+| `0 < N <= 3` | 0.3657 | 0.3657 | 0.2143 | 0.4939 | 0.4544 | 2.31x |
+| `0 < N <= 6` | 0.3797 | 0.3797 | 0.4286 | 0.5000 | 0.5000 | 1.32x |
+| `N == 0` | 0.2407 | 0.2407 | 0.1429 | 0 (no support) | 0 (no support) | — |
+
+Window `b3 = 6, |F_i|,|H_i| <= 1`, all 531,441 pairs, exact enumeration.
+
+**The fact:** "the fraction of flux choices with a small tadpole" is **0.071 or 0.361** depending only on
+which reasonable measure is used — a factor of **5.05**, with no physics changed. That is the
+"10^500 vacua" argument, quantified rather than argued.
+
+**The acceptance test was an identity, not a number:** `fraction(N>0) == (1 - fraction(N==0))/2` holds to
+`1e-16` for all five symmetric measures, and is proved able to fail by an asymmetric weight in
+`tests/test_measure_engine.py`.
+
+**A vacuous column caught in the first version:** "is the content primitive" is 1.000 under every measure
+at `max_abs = 1`, because every non-zero pair there already is primitive. It was replaced by `N == 0`,
+which varies. A column that cannot vary is not a finding.
+
 ## F2 — certified periods (the increment on B3's target · Mac, then node)
 
 **Premise.** #210 probed CYTools on `pacland-rog`: it exposes `compute_gv`, `compute_gw`,
