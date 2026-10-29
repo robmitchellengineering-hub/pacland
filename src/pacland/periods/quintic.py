@@ -165,7 +165,13 @@ def as_log_parts(k: int, n_max: int, dps: int = 40) -> list:
     parts = [[mp.mpf(0)] * (n_max + 1) for _ in range(K)]
     for j in range(k + 1):
         d = k - j
-        parts[j] = [js[n][d] * mp.factorial(d) for n in range(n_max + 1)]
+        # The k-th Frobenius solution is d^k/drho^k applied to z^rho Phi(rho), which expands to
+        #   sum_j C(k,j) L^j Phi^(k-j) = sum_j [k!/(k-j)!] (L^j/j!) Phi^(k-j)
+        # so each log coefficient carries the binomial weight, not just 1. Dropping it (the first
+        # version of this function did) leaves omega_2 and omega_3 outside the solution space -- which
+        # is exactly what the conifold connection caught.
+        weight = mp.factorial(k) / mp.factorial(k - j)
+        parts[j] = [js[n][d] * mp.factorial(d) * weight for n in range(n_max + 1)]
     return parts
 
 

@@ -903,7 +903,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_connection.py",
    "kind": "script",
    "path": "scripts/conifold_connection.py",
-   "summary": "F2 M2c (in progress) - the connection between the z=0 and conifold expansions.",
+   "summary": "F2 M2c - the connection at the conifold, and the test that it closes.",
    "title": "conifold_connection.py"
   },
   {
@@ -1339,6 +1339,13 @@
    "path": "scripts/node_b2_applied.py",
    "summary": "B2 APPLIED \u2014 does degree 2 actually find vacua that degree 0/1 could not?",
    "title": "node_b2_applied.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_f3_quintic.py",
+   "kind": "script",
+   "path": "scripts/node_f3_quintic.py",
+   "summary": "F3 rung 1 \u2014 the quintic's brane data, and the first candidate invariant tested.",
+   "title": "node_f3_quintic.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_potential.py",
