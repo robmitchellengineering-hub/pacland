@@ -522,6 +522,13 @@
    "title": "Physics compute \u2014 removing the GPU, and whether pooling cheap machines works"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-brane-ring.md",
+   "kind": "doc",
+   "path": "docs/plan-brane-ring.md",
+   "summary": "first figures landed (F1 #212, F2-M1 #213), because they change the direction \u2014 this records why.",
+   "title": "F3 \u2014 the brane invariant ring: the one build that can overturn our own claim"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-exact-terms.md",
    "kind": "doc",
    "path": "docs/plan-exact-terms.md",
@@ -1311,6 +1318,13 @@
    "path": "scripts/mine_structure.py",
    "summary": "Mine every flux-paired observable for structure + learnability.",
    "title": "mine_structure.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b2_applied.py",
+   "kind": "script",
+   "path": "scripts/node_b2_applied.py",
+   "summary": "B2 APPLIED \u2014 does degree 2 actually find vacua that degree 0/1 could not?",
+   "title": "node_b2_applied.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_potential.py",
