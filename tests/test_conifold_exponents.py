@@ -37,3 +37,26 @@ class TestIndicial(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestResonances(unittest.TestCase):
+    """Integral exponents mean the recursion collapses at integer orders — computed, not assumed."""
+
+    def test_the_resonance_orders(self):
+        self.assertEqual(C.resonances(0), [1, 2])
+        self.assertEqual(C.resonances(1), [1])
+        self.assertEqual(C.resonances(2), [])
+
+    def test_only_the_top_exponent_is_a_plain_power_series(self):
+        w = C.which_branch_is_clean()
+        self.assertTrue(w["2"]["clean"])
+        self.assertFalse(w["0"]["clean"])
+        self.assertFalse(w["1"]["clean"])
+
+    def test_this_is_why_the_connection_needs_the_log_algebra(self):
+        # two of the three exponent branches are resonantly degenerate (0 and 1); with the double root
+        # at 1 that is three of the four solutions carrying logarithms, and only s=2 clean. Stated as a
+        # test so the next session does not discover it the hard way.
+        w = C.which_branch_is_clean()
+        self.assertEqual(sum(1 for v in w.values() if not v["clean"]), 2)
+        self.assertEqual(sorted(k for k, v in w.items() if v["clean"]), ["2"])
