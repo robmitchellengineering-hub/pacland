@@ -70,6 +70,45 @@ So the rig is justified by measurement, and it makes the walk **cheaper**: rough
 the same conditioning. The honest limit is that the advantage is specifically at one position — if you
 are already walking to three positions, the second capsule is buying robustness, not information.
 
+## With a noise model, the answer changes — and it is the honest one
+
+Rank and conditioning have no noise in them. A real capture does, and the right instrument for that is
+the **Cramér–Rao bound**: given the measurement noise, how precisely can each modal parameter possibly be
+estimated? Parameters are counted as usable when the bound is below 10% of their own value.
+
+3-D room, 18 modes below 100 Hz, 36 parameters, 60 frequencies per capture, **complex** data:
+
+| noise (SNR) | usable at 10% | usable at 25% | median bound |
+|---|---|---|---|
+| 1e-4 (−80 dB) | **23 / 36** | 30 / 36 | 0.05 |
+| 3e-4 (−70 dB) | 13 / 36 | 22 / 36 | 0.16 |
+| 1e-3 (−60 dB) | 3 / 36 | 10 / 36 | 0.53 |
+| 3e-3 (−50 dB) | **0 / 36** | 2 / 36 | 1.60 |
+
+And the microphone count, at −60 dB with complex data:
+
+| microphones | usable at 10% | usable at 25% | median bound |
+|---|---|---|---|
+| 1 | 1 / 36 | 6 / 36 | 1.86 |
+| 2 | 2 / 36 | 8 / 36 | 0.69 |
+| 3 | 3 / 36 | 10 / 36 | 0.53 |
+| 4 | 4 / 36 | 11 / 36 | 0.48 |
+
+**So the earlier headline needs a correction, and this is it.** Rank said one capture identifies
+everything and conditioning said two were enough; with a noise model, **identifying 36 modal parameters
+to 10% needs roughly −70 dB of measurement noise and one microphone per usable direction — and at a
+realistic −60 dB you get about three.** At −50 dB you get nothing.
+
+That is not a failure of the method, it is the honest arithmetic: amplitude and damping trade off
+against each other almost exactly, so the parameters are nearly degenerate even when the *response* is
+well measured. What is well determined at realistic noise is a handful of **combinations** — which is
+precisely what an equaliser needs, and not at all what a modal-parameter table needs.
+
+**Product consequence:** the lab should promise *margin and correction*, not a modal parameter table.
+The anti-feedback design (AirMatrix 34) needs the loop gain near the critical frequency, which is a
+combination and survives this; a "here are your 36 modes" readout would be a confident lie at normal
+measurement noise.
+
 ## What the 3-D run actually needed — and what it still needs
 
 It failed twice before it worked, and the failures are instructive:
