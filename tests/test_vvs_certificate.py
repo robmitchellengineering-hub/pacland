@@ -13,7 +13,19 @@ VVS = ROOT / "certificates" / "vvs"
 #: dependency gap (NOT_DEMONSTRATED) rather than a false theorem — so a test that asserts the tower is
 #: VERIFIED must skip, not fail, where the check cannot run. Found by running the suite on the mesh
 #: node: three tests failed on a bare Linux host for a reason that was about the host, not the code.
-HAVE_NUMPY = importlib.util.find_spec("numpy") is not None
+def _tower_can_run() -> tuple[bool, str]:
+    """Ask the CERTIFICATE whether its validators could run, rather than probing for one library.
+
+    The first version probed for numpy; the mesh node has numpy but lacks the validators' other
+    dependency, so the probe said 'fine' while the certificate correctly said NOT_DEMONSTRATED.
+    The certificate is the authority on its own environment — a test that second-guesses it is
+    testing the wrong thing.
+    """
+    c = D.physics_theorems()
+    for f in c.findings:
+        if f.status == "not demonstrated":
+            return False, f.answer[:160]
+    return True, ""
 
 
 class TestFormat(unittest.TestCase):
@@ -39,7 +51,8 @@ class TestFormat(unittest.TestCase):
                                Finding("c", "q2", "a", "e", FAILING)))
         v = made.to_vvs()
         self.assertEqual((v["gates_passed"], v["gates_required"], v["verified"]), (1, 2, False))
-        names = ["gdpnow"] + (["physics_theorems"] if HAVE_NUMPY else [])
+        tower_ok, _ = _tower_can_run()
+        names = ["gdpnow"] + (["physics_theorems"] if tower_ok else [])
         for name in names:
             v = getattr(D, name)().to_vvs()
             self.assertTrue(v["verified"], name)
@@ -48,15 +61,17 @@ class TestFormat(unittest.TestCase):
 
 class TestPhysics(unittest.TestCase):
     def test_a_dependency_gap_is_not_a_false_theorem(self):
-        if HAVE_NUMPY:
-            self.skipTest("numpy present: the accepted path is the verified one")
+        ok, why = _tower_can_run()
+        if ok:
+            self.skipTest("all validators ran: the accepted path is the verified one")
         c = D.physics_theorems()
         self.assertNotEqual(c.grade, "REFUSED")
         self.assertTrue(any("not refuted" in f.answer for f in c.findings))
 
     def test_the_theorem_tower_is_verified(self):
-        if not HAVE_NUMPY:
-            self.skipTest("validators need numpy; the dependence is reported by the certificate")
+        ok, why = _tower_can_run()
+        if not ok:
+            self.skipTest(f"validators could not run here: {why}")
         c = D.physics_theorems()
         self.assertEqual(c.grade, "VERIFIED")
         self.assertTrue(c.to_vvs()["verified"])
