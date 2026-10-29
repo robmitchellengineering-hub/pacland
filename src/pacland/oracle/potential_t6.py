@@ -299,3 +299,74 @@ def validation_by_construction(tau_star: list[complex] | None = None, seed: int 
     return {"construction_residual": f0, "converged": found["converged"],
             "recovery_error": error, "target": tau_star, "recovered": recovered,
             "pass": f0 < 1e-9 and found["converged"] and error < 1e-4}
+
+
+def gradient(F, H, z: np.ndarray, step: float = 1e-6) -> np.ndarray:
+    """d V / d(8 real moduli), by central differences."""
+    g = np.zeros(8)
+    for i in range(8):
+        zp = z.copy(); zp[i] += step
+        zm = z.copy(); zm[i] -= step
+        vp = potential(F, H, complex(zp[0], zp[1]), complex(zp[2], zp[3]),
+                       complex(zp[4], zp[5]), complex(zp[6], zp[7]))
+        vm = potential(F, H, complex(zm[0], zm[1]), complex(zm[2], zm[3]),
+                       complex(zm[4], zm[5]), complex(zm[6], zm[7]))
+        g[i] = (vp - vm) / (2 * step)
+    return g
+
+
+def solve_stationary(F, H, starts: int = 10, seed: int = 7, iterations: int = 80,
+                     tol: float = 1e-7) -> dict:
+    """Non-supersymmetric stationary points: `DV = 0` on the eight real moduli.
+
+    Validation is not by construction here (V is not linear in anything convenient) but by *inheritance*:
+    a supersymmetric point satisfies `DW = 0`, which implies `DV = 0`, so the solver must recover the
+    constructed susy vacuum. That is the test in `validation_stationary`.
+    """
+    rng = np.random.default_rng(seed)
+    F = np.asarray(F, dtype=float)
+    H = np.asarray(H, dtype=float)
+    best = None
+    for _ in range(starts):
+        z = np.concatenate([[rng.uniform(-1, 1), rng.uniform(0.5, 2.5)],
+                            np.tile([rng.uniform(-1, 1), rng.uniform(0.5, 2.5)], 3)])
+        for _ in range(iterations):
+            g = gradient(F, H, z)
+            if np.linalg.norm(g) < tol:
+                break
+            jac = np.zeros((8, 8))
+            for j in range(8):
+                zp = z.copy(); zp[j] += 1e-5
+                jac[:, j] = (gradient(F, H, zp) - g) / 1e-5
+            try:
+                dz = np.linalg.solve(jac, -g)
+            except np.linalg.LinAlgError:
+                break
+            scale = min(1.0, 0.3 / max(np.max(np.abs(dz)), 1e-12))
+            z = z + scale * dz
+            if np.any(z[1::2] < 0.05):
+                break
+        norm = float(np.linalg.norm(gradient(F, H, z)))
+        if np.all(z[1::2] > 0.05) and (best is None or norm < best[0]):
+            best = (norm, z)
+    if best is None:
+        return {"converged": False, "residual": float("inf"), "z": None, "masses": None}
+    z = best[1]
+    h = real_hessian(F, H, complex(z[0], z[1]), complex(z[2], z[3]), complex(z[4], z[5]),
+                     complex(z[6], z[7]))
+    masses = sorted(float(x) for x in np.linalg.eigvalsh(h))
+    return {"converged": best[0] < 1e-5, "residual": float(best[0]), "z": z,
+            "masses": masses, "is_minimum": all(m > 1e-8 for m in masses)}
+
+
+def validation_stationary(seed: int = 3) -> dict:
+    """DV = 0 must recover a point that DW = 0 already fixes — inheritance is the validation."""
+    tau_star = [complex(0.3, 1.1), complex(-0.2, 0.9), complex(0.1, 1.4), complex(0.4, 0.8)]
+    sol = flux_flat_at(tau_star)
+    F, H = sol[:8], sol[8:]
+    found = solve_stationary(F, H, starts=6, seed=seed)
+    if found["z"] is None:
+        return {"pass": False, "reason": "no stationary point found for a flux that has one"}
+    z = found["z"]
+    err = max(abs(complex(z[2 * i], z[2 * i + 1]) - tau_star[i]) for i in range(N_MODULI))
+    return {"pass": err < 1e-3, "recovery_error": err, "residual": found["residual"]}
