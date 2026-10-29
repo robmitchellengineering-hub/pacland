@@ -290,6 +290,29 @@ the resonant orders, cancelled order by order against the numerator — which is
 this line has deliberately not built yet. The gate is in place to receive it: a real fourth column has
 coefficients of order one, like the other three.
 
+### B1 FIXED — the GV basis convention, and why integrality alone is not the check (2026-10-29)
+
+`src/pacland/periods/gv_basis.py` · `python3 scripts/gv_basis.py` · 4 tests.
+
+#209 found that the extracted invariants came out integral on the **non-primitive** degrees only. That is
+a convention error, and the convention is: the instanton part of the prepotential is
+`Σ_d n_d Li₃(q^d)`, so the coefficient of `q^m` is **not** `n_m` —
+
+```
+c_m = (1/m³) Σ_{d|m} d³ n_d          n_m = c_m − (1/m³) Σ_{d|m, d<m} d³ n_d
+```
+
+Anchored on the classical quintic integers (`n₁ = 2875`, `n₂ = 609250`, `n₃ = 317206375`), the inverse
+relation round-trips **exactly**, and the coefficients are not integers at all (`c₂ = 4876875/8`).
+
+**The finding is stronger than the fix.** A naive read-off (`n_m = m³c_m`) returns **integers** on every
+composite degree, and the wrong ones: `4876875` where the truth is `609250`, `8564575000` where it is
+`317206375`. So **integrality is not a sufficient check** — an "all integers" pass says nothing unless the
+extraction inverted the multi-cover relation. That is precisely why #209's check fired where it did, and
+why a green tick on a naive read-off would have been a false pass.
+
+Degree 1 is the only degree where both agree, which is exactly the shape of #209's symptom.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
