@@ -63,6 +63,40 @@ justified by measurement, and it makes a walking capture **half the positions** 
 The honest limit: the advantage is at *one* position. If you are already walking to three positions, the
 second capsule buys robustness, not information.
 
+## The binaural node — what it is for, and what the maths says about it
+
+The capture hardware is a **binaural node**: two capsules 17 cm apart (head spacing), stereo in, on
+batteries, sent over the Wi-Fi. It is not a microphone — it is a *sensor with two correlated channels*,
+and it has three planned jobs, each of which the analysis has something specific to say about.
+
+**1. Walking capture.** The engineer walks the room and presses to capture at each position; the desk
+already has the remote. The maths says the **second capsule removes half the walking**: one binaural
+position does the work of *two* omni positions, and one omni position alone leaves six directions buried in
+noise. So a route that was going to be four positions can be two — and the system can say "you have enough"
+rather than leaving it to instinct, and say *which* directions are still weak so the next position is
+chosen rather than stumbled on.
+
+**2. A stationary pair at front of house — the reference channel.** The pair does not have to walk. Fixed
+at front of house it is a calibrated, always-on reference: the thing every other measurement is compared
+against, and the record of what the room was doing at a given moment.
+
+**3. The stage mics as the measurement array.** The stage is already covered in microphones, and every one
+of them is a receiver. The desk knows exactly what it is sending to the PA and the wedges, so **the show
+itself is the stimulus** — no sweeps, no pink noise, no stopping the gig. That is the idea that turns the
+lab from a soundcheck tool into something that works during the performance.
+
+**The honest state of each.** (1) is *measured*: the binaural-versus-omni comparison in
+[identifiability-of-room-modes.md](identifiability-of-room-modes.md) uses the same 3-D room with two
+receivers 17 cm apart, and finds one binaural position conditions all 36 directions where one omni leaves
+six buried ten orders below the rest. (2) and (3) are **designed, not yet measured** — the stage-mic array
+in particular carries a real risk: the desk's sends are not a known stimulus unless they are logged, and
+during a show the parameter set changes. The plan states that rather than assuming it away.
+
+**What the node is *not*.** It is not "a machine that tunes the room". The engineer stays the sensor; the
+system becomes the recorder and the auditor — it captures what was heard, timestamps it, tells you when you
+have enough, and at the end the route *is* the report: the positions, the numbers, the settings, and the
+remedy for what remains.
+
 ## The second thing it does: checking a solver against the room
 
 A room's resonances are not arbitrary — their *spacing* has a signature. A plain rectangular room
