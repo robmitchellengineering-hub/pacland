@@ -583,3 +583,88 @@ def cramer_rao(box: "Box3", triples: list[tuple[int, int, int, float]], params: 
             "usable_25pct": int(np.sum(dir_sd < 0.25)),
             "median_dir_sd": float(np.median(dir_sd)),
             "worst_dir_sd": float(np.max(dir_sd))}
+
+
+# ---------------------------------------------------------------------------------------
+# testing it "in the box" — two ways to make a box behave like a room
+# ---------------------------------------------------------------------------------------
+def incommensurate_box(lx: float = 6.0, ly: float = 4.37, lz: float = 3.11) -> "Box3":
+    """A box whose sides are in irrational ratio, so its modes are no longer exactly degenerate.
+
+    6 x 4.5 x 3 has rational ratios and therefore thousands of exact degeneracies (measured: 62,075 of
+    70,371 modes below 2 kHz). A real room is not commensurate, so its modes sit apart. This is the
+    cheapest correction to the model and it can be tested without leaving the box.
+    """
+    return Box3(lx=lx, ly=ly, lz=lz)
+
+
+def degeneracy_report(box: "Box3", f_max: float = 200.0) -> dict:
+    triples = box.modes_below(f_max)
+    freqs = [round(t[3], 6) for t in triples]
+    return {"modes": len(triples), "distinct": len(set(freqs)),
+            "degenerate": len(triples) - len(set(freqs)),
+            "fraction": 1.0 - len(set(freqs)) / max(len(triples), 1)}
+
+
+def goe_spectrum(n_modes: int, f_low: float = 40.0, f_high: float = 100.0, seed: int = 7) -> list[float]:
+    """A chaotic room's spectrum: levels with Wigner (GOE) spacings at the box's mean density.
+
+    This is the surrogate for "any room" rather than "this box". A rectangular box is integrable and its
+    modes are degenerate; a real room is chaotic and its levels repel. Sampling the spacings from the GOE
+    surmise and mapping them through the Weyl counting function gives a spectrum with the same density and
+    the right statistics.
+    """
+    import random
+    rng = random.Random(seed)
+    box = Box3()
+    target = [f for f in (f_low + (f_high - f_low) * i / (n_modes - 1) for i in range(n_modes))]
+    # draw n_modes Wigner-distributed spacings, normalise to unit mean, then walk the target density
+    spacings = []
+    while len(spacings) < n_modes - 1:
+        s = rng.uniform(0.0, 3.0)
+        p = (32.0 / math.pi ** 2) * s * s * math.exp(-4.0 * s * s / math.pi)
+        if rng.random() < p / 0.6:
+            spacings.append(s * 0.9)
+    # map: keep the endpoints, distribute by the drawn spacings
+    total = sum(spacings) or 1.0
+    out = [f_low]
+    for s in spacings:
+        out.append(out[-1] + (f_high - f_low) * s / total)
+    return out[:n_modes]
+
+
+def ensemble_identifiability(rooms: int = 8, n_modes: int = 18, mics: int = 3,
+                             noise: float = 1e-3, seed: int = 11) -> dict:
+    """The same test across an ENSEMBLE of rooms, not one box.
+
+    A single geometry answers a question about that geometry. An ensemble answers the question a customer
+    asks: for a room like this, how many modal parameters can I hope to identify? Each room draws its mode
+    frequencies from a GOE spectrum at the box's mean density — chaotic, non-degenerate, the statistics a
+    real room has — while the mode shapes stay the box's.
+    """
+    box = Box3()
+    triples_shape = box.modes_below(100.0)
+    grid = [(box.lx * (0.15 + 0.23 * ix), box.ly * (0.17 + 0.22 * iy), box.lz * (0.22 + 0.45 * iz))
+            for ix in range(4) for iy in range(4) for iz in range(2)]
+    freqs = [40.0 + 60.0 * i / 59 for i in range(60)]
+    usable, medians = [], []
+    for k in range(rooms):
+        spec = goe_spectrum(n_modes, seed=seed + 17 * k)
+        triples = []
+        for i, (nx, ny, nz, _f) in enumerate(triples_shape[:n_modes]):
+            triples.append((nx, ny, nz, spec[i]))
+        params = []
+        for i in range(n_modes):
+            params += [0.06, 1.0 / (1.0 + 0.1 * i)]
+        r = cramer_rao(box, triples, params, grid[:mics], freqs, False, noise=noise, complex_data=True)
+        usable.append(r["usable_10pct"])
+        medians.append(r["median_dir_sd"])
+    usable_sorted = sorted(usable)
+    lo = usable_sorted[max(0, int(0.1 * len(usable_sorted)))]
+    hi = usable_sorted[min(len(usable_sorted) - 1, int(0.9 * len(usable_sorted)))]
+    return {"rooms": rooms, "n_modes": n_modes, "mics": mics, "noise": noise,
+            "usable": usable, "median_usable": usable_sorted[len(usable_sorted) // 2],
+            "p10": lo, "p90": hi, "median_bound": sorted(medians)[len(medians) // 2],
+            "verdict": (f"{rooms} GOE rooms, {n_modes} modes, {mics} mics at {20 * math.log10(noise):+.0f} dB: "
+                        f"usable@10% median {usable_sorted[len(usable_sorted) // 2]}, "
+                        f"10-90% range {lo}-{hi}")}

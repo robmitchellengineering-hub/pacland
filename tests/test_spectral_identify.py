@@ -91,3 +91,50 @@ class TestCramerRao(unittest.TestCase):
         box, triples, params, grid, freqs = self._setup()
         r = I.cramer_rao(box, triples, params, grid[:3], freqs, False, noise=3e-3)
         self.assertEqual(r["usable_10pct"], 0)
+
+
+class TestBoxBehavingLikeARoom(unittest.TestCase):
+    """Testing 'the real room' without leaving the box: break the symmetry, then randomise the spectrum."""
+
+    def test_a_commensurate_box_really_is_degenerate(self):
+        r = I.degeneracy_report(I.Box3(), 200.0)
+        self.assertGreater(r["degenerate"], 20)
+
+    def test_an_incommensurate_box_has_none(self):
+        r = I.degeneracy_report(I.incommensurate_box(), 200.0)
+        self.assertEqual(r["degenerate"], 0)
+
+    def test_breaking_the_symmetry_does_not_rescue_identifiability(self):
+        # the honest finding: degeneracy is not the limiting factor, the amplitude/damping trade-off is
+        box = I.Box3()
+        inc = I.incommensurate_box()
+
+        def usable(b):
+            triples = b.modes_below(100.0)
+            params = []
+            for i, (_, _, _, _f) in enumerate(triples):
+                params += [0.06, 1.0 / (1.0 + 0.1 * i)]
+            grid = [(b.lx * (0.15 + 0.23 * ix), b.ly * (0.17 + 0.22 * iy), b.lz * (0.22 + 0.45 * iz))
+                    for ix in range(4) for iy in range(4) for iz in range(2)]
+            freqs = [40.0 + 60.0 * i / 59 for i in range(60)]
+            return I.cramer_rao(b, triples, params, grid[:3], freqs, False, noise=1e-3)["usable_10pct"]
+
+        self.assertLessEqual(abs(usable(box) - usable(inc)), 2)
+
+    def test_an_ensemble_of_chaotic_rooms_is_more_identifiable_than_one_box(self):
+        r = I.ensemble_identifiability(rooms=4, mics=3)
+        box = I.Box3()
+        triples = box.modes_below(100.0)
+        params = []
+        for i, (_, _, _, _f) in enumerate(triples):
+            params += [0.06, 1.0 / (1.0 + 0.1 * i)]
+        grid = [(box.lx * (0.15 + 0.23 * ix), box.ly * (0.17 + 0.22 * iy), box.lz * (0.22 + 0.45 * iz))
+                for ix in range(4) for iy in range(4) for iz in range(2)]
+        freqs = [40.0 + 60.0 * i / 59 for i in range(60)]
+        single = I.cramer_rao(box, triples, params, grid[:3], freqs, False, noise=1e-3)["usable_10pct"]
+        self.assertGreater(r["median_usable"], single)
+
+    def test_the_answer_is_a_spread_not_a_number(self):
+        r = I.ensemble_identifiability(rooms=5, mics=3)
+        self.assertIsInstance(r["p10"], int)
+        self.assertLessEqual(r["p10"], r["p90"])
