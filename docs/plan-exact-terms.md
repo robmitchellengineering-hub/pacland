@@ -283,39 +283,61 @@ Every item names its exact term, its falsifier, and — before it runs — **how
 out**. An item whose falsifier cannot fail is a demonstration, not a test, and belongs in the docs
 rather than in this plan.
 
-## 5b. B2 answered, provisionally — the falsifier fired at h12=10 and NOT at h12=25 (2026-10-29)
+## 5b. B2 ANSWERED — the wall IS series truncation at degree 1, and degree 2 fixes it
 
-Run on **pacland-rog** (the only node with jax/jaxvacua/cytools: `jax 0.12.0` imported clean), by
-`scripts/node_b2_truncation.py`. One fixed generic moduli point per h12, `maximum_degree` 0/1/2/3,
-`cond(M)` of the ISD matrix. **The falsifier was written into the script and printed before the run:**
-a move >10% between degrees 1/2/3 means the wall is series truncation, not geometry.
+Two runs on **pacland-rog** (the only node with the oracle stack: `jax 0.12.0` imported clean), by
+`scripts/node_b2_truncation.py` and `scripts/node_b2_followup.py`. Both had the falsifier written into
+the script and printed before the run: **a move >10% in `cond(M)` between degrees 1/2/3 means the wall
+is series truncation, not geometry.**
 
-| h12 | cond(M) @deg1 | @deg3 | move | verdict |
+### Run 1 — one generic point per h12, instanton corrections as the library left them
+
+| h12 | cond @deg1 | cond @deg3 | move | verdict |
 |---|---|---|---|---|
-| 2 | 6.1347e3 | 6.1347e3 | **0.00%** | geometry |
-| 5 | 8.2173e9 | 8.2173e9 | **0.00%** | geometry |
-| 10 | 9.3210e5 | 1.1716e6 | **27.75%** | **TRUNCATION** |
+| 2 | 6.1347e3 | 6.1347e3 | 0.00% | geometry |
+| 5 | 8.2173e9 | 8.2173e9 | 0.00% | geometry |
+| 10 | 9.3210e5 | 1.1716e6 | 27.75% | truncation |
 | 25 | 1.7287e6 | 1.7206e6 | **0.47%** | **geometry** |
 
-**The falsifier fired at h12 = 10 and not at h12 = 25.** If it had fired everywhere, the wall would be a
-degree bug and the fix would be one keyword. It did not: at h12 = 25 — the case the plan is about —
-carrying the series from degree 1 to 3 moves `cond(M)` by **0.47%**, eight times below the threshold.
-**So at this point, truncation is excluded for h12 = 25 and the near-null direction is geometry.**
+Run 1 said h12 = 25 was geometry. **It was wrong**, and for exactly the reason the caveat written next
+to it said: one point per h12 cannot separate a degree effect from where the point landed, and jaxvacua
+had warned that mirror worldsheet instanton corrections were **disabled** while GV charges were provided.
 
-Two caveats, both recorded rather than smoothed:
+### Run 2 — five points per h12, instanton corrections ON (`mirror_instanton=True`, accepted by the constructor)
 
-1. **one point per h12.** A single moduli point cannot separate a degree effect from where the point
-   landed, and the h12 = 10 pattern is non-monotone (deg1 → deg2 rises, deg2 → deg3 falls), which is
-   what a "first instanton order matters, then converges" looks like — but it could also be the point.
-   The 5-point follow-up is written (`scripts/node_b2_followup.py`) and queued.
-2. **jaxvacua warned:** *"Mirror worldsheet instanton corrections are disabled, but GV charges are
-   provided. This may lead to inconsistent results!"* If the instanton corrections are off, the degree
-   ladder is not measuring the series it claims to. The follow-up prints the constructor signature and
-   the warning's own source, and retries with any instanton flag the constructor accepts.
+The warning is gone from all four h12, so the ladder is now measuring the series it claims to.
 
-**Also note:** `cond(M)` is not monotone in h12 (8.2e9 at h12=5 against 1.7e6 at h12=25), so a single
-number per h12 is not a ladder in h12 — only the *within-h12, across-degree* comparison is being claimed
-here, which is what the falsifier is about.
+| h12 | max move | median move | verdict |
+|---|---|---|---|
+| 2 | 0.00% | 0.00% | geometry |
+| 5 | 0.00% | 0.00% | geometry |
+| 10 | **33.41%** | 6.75% | **truncation** |
+| 25 | **88.39%** | 6.38% | **truncation** |
+
+And the shape of the failure is the finding. At h12 = 25, per point (degrees 1 / 2 / 3):
+
+| point | deg 1 | deg 2 | deg 3 | deg2 vs deg3 |
+|---|---|---|---|---|
+| 0 | 1.9385e6 | 1.8223e6 | 1.8223e6 | **identical** |
+| 1 | 1.2658e6 | 1.6326e6 | 1.6326e6 | **identical** |
+| 2 | 2.6337e6 | 1.3980e6 | 1.3980e6 | **identical** |
+| 3 | 1.3122e6 | 1.3156e6 | 1.3156e6 | **identical** |
+| 4 | 5.8137e6 | 5.6015e6 | 5.6015e6 | **identical** |
+
+**Degree 1 has not converged; degree 2 has.** `d2 = d3` at every one of the five points, while `d1`
+differs from them by up to 88%. So the h12 ≥ 5 wall is **series truncation at degree 1** — which is what
+the sampler uses (`maximum_degree = 0/1`) — and **the fix is `maximum_degree = 2`**, not a new solver,
+not a new ensemble, and not "the wall is geometry".
+
+That inverts the reading of the plan's own hypothesis (B2: *"If it holds: the h12 ≥ 5 wall is the integer
+lattice problem"*). It does not hold: the truncation hypothesis is the one that survives, and the degree
+is the fix.
+
+### What run 1 taught, kept because it will happen again
+
+The single-point answer was **plausible, wrong, and consistent with a caveat already written next to
+it**. The correction cost one extra dispatch. The rule this repo already has — *a statistic needs a
+same-size control and more than one sample, or it is a draw* — is the rule that caught it.
 
 ### The node stopped polling, and why
 
