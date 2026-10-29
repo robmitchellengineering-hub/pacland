@@ -1348,11 +1348,39 @@
    "title": "mine_structure.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b1_b3_probe.py",
+   "kind": "script",
+   "path": "scripts/node_b1_b3_probe.py",
+   "summary": "B1 + B3 capability probe \u2014 what the oracle stack actually exposes, and the first real check of each.",
+   "title": "node_b1_b3_probe.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b1_gv.py",
+   "kind": "script",
+   "path": "scripts/node_b1_gv.py",
+   "summary": "B1 \u2014 GV integrality, extracted from the computed prepotential at several points.",
+   "title": "node_b1_gv.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b2_applied.py",
    "kind": "script",
    "path": "scripts/node_b2_applied.py",
    "summary": "B2 APPLIED \u2014 does degree 2 actually find vacua that degree 0/1 could not?",
    "title": "node_b2_applied.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b2_followup.py",
+   "kind": "script",
+   "path": "scripts/node_b2_followup.py",
+   "summary": "B2 follow-up \u2014 the falsifier fired at h12=10 and not at h12=25, so settle two things before believing it.",
+   "title": "node_b2_followup.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b2_truncation.py",
+   "kind": "script",
+   "path": "scripts/node_b2_truncation.py",
+   "summary": "B2 \u2014 the truncation ladder: does cond(M) move when the instanton series is carried further?",
+   "title": "node_b2_truncation.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_f3_quintic.py",
