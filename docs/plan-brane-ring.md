@@ -67,6 +67,34 @@ So the first build task is **getting a triangulated polytope into `CalabiYau`** 
 `all_triangulations` *are* exposed in `cytools.polytope`, so the path is
 `Polytope(...) → Triangulation → CalabiYau`, and that is the next concrete step, not another probe.
 
+## The wall, measured in five attempts (do not repeat these)
+
+Getting a `CalabiYau` object for the **quintic** on pacland-rog, in order, with the exact failure each time:
+
+| attempt | result |
+|---|---|
+| `CalabiYau(Polytope(V))` | `AttributeError: 'Polytope' object has no attribute 'triangulation'` |
+| `Polytope(V, make_simplicial=True)` | `TypeError: unexpected keyword argument 'make_simplicial'` |
+| `CalabiYau(poly, tri)` / `CalabiYau(tri)` | same `'...' object has no attribute 'triangulation'` |
+| `poly.triangulation = tri` | `TypeError: 'Triangulation' object is not callable` — it wants a **method** |
+| `poly.triangulation = lambda: tri` | `Exception: The experimental features must be enabled to construct non-favorable CYs...`, and setting `cytools.experimental_features = True` **did not change it** |
+
+So the constructor wants a polytope whose triangulation comes back from a **call**, and then classifies
+the result as **non-favorable** — which means the hand-written vertex set is not the favourable quintic
+polytope this build expects, not that the flag is missing.
+
+**Two routes out, in order of cost:**
+
+1. **find how jaxvacua gets its own polytope.** It computes prepotentials and (per the `use_cytools=True`
+   failure) can *accept* a `mirror_cy` — so something in that stack builds a `CalabiYau`, and copying that
+   is the shortest path. `FluxVacuaFinder(..., use_cytools=True)` failed with *"Need to provide `mirror_cy`
+   if `use_cytools=True`"*, which names the missing object exactly.
+2. **the KS database path** — `cytools.fetch_polytopes` is on `cytools` (not the submodule) and may return
+   ready-made favourable polytopes with triangulations attached, which is what the constructor wants.
+
+Neither is a dead end; both are API archaeology on the node, and **that is the honest state of F3: not
+started, because the first input cannot yet be constructed.**
+
 ## Order
 
 1. quintic: intersections, `c2`, and the charge lattice from `(F, H, κ, c2)` — with the tadpole as the
