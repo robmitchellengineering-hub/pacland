@@ -16,7 +16,8 @@
       "evidence": "Bridge-equation nowcast; beats the no-change null on MAE by 75% (1.26 vs 5.05 pp)",
       "evidence_path": "src/pacland/economics/gdpnow.py::evaluate",
       "producer": "Data: data/economics/gdpnow_vintages.json (ALFRED vintages); Script: python3 scripts/economics_gdpnow.py; Module: src/pacland/economics/gdpnow.py",
-      "falsifier": "the bridge equations would not aggregate to a GDP path at all, and the MAE ratio would sit at or above 1"
+      "falsifier": "the bridge equations would not aggregate to a GDP path at all, and the MAE ratio would sit at or above 1",
+      "remedy": "none \u2014 the check passes; keep the evidence and re-run on change"
     },
     {
       "gate": "outcomes_analysis_does_it_beat_the_null_out_of_sample",
@@ -25,7 +26,8 @@
       "evidence": "28 of 37 quarters, MAE ratio 0.25 (<1 = beats the null)",
       "evidence_path": "gdpnow.evaluate(target='advance')",
       "producer": "Data: data/economics/gdpnow_vintages.json (ALFRED vintages); Script: python3 scripts/economics_gdpnow.py; Module: src/pacland/economics/gdpnow.py",
-      "falsifier": "ratio >= 1.0, i.e. no better than carrying the previous quarter forward"
+      "falsifier": "ratio >= 1.0, i.e. no better than carrying the previous quarter forward",
+      "remedy": "none \u2014 the check passes; keep the evidence and re-run on change"
     },
     {
       "gate": "outcomes_analysis_is_that_skill_against_the_first_publication_or",
@@ -34,7 +36,8 @@
       "evidence": "Against the settled number it still beats the null: MAE ratio 0.31 on all 37 quarters, 0.75 excluding 2020 \u2014 the edge narrows but survives",
       "evidence_path": "gdpnow.settled_comparison()",
       "producer": "Data: data/economics/gdpnow_vintages.json (ALFRED vintages); Script: python3 scripts/economics_gdpnow.py; Module: src/pacland/economics/gdpnow.py",
-      "falsifier": "a settled-number ratio above 1.0, or one that flips when 2020 is dropped"
+      "falsifier": "a settled-number ratio above 1.0, or one that flips when 2020 is dropped",
+      "remedy": "none \u2014 the check passes; keep the evidence and re-run on change"
     },
     {
       "gate": "data_quality_are_the_inputs_real_time_vintages_or_revised_histor",
@@ -43,7 +46,8 @@
       "evidence": "Real-time vintages (ALFRED) throughout; a vintage that post-dates the forecast is refused by guard_nowcast_predates_release",
       "evidence_path": "gdpnow.guard_nowcast_predates_release",
       "producer": "Data: data/economics/gdpnow_vintages.json (ALFRED vintages); Script: python3 scripts/economics_gdpnow.py; Module: src/pacland/economics/gdpnow.py",
-      "falsifier": "a fixture where the nowcast vintage post-dates the release \u2014 the guard would go red and the evaluation would be refused"
+      "falsifier": "a fixture where the nowcast vintage post-dates the release \u2014 the guard would go red and the evaluation would be refused",
+      "remedy": "none \u2014 the check passes; keep the evidence and re-run on change"
     },
     {
       "gate": "implementation_can_the_evaluation_go_red",
@@ -52,7 +56,8 @@
       "evidence": "Four guards, each mutation-proved: vintage ordering, shared benchmark vintage, first-publication target, units",
       "evidence_path": "tests/test_gdpnow.py",
       "producer": "Data: data/economics/gdpnow_vintages.json (ALFRED vintages); Script: python3 scripts/economics_gdpnow.py; Module: src/pacland/economics/gdpnow.py",
-      "falsifier": "each guard is mutation-proved: the seeded fault makes it read red"
+      "falsifier": "each guard is mutation-proved: the seeded fault makes it read red",
+      "remedy": "none \u2014 the check passes; keep the evidence and re-run on change"
     }
   ],
   "limitations": [

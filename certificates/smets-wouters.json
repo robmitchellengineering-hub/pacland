@@ -18,7 +18,8 @@
       "answer": "34 equations, 34 endogenous variables; every equation vanishes at the steady state to 0.0e+00 and the solved policy satisfies the system to ~1e-13",
       "evidence": "src/pacland/economics/sw_solve.py::solve_model",
       "status": "satisfied",
-      "falsifier": ""
+      "falsifier": "",
+      "remedy": ""
     },
     {
       "clause": "Ongoing monitoring",
@@ -26,7 +27,8 @@
       "answer": "No \u2014 observability rank 14 of 34 (41%), unchanged by adding the missing wage series",
       "evidence": "sw_filter.observability_rank",
       "status": "failing",
-      "falsifier": ""
+      "falsifier": "",
+      "remedy": "estimate the unobserved block with PRIORS rather than from the data \u2014 full-information Bayesian estimation is what the authors themselves used, and it converts the 20 unidentified directions into prior-weighted ones"
     },
     {
       "clause": "Outcomes analysis",
@@ -34,7 +36,8 @@
       "answer": "One-step R^2 +0.10 to +0.41 \u2014 not usable",
       "evidence": "sw_filter.forecast_quality",
       "status": "failing",
-      "falsifier": ""
+      "falsifier": "",
+      "remedy": "do not run a plain filter on this model; the fix is a prior on the state, not a better filter"
     },
     {
       "clause": "Outcomes analysis",
@@ -42,7 +45,8 @@
       "answer": "Moment fit R^2 0.999 while the shock scales are recovered to only 36% \u2014 a perfect fit with unidentified parameters",
       "evidence": "sw_distance.recovery",
       "status": "failing",
-      "falsifier": ""
+      "falsifier": "",
+      "remedy": "add independent series (a 7-8 observable dataset) or shrink the shock scales toward the posterior \u2014 with five series the second moments cannot separate seven shocks"
     },
     {
       "clause": "Conceptual soundness",
@@ -50,7 +54,8 @@
       "answer": "The shock scales are not identified from five observables and two lags; the unidentified directions are structural, not a data-quantity problem",
       "evidence": "sw_distance.py",
       "status": "not demonstrated",
-      "falsifier": ""
+      "falsifier": "",
+      "remedy": ""
     }
   ],
   "limitations": [

@@ -18,7 +18,8 @@
       "answer": "Net top-of-atmosphere drift +1.485 W/m2 against a 0.1 W/m2 tolerance \u2014 fails",
       "evidence": "cmip6_drift.verdict_table",
       "status": "failing",
-      "falsifier": ""
+      "falsifier": "",
+      "remedy": "apply a conservation correction to the projections, or exclude the model and use the conserving five \u2014 the drift is a constant in the control run, so it is subtractable, and CMIP6 has models that do not need the correction"
     },
     {
       "clause": "Outcomes analysis",
@@ -26,7 +27,8 @@
       "answer": "Exceeds the Earth's energy imbalance of 0.77 W/m2 \u2014 the signal the model exists to project",
       "evidence": "cmip6_drift.verdict_table",
       "status": "failing",
-      "falsifier": ""
+      "falsifier": "",
+      "remedy": "for projections where the signal is smaller than the leak, weight the ensemble toward conserving models \u2014 a 1.9x-EEI drift is larger than the effect being attributed to it"
     },
     {
       "clause": "Data quality",
@@ -34,7 +36,8 @@
       "answer": "Mass drift +0.44 mm/yr sea-level equivalent (fail); salt drift -1.94e-06 (pass)",
       "evidence": "cmip6_drift.verdict_table",
       "status": "failing",
-      "falsifier": ""
+      "falsifier": "",
+      "remedy": ""
     },
     {
       "clause": "Ongoing monitoring",
@@ -42,7 +45,8 @@
       "answer": "12 of 19 CMIP6 models fail the energy ledger and 5 conserve all three \u2014 the model is graded against a population, not a single threshold",
       "evidence": "cmip6_drift.summary",
       "status": "satisfied",
-      "falsifier": ""
+      "falsifier": "",
+      "remedy": ""
     }
   ],
   "limitations": [

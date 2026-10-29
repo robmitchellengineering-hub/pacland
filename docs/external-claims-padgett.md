@@ -122,3 +122,37 @@ object.
    the emptiest, because the object it summed over was never defined. **An undefined symbol is where a
    claim goes to hide.** That is now written down as a rule we apply to ourselves too: the same test
    would have caught "the string landscape predicts X" if X had never been specified.
+
+## The zeros: the one lead that turned into a result
+
+His intuition that primes carry an oscillation is not empty — it is just attached to the wrong
+object. The version with an oracle is the **explicit formula**,
+
+    psi(x) = x - sum over zeros rho of x^rho / rho - ln 2pi - ...
+
+where the primes appear as an interference sum over the **Riemann zeros**. That object has a
+cross-source verification with real teeth: the zeros' spacing statistics match a Gaussian unitary
+ensemble, the same statistics nuclear spectra obey (Montgomery 1973; Odlyzko's numerics).
+
+So we computed it — `src/pacland/spectral/zeros.py`, zeta from scratch, no dependencies:
+
+| check | result |
+|---|---|
+| reproduces the first five known zeros | max error **4.2e-11** |
+| finds every zero below t = 400 | **202** zeros against a smooth count of **201.6** |
+| matches a **finite-sample GUE control** | ratio statistic **0.6155** vs **0.6163 ± 0.0190** |
+| and is not Poisson | Poisson control **0.3810** — **12.3** control sd away |
+
+All four gates pass; it is a VERIFIED certificate on the physics board.
+
+**The trap it caught — ours, not his.** The textbook GUE ratio is 0.5307. Comparing 201 computed
+spacings against it gives a **4σ "failure"** of a computation that is exactly right: 0.5307 is the
+*asymptotic* value, and the same estimator returns 0.6156 ± 0.0197 on synthetic GUE spacings of the
+same size. The right reference was a control of the same size, not a constant from a textbook. Every
+statistic needs a control at the size it is computed at, or it measures the estimator and calls it the
+world.
+
+**What this does and does not claim.** It verifies a known result numerically; it does not claim the
+zeros predict anything physical. What it does establish is the shape of the answer to Padgett's idea:
+*prime oscillations are real mathematics, and the object they belong to is the explicit formula over
+the zeros — not a sum over an undefined set.*

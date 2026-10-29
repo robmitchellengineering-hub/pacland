@@ -23,7 +23,8 @@ GRADE_CLASS = {"VERIFIED": "ok", "QUALIFIED": "ok", "RESTRICTED": "warn", "REFUS
 SLUGS = {"climate": "cmip6", "finance": "", "physics": "physics",
          "Atlanta Fed GDPNow (GDP nowcast, US)": "gdpnow",
          "Smets–Wouters (2007) linearised DSGE": "smets-wouters",
-         "The landscape theorem tower (5 theorems)": "physics"}
+         "The landscape theorem tower (5 theorems)": "physics",
+         "Riemann zeros and GUE statistics": "riemann-zeros"}
 
 #: Findings have their own vocabulary — satisfied / partial / not demonstrated / failing — and their
 #: own colours. They were silently falling through to the grade map's default, so every pill came out

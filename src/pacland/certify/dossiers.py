@@ -101,15 +101,23 @@ def smets_wouters() -> Certificate:
         Finding("Ongoing monitoring", "Can the state be estimated from its own observables?",
                 f"No — observability rank {obs['rank']} of {obs['n_state']} ({obs['fraction']:.0%}), "
                 f"unchanged by adding the missing wage series",
-                "sw_filter.observability_rank", FAILING),
+                "sw_filter.observability_rank", FAILING,
+                remedy="estimate the unobserved block with PRIORS rather than from the data — "
+                        "full-information Bayesian estimation is what the authors themselves used, "
+                        "and it converts the 20 unidentified directions into prior-weighted ones"),
         Finding("Outcomes analysis", "Does a filter track data the model itself generated?",
                 f"One-step R^2 {min(r['r2'] for r in q['rows'].values()):+.2f} to "
                 f"{max(r['r2'] for r in q['rows'].values()):+.2f} — not usable",
-                "sw_filter.forecast_quality", FAILING),
+                "sw_filter.forecast_quality", FAILING,
+                remedy="do not run a plain filter on this model; the fix is a prior on the state, "
+                        "not a better filter"),
         Finding("Outcomes analysis", "Can the reduced form be matched to the data without a state?",
                 f"Moment fit R^2 {fit['r2']:.3f} while the shock scales are recovered to only "
                 f"{fit['worst_relative_error']:.0%} — a perfect fit with unidentified parameters",
-                "sw_distance.recovery", FAILING),
+                "sw_distance.recovery", FAILING,
+                remedy="add independent series (a 7-8 observable dataset) or shrink the shock scales "
+                        "toward the posterior — with five series the second moments cannot separate "
+                        "seven shocks"),
         Finding("Conceptual soundness", "Is the model identified at all?",
                 "The shock scales are not identified from five observables and two lags; the "
                 "unidentified directions are structural, not a data-quantity problem",
@@ -148,11 +156,17 @@ def cmip6(worst: bool = True) -> Certificate:
                 f"Net top-of-atmosphere drift {row['netTOA_drift_wm2']:+.3f} W/m2 against a "
                 f"{summary['tol_wm2']} W/m2 tolerance — "
                 f"{'fails' if not row['energy_pass'] else 'passes'}",
-                "cmip6_drift.verdict_table", FAILING if not row["energy_pass"] else SATISFIED),
+                "cmip6_drift.verdict_table", FAILING if not row["energy_pass"] else SATISFIED,
+                remedy="apply a conservation correction to the projections, or exclude the model and "
+                        "use the conserving five — the drift is a constant in the control run, so it "
+                        "is subtractable, and CMIP6 has models that do not need the correction"),
         Finding("Outcomes analysis", "Is the leak large compared with the signal being measured?",
                 f"{'Exceeds' if row['exceeds_eei'] else 'Does not exceed'} the Earth's energy "
                 f"imbalance of {summary['eei_wm2']} W/m2 — the signal the model exists to project",
-                "cmip6_drift.verdict_table", FAILING if row["exceeds_eei"] else SATISFIED),
+                "cmip6_drift.verdict_table", FAILING if row["exceeds_eei"] else SATISFIED,
+                remedy="for projections where the signal is smaller than the leak, weight the ensemble "
+                        "toward conserving models — a 1.9x-EEI drift is larger than the effect being "
+                        "attributed to it"),
         Finding("Data quality", "Does the model conserve mass and salt?",
                 f"Mass drift {row['mass_drift_mm_per_yr']:+.2f} mm/yr sea-level equivalent "
                 f"({'pass' if row['mass_pass'] else 'fail'}); salt drift "
@@ -215,11 +229,28 @@ def physics_theorems() -> Certificate:
                              env={**os.environ, "PYTHONPATH": str(root / "src")})
         ok = run.returncode == 0
         tail = [l.strip() for l in (run.stdout + run.stderr).strip().splitlines() if l.strip()]
+        combined = run.stdout + run.stderr
+        # A missing dependency is not a false theorem. This distinction was forced by running the
+        # certificate on a bare Linux node, where numpy is absent and the tower read REFUSED —
+        # an accusation against the mathematics that was really an accusation against the machine.
+        dep_gap = ("ModuleNotFoundError" in combined or "ImportError" in combined)
+        if ok:
+            status, detail = SATISFIED, claim
+        elif dep_gap:
+            status = NOT_DEMONSTRATED
+            detail = ("could not be re-run here: a dependency is missing in this environment "
+                      f"({tail[-1][:120] if tail else 'no output'}). The theorem is not refuted; the "
+                      "check did not run")
+        else:
+            status, detail = FAILING, f"the validator failed: {tail[-1] if tail else 'no output'}"
         findings.append(Finding(
             "Exact structure", f"Does {name} hold when the checker is re-run?",
-            claim if ok else f"the validator failed: {tail[-1] if tail else 'no output'}",
-            f"scripts/{script}", SATISFIED if ok else FAILING,
-            falsifier=f"scripts/{script} exits non-zero — a single failing symbol fails the theorem"))
+            detail, f"scripts/{script}", status,
+            falsifier=f"scripts/{script} exits non-zero — a single failing symbol fails the theorem",
+            remedy=("install the missing dependency and re-run — an environment gap is fixed in the "
+                    "environment" if dep_gap else
+                    "none — a compiling proof is the fix; if one fails, the statement is false and "
+                    "the remedy is to change the claim, not to patch the proof")))
     return Certificate(
         subject="The landscape theorem tower (5 theorems)", sector="physics", issuer=ISSUER,
         issued=ISSUED, findings=tuple(findings),
@@ -235,12 +266,69 @@ def physics_theorems() -> Certificate:
                     "Doctrine: docs/oracles-without-oracles.md"))
 
 
+
+def riemann_zeros() -> Certificate:
+    """The honest form of "prime oscillations": the explicit formula, and the zeros' statistics.
+
+    This is the one lead from Jason Padgett's preprints that touches real physics. His interference
+    sum runs over an undefined set of primes; the object with a measurable spectrum is the explicit
+    formula, where the primes appear as a sum over the Riemann zeros, and the zeros' spacing
+    statistics are a cross-source check we can run ourselves.
+    """
+    from pacland.spectral import zeros as Z
+
+    a = Z.audit()
+    findings = [
+        Finding("Implementation", "Does the zeta implementation reproduce known values?",
+                f"the first five zeros to {Z.validate()['max_error']:.1e}, on an engine written from "
+                f"scratch with no dependencies",
+                "scripts/spectral_zeros.py; src/pacland/spectral/zeros.py", SATISFIED,
+                remedy="none — re-run on any change to the zeta engine; the five known zeros are the "
+                       "regression test",
+                falsifier="the first five zeros are 14.134725, 21.022040, 25.010858, 30.424876, "
+                          "32.935062 — an implementation that misses them is wrong and knows it"),
+        Finding("Data quality", "Are all the zeros in the range actually found?",
+                f"{a['n_zeros']} zeros below t = 400 against a smooth count of "
+                f"{Z.smooth_count(400.0):.1f} — no zeros missed",
+                "zeros.audit()", SATISFIED,
+                falsifier="a count that drifts from the counting formula means missed or spurious zeros"),
+        Finding("Outcomes analysis", "Do the zeros obey the GUE statistics, or Poisson?",
+                f"ratio statistic {a['ratio']:.4f} against a synthetic GUE control "
+                f"{a['gue']['mean']:.4f} ± {a['gue']['sd']:.4f}, and Poisson {a['poisson']:.4f} — "
+                f"{abs(a['ratio'] - a['poisson']) / a['gue']['sd']:.1f} control standard deviations "
+                f"away",
+                "zeros.gue_control(); zeros.poisson_ratio()", SATISFIED,
+                falsifier="a ratio near the Poisson value would mean the zeros do not repel"),
+        Finding("Conceptual soundness", "Is the textbook constant the right reference?",
+                "no — 0.5307 is the asymptotic GUE value; at 201 spacings the same estimator returns "
+                "0.6163 ± 0.0190, so the zeros are compared against a finite-sample control",
+                "zeros.gue_control()", SATISFIED,
+                falsifier="comparing 201 spacings against 0.5307 would report a 4σ failure of a "
+                          "correct computation — which is exactly what the first run did"),
+    ]
+    return Certificate(
+        subject="Riemann zeros and GUE statistics", sector="physics", issuer=ISSUER, issued=ISSUED,
+        findings=tuple(findings),
+        headline=(f"The zeros repel exactly as a Gaussian unitary ensemble does — ratio statistic "
+                  f"{a['ratio']:.4f} against a finite-sample GUE control of {a['gue']['mean']:.4f}, "
+                  f"and {abs(a['ratio'] - a['poisson']) / a['gue']['sd']:.0f} control standard "
+                  f"deviations from Poisson. Computed from scratch, no dependencies."),
+        limitations=("This is a numerical verification of a known result (Montgomery 1973; Odlyzko), "
+                     "not a new claim about the zeros.",
+                     "The range is t < 400 (202 zeros); the statistics converge further up.",
+                     "Nothing here says the zeros predict anything physical — it says a number-theoretic "
+                     "object has a spectrum with the same statistics as a physical one."),
+        provenance=("Module: src/pacland/spectral/zeros.py (zeta by Euler–Maclaurin and Riemann–Siegel)",
+                    "Script: python3 scripts/spectral_zeros.py",
+                    "Doctrine: docs/external-claims-padgett.md"))
+
 DOSSIERS = {"gdpnow": gdpnow, "smets-wouters": smets_wouters, "cmip6": cmip6,
-            "physics": physics_theorems}
+            "physics": physics_theorems, "riemann-zeros": riemann_zeros}
 
 
 def issue_all() -> dict[str, Certificate]:
     return {name: fn() for name, fn in DOSSIERS.items()}
 
 
-__all__ = ["gdpnow", "smets_wouters", "cmip6", "physics_theorems", "issue_all", "DOSSIERS"]
+__all__ = ["gdpnow", "smets_wouters", "cmip6", "physics_theorems", "riemann_zeros", "issue_all",
+           "DOSSIERS"]

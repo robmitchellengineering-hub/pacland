@@ -16,7 +16,8 @@
       "evidence": "Net top-of-atmosphere drift +1.485 W/m2 against a 0.1 W/m2 tolerance \u2014 fails",
       "evidence_path": "cmip6_drift.verdict_table",
       "producer": "Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py",
-      "falsifier": "the failure is the finding"
+      "falsifier": "the failure is the finding",
+      "remedy": "apply a conservation correction to the projections, or exclude the model and use the conserving five \u2014 the drift is a constant in the control run, so it is subtractable, and CMIP6 has models that do not need the correction"
     },
     {
       "gate": "outcomes_analysis_is_the_leak_large_compared_with_the_signal_bei",
@@ -25,7 +26,8 @@
       "evidence": "Exceeds the Earth's energy imbalance of 0.77 W/m2 \u2014 the signal the model exists to project",
       "evidence_path": "cmip6_drift.verdict_table",
       "producer": "Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py",
-      "falsifier": "the failure is the finding"
+      "falsifier": "the failure is the finding",
+      "remedy": "for projections where the signal is smaller than the leak, weight the ensemble toward conserving models \u2014 a 1.9x-EEI drift is larger than the effect being attributed to it"
     },
     {
       "gate": "data_quality_does_the_model_conserve_mass_and_salt",
@@ -34,7 +36,8 @@
       "evidence": "Mass drift +0.44 mm/yr sea-level equivalent (fail); salt drift -1.94e-06 (pass)",
       "evidence_path": "cmip6_drift.verdict_table",
       "producer": "Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py",
-      "falsifier": "the failure is the finding"
+      "falsifier": "the failure is the finding",
+      "remedy": "fix the failing check before relying on this claim; the falsifier names what to repair"
     },
     {
       "gate": "ongoing_monitoring_is_this_model_an_outlier_among_its_peers",
@@ -43,7 +46,8 @@
       "evidence": "12 of 19 CMIP6 models fail the energy ledger and 5 conserve all three \u2014 the model is graded against a population, not a single threshold",
       "evidence_path": "cmip6_drift.summary",
       "producer": "Data: data/climate/cmip6_drift.json (Irving et al. 2021, three independent ledgers); Script: python3 scripts/issue_certificate.py --all; Module: src/pacland/climate/cmip6_drift.py",
-      "falsifier": "not stated \u2014 this finding records a measurement without naming the failure it rules out"
+      "falsifier": "not stated \u2014 this finding records a measurement without naming the failure it rules out",
+      "remedy": "none \u2014 the check passes; keep the evidence and re-run on change"
     }
   ],
   "limitations": [
