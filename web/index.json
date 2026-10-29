@@ -350,8 +350,8 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/explainer-acoustic-analysis.md",
    "kind": "doc",
    "path": "docs/explainer-acoustic-analysis.md",
-   "summary": "No jargon where a plain word will do. The maths behind it is in [identifiability-of-room-modes.md](identifiability-of-room-modes.md) and the code in src/pacland/spectral/.",
-   "title": "What the acoustic analysis does \u2014 in plain English"
+   "summary": "What it does, what already works, and what it will let us do. The detailed maths is in [identifiability-of-room-modes.md](identifiability-of-room-modes.md); the programme plan is\u2026",
+   "title": "The audio analysis \u2014 in plain English"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/external-claims-padgett.md",
