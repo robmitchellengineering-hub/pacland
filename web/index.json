@@ -396,6 +396,13 @@
    "title": "How many microphones identify how many modes?"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/is-the-landscape-chaotic.md",
+   "kind": "doc",
+   "path": "docs/is-the-landscape-chaotic.md",
+   "summary": "Rob asked for the biggest questions, and this is question 1 from the arm's agenda (docs/quantum-arm-agenda.md). This is the honest state of it after a first attempt.",
+   "title": "Is the landscape chaotic? \u2014 the question, and what it takes to answer it"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/learnability-negative.md",
    "kind": "doc",
    "path": "docs/learnability-negative.md",
@@ -1276,6 +1283,13 @@
    "path": "scripts/mine_structure.py",
    "summary": "Mine every flux-paired observable for structure + learnability.",
    "title": "mine_structure.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_potential.py",
+   "kind": "script",
+   "path": "scripts/oracle_potential.py",
+   "summary": "The IIB scalar potential on T^6 \u2014 validated before it is believed.",
+   "title": "oracle_potential.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/orbit_content_slice.py",
