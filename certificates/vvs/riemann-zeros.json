@@ -23,7 +23,7 @@
       "gate": "data_quality_are_all_the_zeros_in_the_range_actually_found",
       "clause": "Data quality",
       "result": "pass",
-      "evidence": "202 zeros below t = 400 against a smooth count of 201.6 \u2014 no zeros missed",
+      "evidence": "1517 zeros below t = 2000 against a smooth count of 1517.0 \u2014 no zeros missed",
       "evidence_path": "zeros.audit()",
       "producer": "Module: src/pacland/spectral/zeros.py (zeta by Euler\u2013Maclaurin and Riemann\u2013Siegel); Script: python3 scripts/spectral_zeros.py; Doctrine: docs/external-claims-padgett.md",
       "falsifier": "a count that drifts from the counting formula means missed or spurious zeros",
@@ -33,7 +33,7 @@
       "gate": "outcomes_analysis_do_the_zeros_obey_the_gue_statistics_or_poisso",
       "clause": "Outcomes analysis",
       "result": "pass",
-      "evidence": "ratio statistic 0.6155 against a synthetic GUE control 0.6163 \u00b1 0.0190, and Poisson 0.3810 \u2014 12.3 control standard deviations away",
+      "evidence": "ratio statistic 0.6176 against a synthetic GUE control 0.6140 \u00b1 0.0068, and Poisson 0.3810 \u2014 34.6 control standard deviations away",
       "evidence_path": "zeros.gue_control(); zeros.poisson_ratio()",
       "producer": "Module: src/pacland/spectral/zeros.py (zeta by Euler\u2013Maclaurin and Riemann\u2013Siegel); Script: python3 scripts/spectral_zeros.py; Doctrine: docs/external-claims-padgett.md",
       "falsifier": "a ratio near the Poisson value would mean the zeros do not repel",
@@ -52,7 +52,7 @@
   ],
   "limitations": [
     "This is a numerical verification of a known result (Montgomery 1973; Odlyzko), not a new claim about the zeros.",
-    "The range is t < 400 (202 zeros); the statistics converge further up.",
+    "The range is t < 2000 (1517 zeros); the statistics tighten further up.",
     "Nothing here says the zeros predict anything physical \u2014 it says a number-theoretic object has a spectrum with the same statistics as a physical one."
   ]
 }

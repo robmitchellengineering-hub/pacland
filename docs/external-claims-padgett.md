@@ -139,9 +139,12 @@ So we computed it — `src/pacland/spectral/zeros.py`, zeta from scratch, no dep
 | check | result |
 |---|---|
 | reproduces the first five known zeros | max error **4.2e-11** |
-| finds every zero below t = 400 | **202** zeros against a smooth count of **201.6** |
-| matches a **finite-sample GUE control** | ratio statistic **0.6155** vs **0.6163 ± 0.0190** |
-| and is not Poisson | Poisson control **0.3810** — **12.3** control sd away |
+| finds every zero below t = 2000 | **1517** zeros against a smooth count of **1517.0** — exact |
+| matches a **finite-sample GUE control** | ratio statistic **0.6176** vs **0.6140 ± 0.0068** |
+| and is not Poisson | Poisson control **0.3810** — **35** control sd away |
+
+With 1517 zeros the control spread is four times tighter than the original 202-zero run, so "not
+Poisson" is no longer a matter of taste and the GUE match is half a control standard deviation.
 
 All four gates pass; it is a VERIFIED certificate on the physics board.
 

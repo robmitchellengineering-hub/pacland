@@ -40,6 +40,12 @@ class TestAudit(unittest.TestCase):
         a = Z.audit()
         self.assertTrue(a["all_pass"], [c for c in a["checks"] if not c["pass"]])
 
+    def test_the_run_is_now_deep_enough_to_tighten_the_statistic(self):
+        a = Z.audit()
+        self.assertGreaterEqual(a["n_zeros"], 1500)
+        # the control spread must be small enough that "not Poisson" is not a matter of taste
+        self.assertLess(a["gue"]["sd"], 0.02)
+
     def test_the_zeros_beat_poisson_decisively(self):
         a = Z.audit()
         self.assertGreater(abs(a["ratio"] - a["poisson"]) / a["gue"]["sd"], 5.0)

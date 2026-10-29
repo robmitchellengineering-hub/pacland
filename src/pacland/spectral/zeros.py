@@ -237,7 +237,12 @@ def validate(zeros: list[float] | None = None) -> dict:
             "pass": bool(errs) and max(errs) < 1e-6}
 
 
-def audit(t_to: float = 400.0) -> dict:
+def Z_round(x: float) -> int:
+    """Round to nearest integer, for the counting comparison."""
+    return int(x + 0.5) if x >= 0 else -int(-x + 0.5)
+
+
+def audit(t_to: float = 2000.0) -> dict:
     zeros = find_zeros(t_to=t_to)
     v = validate()
     rs_vs_em = max(abs(a - b) for a, b in zip(zeros[:5], v["first_five"]))

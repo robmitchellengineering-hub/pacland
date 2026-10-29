@@ -288,8 +288,8 @@ def riemann_zeros() -> Certificate:
                 falsifier="the first five zeros are 14.134725, 21.022040, 25.010858, 30.424876, "
                           "32.935062 — an implementation that misses them is wrong and knows it"),
         Finding("Data quality", "Are all the zeros in the range actually found?",
-                f"{a['n_zeros']} zeros below t = 400 against a smooth count of "
-                f"{Z.smooth_count(400.0):.1f} — no zeros missed",
+                f"{a['n_zeros']} zeros below t = 2000 against a smooth count of "
+                f"{Z.smooth_count(2000.0):.1f} — no zeros missed",
                 "zeros.audit()", SATISFIED,
                 falsifier="a count that drifts from the counting formula means missed or spurious zeros"),
         Finding("Outcomes analysis", "Do the zeros obey the GUE statistics, or Poisson?",
@@ -309,13 +309,14 @@ def riemann_zeros() -> Certificate:
     return Certificate(
         subject="Riemann zeros and GUE statistics", sector="physics", issuer=ISSUER, issued=ISSUED,
         findings=tuple(findings),
-        headline=(f"The zeros repel exactly as a Gaussian unitary ensemble does — ratio statistic "
-                  f"{a['ratio']:.4f} against a finite-sample GUE control of {a['gue']['mean']:.4f}, "
-                  f"and {abs(a['ratio'] - a['poisson']) / a['gue']['sd']:.0f} control standard "
-                  f"deviations from Poisson. Computed from scratch, no dependencies."),
+        headline=(f"{a['n_zeros']} zeros computed from scratch: they repel exactly as a Gaussian "
+                  f"unitary ensemble does — ratio statistic {a['ratio']:.4f} against a finite-sample "
+                  f"GUE control of {a['gue']['mean']:.4f} +- {a['gue']['sd']:.4f}, and "
+                  f"{abs(a['ratio'] - a['poisson']) / a['gue']['sd']:.0f} control standard deviations "
+                  f"from Poisson."),
         limitations=("This is a numerical verification of a known result (Montgomery 1973; Odlyzko), "
                      "not a new claim about the zeros.",
-                     "The range is t < 400 (202 zeros); the statistics converge further up.",
+                     "The range is t < 2000 (1517 zeros); the statistics tighten further up.",
                      "Nothing here says the zeros predict anything physical — it says a number-theoretic "
                      "object has a spectrum with the same statistics as a physical one."),
         provenance=("Module: src/pacland/spectral/zeros.py (zeta by Euler–Maclaurin and Riemann–Siegel)",
