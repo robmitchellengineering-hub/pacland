@@ -243,6 +243,36 @@ in `u` — only the exponent-2 branch is reachable by a clean recursion. The phy
 combination of them, so R1's number is not yet claimed: what exists now is the machinery that produces
 it, with the gate that will catch it if it is wrong.
 
+### F2 M2d — three of the four conifold branches now connect (2026-10-29)
+
+`src/pacland/periods/conifold_recursion.py` · 8 tests.
+
+The recursion written as a **matrix of polynomials in `ρ`** (`A[n][m]`), validated three ways against work
+that already existed: its `A[lowest][0]` is exactly M2a's indicial polynomial, its **resonance pattern is
+exactly M2b's** (vanishes at `s0=0` for `n=−2,−1`; at the double root `s0=1` only for `n=−2`; never at
+`s0=2`), and solving it at `ρ=2` reproduces M2c's series. That pattern is the discriminating test — a
+wrong matrix passes the indicial check and fails that one.
+
+**The double root, solved.** `c₀ = δ` with `ρ = 1 + δ` cancels the resonance, so every coefficient is
+analytic in `δ`; evaluating at `±δ` gives the two branches. Each is then held to the connection gate:
+
+| branch | connection coefficients | worst residual |
+|---|---|---|
+| exponent 2 (M2c) | −164.4269, −62.6023, −8.1278, −0.3569 | 2.3e-21 |
+| exponent 1, series | 2.723393, 0.931695, 4.7e-12, −0.009440 | 9.0e-14 |
+| exponent 1, **log** | 116.6391, 39.7344, 4.5375, 0.174336 | 1.8e-13 |
+
+Three of four columns exist. The residuals are the conifold-series truncation at `u = 0.75` (~1e-10 at
+these term counts), not the connection; that is why the tests assert `1e-9` and say so.
+
+**One test deliberately not written.** Comparing `numeric_series` against `connection.conifold_series`
+agrees to 3e-39 in a clean process but is sensitive to the ambient mpmath precision, so it is recorded in
+this plan rather than made a gate: a check that depends on global state is a flake, not a control.
+
+**Still missing: the exponent-0 branch.** It has *two* resonances (`n = −2` and `n = −1`), so the
+cancelling normalisation is not `c₀ = δ` alone. That is the last column, and the spec is the same
+construction with the double cancellation.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
