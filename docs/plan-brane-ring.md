@@ -92,6 +92,36 @@ the candidate was named before the run and it did not survive.
 lattice is **one-dimensional** — there is no room for a rival invariant to exist. The real test is rung 2,
 a multi-divisor model, where a second integer structure has somewhere to live.
 
+## Rung 2, first data — integrality of the curvature charge is MODEL-DEPENDENT (2026-10-29)
+
+`fetch_polytopes` needs the KS database over the network and pacland-rog has no route to it
+(`NameResolutionError: quark.itp.tuwien.ac.at`). So the second model was **hand-built**: the product
+lattice `P1 x P3` (8 vertices in a 4-dim lattice, plus the origin), `triangulate().get_cy()`.
+
+| model | h11 | h12 | chi | **chi/24** | integral? |
+|---|---|---|---|---|---|
+| quintic | 1 | 101 | -200 | **-25/3** | **no** |
+| P1 x P3 lattice | 8 | 44 | -72 | **-3** | **yes** |
+
+Both satisfy `chi = 2(h11 - h12)` exactly, so both constructions are sound.
+
+**So the curvature-induced D3 charge, `chi/24`, is an integer in one model and not in the other.** That
+means:
+
+1. it **cannot** be quoted as "the second exact invariant" without a model — in the quintic there is no
+   such integer at all, in the second model there is one;
+2. and therefore **rung 2's rung-1 verdict does not generalise**: "the tadpole has no rival" was true on
+   the quintic for the trivial reason that `h11 = 1`, and false in spirit on a model where an extra
+   integer survives.
+
+**What this does NOT settle, stated plainly:** whether a *flux* invariant beyond the tadpole exists. That
+needs the symplectic pairing on `H^3`, i.e. a flux basis, i.e. periods — which is F2's territory and is
+why this rung stops at the divisor ring. The honest status of the claim is unchanged:
+
+> *the tadpole is the unique exact structure of the flux* — **still not computed at higher degree or in a
+> multi-divisor flux ensemble.** It is computed for one symplectic pair against the full algebra (#192),
+> and scoped to one pair.
+
 ## The wall, measured in five attempts (do not repeat these)
 
 Getting a `CalabiYau` object for the **quintic** on pacland-rog, in order, with the exact failure each time:
