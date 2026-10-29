@@ -303,6 +303,12 @@ value is worse than one with a wrong name --- and added a test that fails in bot
 test asserted only that the control was more than $0.05$ from the constant, which is true under either
 ensemble and could therefore never catch the defect.
 
+The same week produced a second, duller instance of the same point: four documents --- including the
+submission package itself and the file the package quotes for paper~2's numbers --- were committed with git
+conflict markers in them. Every numeric claim in them was correct; the files were unreadable. The suite had
+a dozen checks on numbers and none on documents, so the guard is now one that walks every committed text
+file and fails on a marker. \emph{The check you do not have is the one that ships the defect.}
+
 A verification system that has never found itself wrong is not verification.
 
 \section{Discussion and limits}
