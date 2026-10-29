@@ -67,6 +67,31 @@ So the first build task is **getting a triangulated polytope into `CalabiYau`** 
 `all_triangulations` *are* exposed in `cytools.polytope`, so the path is
 `Polytope(...) → Triangulation → CalabiYau`, and that is the next concrete step, not another probe.
 
+## Rung 1 result — the construction is solved, and the first candidate invariant fails (2026-10-29)
+
+**The wall was mine, not CYTools\': the polytope must be in a FOUR-dimensional lattice.** Five attempts
+failed on the dimension (a 5-coordinate vertex set gives a 5-polytope), not on a missing flag. The path is
+the one `jaxvacua` itself uses (`jaxvacua/cytools_interface.py:156`): `polytope.triangulate().get_cy()`.
+
+`scripts/node_f3_quintic.py` on pacland-rog:
+
+| quantity | value |
+|---|---|
+| h11, h12 | 1, 101 |
+| chi | **-200** (= 2(h11 - h12), checked) |
+| kappa_111 | **5** (the quintic's intersection number, checked) |
+| c2 | (-250, 50, 50, 50, 50, 50) |
+| **chi/24** | **-25/3 — NOT an integer** |
+
+**The first candidate fails.** The curvature-induced D3 charge is the only other charge the geometry
+offers without periods, and on the quintic it is `-25/3`, so it **cannot be a standalone integer flux
+invariant**. That is a real (if modest) result, and it is the falsifier working in the useful direction:
+the candidate was named before the run and it did not survive.
+
+**And rung 1 cannot settle the claim anyway**, which the run makes obvious: with `h11 = 1` the divisor
+lattice is **one-dimensional** — there is no room for a rival invariant to exist. The real test is rung 2,
+a multi-divisor model, where a second integer structure has somewhere to live.
+
 ## The wall, measured in five attempts (do not repeat these)
 
 Getting a `CalabiYau` object for the **quintic** on pacland-rog, in order, with the exact failure each time:
