@@ -90,7 +90,11 @@ validated oracle rung.
 
 ```
 python3 scripts/test_swampland.py
-python3 -m unittest discover -s tests -q   # 864 tests
+<<<<<<< HEAD
+python3 -m unittest discover -s tests -q   # 868 tests
+=======
+python3 -m unittest discover -s tests -q   # 868 tests
+>>>>>>> d14105b (fix(#197): 0.5307 is the GOE value, not GUE's — and a VERIFIED certificate repeated it as fact)
 ```
 
 The module cross-checks its numpy ridge against the canonical stdlib

@@ -228,7 +228,11 @@ compiled PDFs are also in `paper/` as a fallback.
 ## Verification before submitting
 
 ```
-python3 -m unittest discover -s tests -q    # 864 tests green
+<<<<<<< HEAD
+python3 -m unittest discover -s tests -q    # 868 tests green
+=======
+python3 -m unittest discover -s tests -q    # 868 tests green
+>>>>>>> d14105b (fix(#197): 0.5307 is the GOE value, not GUE's — and a VERIFIED certificate repeated it as fact)
 python3 scripts/validate_all_theorems.py    # the 6-proof theorem tower (papers 1's claims)
 python3 scripts/test_swampland.py           # the numbers cited in paper 2
 ```
