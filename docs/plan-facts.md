@@ -166,6 +166,27 @@ which is exactly the kind of thing this plan exists to surface before a number i
 **Not claimed:** R1's conifold Γ-value. #210's rule is that it must be pinned from a citable source before
 use, and it has not been — so no number is asserted.
 
+### F2 M2a — the conifold's exponents, computed (2026-10-29)
+
+`src/pacland/periods/conifold.py` · `python3 scripts/conifold_exponents.py` · 5 tests.
+
+`L(u^s)` is computed exactly in `u = 1 − z/z_c` with `Θ = −(1−u)d/du`, and the indicial polynomial is
+
+```
+s (s − 1)² (s − 2)          ⇒  exponents 0, 1, 1, 2
+```
+
+**All four are integers**, so every eigenvalue of `exp(2πis)` is 1 and the conifold monodromy is
+unipotent — which is what a Picard–Lefschetz transvection requires, and it is computed rather than
+quoted. The **double root at 1** is where the single logarithm lives (monodromy index 2). A test proves
+the polynomial is a property of `z_c = 1/5⁵` by breaking it with `z_c = 1/5⁴`.
+
+**The local radius is `|u| < 1`** (the next singular point is `u = 1`, i.e. `z = 0`). That is the
+practical consequence: unlike the `z = 0` series at the conifold, the conifold's own expansion is
+bounded all the way toward `z = 0`. **So the connection is reachable**: match the two expansions at
+`z = z_c/2`, where both converge, solve a 4×4 system, and the conifold periods are determined *without*
+a literature constant — R1 as a computation rather than a citation.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

@@ -900,6 +900,13 @@
    "title": "climb_deficit.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_exponents.py",
+   "kind": "script",
+   "path": "scripts/conifold_exponents.py",
+   "summary": "F2 M2a - the conifold's local exponents, computed exactly.",
+   "title": "conifold_exponents.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/crosscheck_sm_float.py",
    "kind": "script",
    "path": "scripts/crosscheck_sm_float.py",
