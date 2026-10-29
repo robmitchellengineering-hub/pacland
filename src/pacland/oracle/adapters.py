@@ -50,7 +50,14 @@ class CyToolsAdapter:
         return {
             "h11": cy.h11(),
             "h21": cy.h21(),
-            "intersection_numbers": cy.intersection_numbers(),
+            # Normalised to plain ints, sorted: the CYTools return carries numpy scalar keys, and the
+            # next consumer (F3's K-theory lattice) iterates these triples. numpy keys are a trap --
+            # they print as `np.int64(1)` and compare through numpy's scalar semantics.
+            "intersection_numbers": {
+                tuple(int(x) for x in k): int(v)
+                for k, v in sorted(cy.intersection_numbers().items(),
+                                   key=lambda kv: tuple(int(x) for x in kv[0]))
+            },
             # `second_chern_class` is a METHOD on the CYTools object (confirmed on pacland-rog
             # 2026-10-29: it comes back as a bound method, not a value). Returning it uncalled hands
             # every caller a function object -- found when F3 tried to use c2 as integers.
