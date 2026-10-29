@@ -1334,6 +1334,13 @@
    "title": "orbit_content_slice.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/quintic_periods.py",
+   "kind": "script",
+   "path": "scripts/quintic_periods.py",
+   "summary": "F2 M1 \u2014 the quintic's Picard-Fuchs operator, solved and bounded.",
+   "title": "quintic_periods.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/render_pdf.py",
    "kind": "script",
    "path": "scripts/render_pdf.py",

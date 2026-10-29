@@ -136,6 +136,36 @@ node.
 
 ---
 
+### F2 M1 — BUILT AND RUN (2026-10-29)
+
+`src/pacland/periods/quintic.py` · `python3 scripts/quintic_periods.py` · 6 tests. The operator is
+#210's: `L = θ⁴ − 5z(5θ+1)(5θ+2)(5θ+3)(5θ+4)`, `z = 1/(5ψ)⁵`.
+
+| check | result |
+|---|---|
+| the Frobenius recursion against the literature coefficient | `c_n(0) = (5n)!/(n!)^5` to **1e-31** (dps 30) — exact, not fitted |
+| the monodromy at `z = 0` | unipotent, **index 4** — one Jordan block, as a fourfold indicial root requires |
+| the tail bound inside the radius | **1.5e-97** at `z = 0.5 z_c` with 300 terms |
+| the same bound at the conifold | **9.4e-5** at `z = z_c`, ratio `r → 0.9933` |
+
+**The finding: the conifold sits exactly on the radius of convergence.** `z_c = 1/5⁵`, and
+`|c_n zⁿ/c_{n−1}z^{n−1}| → 5⁵|z|`, so `r → 1` at the conifold, the geometric bound degrades by four orders
+of magnitude from `z_c/2` to `z_c`, and no practical number of extra terms certifies the conifold period.
+**It needs its own local expansion.** That is the next step, and it is stated rather than worked around —
+which is exactly the kind of thing this plan exists to surface before a number is published.
+
+**Two method findings worth keeping.**
+
+1. The **coefficient-space operator check is a tautology** — `c_n n⁴ = 5P(n−1)c_{n−1}` is the recursion
+   that produced `c_n`, so "verifying" it re-derives itself. It was removed rather than kept as a green
+   tick.
+2. **Nested numerical differentiation at fourth order is useless** for the functional check: composing
+   `θ = z d/dz` four times through `mp.diff` gave residuals of order `1e78` on a function of size 1. The
+   functional check needs complex-step or symbolic differentiation, which is the next increment.
+
+**Not claimed:** R1's conifold Γ-value. #210's rule is that it must be pinned from a citable source before
+use, and it has not been — so no number is asserted.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
