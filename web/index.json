@@ -116,6 +116,13 @@
    "title": "Computing the uncomputable \u2014 a cartography of the boundary"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/catchup-2026-10-29.md",
+   "kind": "doc",
+   "path": "docs/catchup-2026-10-29.md",
+   "summary": "Two sessions worked this repo today, on two nodes. This is the synthesis: the results with their numbers, the failure pattern that produced them, and what any of it is good for.",
+   "title": "Catch-up \u2014 2026-10-29: what we learned, and what it is for"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/causal-battery.md",
    "kind": "doc",
    "path": "docs/causal-battery.md",
