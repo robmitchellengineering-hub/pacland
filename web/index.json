@@ -1089,6 +1089,13 @@
    "title": "epidemiology_identifiability.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/exactness.py",
+   "kind": "script",
+   "path": "scripts/exactness.py",
+   "summary": "The exactness instruments \u2014 the four kinds of exactness that work in the interior.",
+   "title": "exactness.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/extract_observables.py",
    "kind": "script",
    "path": "scripts/extract_observables.py",
