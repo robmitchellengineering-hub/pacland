@@ -1369,6 +1369,13 @@
    "title": "shard_vacua.sh"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_explicit.py",
+   "kind": "script",
+   "path": "scripts/spectral_explicit.py",
+   "summary": "The primes as an interference sum over the zeros \u2014 verified against the primes themselves.",
+   "title": "spectral_explicit.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_rooms.py",
    "kind": "script",
    "path": "scripts/spectral_rooms.py",
