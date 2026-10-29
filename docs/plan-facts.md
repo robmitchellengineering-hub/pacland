@@ -187,6 +187,27 @@ bounded all the way toward `z = 0`. **So the connection is reachable**: match th
 `z = z_c/2`, where both converge, solve a 4×4 system, and the conifold periods are determined *without*
 a literature constant — R1 as a computation rather than a citation.
 
+### F2 M2b — the conifold's resonances: which branches need logarithms (2026-10-29)
+
+The connection needs the four conifold solutions, and **three of them carry logarithms** — computed, not
+discovered the hard way. The Frobenius recursion divides by the indicial polynomial at `s0 + n`, so it
+collapses exactly where `P(s0 + n) = 0`, and with integral exponents that is not a corner case:
+
+| exponent | resonances | branch |
+|---|---|---|
+| 0 | at n = **1, 2** | needs logs |
+| 1 (double root) | at n = **1** | needs logs (and the double root adds its own) |
+| 2 | **none** | **a plain power series** — the only clean branch |
+
+So the exponent-2 solution is the one that can be written down with no log algebra at all, and the
+connection's other three columns need the same jet machinery the LCS side uses, now in `u`.
+
+**A failed attempt worth recording:** building the exponent-2 series *symbolically* in sympy (solving
+each coefficient in turn) does not terminate in practical time at 24 terms — the expressions explode.
+The next attempt should solve the recursion **numerically at high precision** (the system is triangular,
+so `c_n = −Σ_{m<n} A[n][m] c_m / A[n][n]`), or keep the symbolic solution to a handful of terms and take
+the rest numerically. That is a two-line change in approach and it saves a day.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

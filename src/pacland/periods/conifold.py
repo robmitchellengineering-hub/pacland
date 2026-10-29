@@ -96,6 +96,26 @@ def exponents() -> list:
     return sorted(roots, key=lambda r: sp.Rational(r))
 
 
+def resonances(s0, n_max: int = 8) -> list:
+    """The orders `n` at which the recursion for the exponent `s0` is degenerate.
+
+    The Frobenius recursion divides by the indicial polynomial evaluated at `s0 + n`, so it collapses
+    exactly where `P(s0 + n) = 0`. With integral exponents this is not a corner case — it is the whole
+    structure, and it says which solution needs a logarithm and at which order.
+    """
+    poly = indicial_polynomial()
+    return [n for n in range(1, n_max + 1) if sp.simplify(poly.subs(S, s0 + n)) == 0]
+
+
+def which_branch_is_clean(n_max: int = 8) -> dict:
+    """For each distinct exponent, the resonance list — and which one is a plain power series."""
+    out = {}
+    for s0 in sorted({sp.Rational(e) for e in exponents()}):
+        r = resonances(s0, n_max)
+        out[str(s0)] = {"resonances": r, "clean": not r}
+    return out
+
+
 def structure() -> dict:
     """The report: exponents, multiplicities, integer-ness, and the monodromy consequence."""
     ex = exponents()
@@ -111,4 +131,5 @@ def structure() -> dict:
             "z_conifold": Z_CONIFOLD}
 
 
-__all__ = ["SINGULAR_POINTS", "apply_L_at_conifold", "indicial_polynomial", "exponents", "structure"]
+__all__ = ["SINGULAR_POINTS", "apply_L_at_conifold", "indicial_polynomial", "exponents",
+           "resonances", "which_branch_is_clean", "structure"]
