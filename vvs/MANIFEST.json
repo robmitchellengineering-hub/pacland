@@ -8,7 +8,7 @@
       "verified": false,
       "gates_passed": 1,
       "gates_required": 4,
-      "sha256": "8d9296e5ec6a36514925c7fc2613621775493fbf492618483671a4fa6a1554fe"
+      "sha256": "f35c71640ab0f2525e54872d649f1218d765e652c36cd3d6d882717908548089"
     },
     "gdpnow": {
       "subject": "Atlanta Fed GDPNow (GDP nowcast, US)",
@@ -17,7 +17,7 @@
       "verified": true,
       "gates_passed": 5,
       "gates_required": 5,
-      "sha256": "42b0178bcf88c36a5fa412cdfce6f5ba4cb3c89cf1671016fd90f59720d273aa"
+      "sha256": "df8f7e839cd9f5a7b1be8eea072a3b332c6962694e1770234b8cddc99fec4de1"
     },
     "physics": {
       "subject": "The landscape theorem tower (5 theorems)",
@@ -26,7 +26,7 @@
       "verified": true,
       "gates_passed": 5,
       "gates_required": 5,
-      "sha256": "408107f146562f94ac6999177062ce4570a66bb458c834927d07f1b92fc68e96"
+      "sha256": "2fd20a1647b5e28f31c0c0efc72b539305d126d3e36eef6ab560ae66ed2d2331"
     },
     "riemann-zeros": {
       "subject": "Riemann zeros and GUE statistics",
@@ -35,7 +35,7 @@
       "verified": true,
       "gates_passed": 4,
       "gates_required": 4,
-      "sha256": "e4f674607cf264857cfc19f013f3bb2e0c9e311fd33ce900d92a2baaa44becad"
+      "sha256": "f6b05f44c2f2acb0a3ef82df95fd03423661ad2e776efae61982c5d20ff4717c"
     },
     "smets-wouters": {
       "subject": "Smets\u2013Wouters (2007) linearised DSGE",
@@ -44,7 +44,7 @@
       "verified": false,
       "gates_passed": 1,
       "gates_required": 5,
-      "sha256": "64264a55d734f07b51d0e0f86b92309c088f98dbb1b28fcccf310ab6df24014a"
+      "sha256": "418f0bdef29f255670eca2bf8cf68ecd593a0fabfd60219a99c2c8b8890203e5"
     }
   }
 }
