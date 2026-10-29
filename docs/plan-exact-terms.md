@@ -161,10 +161,13 @@ Both provable today, both for the chaos arm:
    `DW → d·DW`) gives `V → d²V` and therefore `M² → d²M²` at a shared critical point; an overall scale
    drops out of *unfolded* spacings. Ensembles mixing `d` are provably clean — that asterisk is closed
    before the run, not carried.
-2. **No-scale is an exact zero-mode detector.** At a SUSY Minkowski point `V = 0` exactly and the
-   Kähler sector is flat, so the Hessian must show exact zeros. The chaos doc names zero-modes as the
-   trap that would turn the spacing statistic into a statement about degeneracies; this makes the trap
-   a pass/fail check.
+2. **A supersymmetric point is AdS, and the value is fixed.** At `DW = 0` every term in
+   `g^{i jbar} D_i W D_jbar Wbar` vanishes, so what is left is `V = -3 e^K |W|^2` — exactly, with no
+   freedom. Measured on the recovered constructed vacuum: relative residual **1.9e-16**. So the exact
+   control is this identity, not a zero mode: **v2 of this plan said "Minkowski", and that was wrong**
+   for this model (`potential_t6.py` has no Kähler modulus, and `V = 0` at SUSY needs `W = 0`). The
+   zero-mode trap the chaos doc warns about is real, but it lives at `W -> 0`, and the identity is what
+   tells you which case you are in.
 
 **Falsifier:** an unfolded statistic that moves under `d → 2d`, or a claimed SUSY point with no exact
 zero mode. Either is a bug in the spectrum.
@@ -212,6 +215,23 @@ B2 has answered the wall.
 
 ---
 
+## 5a. First results — the interior instruments, run (2026-10-29)
+
+`src/pacland/exactness/` · `python3 scripts/exactness.py` · 18 tests, every check mutation-tested.
+
+| item | measured | reading |
+|---|---|---|
+| A1 + B4 | 5/5 invariance and identity checks pass; `D_i W` covariant to `1.9e-9`, `V` phase-invariant, `V(dF,dH) = d^2 V`, the unfolded spectrum and ratio statistic unchanged under `d = 2` | the potential's assembly is the documented one, and the `d`-content provably cannot contaminate a spacing statistic |
+| A1 (correction) | at the recovered SUSY vacuum `V = -3 e^K \|W\|^2` to **1.9e-16**, `V = -1.847e-02 < 0` | a SUSY vacuum here is **AdS4**, not Minkowski. v2 of this plan had this wrong — see B4.2 |
+| A2 | 5,885 rows: **5 failures, all one kind** — recorded `Nflux` is the negative of `F^T J H` for the stored ordering (either the pair is stored `H ++ F` or the tadpole was recorded as a magnitude) | pinned as `KNOWN_SIGN_FLIPS`, 0 unexplained. A new one goes red. `N <= chi/24` is **skipped** (no `h11` on disk) — unknown, not green |
+| A3 | at 40 spectra of dim 6 the GOE and Poisson bands sit **2.4 combined sd** apart, so the gate returns `undecidable`; the required size is **202–273** spectra | **the chaos question is reachable**: the h12=2 corpus holds 3,424. And the gate states the budget instead of discovering it after the run |
+| A4 | the corpus covers **13 of 531,440** primitive orbits in the smallest window (**0.0025%**); its largest flux component is **62** | the sampler never visits the small-flux region. Every "fraction of vacua" is a statement about its flux range until recall is measured inside a window |
+| D1 | same window, two measures: at `L = 1` the fraction is **0.2015** flux-uniform vs **0.1667** label-uniform; at `L = 6`, **0.3797** vs **1.0000**. Largest shift **0.62** | the measure problem, demonstrated on a finite lattice rather than argued. (All-vs-primitive coincides here — every non-zero pair in this window is primitive — and the code says so instead of reporting a vacuous agreement) |
+
+Three of these are findings, not checks, and they arrived by running rather than by plan: the AdS
+identity, the 5 pinned corpus defects, and the fact that the chaos question needs ~200 spectra rather
+than being out of reach.
+
 ## 6. D1 — the finite-window measure tool (X7)
 
 `docs/quantum-arm-agenda.md` Q3 and the chaos doc both end at "this may be a measure question". X7 is
@@ -231,17 +251,17 @@ the only exactness that lets us *state* a measure claim without an oracle:
 ## 7. Order, and why
 
 ```
-A1  gauge invariance      an hour, and it may already be a bug in V
-A3  the control gate      stops the fourth repeat; needed before any chaos number counts
-A2  the identity battery  first check of the corpus against its own geometry
-B4  the two controls      unblocks the chaos arm; provable, no build
-B2  truncation ladder     decides the wall; needs studio-linux up
-B1  GV integrality        rides on B2's runs
-A4  coverage / recall     converts every "fraction" into a checked claim
-D1  finite-window measure first exact measure statement
-B3  monodromy table       closes G1; starts with a capability probe
-R1  quintic rung          the only real-CY known-answer we can reach cheaply
-R2  second rung           the only scope test of the claim's C1/C3 — and the only falsifier here
+A1  gauge invariance      DONE — 5 checks, mutation-tested; produced the AdS correction
+A3  the control gate      DONE — and it says the chaos question needs ~200 spectra
+A2  the identity battery  DONE — 5 pinned sign-flip rows, 0 unexplained, chi/24 skipped
+B4  the two controls      DONE — d-scaling proven clean; the SUSY identity measured
+A4  coverage / recall     step 1 DONE (0.0025% coverage); step 2 needs the solver on a node
+D1  finite-window measure DONE — two measures, shift 0.62, demo in the report
+B2  truncation ladder     NOT STARTED — decides the wall; needs studio-linux up
+B1  GV integrality        NOT STARTED — rides on B2's runs
+B3  monodromy table       NOT STARTED — closes G1; starts with a capability probe
+R1  quintic rung          NOT STARTED — the only real-CY known-answer we can reach cheaply
+R2  second rung           NOT STARTED — the only scope test of the claim's C1/C3
 R3  arithmetic            deferred
 ```
 

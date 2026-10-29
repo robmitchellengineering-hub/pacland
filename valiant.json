@@ -92,6 +92,28 @@
         "-c",
         "PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift tests.test_climate_reference_model -q"
       ]
+    },
+    {
+      "name": "exactness-f-term-covariant",
+      "file": "src/pacland/oracle/potential_t6.py",
+      "find": "return np.array([dw[i] + kg[i] * w for i in range(N_MODULI)])",
+      "replace": "return np.array([dw[i] + kg[i] * 0.0 * w for i in range(N_MODULI)])",
+      "check": [
+        "sh",
+        "-c",
+        "PYTHONPATH=src python3 -m unittest tests.test_exactness -q"
+      ]
+    },
+    {
+      "name": "exactness-split-flux-order",
+      "file": "src/pacland/exactness/identities.py",
+      "find": "return v[:half], v[half:]",
+      "replace": "return v[half:], v[:half]",
+      "check": [
+        "sh",
+        "-c",
+        "PYTHONPATH=src python3 -m unittest tests.test_exactness -q"
+      ]
     }
   ]
 }
