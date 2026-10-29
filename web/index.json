@@ -767,6 +767,13 @@
    "title": "W\u2080's weak structure is its own flux dependence \u2014 not the tadpole's scale"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/what-transfers.md",
+   "kind": "doc",
+   "path": "docs/what-transfers.md",
+   "summary": "Written for a reader from another discipline. The question is narrow and answerable: which parts of this work are discipline-independent, what would each need to be used elsewhere, and\u2026",
+   "title": "What transfers out of this programme, and for what it should not be claimed"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",
