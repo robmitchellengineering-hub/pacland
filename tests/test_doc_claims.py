@@ -268,3 +268,21 @@ class TestNoMergeResidue(unittest.TestCase):
                     bad.append(f"{path.relative_to(root)}: {marker}")
                     break
         self.assertEqual(bad, [], "committed conflict markers: " + ", ".join(bad))
+
+
+class TestEveryQuotedMeasurementHasItsScript(unittest.TestCase):
+    """A claimed measurement whose script is not in the repository is a story, not an evidence trail.
+
+    Bought on 2026-10-29: the B1 result (GV integrality firing on non-primitive classes) was merged as a
+    document while its runner `scripts/node_b1_gv.py` stayed on an unmerged branch — so the number was on
+    main and the code that produced it was not.
+    """
+
+    def test_the_node_runners_named_in_the_plan_exist(self):
+        import pathlib
+        root = pathlib.Path(__file__).resolve().parents[1]
+        plan = (root / "docs" / "plan-exact-terms.md").read_text()
+        import re
+        named = set(re.findall(r"`?(scripts/node_[a-z0-9_]+\.py)`?", plan))
+        missing = [p for p in named if not (root / p).exists()]
+        self.assertEqual(missing, [], "the plan names runners that are not in the repo: " + ", ".join(missing))
