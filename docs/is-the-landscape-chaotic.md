@@ -66,14 +66,47 @@ With `V` implemented and validated:
   measure question** — which is worth knowing, and is the same conclusion the vacuum-energy question is
   heading for.
 
+## The potential is now built — and validated 4/4
+
+`src/pacland/oracle/potential_t6.py` implements `V = e^K(g^{ij̄}D_iW D_j̄W̄ − 3|W|²)` for the
+axio-dilaton and the three T² complex structures. It is not used until it passes:
+
+| validation | result |
+|---|---|
+| no-scale identity `g^{ij̄}K_iK_j̄ = 3` on the Kähler moduli | **3.0000000000** |
+| a constant `W` gives `V = 0` on the Kähler sector | **0.000e+00** |
+| invariance under `τ₀ → τ₀+1` with `F → F+H` | equal to 9 digits |
+| a real flux choice gives a finite potential | finite |
+
+**The first version failed both identities**, and the reason is worth keeping: a *real* finite-difference
+step probes `Re τ`, and `K` depends only on `Im τ`, so every Kähler gradient came out **zero** and the
+no-scale identity read `0.0` instead of `3`. The gradients are analytic now, and the metric is analytic
+too — the finite-difference metric was singular for the same reason.
+
+## What is still missing: a *stationary point*
+
+The Hessian machinery works and returns eight real eigenvalues per flux choice, but at a **generic point
+in moduli space** those eigenvalues include tachyons:
+
+```
+-1.171e+01  -2.860e+00  -1.717e+00  -1.770e-01  +4.118e+00  +5.753e+00  +1.199e+01  +1.460e+01
+```
+
+Negative eigenvalues at an arbitrary point are expected and are **not masses**. Calling them a mass
+spectrum would be the same error as calling a lattice a spectrum: the right object, asked of the wrong
+place. **Masses need a stationary point** — `DW = 0` (supersymmetric) or `DV = 0` — which means solving
+four complex equations per flux choice by Newton's method.
+
+That is the next build, and it is the last one between this arm and an answer to the chaos question.
+
 ## Honest current status
 
 | | |
 |---|---|
 | the machinery | **verified**, reused from the zeros work |
-| the spectrum | **not yet computable** — needs `V`; the naive choice is a lattice, measured |
+| the spectrum | **`V` is built and validated 4/4**; masses need a stationary point, which is the remaining build |
 | the answer | **open** |
-| the next step | implement and validate `V` on T⁶, then compute the Hessian spectrum |
+| the next step | solve `DW = 0` per flux choice, then the Hessian spectrum at those vacua |
 
 This is what an honest research arm looks like from the inside: one question, one failed first
 approach that taught us what the observable has to be, and a named next build.
