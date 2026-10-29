@@ -278,6 +278,33 @@ problem = underdetermined). \textbf{None is undecidable}---the landscape problem
 a finding: the path forward is not ``invent a faster computer'' but ``build the missing
 oracles'' and ``compute the invariants of the underdetermined set.''
 
+\section{A worked failure, and what the format bought}
+
+The strongest evidence for the gate format is that it found one of its own certificates wrong.
+
+A gate of the form \emph{``is the textbook constant the right reference?''} was recorded with every
+required field --- name, result, evidence, producer, falsifier, remedy --- and graded \textsc{verified}.
+Its \emph{result} field stated that a reference constant was the asymptotic value for the ensemble being
+graded, and that comparing against it measured finite-sample bias. The constant was $0.5307$; the graded
+system was unitary, and the corresponding value under the same estimator is $0.6136$. The constant is
+the real-symmetric (GOE) one. The recorded reason was wrong, and it had propagated from a module name
+into a docstring, two documents and a certificate.
+
+What the format did, in order: (i) the falsifier was a checkable sentence --- \emph{``comparing against
+the constant would report a $4\sigma$ failure of a correct computation''} --- and it was checked, the
+failure occurred, so one of the two numbers had to be wrong; (ii) the evidence was a computation rather
+than a citation, so the control could be re-run at the right ensemble and size, where it disagreed;
+(iii) the remedy field already said the right thing, which is what made the error legible: the practice
+was sound and the \emph{reason} was not.
+
+The correction renamed the constant for its ensemble, added the unitary reference measured from our own
+sampler rather than quoted, kept the old name as a deprecated alias --- a constant that silently changes
+value is worse than one with a wrong name --- and added a test that fails in both directions. The previous
+test asserted only that the control was more than $0.05$ from the constant, which is true under either
+ensemble and could therefore never catch the defect.
+
+A verification system that has never found itself wrong is not verification.
+
 \section{Discussion and limits}
 \label{sec:discussion}
 
