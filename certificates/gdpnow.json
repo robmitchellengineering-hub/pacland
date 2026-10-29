@@ -18,7 +18,8 @@
       "answer": "Bridge-equation nowcast; beats the no-change null on MAE by 75% (1.26 vs 5.05 pp)",
       "evidence": "src/pacland/economics/gdpnow.py::evaluate",
       "status": "satisfied",
-      "falsifier": "the bridge equations would not aggregate to a GDP path at all, and the MAE ratio would sit at or above 1"
+      "falsifier": "the bridge equations would not aggregate to a GDP path at all, and the MAE ratio would sit at or above 1",
+      "remedy": ""
     },
     {
       "clause": "Outcomes analysis",
@@ -26,7 +27,8 @@
       "answer": "28 of 37 quarters, MAE ratio 0.25 (<1 = beats the null)",
       "evidence": "gdpnow.evaluate(target='advance')",
       "status": "satisfied",
-      "falsifier": "ratio >= 1.0, i.e. no better than carrying the previous quarter forward"
+      "falsifier": "ratio >= 1.0, i.e. no better than carrying the previous quarter forward",
+      "remedy": ""
     },
     {
       "clause": "Outcomes analysis",
@@ -34,7 +36,8 @@
       "answer": "Against the settled number it still beats the null: MAE ratio 0.31 on all 37 quarters, 0.75 excluding 2020 \u2014 the edge narrows but survives",
       "evidence": "gdpnow.settled_comparison()",
       "status": "satisfied",
-      "falsifier": "a settled-number ratio above 1.0, or one that flips when 2020 is dropped"
+      "falsifier": "a settled-number ratio above 1.0, or one that flips when 2020 is dropped",
+      "remedy": ""
     },
     {
       "clause": "Data quality",
@@ -42,7 +45,8 @@
       "answer": "Real-time vintages (ALFRED) throughout; a vintage that post-dates the forecast is refused by guard_nowcast_predates_release",
       "evidence": "gdpnow.guard_nowcast_predates_release",
       "status": "satisfied",
-      "falsifier": "a fixture where the nowcast vintage post-dates the release \u2014 the guard would go red and the evaluation would be refused"
+      "falsifier": "a fixture where the nowcast vintage post-dates the release \u2014 the guard would go red and the evaluation would be refused",
+      "remedy": ""
     },
     {
       "clause": "Implementation",
@@ -50,7 +54,8 @@
       "answer": "Four guards, each mutation-proved: vintage ordering, shared benchmark vintage, first-publication target, units",
       "evidence": "tests/test_gdpnow.py",
       "status": "satisfied",
-      "falsifier": "each guard is mutation-proved: the seeded fault makes it read red"
+      "falsifier": "each guard is mutation-proved: the seeded fault makes it read red",
+      "remedy": ""
     }
   ],
   "limitations": [

@@ -16,7 +16,8 @@
       "evidence": "the D3 tadpole F^T J H is the unique bilinear symplectic invariant of the flux",
       "evidence_path": "scripts/validate_mitchell_uniqueness.py",
       "producer": "Scripts: scripts/validate_*.py (re-run at issue time); Module: src/pacland/certify/dossiers.py::physics_theorems; Doctrine: docs/oracles-without-oracles.md",
-      "falsifier": "scripts/validate_mitchell_uniqueness.py exits non-zero \u2014 a single failing symbol fails the theorem"
+      "falsifier": "scripts/validate_mitchell_uniqueness.py exits non-zero \u2014 a single failing symbol fails the theorem",
+      "remedy": "none \u2014 a compiling proof is the fix; if one fails, the statement is false and the remedy is to change the claim, not to patch the proof"
     },
     {
       "gate": "exact_structure_does_constraint_first_weyl_fft_hold_when_the_che",
@@ -25,7 +26,8 @@
       "evidence": "the constraint-first construction reproduces the Weyl FFT degrees of freedom",
       "evidence_path": "scripts/validate_constraint_first.py",
       "producer": "Scripts: scripts/validate_*.py (re-run at issue time); Module: src/pacland/certify/dossiers.py::physics_theorems; Doctrine: docs/oracles-without-oracles.md",
-      "falsifier": "scripts/validate_constraint_first.py exits non-zero \u2014 a single failing symbol fails the theorem"
+      "falsifier": "scripts/validate_constraint_first.py exits non-zero \u2014 a single failing symbol fails the theorem",
+      "remedy": "none \u2014 a compiling proof is the fix; if one fails, the statement is false and the remedy is to change the claim, not to patch the proof"
     },
     {
       "gate": "exact_structure_does_mitchell_s_completeness_hold_when_the_check",
@@ -34,7 +36,8 @@
       "evidence": "the structure is complete: 6 exact and 2 numeric checks",
       "evidence_path": "scripts/validate_mitchell_completeness.py",
       "producer": "Scripts: scripts/validate_*.py (re-run at issue time); Module: src/pacland/certify/dossiers.py::physics_theorems; Doctrine: docs/oracles-without-oracles.md",
-      "falsifier": "scripts/validate_mitchell_completeness.py exits non-zero \u2014 a single failing symbol fails the theorem"
+      "falsifier": "scripts/validate_mitchell_completeness.py exits non-zero \u2014 a single failing symbol fails the theorem",
+      "remedy": "none \u2014 a compiling proof is the fix; if one fails, the statement is false and the remedy is to change the claim, not to patch the proof"
     },
     {
       "gate": "exact_structure_does_full_duality_completion_hold_when_the_check",
@@ -43,7 +46,8 @@
       "evidence": "the COMPLETE duality group, not just the monodromy subgroup",
       "evidence_path": "scripts/validate_full_duality.py",
       "producer": "Scripts: scripts/validate_*.py (re-run at issue time); Module: src/pacland/certify/dossiers.py::physics_theorems; Doctrine: docs/oracles-without-oracles.md",
-      "falsifier": "scripts/validate_full_duality.py exits non-zero \u2014 a single failing symbol fails the theorem"
+      "falsifier": "scripts/validate_full_duality.py exits non-zero \u2014 a single failing symbol fails the theorem",
+      "remedy": "none \u2014 a compiling proof is the fix; if one fails, the statement is false and the remedy is to change the claim, not to patch the proof"
     },
     {
       "gate": "exact_structure_does_complete_exact_structure_hold_when_the_chec",
@@ -52,7 +56,8 @@
       "evidence": "the assembly of the four theorems above",
       "evidence_path": "scripts/validate_all_theorems.py",
       "producer": "Scripts: scripts/validate_*.py (re-run at issue time); Module: src/pacland/certify/dossiers.py::physics_theorems; Doctrine: docs/oracles-without-oracles.md",
-      "falsifier": "scripts/validate_all_theorems.py exits non-zero \u2014 a single failing symbol fails the theorem"
+      "falsifier": "scripts/validate_all_theorems.py exits non-zero \u2014 a single failing symbol fails the theorem",
+      "remedy": "none \u2014 a compiling proof is the fix; if one fails, the statement is false and the remedy is to change the claim, not to patch the proof"
     }
   ],
   "limitations": [

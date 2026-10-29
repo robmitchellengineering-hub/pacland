@@ -18,7 +18,8 @@
       "answer": "the D3 tadpole F^T J H is the unique bilinear symplectic invariant of the flux",
       "evidence": "scripts/validate_mitchell_uniqueness.py",
       "status": "satisfied",
-      "falsifier": "scripts/validate_mitchell_uniqueness.py exits non-zero \u2014 a single failing symbol fails the theorem"
+      "falsifier": "scripts/validate_mitchell_uniqueness.py exits non-zero \u2014 a single failing symbol fails the theorem",
+      "remedy": "none \u2014 a compiling proof is the fix; if one fails, the statement is false and the remedy is to change the claim, not to patch the proof"
     },
     {
       "clause": "Exact structure",
@@ -26,7 +27,8 @@
       "answer": "the constraint-first construction reproduces the Weyl FFT degrees of freedom",
       "evidence": "scripts/validate_constraint_first.py",
       "status": "satisfied",
-      "falsifier": "scripts/validate_constraint_first.py exits non-zero \u2014 a single failing symbol fails the theorem"
+      "falsifier": "scripts/validate_constraint_first.py exits non-zero \u2014 a single failing symbol fails the theorem",
+      "remedy": "none \u2014 a compiling proof is the fix; if one fails, the statement is false and the remedy is to change the claim, not to patch the proof"
     },
     {
       "clause": "Exact structure",
@@ -34,7 +36,8 @@
       "answer": "the structure is complete: 6 exact and 2 numeric checks",
       "evidence": "scripts/validate_mitchell_completeness.py",
       "status": "satisfied",
-      "falsifier": "scripts/validate_mitchell_completeness.py exits non-zero \u2014 a single failing symbol fails the theorem"
+      "falsifier": "scripts/validate_mitchell_completeness.py exits non-zero \u2014 a single failing symbol fails the theorem",
+      "remedy": "none \u2014 a compiling proof is the fix; if one fails, the statement is false and the remedy is to change the claim, not to patch the proof"
     },
     {
       "clause": "Exact structure",
@@ -42,7 +45,8 @@
       "answer": "the COMPLETE duality group, not just the monodromy subgroup",
       "evidence": "scripts/validate_full_duality.py",
       "status": "satisfied",
-      "falsifier": "scripts/validate_full_duality.py exits non-zero \u2014 a single failing symbol fails the theorem"
+      "falsifier": "scripts/validate_full_duality.py exits non-zero \u2014 a single failing symbol fails the theorem",
+      "remedy": "none \u2014 a compiling proof is the fix; if one fails, the statement is false and the remedy is to change the claim, not to patch the proof"
     },
     {
       "clause": "Exact structure",
@@ -50,7 +54,8 @@
       "answer": "the assembly of the four theorems above",
       "evidence": "scripts/validate_all_theorems.py",
       "status": "satisfied",
-      "falsifier": "scripts/validate_all_theorems.py exits non-zero \u2014 a single failing symbol fails the theorem"
+      "falsifier": "scripts/validate_all_theorems.py exits non-zero \u2014 a single failing symbol fails the theorem",
+      "remedy": "none \u2014 a compiling proof is the fix; if one fails, the statement is false and the remedy is to change the claim, not to patch the proof"
     }
   ],
   "limitations": [

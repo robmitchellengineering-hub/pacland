@@ -37,6 +37,11 @@ class Finding:
     #: *possible* failure is what separates a check from an assertion.
     falsifier: str = ""
 
+    #: What to DO about it. Rob, 2026-10-28: "it's not just the verification, it's the analysis
+    #: verification — and you keep forgetting to add a solution." A verdict without a remedy is a
+    #: report; the leverage is in the fix.
+    remedy: str = ""
+
     @property
     def gate(self) -> str:
         return _slug(f"{self.clause} {self.question}")
@@ -117,6 +122,7 @@ class Certificate:
             "evidence_path": f.evidence,
             "producer": self.producer,
             "falsifier": f.falsifier or _default_falsifier(f),
+            "remedy": f.remedy or _default_remedy(f),
         } for f in self.findings]
 
     @property
@@ -150,12 +156,21 @@ class Certificate:
                  f"**Grade:** **{v['grade']}**  ",
                  f"**Gates:** {v['gates_passed']} of {v['gates_required']} pass  ",
                  f"**Verified:** {'yes' if v['verified'] else 'no'}", "",
-                 "| gate | result | evidence | falsifier |", "|---|---|---|---|"]
+                 "| gate | result | evidence | falsifier | remedy |",
+                 "|---|---|---|---|---|"]
         for g in v["gates"]:
-            lines.append(f"| `{g['gate']}` | **{g['result']}** | {g['evidence']} | {g['falsifier']} |")
+            lines.append(f"| `{g['gate']}` | **{g['result']}** | {g['evidence']} | {g['falsifier']} "
+                         f"| {g['remedy']} |")
         lines += ["", "**Producer:** " + self.producer, "", "## Limitations", ""]
         lines += [f"- {l}" for l in self.limitations]
         return "\n".join(lines) + "\n"
+
+
+def _default_remedy(f: Finding) -> str:
+    """Every gate carries an action, even when the action is "none required"."""
+    if f.ok:
+        return "none — the check passes; keep the evidence and re-run on change"
+    return "fix the failing check before relying on this claim; the falsifier names what to repair"
 
 
 def _default_falsifier(f: Finding) -> str:
