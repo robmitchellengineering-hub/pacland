@@ -1,140 +1,122 @@
-# What the acoustic analysis does — in plain English
+# The audio analysis — in plain English
 
-No jargon where a plain word will do. The maths behind it is in
-[identifiability-of-room-modes.md](identifiability-of-room-modes.md) and the code in `src/pacland/spectral/`.
+What it does, what already works, and what it will let us do. The detailed maths is in
+[identifiability-of-room-modes.md](identifiability-of-room-modes.md); the programme plan is AirMatrix's
+`PLANS/PLAN-airmatrix-audio-lab.md`; the code is `src/pacland/spectral/` here and `rob-meter` / `rob-dsp`
+in the AirMatrix repo.
 
 ## In one sentence
 
-Before anyone spends money on microphones or promises a customer a corrected room, this tells you **how
-much of a room's sound a given microphone setup can actually know** — as a number, with the assumptions
-printed next to it.
+It turns a PA system into an **audio lab that can certify what it measured** — and, before any of that, it
+answers the question every room-correction product skips: *how much of a room can this microphone setup
+actually know?*
 
-## The problem it answers
+## What already works — measured, not planned
 
-Room correction is sold by microphone count. Buy more mics, get a better room. Nowhere does anyone
-publish the answer to the obvious question: *how many microphones do you need before you have all the
-information there is?* We can answer that, and the answer is smaller and stranger than the sales copy —
-which is exactly why it is worth having.
+These are in the tree and verified with figures, not promises:
 
-There is a second question behind it. When software works out a room's resonances, how do we know it got
-them right? A room's own acoustics turn out to contain a check on that, and we use it.
+| capability | verified |
+|---|---|
+| loudness (K-weighted, M/S/I, LRA, true peak) | EBU Tech 3341 to **0.1 LU**, 3342 to **1 LU** |
+| levels — sample peak/hold, PPM (DIN/Nordic/BBC/EBU), VU | PPM burst to **0.05 dB**; VU 300 ms / 1.5% overshoot |
+| spectrum — FFT analyser, 1/3-octave RTA, spectrogram | pink flat to **1.5 dB**, 25 Hz–16 kHz |
+| transfer function + **coherence** + delay finder | +6 dB peak to **0.3 dB**, coherence > 0.95; sub-sample delay |
+| 31-band graphic EQ, master bus | exact at band centres — **12.00 dB for a 12 dB request**; transparent at rest |
+| parametric EQ (per-band Q, frequency, gain) | `Eq::magnitude(hz)` exposes the realised curve |
 
-## How it works, in four steps
+So the measuring instruments are real. What is **not** present yet: a stimulus generator, room acoustics
+(RT60/EDT/C50/C80/STIPA), modal analysis, a battery orchestrator, the per-venue certificate, and a
+correction engine that targets *modes* rather than *bands*.
 
-**1. A room is a set of resonances.** At low frequencies a room rings at particular pitches — its *modes*.
-Each one is described by three numbers: where it rings, how fast it dies away, and how loud it is.
+## The finding that shapes the whole design
 
-**2. A microphone gives you one kind of evidence.** At each seat, a microphone reports loudness against
-frequency. That is all it reports; anything you cannot see in that curve, you cannot recover later, no
-matter how clever the software.
+**A 1/3-octave graphic EQ is the wrong instrument for correcting a room.** A 12 dB cut at 63 Hz at the
+graphic's Q of 4.32 spills **9.29 dB into the neighbouring third-octave**. Narrow it and the spill falls
+(0.68 dB at Q = 10, 0.18 dB at Q = 20) — but a graphic EQ cannot place a narrow notch at a mode.
 
-**3. Nudge each unknown and watch what moves.** Take every unknown number in the room model and nudge it
-a hair. Some nudges change the microphone curves, some change nothing that any microphone can see. Count
-the independent directions that actually move — that count is the answer to "how much can a microphone
-setup know". An unknown whose nudge moves nothing is *invisible*, and no amount of processing will get it
-back.
+That single number decides the architecture: room correction is **parametric notches at identified modal
+frequencies with fitted Q**, plus a shallow shape for the broad tilt. And the parametric band is already
+in the tree — it was always there; nobody had measured that the graphic could not do the job.
 
-**4. Then add the noise, because that is the honest question.** Real measurements are noisy. Nudge the
-unknowns and ask not *can* we see the change but *how precisely* can we pin each number down, given the
-noise. That is the honest answer, and it is considerably smaller than the noiseless one.
+## What the analysis adds — three questions, and the honesty in each
 
-## What it found — three answers, each correcting the last
+**1. How many microphones do you need?** Answered by nudging each unknown in the room model and counting
+which directions the measurements actually move.
 
-| stage | answer | verdict |
+| stage | answer | what it means |
 |---|---|---|
-| how many unknowns are visible at all | **one** microphone separates every resonance in a simple 1-D case; two is the maximum useful | encouraging, and *wrong to publish on its own* |
-| how well are they separated | one microphone leaves **six** directions ten orders of magnitude below the rest — that is noise, not information. Two separate them all | two is the real minimum |
-| how precisely, at real noise | at a realistic **−60 dB** you can pin about **3 of 36** parameters to within 10%; at **−50 dB**, none. To get 36 you would need about −70 dB and one microphone per direction | **the honest number** |
+| what is visible at all | one microphone separates every resonance in the 1-D case | true, and *false to publish alone* |
+| how well separated | one omni leaves **six** directions ten orders below the rest — noise, not information | **two** is the real minimum |
+| at real noise | at **−60 dB**, about **3 of 36** parameters to 10%; at **−50 dB**, none | the honest number |
 
-**The correction matters.** Publishing the first line would have been a confident, false claim — "one
-microphone identifies everything". The noise model is what turns a true statement into a useful one, and
-the useful one is: *at normal measurement noise you can reliably measure a handful of combinations, not
-a table of every resonance.*
+Publishing the first line alone would have been a confident false claim. The useful statement is:
+*at normal measurement noise you can reliably measure a handful of combinations, not a table of every
+resonance* — which is exactly what an equaliser and an anti-feedback system need, and not what a
+"here are your 36 resonances" readout needs.
 
-That is not a disappointment. **A handful of combinations is exactly what an equaliser or an
-anti-feedback system needs.** It is only a table of 36 resonances that we cannot honestly promise.
+**2. Is the room solver right?** A room's resonances have a spacing signature. A plain box produces
+clustering modes (Poisson); an irregular room produces repelling ones (the same signature the Riemann
+zeros have). Both are known in advance from the room's shape, so a solver can be checked **without knowing
+the answer** — and there is also a Weyl count check for the number of modes, measured to **0.02%** on
+analytic boxes. Nobody else applies this to room solvers.
 
-## The walking rig, checked
+**3. What should the corrector actually do?** Target the modes that were identified, minimise the **worst
+seat** rather than the average curve, and always report per seat. On a synthetic room the target is a
+**≥ 6 dB** reduction in worst-seat ripple with no band boosted beyond +6 dB; on a real room, the report
+names every mode it did **not** fix, and why.
 
-A binaural pair 17 cm apart — two capsules at one position — does the work of **two separate omni
-positions**. One such position conditions everything an omni pair needs two positions for. So the rig is
-justified by measurement, and it makes a walking capture **half the positions** for the same information.
+## The binaural node — three jobs, and which are measured
 
-The honest limit: the advantage is at *one* position. If you are already walking to three positions, the
-second capsule buys robustness, not information.
+The capture hardware is a **binaural node**: two capsules 17 cm apart, stereo in, on batteries, over
+Wi-Fi. Not a microphone — a sensor with two correlated channels, with three planned jobs:
 
-## The binaural node — what it is for, and what the maths says about it
+1. **Walking capture.** The engineer walks and presses; the desk already has the remote. **Measured:** one
+   binaural position does the work of *two* omni positions, so a four-position route can be two — and the
+   system can say "you have enough", and which directions are still weak.
+2. **A stationary pair at front of house** — a calibrated, always-on reference channel. *Designed, not
+   measured.*
+3. **The stage mics as the measurement array.** Every stage mic is a receiver and the desk knows what it
+   is sending, so **the show itself is the stimulus** — no sweeps, no stopping the gig. *Designed, not
+   measured*, with a named risk: the sends are not a known stimulus unless logged, and parameters change
+   during a show.
 
-The capture hardware is a **binaural node**: two capsules 17 cm apart (head spacing), stereo in, on
-batteries, sent over the Wi-Fi. It is not a microphone — it is a *sensor with two correlated channels*,
-and it has three planned jobs, each of which the analysis has something specific to say about.
+The node is **not** "a machine that tunes the room". The engineer stays the sensor; the system is the
+recorder and auditor. At the end the route *is* the report.
 
-**1. Walking capture.** The engineer walks the room and presses to capture at each position; the desk
-already has the remote. The maths says the **second capsule removes half the walking**: one binaural
-position does the work of *two* omni positions, and one omni position alone leaves six directions buried in
-noise. So a route that was going to be four positions can be two — and the system can say "you have enough"
-rather than leaving it to instinct, and say *which* directions are still weak so the next position is
-chosen rather than stumbled on.
+## The suite, in phases — each with its own pass mark
 
-**2. A stationary pair at front of house — the reference channel.** The pair does not have to walk. Fixed
-at front of house it is a calibrated, always-on reference: the thing every other measurement is compared
-against, and the record of what the room was doing at a given moment.
-
-**3. The stage mics as the measurement array.** The stage is already covered in microphones, and every one
-of them is a receiver. The desk knows exactly what it is sending to the PA and the wedges, so **the show
-itself is the stimulus** — no sweeps, no pink noise, no stopping the gig. That is the idea that turns the
-lab from a soundcheck tool into something that works during the performance.
-
-**The honest state of each.** (1) is *measured*: the binaural-versus-omni comparison in
-[identifiability-of-room-modes.md](identifiability-of-room-modes.md) uses the same 3-D room with two
-receivers 17 cm apart, and finds one binaural position conditions all 36 directions where one omni leaves
-six buried ten orders below the rest. (2) and (3) are **designed, not yet measured** — the stage-mic array
-in particular carries a real risk: the desk's sends are not a known stimulus unless they are logged, and
-during a show the parameter set changes. The plan states that rather than assuming it away.
-
-**What the node is *not*.** It is not "a machine that tunes the room". The engineer stays the sensor; the
-system becomes the recorder and the auditor — it captures what was heard, timestamps it, tells you when you
-have enough, and at the end the route *is* the report: the positions, the numbers, the settings, and the
-remedy for what remains.
-
-## The second thing it does: checking a solver against the room
-
-A room's resonances are not arbitrary — their *spacing* has a signature. A plain rectangular room
-produces resonances that fall independently (they cluster); an irregular room produces resonances that
-repel each other, the same signature the Riemann zeros have. Both are known in advance from the room's
-shape, which means a solver can be checked **without knowing the answer**: solve for the resonances,
-measure the spacing signature, and see which family it belongs to. A solver that gets the signature wrong
-is wrong even when its output looks plausible.
-
-That is a free test that no one else applies to room solvers, and it came out of the same statistics
-toolkit as the number-theory work.
+| phase | produces | pass mark |
+|---|---|---|
+| **1 · measurement spine** | stimulus + deconvolution to an impulse response, coherence per mic, validity gating | loopback flat **±0.25 dB** 20 Hz–20 kHz, delay to **1 sample**; a capture with a dropout is **refused**, not averaged |
+| **2 · room acoustics** | RT60/EDT/T20/T30, C50/C80, noise floor, STIPA | RT60 within **5%** of a synthetic decay; C50/C80 within **0.5 dB** of a two-path model |
+| **3 · modal analysis + correction** | mode identification, Weyl and spacing checks, the notch corrector | **≥ 6 dB** worst-seat ripple reduction, no boost beyond +6 dB, every unfixed mode named |
+| **4 · the lab product** | one command per venue → a **certificate** (gate, result, evidence, producer, falsifier, remedy) with a manifest hash | a third party can verify the file |
+| **5 · the claim** | "the world's best audio lab" — only after 1–4, defined by evidence, not by adjective | the evidence page is linked |
 
 ## What it lets us do
 
-- **Size the hardware honestly** — two capsules or two positions, not five. Cheaper, and defensible.
-- **Place microphones on purpose** — away from a resonance's null, where that mode is invisible.
-- **Promise only what survives the noise** — "margin and correction", not "here are your 36 resonances".
-- **Design the anti-feedback feature around the thing that is measurable** (loop gain near the critical
-  frequency is a combination, and combinations survive).
-- **Reuse it anywhere** — the same test answers the same question for speaker placement, venue tuning,
-  and any "how much can my sensors know" problem. That is the transferable asset, not the room.
+- **Certify instead of assert.** Every venue visit produces a file with the falsifier and the remedy in it,
+  checkable by someone who does not trust us.
+- **Compare venues as numbers.** Same fields everywhere, so "this room is worse than that one" stops being
+  an opinion.
+- **Size hardware honestly.** Two capsules or two positions, not five.
+- **Make claims that survive a hostile engineer.** Margin and correction, not a modal table.
+- **Reuse the method.** The same rank/noise/spacing tests answer the same question for speaker placement,
+  venue tuning, and any "how much can my sensors know" problem — that is the asset, not the room.
 
-## Where it stops, said plainly
+## What would make this wrong
 
-- It is a **low-frequency** method — the modal region, roughly below 200 Hz in a room. Above that, sound
-  is not a set of resonances and this does not apply.
-- It assumes the **room's shape is known** (the mode shape is fixed by geometry).
-- It is **linear**; it says nothing about nonlinearity in the loudspeaker.
-- It says what is **identifiable**, not what is **audible**. Those are different questions and the second
-  one needs ears.
-- The numbers move with the **noise assumption**, which is why the noise figure is printed beside every
-  number.
+- The modal model is **linear and low-frequency** — it does not describe a room above a few hundred Hz, and
+  it says nothing about loudspeaker nonlinearity.
+- It says what is **identifiable**, not what is **audible**. Those are different questions.
+- Every number moves with the **noise assumption**, which is why the noise figure is printed beside it.
+- The stage-mic array assumes a logged stimulus; if the desk's sends are not recorded, the show is not a
+  measurement.
 
 ## How to check us
 
-- The 1-D case has an **exact analytic answer** — modes at known pitches, shapes known in closed form — so
-  there is no solver to trust. The answer was checked against that.
-- The 3-D case uses a real 6 × 4.5 × 3 m room with the modes below 100 Hz computed and cross-checked.
-- Everything is code in this repository with tests that run, and the full reasoning — including the stage
-  where the headline had to be corrected — is in
-  [identifiability-of-room-modes.md](identifiability-of-room-modes.md).
+The 1-D case has an **exact analytic answer** — modes at known pitches, shapes in closed form — so no
+solver has to be trusted. The 3-D case is a real 6 × 4.5 × 3 m room with the modes below 100 Hz computed
+and cross-checked. The instrument figures above come from the AirMatrix tree's own tests. The reasoning,
+including the stage where the headline had to be corrected, is in
+[identifiability-of-room-modes.md](identifiability-of-room-modes.md).
