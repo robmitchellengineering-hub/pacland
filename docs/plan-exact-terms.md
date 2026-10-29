@@ -1,189 +1,264 @@
-# The exactness programme — what exact terms exist, and what each one can decide
+# The exactness programme — every kind of exactness we can use, and what each one decides
 
-Written 2026-10-29 in the planning room (`~/Documents/DeepSeek`), under D9 (the planning room owns
-intent, the repo owns code), D10 (job → plan → decision), D14 (pacland is the method at maximum
-difficulty) and D15 (physics is discipline-scale; its framing is the risk).
+Planning room (`~/Documents/DeepSeek`), 2026-10-29, **v2**. Decisions: D9 (this folder owns intent, the
+repo owns code), D10 (job → plan → decision), D14 (pacland is the method at maximum difficulty), D15
+(physics is discipline-scale; its framing is the risk).
 
-Rob's question: *"are there other exact geometric terms we can use that already exist, and what other
-types of exactness are we able to use?"* This answers both, then says what to do with them, and — the
-part that matters — what each one can **falsify**.
+**v1 → v2.** v1 named eight kinds of exactness but built its six items almost entirely out of three of
+them (X1/X2/X3), which are the kinds that exist **only** topologically, at special loci, or as
+structure. The kinds that work **everywhere** — invariance, identity, exhaustion, known-answer controls
+— had two uses between them. Rob: *"make a plan to use the other forms of exactness that work for us,
+add the other types that work to the plan."* v2 turns each of those into work that runs on the data we
+already hold, and adds the structural and closed-form rungs that are worth having.
 
-Read with `docs/is-the-landscape-chaotic.md` (the chaos question and its current build) and
-`docs/unification-claim.md` (C1–C4). This plan does not re-ask those questions; it supplies the
-instrument they are missing.
+Read with `docs/is-the-landscape-chaotic.md` (the chaos question and its build) and
+`docs/unification-claim.md` (C1–C4). This plan does not re-ask those questions; it supplies instruments.
 
 ---
 
-## 1. The eight kinds of exactness available to this programme
+## 1. The eight kinds
 
-They are not interchangeable. Each is exact for a different reason, and each can therefore certify a
-different thing.
-
-| # | kind | what makes it exact | where we have it | what it can decide |
+| # | kind | exact because | where it exists | used by |
 |---|---|---|---|---|
-| **X1** | **topological / integer** | it counts something: indices, intersections, charges | `κ_ijk`, `c₂`, `χ`, the tadpole `N = FᵀΣH`, the GV invariants `n_d` | whether a computed continuous quantity is right — the integer must come out whole |
-| **X2** | **closed form at a locus** | the analytic answer is known there | T⁶ (`oracle/exact_t6.py`); the LCS prepotential; orbifold/Gepner points; GLSM | an oracle with **zero systematic error**, so the verifier is provably exact |
-| **X3** | **structural / recursive closure** | a finite generating datum determines everything else | N=2 special geometry (one prepotential ⇒ the whole metric); Picard–Fuchs (a finite ODE ⇒ every period); the holomorphic anomaly (a finite boundary datum ⇒ all genera) | whether a truncation is *convergent* rather than merely tolerable |
-| **X4** | **invariance** | change the description, not the world; the claim must not move | `Sp(b₃,ℤ) × SL(2,ℤ)`; Law II; the monodromy representation | whether a claimed observable is physics or a coordinate artefact |
-| **X5** | **definitional / identity** | true by construction | no-scale `g^{ij̄}K_iK_j̄ = 3` (measured **3.0000000000**); `V = 0` at a SUSY Minkowski point; anomaly cancellation | whether an implementation is wrong — an identity that fails is a bug, not a finding |
-| **X6** | **arithmetic** | the object is defined arithmetically (Euler product, point counts, p-adic periods) | **not used yet** — the zeros arm's own kind, borrowed for the spectrum but never applied to the geometry | a check on periods that shares no code, no sampler and no series with the period computation |
-| **X7** | **finite-window exhaustion** | below `N ≤ L` the flux lattice is finite, so enumeration is complete | implicit in the corpus (5,885 vacua); never stated as a theorem | an exact statement conditional only on a **declared** window — the honest form of every "fraction of vacua" claim |
-| **X8** | **known-answer (null) control** | the reference's answer is exact by construction | GUE/Poisson controls; equally-spaced zeros; persistence in climate; the trend null in finance | whether a statistic means anything at the size it was computed at |
+| **X1** | topological / integer | it counts something | everywhere (discrete) | A2, B1, R1 |
+| **X2** | closed form at a locus | the analytic answer is known there | T⁶, LCS, orbifolds/Gepner, quintic special points | R1, R2 |
+| **X3** | structural / recursive closure | a finite datum determines the rest | special geometry, Picard–Fuchs, holomorphic anomaly | B2, B3 |
+| **X4** | invariance | change the description, not the world | **everywhere** | A1, A3, B3, B4 |
+| **X5** | definitional identity | true by construction | **everywhere** | A1, A2, B4 |
+| **X6** | arithmetic | Euler product / point counts / p-adic periods | not used yet | R3 (deferred) |
+| **X7** | finite-window exhaustion | below `N ≤ L` the lattice is finite, so enumeration is complete | **everywhere**, conditional on a declared window | A4, D1 |
+| **X8** | known-answer control | the reference answer is exact by construction | **everywhere** | A3, B4 |
 
-Two lessons the programme already paid for, both instances of X8: the zeros' 0.5307 scare (a reference
-that was the wrong **ensemble**, not the wrong sample size) and the `|W|` lattice (a reference object
-with no fluctuations to report). A statistic without an exact control at the same size is a measurement
-of the estimator.
-
-**The important distinction:** X4, X5 and X8 are available *everywhere*, including the interior of
-moduli space, because they need no closed form. X1, X2, X3 and X6 are only available topologically, at
-special loci, or as structure. **The 5,885 vacua live in the interior, so the interior's exactness has
-to come from X4/X5/X8 or from X1's discrete data — never from a closed form we might one day find.**
+The partition is the point: **X1/X2/X3/X6 are missing in the interior of moduli space and no search will
+produce them.** X4/X5/X7/X8 need no closed form, so they are the only exactness available where all
+5,885 vacua actually live. That is why seven of the twelve items below are built on them.
 
 ---
 
-## 2. What the toolchain already exposes (verified, not assumed)
+## 2. What the toolchain already exposes (verified, not remembered)
 
 | capability | where | evidence |
 |---|---|---|
-| Hodge numbers, triple intersections, `c₂`, Kähler/Mori cones, **GV invariants** | CYTools 1.4.12 | `docs/tooling.md`, verified live on `studio-linux` 2026-10-18 |
+| Hodge numbers, triple intersections, `c₂`, Kähler/Mori cones, GV invariants | CYTools 1.4.12 | `docs/tooling.md`, verified live on `studio-linux` 2026-10-18; the **quintic** returns `h11=1, h21=101, c₂=[-250,50,50,50,50,50]` |
 | LCS tree, prepotential, instanton sums, F-terms, Hessian | JAXVacua | `oracle/adapters.py:85` — `jvc.lcs_tree.from_cytools(cy, maximum_degree=1)` |
-| **the truncation knob is a named parameter** | `maximum_degree` | same call — this is what "truncation" actually means in our stack |
+| **the truncation knob is a named parameter** | `maximum_degree` | same call — this is what "truncation" means in our stack |
 | instanton sum is tiny in our models | 2 GV charges, correction ~0.004 | `src/pacland/limits.py:82` |
+| `V`, the `DW=0` solver, Hessian | `oracle/potential_t6.py` | #198–#200; no-scale `3.0000000000`, `V=0` at a SUSY Minkowski point, 4/4 |
 | explicit symbolic arithmetic | sympy 1.14.0 in `/home/rob/cytools-venv` | 2026-10-22 mesh job |
-| `V`, the `DW=0` solver, Hessian | `oracle/potential_t6.py` | #198–#200, validated 4/4 |
 
-**Routing, read live (not remembered):** `dispatch.py --list` on 2026-10-29 shows `mac`, `pacland-rog`,
-`studio-linux2`, `win`, `win-2`. **`studio-linux` — the only node verified to have cytools + jaxvacua —
-is not registered.** `studio-linux2` advertises `node:js` only. The VMs on `win-2` do not auto-start.
+**Routing, read live (not remembered):** `dispatch.py --list` on 2026-10-29 lists `mac`,
+`pacland-rog`, `studio-linux2`, `win`, `win-2`. **`studio-linux` — the only node verified with cytools
++ jaxvacua — is not registered**, and the VMs on `win-2` do not auto-start. Group A, D1 and R1's analytic
+target run on the Mac; B1/B2/B3 and R1's numeric periods need that node.
 
 ---
 
-## 3. What the work is, ordered by (cost × what it can falsify)
+## 3. Group A — the interior's exactness (works on data already on disk)
 
-### E1 — The truncation ladder: is `cond(M)` geometry or series truncation?
+### A1 · Kähler-gauge invariance, as a bug detector (X4 + X5)
 
-**Exact term used:** X3 (the instanton series is closed-form with integer coefficients, so its
-truncation error is *bounded*, not estimated).
+`K → K + f + f̄` is a field redefinition: `V`, the masses and every physical quantity must be
+**unchanged to machine precision**, because `D_iW` transforms covariantly. An implementation that uses
+`K` without the covariant structure moves — and the move is invisible in any single run.
+
+- **Test:** shift `K` by `c·z` (and by a constant), recompute `V`, the gradient and the Hessian
+  eigenvalues; all must agree within 1e-12 relative.
+- **Why now:** the `limits.py` boundary for the instanton-corrected spectrum ends on *"the CS-vs-Kähler
+  (mirror) moduli convention, to be read from arXiv:2306.06160"*. That convention bug is exactly what a
+  gauge-invariance test catches, and it is cheaper than reading the paper.
+- **Falsifier:** a shift that moves `V`. That is a bug in `potential_t6.py`, not a finding.
+- **Where:** Mac. Cost: an hour.
+
+### A2 · The identity battery over the whole corpus (X5 + X1)
+
+One command over the 14 `data/h12_*_stats.json` files, printing per-row failures rather than a verdict:
+
+| identity | why it must hold |
+|---|---|
+| `N = FᵀJH ∈ ℤ` | the flux pairing is integral; a non-integer means the basis or the flux record is wrong |
+| `N = χ/24` per model | the flux charge is the topological charge — this ties the discrete flux data to the geometry, and nothing in the corpus currently checks it |
+| `det Σ = ±1` | the intersection form is unimodular; a wrong basis breaks it |
+| gauge-invariance residual (A1) per row | the recorded `V` and `eigenvalues` must be gauge-invariant |
+| `d² | N` and `gcd(F,H) = d` | already known to hold on all 5,885 rows — keep it as a **regression**, not a discovery |
+
+- **Can it fail?** Prove it before trusting it: seed a basis change into one model and the battery must
+  go red. A battery that cannot go red is decoration.
+- **What it buys:** the first time the corpus is checked against the geometry it claims to come from.
+- **Where:** Mac, on disk. Cost: an afternoon.
+
+### A3 · The same-size known-answer gate for every statistic (X8)
+
+Three times now a statistic has been read against the wrong reference: the `|W|` lattice (no
+fluctuations to report), the 0.5307 zeros scare (the GOE value used as GUE's), and the chaos arm's
+zero-mode trap. Make the control a **gate** rather than a habit:
+
+- one function — `control(statistic, n, dim, pooling)` — that builds a **GOE** control, a **GUE**
+  control, and a **Poisson** control matched on dimension, level density **and** pooling, and returns
+  the measured value with its finite-size offset;
+- an **authority test**: the pipeline is not allowed to report an unknown class until it recovers a
+  *known* one — feed it a deliberately order-destroyed spectrum (shuffle the eigenvalues) and it must
+  return Poisson; feed it GOE matrices and it must return GOE.
+- **Falsifier:** a shuffled spectrum that still reads "repulsion". Then the estimator is broken and no
+  chaos number from it counts.
+- **Where:** Mac. Cost: small, and it is the item that stops the fourth repeat.
+
+### A4 · The sampler's coverage — and its recall — in the smallest window (X7 + X8)
+
+The corpus is a **heuristic** sample (the ISD proposal). Its recall is unknown, and every "fraction of
+vacua" sentence silently assumes it is 100%.
+
+- **Step 1 (exact, instant):** enumerate the smallest flux window exhaustively — `|F_i|, |H_i| ≤ 1` at
+  h12=2 is `3¹² = 531,441` pairs, cut further by the flux-scaling lemma (primitive pairs only, since
+  `(F,H)` and `d(F,H)` are the same vacuum). Match every corpus row's orbit against the enumerated set
+  and report **coverage**: which small-flux orbits the sampler has never visited.
+- **Step 2 (the cost decision):** for the uncovered orbits, run the `DW=0` solver to get the true count
+  of SUSY-admitting pairs in the window, and divide.
+- **Falsifier:** recall below 100% in a window where enumeration is complete. Then **every** fraction
+  in this programme is a statement about the sampler and must be relabelled as such — which is a
+  publishable finding, not a nuisance.
+- **Where:** Mac for step 1; a node for step 2 if the solve count is large.
+
+---
+
+## 4. Group B — discrete and structural exactness (the wall, and gaps G1/G2)
+
+### B1 · GV integrality — an independent check on the period pipeline (X1)
+
+Extract `n_d` from the computed prepotential at several points. GV invariants are integers by
+definition (BPS counts); non-integral output means the periods are wrong **at that point**, with no
+oracle needed.
+**Falsifier:** a non-integer `n_d`, or values that move with the point when they must not. Shares B2's runs.
+
+### B2 · The truncation ladder — the item that can decide the wall (X3)
 
 With `Im T ≥ 2` from the sampler bounds, the neglected degree-`d` instanton is suppressed by
 `e^{−2π d·Im T}`: degree 1 ≤ **3.5×10⁻⁶**, degree 2 ≤ **1.2×10⁻¹¹**. The observed h12=25 failure is
 `|dV|` of order **10²–10³** against 0.3–4.1 at h12=2 — eight orders above the largest neglected term.
 
-**Hypothesis:** the near-null direction of `Im N` is **real geometry**, not truncation.
-**Falsifier:** run `maximum_degree = 1, 2, 3` and see whether `cond(M)` moves. If it moves by more than
-10%, the conditioning is a series artefact and the wall *is* a truncation wall.
-**Can this fail?** Yes — that is the point. This is the first version of the wall question that has an
-answer that is not "more sampling needed".
-**Where:** any node with cytools + jaxvacua (see routing note).
-**If it holds:** the h12 ≥ 5 wall is the integer-lattice problem (`docs/is-the-landscape-chaotic.md`
-found the same thing from the other end this week: a generic integer flux is F-flat **nowhere**),
-1/`λ_min` being the magnification. Then no solver, degree or ensemble size fixes it, and effort goes to
-non-SUSY `DV = 0` vacua — which is where the chaos arm is already heading.
+- **Hypothesis:** the near-null direction of `Im N` is real geometry, not truncation.
+- **Test:** `maximum_degree = 1, 2, 3`; does `cond(M)` move?
+- **Falsifier:** `cond(M)` moving by more than 10% ⇒ it *is* truncation, and the degree is the fix.
+- **If it holds:** the h12 ≥ 5 wall is the integer-lattice problem that
+  `docs/is-the-landscape-chaotic.md` found from the other end this week (a generic integer flux is
+  F-flat **nowhere**), with `1/λ_min` as the magnification. Then no solver, degree or ensemble size
+  fixes it, and the effort belongs to non-SUSY `DV = 0` vacua.
 
-### E2 — GV integrality: an independent check on the period pipeline
+### B3 · Monodromy — the covariance table as a derivation (X4 + X3)
 
-**Exact term used:** X1. Extract `n_d` from the computed prepotential at several points. GV invariants
-are integers by definition (BPS counts). Non-integral output means the periods are wrong *at that
-point* — a detector that needs no oracle.
-**Falsifier:** a non-integer `n_d`, or values that change with the point when they must not.
-**Cost:** shares E1's runs.
+The Picard–Fuchs/GKZ system gives integer monodromy matrices `M ∈ Sp(2h+2,ℤ)` with the
+machine-checkable identity `MᵀΣM = Σ`. Every observable's transformation law follows by differentiating
+the period action — so **G1** becomes a closed-form derivation instead of a fit with a log residual, and
+the open phase half of Law II is exactly what the monodromy fixes.
+**Falsifier:** `MᵀΣM ≠ Σ` (implementation error), or a law that fails to close under a full generator.
+**First step is a capability probe** — does CYTools 1.4.12 expose periods/PF operators? If not, this is
+a build (Frobenius on the GKZ system), and the build is the deliverable.
 
-### E3 — Monodromy: the covariance table as computation, not measurement
+### B4 · Two provable controls for the mass spectrum (X4 + X5)
 
-**Exact term used:** X4 + X3. The Picard–Fuchs/GKZ system gives integer monodromy matrices
-`M ∈ Sp(2h+2,ℤ)` with the machine-checkable identity `MᵀΣM = Σ`. Every observable's transformation law
-follows by differentiating the period action — so **G1** (`docs/SOLVING-STRING-THEORY.md` §4) becomes a
-closed-form derivation instead of a fit with a log residual, and the open half of Law II (the phase) is
-exactly what the monodromy fixes.
-**Falsifier:** `MᵀΣM ≠ Σ` (implementation error), or a law that does not close under a full monodromy
-generator when it closed under S and T.
-**First step is a capability probe** — does `cytools` 1.4.12 expose periods/PF operators? If not, this
-is a build (Frobenius on the GKZ system), and the build is the deliverable.
-
-### E4 — Finite-window exhaustion: the first *exact* measure statement
-
-**Exact term used:** X7. Below a declared tadpole bound `N ≤ L` the landscape is finite, so
-"fraction of vacua with property P" is exact and reproducible — and the fraction's sensitivity to the
-window is itself measurable.
-**Why now:** `docs/quantum-arm-agenda.md` Q3 and the chaos doc both end at "this may be a measure
-question". X7 is the only kind of exactness that lets us *state* a measure claim without an oracle.
-**Falsifier:** the fraction must move with `L`; if it is flat in `L` for two different measures, the
-"10⁵⁰⁰ argument is about measures" claim loses its demonstration.
-**Where:** Mac, on the corpus already on disk — no node needed.
-
-### E5 — Two exact controls for the mass spectrum (plugs into the chaos arm now)
-
-**Exact terms used:** X4 and X5, and both are provable today:
+Both provable today, both for the chaos arm:
 
 1. **`d`-scaling cannot contaminate the level statistics.** The flux-scaling lemma (`W → dW`,
-   `DW → d·DW`) makes `V → d²V` and therefore `M² → d²M²` at a shared critical point. The *unfolded*
-   spacing statistic is invariant under an overall scale, so ensembles mixing different `d` are
-   provably clean. Without this, every chaos number would carry an "is it just the lattice label?"
-   asterisk; with it, that question is closed before the run.
+   `DW → d·DW`) gives `V → d²V` and therefore `M² → d²M²` at a shared critical point; an overall scale
+   drops out of *unfolded* spacings. Ensembles mixing `d` are provably clean — that asterisk is closed
+   before the run, not carried.
 2. **No-scale is an exact zero-mode detector.** At a SUSY Minkowski point `V = 0` exactly and the
    Kähler sector is flat, so the Hessian must show exact zeros. The chaos doc names zero-modes as the
-   trap that would make the spacing statistic a statement about degeneracies — this turns the trap into
-   a pass/fail check rather than a judgement call.
+   trap that would turn the spacing statistic into a statement about degeneracies; this makes the trap
+   a pass/fail check.
 
-**Falsifier:** a spectrum whose unfolded statistic moves under `d → 2d`, or a claimed SUSY point whose
-Hessian has no exact zero mode. Either is a bug in the spectrum, not a finding.
-
-### E6 — A second exact rung, and the one item that can falsify rather than certify
-
-**Exact term used:** X2. Two candidates, pick by cost:
-
-- **K3 × T²** — complex-structure moduli space is the symmetric space `O(2,19)/(O(2)×O(19))`, so the
-  period domain and the special-Kähler metric are closed form. Gives a second exact oracle with
-  `h¹¹ = 20`: real gauge structure, unlike T⁶.
-- **toroidal orbifolds / Gepner points** — the *worldsheet CFT* is exactly solvable, so **every `α′`
-  correction is exact**, not just the leading term. And they carry **discrete torsion**, which is:
-
-> the sharpest test on the board. Discrete torsion is exact, discrete, topologically classified, cheap
-> to enumerate — and it **changes the spectrum**. C3 says distinct orbits ⇒ distinct physics; discrete
-> torsion is a label the orbit data does not contain, so two configurations with the same `(N, d)` and
-> the same moduli can differ physically. That is C3's **injectivity** failing from a direction the
-> corpus cannot even represent (it samples smooth CYs and records no torsion). It is the same *class*
-> of object as `d`, except `d` is provably empty and discrete torsion is provably not.
-
-**Falsifier:** a pair of orbifold configurations, identical orbit data, different spectra. If that
-exists, "the exact content is constraints + labels + orbit coordinates" needs a fourth bucket, or
-"label" needs splitting into *observable* and *redundant*.
-
-### Deferred (named, not planned)
-
-- **X6 arithmetic** — the L-function of the family / p-adic periods: the only exactness that shares
-  nothing with the period computation, so the only true cross-source check on it. Expensive; revisit
-  when E1's answer is known.
-- **GLSM exact Kähler potential** — exact on the Kähler side only, where the flux vacua are not.
+**Falsifier:** an unfolded statistic that moves under `d → 2d`, or a claimed SUSY point with no exact
+zero mode. Either is a bug in the spectrum.
 
 ---
 
-## 4. Order, and why
+## 5. Group C — closed-form rungs (X2), and the one kind still unused (X6)
+
+### R1 · A known-answer rung on a *real* Calabi–Yau: the quintic's special points (X2 + X8)
+
+`docs/quantum-arm-agenda.md` names the gap to a real CY as the arm's largest missing machinery, and
+`exact_t6.py` is the only exact oracle. But the quintic has **exact period values at special points of
+its moduli space** (the conifold point, and the large-complex-structure limit) with a closed form built
+from Γ-functions — literature to be pinned down and cited before use, not asserted here.
+
+- **What it buys:** a real-CY (not torus) known-answer target for the period pipeline — a rung between
+  T⁶ and a general CY oracle, on the model the CYTools adapter already handles.
+- **Falsifier:** the pipeline's period at the special point misses the closed value by more than the
+  series bound. Then the period pipeline is wrong on real CYs and every downstream number is suspect.
+- **Where:** the Mac for the analytic target; the node for the numeric periods.
+
+### R2 · A second exact rung — and the only item that can falsify the claim's C3 (X2)
+
+- **K3 × T²**: complex-structure moduli space is the symmetric space `O(2,19)/(O(2)×O(19))`, so the
+  period domain and special-Kähler metric are closed form. A second exact oracle with `h¹¹ = 20` — real
+  gauge structure, unlike T⁶.
+- **Toroidal orbifolds / Gepner points**: the worldsheet CFT is exactly solvable, so **every `α′`
+  correction is exact**, not just the leading term. And they carry **discrete torsion**:
+
+> the sharpest test on the board. Discrete torsion is exact, discrete, topologically classified, cheap
+> to enumerate — and it **changes the spectrum**. C3 says distinct orbits ⇒ distinct physics; torsion is
+> a label the orbit data does not contain, so two configurations with the same `(N, d)` and the same
+> moduli can differ physically. That is C3's **injectivity** failing from a direction the corpus cannot
+> represent (it samples smooth CYs and records no torsion). Same *class* of object as `d` — except `d`
+> is provably empty and discrete torsion is provably not.
+
+**Falsifier:** a pair of orbifold configurations with identical orbit data and different spectra. Then
+the claim needs a fourth bucket, or "label" needs splitting into *observable* and *redundant*.
+
+### R3 · Deferred — arithmetic exactness (X6)
+
+The L-function of the family / p-adic periods: the only exactness that shares no code, no sampler and no
+series with the period computation, so the only true cross-source check on it. Expensive; revisit once
+B2 has answered the wall.
+
+---
+
+## 6. D1 — the finite-window measure tool (X7)
+
+`docs/quantum-arm-agenda.md` Q3 and the chaos doc both end at "this may be a measure question". X7 is
+the only exactness that lets us *state* a measure claim without an oracle:
+
+- **D1:** an exact enumerator over the bounded flux lattice with the **window printed in the output**, so
+  "the fraction of vacua with property P below `N ≤ L`" is a reproducible artefact rather than a number
+  from a run;
+- plus the **convergence table in `L`** — the fraction at each window, which is what makes the "is it
+  the measure?" claim demonstrable instead of rhetorical.
+- **Falsifier:** the fraction must move with `L`; if it is flat in `L` for two different measures, the
+  claim that the 10⁵⁰⁰ argument is about measures loses its demonstration.
+- **Where:** Mac, corpus on disk.
+
+---
+
+## 7. Order, and why
 
 ```
-E1  truncation ladder      decides the wall; cheapest decisive test; needs the node
-E2  GV integrality         rides on E1's runs
-E5  the two exact controls unblocks the chaos arm immediately, provable on the Mac
-E4  finite-window measure  first exact measure statement, no new machinery
-E3  monodromy table        closes G1; starts with a capability probe
-E6  second rung            the only scope test of C1/C3 — and the only falsifier here
+A1  gauge invariance      an hour, and it may already be a bug in V
+A3  the control gate      stops the fourth repeat; needed before any chaos number counts
+A2  the identity battery  first check of the corpus against its own geometry
+B4  the two controls      unblocks the chaos arm; provable, no build
+B2  truncation ladder     decides the wall; needs studio-linux up
+B1  GV integrality        rides on B2's runs
+A4  coverage / recall     converts every "fraction" into a checked claim
+D1  finite-window measure first exact measure statement
+B3  monodromy table       closes G1; starts with a capability probe
+R1  quintic rung          the only real-CY known-answer we can reach cheaply
+R2  second rung           the only scope test of the claim's C1/C3 — and the only falsifier here
+R3  arithmetic            deferred
 ```
 
-**Gates:** E1's verdict decides whether E4/E6 are aimed at "a landscape" or at "a truncation". Nothing
-downstream should be read as a landscape statement until E1 reports.
+**Gates:** A3 before any spacing statistic is published. B2 before any h12 ≥ 5 number is called a
+landscape fact. A4 before any fraction is quoted. R2 is the only item that can overturn a claim rather
+than certify one — it should not be starved.
 
-## 5. What none of this does
+## 8. What none of this does
 
 - It does not raise `m` (still **9**: topology 4 + flux 1 + SM 4). Exactness changes the *oracle class*
-  of what is already claimed; it does not add a certified parameter.
-- It does not produce a closed form for the interior of moduli space, because none is known and
-  searching for one is not a plan.
+  of what is already claimed; it does not certify a new parameter.
+- It does not produce a closed form for the interior of moduli space, because none is known.
 - It does not touch the 19 Standard-Model parameters. C4 remains a conjectured bet.
-- It does not rescue C1 or C3. E6 is here partly to see whether they survive.
+- It does not rescue the claim's C1 or C3. R2 is here partly to see whether they survive.
 
-## 6. The rule this plan works under
+## 9. The rule this plan works under
 
-Every item names the exact term it uses, the falsifier, and — before it runs — *how the falsifier could
-come out*. An item whose falsifier cannot fail is a demonstration, not a test, and belongs in the docs
+Every item names its exact term, its falsifier, and — before it runs — **how the falsifier could come
+out**. An item whose falsifier cannot fail is a demonstration, not a test, and belongs in the docs
 rather than in this plan.
