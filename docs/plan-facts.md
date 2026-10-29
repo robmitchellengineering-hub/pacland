@@ -269,9 +269,26 @@ these term counts), not the connection; that is why the tests assert `1e-9` and 
 agrees to 3e-39 in a clean process but is sensitive to the ambient mpmath precision, so it is recorded in
 this plan rather than made a gate: a check that depends on global state is a flake, not a control.
 
-**Still missing: the exponent-0 branch.** It has *two* resonances (`n = −2` and `n = −1`), so the
-cancelling normalisation is not `c₀ = δ` alone. That is the last column, and the spec is the same
-construction with the double cancellation.
+**Still missing: the exponent-0 branch**, and two attempts have now failed in an instructive way.
+
+It has *two* resonances (`n = −2` and `n = −1`), so `c₀ = δ` cancels only one. Measured:
+
+| normalisation | outcome |
+|---|---|
+| `c₀ = δ` | recursion regular, `d₀ = [1.0, −9.4, −6.05, −4.699…]`, but the connection reaches only **5.1e-3** |
+| `c₀ = δ²` | regular but **garbage** — `d₀ = [0, 3.4e18, 2.4e18, …]` |
+| `c₀ = δ³` | identical to `c₀ = δ` — a third power changes nothing |
+| with a log term from `±δ` | "closes" at 1.3e-13 **with coefficients ~1e36** — a cancellation artefact, not a result |
+
+**The diagnosis, which is the useful part.** At a resonant order the diagonal vanishes, so that order's
+equation does not determine its coefficient — it determines it only at the *next* order in `ρ`. A numeric
+`±δ` probe therefore reads a coefficient that is not yet determined, which is exactly why `c₀ = δ²`
+returns `1e18` garbage and why the log candidate "closes" through 36-digit cancellation.
+
+**So this is not a numeric step.** It needs the recursion carried as a **Laurent jet in `ρ`** — poles at
+the resonant orders, cancelled order by order against the numerator — which is the one piece of machinery
+this line has deliberately not built yet. The gate is in place to receive it: a real fourth column has
+coefficients of order one, like the other three.
 
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
