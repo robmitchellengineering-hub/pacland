@@ -430,6 +430,30 @@ Two claims that were in danger of merging into one sentence, now separated:
 That is a smaller claim than #208 alone suggests, and it is the true one. The next test, if it is worth
 the compute, is the yield at a budget large enough that degree 0 finds something.
 
+### B1 re-run with the runner restored — and the extraction itself is unstable (same day)
+
+Re-running B1 after the missing runner was restored (#234) gave a result that **undermines the finding
+above**, and it is recorded here rather than left to be discovered:
+
+| h12 | n from the fit | integral? | drift between point sets |
+|---|---|---|---|
+| 1 | −29504.05 (should be −29504) | **off by 0.05** | **1.45** |
+| 1 | n_(2) = +1.19 then −1.29e8 | not reproducible | **1.45** |
+
+**The one-modulus model should be the easiest case in the programme** — a single Li_3 basis, no
+multi-parameter degeneracy — and its fit does not converge, with a drift of 1.45 between two disjoint point
+sets. So the extraction is **not reliable**, and the h12 = 2 "non-primitive classes are not integral"
+result inherits that doubt: it may be a property of the periods, or it may be a property of **the fit**.
+
+**What that changes:** the B1 claim is downgraded from *"a defect located in the curve-class basis"* to
+**"the extraction is not yet trustworthy; the non-primitive values are unexplained"**. The falsifier fired
+twice — once on the pipeline, once on the method — and the second firing is the one that has to be believed
+until a stable extraction exists.
+
+**What a stable extraction needs:** either an exact recursion for the coefficients (B1 read from a series
+rather than fitted by least squares), or a much larger condition number budget with a stated window. Both
+are small pieces of work; neither is done.
+
 ### The node stopped polling, and why
 
 The B2 run wrote a `result.json` with `"summary": ,` — an empty summary — which is invalid JSON. The node
