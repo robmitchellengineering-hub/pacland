@@ -146,6 +146,31 @@ So we computed it — `src/pacland/spectral/zeros.py`, zeta from scratch, no dep
 With 1517 zeros the control spread is four times tighter than the original 202-zero run, so "not
 Poisson" is no longer a matter of taste and the GUE match is half a control standard deviation.
 
+### And the deep run
+
+`python3 scripts/spectral_zeros_deep.py` computes **22,491 zeros** below t = 20,000 in about thirty
+seconds:
+
+| | |
+|---|---|
+| count vs smooth count | **22,491** vs 22,491.4 |
+| mean unfolded spacing | **1.00000** |
+| ratio statistic | **0.6133** against a GUE control of **0.6137 ± 0.0018** — 0.2σ |
+| Poisson | 0.3810 — **133 control standard deviations** away |
+
+**And the primes come out of them**, until the zeros run out:
+
+| x | ψ(x) from the primes | error with 22,491 zeros |
+|---|---|---|
+| 10⁴ | 10,013.4 | **+0.58** |
+| 10⁵ | 100,051.6 | **−0.26** |
+| 10⁶ | 999,586.6 | −27.28 |
+| 10⁷ | 9,998,539.4 | −56.74 |
+
+**The reconstruction is good to about one unit up to 10⁵ and degrades above it.** The truncation error
+scales with √x, so each further decade of x needs far more zeros — at 10⁶ the 22,491 zeros are not
+enough. That is a finding rather than a failure: it says exactly how many zeros a given x requires.
+
 All four gates pass; it is a VERIFIED certificate on the physics board.
 
 **The trap it caught — ours, not his.** The textbook GUE ratio is 0.5307. Comparing 201 computed
