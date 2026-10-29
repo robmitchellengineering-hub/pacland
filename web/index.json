@@ -1292,6 +1292,13 @@
    "title": "oracle_potential.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_vacua.py",
+   "kind": "script",
+   "path": "scripts/oracle_vacua.py",
+   "summary": "Solving the vacua: DW = 0 by Newton, validated by construction, and what the integer lattice gives.",
+   "title": "oracle_vacua.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/orbit_content_slice.py",
    "kind": "script",
    "path": "scripts/orbit_content_slice.py",

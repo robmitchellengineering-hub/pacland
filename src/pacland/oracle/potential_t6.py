@@ -150,7 +150,9 @@ def validate() -> dict:
 
 
 __all__ = ["potential", "validate", "kahler_full", "kahler_metric", "kahler_gradients",
-           "superpotential_and_gradients", "N_MODULI"]
+           "superpotential_and_gradients", "N_MODULI", "f_terms", "real_hessian",
+           "mass_spectrum", "solve_supersymmetric", "masses_at", "flux_flat_at",
+           "validation_by_construction"]
 
 
 def real_hessian(F, H, tau0, tau1, tau2, tau3, step: float = 1e-4) -> np.ndarray:
@@ -187,3 +189,113 @@ def mass_spectrum(F, H, tau0=1j, tau1=1j, tau2=1j, tau3=1j) -> list[float]:
     """The eight Hessian eigenvalues — the candidate spectrum for the chaos question."""
     h = real_hessian(F, H, tau0, tau1, tau2, tau3)
     return sorted(float(x) for x in np.linalg.eigvalsh(h))
+
+
+# ---------------------------------------------------------------------------------------
+# vacuum finding: DW = 0 by Newton, then the Hessian AT the vacuum (the only place masses mean
+# anything)
+# ---------------------------------------------------------------------------------------
+def f_terms(F, H, taus: list[complex]) -> np.ndarray:
+    """The four F-term equations `D_i W = d_i W + K_i W`, as a complex vector."""
+    w, dw = superpotential_and_gradients(F, H, taus[0], taus[1], taus[2], taus[3])
+    kg = kahler_gradients(*taus)
+    return np.array([dw[i] + kg[i] * w for i in range(N_MODULI)])
+
+
+def _residual(F, H, z: np.ndarray) -> np.ndarray:
+    taus = [complex(z[2 * i], z[2 * i + 1]) for i in range(N_MODULI)]
+    f = f_terms(F, H, taus)
+    return np.concatenate([f.real, f.imag])
+
+
+def solve_supersymmetric(F, H, starts: int = 8, seed: int = 5,
+                         iterations: int = 60, step: float = 1e-6,
+                         tol: float = 1e-9) -> dict:
+    """Newton's method on `DW = 0` from several random starts.
+
+    Generic integer fluxes may have no supersymmetric vacuum at all — the ISD condition is not
+    automatic — so a failure to converge is a result, not a bug, and it is reported as one.
+    """
+    rng = np.random.default_rng(seed)
+    F = np.asarray(F, dtype=float)
+    H = np.asarray(H, dtype=float)
+    best = None
+    for _ in range(starts):
+        z = np.concatenate([[rng.uniform(-1, 1), rng.uniform(0.4, 2.5)],
+                            np.tile([rng.uniform(-1, 1), rng.uniform(0.4, 2.5)], 3)])
+        for _ in range(iterations):
+            r = _residual(F, H, z)
+            norm = np.linalg.norm(r)
+            if norm < tol:
+                break
+            jac = np.zeros((8, 8))
+            for j in range(8):
+                zp = z.copy(); zp[j] += step
+                jac[:, j] = (_residual(F, H, zp) - r) / step
+            try:
+                dz = np.linalg.solve(jac, -r)
+            except np.linalg.LinAlgError:
+                break
+            # damped step: the F-term equations are badly conditioned near tau_i -> 0
+            scale = min(1.0, 0.5 / max(np.max(np.abs(dz)), 1e-12))
+            z = z + scale * dz
+        norm = np.linalg.norm(_residual(F, H, z))
+        if np.all(np.abs(z[1::2]) > 0.05):
+            if best is None or norm < best[0]:
+                best = (norm, z)
+    if best is None:
+        return {"converged": False, "residual": float("inf"), "taus": None}
+    taus = [complex(best[1][2 * i], best[1][2 * i + 1]) for i in range(N_MODULI)]
+    return {"converged": best[0] < 1e-6, "residual": float(best[0]), "taus": taus}
+
+
+def masses_at(F, H, taus: list[complex]) -> list[float]:
+    """Hessian eigenvalues at a given point — meaningful only at a stationary one."""
+    h = real_hessian(F, H, taus[0], taus[1], taus[2], taus[3])
+    return sorted(float(x) for x in np.linalg.eigvalsh(h))
+
+
+def flux_flat_at(tau_star: list[complex]) -> np.ndarray:
+    """A flux pair that is F-flat at `tau_star`, found by solving the linear conditions.
+
+    `DW = 0` is LINEAR in the flux and nonlinear in the moduli, which is the whole trick: pick a point,
+    solve for a flux that is flat there, and then ask Newton to find the point from a different start.
+    If it returns the point we chose, the solver works — a construct-and-recover test, which is the only
+    kind that proves a root finder can find roots rather than merely not crash.
+    """
+    pi = T.period_vector(*tau_star[1:])
+    kg = kahler_gradients(*tau_star)
+    dpi = period_derivatives(*tau_star[1:])
+    A = np.zeros((8, 16))
+    for i in range(4):
+        for k in range(8):
+            if i == 0:
+                c_f = kg[0] * pi[k]
+                c_h = -pi[k] - tau_star[0] * kg[0] * pi[k]
+            else:
+                base = dpi[i - 1][k] + kg[i] * pi[k]
+                c_f = base
+                c_h = -tau_star[0] * base
+            A[2 * i, k] = c_f.real
+            A[2 * i + 1, k] = c_f.imag
+            A[2 * i, 8 + k] = c_h.real
+            A[2 * i + 1, 8 + k] = c_h.imag
+    _, s, vt = np.linalg.svd(A)
+    null = vt[np.sum(s > 1e-9):]
+    return null[0] if len(null) else np.zeros(16)
+
+
+def validation_by_construction(tau_star: list[complex] | None = None, seed: int = 3) -> dict:
+    """Construct a vacuum, then recover it with Newton from a different start."""
+    tau_star = tau_star or [complex(0.3, 1.1), complex(-0.2, 0.9), complex(0.1, 1.4),
+                            complex(0.4, 0.8)]
+    sol = flux_flat_at(tau_star)
+    F, H = sol[:8], sol[8:]
+    f0 = float(np.linalg.norm(f_terms(F, H, tau_star)))
+    found = solve_supersymmetric(F, H, starts=6, seed=seed)
+    recovered = found["taus"]
+    error = (max(abs(recovered[i] - tau_star[i]) for i in range(N_MODULI))
+             if recovered is not None else float("inf"))
+    return {"construction_residual": f0, "converged": found["converged"],
+            "recovery_error": error, "target": tau_star, "recovered": recovered,
+            "pass": f0 < 1e-9 and found["converged"] and error < 1e-4}
