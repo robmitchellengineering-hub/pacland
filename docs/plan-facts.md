@@ -429,6 +429,26 @@ someone else's default.
 `threshold_table()` and `flag_threshold()` make both facts one call away, with a test that a corpus whose
 flag contradicts its own eigenvalues reports *not exact* rather than guessing a threshold.
 
+## The observability engine — what the corpus can measure (2026-10-30)
+
+`src/pacland/exactness/observability.py` · `python3 scripts/observability.py` · 9 tests. D17's third
+instrument, and the first aimed at the corpus itself: a proportion is a claim with three parts — precision,
+parameter sensitivity, coverage — and the engine says which part decides it.
+
+| quantity (primitive rows) | estimate | 95% interval | verdict |
+|---|---|---|---|
+| **SUSY fraction** | **21.17%** | [20.15%, 22.22%] | **measured** |
+| **minima fraction** | 39.87% | [38.63%, 41.12%] | **parameter-limited** — the `is_minimum` threshold moves it by 87% of itself |
+| primitive fraction | 99.950% | [99.85%, 99.98%] | measured |
+
+**The contrast is the finding.** At ±1.2% the SUSY fraction is a real measurement backed by 5,962 rows. The
+minima fraction has the *same quality of interval* and is still not a property of the landscape: its
+threshold moves it by 35 points, five times the statistical error. Two numbers with identical error bars,
+one usable and one not — which is exactly the distinction a bare `p ± σ` cannot make.
+
+This is the engine that would have caught all three defects of the last two days before they were found, and
+its verdict for minima now has the recovered threshold (`λ_min > 1e-6`) to quote.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
