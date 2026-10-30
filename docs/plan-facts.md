@@ -516,6 +516,37 @@ presented as the obvious choice.
 **Boundary:** 16 families across three `h12` values, so the `h12 = 4` fold asks the model to extrapolate a
 category it never saw. Stated in the returned record.
 
+## The positive side — three exhibited objects and one theorem-in-a-window (2026-10-30)
+
+`src/pacland/exactness/existence.py` · `python3 scripts/existence.py` · 12 tests. The counterexample engine
+pointed the other way: find an **object** with a stated property rather than the object that breaks a claim.
+Window `b3 = 6, |component| ≤ 1` (531,441 pairs), exact enumeration, least-norm witness (so two runs report
+the same object and it can be checked by hand).
+
+| question | verdict |
+|---|---|
+| a primitive null-tadpole pair whose halves are non-zero and **not proportional** | **FOUND** `(−1,0,0,0,0,0 \| 0,−1,0,0,0,0)`, N = 0, 124,992 in window |
+| a primitive null-tadpole pair with **no zero component** | **FOUND** `(−1,…,−1)`, N = 0, 1,280 in window |
+| a primitive pair with **N = 1 and no zero component** | **NONE** in 531,441 pairs |
+
+**The third is the interesting one.** The minimal odd tadpole cannot be reached on a fully-supported primitive
+pair in this window — so a construction that needs `N = 1` carries a **zero component**, which is a
+structural constraint on single-brane and brane-inflation constructions. It is a theorem about the window and
+nothing outside it, and it is stated that way.
+
+**And it is a resource, not just a fact:** both found objects are concrete flux pairs any other computation
+can be handed.
+
+### `docs/known-positives.md` — the page, generated
+
+`python3 scripts/positives.py` regenerates the page from the engines themselves; `--check` fails if the file
+is stale and is wired as a test. **11 entries**, each carrying the command that reproduces it, grouped as
+exhibited objects, theorem-in-a-window, recovered definition (`λ_min > 1e-6`), measured values, certified
+maps (the three dictionary entries) and exact integers (the quintic GV invariants).
+
+Nothing that cannot be regenerated goes on the page — which is how the positive side stays honest instead of
+becoming a highlight reel.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

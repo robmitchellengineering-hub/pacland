@@ -431,6 +431,13 @@
    "title": "The structure is joint, not marginal \u2014 W0 is random alone but correlated with the gauge couplings"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/known-positives.md",
+   "kind": "doc",
+   "path": "docs/known-positives.md",
+   "summary": "",
+   "title": "What we know \u2014 the positive side"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/learnability-negative.md",
    "kind": "doc",
    "path": "docs/learnability-negative.md",
@@ -1549,6 +1556,13 @@
    "path": "scripts/orbit_content_slice.py",
    "summary": "The orbit-content slice \u2014 does the integer content d = gcd(F,H) carry physics?",
    "title": "orbit_content_slice.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/positives.py",
+   "kind": "script",
+   "path": "scripts/positives.py",
+   "summary": "The positives page \u2014 every established positive, regenerated from the engines themselves.",
+   "title": "positives.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/quintic_periods.py",
