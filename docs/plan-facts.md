@@ -449,6 +449,33 @@ one usable and one not — which is exactly the distinction a bare `p ± σ` can
 This is the engine that would have caught all three defects of the last two days before they were found, and
 its verdict for minima now has the recovered threshold (`λ_min > 1e-6`) to quote.
 
+## The robustness engine — the pooled 21% is the campaign's number, not the spectrum's (2026-10-30)
+
+`src/pacland/exactness/robustness.py` · `python3 scripts/robustness.py` · 11 tests. For a named statistic it
+prints **every defensible choice**, the spread, a verdict and the dominant choice — because three of the
+last two days' findings were all the same failure: a menu published as a single number.
+
+| the SUSY fraction under each choice | value |
+|---|---|
+| row-weighted, all rows | 0.2117 |
+| row-weighted, primitive only | 0.2117 |
+| family-weighted (mean over 16 files) | 0.1935 |
+| **h12 = 2 rows only** | **0.2789** |
+| h12 = 3 rows only | 0.2025 |
+| **h12 = 4 rows only** | **0.0120** |
+
+**Verdict: choice-dependent**, spread 0.2669, dominant = the h12 split. The stratified rate runs from **27.9%
+to 1.2%** — a factor of 23 — so the pooled 21.2% sits between the strata and is partly a statement about how
+the campaign allocated runs, not about the landscape. A `21.17% ± 1.2%` interval hides that completely,
+which is the point.
+
+**The second customer did not ship, and that is recorded in the module.** F1's 5.05× is a ratio between two
+*different quantities* (a corpus-observed fraction and a uniform-over-primitive fraction), not two measures of
+the same fraction. Re-deriving it from the window gives two fractions that agree to 1e-6 — because in the
+small window primitivity and `|N| ≤ 1` are independent — so a naive re-derivation would have shipped a ratio
+of **1.00** and called it "stable". That is exactly the defect this engine exists to catch, so the customer
+waits until it re-uses F1's own construction.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
