@@ -476,6 +476,35 @@ small window primitivity and `|N| ≤ 1` are independent — so a naive re-deriv
 of **1.00** and called it "stable". That is exactly the defect this engine exists to catch, so the customer
 waits until it re-uses F1's own construction.
 
+## The compression engine — the corpus does not compress (2026-10-30)
+
+`src/pacland/exactness/compression.py` · `python3 scripts/compression.py` · 5 tests. Does a prespecified model
+on `[1, log|N|, degree, h12]` predict SUSY status better than the **marginal** on held-out families? If it
+cannot, the features carry no structure that generalises — and that is a full result.
+
+| | log-loss | Brier |
+|---|---|---|
+| marginal (constant rate) | **0.5264** | 0.1703 |
+| model | 0.5626 | 0.1799 |
+
+**Verdict: no structure — the model is 6.9% WORSE than a constant.** Leave-one-family-out over all 16 files,
+5,965 rows, 16 folds.
+
+**This is the other half of the robustness finding.** Robustness showed the pooled SUSY fraction is
+choice-dependent (27.9% at h12 = 2 down to 1.2% at h12 = 4). Compression shows those strata differences **do
+not generalise into a rule**: given the features, the best prediction for an unseen family is still the base
+rate. Together: *the corpus's SUSY rate describes the sample; it does not predict.*
+
+**The model class was fixed before the score was seen** — one logistic on four prespecified features, no
+feature search, no tuning on the holdout, and it is written in the docstring as a decision rather than
+presented as the obvious choice.
+
+**Fail-ability:** a synthetic dataset whose label depends on `N` identically in every family reads as
+`structure` (+improvement > 2%), and an independent-label dataset reads as `no structure`. Both asserted.
+
+**Boundary:** 16 families across three `h12` values, so the `h12 = 4` fold asks the model to extrapolate a
+category it never saw. Stated in the returned record.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
