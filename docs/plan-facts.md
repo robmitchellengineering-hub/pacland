@@ -469,12 +469,23 @@ to 1.2%** — a factor of 23 — so the pooled 21.2% sits between the strata and
 the campaign allocated runs, not about the landscape. A `21.17% ± 1.2%` interval hides that completely,
 which is the point.
 
-**The second customer did not ship, and that is recorded in the module.** F1's 5.05× is a ratio between two
-*different quantities* (a corpus-observed fraction and a uniform-over-primitive fraction), not two measures of
-the same fraction. Re-deriving it from the window gives two fractions that agree to 1e-6 — because in the
-small window primitivity and `|N| ≤ 1` are independent — so a naive re-derivation would have shipped a ratio
-of **1.00** and called it "stable". That is exactly the defect this engine exists to catch, so the customer
-waits until it re-uses F1's own construction.
+**Customer 2 — F1's 5.05×, judged through F1's own construction.** The first attempt compared
+"flux-uniform" against "primitive-uniform" and got **1.000**, because in the small window primitivity and
+`|N| ≤ 1` are independent — two names for one fraction. It would have shipped a wrong ratio labelled
+"stable", which is exactly the defect this engine exists to catch. Done properly, through
+`measures.table()`:
+
+| measure | `0 < N ≤ 1` |
+|---|---|
+| flux-uniform | 0.2015 |
+| primitive | 0.2015 |
+| **tadpole-uniform** | **0.0714** |
+| **log-N** | **0.3609** |
+| tadpole-weighted | 0.1588 |
+
+**Verdict: choice-dependent**, spread 0.2894, dominant = `log-N` vs `tadpole-uniform` — the pair F1 quotes.
+The ratio **5.052×** is reproduced exactly. A regression test now pins the trap: the naive pair *does* pass
+the stable verdict, so a future session cannot quietly re-introduce it and call it robust.
 
 ## The compression engine — the corpus does not compress (2026-10-30)
 
