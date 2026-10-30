@@ -481,6 +481,35 @@ the objective being solved, not the existence of critical points — so the yiel
 classification in this run is evaluated against a period approximation**, and the next run should enable the
 corrections before the hit rates are quoted as final.
 
+### The caveat is not a caveat — it is a switch, and every degree-0 run in this programme had it off
+
+The yield run warned: *"mirror worldsheet instanton corrections are disabled, but GV charges are provided."*
+Chasing it into the library settles it in one line:
+
+```python
+# jaxvacua/periods.py:205
+if self.maximum_degree == 0:
+    self.use_gvs = False
+    self.include_mirror_wsi = False      # <-- forced off
+else:
+    self.include_mirror_wsi = True
+```
+
+**`maximum_degree = 0` forces instanton corrections off, whatever else is passed.** The `mirror_instanton`
+keyword is overridden.
+
+That has consequences beyond the yield test:
+
+- the **yield run** (h12 = 5: 10 points, 0 SUSY) was solved **without** instanton corrections — so it measures
+  the *degree-0 objective*, not the model;
+- **B2-applied** (#214) compared degree 0 against degree 2 and would have been comparing "corrections off"
+  against "corrections on", not two truncation orders — its "no yield difference" result is confounded;
+- and the B2 **ladder** itself (#208) is safe, because it compared degrees 1, 2, 3 — all with corrections on.
+
+**The fair test is degree ≥ 1 across h12**, which is now running: `h12 = 2, 5` at **degree 2**, same budget
+(10 target × 400 batches). If the SUSY hit rate at h12 = 5 stays at zero with corrections on, the solve is the
+limit. If it rises, the earlier zero was the disabled switch and the wall is smaller than we thought.
+
 ### The node stopped polling, and why
 
 The B2 run wrote a `result.json` with `"summary": ,` — an empty summary — which is invalid JSON. The node
