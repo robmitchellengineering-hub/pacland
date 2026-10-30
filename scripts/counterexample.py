@@ -27,6 +27,11 @@ def main() -> int:
     print(f"         {cv.proves}")
     print(f"         scope: {cv.scope}")
 
+    sm = C.corpus_susy_minima()
+    print(f"\n{'BROKEN ' if sm.counterexample else 'CLEAN  '} {sm.conjecture}  ({sm.searched} SUSY rows)")
+    print(f"         {sm.proves}")
+    print(f"         scope: {sm.scope}")
+
     print("\nA clean verdict is a statement about THE WINDOW, never a proof. Two of these searches are")
     print("known-answer controls: they must find a counterexample, and if they ever stop finding one the")
     print("engine is blind rather than the conjecture being true. That is the check on the checker.")
