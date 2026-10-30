@@ -1005,6 +1005,13 @@
    "title": "climb_deficit.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/compression.py",
+   "kind": "script",
+   "path": "scripts/compression.py",
+   "summary": "The compression engine \u2014 does the corpus predict, or is it a list?",
+   "title": "compression.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_connection.py",
    "kind": "script",
    "path": "scripts/conifold_connection.py",

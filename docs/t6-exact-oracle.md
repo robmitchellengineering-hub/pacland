@@ -89,7 +89,7 @@ tadpole/gravity — is **proven exactly**, bookending the measured CY versions.
 ```
 python3 scripts/validate_t6.py          # 21/21 numerical self-assertions
 python3 scripts/validate_t6_sympy.py    # 8/8 exact symbolic checks
-python3 -m unittest discover -s tests   # 946 tests
+python3 -m unittest discover -s tests   # 951 tests
 ```
 
 ## Scope, tested at scale (2026-10-28)
