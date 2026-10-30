@@ -1432,6 +1432,13 @@
    "title": "node_yield.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/observability.py",
+   "kind": "script",
+   "path": "scripts/observability.py",
+   "summary": "The observability engine \u2014 what the corpus can measure, and what it only appears to.",
+   "title": "observability.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_potential.py",
    "kind": "script",
    "path": "scripts/oracle_potential.py",
