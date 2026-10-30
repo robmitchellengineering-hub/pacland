@@ -603,6 +603,31 @@ stops at 6** — that limit is part of the result.
 **A small exact fact fell out:** with `|component| ≤ 1` the largest `|N|` is exactly `b3`, so the window's own
 tadpole bound is computable rather than assumed.
 
+## Route C — a period computed outside the LCS radius (2026-10-30)
+
+`src/pacland/periods/continuation.py` · `python3 scripts/continuation.py` · 7 tests. **The first number in this
+estate that the easy frame cannot produce.**
+
+The LCS series converges for `|z| < z_c = 3.2e-4`; the conifold coordinate `u = 1 − z/z_c` converges for
+`|u| < 1`, covering `0 < z < 2z_c`. So `z_c < z < 2z_c` is outside the LCS radius and inside the conifold
+chart. Computed at `z = 1.5 z_c` (`u = −0.5`):
+
+| conifold order | Φ(u) | movement vs order 160 |
+|---|---|---|
+| 40 | 0.597162486982025541601011 | **2.8e-13** |
+| 80 | 0.597162486981857790476293 | 1.7e-25 |
+| 120 | 0.597162486981857790476293 | 1.2e-37 |
+
+**Pass mark (a) met**: the value moves by `2.8e-13` between orders 40 and 160, inside the plan's `1e-10`. It
+converges monotonically with order, and a point outside the chart (`u = −1.2`) is asserted to *fail* the pass
+mark, so the check can fail.
+
+**Pass mark (b) is not claimed, and the reason is stated in the module**: a single branch value does not fix the
+fourth-order Picard–Fuchs equation, so a PF residual computed from one point would be circular — it would test
+the series against the recurrence that built it. An independent estimate needs the LCS series evaluated at a
+point where both charts converge (`0 < z < z_c`), which requires an LCS-series adapter the connection module
+does not expose.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
