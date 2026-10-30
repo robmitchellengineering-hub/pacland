@@ -167,3 +167,46 @@ class TestTheSusyMinimaCheckCanFail(unittest.TestCase):
             ]}))
             v = C.corpus_susy_minima(data_dir=d)
             self.assertEqual(v.verdict, "BROKEN")
+
+
+class TestTheMinimaThreshold(unittest.TestCase):
+    """`is_minimum` is a threshold that was never written down — and it can be recovered exactly."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.table = {r["threshold"]: r for r in C.threshold_table()}
+        cls.best = C.flag_threshold()
+
+    def test_the_flag_is_exactly_a_threshold(self):
+        # the set-level test, not just the count: identical at 1e-6, differing counts elsewhere
+        self.assertTrue(self.table[1e-6]["identical_to_flag"])
+        self.assertEqual(self.table[1e-6]["missing"], 0)
+        self.assertEqual(self.table[1e-6]["extra"], 0)
+
+    def test_the_threshold_is_recovered(self):
+        self.assertTrue(self.best["exact"])
+        self.assertAlmostEqual(self.best["threshold"], 1e-6, places=15)
+
+    def test_the_count_moves_by_a_factor_of_two(self):
+        self.assertGreater(self.table[0.0]["count"], 2 * self.table[1e-3]["count"])
+
+    def test_no_threshold_is_the_same_as_the_flag_by_accident(self):
+        # only 1e-6 matches; the neighbours do not
+        self.assertFalse(self.table[1e-8]["identical_to_flag"])
+        self.assertFalse(self.table[1e-4]["identical_to_flag"])
+
+
+class TestTheThresholdFinderCanFail(unittest.TestCase):
+    def test_a_corpus_with_no_consistent_threshold_is_reported_not_exact(self):
+        import json
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as d:
+            # flag contradicts its own eigenvalues at every candidate threshold: a saddle flagged as minimum
+            Path(d, "x.json").write_text(json.dumps({"vacua": [
+                {"flux": [1, 0, 0, 0, 1, 0, 0, 0], "Nflux": 1, "is_minimum": True,
+                 "eigenvalues": [-40.0, 1.0, 1.0, 1.0, 1.0, 1.0]},
+            ]}))
+            best = C.flag_threshold(data_dir=d)
+            self.assertFalse(best["exact"])
+            self.assertGreater(best["symmetric_difference"], 0)

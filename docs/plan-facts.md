@@ -405,6 +405,30 @@ the threshold is chosen and applied; the 12 rows are the counterexample that pro
 
 Scope, in the verdict: exhaustive over the stored rows, which are themselves a heuristic sample.
 
+### `is_minimum` is exactly `λ_min > 1e-6` — the threshold recovered, and the count moves 2× (2026-10-30)
+
+The column's definition, recovered by set comparison over all 5,965 rows:
+
+| threshold | minima | missing | extra |
+|---|---|---|---|
+| 0 | 4,111 | 0 | 1,734 |
+| 1e-12 | 2,385 | 0 | 8 |
+| 1e-8 | 2,382 | 0 | 5 |
+| **1e-6** | **2,377** | **0** | **0** ← identical to the stored flag |
+| 1e-4 | 2,278 | 99 | 0 |
+| 1e-3 | 2,045 | 332 | 0 |
+
+**The stored flag is reproduced exactly — same set, not just the same count — by `min(eigenvalue) > 1e-6`.**
+So the corpus has a silent threshold, and every "number of minima" it reports carries that 1e-6 without
+saying so.
+
+**The count moves by a factor of two across the plausible range** (4,111 at t = 0 → 2,045 at t = 1e-3).
+Any minima fraction quoted from this corpus must carry its threshold, or it is a number whose definition is
+someone else's default.
+
+`threshold_table()` and `flag_threshold()` make both facts one call away, with a test that a corpus whose
+flag contradicts its own eigenvalues reports *not exact* rather than guessing a threshold.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
