@@ -561,10 +561,16 @@ the cheapest discriminator, and a state.
 | T4 | `is_minimum` disagrees with its own eigenvalues on 12 rows | resolved — it is exactly `λ_min > 1e-6` |
 | T5 | 3 non-primitive corpus rows with absent parents | resolved — a coverage defect at 0.05%, now guarded |
 
-**T1 is the one that matters and it is open.** Its discriminator is written down: recompute `cond(M)` — what
-#208 actually measured — on the *same* h12=5 proposals at degree 1 and 2 and compare with the yield. If the
-diagnostic improves while the yield stays zero, #208 measured the wrong quantity; if both improve, the yield
-run had a different fault. **One node job, ~15 min.**
+**T1 is the one that matters and it is open — and the first attempt to settle it failed, informatively.**
+The discriminator was "raise the tries budget and re-run both degrees". Ran on pacland-rog at 1200 "tries",
+and the sampler reported **400 tried** in both cases: `scripts/sample_h12.py`'s second argument is `n_target`
+(points wanted), not a try count, and the library caps tries internally. So the intended escalation silently
+did not happen — caught by reading the output rather than the intent.
+
+What the run *did* establish: **degree 2 produced 1 critical point (a saddle) across two 400-try runs, degree
+1 produced 0 across two.** One event apart. That cannot discriminate — and it is the honest state of T1: not
+"degree 2 fixes it", not "degree 2 does nothing", but an effect too small to see at this budget. The
+precondition for settling it is a real `max_tries` knob, which the script does not expose.
 
 Four of five resolved, and every resolution says what the resolution *was* rather than just "fixed" — so a
 later session can disagree with the resolution instead of re-deriving the dispute.

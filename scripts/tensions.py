@@ -23,13 +23,17 @@ TENSIONS = [
             "#208 concluded the `h12 >= 5` wall is degree-1 truncation and that **degree 2 fixes it**",
         ],
         "clash": "one says degree 2 does not help; the other says it is the fix",
-        "discriminator": ("recompute `cond(M)` — the quantity #208 measured — for the *same* `h12 = 5` "
-                          "proposals at degree 1 and degree 2, and compare it with the observed yield. If the "
-                          "diagnostic improves and the yield stays zero, #208 measured the wrong thing; if "
-                          "both improve, the yield run had a different fault (budget or initialisation)."),
+        "discriminator": ("raise the *tries* budget and re-run both degrees. **Attempted 2026-10-30; it "
+                          "failed to discriminate, for a reason worth recording:** the second argument of "
+                          "`scripts/sample_h12.py` is `n_target` (points wanted), not a try count — the "
+                          "library caps at 400 tried regardless, so a \"1200-try\" run silently did 400. What "
+                          "the attempt did establish: **degree 2 produced 1 critical point (1 saddle) across "
+                          "two 400-try runs; degree 1 produced 0 across two** — one event apart, which cannot "
+                          "discriminate. A real budget knob (`max_tries`, not exposed by the script) is now "
+                          "the precondition, not the comparison."),
         "state": "open",
         "resolution": "",
-        "cost": "one node job, ~15 min (pacland-rog, the cytools venv)",
+        "cost": "blocked: `sample_h12.py` passes `n_target`, and the library caps at 400 tried",
     },
     {
         "id": "T2",
