@@ -387,6 +387,24 @@ export can be refused if the number grows.
 Scope is stated in the verdict: exhaustive over the *stored rows*, which are themselves a heuristic
 sample — it says the corpus **contains** non-primitive rows, not how many exist in nature.
 
+### The `is_minimum` flag is decided by rounding noise at SUSY points (2026-10-30)
+
+Second real-data search. Conjecture: *every SUSY critical point in the corpus is a minimum.* **BROKEN, 12 of
+1,263 SUSY rows** — and the interesting part is *why*.
+
+**11 of the 12 have a Hessian eigenvalue within 1e-20 of zero** (−1.5e-34, +1.7e-32, −3.4e-31 …). A SUSY
+point's Hessian is flat, so `is_minimum` is decided by floating-point rounding, not by geometry: the flag is
+arbitrary there, and any statistic that counts minima at SUSY points without a threshold is measuring noise.
+
+**1 row is a genuine discrepancy**: `h12_2_m7_stats.json`, `N = 1`, `λ_min = +5.3e-7` — positive and *not*
+noise, yet flagged not a minimum.
+
+**Consequence.** The corpus's `is_minimum` column must not be used to compare minima fractions across
+`h12`/degree without a stated threshold. The SUSY-vs-saddle split at h12 = 2 is not a physics result until
+the threshold is chosen and applied; the 12 rows are the counterexample that proves it.
+
+Scope, in the verdict: exhaustive over the stored rows, which are themselves a heuristic sample.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

@@ -166,5 +166,54 @@ def corpus_primitivity(data_dir=None) -> Verdict:
                           "non-primitive row is the same vacuum as its parent by the scaling lemma."))
 
 
+def _eigs(row) -> list:
+    e = row.get("eigenvalues")
+    if not isinstance(e, (list, tuple)):
+        return []
+    out = []
+    for v in e:
+        try:
+            out.append(float(v))
+        except (TypeError, ValueError):
+            return []
+    return out
+
+
+def corpus_susy_minima(data_dir=None) -> Verdict:
+    """CONJECTURE: every SUSY critical point in the corpus is a minimum.
+
+    It reads as a check on the physics; it turns out to be a check on the **flags**. A SUSY point's Hessian
+    is flat to ~1e-30, so `is_minimum` is decided by rounding noise, not by the geometry — and one row has a
+    Hessian that is positive *and* not noise, yet is flagged as not a minimum.
+    """
+    corpus = load_corpus(data_dir)
+    susy = [c for c in corpus if c["row"].get("is_susy")]
+    broken = []
+    for c in susy:
+        if c["row"].get("is_minimum"):
+            continue
+        e = _eigs(c["row"])
+        lam = min(e) if e else 0.0
+        broken.append({"flux": [int(round(float(x))) for x in c["row"]["flux"]],
+                       "tadpole": int(c["row"].get("Nflux", 0) or 0),
+                       "lambda_min": lam,
+                       "noise": abs(lam) < 1e-20,
+                       "what": (f"SUSY but flagged not-minimum in {c['file']} "
+                                f"(lambda_min = {lam:.1e}{', numerically zero' if abs(lam) < 1e-20 else ''})")})
+    noisy = sum(1 for b in broken if b["noise"])
+    real = [b for b in broken if not b["noise"]]
+    window = f"{len(corpus)} stored rows, {len(susy)} of them flagged SUSY"
+    scope = (f"exhaustive over the stored rows. **{noisy} of the {len(broken)} 'counterexamples' have a "
+             f"Hessian eigenvalue within 1e-20 of zero**, so the flag there is decided by floating-point "
+             f"noise and is not evidence about the physics: a SUSY point's Hessian is flat, and "
+             f"counting minima at SUSY points without a threshold is meaningless. "
+             + (f"The remaining {len(real)} row(s) are genuine discrepancies: positive and not noise, yet "
+                f"not flagged. " if real else "")
+             + "The corpus is itself a heuristic sample.")
+    return Verdict(conjecture="every SUSY critical point is a minimum", window=window,
+                   searched=len(susy), counterexample=(broken[0] if broken else None), scope=scope)
+
+
 __all__ = ["Verdict", "search", "tadpole_positive", "tadpole_bounded", "tadpole_nonzero",
-           "SHIPPED", "run_all", "load_corpus", "scaling_gcd", "corpus_primitivity"]
+           "SHIPPED", "run_all", "load_corpus", "scaling_gcd", "corpus_primitivity",
+           "corpus_susy_minima"]

@@ -117,3 +117,53 @@ class TestTheCorpusCheckCanFail(unittest.TestCase):
             ]}))
             v = C.corpus_primitivity(data_dir=d)
             self.assertEqual(v.verdict, "BROKEN")
+
+
+class TestTheSusyMinimaCheck(unittest.TestCase):
+    """The second corpus conjecture — and the finding that it is a check on the flags, not the physics."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.v = C.corpus_susy_minima()
+
+    def test_the_conjecture_is_broken(self):
+        self.assertEqual(self.v.verdict, "BROKEN")
+
+    def test_it_searched_the_susy_rows(self):
+        rows = [c for c in C.load_corpus() if c["row"].get("is_susy")]
+        self.assertEqual(self.v.searched, len(rows))
+        self.assertGreater(self.v.searched, 1000)
+
+    def test_it_says_most_counterexamples_are_noise(self):
+        # the honest part: 11 of 12 flags are decided by rounding, so they are not physics
+        self.assertIn("decided by floating-point noise", self.v.scope)
+        self.assertIn("within 1e-20 of zero", self.v.scope)
+
+    def test_it_names_any_genuine_discrepancy(self):
+        self.assertIn("genuine discrepancies", self.v.scope)
+
+
+class TestTheSusyMinimaCheckCanFail(unittest.TestCase):
+    def test_a_consistent_corpus_returns_clean(self):
+        import json
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as d:
+            Path(d, "x.json").write_text(json.dumps({"vacua": [
+                {"flux": [1, 0, 0, 0, 1, 0, 0, 0], "Nflux": 1, "is_susy": True, "is_minimum": True,
+                 "eigenvalues": [1e-2] * 6},
+            ]}))
+            v = C.corpus_susy_minima(data_dir=d)
+            self.assertEqual(v.verdict, "no counterexample")
+
+    def test_a_planted_susy_saddle_is_found(self):
+        import json
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as d:
+            Path(d, "x.json").write_text(json.dumps({"vacua": [
+                {"flux": [1, 0, 0, 0, 1, 0, 0, 0], "Nflux": 1, "is_susy": True, "is_minimum": False,
+                 "eigenvalues": [-0.5] + [1e-2] * 5},
+            ]}))
+            v = C.corpus_susy_minima(data_dir=d)
+            self.assertEqual(v.verdict, "BROKEN")
