@@ -1677,6 +1677,13 @@
    "title": "sample_vacua.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/scaling.py",
+   "kind": "script",
+   "path": "scripts/scaling.py",
+   "summary": "Route A \u2014 the scaling study: which lattice facts survive a change of b3?",
+   "title": "scaling.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/scan_isd_conditioning.py",
    "kind": "script",
    "path": "scripts/scan_isd_conditioning.py",
