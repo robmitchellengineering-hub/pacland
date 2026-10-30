@@ -543,6 +543,13 @@
    "title": "F3 \u2014 the brane invariant ring: the one build that can overturn our own claim"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-dictionary-engine.md",
+   "kind": "doc",
+   "path": "docs/plan-dictionary-engine.md",
+   "summary": "engine yields certain negatives, and only construction or equivalence can yield a certain positive \u2014 so the next instruments are a dictionary engine (certified equivalences) and a\u2026",
+   "title": "Plan \u2014 the dictionary engine"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-exact-terms.md",
    "kind": "doc",
    "path": "docs/plan-exact-terms.md",
@@ -1402,6 +1409,13 @@
    "path": "scripts/node_f3_quintic.py",
    "summary": "F3 rung 1 \u2014 the quintic's brane data, and the first candidate invariant tested.",
    "title": "node_f3_quintic.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_yield.py",
+   "kind": "script",
+   "path": "scripts/node_yield.py",
+   "summary": "Does the sampler actually FIND vacua at a real budget?",
+   "title": "node_yield.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_potential.py",
