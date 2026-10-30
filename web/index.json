@@ -984,6 +984,13 @@
    "title": "diagnose_truncation.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/dictionary.py",
+   "kind": "script",
+   "path": "scripts/dictionary.py",
+   "summary": "The dictionary engine \u2014 first entry: flux scaling.",
+   "title": "dictionary.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/drugs_recovery.py",
    "kind": "script",
    "path": "scripts/drugs_recovery.py",
