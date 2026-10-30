@@ -454,6 +454,33 @@ until a stable extraction exists.
 rather than fitted by least squares), or a much larger condition number budget with a stated window. Both
 are small pieces of work; neither is done.
 
+## 5f. YIELD — the sampler proposes fine; the SOLVE is what fails (2026-10-29)
+
+B2-applied ran a deliberately tiny budget and found nothing, which could not distinguish "no budget" from "no
+proposal". Real budget, pacland-rog, single process:
+
+| h12 | degree | critical points found | SUSY | time |
+|---|---|---|---|---|
+| **5** | 0 | **10 of 10 target** | **0** | 952 s |
+| **2** | 0 | 10 of 10 target | **1** | 33 s |
+
+**The falsifier, stated before the run, resolves cleanly in its second branch:**
+
+- "zero critical points at this budget ⇒ the proposal step is the limit" — **false**. It found ten, hitting the
+  target at h12 = 5.
+- "points but no SUSY ⇒ the solve is the limit" — **true**. Every one of the ten critical points at h12 = 5
+  fails the SUSY test, while at h12 = 2 one in ten passes.
+
+**So the h12 ≥ 5 wall is the ISD solve, not the proposal and not the truncation.** The sampler reaches the
+neighbourhood; the solver does not land. That is a different repair from either of the two we had been
+considering, and it is measurable: the SUSY hit rate goes from 1/10 at h12 = 2 to 0/10 at h12 = 5.
+
+**Caveat, recorded because it appeared in the run's own log:** jaxvacua warned that *"mirror worldsheet
+instanton corrections are disabled, but GV charges are provided"* in the sampler's period path. That affects
+the objective being solved, not the existence of critical points — so the yield result stands, but **the SUSY
+classification in this run is evaluated against a period approximation**, and the next run should enable the
+corrections before the hit rates are quoted as final.
+
 ### The node stopped polling, and why
 
 The B2 run wrote a `result.json` with `"summary": ,` — an empty summary — which is invalid JSON. The node
