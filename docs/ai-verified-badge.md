@@ -27,7 +27,7 @@ verifies itself is circular). It is proven by driving real repos:
 
 | repo | badge status |
 |---|---|
-| pacland (this repo) | unit-tests gate green (915 tests) |
+| pacland (this repo) | unit-tests gate green (920 tests) |
 | harness-mesh | 11 guards, 33 mutations, each proven to go red |
 | morpheus-self-hosted | adopter (status not re-verified in this session) |
 

@@ -214,6 +214,49 @@ def corpus_susy_minima(data_dir=None) -> Verdict:
                    searched=len(susy), counterexample=(broken[0] if broken else None), scope=scope)
 
 
+def _row_key(file, row):
+    return (file, tuple(int(round(float(v))) for v in row["flux"]))
+
+
+def threshold_table(thresholds=(0.0, 1e-12, 1e-8, 1e-6, 1e-4, 1e-3), data_dir=None) -> list:
+    """`is_minimum` is a **threshold on the Hessian**, and the threshold was never written down.
+
+    A minimum is `min(eigenvalue) > t`. The corpus stores the resulting boolean and not `t`, so every
+    "number of minima" is a number with a silent parameter — and the count moves by a factor of two across
+    the plausible range. This table makes the parameter visible and finds the value the corpus actually used.
+    """
+    corpus = load_corpus(data_dir)
+    flagged = {_row_key(c["file"], c["row"]) for c in corpus if c["row"].get("is_minimum")}
+    out = []
+    for t in thresholds:
+        got = set()
+        for c in corpus:
+            e = _eigs(c["row"])
+            if e and min(e) > t:
+                got.add(_row_key(c["file"], c["row"]))
+        out.append({"threshold": t, "count": len(got), "missing": len(flagged - got),
+                    "extra": len(got - flagged), "identical_to_flag": got == flagged})
+    return out
+
+
+def flag_threshold(data_dir=None, candidates=None) -> dict:
+    """The threshold that reproduces the stored `is_minimum` column **exactly**, or the closest one.
+
+    Returns the threshold, whether the match is set-exact, and the size of the symmetric difference. If no
+    candidate reproduces the column, that is a finding too: it means the stored flag is not a pure
+    eigenvalue threshold and something else decided it.
+    """
+    if candidates is None:
+        candidates = (1e-12, 1e-10, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3)
+    best = None
+    for r in threshold_table(candidates, data_dir):
+        diff = r["missing"] + r["extra"]
+        if best is None or diff < best["symmetric_difference"]:
+            best = {"threshold": r["threshold"], "count": r["count"],
+                    "symmetric_difference": diff, "exact": r["identical_to_flag"]}
+    return best
+
+
 __all__ = ["Verdict", "search", "tadpole_positive", "tadpole_bounded", "tadpole_nonzero",
            "SHIPPED", "run_all", "load_corpus", "scaling_gcd", "corpus_primitivity",
-           "corpus_susy_minima"]
+           "corpus_susy_minima", "threshold_table", "flag_threshold"]

@@ -32,6 +32,16 @@ def main() -> int:
     print(f"         {sm.proves}")
     print(f"         scope: {sm.scope}")
 
+    print("\nThe `is_minimum` column is a threshold that was never written down:")
+    for r in C.threshold_table():
+        mark = "  <- exact match to the stored flag" if r["identical_to_flag"] else ""
+        print(f"  t = {r['threshold']:<8g} minima = {r['count']:<5} (missing {r['missing']}, "
+              f"extra {r['extra']}){mark}")
+    print(f"  recovered threshold: {C.flag_threshold()['threshold']:g} "
+          f"(exact: {C.flag_threshold()['exact']})")
+    print("  So every 'number of minima' in this corpus carries a silent 1e-6, and the count moves by a")
+    print("  factor of two between t = 0 and t = 1e-3.")
+
     print("\nA clean verdict is a statement about THE WINDOW, never a proof. Two of these searches are")
     print("known-answer controls: they must find a counterexample, and if they ever stop finding one the")
     print("engine is blind rather than the conjecture being true. That is the check on the checker.")
