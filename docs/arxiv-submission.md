@@ -228,7 +228,7 @@ compiled PDFs are also in `paper/` as a fallback.
 ## Verification before submitting
 
 ```
-python3 -m unittest discover -s tests -q    # 976 tests green
+python3 -m unittest discover -s tests -q    # 984 tests green
 python3 scripts/validate_all_theorems.py    # the 6-proof theorem tower (papers 1's claims)
 python3 scripts/test_swampland.py           # the numbers cited in paper 2
 ```

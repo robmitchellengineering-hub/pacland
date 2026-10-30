@@ -575,6 +575,34 @@ precondition for settling it is a real `max_tries` knob, which the script does n
 Four of five resolved, and every resolution says what the resolution *was* rather than just "fixed" — so a
 later session can disagree with the resolution instead of re-deriving the dispute.
 
+## Route A — the scaling study: every window fraction moves with b3 (2026-10-30)
+
+`src/pacland/exactness/scaling.py` · `python3 scripts/scaling.py` · 8 tests. The exact ladder is
+`b3 = 2, 4, 6` at `max_abs = 1` (81 / 6,561 / 531,441 pairs). **`b3 = 8` is 43M pairs (~5.5 GB), so the ladder
+stops at 6** — that limit is part of the result.
+
+| fact | b3=2 | b3=4 | b3=6 | verdict |
+|---|---|---|---|---|
+| primitive fraction | 0.9877 | 0.9998 | 1.0000 | **invariant within 10% — but still trending to 1** |
+| `N = 0` fraction | 0.4074 | 0.2928 | 0.2407 | scale-dependent, falling |
+| `N > 0` fraction | 0.2963 | 0.3536 | 0.3797 | scale-dependent, rising |
+| `|N| ≤ 1` fraction | 0.9012 | 0.7439 | 0.6437 | scale-dependent, falling |
+| `max |N|` | 2 | 4 | 6 | **= b3** exactly |
+| all components non-zero | 0.1975 | 0.0390 | 0.0077 | scale-dependent, collapsing |
+
+**Two findings, and the first one corrected the analysis.**
+
+1. **Primitivity is "invariant" only because the tolerance hides a trend.** It moves 1.2% across the ladder —
+   inside the stated 10% — but it moves *monotonically toward 1*. So a tolerance-based verdict is not the same
+   as invariance, and the engine now reports **both** (verdict and `trend_within_tolerance`). My first version
+   said "nothing is scale-invariant", which was wrong; the test caught it.
+2. **Every fraction that matters moves by far more than the tolerance.** F1's `0.6437` flux-uniform
+   small-tadpole fraction is **0.90 at b3 = 2 and falling**, so it is a `b3 = 6` window value, not a landscape
+   fact. That sharpens T3: the 5.05× ratio is a ratio *at one window size*.
+
+**A small exact fact fell out:** with `|component| ≤ 1` the largest `|N|` is exactly `b3`, so the window's own
+tadpole bound is computable rather than assumed.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
