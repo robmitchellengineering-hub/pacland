@@ -628,6 +628,30 @@ the series against the recurrence that built it. An independent estimate needs t
 point where both charts converge (`0 < z < z_c`), which requires an LCS-series adapter the connection module
 does not expose.
 
+### Route C, exact sub-item — the conifold coefficients are rational (2026-10-30)
+
+`src/pacland/periods/exact_series.py` · `python3 scripts/exact_series.py` · 7 tests.
+
+The conifold recursion is solved numerically everywhere else (mpmath, 60 dps) and the connection is then quoted
+as "residual 2.3e-21" — a measurement. The recursion's only non-rational step is the `_exact()` conversion, so
+solving it *without* that step gives the coefficients exactly:
+
+```
+c_0 = 1            c_1 = 37/30          c_2 = 2309/1800
+c_3 = 286471/225000  c_4 = 41932661/33750000  c_5 = 237108737/196875000
+```
+
+**Every coefficient of the conifold series is a rational number.** Agreement with the numeric series: `9.4e-60`
+— i.e. the two evaluations agree to 60 digits, as two independent routes to the same recursion must.
+
+**Where the transcendental structure actually lives.** Not in the series: it enters only when the series is
+expressed in the large-complex-structure basis. That is a statement about the algebra's shape, and it says
+precisely which part of the connection audit remains a measurement.
+
+**Not claimed:** the connection matrix is still not derived exactly. It needs the LCS period basis in exact
+form (the `log`-branch values carry `zeta(3)`), and until that exists its residual stays labelled *measured*.
+The module says so in its own returned record rather than implying the audit is complete.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

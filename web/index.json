@@ -1271,6 +1271,13 @@
    "title": "epidemiology_identifiability.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/exact_series.py",
+   "kind": "script",
+   "path": "scripts/exact_series.py",
+   "summary": "Route C exact sub-item \u2014 the conifold coefficients, exactly.",
+   "title": "exact_series.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/exactness.py",
    "kind": "script",
    "path": "scripts/exactness.py",
