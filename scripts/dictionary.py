@@ -27,6 +27,18 @@ def main() -> int:
                   f"{'PASS' if c.passes else 'FAIL'}")
         print(f"  boundary  {e.boundary}")
         print(f"  entry passes: {e.passes}")
+    e2 = D.mirror_map()
+    print(f"\nENTRY  {e2.name}")
+    print(f"  from : {e2.frame_a}")
+    print(f"  to   : {e2.frame_b}")
+    print(f"  {e2.t_note}")
+    print(f"  {e2.tinv_note}")
+    print(f"  identity  residual {e2.identity_residual:.1e}")
+    for c in e2.carries:
+        print(f"  carry     {c.name:<46} residual {c.residual:.1e}  {'PASS' if c.passes else 'FAIL'}")
+    print(f"  boundary  {e2.boundary}")
+    print(f"  entry passes: {e2.passes}")
+
     print("\nThe law is the lemma's own (W -> dW, N -> d^2 N), not a fit. The boundary is what keeps it")
     print("from overclaiming: d must be a positive INTEGER, and the zero set being invariant means this is")
     print("a relabelling of one vacuum, not a second one.")

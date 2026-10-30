@@ -116,6 +116,65 @@ def flux_scaling(d: int = 2, seed: int = 7) -> Entry:
     )
 
 
+# ---------------------------------------------------------------------------------------
+# entry 2: the mirror map, z-chart <-> conifold chart
+# ---------------------------------------------------------------------------------------
+def mirror_map(z_sample=(0.55, 0.65, 0.7, 0.75), dps: int = 50) -> Entry:
+    """The mirror map between the two charts of the same family: `z` (large complex structure) and
+    `u` (conifold).
+
+    `T` is the coordinate change `u = 1 - z/z_c`, `T-inverse` is `z = z_c(1 - u)` — exact, and its
+    identity residual is rounding. What makes this an *entry* rather than a coordinate substitution is
+    the carried observable: a period whose value in the conifold chart must equal the value obtained by
+    translating its representation in the `z` chart. That residual is the connection's own
+    (`src/pacland/periods/connection.py`), computed here rather than quoted.
+
+    **Boundary, stated:** only **three of the four** conifold branches have a certified translation. The
+    exponent-0 branch needs the double resonance cancelled and has resisted a numeric probe
+    (docs/plan-facts.md F2 M2e), so the map is certified on the span of the three and the fourth is
+    *open*, not assumed. Both charts are also limited by their radii: the `z` series converges for
+    `|z| < z_c`, the `u` series for `|u| < 1`.
+    """
+    import mpmath as mp
+
+    from . import connection, conifold_recursion, quintic
+
+    mp.mp.dps = dps
+    zc = quintic.Z_CONIFOLD
+
+    t = lambda z: 1 - mp.mpf(z) / zc              # noqa: E731  z -> u
+    tinv = lambda u: zc * (1 - mp.mpf(u))         # noqa: E731  u -> z
+    identity = max(abs(tinv(t(z)) - mp.mpf(z)) / mp.mpf(z) for z in z_sample)
+
+    # the carried observable: the exponent-2 conifold branch, in both charts
+    conn = connection.connect(n_max=160, dps=dps)
+    carries = []
+    for row in conn["rows"]:
+        if not row["in_verdict"]:
+            continue
+        carries.append(Carry(name=f"period (exponent-2 branch) at z = {row['z']} z_c",
+                             law="same value in both charts",
+                             value_a=float(row["series"]), value_b=float(row["predicted"]),
+                             residual=float(row["relative"]),
+                             passes=bool(row["relative"] < 1e-10)))
+    worst = max((c.residual for c in carries), default=float("inf"))
+
+    return Entry(
+        name="the mirror map, z-chart <-> conifold chart",
+        frame_a="large complex structure, z = 1/(5 psi)^5",
+        frame_b="conifold, u = 1 - z/z_c",
+        identity_residual=float(identity),
+        carries=carries,
+        boundary=("**three of four branches**: the exponent-0 branch has no certified translation (double "
+                  "resonance, F2 M2e), so the map is certified on the span of the other three and the "
+                  "fourth is open. Radii: the z series converges for |z| < z_c, the u series for |u| < 1; "
+                  "nothing is claimed outside them. The carried-observable residual at z = 0.75 z_c is "
+                  f"{worst:.1e}, which is the truncation of the conifold series, not of the map."),
+        t_note="T: z -> u = 1 - z/z_c",
+        tinv_note="T⁻¹: u -> z = z_c(1 - u)",
+    )
+
+
 def report(d: int = 2, seed: int = 7) -> dict:
     e = flux_scaling(d, seed)
     return {"entry": e, "passes": e.passes}
