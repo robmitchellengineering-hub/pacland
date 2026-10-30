@@ -942,6 +942,13 @@
    "title": "conifold_exponents.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/counterexample.py",
+   "kind": "script",
+   "path": "scripts/counterexample.py",
+   "summary": "The counterexample engine \u2014 exhaustive window search with known-answer controls.",
+   "title": "counterexample.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/crosscheck_sm_float.py",
    "kind": "script",
    "path": "scripts/crosscheck_sm_float.py",

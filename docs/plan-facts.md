@@ -342,6 +342,27 @@ and keep the word "invariant".
 mirror-map matrix, not the entry as stated. And the S/T law is exact *where computed* — the oracle — and
 conjectured on a general CY until B3's monodromy exists.
 
+## The counterexample engine — D17's second instrument (2026-10-30)
+
+`src/pacland/exactness/counterexample.py` · `python3 scripts/counterexample.py` · 8 tests. The falsifier
+pointed the other way: enumerate an exactly-defined finite window, apply a conjecture, and either produce
+the object that breaks it or state what was ruled out. Built on `exactness/windows.py`, so a fix to the
+enumeration moves both.
+
+| conjecture | verdict in `b3=6, |component| ≤ 1` (531,441 pairs) |
+|---|---|
+| tadpole is always positive | **BROKEN** — `N = 0` at `(F,H) = (−1,…,−1)` |
+| tadpole is never zero | **BROKEN** — the same object |
+| tadpole `N ≤ 3` | **BROKEN** — `N = 4` at `(F,H) = (−1,−1,−1,−1,−1,−1,−1,1,1,−1,−1,−1)` |
+| tadpole `N ≤ 6` | **CLEAN** — no counterexample in 531,441 objects |
+
+**The scope is the product.** A clean verdict says *"no counterexample in window W"* and nothing else; the
+`Verdict.proves` string carries "nothing outside it" so a caller cannot quote the clean line as a proof.
+
+**Two of the four searches are known-answer controls.** They are conjectures that are false in the window,
+so they *must* find a counterexample. If they ever stop finding one, the engine is blind — not the
+conjecture true. That is the check on the checker, and it is the reason a clean verdict here means anything.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
