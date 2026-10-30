@@ -746,6 +746,13 @@
    "title": "The exact T\u2076 toroidal orbifold oracle \u2014 build #2 done properly"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/tensions.md",
+   "kind": "doc",
+   "path": "docs/tensions.md",
+   "summary": "Facts: - h12 = 5 sampler yield is zero at instanton degree 0, 1 and 2 (~360 valid candidates each, ~180 s; JOBS.md, 2026-10-29) - #208 concluded the h12 >= 5 wall is degree-1 truncation and\u2026",
+   "title": "Tensions \u2014 facts that cannot both be true as stated"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/three-machines-plan.md",
    "kind": "doc",
    "path": "docs/three-machines-plan.md",
@@ -1724,6 +1731,13 @@
    "path": "scripts/spectral_zeros_deep.py",
    "summary": "The deep run: 22,491 zeros below t = 20,000, in about thirty seconds.",
    "title": "spectral_zeros_deep.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tensions.py",
+   "kind": "script",
+   "path": "scripts/tensions.py",
+   "summary": "The tension register \u2014 pairs of established facts that cannot both be true as stated.",
+   "title": "tensions.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_g2_sdual_stability.py",
