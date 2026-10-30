@@ -105,5 +105,66 @@ def run_all(b3: int = 6, max_abs: int = 1) -> list:
     return [search(p, name, b3=b3, max_abs=max_abs) for name, p in SHIPPED]
 
 
+# ---------------------------------------------------------------------------------------
+# the same engine, over a stored corpus rather than an enumerated window
+# ---------------------------------------------------------------------------------------
+def load_corpus(data_dir=None) -> list:
+    """Every stored row that carries a `flux`, with its file name — the corpus as the machine found it."""
+    import glob
+    import json
+    import os
+    from pathlib import Path
+
+    base = Path(data_dir) if data_dir else Path(__file__).resolve().parents[3] / "data"
+    out = []
+    for path in sorted(glob.glob(str(base / "*.json"))):
+        try:
+            d = json.load(open(path))
+        except Exception:
+            continue
+        rows = d["vacua"] if isinstance(d, dict) and "vacua" in d else (d if isinstance(d, list) else [])
+        for r in rows:
+            if isinstance(r, dict) and "flux" in r:
+                out.append({"file": os.path.basename(path), "row": r})
+    return out
+
+
+def scaling_gcd(flux) -> int:
+    """The gcd of a flux vector — the scaling class is `(F, H) ~ d(F, H)`, so `gcd > 1` is a copy."""
+    import math
+    g = 0
+    for x in flux:
+        g = math.gcd(g, abs(int(round(float(x)))))
+    return g
+
+
+def corpus_primitivity(data_dir=None) -> Verdict:
+    """CONJECTURE: every stored vacuum is primitive.
+
+    It is load-bearing: the flux-scaling lemma says `(F, H)` and `d(F, H)` are the **same** vacuum, so any
+    non-primitive row is a scaling copy — and if its primitive parent is absent from the corpus, the class
+    is represented *only* by a copy. Every per-row fraction then counts that class at a representative the
+    sampler never found.
+    """
+    corpus = load_corpus(data_dir)
+    primitives = {tuple(int(round(float(x))) for x in c["row"]["flux"]) for c in corpus}
+    broken = []
+    for c in corpus:
+        g = scaling_gcd(c["row"]["flux"])
+        if g <= 1:
+            continue
+        v = [int(round(float(x))) for x in c["row"]["flux"]]
+        parent = tuple(x // g for x in v)
+        broken.append({"flux": v, "tadpole": int(c["row"].get("Nflux", 0) or 0),
+                       "what": (f"non-primitive (gcd {g}) in {c['file']}; primitive parent "
+                                f"{'PRESENT' if parent in primitives else 'ABSENT'} in the corpus")})
+    window = f"{len(corpus)} stored rows carrying a flux"
+    return Verdict(conjecture="every stored vacuum is primitive", window=window,
+                   searched=len(corpus), counterexample=(broken[0] if broken else None),
+                   scope=("exhaustive over the stored rows, which are themselves a heuristic sample — so "
+                          "this says the corpus CONTAINS non-primitive rows, not how many exist. A "
+                          "non-primitive row is the same vacuum as its parent by the scaling lemma."))
+
+
 __all__ = ["Verdict", "search", "tadpole_positive", "tadpole_bounded", "tadpole_nonzero",
-           "SHIPPED", "run_all"]
+           "SHIPPED", "run_all", "load_corpus", "scaling_gcd", "corpus_primitivity"]

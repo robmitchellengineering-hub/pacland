@@ -65,3 +65,55 @@ class TestTheEngineCanFail(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestTheCorpusSearch(unittest.TestCase):
+    """The engine over a stored corpus — and the conjecture it breaks."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.v = C.corpus_primitivity()
+
+    def test_the_conjecture_is_broken(self):
+        self.assertEqual(self.v.verdict, "BROKEN")
+        self.assertIsNotNone(self.v.counterexample)
+
+    def test_the_counterexample_is_actually_non_primitive(self):
+        self.assertGreater(C.scaling_gcd(self.v.counterexample["flux"]), 1)
+
+    def test_it_searched_the_whole_corpus(self):
+        self.assertEqual(self.v.searched, len(C.load_corpus()))
+        self.assertGreater(self.v.searched, 5000)
+
+    def test_the_scope_admits_the_corpus_is_a_sample(self):
+        self.assertIn("heuristic sample", self.v.scope)
+
+    def test_the_gcd_of_a_scaled_pair_is_the_scale(self):
+        self.assertEqual(C.scaling_gcd([2, -2, 0, 4]), 2)
+        self.assertEqual(C.scaling_gcd([1, 0, 3, -1]), 1)
+        self.assertEqual(C.scaling_gcd([0, 0, 0, 0]), 0)
+
+
+class TestTheCorpusCheckCanFail(unittest.TestCase):
+    def test_a_synthetic_primitive_corpus_returns_clean(self):
+        import json
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as d:
+            Path(d, "x.json").write_text(json.dumps({"vacua": [
+                {"flux": [1, 0, 0, 0, 1, 0, 0, 0], "Nflux": 1},
+                {"flux": [0, 1, 0, 0, 0, 1, 0, 0], "Nflux": 1},
+            ]}))
+            v = C.corpus_primitivity(data_dir=d)
+            self.assertEqual(v.verdict, "no counterexample")
+
+    def test_a_planted_scaled_row_is_found(self):
+        import json
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as d:
+            Path(d, "x.json").write_text(json.dumps({"vacua": [
+                {"flux": [2, 0, 0, 0, 2, 0, 0, 0], "Nflux": 4},
+            ]}))
+            v = C.corpus_primitivity(data_dir=d)
+            self.assertEqual(v.verdict, "BROKEN")
