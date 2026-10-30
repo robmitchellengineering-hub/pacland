@@ -68,3 +68,44 @@ class TestTheEngineCanFail(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestTheF1MeasureRatio(unittest.TestCase):
+    """Customer 2 — F1's 5.05x, judged through measures.table() rather than re-derived."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.r = R.measure_ratio()
+
+    def test_it_reproduces_f1s_numbers(self):
+        v = self.r.values
+        self.assertAlmostEqual(v["tadpole-uniform"], 0.0714, places=4)
+        self.assertAlmostEqual(v["log-N"], 0.3609, places=4)
+        self.assertAlmostEqual(v["log-N"] / v["tadpole-uniform"], 5.05, places=2)
+
+    def test_the_verdict_is_choice_dependent(self):
+        self.assertEqual(self.r.verdict, "choice-dependent")
+
+    def test_the_dominant_choice_is_the_pair_f1_quotes(self):
+        self.assertIn("log-N", self.r.dominant)
+        self.assertIn("tadpole-uniform", self.r.dominant)
+
+    def test_the_note_keeps_the_window_and_the_exactness_flag(self):
+        self.assertIn("531441 pairs", self.r.note)
+        self.assertIn("exact enumeration", self.r.note)
+
+
+class TestTheNaiveApproachIsRefused(unittest.TestCase):
+    """Regression guard: the first attempt at this customer compared the wrong two measures."""
+
+    def test_flux_uniform_and_primitive_are_the_same_fraction_here(self):
+        # which is WHY comparing them would have shipped a ratio of 1.00 and called it stable
+        v = R.measure_ratio().values
+        self.assertAlmostEqual(v["flux-uniform"], v["primitive"], places=6)
+
+    def test_that_pair_alone_would_have_looked_stable(self):
+        v = R.measure_ratio().values
+        naive = R.assess("naive ratio", {"flux-uniform": v["flux-uniform"],
+                                         "primitive": v["primitive"]})
+        self.assertTrue(naive.stable)          # the trap: a wrong construction passes the verdict
+        self.assertEqual(R.measure_ratio().verdict, "choice-dependent")   # the right one does not

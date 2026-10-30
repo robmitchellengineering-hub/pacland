@@ -104,14 +104,29 @@ def corpus_susy_fraction(data_dir=None) -> Robustness:
 
 
 # ---------------------------------------------------------------------------------------
-# customer 2: F1's 5.05x small-tadpole ratio — NOT YET, and why
+# customer 2: F1's 5.05x small-tadpole ratio, judged through F1's OWN construction
 # ---------------------------------------------------------------------------------------
-# F1's 5.05x is a ratio between two *different quantities* (a corpus-observed fraction and a uniform-over-
-# primitive fraction), not two measures of the same fraction. Re-deriving it from the window gives two
-# fractions that agree to 1e-6, because in the small window primitivity and |N| <= 1 are independent — so a
-# naive re-derivation would have shipped a ratio of 1.00 and called it "stable". That is the same defect
-# this engine exists to catch, so the customer waits until it re-uses F1's own construction
-# (`exactness/measures.py` `table()` and the corpus join) rather than a plausible-looking substitute.
+def measure_ratio(b3: int = 6, max_abs: int = 1, property_index: int = 0) -> Robustness:
+    """F1's headline ratio, re-judged **through `measures.table()`** rather than re-derived.
+
+    The first attempt at this customer (recorded in the git history) compared "flux-uniform" against
+    "primitive-uniform" and got 1.000 — because in the small window primitivity and `|N| <= 1` are
+    independent, so the two were the same fraction twice. It would have shipped a wrong ratio labelled
+    "stable", which is exactly the defect this engine exists to catch. F1's 5.05x is the **max/min across
+    the five measures** of one property, so the only honest way to judge it is to ask `measures` for the row
+    and assess those five values.
+    """
+    from . import measures as M
+
+    t = M.table(b3, max_abs)
+    row = t["rows"][property_index]
+    r = assess(f"F1 ratio for `{row['property']}`", dict(row["values"]))
+    r.note = (f"window {t['window']}, {t['pairs']} pairs, exact enumeration. F1's ratio is max/min across "
+              f"the measures = {row['ratio']:.3f}x; the spread is {row['spread']:.4f}. The measures are all "
+              f"defensible, so the fact is the ratio, not either endpoint. Note the property with zero "
+              f"support under some measure (see `measures.table()`), where a ratio is definitional rather "
+              f"than measured.")
+    return r
 
 
-__all__ = ["Robustness", "assess", "corpus_susy_fraction"]
+__all__ = ["Robustness", "assess", "corpus_susy_fraction", "measure_ratio"]

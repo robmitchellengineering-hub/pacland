@@ -20,6 +20,15 @@ def main() -> int:
     print(f"\n  spread {r.spread:.4f}   verdict: {r.verdict.upper()}")
     print(f"  dominant: {r.dominant}")
     print(f"  {r.note}")
+    print()
+    r2 = R.measure_ratio()
+    print(f"ROBUSTNESS — {r2.statistic}\n")
+    for k, v in r2.values.items():
+        print(f"  {k:<22} {v:.4f}")
+    print(f"\n  spread {r2.spread:.4f}   verdict: {r2.verdict.upper()}")
+    print(f"  dominant: {r2.dominant}")
+    print(f"  {r2.note}")
+
     print("\nThe pooled 21.2% is not the spectrum's number — it is the campaign's. Stratified, the rate")
     print("runs from 27.9% (h12=2) to 1.2% (h12=4), so any pooled figure is partly a statement about how")
     print("many runs each h12 received. That is the kind of sentence a bare '21.17% +/- 1.2%' hides.")
