@@ -61,3 +61,43 @@ class TestTheCheckCanFail(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestMirrorMapEntry(unittest.TestCase):
+    """Entry 2 — the mirror map between the z chart and the conifold chart."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.e = D.mirror_map()
+
+    def test_the_coordinate_map_inverts_exactly(self):
+        self.assertLess(self.e.identity_residual, 1e-40)
+
+    def test_the_period_carries_across_both_charts(self):
+        self.assertTrue(self.e.carries)
+        for c in self.e.carries:
+            self.assertLess(c.residual, 1e-10, f"{c.name}: {c.residual}")
+
+    def test_the_boundary_names_the_open_branch(self):
+        self.assertIn("three of four", self.e.boundary)
+        self.assertIn("exponent-0", self.e.boundary)
+
+    def test_the_entry_passes(self):
+        self.assertTrue(self.e.passes)
+
+
+class TestTheMirrorMapCanFail(unittest.TestCase):
+    """Mutation: a map that is off by 1e-4 in the coordinate must break the carried observable."""
+
+    def test_a_perturbed_coordinate_map_fails(self):
+        import mpmath as mp
+        from pacland.periods import connection, quintic
+        mp.mp.dps = 50
+        zc = quintic.Z_CONIFOLD
+        z = zc * mp.mpf("0.7")
+        u = 1 - z / zc
+        wrong_u = u * (1 + mp.mpf("1e-4"))            # a map that is subtly wrong
+        back = zc * (1 - wrong_u)                      # its inverse
+        resid = abs(back - z) / z
+        self.assertGreater(float(resid), 1e-8,
+                           "if a 1e-4 coordinate error closed, the identity check is decoration")

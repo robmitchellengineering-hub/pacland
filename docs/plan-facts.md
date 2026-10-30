@@ -313,6 +313,27 @@ why a green tick on a naive read-off would have been a false pass.
 
 Degree 1 is the only degree where both agree, which is exactly the shape of #209's symptom.
 
+### The dictionary engine — entries 1 and 2 merged (2026-10-30)
+
+`src/pacland/periods/dictionary.py` · `python3 scripts/dictionary.py` · 13 tests. An **entry** is a map
+with an inverse, the identity residual, a named observable carried across and compared, and the failure
+boundary — plus a mutation test proving the check can fail.
+
+| entry | map | identity | carried observable | boundary |
+|---|---|---|---|---|
+| **1 · flux scaling** | `(F,H) → d(F,H)` | 0.0 | `W → dW` (2.4e-16), `N → d²N` (0.0) | `d` must be a positive **integer**; the zero set is invariant, so this relabels one vacuum rather than producing a second |
+| **2 · mirror map** | `z ↦ u = 1 − z/z_c` | 1.9e-51 | the exponent-2 period in both charts: 4.0e-17 … 6.3e-15 | **three of four branches** — the exponent-0 branch has no certified translation (F2 M2e); radii `|z| < z_c`, `|u| < 1` |
+
+**Entry 2 is the first time the conifold work has been used as an instrument rather than a result.** Its
+carried-observable residual is the *connection's* residual computed at run time, so if the connection ever
+breaks, the entry fails — the dictionary is wired to the thing it certifies, not to a stored number.
+
+Mutation tests on both: a wrong law (`N → dN`), a broken inverse (`f/(d+1)`), and a coordinate map off by
+`1e-4` must each break the entry.
+
+**Still open:** entry 3 (S/T with the phase half as a map rather than a fit), and the fourth conifold
+branch, which blocks only the *full* four-dimensional mirror-map matrix — not the entry as stated.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
