@@ -1,0 +1,42 @@
+# The suite, run where a PR can be judged by it.
+#
+# WHY THIS EXISTED FIRST AND WAS REQUIRED SECOND
+#
+# pacland has tests/ but had no workflow at all, so main was protected and gating nothing. Requiring a check that no
+# workflow produces makes every PR permanently unmergeable - the opposite of the intent - so this lands as a PROBE:
+# it runs, we look at whether the suite is actually green today, and only then is `tests` added to the required checks
+# on main.
+#
+# If the suite turns out to be red, that is not a reason to require it before it is fixed; it is the reason this order
+# exists.
+name: tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+          # The package declares no runtime dependencies, so this should be enough. If it is not,
+          # the failure is information: it names what the suite needs before it can be a gate.
+          pip install -e . || echo "editable install failed; testing against the tree"
+
+      - name: Run the suite
+        run: python -m pytest tests -q
