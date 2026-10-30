@@ -363,6 +363,30 @@ enumeration moves both.
 so they *must* find a counterexample. If they ever stop finding one, the engine is blind — not the
 conjecture true. That is the check on the checker, and it is the reason a clean verdict here means anything.
 
+### The counterexample engine over the stored corpus — 3 non-primitive rows, parents absent (2026-10-30)
+
+The engine's first run on **real data** rather than an enumerated window. Conjecture: *every stored vacuum
+is primitive.* Verdict: **BROKEN**, 3 of 5,965 rows.
+
+| file | gcd | `N` | SUSY | primitive parent in corpus |
+|---|---|---|---|---|
+| `h12_2_m1_stats.json` | 2 | 4 | no | **ABSENT** |
+| `h12_2_m4_stats.json` | 2 | 8 | **yes** | **ABSENT** |
+| `h12_2_m7_stats.json` | 2 | 4 | no | **ABSENT** |
+
+**It is a coverage defect, not a duplication one.** No file contains duplicate flux rows, and none of the
+three parents appears anywhere in the corpus — so each of these three scaling classes is represented
+*only* by a copy. Under the flux-scaling lemma the copy and its parent are the same vacuum, which means the
+corpus holds three vacua whose representative the sampler never found — and one of them is SUSY.
+
+**Why it matters at all:** every per-row fraction (SUSY rate, minimum rate, the small-tadpole 5.05×) counts
+rows. A scaling copy is counted as a separate vacuum. At 3/5,965 = 0.05% that is far too small to move any
+of the published numbers, and saying so is the honest part — but the check now exists, so the next corpus
+export can be refused if the number grows.
+
+Scope is stated in the verdict: exhaustive over the *stored rows*, which are themselves a heuristic
+sample — it says the corpus **contains** non-primitive rows, not how many exist in nature.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

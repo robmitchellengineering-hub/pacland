@@ -22,6 +22,11 @@ def main() -> int:
         print()
     broken = sum(1 for v in verdicts if v.counterexample is not None)
     print(f"{broken} of {len(verdicts)} broken, {len(verdicts) - broken} clean.")
+    cv = C.corpus_primitivity()
+    print(f"\n{'BROKEN ' if cv.counterexample else 'CLEAN  '} {cv.conjecture}  ({cv.searched} rows)")
+    print(f"         {cv.proves}")
+    print(f"         scope: {cv.scope}")
+
     print("\nA clean verdict is a statement about THE WINDOW, never a proof. Two of these searches are")
     print("known-answer controls: they must find a counterexample, and if they ever stop finding one the")
     print("engine is blind rather than the conjecture being true. That is the check on the checker.")
