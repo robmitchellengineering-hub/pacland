@@ -375,6 +375,13 @@
    "title": "Falsification status \u2014 what is checked, and the two honest gaps"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/field-audit.md",
+   "kind": "doc",
+   "path": "docs/field-audit.md",
+   "summary": "A checkable audit, not a vibe. The research (three parallel gap analyses, 2026-10-18) found that no ML-for-the-landscape tool emits a calibrated error model. This document makes that\u2026",
+   "title": "Verification audit of the ML-for-the-string-landscape field"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/finance-claims.md",
    "kind": "doc",
    "path": "docs/finance-claims.md",
@@ -417,11 +424,32 @@
    "title": "Is the landscape chaotic? \u2014 the question, and what it takes to answer it"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/joint-structure.md",
+   "kind": "doc",
+   "path": "docs/joint-structure.md",
+   "summary": "The swing that landed, after the first test missed.",
+   "title": "The structure is joint, not marginal \u2014 W0 is random alone but correlated with the gauge couplings"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/learnability-negative.md",
    "kind": "doc",
    "path": "docs/learnability-negative.md",
    "summary": "This connects three known pieces \u2014 Denef\u2013Douglas uniformity, Valiant's evolvability theorem, and real flux-vacua data \u2014 into a statement that, to this project's knowledge, has not been made\u2026",
    "title": "The flux landscape is not evolvable \u2014 a negative result, assembled from existing work"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/learnability-spectrum.md",
+   "kind": "doc",
+   "path": "docs/learnability-spectrum.md",
+   "summary": "Refined result from the paired flux\u2194observable data (107 real SUSY flux vacua, data/fluxobservables.json). This is the verification angle: not mining for structure, but certifying where\u2026",
+   "title": "The learnability boundary \u2014 linear fails, quadratic carries structure, W0 is random"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/learnable-through-phenotype.md",
+   "kind": "doc",
+   "path": "docs/learnable-through-phenotype.md",
+   "summary": "The sharpest learnability result so far, and it reframes the governing question.",
+   "title": "W0 is learnable through the phenotype, not the genotype"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/linux-node-spec.md",
@@ -473,6 +501,13 @@
    "title": "A New Approach: Constraint-First String Theory"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/nonlinear-edges.md",
+   "kind": "doc",
+   "path": "docs/nonlinear-edges.md",
+   "summary": "Spearman (rank) vs Pearson (linear) on the phenotype network, n \u2248 101.",
+   "title": "Nonlinear edges \u2014 the phenotype network is more structured than linear correlation showed, and the tadpole hub"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/observable-measure.md",
    "kind": "doc",
    "path": "docs/observable-measure.md",
@@ -522,11 +557,25 @@
    "title": "Outreach \u2014 Zenodo metadata and the four endorsement emails"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/partial-markov-blanket.md",
+   "kind": "doc",
+   "path": "docs/partial-markov-blanket.md",
+   "summary": "The sufficient-statistic result, generalized and given its honest boundary.",
+   "title": "The phenotype is a partial Markov blanket \u2014 and the dilaton is the leak"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/partner-appeals.md",
    "kind": "doc",
    "path": "docs/partner-appeals.md",
    "summary": "The program has a machine-checked core and a short list of things it cannot yet compute. Each of those is a sharp, falsifiable problem a partner with the right expertise can advance \u2014 and\u2026",
    "title": "Partner appeals \u2014 the open problems, framed as collaborations"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/phenotype-network.md",
+   "kind": "doc",
+   "path": "docs/phenotype-network.md",
+   "summary": "The reframe that fell out of going multipath: stop asking about the genotype\u2192phenotype map (unlearnable) and map the phenotype network instead.",
+   "title": "The phenotype network \u2014 the landscape's learnable structure is observable\u2194observable, with the tadpole as hub"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/physics-compute-roadmap.md",
@@ -592,6 +641,13 @@
    "title": "Sampling frontier \u2014 the stabilised regime ends at h12 = 4 (measured 2026-10-22)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/selection-uniformity.md",
+   "kind": "doc",
+   "path": "docs/selection-uniformity.md",
+   "summary": "A speculative but falsifiable claim, advanced deliberately (this is the \"swing\": a real chance to be wrong, stated so it can be checked).",
+   "title": "The flux-vacua ensemble provides no selection \u2014 a bold claim about the measure problem"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/selection.md",
    "kind": "doc",
    "path": "docs/selection.md",
@@ -655,11 +711,25 @@
    "title": "The structure map \u2014 every observable classified (Rule-of-Three verified)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sufficient-statistic.md",
+   "kind": "doc",
+   "path": "docs/sufficient-statistic.md",
+   "summary": "The first clean causal (mediation) result, not just correlation.",
+   "title": "The tadpole is a sufficient statistic \u2014 flux acts on the mass spectrum only through one scalar"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/swampland-connection.md",
    "kind": "doc",
    "path": "docs/swampland-connection.md",
    "summary": "This doc records the bridge between the measured structure map and the swampland program, and the runnable system that tests it: pacland.swampland + scripts/testswampland.py (pure stdlib +\u2026",
    "title": "The swampland connection \u2014 the constraint-first conjecture as a swampland test"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/synthesis.md",
+   "kind": "doc",
+   "path": "docs/synthesis.md",
+   "summary": "Consolidation of the verify-lead findings (2026-10-18). Each reframe is a link; the individual docs carry the numbers.",
+   "title": "Synthesis \u2014 the landscape's learnable structure is a small, nearly-closed phenotype network"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/t6-exact-oracle.md",
@@ -828,6 +898,13 @@
    "path": "scripts/causal_battery.py",
    "summary": "The known-truth battery: score causal estimators against effects that were planted.",
    "title": "causal_battery.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/certify_vacuum.py",
+   "kind": "script",
+   "path": "scripts/certify_vacuum.py",
+   "summary": "Certify a real flux vacuum end-to-end through the Verification Vault.",
+   "title": "certify_vacuum.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check-site-links.py",
@@ -1360,6 +1437,13 @@
    "path": "scripts/measure_learnability.py",
    "summary": "Measure learnability + selection statistics on the real flux-vacua sample.",
    "title": "measure_learnability.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_learnability_spectrum.py",
+   "kind": "script",
+   "path": "scripts/measure_learnability_spectrum.py",
+   "summary": "Learnability spectrum \u2014 linear flux->observable R^2 + F-test (verification angle).",
+   "title": "measure_learnability_spectrum.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_phase_law.py",
