@@ -175,6 +175,87 @@ def mirror_map(z_sample=(0.55, 0.65, 0.7, 0.75), dps: int = 50) -> Entry:
     )
 
 
+# ---------------------------------------------------------------------------------------
+# entry 3: S and T, with the phase law stated as a law
+# ---------------------------------------------------------------------------------------
+def s_t_duality(seed: int = 7) -> Entry:
+    """`S` and `T` on `(F, H, tau0)` — Law II's **phase half**, expressed as a map rather than a fit.
+
+    Law II records that `|W|` is invariant under S on 25 vacua, with the *phase* left open. On the T^6
+    oracle the phase is not open: it is a closed-form law.
+
+        S:  (F, H, tau0) -> (-H, F, -1/tau0)        W  ->  W / tau0
+        T:  (F, H, tau0) -> (F+H, H, tau0 + 1)      W  ->  W
+
+    and the combination that *is* invariant under S is `e^{K/2} |W|`, not `|W|` — because `K` moves with
+    `Im tau0` while `W` moves with `tau0`. That distinction is the whole content: an "invariant |W|" stated
+    without the Kähler factor would be false by a factor of `|tau0|`.
+
+    **Boundary, stated:** exact on the T^6 oracle, where `K` and `Pi` are closed form. Off the oracle the
+    same law needs the Picard-Fuchs monodromy matrices (`docs/plan-exact-terms.md` B3, unbuilt), so the law
+    is exact where computed and **conjectured elsewhere**. The complex-structure moduli are inert at degree
+    0 (Law II's own scope); no degree > 0 statement is claimed.
+    """
+    import math
+
+    from ..oracle import exact_t6 as T6
+    from ..oracle import potential_t6 as P
+
+    # plain Python complex: kahler_full is numpy-based and does not take mpf
+    F, H = _flux_pair(seed)
+    tau0 = 0.3 + 1.1j
+    taus = (0.9 + 1.4j, 1.2 + 0.8j, 0.7 + 1.6j)
+
+    S = lambda f, h, t: (-h, f, -1 / t)          # noqa: E731
+    Tinv = lambda f, h, t: (-h, f, -1 / t)       # noqa: E731  S is its own inverse up to the global -1
+    Tt = lambda f, h, t: (f + h, h, t + 1)       # noqa: E731
+    TinvT = lambda f, h, t: (f - h, h, t - 1)    # noqa: E731
+
+    def W(f, h, t):
+        return T6.superpotential(f, h, t, *taus)
+
+    def k(f, h, t):
+        return P.kahler_full(t, *taus)
+
+    # identity: applying S twice returns (-F, -H) at the same tau0 -- the projective minus one
+    fS, hS, tS = S(F, H, tau0)
+    fSS, hSS, tSS = S(fS, hS, tS)
+    id_S = float(max(np.max(np.abs(fSS + F)), np.max(np.abs(hSS + H)), abs(tSS - tau0)))
+    fT, hT, tT = TinvT(*Tt(F, H, tau0))
+    id_T = float(max(np.max(np.abs(fT - F)), np.max(np.abs(hT - H)), abs(tT - tau0)))
+
+    w = W(F, H, tau0)
+    wS = W(fS, hS, tS)
+
+    s_law = abs(wS - w / tau0) / abs(w)                       # W -> W/tau0
+    s_inv = abs(math.exp(k(fS, hS, tS) / 2) * abs(wS) - math.exp(k(F, H, tau0) / 2) * abs(w)) / \
+        abs(math.exp(k(F, H, tau0) / 2) * abs(w))            # e^{K/2}|W| invariant
+    t_law = abs(W(*Tt(F, H, tau0)) - w) / abs(w)              # W invariant under T
+
+    carries = [
+        Carry("superpotential under S", "W -> W/tau0", float(abs(w)), float(abs(wS)),
+              float(s_law), bool(s_law < 1e-12)),
+        Carry("e^{K/2}|W| under S", "invariant", float(math.exp(k(F, H, tau0) / 2) * abs(w)),
+              float(math.exp(k(fS, hS, tS) / 2) * abs(wS)), float(s_inv), bool(s_inv < 1e-12)),
+        Carry("superpotential under T", "W -> W (invariant)", float(abs(w)), float(abs(w)),
+              float(t_law), bool(t_law < 1e-12)),
+    ]
+    return Entry(
+        name="S and T duality: the phase law",
+        frame_a="the vacuum (F, H; tau0, z_i)",
+        frame_b="its S-dual, and its T-dual",
+        identity_residual=max(id_S, id_T),
+        carries=carries,
+        boundary=("exact on the T^6 oracle, where K and Pi are closed form. Off the oracle the same law "
+                  "needs the Picard-Fuchs monodromy matrices (B3, unbuilt), so it is exact where computed "
+                  "and **conjectured elsewhere**. Moduli are inert at degree 0 -- Law II's own scope -- so "
+                  "no degree > 0 statement is claimed. And note which quantity is invariant: e^{K/2}|W|, "
+                  "**not** |W|, which moves with |tau0|."),
+        t_note="S: (F,H,tau0) -> (-H, F, -1/tau0);   T: (F,H,tau0) -> (F+H, H, tau0+1)",
+        tinv_note="S itself (up to the global -1);   T⁻¹: (F,H,tau0) -> (F-H, H, tau0-1)",
+    )
+
+
 def report(d: int = 2, seed: int = 7) -> dict:
     e = flux_scaling(d, seed)
     return {"entry": e, "passes": e.passes}

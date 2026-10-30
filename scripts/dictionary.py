@@ -39,6 +39,18 @@ def main() -> int:
     print(f"  boundary  {e2.boundary}")
     print(f"  entry passes: {e2.passes}")
 
+    e3 = D.s_t_duality()
+    print(f"\nENTRY  {e3.name}")
+    print(f"  from : {e3.frame_a}")
+    print(f"  to   : {e3.frame_b}")
+    print(f"  {e3.t_note}")
+    print(f"  {e3.tinv_note}")
+    print(f"  identity  residual {e3.identity_residual:.1e}")
+    for c in e3.carries:
+        print(f"  carry     {c.name:<28} {c.law:<18} residual {c.residual:.1e}  {'PASS' if c.passes else 'FAIL'}")
+    print(f"  boundary  {e3.boundary}")
+    print(f"  entry passes: {e3.passes}")
+
     print("\nThe law is the lemma's own (W -> dW, N -> d^2 N), not a fit. The boundary is what keeps it")
     print("from overclaiming: d must be a positive INTEGER, and the zero set being invariant means this is")
     print("a relabelling of one vacuum, not a second one.")

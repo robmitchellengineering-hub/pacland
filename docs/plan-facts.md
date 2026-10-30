@@ -331,8 +331,16 @@ breaks, the entry fails — the dictionary is wired to the thing it certifies, n
 Mutation tests on both: a wrong law (`N → dN`), a broken inverse (`f/(d+1)`), and a coordinate map off by
 `1e-4` must each break the entry.
 
-**Still open:** entry 3 (S/T with the phase half as a map rather than a fit), and the fourth conifold
-branch, which blocks only the *full* four-dimensional mirror-map matrix — not the entry as stated.
+| **3 · S/T (the phase law)** | `S: (F,H,τ0) → (−H,F,−1/τ0)`; `T: → (F+H,H,τ0+1)` | 5.6e-17 | `W → W/τ0` under S (1.2e-16), `e^{K/2}\|W\|` invariant under S (3.4e-16), `W` invariant under T (1.2e-16) | exact on the T⁶ oracle; off it, needs the PF monodromy (B3, unbuilt) — **conjectured elsewhere** |
+
+**Entry 3 closes Law II's open half — and corrects the way it is usually said.** The phase is not open on
+the oracle: `W → W/τ0` under S, exactly. And the invariant is `e^{K/2}|W|`, **not** `|W|` — bare `|W|` moves
+by `|τ0|`, which the entry's mutation test asserts numerically so nobody can quietly drop the Kähler factor
+and keep the word "invariant".
+
+**Still open:** the fourth conifold branch (F2 M2e), which blocks only the *full* four-dimensional
+mirror-map matrix, not the entry as stated. And the S/T law is exact *where computed* — the oracle — and
+conjectured on a general CY until B3's monodromy exists.
 
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
