@@ -29,6 +29,27 @@ class TestLUF(unittest.TestCase):
         self.assertGreater(r["luf_density_hz"], r["luf_rule_hz"])
 
 
+class TestClosedFormLUF(unittest.TestCase):
+    """LUF = (Q c^3 / (8 pi V))^(1/3) — a scaling law, not a fit."""
+
+    def test_closed_form_matches_the_bisection(self):
+        import math
+        for volume in (5.0, 16.5, 60.0):
+            a = volume ** (1 / 3)
+            for q in (100.0, 200.0, 400.0):
+                r = C.analyse(a, a, a, 3e9, q)
+                cf = C.luf_closed_form(volume, q)
+                self.assertLess(abs(cf - r["luf_density_hz"]) / r["luf_density_hz"], 1e-6)
+
+    def test_quadrupling_q_scales_luf_by_the_cube_root_of_four(self):
+        x = C.luf_closed_form(16.5, 400.0) / C.luf_closed_form(16.5, 100.0)
+        self.assertAlmostEqual(x, 4 ** (1 / 3), places=6)
+
+    def test_eight_times_the_volume_halves_the_luf(self):
+        x = C.luf_closed_form(132.0, 200.0) / C.luf_closed_form(16.5, 200.0)
+        self.assertAlmostEqual(x, 0.5, places=6)
+
+
 class TestModeCount(unittest.TestCase):
     def test_weyl_agrees_with_exact_enumeration(self):
         r = C.analyse(3.0, 2.5, 2.2, 1e9, 200.0)

@@ -54,6 +54,20 @@ def luf_density(volume: float, q_factor: float, f_lo: float, f_hi: float,
     return hi
 
 
+def luf_closed_form(volume: float, q_factor: float, c: float = E.C_LIGHT) -> float:
+    """LUF in closed form: where the mode density times the modal width equals one.
+
+    Setting `density(f) * f/Q = 1` with `density(f) = 8 pi f^2 V / c^3`:
+
+        8 pi f^3 V / (Q c^3) = 1      ->      f = ( Q c^3 / (8 pi V) )^(1/3)
+
+    So **LUF ~ (Q/V)^(1/3)**: the cube root of the quality factor over the volume. Doubling Q raises the usable
+    frequency by 26%, not by 100%; doubling the volume lowers it by 21%. That is a scaling law, and the
+    bisection in `luf_density` should agree with it to numerical precision - which is the test.
+    """
+    return (q_factor * c ** 3 / (8.0 * math.pi * volume)) ** (1.0 / 3.0)
+
+
 def analyse(a: float, b: float, d: float, f_max: float, q_factor: float = 200.0,
             c: float = E.C_LIGHT) -> dict:
     volume = a * b * d

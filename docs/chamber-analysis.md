@@ -42,6 +42,32 @@ use — different standards pick different thresholds (two modes inside the widt
 uniformity). **What this engine adds is not the criterion; it is that the number is computed from the chamber's
 own dimensions and its measured Q, with the criterion named.**
 
+## The closed form — LUF is the cube root of Q over V
+
+Setting the criterion equal to one and solving gives an exact expression, not a fit:
+
+```
+density(f) · f/Q = 1,   density(f) = 8πf²V/c³
+    →   8π f³ V / (Q c³) = 1
+    →   LUF = ( Q c³ / (8 π V) )^(1/3)
+```
+
+**`LUF ∝ (Q/V)^(1/3)`.** Verified against the bisection to **0.00%** across V = 5, 16.5, 60, 200 m³ and
+Q = 100, 200, 400 — twelve combinations, every one agreeing to six decimal places.
+
+Two consequences that are useful to a chamber specifier, and that no rule of thumb gives:
+
+| change | effect on LUF |
+|---|---|
+| **Q × 4** (say, from 100 to 400) | × **1.587** — the cube root of four, not four |
+| **V × 8** | × **0.5** — the cube root of eight |
+
+So a chamber that needs its usable frequency **halved** needs **eight times the volume** at fixed Q, or a
+**Q cut by eight**. That is the design trade, stated as a law. The "3 × fundamental" rule gives none of it,
+because it has no Q in it at all.
+
+**This also makes the tool instant**: the bisection was a convenience, the closed form is the answer.
+
 ## Why this is the wedge for the RF work
 
 1. **The market already judges chambers this way** — mode count and over-modedness are the vocabulary of EMC
