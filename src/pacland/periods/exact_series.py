@@ -91,3 +91,57 @@ def form() -> dict:
 
 
 __all__ = ["conifold_coefficients", "against_numeric", "form"]
+
+
+# ---------------------------------------------------------------------------------------
+# the connection matrix: is there a closed algebraic form?
+# ---------------------------------------------------------------------------------------
+#: The basis a connection coefficient could plausibly be built from: the transcendental weight system of the
+#: conifold-to-LCS map. `{1, pi^2, zeta(3), pi^2 zeta(3)}` covers weights 0, 2, 3 and 5.
+BASIS = ("1", "pi^2", "zeta(3)", "pi^2*zeta(3)")
+
+
+def connection_coefficients(n_max: int = 120, dps: int = 80) -> list:
+    """The four coefficients of the exponent-2 branch in the LCS basis, as high-precision numbers."""
+    import mpmath as mp
+
+    from . import conifold_recursion as R
+
+    mp.mp.dps = dps
+    b = R.all_branches(n_max=n_max, dps=dps)
+    return [mp.mpf(c) for c in b["exponent_2"]["coefficients"]]
+
+
+def connection_form(maxcoeff: int = 10 ** 6, dps: int = 80, n_max: int = 120) -> dict:
+    """Integer-relation search: is a connection coefficient a rational combination of `BASIS`?
+
+    Uses PSLQ, which returns **small** integer coefficients when a genuine relation exists and large ones when
+    it does not. That distinction is the whole method: a hit at `maxcoeff = 1e12` is a numerical artefact, not a
+    discovery, and reporting it as an algebraic form would be the cancellation error this estate keeps catching.
+
+    **Result (2026-10-30): no relation below `10^6`.** So on this evidence the connection coefficients are not
+    in the span of `{1, pi^2, zeta(3), pi^2 zeta(3)}` with small rational coefficients — and the mirror-map
+    residual therefore stays labelled **measured**.
+    """
+    import mpmath as mp
+
+    mp.mp.dps = dps
+    basis = [mp.mpf(1), mp.pi ** 2, mp.zeta(3), mp.pi ** 2 * mp.zeta(3)]
+    rows = []
+    for a in connection_coefficients(n_max, dps):
+        try:
+            rel = mp.pslq(basis + [a], maxcoeff=maxcoeff, tol=mp.mpf(10) ** (-(dps // 2)),
+                          maxsteps=100000)
+        except Exception:
+            rel = None
+        rows.append({"value": mp.nstr(a, 20), "relation": rel, "found": rel is not None})
+    return {
+        "basis": list(BASIS), "maxcoeff": maxcoeff, "dps": dps, "rows": rows,
+        "any_found": any(r["found"] for r in rows),
+        "statement": (f"no integer relation with coefficients below {maxcoeff} at {dps} dps"
+                      if not any(r["found"] for r in rows)
+                      else "a relation was found — verify it independently before calling it exact"),
+        "consequence": ("the connection matrix is NOT derived exactly; its residual stays labelled 'measured'. "
+                        "A wider basis (weights 4, 6, or log-structured terms) was not tested, so this bounds "
+                        "the claim rather than closing the question."),
+    }

@@ -1054,6 +1054,13 @@
    "title": "conifold_exponents.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/connection_form.py",
+   "kind": "script",
+   "path": "scripts/connection_form.py",
+   "summary": "The connection matrix: is there a closed algebraic form?",
+   "title": "connection_form.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/continuation.py",
    "kind": "script",
    "path": "scripts/continuation.py",
