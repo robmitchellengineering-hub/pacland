@@ -77,6 +77,17 @@ def build():
                         "why": e.boundary.split(".")[0][:160],
                         "command": "python3 scripts/dictionary.py"})
 
+    # --- scale statements ----------------------------------------------------------------
+    from pacland.exactness import scaling as SC
+    ladder = SC.report()
+    moved = [k for k, v in ladder["facts"].items() if v["verdict"] == "scale-dependent"]
+    entries.append({"kind": "measured value",
+                    "claim": (f"window facts across b3 = {ladder['ladder']}: "
+                              f"{len(moved)} of {len(ladder['facts'])} are scale-dependent "
+                              f"(e.g. `|N| <= 1` 0.901 to 0.644); `max|N| = b3` exactly"),
+                    "why": "a window fraction is not a landscape fact; the exact ladder stops at b3 = 6",
+                    "command": "python3 scripts/scaling.py"})
+
     # --- exact integers -----------------------------------------------------------------
     nums = G.report()["rows"]
     entries.append({"kind": "exact integer",

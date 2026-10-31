@@ -575,6 +575,366 @@ precondition for settling it is a real `max_tries` knob, which the script does n
 Four of five resolved, and every resolution says what the resolution *was* rather than just "fixed" — so a
 later session can disagree with the resolution instead of re-deriving the dispute.
 
+## Route A — the scaling study: every window fraction moves with b3 (2026-10-30)
+
+`src/pacland/exactness/scaling.py` · `python3 scripts/scaling.py` · 8 tests. The exact ladder is
+`b3 = 2, 4, 6` at `max_abs = 1` (81 / 6,561 / 531,441 pairs). **`b3 = 8` is 43M pairs (~5.5 GB), so the ladder
+stops at 6** — that limit is part of the result.
+
+| fact | b3=2 | b3=4 | b3=6 | verdict |
+|---|---|---|---|---|
+| primitive fraction | 0.9877 | 0.9998 | 1.0000 | **invariant within 10% — but still trending to 1** |
+| `N = 0` fraction | 0.4074 | 0.2928 | 0.2407 | scale-dependent, falling |
+| `N > 0` fraction | 0.2963 | 0.3536 | 0.3797 | scale-dependent, rising |
+| `|N| ≤ 1` fraction | 0.9012 | 0.7439 | 0.6437 | scale-dependent, falling |
+| `max |N|` | 2 | 4 | 6 | **= b3** exactly |
+| all components non-zero | 0.1975 | 0.0390 | 0.0077 | scale-dependent, collapsing |
+
+**Two findings, and the first one corrected the analysis.**
+
+1. **Primitivity is "invariant" only because the tolerance hides a trend.** It moves 1.2% across the ladder —
+   inside the stated 10% — but it moves *monotonically toward 1*. So a tolerance-based verdict is not the same
+   as invariance, and the engine now reports **both** (verdict and `trend_within_tolerance`). My first version
+   said "nothing is scale-invariant", which was wrong; the test caught it.
+2. **Every fraction that matters moves by far more than the tolerance.** F1's `0.6437` flux-uniform
+   small-tadpole fraction is **0.90 at b3 = 2 and falling**, so it is a `b3 = 6` window value, not a landscape
+   fact. That sharpens T3: the 5.05× ratio is a ratio *at one window size*.
+
+**A small exact fact fell out:** with `|component| ≤ 1` the largest `|N|` is exactly `b3`, so the window's own
+tadpole bound is computable rather than assumed.
+
+## Route C — a period computed outside the LCS radius (2026-10-30)
+
+`src/pacland/periods/continuation.py` · `python3 scripts/continuation.py` · 7 tests. **The first number in this
+estate that the easy frame cannot produce.**
+
+The LCS series converges for `|z| < z_c = 3.2e-4`; the conifold coordinate `u = 1 − z/z_c` converges for
+`|u| < 1`, covering `0 < z < 2z_c`. So `z_c < z < 2z_c` is outside the LCS radius and inside the conifold
+chart. Computed at `z = 1.5 z_c` (`u = −0.5`):
+
+| conifold order | Φ(u) | movement vs order 160 |
+|---|---|---|
+| 40 | 0.597162486982025541601011 | **2.8e-13** |
+| 80 | 0.597162486981857790476293 | 1.7e-25 |
+| 120 | 0.597162486981857790476293 | 1.2e-37 |
+
+**Pass mark (a) met**: the value moves by `2.8e-13` between orders 40 and 160, inside the plan's `1e-10`. It
+converges monotonically with order, and a point outside the chart (`u = −1.2`) is asserted to *fail* the pass
+mark, so the check can fail.
+
+**Pass mark (b) is not claimed, and the reason is stated in the module**: a single branch value does not fix the
+fourth-order Picard–Fuchs equation, so a PF residual computed from one point would be circular — it would test
+the series against the recurrence that built it. An independent estimate needs the LCS series evaluated at a
+point where both charts converge (`0 < z < z_c`), which requires an LCS-series adapter the connection module
+does not expose.
+
+### Route C, exact sub-item — the conifold coefficients are rational (2026-10-30)
+
+`src/pacland/periods/exact_series.py` · `python3 scripts/exact_series.py` · 7 tests.
+
+The conifold recursion is solved numerically everywhere else (mpmath, 60 dps) and the connection is then quoted
+as "residual 2.3e-21" — a measurement. The recursion's only non-rational step is the `_exact()` conversion, so
+solving it *without* that step gives the coefficients exactly:
+
+```
+c_0 = 1            c_1 = 37/30          c_2 = 2309/1800
+c_3 = 286471/225000  c_4 = 41932661/33750000  c_5 = 237108737/196875000
+```
+
+**Every coefficient of the conifold series is a rational number.** Agreement with the numeric series: `9.4e-60`
+— i.e. the two evaluations agree to 60 digits, as two independent routes to the same recursion must.
+
+**Where the transcendental structure actually lives.** Not in the series: it enters only when the series is
+expressed in the large-complex-structure basis. That is a statement about the algebra's shape, and it says
+precisely which part of the connection audit remains a measurement.
+
+**Not claimed:** the connection matrix is still not derived exactly. It needs the LCS period basis in exact
+form (the `log`-branch values carry `zeta(3)`), and until that exists its residual stays labelled *measured*.
+The module says so in its own returned record rather than implying the audit is complete.
+
+## The try-budget wrapper — a budget in the units the API has (2026-10-30)
+
+`src/pacland/exactness/try_budget.py` · `python3 scripts/try_budget.py` · 7 tests.
+
+`sample_critical_points(n_target=N)` asks for **points**. The library caps its own search at 400 tries per call,
+so the "1200-try" escalation behind T1 silently did 400 — the run happened, the budget did not.
+
+**The wrapper's budget is calls, seconds and points — the units the API exposes — and the try count is reported
+as `unknown`, not inferred.** Inferring tries from calls would repeat exactly the mistake that cost T1 its
+discriminator.
+
+| what | value |
+|---|---|
+| calls | how many invocations |
+| seconds | wall-clock |
+| points | accumulated, with per-call counts |
+| yield | per call and per second |
+| tries | **unknown** — the sampler does not expose it |
+
+Early stop on first find is supported (`stop_when_found`), which is what an *existence* question needs: the
+run ends the moment an object appears, instead of spending the rest of the budget.
+
+## The cycle log — seven closed loops, and what each excluded (2026-10-30)
+
+`docs/cycles.md`, generated by `python3 scripts/cycles.py` with a `--check` drift guard in the suite. One entry
+per closed turn of the process: **no → question → object → what it excluded**.
+
+| id | negative | object / answer | excluded |
+|---|---|---|---|
+| C1 | `is_minimum` disagreed with its own eigenvalues | it is exactly `λ_min > 1e-6` | every minima count without a threshold |
+| C2 | 3 non-primitive rows, parents absent | a coverage defect, not duplication | the corpus-primitive assumption |
+| C3 | h12=5 yield zero at all degrees | the discriminator was invalid (`n_target` ≠ tries) | "degree 2 fixes it" — T1 stays open |
+| C4 | pooled 21.17% between 27.9% and 1.2% | the pool *is* the weighted average | a single pooled SUSY fraction |
+| C5 | F1's 0.071 vs 0.361 | max/min across five measures | a single small-tadpole fraction |
+| C6 | every fraction moves with `b3` | none is a landscape fact; `max\|N\| = b3` | quoting 0.6437 without `b3 = 6` |
+| C7 | conifold series numeric, connection measured | coefficients are **rational** (`37/30`, `2309/1800`) | transcendentals are in the basis, not the series |
+
+**The rule the log enforces: no exclusion, no entry.** A turn that cannot name what it ruled out was
+maintenance, not a turn — so six of the seven exclusions are about *how numbers may be quoted*, and one (C7) is
+about where the algebra lives. That ratio is the honest measure of where this programme currently is: strong on
+method, thin on nature.
+
+## Route B — the T^6 oracle has no de Sitter vacuum, proved (2026-10-30)
+
+`src/pacland/oracle/no_ds_t6.py` · `python3 scripts/no_ds_t6.py` · 6 tests.
+
+At `DW = 0` the F-term potential of the T⁶ (STU) model is `V = −3 e^K |W|²`, which is **non-positive by
+inspection** — `e^K > 0`, `|W|² ≥ 0`. So **no critical point of this model can have `V > 0`**, and the
+exclusion needs no sampling, no budget and no window.
+
+**This is the first permanent answer in the estate**: an impossibility that no new data can overturn *within the
+model*. It is the kind of result the plan's Route B was for.
+
+**Its scope is written into the module and tested** — it holds for the T⁶ F-term potential at `DW = 0`, and does
+**not** extend to models with non-perturbative terms, a Kähler modulus, or an uplift. Those can raise `V`, and
+that is the KKLT question, which this result explicitly does not answer.
+
+Cross-checked numerically at two flux pairs and two moduli points: identity residual `0.0`, every `V < 0`
+(observed `−4.27`, `−1.9e-2` …). The algebra carries the claim; the numerics are there so that a disagreement
+between them would be visible.
+
+### The connection matrix — attempted, and the attempt is bounded (2026-10-30)
+
+`src/pacland/periods/exact_series.py` · `python3 scripts/connection_form.py` · 12 tests in the module.
+
+The exact sub-item asked for the connection in ℚ. **Attempted: no relation found.** A PSLQ search of each of the
+four coefficients against the weight basis `{1, π², ζ(3), π²ζ(3)}` returns **nothing** at `maxcoeff = 10³` or
+`10⁶` and 80 dps.
+
+| bound | relation found |
+|---|---|
+| `10³` | none |
+| `10⁶` | none |
+| `10¹²` | **hits — and they are artefacts** (coefficients ~10¹⁰, the signature of no relation) |
+
+**The `10¹²` column is the reason this took a run.** PSLQ manufactures relations when the bound is loose; a hit
+with ten-digit coefficients is the cancellation error this estate keeps catching, not a discovery. The method
+only works with tight bounds, and at tight bounds there is nothing.
+
+**So the consequence, in the sub-item's own terms:** the connection matrix is **not** derived exactly and its
+residual stays labelled *measured*. The claim is bounded rather than closed — a wider basis (weights 4 and 6, or
+log-structured terms) was not tested.
+
+**Fail-ability, both ways:** a planted value `3 + 5π² − 2ζ(3)` *is* found with small coefficients, and an
+arbitrary decimal is not. So the search can find a relation when one exists.
+
+## T1 RESOLVED — h12 = 5 is not a degree wall; the zero was a budget (2026-10-30)
+
+The try-budget wrapper spent **five calls per degree** (~2,000 tries each) at `h12 = 5` on pacland-rog:
+
+| degree | points | per call | seconds |
+|---|---|---|---|
+| **1** | **2** | `[0, 1, 0, 0, 1]` | 504 |
+| **2** | **2** | `[0, 0, 1, 0, 1]` | 521 |
+
+**Indistinguishable.** So:
+
+1. **The earlier zero was a budget artefact** — 400 tries was simply too few, at either degree.
+2. **#208's "degree 2 fixes it" is refuted as a statement about yield**: degree 1 produces at the same rate.
+3. **The real wall is the rate** — roughly 0.008 points per valid candidate at `h12 = 5`, against 0.138 at
+   `h12 = 2`. A factor of ~17, and no change of degree addresses it.
+
+This is the register earning its keep twice over: T1 would have been marked *resolved against #208* on a naive
+"0 vs 1" reading, and *would have been marked unanswerable* if the `n_target` misunderstanding had been accepted.
+The wrapper built in the previous round is what made the question answerable at all.
+
+**Job caveat, recorded:** the node reported state `suspect` while the `DEGREE` lines and `DONE` are present in
+the output. The per-call counts are the datum; the job's own verdict is not being leaned on.
+
+## The rate wall — T1's open question, measured (2026-10-30)
+
+`src/pacland/exactness/rate_wall.py` · `python3 scripts/rate_wall.py` · 8 tests.
+
+| `h12` | tries | valid | points | points per valid |
+|---|---|---|---|---|
+| 2 | 400 | 384 (96%) | **53** | **0.138** |
+| 5 | 2,000 | ~1,800 (90%) | **2** | **0.0011** |
+
+**The loss is not at the proposal stage.** Validity barely moves (96% → 90%) while points-per-valid collapses by a
+factor of **124**. So the sampler finds candidates and fails to drive them to `DW = 0`.
+
+**Hypothesis, labelled as one:** the solve dimension doubles (`b3 = 6` → `12`, i.e. 12 → 24 real flux
+components), so a Newton basin's volume shrinks geometrically. The alternative is that critical points are
+genuinely rarer at higher `h12`.
+
+**The discriminating test is named, and it is blocked:** a **per-trial residual histogram** — pile-up near
+`|DW| ~ 1e-2…1e-1` means convergence failure, a scatter means the points are absent. `sample_critical_points`
+does not expose per-trial residuals, so the question cannot be answered with the current API. That is the exact
+blocker, recorded rather than worked around.
+
+**Degree is excluded as the cause** by T1: degree 1 and degree 2 give 2 points each on the same budget.
+
+## The rate-wall verdict — arrivals are uniformly rare, not clustered (2026-10-30)
+
+`src/pacland/exactness/rate_wall.py` · 16 tests. Twenty consecutive calls at `h12 = 5`, degree 1, 400 tries each:
+
+```
+0 1 0 0 1 1 1 1 0 1 0 0 0 0 1 1 1 1 1 0     → 11 points in 20 calls
+```
+
+| quantity | value |
+|---|---|
+| mean points/call | 0.55 |
+| variance | 0.26 |
+| **variance / mean** | **0.47** (1 = Poisson, ≫1 = clustered) |
+| calls with ≥ 2 points | **0 observed**, 2.1 expected at Poisson(0.55) |
+| rate per try | **0.00137** (1 in 727) |
+| vs `h12 = 2` | **96×** |
+
+**Verdict: uniformly rare, not clustered.** No call produced two points where a free-Poisson process would have
+produced about two such calls, and the variance sits *below* the mean. Solver dynamics — lucky seeds, occasional
+good runs — would show the opposite. So the wall is a **per-try probability**, i.e. basin volume in 24
+dimensions, not a solver pathology.
+
+**And the under-dispersion suggests something stronger:** a maximum of 1 per call across 20 calls is consistent
+with the sampler **returning at most one point per call**, in which case 0.00137 is a *lower bound* and
+`1 − (1−p)^400 = 0.55` gives `p ≈ 0.002`. Flagged as a suggestion, not asserted.
+
+**What that decides:** better initialisation is a real path (a warm start raises the per-try probability), and a
+different solver is not needed to explain the wall.
+
+## B1 REFUTED — the h12 strata survive at fixed tadpole, and SUSY rises with N (2026-10-30)
+
+The cheapest bold claim, tested on data already on disk. **Claim B1**: the SUSY fraction is a function of the
+tadpole alone, so the 27.9% / 20.2% / 1.2% `h12` stratification is a sampling artefact.
+
+**Refuted.** Binned by tadpole (`log₂ N`), the SUSY fraction across `h12`:
+
+| N bin | h12=2 | h12=3 | h12=4 |
+|---|---|---|---|
+| 2² | 0.17 | 0.04 | **0.00** |
+| 2³ | 0.25 | 0.11 | **0.01** |
+| 2⁴ | 0.34 | 0.20 | **0.01** |
+| 2⁵ | 0.42 | 0.36 | **0.06** |
+| 2⁶ | 0.49 | 0.42 | **0.04** |
+
+**At every tadpole bin the `h12 = 4` rate is far below `h12 = 2`.** So the stratification is **not** explained
+by the `N` mix: something that tracks `h12` beyond `N` shapes the rate. B1's own falsifier, recorded before the
+run, is met — *"if the strata survive at fixed `N` then the landscape does vary with `h12` and the invariant
+content is not `(N, orbit)`"*.
+
+**And a stronger positive fell out of the same table:** within every `h12`, the SUSY fraction **rises
+monotonically with the tadpole** — 0.03 → 0.06 → 0.17 → 0.25 → 0.34 → 0.42 → 0.49 at `h12 = 2`. That is a
+genuine relation between two invariants (`N` and SUSY-ness) which survives across all three moduli counts, and
+it is the first *positive* structure the compression engine said did not exist — because compression used
+`log|N|` as one linear feature against a constant, and this is a strong monotone trend the linear model could
+not capture.
+
+**So the corpus does contain structure — just not the kind the model class we prespecified could see.** That is
+a correction to the compression verdict, and it is worth stating as one.
+
+## B3 REFUTED as written, replaced by a proved statement — dS needs a lift (2026-10-30)
+
+`src/pacland/oracle/ds_needs_uplift.py` · `python3 scripts/ds_uplift.py` · 9 tests.
+
+**The claim was "dS requires a Kähler modulus, not an uplift".** Executed, it is wrong in that wording and right
+in a sharper one.
+
+**Proved.** For the one-modulus model `K = −3 ln(T+T̄)`, `W = W0 + A e^{−aT}`, at a SUSY point `D_T W = 0`:
+
+```
+V = −3 e^K |W|² < 0     identically
+```
+
+— the *same* identity as the T⁶ result, now with a **Kähler** modulus stabilised. Stabilising a modulus cannot
+produce de Sitter. Verified at `T = 43.58`, `V = −6.27e−9`, identity residual **9.4e−31**, `DW = 1.5e−33`.
+
+**Exhibited.** An uplift `D/(2T)²` lifts the same minimum:
+
+| `D/D_crit` | `V` | verdict |
+|---|---|---|
+| 0 | −6.3e−9 | AdS |
+| 0.5 | −3.1e−9 | AdS |
+| **1.0** | **−7.3e−40** | **Minkowski** |
+| 2.0 | +6.3e−9 | **dS** |
+
+`D_crit = 3|W|²/(2T)` is a **formula**, not a searched value — the test recomputes it from `W` and `T` and
+requires agreement to `1e−30`.
+
+**The surviving statement:** *dS requires a positive term beyond the F-term potential; the modulus stabilises,
+the uplift lifts.* It excludes that the F-term potential alone can give de Sitter, in either sector.
+
+**Method note — this is the second attempt and the difference matters.** The first used `mp.findroot` from a
+guess, silently returned a point where `D_T W ≠ 0`, and reported `V > 0`, contradicting the theorem. This version
+**brackets and bisects** on a stated interval, **raises** if the bracket has no sign change, and asserts the
+identity residual before any uplift scan. The bad-bracket case is a test.
+
+## The invariant I(b3) — predictions on record, first test failed to confirm (2026-10-31)
+
+`src/pacland/exactness/invariant.py` · `python3 scripts/invariant.py` · 12 tests.
+
+**The law, stated before the run** — `rate(b3) = rate(6)·exp(−c(b3−6))` with `c = 0.762` fitted from two anchors
+(`0.1325/try` at `b3 = 6`, `0.00137/try` at `b3 = 12`). Predictions: **11.5 points per 400-try call at `h12 = 3`**,
+**2.5 at `h12 = 4`**. Committed before the measurement, which is what makes it a test.
+
+**First measurement (job `0511Z-invariant-law2`, degree 0):**
+
+| `h12` | predicted per call | measured |
+|---|---|---|
+| 3 | 11.5 | **20 of 20 calls raised** — unmeasurable |
+| 4 | 2.5 | **8 and 10** in the first two calls — **3–4× above** |
+
+**Provisional verdict: not confirmed, and if `h12 = 4` holds above prediction the law fails.** Two consequences:
+
+1. **A framework-level negative result.** If the rate does not follow a single exponential in `b3`, then the
+   classification scale (`max|N| = b3`) and the accessibility scale are **unrelated**, and `I(b3)` is not one
+   invariant. That is the first result this arm has produced *against* its own unification-shaped target, and it
+   was cheap because the prediction was written first.
+2. **An instrumentation defect of my own, recorded.** `h12 = 3` raised on every call and the `try/except` stored
+   `-1`, discarding the message — so an entire `h12` is unmeasurable for an unknown reason. A sentinel value hid
+   the diagnosis. The next run must capture and print the exception text before counting anything.
+
+**Not yet recorded as settled:** the full 20-call `h12 = 4` counts and the `h12 = 3` exception text. The module
+records the partial state rather than smoothing it.
+
+## The invariant law, measured — the FORM survives, the PARAMETER does not (2026-10-31)
+
+Eight of the twenty `h12 = 4` calls are in (the run is slow; each call returns several points):
+
+```
+8 10 1 8 6 8 4 9     → 54 points in 8 calls = 6.75 per call
+```
+
+| quantity | value |
+|---|---|
+| predicted per call | 2.5 |
+| measured per call | **6.75** |
+| ratio | **2.70×** — inside the pre-registered factor-3 band |
+| implied coefficient `c` | **0.515** against the fitted **0.762** |
+
+**So the verdict splits, and both halves matter:**
+
+1. **The exponential form survives.** A ratio of 2.70 is inside the band written down before the run, so the
+   sampler's rate **does** track `b3` — the accessibility scale and the classification scale (`max|N| = b3`) are
+   not unrelated, and the unification-shaped reading holds *in form*.
+2. **The fitted parameter does not.** The implied coefficient is 0.515, not 0.762 — the rate falls more slowly
+   with `b3` than the two-anchor fit said. With `h12 = 2, 4, 5` only, `c` and the functional form are
+   degenerate; **`h12 = 3` is the point that breaks it**, and that run raised on every call for a reason still
+   unknown (probe queued).
+
+**This is the honest shape of a first confirmation:** the claim's structure passed its own test, its number did
+not, and the missing measurement is exactly the one that would settle which is wrong.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

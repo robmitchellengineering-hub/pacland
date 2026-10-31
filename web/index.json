@@ -249,6 +249,13 @@
    "title": "The constraint/observable split \u2014 the structure miner's answer"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/cycles.md",
+   "kind": "doc",
+   "path": "docs/cycles.md",
+   "summary": "",
+   "title": "Cycles \u2014 the no \u2192 question \u2192 yes \u2192 no loop, closed ones only"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/darboux-connection.md",
    "kind": "doc",
    "path": "docs/darboux-connection.md",
@@ -592,6 +599,13 @@
    "title": "Physics compute \u2014 removing the GPU, and whether pooling cheap machines works"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-bold-claims.md",
+   "kind": "doc",
+   "path": "docs/plan-bold-claims.md",
+   "summary": "contribute to a unified theory. AirMatrix is where findings become hardware; this is where they become structure. Every claim in this document is judged by one question: does it constrain\u2026",
+   "title": "Bold but provable \u2014 the research arm, pointed at unification"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-brane-ring.md",
    "kind": "doc",
    "path": "docs/plan-brane-ring.md",
@@ -618,6 +632,13 @@
    "path": "docs/plan-facts.md",
    "summary": "Planning room (~/Documents/DeepSeek), 2026-10-29. Decisions: D9 (this folder owns intent, the repo owns code), D10 (job \u2192 plan \u2192 decision), D14 (pacland is the method at maximum\u2026",
    "title": "The fact-builds \u2014 what to build to get answers rather than pointers"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-real-answers.md",
+   "kind": "doc",
+   "path": "docs/plan-real-answers.md",
+   "summary": "negatives into questions. What has not yet happened is a single answer about nature rather than about our data. This is the plan for changing that, and it names what is missing rather than\u2026",
+   "title": "Plan \u2014 from falsification to answers"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/publication-plan.md",
@@ -728,7 +749,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/swampland-connection.md",
    "kind": "doc",
    "path": "docs/swampland-connection.md",
-   "summary": "This doc records the bridge between the measured structure map and the swampland program, and the runnable system that tests it: pacland.swampland + scripts/testswampland.py (pure stdlib +\u2026",
+   "summary": "This doc records the bridge between the measured structure map and the swampland program, and the runnable system that tests it: pacland.swampland + scripts/swamplandchecks.py (pure stdlib\u2026",
    "title": "The swampland connection \u2014 the constraint-first conjecture as a swampland test"
   },
   {
@@ -749,7 +770,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/tensions.md",
    "kind": "doc",
    "path": "docs/tensions.md",
-   "summary": "Facts: - h12 = 5 sampler yield is zero at instanton degree 0, 1 and 2 (~360 valid candidates each, ~180 s; JOBS.md, 2026-10-29) - #208 concluded the h12 >= 5 wall is degree-1 truncation and\u2026",
+   "summary": "Facts: - h12 = 5 sampler yield was zero at instanton degree 0, 1 and 2 at 400 tries each - #208 concluded the h12 >= 5 wall is degree-1 truncation and that degree 2 fixes it",
    "title": "Tensions \u2014 facts that cannot both be true as stated"
   },
   {
@@ -1040,6 +1061,20 @@
    "title": "conifold_exponents.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/connection_form.py",
+   "kind": "script",
+   "path": "scripts/connection_form.py",
+   "summary": "The connection matrix: is there a closed algebraic form?",
+   "title": "connection_form.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/continuation.py",
+   "kind": "script",
+   "path": "scripts/continuation.py",
+   "summary": "Route C \u2014 a period outside the large-complex-structure radius.",
+   "title": "continuation.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/counterexample.py",
    "kind": "script",
    "path": "scripts/counterexample.py",
@@ -1052,6 +1087,13 @@
    "path": "scripts/crosscheck_sm_float.py",
    "summary": "Rule of Three, arm 2 \u2014 an INDEPENDENT float re-derivation of the two SM exact results.",
    "title": "crosscheck_sm_float.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/cycles.py",
+   "kind": "script",
+   "path": "scripts/cycles.py",
+   "summary": "The cycle log \u2014 one line per closed loop of the no -> question -> yes -> no process.",
+   "title": "cycles.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/demo_certificate_t6.py",
@@ -1108,6 +1150,13 @@
    "path": "scripts/drugs_second_source.py",
    "summary": "Class 5 for drug discovery: the same potency, from two independent databases.",
    "title": "drugs_second_source.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ds_uplift.py",
+   "kind": "script",
+   "path": "scripts/ds_uplift.py",
+   "summary": "B3 \u2014 de Sitter requires a positive term beyond the F-term potential.",
+   "title": "ds_uplift.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_resolve.py",
@@ -1257,6 +1306,13 @@
    "title": "epidemiology_identifiability.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/exact_series.py",
+   "kind": "script",
+   "path": "scripts/exact_series.py",
+   "summary": "Route C exact sub-item \u2014 the conifold coefficients, exactly.",
+   "title": "exact_series.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/exactness.py",
    "kind": "script",
    "path": "scripts/exactness.py",
@@ -1374,6 +1430,13 @@
    "path": "scripts/install_cytools.sh",
    "summary": "Install CYTools + its C++ prerequisites, then verify against the quintic.",
    "title": "install_cytools.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/invariant.py",
+   "kind": "script",
+   "path": "scripts/invariant.py",
+   "summary": "The invariant I(b3) \u2014 one integer behind classification and accessibility.",
+   "title": "invariant.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/issue_certificate.py",
@@ -1495,6 +1558,13 @@
    "title": "mine_structure.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/no_ds_t6.py",
+   "kind": "script",
+   "path": "scripts/no_ds_t6.py",
+   "summary": "Route B \u2014 the T^6 oracle has no de Sitter vacuum, and it is proved rather than sampled.",
+   "title": "no_ds_t6.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b1_b3_probe.py",
    "kind": "script",
    "path": "scripts/node_b1_b3_probe.py",
@@ -1579,11 +1649,25 @@
    "title": "positives.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/preconditions.py",
+   "kind": "script",
+   "path": "scripts/preconditions.py",
+   "summary": "Guards for the instrument, not the result.",
+   "title": "preconditions.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/quintic_periods.py",
    "kind": "script",
    "path": "scripts/quintic_periods.py",
    "summary": "F2 M1 \u2014 the quintic's Picard-Fuchs operator, solved and bounded.",
    "title": "quintic_periods.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/rate_wall.py",
+   "kind": "script",
+   "path": "scripts/rate_wall.py",
+   "summary": "The rate wall \u2014 where the sampler loses candidates as h12 grows.",
+   "title": "rate_wall.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/render_pdf.py",
@@ -1670,6 +1754,13 @@
    "title": "sample_vacua.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/scaling.py",
+   "kind": "script",
+   "path": "scripts/scaling.py",
+   "summary": "Route A \u2014 the scaling study: which lattice facts survive a change of b3?",
+   "title": "scaling.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/scan_isd_conditioning.py",
    "kind": "script",
    "path": "scripts/scan_isd_conditioning.py",
@@ -1733,6 +1824,13 @@
    "title": "spectral_zeros_deep.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/swampland_checks.py",
+   "kind": "script",
+   "path": "scripts/swampland_checks.py",
+   "summary": "Run the swampland-connection report against the data we already hold.",
+   "title": "swampland_checks.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tensions.py",
    "kind": "script",
    "path": "scripts/tensions.py",
@@ -1754,11 +1852,11 @@
    "title": "test_orbit_injectivity.py"
   },
   {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_swampland.py",
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/try_budget.py",
    "kind": "script",
-   "path": "scripts/test_swampland.py",
-   "summary": "Run the swampland-connection report against the data we already hold.",
-   "title": "test_swampland.py"
+   "path": "scripts/try_budget.py",
+   "summary": "The try-budget wrapper \u2014 a budget in the units the API actually exposes.",
+   "title": "try_budget.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_all_theorems.py",
@@ -2074,6 +2172,13 @@
    "path": "web/climate.html",
    "summary": "page on this site",
    "title": "Climate figures \u2014 the four graphs drawn from the data"
+  },
+  {
+   "href": "./cones-3d.html",
+   "kind": "page",
+   "path": "web/cones-3d.html",
+   "summary": "page on this site",
+   "title": "cones-3d"
   },
   {
    "href": "./index.html",

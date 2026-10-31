@@ -1,12 +1,25 @@
-"""The tension register — generated, drift-guarded, and every open tension has a discriminator."""
+import importlib.util
 import subprocess
 import sys
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "scripts"))
-import tensions as T  # noqa: E402
+
+
+def _load(name):
+    """Load a script module WITHOUT putting scripts/ on sys.path.
+
+    `scripts/` contains test-named files from another session (test_swampland, test_orbit_injectivity, ...).
+    Appending it to sys.path makes unittest discovery import THOSE instead of tests/*, which surfaces as
+    "module incorrectly imported from .../scripts". Load by explicit path and keep sys.path clean.
+    """
+    spec = importlib.util.spec_from_file_location(f"_script_{name}", ROOT / "scripts" / f"{name}.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+T = _load("tensions")
 
 
 class TestTheRegister(unittest.TestCase):

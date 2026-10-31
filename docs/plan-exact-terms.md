@@ -510,6 +510,89 @@ That has consequences beyond the yield test:
 (10 target × 400 batches). If the SUSY hit rate at h12 = 5 stays at zero with corrections on, the solve is the
 limit. If it rises, the earlier zero was the disabled switch and the wall is smaller than we thought.
 
+### The fair test — corrections ON, and the verdict survives (2026-10-29)
+
+Same budget, same machine, `maximum_degree = 2` so `include_mirror_wsi = True`:
+
+| h12 | degree | critical points | SUSY | time |
+|---|---|---|---|---|
+| **2** | 2 | 11 | **5** | 127 s |
+| **5** | 2 | 10 | **0** | 1,197 s |
+
+**Two facts, and they pull in different directions:**
+
+1. **The disabled switch mattered at h12 = 2.** With corrections on, the SUSY hit rate there goes from **1/10
+   (degree 0) to 5/11 (degree 2)** — the degree-0 measurement was depressed by the forced-off flag, exactly as
+   the source said it would be.
+2. **It did not matter at h12 = 5.** Ten critical points, still **zero** SUSY, with corrections on and a budget
+   that found the target count.
+
+**So the yield conclusion survives the fair test, and gets sharper:** the sampler reaches critical points at
+h12 = 5 at the same rate as at h12 = 2 (10–11 of target, both), and the SUSY success collapses from **45% to
+0%** between those two models. **A solve failure, not a proposal failure and not a truncation failure** — the
+third candidate, and the one that survives all three tests.
+
+### What this does to the earlier claims
+
+| claim | verdict after the fair test |
+|---|---|
+| "degree 2 fixes the series" (#208) | **holds** — `d2 = d3` with corrections on |
+| "degree 2 does not fix the yield" (#214) | **confounded** — it compared corrections off vs on; withdrawn as stated |
+| "the sampler proposes fine; the solve fails" (#244) | **holds, and is now measured with corrections on** — 45% → 0% |
+
+**The next repair is aimed at the solve**, and it now has a clean diagnostic: at h12 = 5 the sampler lands ten
+critical points and the F-term solve fails on every one.
+
+### Diagnosing the solve — the two SUSY criteria disagree by seventy-five orders of magnitude
+
+The sampler returns each critical point with **both** a `|DW|` field and a `residual` field. At h12 = 5,
+degree 2 (corrections on), the two points sampled:
+
+| point | `is_susy` | `\|DW\|` | `residual` | `is_minimum` | V |
+|---|---|---|---|---|---|
+| 0 | false | **1.71e+38** | **3.77e-37** | false | 6.42 |
+| 1 | false | **5.57e+27** | **7.61e-36** | false | 9.60 |
+
+**One field says the F-terms are astronomically unsatisfied; the other says they are satisfied to 36 digits.**
+They cannot both be describing the same equations at the same point.
+
+**What that means for the h12 ≥ 5 verdict:** the falsifier's first branch was *"if `|DW|` is small and
+`is_susy` is false, the classifier is wrong"*. It did not fire — but a criterion that reports `10^38` and a
+residual of `10^-37` at the same point is not a criterion we can grade a hit rate with. **So the 0/10 SUSY
+result at h12 = 5 is not yet trustworthy either**, for a different reason than the instanton switch, and this
+is the third time in one day that a headline has had to be withdrawn on inspection.
+
+**The next step is small and specific:** establish which of the two fields `is_susy` is computed from, and why
+the other explodes at h12 = 5 (a scaling/overflow in the DW evaluation at large moduli is the leading
+candidate — `e^K` and the period sum both grow). Until that is settled, **no SUSY hit-rate at h12 ≥ 5 is
+quoted as a result**, only as a provisional number with this table attached.
+
+### The guards — check the instrument, then the measurement (2026-10-29)
+
+Three retractions in one day shared one shape: the number was fine and the **apparatus assumption** was wrong.
+`scripts/preconditions.py` now makes that class of error loud, and every check is tested to fire:
+
+| guard | catches | test |
+|---|---|---|
+| `require_corrections_on(model, degree)` | `maximum_degree = 0` silently disabling mirror instanton corrections, so a "baseline" was not the model | degree 2 with corrections off **raises** |
+| `require_agree(a, b, names)` | two fields describing the same quantity disagreeing by orders of magnitude — `|DW|` 1.7e38 against `residual` 3.8e-37 | that exact pair **raises** |
+| `require_multi_point(n, 3)` | a ladder run at one moduli point, where five points moved the answer by 88% | `n = 1` **raises** |
+
+**The rule they encode:** *check that the instrument measures what you think, before checking what it
+measured.* A falsifier cannot catch a false premise about the setup — only a precondition can.
+
+### Pass markers — the record distinguishes a first pass from a confirmed one
+
+From here, a measured number in this document carries one of two marks:
+
+- **PASS-1** — one run, falsifier satisfied, **not yet reproduced**. Treated as provisional and never quoted
+  in a paper or a certificate.
+- **PASS-2** — reproduced by a second run with a different parameterisation (different degree, seed, budget or
+  point count), or by an independent path. Only PASS-2 numbers leave the repository.
+
+Today's three retractions were all PASS-1 numbers that had been written up as if they were PASS-2. The
+markers exist so that mistake is visible in the document rather than in the next session's surprise.
+
 ### The node stopped polling, and why
 
 The B2 run wrote a `result.json` with `"summary": ,` — an empty summary — which is invalid JSON. The node

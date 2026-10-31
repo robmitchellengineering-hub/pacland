@@ -18,22 +18,22 @@ TENSIONS = [
     {
         "id": "T1",
         "facts": [
-            "`h12 = 5` sampler yield is **zero** at instanton degree 0, 1 **and** 2 "
-            "(~360 valid candidates each, ~180 s; JOBS.md, 2026-10-29)",
+            "`h12 = 5` sampler yield was **zero** at instanton degree 0, 1 **and** 2 at 400 tries each",
             "#208 concluded the `h12 >= 5` wall is degree-1 truncation and that **degree 2 fixes it**",
         ],
         "clash": "one says degree 2 does not help; the other says it is the fix",
-        "discriminator": ("raise the *tries* budget and re-run both degrees. **Attempted 2026-10-30; it "
-                          "failed to discriminate, for a reason worth recording:** the second argument of "
-                          "`scripts/sample_h12.py` is `n_target` (points wanted), not a try count — the "
-                          "library caps at 400 tried regardless, so a \"1200-try\" run silently did 400. What "
-                          "the attempt did establish: **degree 2 produced 1 critical point (1 saddle) across "
-                          "two 400-try runs; degree 1 produced 0 across two** — one event apart, which cannot "
-                          "discriminate. A real budget knob (`max_tries`, not exposed by the script) is now "
-                          "the precondition, not the comparison."),
-        "state": "open",
-        "resolution": "",
-        "cost": "blocked: `sample_h12.py` passes `n_target`, and the library caps at 400 tried",
+        "discriminator": ("spend a real budget with `try_budget.run_to_budget` (calls, not `n_target`) and "
+                          "compare the two degrees"),
+        "state": "resolved",
+        "resolution": ("**both degrees work; the zero was a budget artefact.** Five calls each (~2,000 tries) "
+                       "on pacland-rog: degree 1 → **2 points** `[0,1,0,0,1]` in 504 s, degree 2 → **2 points** "
+                       "`[0,0,1,0,1]` in 521 s. Indistinguishable. So `h12 = 5` is **not** a degree wall: "
+                       "degree 1 yields at the same rate, and the earlier zero was 400 tries being too few. "
+                       "#208's \"degree 2 fixes it\" is refuted as a statement about yield — the real wall "
+                       "is the **rate** (~0.008 points per valid candidate at `h12 = 5`, against 0.138 at "
+                       "`h12 = 2`), which no degree change addresses. Job state was `suspect` with the "
+                       "DEGREE lines and DONE present; the per-call counts are the datum."),
+        "cost": "done — one node job, ~15 min",
     },
     {
         "id": "T2",
@@ -54,17 +54,17 @@ TENSIONS = [
         "id": "T3",
         "facts": [
             "F1 states the small-tadpole fraction is **0.071 or 0.361** depending on measure — **5.05x**",
-            "the same F1 table shows `flux-uniform` and `primitive` agreeing exactly (0.2015 both)",
+            "Route A: the same flux-uniform fraction is **0.901 at `b3=2`, 0.744 at `b3=4`, 0.644 at `b3=6`**",
         ],
-        "clash": "a 5x spread across measures, and two of those measures indistinguishable",
-        "discriminator": "ask `measures.table()` which measures differ for the property, and check that the "
-                        "ratio is max/min rather than a real-vs-null comparison",
+        "clash": "a 5x spread across measures, and a further 40% movement across window sizes",
+        "discriminator": "ask `measures.table()` which measures differ, AND `scaling.py` how the value moves "
+                        "with `b3` — two independent dependencies on one number",
         "state": "resolved",
         "resolution": ("the 5.05x is `max/min` across five defensible measures (`log-N` 0.3609 vs "
-                       "`tadpole-uniform` 0.0714). `flux-uniform` and `primitive` coincide here because "
-                       "primitivity and `|N| <= 1` are independent in the window — so an analysis that "
-                       "compared *those two* would have reported 1.00 and called it robust. Both facts are "
-                       "true; the tension was a temptation, and the robustness regression test pins it."),
+                       "`tadpole-uniform` 0.0714). **And it is a ratio at one window size**: the flux-uniform "
+                       "fraction moves 0.901 → 0.644 as `b3` goes 2 → 6, so the ratio is not a landscape "
+                       "invariant either. Both facts are true; the tension was a temptation, and the "
+                       "robustness regression test plus the scaling study now pin both halves."),
         "cost": "done",
     },
     {
