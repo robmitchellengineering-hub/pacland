@@ -5,6 +5,7 @@ import unittest
 from contextlib import redirect_stdout
 
 sys.path.insert(0, "scripts")
+sys.path.insert(0, "src")
 import rf_plan  # noqa: E402
 
 
@@ -41,3 +42,35 @@ class TestOneCommand(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestMeasuredLink(unittest.TestCase):
+    """The plan must consume a real `iw link` capture and say whether it discriminates."""
+
+    def _capture(self):
+        import pathlib
+        import tempfile
+        text = ("Connected to 14:59:c0:65:57:2d (on wlp2s0)\n"
+                "\tSSID: Telstra3696\n\tfreq: 2462.0\n\tsignal: -37 dBm\n"
+                "\trx bitrate: 144.4 MBit/s MCS 15 short GI\n"
+                "\ttx bitrate: 144.4 MBit/s MCS 15 short GI\n")
+        p = pathlib.Path(tempfile.mkdtemp()) / "link.txt"
+        p.write_text(text)
+        return str(p)
+
+    def test_the_measured_band_replaces_the_assumed_one(self):
+        out = run(["--room", "4,5,2.4", "--antennas", "2", "--iw-link", self._capture()])
+        self.assertIn("2.46 GHz", out)
+        self.assertNotIn("5.18 GHz", out)
+
+    def test_it_reports_the_streams_from_the_mcs(self):
+        out = run(["--room", "4,5,2.4", "--antennas", "2", "--iw-link", self._capture()])
+        self.assertIn("streams in use            2 of at most 2", out)
+
+    def test_it_says_when_the_row_cannot_discriminate(self):
+        out = run(["--room", "4,5,2.4", "--antennas", "2", "--iw-link", self._capture()])
+        self.assertIn("NOT DISCRIMINATING", out)
+
+    def test_the_falsifier_never_asks_for_a_negative_number(self):
+        out = run(["--room", "4,5,2.4", "--antennas", "2", "--iw-link", self._capture()])
+        self.assertNotIn("FEWER than 0", out)
