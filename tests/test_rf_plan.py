@@ -23,10 +23,14 @@ class TestOneCommand(unittest.TestCase):
                         "THERMAL CEILING", "WHAT WOULD FALSIFY"):
             self.assertIn(section, out)
 
-    def test_it_carries_pass_marks(self):
+    def test_every_section_carries_a_pass_mark(self):
+        # the mechanism, not a specific value: every numbered section must declare its status
         out = run(["--room", "3,4,2.5"])
         self.assertIn("PASS-2", out)
-        self.assertIn("PASS-1", out)          # the thermal bound is PASS-1 and says so
+        self.assertIn("PASS-1", out)          # the chamber rule comparison is still PASS-1, and says so
+        for n in ("1.", "2.", "3.", "4.", "5."):
+            line = next(l for l in out.splitlines() if l.strip().startswith(n))
+            self.assertTrue("PASS-" in line, line)
 
     def test_it_states_a_falsifier(self):
         self.assertIn("One measurement settles it", run(["--room", "3,4,2.5"]))
@@ -74,3 +78,14 @@ class TestMeasuredLink(unittest.TestCase):
     def test_the_falsifier_never_asks_for_a_negative_number(self):
         out = run(["--room", "4,5,2.4", "--antennas", "2", "--iw-link", self._capture()])
         self.assertNotIn("FEWER than 0", out)
+
+
+class TestOneCommandCoversChambers(unittest.TestCase):
+    def test_chamber_flag_adds_the_chamber_section(self):
+        out = run(["--room", "3,2.5,2.2", "--band", "0.3", "--chamber"])
+        self.assertIn("CHAMBER", out)
+        self.assertIn("LUF by exact mode count", out)
+
+    def test_without_the_flag_there_is_no_chamber_section(self):
+        out = run(["--room", "3,2.5,2.2", "--band", "0.3"])
+        self.assertNotIn("LUF by exact mode count", out)
