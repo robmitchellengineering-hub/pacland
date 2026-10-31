@@ -6,11 +6,11 @@
 
 ## Exhibited Object (2)
 
-- **a primitive pair with zero tadpole whose halves are non-zero and not proportional: `(F|H) = [-1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0]`, N = 0 (124992 in the window)**
-  - why it matters: it says the kernel of the symplectic pairing is populated away from its two obvious branches (F = 0 and F proportional to H), which is a statement about the lattice rather than a claim about a model
-  - reproduce: `python3 scripts/existence.py`
 - **a primitive pair with zero tadpole and no zero component: `(F|H) = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]`, N = 0 (1280 in the window)**
   - why it matters: it gives a null-tadpole flux pair you can hand to any computation without a component dropping out — a resource, not just a fact
+  - reproduce: `python3 scripts/existence.py`
+- **a primitive pair with zero tadpole whose halves are non-zero and not proportional: `(F|H) = [-1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0]`, N = 0 (124992 in the window)**
+  - why it matters: it says the kernel of the symplectic pairing is populated away from its two obvious branches (F = 0 and F proportional to H), which is a statement about the lattice rather than a claim about a model
   - reproduce: `python3 scripts/existence.py`
 
 ## Theorem In A Window (1)
@@ -30,26 +30,26 @@
 - **SUSY fraction (primitive rows) = 21.167% (95% CI [20.149%, 22.223%], 5962 rows)**
   - why it matters: narrow interval and stable under the stated choices
   - reproduce: `python3 scripts/observability.py`
-- **primitive fraction = 99.950% (95% CI [99.852%, 99.983%], 5965 rows)**
-  - why it matters: narrow interval and stable under the stated choices
-  - reproduce: `python3 scripts/observability.py`
 - **SUSY fraction stratified: h12 = 2 rows only = 27.9%, h12 = 3 rows only = 20.2%, h12 = 4 rows only = 1.2%**
   - why it matters: the spread is the finding: the pooled number is between the strata
   - reproduce: `python3 scripts/robustness.py`
+- **primitive fraction = 99.950% (95% CI [99.852%, 99.983%], 5965 rows)**
+  - why it matters: narrow interval and stable under the stated choices
+  - reproduce: `python3 scripts/observability.py`
 - **window facts across b3 = [2, 4, 6]: 5 of 6 are scale-dependent (e.g. `|N| <= 1` 0.901 to 0.644); `max|N| = b3` exactly**
   - why it matters: a window fraction is not a landscape fact; the exact ladder stops at b3 = 6
   - reproduce: `python3 scripts/scaling.py`
 
 ## Certified Map (3)
 
+- **S and T duality: the phase law: S: (F,H,tau0) -> (-H, F, -1/tau0);   T: (F,H,tau0) -> (F+H, H, tau0+1); identity 5.6e-17, worth case carried observable 3.4e-16**
+  - why it matters: exact on the T^6 oracle, where K and Pi are closed form
+  - reproduce: `python3 scripts/dictionary.py`
 - **flux scaling, d = 2: T: (F, H) -> 2(F, H); identity 0.0e+00, worth case carried observable 0.0e+00**
   - why it matters: d must be a **positive integer** for the map to be a map of the flux lattice: for real d the scaling of W and N still holds, but the image is not on the lattice
   - reproduce: `python3 scripts/dictionary.py`
 - **the mirror map, z-chart <-> conifold chart: T: z -> u = 1 - z/z_c; identity 1.9e-51, worth case carried observable 6.3e-15**
   - why it matters: **three of four branches**: the exponent-0 branch has no certified translation (double resonance, F2 M2e), so the map is certified on the span of the other thre
-  - reproduce: `python3 scripts/dictionary.py`
-- **S and T duality: the phase law: S: (F,H,tau0) -> (-H, F, -1/tau0);   T: (F,H,tau0) -> (F+H, H, tau0+1); identity 5.6e-17, worth case carried observable 3.4e-16**
-  - why it matters: exact on the T^6 oracle, where K and Pi are closed form
   - reproduce: `python3 scripts/dictionary.py`
 
 ## Exact Integer (1)
