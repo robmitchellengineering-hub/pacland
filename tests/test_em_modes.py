@@ -72,3 +72,16 @@ class TestPolarisation(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestSeedParameter(unittest.TestCase):
+    """The sampled-mode draw must be controllable, or the sampling cannot be tested."""
+
+    def test_seed_is_accepted_and_reproducible(self):
+        tx = [(0.6, 3.2, 1.5), (1.2, 2.4, 1.8), (1.8, 1.6, 2.0), (2.4, 0.8, 2.2)]
+        rx = [((3.0 - x) * 0.8 + 0.3, (4.0 - y) * 0.8 + 0.4, z) for (x, y, z) in tx]
+        a = E.channel_matrix_polarised(3.0, 4.0, 2.5, 5.18e9, tx, rx, [(0, 0, 1)] * 4, [(0, 0, 1)] * 4,
+                                       max_modes=200, seed=7)
+        b = E.channel_matrix_polarised(3.0, 4.0, 2.5, 5.18e9, tx, rx, [(0, 0, 1)] * 4, [(0, 0, 1)] * 4,
+                                       max_modes=200, seed=7)
+        self.assertEqual(E.streams(a, 20.0), E.streams(b, 20.0))
