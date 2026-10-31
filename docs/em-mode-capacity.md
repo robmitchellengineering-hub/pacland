@@ -15,9 +15,9 @@ Weyl's law with a **fitted** surface coefficient:
 
 | space | to 3 GHz | exact modes | distinct | Weyl error |
 |---|---|---|---|---|
-| metal cabinet (0.5 m cube) | | 1,037 | 85 | small-N |
-| small room (3 × 4 × 2.5 m) | | **251,768** | 56,454 | **−0.001%** |
-| implant phantom (10 × 10 × 20 cm) | | 15 | 8 | **+1.02%** |
+| metal cabinet (0.5 m cube) | | 1,027 | 81 | −0.107% |
+| small room (3 × 4 × 2.5 m) | | **251,718** | 56,427 | **−0.004%** |
+| implant phantom (10 × 10 × 20 cm) | | 11 | 5 | −0.745% |
 
 The volume coefficient is theory — two polarisations of a scalar field give `(8πV/3)(f/c)³` exactly. The
 surface coefficient is **measured against exact enumeration** (0.009–0.104 depending on the space), never
@@ -28,10 +28,23 @@ asserted.
 
 ## What the same table says that a solver does not
 
-**77.6% of the modes in a 3 × 4 × 2.5 m space are exact degeneracies**, and **91.8%** in a cube. That is the
+**77.6% of the modes in a 3 × 4 × 2.5 m space are exact degeneracies**, and **92.1%** in a cube. That is the
 identical structural fact the acoustic work found (38 of 104 box modes below 200 Hz), and it has the same
 consequence: **a spacing statistic computed on raw modes is measuring the symmetry of the box, not the
 physics.** Any tool that reports "mode density" without collapsing degeneracies is reporting an artefact.
+
+### A real bug found by a test, kept because it changes the numbers
+
+The first enumeration counted `(0,0,p)` as a TE mode. **With both transverse indices zero every transverse
+field component vanishes identically — it is not a mode.** The TE101 test asserted that `(0,1,1)` was the
+lowest mode and got `(0,0,1)` back, which is how it was caught.
+
+Corrected counts: cabinet **1,037 → 1,027**, room **251,768 → 251,718**, phantom **15 → 11**. The Weyl
+agreement moved from *small-N* to a stated **−0.004%** on the room and **−0.745%** on the phantom, and the
+degeneracy fractions rose slightly because the spurious modes were singletons.
+
+**The test earned its keep on its first run** — and the fix changed three numbers on the page, which is why
+they are quoted with the correction rather than silently updated.
 
 ## What does not yet hold, stated plainly
 

@@ -36,9 +36,12 @@ def cavity_modes(a: float, b: float, d: float, f_max: float,
                 f = (c / 2.0) * math.sqrt((m / a) ** 2 + (n / b) ** 2 + (p / d) ** 2)
                 if f > f_max or f <= 0:
                     continue
-                # TE: p >= 1 (both transverse indices may vanish); TM: m >= 1 and n >= 1
-                if p >= 1:
+                # TE: p >= 1 AND at least one transverse index non-zero. (0,0,p) is NOT a mode: with both
+                # transverse indices zero every transverse field component vanishes identically. Counting it
+                # was a real bug — found by the TE101 test asserting (0,1,1) was lowest and getting (0,0,1).
+                if p >= 1 and (m >= 1 or n >= 1):
                     out.append((f, "TE", (m, n, p)))
+                # TM: m >= 1 and n >= 1 (p may be zero: TM_mn0 is physical)
                 if m >= 1 and n >= 1:
                     out.append((f, "TM", (m, n, p)))
     out.sort()
