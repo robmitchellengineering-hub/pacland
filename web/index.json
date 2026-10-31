@@ -1789,6 +1789,13 @@
    "title": "test_swampland.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/try_budget.py",
+   "kind": "script",
+   "path": "scripts/try_budget.py",
+   "summary": "The try-budget wrapper \u2014 a budget in the units the API actually exposes.",
+   "title": "try_budget.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_all_theorems.py",
    "kind": "script",
    "path": "scripts/validate_all_theorems.py",

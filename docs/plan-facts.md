@@ -652,6 +652,28 @@ precisely which part of the connection audit remains a measurement.
 form (the `log`-branch values carry `zeta(3)`), and until that exists its residual stays labelled *measured*.
 The module says so in its own returned record rather than implying the audit is complete.
 
+## The try-budget wrapper — a budget in the units the API has (2026-10-30)
+
+`src/pacland/exactness/try_budget.py` · `python3 scripts/try_budget.py` · 7 tests.
+
+`sample_critical_points(n_target=N)` asks for **points**. The library caps its own search at 400 tries per call,
+so the "1200-try" escalation behind T1 silently did 400 — the run happened, the budget did not.
+
+**The wrapper's budget is calls, seconds and points — the units the API exposes — and the try count is reported
+as `unknown`, not inferred.** Inferring tries from calls would repeat exactly the mistake that cost T1 its
+discriminator.
+
+| what | value |
+|---|---|
+| calls | how many invocations |
+| seconds | wall-clock |
+| points | accumulated, with per-call counts |
+| yield | per call and per second |
+| tries | **unknown** — the sampler does not expose it |
+
+Early stop on first find is supported (`stop_when_found`), which is what an *existence* question needs: the
+run ends the moment an object appears, instead of spending the rest of the budget.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
