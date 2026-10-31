@@ -54,6 +54,43 @@ def check(paths: dict[str, bool], outcome: str) -> dict:
             "conformant": True}
 
 
+def check_operator_ask(reach: dict[str, bool], outcome: str, *, what: str = "") -> dict:
+    """The harder gate: if the agent can REACH the device, an operator ask is non-conformant.
+
+    Rob, 2026-10-31, after being asked to run `iw` and then told to plug a laptop's Ethernet out:
+
+        "what is this you have the power and authority to do whatever you want on the robmesh
+         you have that ssid and password just get it done stop hitting walls
+         you know what we do with them"
+
+    The first gate (`check`) asks whether an execution PATH was tried. That is not enough: a session can honestly
+    report `local=False, ssh=False, mesh=False` and still be able to act, because it never thought to try the
+    credential store, the saved profile, the device's own control channel, or its API.
+
+    So this gate asks a different question — **can the agent reach the machine?** — and refuses an operator ask
+    when it can. `reach` maps each channel to whether the agent has working access:
+
+        ssh        a key that authenticates to the device
+        mesh       a node in the mesh that can run the job
+        api        a control API the agent is authorised to call (router, hypervisor, cloud console)
+        stored_cred  a saved credential or profile the agent may use without a human
+
+    If ANY of these is true, the agent does the work. Reporting that a path was "not tried" is not an excuse; that
+    is the failure mode this gate exists to catch.
+    """
+    channels = ("ssh", "mesh", "api", "stored_cred")
+    have = {c: bool(reach.get(c, False)) for c in channels}
+    if outcome == "asked_operator" and any(have.values()):
+        available = ", ".join(c for c, ok in have.items() if ok)
+        raise ExecutionGateError(
+            f"asked the operator to {what or 'act'} while the agent can reach the device via: {available}. "
+            "Reaching it and declining to act is a wall of the agent's own making - break it.")
+    if outcome == "asked_operator" and not any(have.values()):
+        return {"gate": "operator-ask@1", "reach": have, "outcome": outcome, "conformant": True,
+                "note": "no channel open: the ask is legitimate and must say which channels were checked"}
+    return {"gate": "operator-ask@1", "reach": have, "outcome": outcome, "conformant": True}
+
+
 def summary(record: dict) -> str:
     tried = [p for p, ok in record["paths_tried"].items() if ok]
     if record["outcome"] == "asked_operator":
