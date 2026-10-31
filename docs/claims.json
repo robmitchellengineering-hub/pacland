@@ -88,14 +88,15 @@
     },
     {
       "id": "identifiability-modes",
-      "claim": "17-19 of 40 modes are usable at -60 dB in a high-Q cavity, and probes buy little beyond the fourth",
-      "status": "PASS-1",
+      "claim": "16-17 of 40 modes are usable at -60 dB with three probes, independent of Q, and the count saturates while the mode count grows 245x",
+      "status": "PASS-2",
       "script": "scripts/em_capacity.py",
       "doc": "docs/em-mode-capacity.md",
       "evidence": [
-        "one parameterisation (Q=50, 0.5 m cube)"
+        "Q 25/50/100 give exactly the same count in four spaces",
+        "modes 147->36096 while usable 11->17"
       ],
-      "falsifier": "a second Q or geometry changing the usable count by more than a factor of two"
+      "falsifier": "a probe count or noise floor that moves the usable count by more than a factor of two"
     },
     {
       "id": "wifi-streams-3-of-4",
