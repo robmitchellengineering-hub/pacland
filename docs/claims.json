@@ -42,15 +42,15 @@
     },
     {
       "id": "polarised-streams",
-      "claim": "with polarisation the count is 3-4 at 20 dB, so polarisation costs at most one stream",
-      "status": "PASS-1",
+      "claim": "with polarisation the count is 3-4 of 4 at 20 dB, spread one stream across Q=100..400 and three heights",
+      "status": "PASS-2",
       "script": "scripts/node_polarisation_converge.py",
       "doc": "docs/polarisation.md",
       "evidence": [
-        "converged in cap to 38,985 modes",
-        "seed-dependent 3-4"
+        "27 matrices: Q 100/200/400 x 3 seeds x 3 heights, spread exactly 1 stream",
+        "converged in cap to the full 38,985-mode resonance window"
       ],
-      "falsifier": "a cap sweep showing the count still moving at the full window"
+      "falsifier": "more than one stream of movement across a factor of four in Q or across height"
     },
     {
       "id": "chamber-luf-closed-form",

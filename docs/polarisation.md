@@ -113,6 +113,27 @@ supports — the constraint is the **channel-sounding / CSI budget and pilot str
 4-stream-capable channel and still agree 3 with its client because of how it sounds it. No amount of mode
 modelling will reproduce that, because it is a limit of the standard, not of the room.
 
+## PASS-2: the same answer a factor of four either side of Q = 200
+
+The claim was PASS-1 because it rested on one Q. Re-run at **Q = 100, 200 and 400**, cap 20,000 modes, three seeds
+each, three receiver heights — **27 matrices**:
+
+| Q | z = 0.50 | z = 0.75 | z = 0.90 |
+|---|---|---|---|
+| **100** | 4, 4, **3** | 4, 4, 4 | 4, 4, 4 |
+| **200** | **3**, 4, 4 | 4, 4, 4 | 4, 4, 4 |
+| **400** | 4, 4, 4 | 4, 4, 4 | 4, 4, 4 |
+
+**The spread across a factor of four in Q and the full height range is exactly one stream.** The falsifier —
+"more than one stream of movement keeps this at PASS-1" — did not fire.
+
+**So: PASS-2. The polarised answer is 3–4 of 4 at 20 dB, and it is a property of the space rather than of the
+assumed damping.**
+
+**And the entry that stayed 2 was wrong.** Q = 400 gives [4, 4, 4] where Q = 200 gives a 3 — the most damped
+chamber gave the *cleanest* answer, which is what a higher Q should do inside one resonance window: fewer modes,
+less superposition.
+
 ## What validation this needs, before any claim
 
 1. **a single-mode check**: at one (m,n,p), compare the field vector against a textbook worked example or a
