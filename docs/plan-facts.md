@@ -907,6 +907,34 @@ identity residual before any uplift scan. The bad-bracket case is a test.
 **Not yet recorded as settled:** the full 20-call `h12 = 4` counts and the `h12 = 3` exception text. The module
 records the partial state rather than smoothing it.
 
+## The invariant law, measured — the FORM survives, the PARAMETER does not (2026-10-31)
+
+Eight of the twenty `h12 = 4` calls are in (the run is slow; each call returns several points):
+
+```
+8 10 1 8 6 8 4 9     → 54 points in 8 calls = 6.75 per call
+```
+
+| quantity | value |
+|---|---|
+| predicted per call | 2.5 |
+| measured per call | **6.75** |
+| ratio | **2.70×** — inside the pre-registered factor-3 band |
+| implied coefficient `c` | **0.515** against the fitted **0.762** |
+
+**So the verdict splits, and both halves matter:**
+
+1. **The exponential form survives.** A ratio of 2.70 is inside the band written down before the run, so the
+   sampler's rate **does** track `b3` — the accessibility scale and the classification scale (`max|N| = b3`) are
+   not unrelated, and the unification-shaped reading holds *in form*.
+2. **The fitted parameter does not.** The implied coefficient is 0.515, not 0.762 — the rate falls more slowly
+   with `b3` than the two-anchor fit said. With `h12 = 2, 4, 5` only, `c` and the functional form are
+   degenerate; **`h12 = 3` is the point that breaks it**, and that run raised on every call for a reason still
+   unknown (probe queued).
+
+**This is the honest shape of a first confirmation:** the claim's structure passed its own test, its number did
+not, and the missing measurement is exactly the one that would settle which is wrong.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

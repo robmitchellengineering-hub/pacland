@@ -65,10 +65,17 @@ class TestThePartialVerdict(unittest.TestCase):
         self.assertEqual(o["raise_count"], o["calls"])
         self.assertIn("sentinel", o["why"])
 
-    def test_h12_four_is_above_prediction(self):
+    def test_h12_four_is_above_prediction_but_inside_the_band(self):
         o = I.OBSERVED[4]
-        self.assertTrue(all(c > o["predicted_per_call"] for c in o["sample"]))
+        self.assertGreater(o["mean_per_call"], o["predicted_per_call"])
+        self.assertLess(o["ratio"], 3.0)          # the pre-registered band, so the FORM survives
 
-    def test_the_composition_is_negative_if_the_law_fails(self):
+    def test_the_implied_coefficient_differs_from_the_fitted_one(self):
+        # the form passes, the parameter does not -- both must be visible
+        self.assertAlmostEqual(I.implied_c(), 0.515, places=2)
+        self.assertGreater(abs(I.implied_c() - I.fit_c()), 0.2)
+
+    def test_the_composition_keeps_the_form_and_rejects_the_parameter(self):
         v = I.verdict(observed=I.OBSERVED)
-        self.assertIn("not one invariant", v["composition"])
+        self.assertIn("FORM survives", v["composition"])
+        self.assertIn("COEFFICIENT does not", v["composition"])

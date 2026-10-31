@@ -52,7 +52,8 @@ MEASURED = ((3, 8), (4, 10))
 OBSERVED = {
     3: {"status": "unmeasurable", "raise_count": 20, "calls": 20,
         "why": "every call raised; the exception text was discarded by a -1 sentinel"},
-    4: {"status": "in progress (partial)", "sample": [8, 10], "predicted_per_call": 2.5},
+    4: {"status": "measured (8 of 20 calls)", "sample": [8, 10, 1, 8, 6, 8, 4, 9],
+        "predicted_per_call": 2.5, "mean_per_call": 6.75, "ratio": 2.70},
 }
 
 
@@ -65,6 +66,12 @@ def fit_c(anchors=ANCHORS) -> float:
     """The exponential coefficient from the two anchors."""
     (h1, b1, r1), (h2, b2, r2) = anchors
     return math.log(r1 / r2) / (b2 - b1)
+
+
+def implied_c(measured_per_call=6.75, h12=4) -> float:
+    """The coefficient the data actually imply, for comparison with the fitted one."""
+    rate = measured_per_call / 400
+    return math.log(ANCHORS[0][2] / rate) / (b3_of(h12) - ANCHORS[0][1])
 
 
 def predicted_rate(h12: int, c: float | None = None) -> float:
@@ -83,11 +90,14 @@ def verdict(measured: dict | None = None, observed: dict | None = None) -> dict:
     if observed is not None:
         return {"status": "provisional — h12=3 unmeasurable, h12=4 partial", "observed": observed,
                 "c": fit_c(),
-                "note": ("h12=3 raised on every call with the message discarded; h12=4 gave 8 and 10 points "
-                         "in its first two calls against a predicted 2.5, i.e. 3-4x above the law"),
-                "composition": ("if h12=4 holds above prediction, the rate does not follow a single "
-                                "exponential in b3: the classification and accessibility scales are unrelated "
-                                "and I(b3) is not one invariant")}
+                "note": ("h12=3 raised on every call with the message discarded; h12=4 over its first 8 calls "
+                         "gives 6.75 points per call against a predicted 2.5 -- a ratio of 2.70, which is "
+                         "INSIDE the stated factor-3 band, while the implied coefficient (0.515) is well "
+                         "below the fitted 0.762"),
+                "composition": ("the exponential FORM survives (2.70x is inside the pre-registered band), so "
+                                "the rate does track b3 and the unification-shaped reading holds in form; but "
+                                "the fitted COEFFICIENT does not (implied 0.515 vs 0.762). One functional form, "
+                                "wrong parameter -- which needs h12=3 to break the degeneracy")}
     measured = measured or {}
     rows = []
     for h in (3, 4):
@@ -103,6 +113,7 @@ def verdict(measured: dict | None = None, observed: dict | None = None) -> dict:
     return {"status": "confirmed" if ok else "refuted", "rows": rows, "c": fit_c(),
             "note": ("the rate tracks b3 exponentially" if ok else
                      "the rate does not follow the b3 exponential: not one invariant"),
+            "implied_c": implied_c(),
             "composition": ("with max|N| = b3, a confirmed law gives: the same integer sets what exists and "
                             "what can be found" if ok else
                             "the classification and accessibility scales are unrelated: not one invariant")}
