@@ -813,6 +813,36 @@ with the sampler **returning at most one point per call**, in which case 0.00137
 **What that decides:** better initialisation is a real path (a warm start raises the per-try probability), and a
 different solver is not needed to explain the wall.
 
+## B1 REFUTED — the h12 strata survive at fixed tadpole, and SUSY rises with N (2026-10-30)
+
+The cheapest bold claim, tested on data already on disk. **Claim B1**: the SUSY fraction is a function of the
+tadpole alone, so the 27.9% / 20.2% / 1.2% `h12` stratification is a sampling artefact.
+
+**Refuted.** Binned by tadpole (`log₂ N`), the SUSY fraction across `h12`:
+
+| N bin | h12=2 | h12=3 | h12=4 |
+|---|---|---|---|
+| 2² | 0.17 | 0.04 | **0.00** |
+| 2³ | 0.25 | 0.11 | **0.01** |
+| 2⁴ | 0.34 | 0.20 | **0.01** |
+| 2⁵ | 0.42 | 0.36 | **0.06** |
+| 2⁶ | 0.49 | 0.42 | **0.04** |
+
+**At every tadpole bin the `h12 = 4` rate is far below `h12 = 2`.** So the stratification is **not** explained
+by the `N` mix: something that tracks `h12` beyond `N` shapes the rate. B1's own falsifier, recorded before the
+run, is met — *"if the strata survive at fixed `N` then the landscape does vary with `h12` and the invariant
+content is not `(N, orbit)`"*.
+
+**And a stronger positive fell out of the same table:** within every `h12`, the SUSY fraction **rises
+monotonically with the tadpole** — 0.03 → 0.06 → 0.17 → 0.25 → 0.34 → 0.42 → 0.49 at `h12 = 2`. That is a
+genuine relation between two invariants (`N` and SUSY-ness) which survives across all three moduli counts, and
+it is the first *positive* structure the compression engine said did not exist — because compression used
+`log|N|` as one linear feature against a constant, and this is a strong monotone trend the linear model could
+not capture.
+
+**So the corpus does contain structure — just not the kind the model class we prespecified could see.** That is
+a correction to the compression verdict, and it is worth stating as one.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
