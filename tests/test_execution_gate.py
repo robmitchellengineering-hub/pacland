@@ -43,3 +43,28 @@ class TestTheHonestOutcomes(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestOperatorAskGate(unittest.TestCase):
+    """The second incident: asked to unplug Ethernet while the agent could reach the machine."""
+
+    def test_asking_while_ssh_works_raises(self):
+        with self.assertRaises(X.ExecutionGateError):
+            X.check_operator_ask({"ssh": True}, "asked_operator", what="join the Legion to Wi-Fi")
+
+    def test_asking_while_a_stored_credential_exists_raises(self):
+        # the real case: a saved Wi-Fi profile needs no password to be typed by anyone
+        with self.assertRaises(X.ExecutionGateError):
+            X.check_operator_ask({"stored_cred": True}, "asked_operator", what="connect the Wi-Fi")
+
+    def test_asking_while_the_mesh_can_run_the_job_raises(self):
+        with self.assertRaises(X.ExecutionGateError):
+            X.check_operator_ask({"mesh": True}, "asked_operator", what="read the link speed")
+
+    def test_asking_with_every_channel_closed_is_conformant_and_must_say_so(self):
+        rec = X.check_operator_ask({}, "asked_operator", what="plug in a cable")
+        self.assertTrue(rec["conformant"])
+        self.assertIn("no channel open", rec["note"])
+
+    def test_not_asking_is_always_conformant(self):
+        self.assertTrue(X.check_operator_ask({"ssh": True}, "ran")["conformant"])
