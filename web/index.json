@@ -1642,6 +1642,13 @@
    "title": "quintic_periods.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/rate_wall.py",
+   "kind": "script",
+   "path": "scripts/rate_wall.py",
+   "summary": "The rate wall \u2014 where the sampler loses candidates as h12 grows.",
+   "title": "rate_wall.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/render_pdf.py",
    "kind": "script",
    "path": "scripts/render_pdf.py",

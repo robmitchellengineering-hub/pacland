@@ -761,6 +761,29 @@ The wrapper built in the previous round is what made the question answerable at 
 **Job caveat, recorded:** the node reported state `suspect` while the `DEGREE` lines and `DONE` are present in
 the output. The per-call counts are the datum; the job's own verdict is not being leaned on.
 
+## The rate wall — T1's open question, measured (2026-10-30)
+
+`src/pacland/exactness/rate_wall.py` · `python3 scripts/rate_wall.py` · 8 tests.
+
+| `h12` | tries | valid | points | points per valid |
+|---|---|---|---|---|
+| 2 | 400 | 384 (96%) | **53** | **0.138** |
+| 5 | 2,000 | ~1,800 (90%) | **2** | **0.0011** |
+
+**The loss is not at the proposal stage.** Validity barely moves (96% → 90%) while points-per-valid collapses by a
+factor of **124**. So the sampler finds candidates and fails to drive them to `DW = 0`.
+
+**Hypothesis, labelled as one:** the solve dimension doubles (`b3 = 6` → `12`, i.e. 12 → 24 real flux
+components), so a Newton basin's volume shrinks geometrically. The alternative is that critical points are
+genuinely rarer at higher `h12`.
+
+**The discriminating test is named, and it is blocked:** a **per-trial residual histogram** — pile-up near
+`|DW| ~ 1e-2…1e-1` means convergence failure, a scatter means the points are absent. `sample_critical_points`
+does not expose per-trial residuals, so the question cannot be answered with the current API. That is the exact
+blocker, recorded rather than worked around.
+
+**Degree is excluded as the cause** by T1: degree 1 and degree 2 give 2 points each on the same budget.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
