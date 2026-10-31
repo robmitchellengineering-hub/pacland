@@ -139,7 +139,7 @@ addEventListener('pointerup', () => drag=false);
 addEventListener('pointermove', e => { if(!drag) return;
   ry += (e.clientX-px)*0.0075; rx = Math.max(-1.2, Math.min(1.2, rx+(e.clientY-py)*0.0055));
   px=e.clientX; py=e.clientY; });
-addEventListener('wheel', e => { dist = Math.max(2.4, Math.min(9, dist + e.deltaY*0.0016)); }, {passive:true});
+addEventListener('wheel', e => { dist = Math.max(1.8, Math.min(26, dist + e.deltaY*0.0022)); }, {passive:true});
 
 function resize(){ renderer.setSize(innerWidth, innerHeight, false);
   camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); }
