@@ -189,3 +189,66 @@ def thermal_capacity(contrast: float, bandwidth: float, temperature: float = 300
     return {"contrast": contrast, "samples_per_bit": m,
             "integration_s": m / bandwidth,
             "energy_per_bit_J": k_b * temperature * m / 1.0}
+
+
+_BAND_CACHE: dict = {}
+
+
+def _cached_band(a, b, d, f, max_modes, c):
+    """The mode list for a band, computed once. Rebuilding it per placement made the search unusable."""
+    key = (round(a, 6), round(b, 6), round(d, 6), round(f, 3), max_modes, c)
+    if key in _BAND_CACHE:
+        return _BAND_CACHE[key]
+    lo, hi = f - 1.0e9, f + 1.0e9
+    seen, chosen = set(), []
+    for f0, _, idx in cavity_modes(a, b, d, hi, c):
+        if f0 < lo:
+            continue
+        k = round(f0, 3)
+        if k in seen:
+            continue
+        seen.add(k)
+        chosen.append((f0, idx))
+    chosen = chosen[:max_modes]
+    _BAND_CACHE[key] = chosen
+    return chosen
+
+
+def channel_matrix(a: float, b: float, d: float, f: float,
+                   tx: list[tuple[float, float, float]], rx: list[tuple[float, float, float]],
+                   q_factor: float = 200.0, max_modes: int = 120, c: float = C_LIGHT):
+    """The MIMO channel between placed antennas, from the room's own modes.
+
+    This is the piece that makes the engine a planning tool rather than a table: given WHERE the antennas go,
+    it returns the matrix whose singular values decide how many independent streams the link can carry.
+    """
+    import numpy as np
+
+    chosen = _cached_band(a, b, d, f, max_modes, c)
+
+    def shape(idx, x, y, z):
+        m, n, p = idx
+        return (math.sin(m * math.pi * x / a) * math.sin(n * math.pi * y / b)
+                * math.sin(p * math.pi * z / d))
+
+    h = np.zeros((len(rx), len(tx)), dtype=complex)
+    for t, (xt, yt, zt) in enumerate(tx):
+        for r, (xr, yr, zr) in enumerate(rx):
+            acc = 0j
+            for f0, idx in chosen:
+                w0, w = 2 * math.pi * f0, 2 * math.pi * f
+                acc += shape(idx, xt, yt, zt) * shape(idx, xr, yr, zr) / complex(
+                    w0 * w0 - w * w, w0 * w / q_factor)
+            h[r, t] = acc
+    return h
+
+
+def streams(h, snr_db: float) -> int:
+    """How many singular values of the channel clear the noise floor at this SNR."""
+    import numpy as np
+
+    sv = np.linalg.svd(h, compute_uv=False)
+    if len(sv) == 0 or sv[0] == 0:
+        return 0
+    snr = 10 ** (snr_db / 10.0)
+    return int((((sv / sv[0]) ** 2) * snr > 1.0).sum())
