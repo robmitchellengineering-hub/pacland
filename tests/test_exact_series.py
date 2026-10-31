@@ -50,3 +50,42 @@ class TestTheRecursionCanFail(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestTheConnectionForm(unittest.TestCase):
+    """The connection matrix: attempted, and the attempt is bounded."""
+
+    @classmethod
+    def setUpClass(cls):
+        from pacland.periods import exact_series as E
+        cls.f = E.connection_form(maxcoeff=10 ** 6, dps=80)
+
+    def test_no_relation_was_found(self):
+        self.assertFalse(self.f["any_found"])
+
+    def test_the_basis_and_bound_are_stated(self):
+        self.assertEqual(self.f["basis"], ["1", "pi^2", "zeta(3)", "pi^2*zeta(3)"])
+        self.assertEqual(self.f["maxcoeff"], 10 ** 6)
+
+    def test_the_consequence_keeps_the_residual_labelled(self):
+        self.assertIn("NOT derived exactly", self.f["consequence"])
+        self.assertIn("not tested", self.f["consequence"])
+
+    def test_the_search_can_find_a_planted_relation(self):
+        # fail-ability: a value that IS in the basis must be found, or the search proves nothing
+        import mpmath as mp
+        mp.mp.dps = 80
+        planted = mp.mpf(3) + 5 * mp.pi ** 2 + (-2) * mp.zeta(3)
+        rel = mp.pslq([mp.mpf(1), mp.pi ** 2, mp.zeta(3), mp.pi ** 2 * mp.zeta(3), planted],
+                      maxcoeff=10 ** 6, tol=mp.mpf("1e-60"))
+        self.assertIsNotNone(rel)
+        self.assertLess(max(abs(x) for x in rel), 100)
+
+    def test_a_spurious_large_coefficient_hit_is_not_a_relation(self):
+        # the artefact: loose bounds manufacture relations. Tight bounds on an arbitrary number do not.
+        import mpmath as mp
+        mp.mp.dps = 80
+        random_like = mp.mpf("1.2345678901234567890123456789")
+        rel = mp.pslq([mp.mpf(1), mp.pi ** 2, mp.zeta(3), mp.pi ** 2 * mp.zeta(3), random_like],
+                      maxcoeff=10 ** 6, tol=mp.mpf("1e-60"))
+        self.assertIsNone(rel)

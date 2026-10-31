@@ -713,6 +713,31 @@ Cross-checked numerically at two flux pairs and two moduli points: identity resi
 (observed `−4.27`, `−1.9e-2` …). The algebra carries the claim; the numerics are there so that a disagreement
 between them would be visible.
 
+### The connection matrix — attempted, and the attempt is bounded (2026-10-30)
+
+`src/pacland/periods/exact_series.py` · `python3 scripts/connection_form.py` · 12 tests in the module.
+
+The exact sub-item asked for the connection in ℚ. **Attempted: no relation found.** A PSLQ search of each of the
+four coefficients against the weight basis `{1, π², ζ(3), π²ζ(3)}` returns **nothing** at `maxcoeff = 10³` or
+`10⁶` and 80 dps.
+
+| bound | relation found |
+|---|---|
+| `10³` | none |
+| `10⁶` | none |
+| `10¹²` | **hits — and they are artefacts** (coefficients ~10¹⁰, the signature of no relation) |
+
+**The `10¹²` column is the reason this took a run.** PSLQ manufactures relations when the bound is loose; a hit
+with ten-digit coefficients is the cancellation error this estate keeps catching, not a discovery. The method
+only works with tight bounds, and at tight bounds there is nothing.
+
+**So the consequence, in the sub-item's own terms:** the connection matrix is **not** derived exactly and its
+residual stays labelled *measured*. The claim is bounded rather than closed — a wider basis (weights 4 and 6, or
+log-structured terms) was not tested.
+
+**Fail-ability, both ways:** a planted value `3 + 5π² − 2ζ(3)` *is* found with small coefficients, and an
+arbitrary decimal is not. So the search can find a relation when one exists.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
