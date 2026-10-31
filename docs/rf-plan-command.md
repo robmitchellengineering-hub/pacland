@@ -16,7 +16,7 @@ Output for a 3 × 4 × 2.5 m room at 5.18 GHz, 4 × 4, 20 dB:
 | **2 streams** | **4 of 4** as a perfect-polarisation **ceiling**; 3–4 across receiver heights; polarisation-corrected **3–4** | **PASS-2** |
 | **3 placement levers** | receiver height is worth **up to one stream** | **PASS-2** |
 | **4 chamber question** | LUF rule of thumb **112.4 MHz**, mode-density LUF **192.6 MHz** (**1.71×** the rule) | **PASS-2** |
-| **5 thermal ceiling** | **1,910 samples/bit** at contrast 0.1, BER 1e-3 — a bound, not a prediction | **PASS-1** |
+| **5 thermal ceiling** | **3,820 samples/bit** at contrast 0.1, BER 1e-3 — a bound, not a prediction | **PASS-1** |
 
 And the last block is the point of the whole thing:
 

@@ -62,7 +62,9 @@ def spectral_efficiency(eta: float, m: float) -> float:
 
 def samples_for(eta: float, target_ber: float) -> float:
     """How many independent noise samples are needed to reach a target bit error rate."""
-    return 2.0 * q_inv(target_ber) ** 2 / (eta * eta)
+    # FOUR, not two: the two-state detection error is Q(d/2) with d = eta*sqrt(m), so m = 4 Q^-1^2 / eta^2.
+    # The first version used 2, from writing the error as Q(sqrt(I/2)); a Monte Carlo disagreed by exactly 2x in m.
+    return 4.0 * q_inv(target_ber) ** 2 / (eta * eta)
 
 
 def main() -> int:

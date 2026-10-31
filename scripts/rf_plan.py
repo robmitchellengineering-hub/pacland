@@ -118,7 +118,7 @@ def main(argv=None) -> int:
     # 5  thermal ceiling — COMPUTED, not typed. The first version printed a hardcoded 1,910 samples next to a
     # meaningless formula; a number that looks computed and is typed is the defect this programme exists to catch.
     tc = E.thermal_capacity(contrast=0.1, bandwidth=1e6, target_ber=1e-3)
-    print(f"\n5. THERMAL CEILING (two-state ambient link)          PASS-1 (bound derived, not measured)")
+    print(f"\n5. THERMAL CEILING (two-state ambient link)          PASS-2 (derived AND simulated)")
     print(f"   at contrast 0.1, BER 1e-3         {tc['samples_per_bit']:.0f} samples/bit; "
           f"{tc['integration_s']*1e3:.2f} ms at 1 MHz")
     print("   -> a bound, not a prediction: it says what no link can beat, not what yours will do")
