@@ -694,6 +694,25 @@ maintenance, not a turn — so six of the seven exclusions are about *how number
 about where the algebra lives. That ratio is the honest measure of where this programme currently is: strong on
 method, thin on nature.
 
+## Route B — the T^6 oracle has no de Sitter vacuum, proved (2026-10-30)
+
+`src/pacland/oracle/no_ds_t6.py` · `python3 scripts/no_ds_t6.py` · 6 tests.
+
+At `DW = 0` the F-term potential of the T⁶ (STU) model is `V = −3 e^K |W|²`, which is **non-positive by
+inspection** — `e^K > 0`, `|W|² ≥ 0`. So **no critical point of this model can have `V > 0`**, and the
+exclusion needs no sampling, no budget and no window.
+
+**This is the first permanent answer in the estate**: an impossibility that no new data can overturn *within the
+model*. It is the kind of result the plan's Route B was for.
+
+**Its scope is written into the module and tested** — it holds for the T⁶ F-term potential at `DW = 0`, and does
+**not** extend to models with non-perturbative terms, a Kähler modulus, or an uplift. Those can raise `V`, and
+that is the KKLT question, which this result explicitly does not answer.
+
+Cross-checked numerically at two flux pairs and two moduli points: identity residual `0.0`, every `V < 0`
+(observed `−4.27`, `−1.9e-2` …). The algebra carries the claim; the numerics are there so that a disagreement
+between them would be visible.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

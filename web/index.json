@@ -1530,6 +1530,13 @@
    "title": "mine_structure.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/no_ds_t6.py",
+   "kind": "script",
+   "path": "scripts/no_ds_t6.py",
+   "summary": "Route B \u2014 the T^6 oracle has no de Sitter vacuum, and it is proved rather than sampled.",
+   "title": "no_ds_t6.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b1_b3_probe.py",
    "kind": "script",
    "path": "scripts/node_b1_b3_probe.py",
