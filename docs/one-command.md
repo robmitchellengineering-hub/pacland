@@ -33,6 +33,25 @@ And a closing block naming **what would falsify it**, with the measurement that 
    test failed — not because the output was wrong, but because the test was pinned to a *value* instead of to the
    *rule*. **It now checks that every numbered section carries a mark**, which is the property that matters.
 
+## `--optimise`: the planner actually searches
+
+The placement block used to report a *leverage* ("receiver height is worth up to one stream"). With `--optimise` it
+**searches both ends' heights and the mirror offset** — 36 configurations — and reports the best it finds:
+
+```
+3. PLACEMENT LEVERS                                  PASS-2 (reproduced, and it moved the answer)
+   receiver height           worth up to 1 stream(s) across 0.5-0.9 of room height
+   best found                4 of 4 at tx height 0.50, rx height 0.40, mirror offset 0.30
+   gain over the naive install  +1 stream(s)
+```
+
+**At 15 dB, placement is worth a full stream**: the naive install gives 3 of 4, the searched one gives 4.
+At 20 dB the same room already gives 4, and the search honestly reports **"no placement beat the naive install at
+this SNR — the room is already giving what it has"** rather than manufacturing an optimum.
+
+**That is the planner the objective asked for**, and its falsifier is built in: *a better layout can beat the one
+printed, and at a high enough SNR there is nothing left to win.*
+
 ## `--json`: the plan as data
 
 A plan that only prints prose cannot be put in a report, a ticket or a test fixture. `--json` emits the same

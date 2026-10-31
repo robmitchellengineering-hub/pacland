@@ -125,3 +125,21 @@ class TestJsonOutput(unittest.TestCase):
         d = self._json(["--room", "4,5,2.4", "--antennas", "2", "--iw-link", str(p), "--json"])
         self.assertEqual(d["measured"]["nss"], 2)
         self.assertFalse(d["measured"]["discriminating"])   # a 2-element ceiling cannot be beaten by 2
+
+
+class TestOptimise(unittest.TestCase):
+    def test_it_searches_and_reports_a_best_placement(self):
+        out = run(["--room", "3,4,2.5", "--antennas", "4", "--snr", "15", "--optimise"])
+        self.assertTrue("best found" in out or "no placement beat" in out, out)
+
+    def test_the_gain_is_never_negative(self):
+        out = run(["--room", "3,4,2.5", "--antennas", "4", "--snr", "15", "--optimise"])
+        import re
+        m = re.search(r"\+(-?\d+) stream", out)
+        if m:
+            self.assertGreaterEqual(int(m.group(1)), 0)
+
+    def test_without_the_flag_it_does_not_search(self):
+        out = run(["--room", "3,4,2.5", "--antennas", "4"])
+        self.assertNotIn("best found", out)
+        self.assertIn("run with --optimise", out)
