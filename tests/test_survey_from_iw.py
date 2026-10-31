@@ -40,3 +40,26 @@ if __name__ == "__main__":
     test_occupancy_is_busy_over_active()
     test_station_signal_parsed()
     print("survey-from-iw: 2 checks pass")
+
+
+def test_nss_from_mcs_covers_all_four_streams():
+    assert S.nss_from_mcs(0) == 1 and S.nss_from_mcs(7) == 1
+    assert S.nss_from_mcs(8) == 2 and S.nss_from_mcs(15) == 2
+    assert S.nss_from_mcs(16) == 3 and S.nss_from_mcs(24) == 4
+
+
+def test_parse_link_reads_the_real_node_output():
+    # verbatim from pacland-rog, 2026-10-31
+    text = """Connected to 14:59:c0:65:57:2d (on wlp2s0)
+\tSSID: Telstra3696
+\tfreq: 2462.0
+\tsignal: -37 dBm
+\trx bitrate: 144.4 MBit/s MCS 15 short GI
+\ttx bitrate: 144.4 MBit/s MCS 15 short GI
+"""
+    link = S.parse_link(text)
+    assert link["ssid"] == "Telstra3696"
+    assert link["freq_mhz"] == 2462.0
+    assert link["band"] == "2.4 GHz"
+    assert link["signal_dbm"] == -37.0
+    assert link["nss"] == 2, link
