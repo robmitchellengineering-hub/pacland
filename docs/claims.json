@@ -8,7 +8,11 @@
       "status": "PASS-2",
       "script": "scripts/em_capacity.py",
       "doc": "docs/em-mode-capacity.md",
-      "evidence": ["room 0.004%", "chamber -0.08%", "acoustic 0.02%"],
+      "evidence": [
+        "room 0.004%",
+        "chamber -0.08%",
+        "acoustic 0.02%"
+      ],
       "falsifier": "an independent mode count disagreeing by more than 1%"
     },
     {
@@ -17,7 +21,11 @@
       "status": "PASS-2",
       "script": "scripts/em_capacity.py",
       "doc": "docs/em-mode-capacity.md",
-      "evidence": ["room 77.6%", "cube 92.1%", "chamber 46.6%"],
+      "evidence": [
+        "room 77.6%",
+        "cube 92.1%",
+        "chamber 46.6%"
+      ],
       "falsifier": "a space whose measured spacing statistic survives without degeneracy collapse"
     },
     {
@@ -26,7 +34,10 @@
       "status": "PASS-2",
       "script": "scripts/wifi_5ghz.py",
       "doc": "docs/wifi-5ghz.md",
-      "evidence": ["Q 100/200/400 identical", "layout sweep 3-4"],
+      "evidence": [
+        "Q 100/200/400 identical",
+        "layout sweep 3-4"
+      ],
       "falsifier": "a measured 4x4 link giving fewer than 2 or more than 4 streams"
     },
     {
@@ -35,7 +46,10 @@
       "status": "PASS-1",
       "script": "scripts/node_polarisation_converge.py",
       "doc": "docs/polarisation.md",
-      "evidence": ["converged in cap to 38,985 modes", "seed-dependent 3-4"],
+      "evidence": [
+        "converged in cap to 38,985 modes",
+        "seed-dependent 3-4"
+      ],
       "falsifier": "a cap sweep showing the count still moving at the full window"
     },
     {
@@ -44,7 +58,10 @@
       "status": "PASS-2",
       "script": "scripts/chamber.py",
       "doc": "docs/chamber-analysis.md",
-      "evidence": ["matches bisection to 0.00% over 12 V/Q combinations", "Q x4 -> cube root of 4"],
+      "evidence": [
+        "matches bisection to 0.00% over 12 V/Q combinations",
+        "Q x4 -> cube root of 4"
+      ],
       "falsifier": "a chamber whose measured uniformity onset disagrees with the formula"
     },
     {
@@ -53,7 +70,9 @@
       "status": "PASS-1",
       "script": "scripts/chamber.py",
       "doc": "docs/chamber-analysis.md",
-      "evidence": ["computed, never measured in a chamber"],
+      "evidence": [
+        "computed, never measured in a chamber"
+      ],
       "falsifier": "a measured chamber whose field becomes uniform at or below the rule of thumb"
     },
     {
@@ -62,7 +81,9 @@
       "status": "PASS-1",
       "script": "scripts/thermal_noise_bound.py",
       "doc": "docs/thermal-noise-bound.md",
-      "evidence": ["derived from Fisher information, not measured"],
+      "evidence": [
+        "derived from Fisher information, not measured"
+      ],
       "falsifier": "a working link beating the bound at the same contrast and BER"
     },
     {
@@ -71,7 +92,9 @@
       "status": "PASS-1",
       "script": "scripts/em_capacity.py",
       "doc": "docs/em-mode-capacity.md",
-      "evidence": ["one parameterisation (Q=50, 0.5 m cube)"],
+      "evidence": [
+        "one parameterisation (Q=50, 0.5 m cube)"
+      ],
       "falsifier": "a second Q or geometry changing the usable count by more than a factor of two"
     },
     {
@@ -97,6 +120,19 @@
       "script": "scripts/node_yield.py",
       "doc": "docs/plan-exact-terms.md",
       "reason": "measured by a criterion whose two residual fields disagree by 75 orders of magnitude at the same point"
+    },
+    {
+      "id": "execution-gate",
+      "claim": "a command reaches the operator only if local, ssh and mesh were tried and none worked",
+      "status": "PASS-2",
+      "script": "tests/test_execution_gate.py",
+      "doc": "docs/execution-gate.md",
+      "evidence": [
+        "the 2026-10-31 incident raises",
+        "claiming a run with no attempt raises",
+        "a working mesh path + asked_operator raises"
+      ],
+      "falsifier": "a session that asks the operator to run something while a path exists"
     }
   ]
 }
