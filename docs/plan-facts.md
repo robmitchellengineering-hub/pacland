@@ -738,6 +738,29 @@ log-structured terms) was not tested.
 **Fail-ability, both ways:** a planted value `3 + 5π² − 2ζ(3)` *is* found with small coefficients, and an
 arbitrary decimal is not. So the search can find a relation when one exists.
 
+## T1 RESOLVED — h12 = 5 is not a degree wall; the zero was a budget (2026-10-30)
+
+The try-budget wrapper spent **five calls per degree** (~2,000 tries each) at `h12 = 5` on pacland-rog:
+
+| degree | points | per call | seconds |
+|---|---|---|---|
+| **1** | **2** | `[0, 1, 0, 0, 1]` | 504 |
+| **2** | **2** | `[0, 0, 1, 0, 1]` | 521 |
+
+**Indistinguishable.** So:
+
+1. **The earlier zero was a budget artefact** — 400 tries was simply too few, at either degree.
+2. **#208's "degree 2 fixes it" is refuted as a statement about yield**: degree 1 produces at the same rate.
+3. **The real wall is the rate** — roughly 0.008 points per valid candidate at `h12 = 5`, against 0.138 at
+   `h12 = 2`. A factor of ~17, and no change of degree addresses it.
+
+This is the register earning its keep twice over: T1 would have been marked *resolved against #208* on a naive
+"0 vs 1" reading, and *would have been marked unanswerable* if the `n_target` misunderstanding had been accepted.
+The wrapper built in the previous round is what made the question answerable at all.
+
+**Job caveat, recorded:** the node reported state `suspect` while the `DEGREE` lines and `DONE` are present in
+the output. The per-call counts are the datum; the job's own verdict is not being leaned on.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
