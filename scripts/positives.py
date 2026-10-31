@@ -31,7 +31,7 @@ def build():
         if q.found is not None:
             entries.append({
                 "kind": "exhibited object",
-                "claim": f"{q.question}: `(F|H) = {[round(float(v), 6) for v in q.found['flux']]}`, N = {q.found['tadpole']} "
+                "claim": f"{q.question}: `(F|H) = {q.found['flux']}`, N = {q.found['tadpole']} "
                          f"({q.matches} in the window)",
                 "why": q.why,
                 "command": "python3 scripts/existence.py",
