@@ -46,9 +46,18 @@ def main(argv=None) -> int:
     ap.add_argument("--snr", type=float, default=20.0, help="design SNR in dB")
     ap.add_argument("--q", type=float, default=200.0, help="modal quality factor")
     ap.add_argument("--survey", help="survey.json from rf_survey_from_iw.py; overrides --snr with a measured value")
+    ap.add_argument("--iw-link", dest="iw_link",
+                    help="a capture of `iw dev <if> link`; reports MEASURED streams beside the predicted ceiling")
     args = ap.parse_args(argv)
 
     a, b, d = parse_room(args.room)
+    measured = None
+    if args.iw_link:
+        from rf_survey_from_iw import parse_link          # scripts/ is on sys.path when run as a script
+        measured = parse_link(Path(args.iw_link).read_text())
+        if measured.get("freq_mhz"):
+            args.band = measured["freq_mhz"] / 1e3
+            provenance = "measured band from `iw link`"
     f = args.band * 1e9
     n = args.antennas
     snr = args.snr
@@ -114,10 +123,25 @@ def main(argv=None) -> int:
           f"{tc['integration_s']*1e3:.2f} ms at 1 MHz")
     print("   -> a bound, not a prediction: it says what no link can beat, not what yours will do")
 
+    if measured:
+        nss = measured.get("nss")
+        print(f"\n6. MEASURED LINK (from `iw link`)                     measured, not modelled")
+        print(f"   ssid {measured.get('ssid')}   {measured.get('band')}   "
+              f"{measured.get('freq_mhz')} MHz   {measured.get('signal_dbm')} dBm")
+        print(f"   streams in use            {nss} of at most {n}   (from MCS {measured.get('mcs')})")
+        print(f"   predicted ceiling         {max(scalar, lo)}-{hi} of {n}")
+        if nss is not None and nss > hi:
+            print("   -> FALSIFIED: the measurement EXCEEDS the predicted ceiling")
+        elif nss is not None and hi <= n:
+            print(f"   -> consistent, but NOT DISCRIMINATING: a {n}-element ceiling cannot be beaten by a")
+            print(f"      {n}-stream observation, so this row confirms the toolchain and not the model.")
+        else:
+            print("   -> consistent")
+
     print(f"\nWHAT WOULD FALSIFY THIS PLAN")
-    print(f"   a measured 4x4 link at {snr:.0f} dB giving FEWER than {max(0, lo - 1)} streams -> the ceiling is wrong")
-    print(f"   the same link giving MORE than {hi} streams -> the model is pessimistic and polarisation")
-    print(f"   is over-charged")
+    print(f"   a measured {n}x{n} link at {snr:.0f} dB giving MORE than {hi} streams -> the ceiling is wrong")
+    print(f"   ... or giving FEWER than {lo} at a measured SNR well above the design point -> the ceiling")
+    print(f"   is too high and the polarisation/sounding gap is larger than documented")
     print(f"\n   One measurement settles it. Anything above is a model until that measurement exists.")
     return 0
 
