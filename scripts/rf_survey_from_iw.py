@@ -63,6 +63,41 @@ def parse_stations(text: str) -> list[dict]:
     return out
 
 
+def nss_from_mcs(mcs: int) -> int:
+    """Spatial streams from an 802.11n/ac MCS index.
+
+    HT MCS 0-7 are one stream, 8-15 two, 16-23 three, 24-31 four. This is the cleanest NSS reading a client can
+    get without CSI: `iw dev <if> link` prints the MCS it is actually using, so the stream count is MEASURED, not
+    inferred from the bitrate.
+    """
+    if mcs < 0:
+        raise ValueError(f"MCS must be non-negative, got {mcs}")
+    return mcs // 8 + 1
+
+
+def parse_link(text: str) -> dict:
+    """Current association from `iw dev <if> link`: frequency, signal, MCS, bitrate and the derived NSS."""
+    out: dict = {}
+    for line in text.splitlines():
+        line = line.strip()
+        if line.startswith("SSID:"):
+            out["ssid"] = line.split(":", 1)[1].strip()
+        elif line.startswith("freq:"):
+            out["freq_mhz"] = float(line.split(":", 1)[1].strip())
+        elif line.startswith("signal:"):
+            out["signal_dbm"] = float(line.split(":", 1)[1].split()[0])
+        elif line.startswith(("rx bitrate:", "tx bitrate:")):
+            parts = line.split(":", 1)[1].split()
+            out[line.split(":", 1)[0].replace(" ", "_")] = float(parts[0])
+            if "MCS" in parts:
+                mcs = int(parts[parts.index("MCS") + 1])
+                out["mcs"] = mcs
+                out["nss"] = nss_from_mcs(mcs)
+    if "freq_mhz" in out:
+        out["band"] = "2.4 GHz" if out["freq_mhz"] < 3000 else ("6 GHz" if out["freq_mhz"] > 5925 else "5 GHz")
+    return out
+
+
 def summarise(survey: list[dict], stations: list[dict]) -> dict:
     busy = []
     for r in survey:
