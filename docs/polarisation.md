@@ -63,6 +63,56 @@ numerically rank-deficient matrix. That is either:
 
 **I cannot tell which from this run, so the run is PASS-1 and the claim is not made.**
 
+## The converged run — polarisation is NOT the missing physics
+
+Full resonance window (**38,985 modes** at 5.18 GHz, Q = 200), summed as a matrix product on `pacland-rog`,
+caps 1,000 → 20,000, three seeds per cap, three receiver heights:
+
+| height | 1,000 | 2,500 | 5,000 | 10,000 | **20,000** |
+|---|---|---|---|---|---|
+| z = 0.50 | 4,4,4 | 4,4,4 | 4,4,4 | 3,4,4 | **3,4,4** |
+| z = 0.75 | 4,3,4 | 4,4,2 | 4,4,3 | 4,4,4 | **4,4,4** |
+| z = 0.90 | 4,4,4 | 4,4,4 | 3,4,4 | 3,4,4 | **4,4,4** |
+
+**The falsifier resolves cleanly:** at the largest cap the count is **3–4 of 4**, and the residual variation is
+across *seeds* (the sampled mode draw), not across caps. So the mode sum is **converged in the cap** and the
+polarised answer is **3–4 streams at 20 dB**.
+
+**Which is not what practice reports.** Practice is 2–3. So:
+
+> **Polarisation accounts for at most one stream. It is not the missing physics.**
+
+**The next hypothesis, and it is now the leading one:** real APs do not use all the spatial streams the channel
+supports — the constraint is the sounding/CSI budget and the pilot structure, not the field. A 4-antenna AP can
+have a 4-stream-capable channel and still agree 3 with its client because of how it sounds the channel.
+
+That is a testable claim, and it is *not* a physics one: it is a limit of the standard's channel-sounding
+protocol, which is why no amount of mode modelling will reproduce it.
+
+## The converged run — polarisation is NOT the missing physics
+
+Full resonance window (**38,985 modes** at 5.18 GHz, Q = 200), summed as a matrix product on `pacland-rog`,
+caps 1,000 → 20,000, three seeds per cap, three receiver heights:
+
+| height | 1,000 | 2,500 | 5,000 | 10,000 | **20,000** |
+|---|---|---|---|---|---|
+| z = 0.50 | 4,4,4 | 4,4,4 | 4,4,4 | 3,4,4 | **3,4,4** |
+| z = 0.75 | 4,3,4 | 4,4,2 | 4,4,3 | 4,4,4 | **4,4,4** |
+| z = 0.90 | 4,4,4 | 4,4,4 | 3,4,4 | 3,4,4 | **4,4,4** |
+
+**The falsifier resolves cleanly:** at the largest cap the count is **3–4 of 4**, and the residual variation is
+across *seeds* (the sampled mode draw), not across caps. The mode sum is **converged in the cap**, and the
+polarised answer is **3–4 streams at 20 dB**.
+
+**Which is not what practice reports.** Practice is 2–3. So:
+
+> **Polarisation accounts for at most one stream. It is not the missing physics.**
+
+**The next hypothesis, and it is not a physics one:** real APs do not use all the spatial streams the channel
+supports — the constraint is the **channel-sounding / CSI budget and pilot structure**. A 4-antenna AP can have a
+4-stream-capable channel and still agree 3 with its client because of how it sounds it. No amount of mode
+modelling will reproduce that, because it is a limit of the standard, not of the room.
+
 ## What validation this needs, before any claim
 
 1. **a single-mode check**: at one (m,n,p), compare the field vector against a textbook worked example or a
