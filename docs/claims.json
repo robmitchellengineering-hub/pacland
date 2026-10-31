@@ -77,14 +77,15 @@
     },
     {
       "id": "thermal-ceiling",
-      "claim": "a two-state ambient link needs eta^2 m = 2[Q^-1(eps)]^2 samples",
-      "status": "PASS-1",
-      "script": "scripts/thermal_noise_bound.py",
+      "claim": "a two-state ambient link needs eta^2 m = 4[Q^-1(eps)]^2 samples (constant corrected from 2)",
+      "status": "PASS-2",
+      "script": "scripts/thermal_ceiling_check.py",
       "doc": "docs/thermal-noise-bound.md",
       "evidence": [
-        "derived from Fisher information, not measured"
+        "Monte Carlo of the stated receiver lands within 1.11x of target on four cases",
+        "derivation, with the binary error as Q(sqrt(I)/2)"
       ],
-      "falsifier": "a working link beating the bound at the same contrast and BER"
+      "falsifier": "a receiver achieving the target BER with fewer than 4[Q^-1]^2/eta^2 samples"
     },
     {
       "id": "identifiability-modes",

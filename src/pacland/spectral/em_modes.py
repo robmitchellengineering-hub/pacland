@@ -173,7 +173,12 @@ def usable_modes(a: float, b: float, d: float, f_lo: float, f_hi: float, probes:
 
 def thermal_capacity(contrast: float, bandwidth: float, temperature: float = 300.0,
                      target_ber: float = 1e-3) -> dict:
-    """The thermal-noise link ceiling for this space, from the eta^2 m = 2[Q^-1(eps)]^2 bound."""
+    """The thermal-noise link ceiling for this space, from the eta^2 m = 4[Q^-1(eps)]^2 bound.
+
+    The constant is FOUR, not two. The published derivation wrote the error as `Q(sqrt(I/2))` where the two-state
+    detection result is `Q(sqrt(I)/2)`; a Monte Carlo of the stated receiver disagreed by exactly the factor of two
+    in m, which is how the error was found. See docs/thermal-noise-bound.md.
+    """
     def q_inv(p: float) -> float:
         lo, hi = -10.0, 10.0
         for _ in range(200):
@@ -184,7 +189,7 @@ def thermal_capacity(contrast: float, bandwidth: float, temperature: float = 300
                 hi = mid
         return 0.5 * (lo + hi)
 
-    m = 2.0 * q_inv(target_ber) ** 2 / (contrast ** 2)
+    m = 4.0 * q_inv(target_ber) ** 2 / (contrast ** 2)
     k_b = 1.380649e-23
     return {"contrast": contrast, "samples_per_bit": m,
             "integration_s": m / bandwidth,

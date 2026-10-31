@@ -33,21 +33,44 @@ Per-sample Fisher information for the state, from the difference of means over t
 I = (ΔP)² / var = (ηP)² / (P²/m) = η²·m
 ```
 
-Binary decision: `ε = Q(√(I/2))`. Achievable spectral efficiency (one observation per sample-pair, binary
+Binary decision, two equally likely states decided at the midpoint: `ε = Q(√I / 2)`. Achievable spectral efficiency (one observation per sample-pair, binary
 input): `C/B = 1 − H₂(ε)`.
 
 ## The bound, which has one term that matters
 
-**`η²·m = 2·[Q⁻¹(ε)]²`** — a fixed product for a target error rate. It does not care how the contrast is
+**`η²·m = 4·[Q⁻¹(ε)]²`** — a fixed product for a target error rate. It does not care how the contrast is
 generated, how clever the receiver is, or which switch technology is used.
 
 | contrast η | samples for BER 1e-3 | samples for BER 1e-6 | τ at B = 1 MHz |
 |---|---|---|---|
-| 1e-3 | 1.9e+07 | 4.5e+07 | 19.1 s |
-| 1e-2 | 1.9e+05 | 4.5e+05 | 0.19 s |
-| 0.1 | **1.9e+03** | 4.5e+03 | **1.9 ms** |
-| 0.5 | 76 | 181 | 76 µs |
-| 1.0 | 19 | 45 | 19 µs |
+| 0.001 | 38,198,143 | 90,380,171 | 3.82e+04 ms |
+| 0.01 | 381,981 | 903,802 | 382 ms |
+| 0.1 | 3,820 | 9,038 | 3.82 ms |
+| 0.5 | 153 | 362 | 0.153 ms |
+| 1 | 38 | 90 | 0.0382 ms |
+
+## CORRECTION — the constant was 2 and is 4
+
+The first version of this document wrote the binary error as `ε = Q(√(I/2))` and derived `η²m = 2[Q⁻¹]²`. **That
+is wrong by a factor of two in `m`**, and it made every number in the table **2× too optimistic**.
+
+The two-state result is `ε = Q(D/2)` where `D` is the deflection, so `m = 4[Q⁻¹(ε)]²/η²`.
+
+**How it was found:** `scripts/thermal_ceiling_check.py` simulates the receiver this document describes — two
+equally likely states, equal variance, integrate `m` samples, decide at the midpoint — and at the published `m` it
+produced a BER **43× the target**. With the constant corrected to 4 the same simulation lands within **1.11×** of
+target on all four cases:
+
+| contrast | target BER | m (bound) | simulated BER |
+|---|---|---|---|
+| 0.05 | 1e-2 | 8,660 | 1.01e-2 |
+| 0.10 | 1e-3 | 3,820 | 1.11e-3 |
+| 0.10 | 1e-2 | 2,165 | 1.00e-2 |
+| 0.20 | 1e-4 | 1,384 | 1.00e-4 |
+
+**So the claim is now PASS-2 — by derivation and by independent simulation — and the correction is recorded rather
+than the old number quietly replaced.** This is the fourth published number in this programme to fall, and the first
+to fall to a simulation rather than a better experiment.
 
 **So the rate is bought entirely with the product `η²·m`.** Their 100× improvement, if it came from a better
 channel model rather than from a better switch, is a 100× in the *effective* `m` — which is a statement about
