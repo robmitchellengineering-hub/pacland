@@ -302,17 +302,22 @@ def channel_matrix_polarised(a: float, b: float, d: float, f: float,
     """
     import numpy as np
 
-    lo, hi = f - 1.0e9, f + 1.0e9
-    seen, chosen = set(), []
-    for f0, kind, idx in cavity_modes(a, b, d, hi, c):
-        if f0 < lo:
-            continue
-        k = round(f0, 3)
-        if k in seen:
-            continue
-        seen.add(k)
-        chosen.append((f0, kind, idx))
-    chosen = chosen[:max_modes]
+    # THE WINDOW WAS WRONG. The first version took the lowest `max_modes` modes between f-1 GHz and f+1 GHz -
+    # an arbitrary window dominated by FAR-OFF-RESONANCE modes, whose fields oscillate rapidly and cancel to a
+    # rank-deficient sum. That is why vertical polarisation returned zero at every height.
+    #
+    # Physically only modes within one resonance width contribute: |f0 - f| < f/Q. At 5.18 GHz with Q = 200 that
+    # is a 26 MHz window holding ~19,000 modes, so they are SAMPLED (uniformly, with a stated count) rather than
+    # enumerated - a stated approximation, not an arbitrary cut.
+    import random as _random
+    width = f / max(q_factor, 1.0)
+    lo, hi = f - width, f + width
+    pool = [(f0, kind, idx) for f0, kind, idx in cavity_modes(a, b, d, hi, c) if f0 >= lo]
+    if not pool:                                   # tiny cavity: fall back to the nearest modes
+        pool = list(cavity_modes(a, b, d, f + width, c))[-max_modes:]
+    rng = _random.Random(11)
+    chosen = pool if len(pool) <= max_modes else rng.sample(pool, max_modes)
+    chosen.sort()
 
     def proj(pos, pol, kind, idx):
         e = mode_field(idx, kind, pos[0], pos[1], pos[2], a, b, d)

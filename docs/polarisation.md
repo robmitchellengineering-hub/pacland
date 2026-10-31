@@ -10,7 +10,34 @@ directions.
 So the mode fields are now vectors (Pozar §6.4 / Collin, standard rectangular-cavity fields) and the channel
 matrix projects each antenna's polarisation onto them.
 
-## What the run shows
+## UPDATE — the vertical-zero was a window bug, and the result is not converged
+
+Two corrections after the first run, both found by looking at the zero rather than accepting it:
+
+**1. The mode window was wrong.** The first version took the lowest 120 modes between `f − 1 GHz` and `f + 1 GHz`
+— an arbitrary window dominated by **far-off-resonance** modes, whose fields oscillate rapidly and cancel to a
+rank-deficient sum. **That is why vertical returned zero.** Physically only modes within one resonance width
+contribute (`|f₀ − f| < f/Q`), which at 5.18 GHz with Q = 200 is a **26 MHz** window holding ≈ 19,000 modes.
+They are now **sampled** from that window (a stated approximation, not an arbitrary cut).
+
+With the window corrected, **vertical returns 4, not 0** — the zero was the bug.
+
+**2. But the answer is not converged in the mode count, and that is the real problem:**
+
+| modes sampled | 4 × 4, vertical, 20 dB |
+|---|---|
+| 60 | **2** |
+| 120 | **4** |
+| 240 | **3** |
+| 480 | **4** |
+
+Repeatable within a sample count, **not stable across them.** So the stream count is currently a property of the
+truncation, not of the room — **exactly the h12 truncation failure from earlier in this work**, in a new place.
+
+**Therefore: no polarised stream count is quoted.** The next run must converge the mode sum (all ≈ 19,000, or a
+demonstrated plateau in the cap), and that is a compute job for the node, not a laptop.
+
+## The first run, kept because the correction is the finding
 
 | antennas | z fraction | vertical | horizontal | random | scalar (ceiling) |
 |---|---|---|---|---|---|
