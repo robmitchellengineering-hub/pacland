@@ -46,6 +46,8 @@ def main(argv=None) -> int:
     ap.add_argument("--snr", type=float, default=20.0, help="design SNR in dB")
     ap.add_argument("--q", type=float, default=200.0, help="modal quality factor")
     ap.add_argument("--survey", help="survey.json from rf_survey_from_iw.py; overrides --snr with a measured value")
+    ap.add_argument("--chamber", action="store_true",
+                    help="also analyse the space as a reverberation chamber (LUF, mode count, verdict)")
     ap.add_argument("--iw-link", dest="iw_link",
                     help="a capture of `iw dev <if> link`; reports MEASURED streams beside the predicted ceiling")
     args = ap.parse_args(argv)
@@ -72,6 +74,14 @@ def main(argv=None) -> int:
     print("=" * 92)
     print(f"RF PLAN   {a} x {b} x {d} m   {args.band:.2f} GHz   {n} x {n} antennas   {snr:.1f} dB ({provenance})")
     print("=" * 92)
+
+    if args.chamber:
+        # ONE COMMAND: the chamber analysis is the same engine on the same room, so it is dispatched from here
+        # rather than being a second tool a user has to know about.
+        import chamber_plan
+        print()
+        chamber_plan.main(["--chamber", args.room, "--frequency", str(args.band), "--q", str(args.q)])
+        print()
 
     # 1  the mode structure
     n_exact = E.exact_count(a, b, d, f)
@@ -109,7 +119,7 @@ def main(argv=None) -> int:
     # 4  chamber question
     luf_rule = 3 * E.C_LIGHT / (2 * max(a, b, d))
     luf_density = C_luf(vol, args.q)
-    print(f"\n4. CHAMBER QUESTION (only if the space is used as one)  PASS-2 (closed form, verified 0.00%)")
+    print(f"\n4. CHAMBER QUESTION   closed form PASS-2 (verified 0.00%); rule comparison PASS-1 (no chamber measured)")
     print(f"   rule of thumb (3 x fundamental)   {luf_rule/1e6:8.1f} MHz")
     print(f"   LUF from mode density             {luf_density/1e6:8.1f} MHz   "
           f"({luf_density/luf_rule:.2f} x the rule)")
