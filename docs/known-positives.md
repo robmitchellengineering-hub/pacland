@@ -6,10 +6,10 @@
 
 ## Exhibited Object (2)
 
-- **a primitive pair with zero tadpole whose halves are non-zero and not proportional: `(F|H) = [-1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0]`, N = 0 (124992 in the window)**
+- **a primitive pair with zero tadpole whose halves are non-zero and not proportional: `(F|H) = [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0]`, N = 0 (124992 in the window)**
   - why it matters: it says the kernel of the symplectic pairing is populated away from its two obvious branches (F = 0 and F proportional to H), which is a statement about the lattice rather than a claim about a model
   - reproduce: `python3 scripts/existence.py`
-- **a primitive pair with zero tadpole and no zero component: `(F|H) = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]`, N = 0 (1280 in the window)**
+- **a primitive pair with zero tadpole and no zero component: `(F|H) = [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]`, N = 0 (1280 in the window)**
   - why it matters: it gives a null-tadpole flux pair you can hand to any computation without a component dropping out — a resource, not just a fact
   - reproduce: `python3 scripts/existence.py`
 
