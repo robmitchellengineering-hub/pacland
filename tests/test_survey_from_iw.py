@@ -63,3 +63,15 @@ def test_parse_link_reads_the_real_node_output():
     assert link["band"] == "2.4 GHz"
     assert link["signal_dbm"] == -37.0
     assert link["nss"] == 2, link
+
+
+def test_the_committed_capture_still_parses_to_two_streams():
+    """The measurement record cites this file; if the parser drifts, the record is wrong."""
+    import pathlib
+    text = (pathlib.Path(__file__).resolve().parents[1] / "docs" / "data" / "iw-link-2026-10-31.txt").read_text()
+    link = S.parse_link(text)
+    assert link["ssid"] == "Telstra3696"
+    assert link["band"] == "2.4 GHz"
+    assert link["freq_mhz"] == 2462.0
+    assert link["nss"] == 2
+    assert link["mcs"] == 15

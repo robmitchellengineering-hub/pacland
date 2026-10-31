@@ -1,0 +1,9 @@
+Connected to 14:59:c0:65:57:2d (on wlp2s0)
+	SSID: Telstra3696
+	freq: 2462.0
+	signal: -37 dBm
+	rx bitrate: 144.4 MBit/s MCS 15 short GI
+	tx bitrate: 144.4 MBit/s MCS 15 short GI
+	bss flags: short-slot-time
+	dtim period: 1
+	beacon int: 100
