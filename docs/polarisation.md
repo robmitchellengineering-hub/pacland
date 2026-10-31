@@ -134,6 +134,27 @@ assumed damping.**
 chamber gave the *cleanest* answer, which is what a higher Q should do inside one resonance window: fewer modes,
 less superposition.
 
+## The validation it promised — done, and it passes to floating point
+
+`docs/polarisation.md` listed two checks that had to pass before any polarised number could be trusted. Both are now
+in `scripts/polarisation_validation.py`:
+
+| check | result |
+|---|---|
+| **no tangential E on any conducting wall** — six walls, TE and TM modes | **2.8e-16** worst case |
+| **coupling of a linear element follows `\|cos θ\|`** as it rotates | **6.3e-16** worst case |
+
+**So the field structure the projection depends on is right**, and the PASS-2 stream table rests on a validated
+model rather than a plausible one.
+
+### Two defects the validation caught in itself
+
+1. **It normalised against the full `|E|`** including the out-of-plane `Ez` that a rotating element in the x-y plane
+   can never see — a correct model looked like a 1.5e-3 failure. Fixed by using the in-plane amplitude.
+2. **It fitted `θ₀` on a 0.25° grid** instead of using the field's own `atan2(Ey, Ex)`; a grid that coarse puts a
+   **2.2e-3 floor** under the residual — twice the tolerance, and again a correct model failed. **A test with a
+   tolerance below its own sampling resolution cannot pass for a right answer.**
+
 ## What validation this needs, before any claim
 
 1. **a single-mode check**: at one (m,n,p), compare the field vector against a textbook worked example or a
