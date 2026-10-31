@@ -249,6 +249,13 @@
    "title": "The constraint/observable split \u2014 the structure miner's answer"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/cycles.md",
+   "kind": "doc",
+   "path": "docs/cycles.md",
+   "summary": "",
+   "title": "Cycles \u2014 the no \u2192 question \u2192 yes \u2192 no loop, closed ones only"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/darboux-connection.md",
    "kind": "doc",
    "path": "docs/darboux-connection.md",
@@ -1066,6 +1073,13 @@
    "path": "scripts/crosscheck_sm_float.py",
    "summary": "Rule of Three, arm 2 \u2014 an INDEPENDENT float re-derivation of the two SM exact results.",
    "title": "crosscheck_sm_float.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/cycles.py",
+   "kind": "script",
+   "path": "scripts/cycles.py",
+   "summary": "The cycle log \u2014 one line per closed loop of the no -> question -> yes -> no process.",
+   "title": "cycles.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/demo_certificate_t6.py",
