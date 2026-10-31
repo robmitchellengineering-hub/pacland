@@ -1432,6 +1432,13 @@
    "title": "install_cytools.sh"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/invariant.py",
+   "kind": "script",
+   "path": "scripts/invariant.py",
+   "summary": "The invariant I(b3) \u2014 one integer behind classification and accessibility.",
+   "title": "invariant.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/issue_certificate.py",
    "kind": "script",
    "path": "scripts/issue_certificate.py",
