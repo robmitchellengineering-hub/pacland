@@ -46,6 +46,8 @@ def main(argv=None) -> int:
     ap.add_argument("--snr", type=float, default=20.0, help="design SNR in dB")
     ap.add_argument("--q", type=float, default=200.0, help="modal quality factor")
     ap.add_argument("--survey", help="survey.json from rf_survey_from_iw.py; overrides --snr with a measured value")
+    ap.add_argument("--json", action="store_true",
+                    help="emit the plan as JSON (for a tool to consume) instead of prose")
     ap.add_argument("--chamber", action="store_true",
                     help="also analyse the space as a reverberation chamber (LUF, mode count, verdict)")
     ap.add_argument("--iw-link", dest="iw_link",
@@ -153,6 +155,36 @@ def main(argv=None) -> int:
     print(f"   ... or giving FEWER than {lo} at a measured SNR well above the design point -> the ceiling")
     print(f"   is too high and the polarisation/sounding gap is larger than documented")
     print(f"\n   One measurement settles it. Anything above is a model until that measurement exists.")
+
+    if args.json:
+        result = {
+            "format": "rf-plan@1",
+            "room_m": [a, b, d],
+            "band_ghz": args.band,
+            "antennas": n,
+            "snr_db": snr,
+            "snr_source": provenance,
+            "q_factor": args.q,
+            "modes": {"exact": n_exact, "weyl": round(weyl), "weyl_error": (weyl - n_exact) / max(n_exact, 1),
+                      "distinct": deg["distinct"], "degenerate_fraction": deg["fraction"],
+                      "status": "PASS-2"},
+            "streams": {"ceiling": scalar, "across_heights": [lo, hi], "status": "PASS-2",
+                        "note": "ceiling only; real hardware delivers fewer because of channel sounding"},
+            "placement": {"receiver_height_worth": hi - lo, "status": "PASS-2"},
+            "chamber": {"luf_rule_hz": luf_rule, "luf_density_hz": luf_density,
+                        "ratio": luf_density / luf_rule if luf_rule else None,
+                        "status": "closed form PASS-2, rule comparison PASS-1"},
+            "thermal": {"samples_per_bit": round(tc["samples_per_bit"]), "status": "PASS-2"},
+            "falsifier": {"exceeds_ceiling_above": hi,
+                          "falling_short_below": lo},
+        }
+        if measured:
+            result["measured"] = {"ssid": measured.get("ssid"), "band": measured.get("band"),
+                                  "freq_mhz": measured.get("freq_mhz"),
+                                  "signal_dbm": measured.get("signal_dbm"),
+                                  "nss": measured.get("nss"), "mcs": measured.get("mcs"),
+                                  "discriminating": bool(measured.get("nss") is not None and hi > (measured.get("nss") or 0))}
+        print(json.dumps(result, indent=2))
     return 0
 
 

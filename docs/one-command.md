@@ -33,6 +33,37 @@ And a closing block naming **what would falsify it**, with the measurement that 
    test failed — not because the output was wrong, but because the test was pinned to a *value* instead of to the
    *rule*. **It now checks that every numbered section carries a mark**, which is the property that matters.
 
+## `--json`: the plan as data
+
+A plan that only prints prose cannot be put in a report, a ticket or a test fixture. `--json` emits the same
+figures with the same statuses:
+
+```json
+{
+  "format": "rf-plan@1",
+  "modes":    {"exact": 1296344, "weyl": 1295100, "weyl_error": -0.00096, "degenerate_fraction": 0.84, "status": "PASS-2"},
+  "streams":  {"ceiling": 4, "across_heights": [3, 4], "status": "PASS-2"},
+  "chamber":  {"luf_rule_hz": 1.12e8, "luf_density_hz": 1.93e8, "ratio": 1.71,
+               "status": "closed form PASS-2, rule comparison PASS-1"},
+  "thermal":  {"samples_per_bit": 3820, "status": "PASS-2"},
+  "falsifier": {"exceeds_ceiling_above": 4, "falling_short_below": 3}
+}
+```
+
+**Every block carries its own `status`**, so a consumer cannot pick a number out of the JSON and quote it as
+settled — the status travels with it. That is the registry rule applied to a data format: **a status belongs to a
+claim, not to a document.**
+
+With `--iw-link`, the JSON carries the measured link and a **`discriminating`** flag:
+
+```json
+"measured": {"ssid": "Telstra3696", "band": "2.4 GHz", "nss": 2, "mcs": 15, "discriminating": false}
+```
+
+**`false` is the honest answer for a 2 × 2 link**: a ceiling of 2 cannot be beaten by an observation of 2, so this
+row cannot falsify anything. A consumer that ignores the flag will read "consistent" as "confirmed", which is the
+exact error the flag exists to prevent.
+
 ## The rule this file keeps
 
 **A status belongs to a claim, not to a section of a report.** Where a section mixes a verified computation with an

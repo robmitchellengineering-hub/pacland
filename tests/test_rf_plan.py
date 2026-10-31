@@ -1,5 +1,6 @@
 """The one command: it must run, say the required things, and refuse nonsense."""
 import io
+import json
 import sys
 import unittest
 from contextlib import redirect_stdout
@@ -89,3 +90,38 @@ class TestOneCommandCoversChambers(unittest.TestCase):
     def test_without_the_flag_there_is_no_chamber_section(self):
         out = run(["--room", "3,2.5,2.2", "--band", "0.3"])
         self.assertNotIn("LUF by exact mode count", out)
+
+
+class TestJsonOutput(unittest.TestCase):
+    def _json(self, args):
+        import io
+        import json
+        from contextlib import redirect_stdout
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            rf_plan.main(args)
+        out = buf.getvalue()
+        start = out.index("{")
+        return json.loads(out[start:])
+
+    def test_it_emits_machine_readable_plan(self):
+        d = self._json(["--room", "3,4,2.5", "--json"])
+        self.assertEqual(d["format"], "rf-plan@1")
+        self.assertIn("status", d["modes"])
+        self.assertIn("ceiling", d["streams"])
+        self.assertIn("falsifier", d)
+
+    def test_every_block_declares_a_status(self):
+        d = self._json(["--room", "3,4,2.5", "--json"])
+        for block in ("modes", "streams", "placement", "chamber", "thermal"):
+            self.assertIn("status", d[block], block)
+
+    def test_the_measured_link_is_carried_and_marked_discriminating(self):
+        import pathlib
+        import tempfile
+        p = pathlib.Path(tempfile.mkdtemp()) / "l.txt"
+        p.write_text("Connected to aa:bb (on w0)\n\tSSID: X\n\tfreq: 2462.0\n\tsignal: -37 dBm\n"
+                     "\trx bitrate: 144.4 MBit/s MCS 15 short GI\n")
+        d = self._json(["--room", "4,5,2.4", "--antennas", "2", "--iw-link", str(p), "--json"])
+        self.assertEqual(d["measured"]["nss"], 2)
+        self.assertFalse(d["measured"]["discriminating"])   # a 2-element ceiling cannot be beaten by 2
