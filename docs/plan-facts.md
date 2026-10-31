@@ -879,6 +879,34 @@ guess, silently returned a point where `D_T W ≠ 0`, and reported `V > 0`, cont
 **brackets and bisects** on a stated interval, **raises** if the bracket has no sign change, and asserts the
 identity residual before any uplift scan. The bad-bracket case is a test.
 
+## The invariant I(b3) — predictions on record, first test failed to confirm (2026-10-31)
+
+`src/pacland/exactness/invariant.py` · `python3 scripts/invariant.py` · 12 tests.
+
+**The law, stated before the run** — `rate(b3) = rate(6)·exp(−c(b3−6))` with `c = 0.762` fitted from two anchors
+(`0.1325/try` at `b3 = 6`, `0.00137/try` at `b3 = 12`). Predictions: **11.5 points per 400-try call at `h12 = 3`**,
+**2.5 at `h12 = 4`**. Committed before the measurement, which is what makes it a test.
+
+**First measurement (job `0511Z-invariant-law2`, degree 0):**
+
+| `h12` | predicted per call | measured |
+|---|---|---|
+| 3 | 11.5 | **20 of 20 calls raised** — unmeasurable |
+| 4 | 2.5 | **8 and 10** in the first two calls — **3–4× above** |
+
+**Provisional verdict: not confirmed, and if `h12 = 4` holds above prediction the law fails.** Two consequences:
+
+1. **A framework-level negative result.** If the rate does not follow a single exponential in `b3`, then the
+   classification scale (`max|N| = b3`) and the accessibility scale are **unrelated**, and `I(b3)` is not one
+   invariant. That is the first result this arm has produced *against* its own unification-shaped target, and it
+   was cheap because the prediction was written first.
+2. **An instrumentation defect of my own, recorded.** `h12 = 3` raised on every call and the `try/except` stored
+   `-1`, discarding the message — so an entire `h12` is unmeasurable for an unknown reason. A sentinel value hid
+   the diagnosis. The next run must capture and print the exception text before counting anything.
+
+**Not yet recorded as settled:** the full 20-call `h12 = 4` counts and the `h12 = 3` exception text. The module
+records the partial state rather than smoothing it.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
