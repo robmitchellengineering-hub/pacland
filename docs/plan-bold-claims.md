@@ -35,7 +35,10 @@ not by physics. This uses only data on disk plus the measured rate.
 **What it excludes.** That the moduli count shapes the landscape's statistics — i.e. it would kill the
 "landscape changes character with `h12`" story and replace it with an invariant `(N, orbit)` classification.
 
-**Confidence.** High that the test is decisive; medium on which way it goes.
+**STATUS: REFUTED (2026-10-30).** Binned by tadpole, the `h12 = 4` rate is far below `h12 = 2` at **every**
+bin (0.00 vs 0.17 at `2²`; 0.01 vs 0.34 at `2⁴`). The strata are not the `N` mix. Out of the same table came a
+real positive: the SUSY fraction **rises monotonically with the tadpole** at every `h12` (0.03 → 0.49), which is
+structure the compression engine's linear model class could not see. Next question: what tracks `h12` beyond `N`?
 
 ### B2 — Exactness is preserved by recursion and broken by normalisation
 
