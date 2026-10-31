@@ -297,7 +297,8 @@ def channel_matrix_polarised(a: float, b: float, d: float, f: float,
                              rx: list[tuple[float, float, float]],
                              tx_pol: list[tuple[float, float, float]],
                              rx_pol: list[tuple[float, float, float]],
-                             q_factor: float = 200.0, max_modes: int = 120, c: float = C_LIGHT):
+                             q_factor: float = 200.0, max_modes: int = 120, c: float = C_LIGHT,
+                             seed: int = 11):
     """The channel matrix with antenna polarisation projected onto the mode fields.
 
     The unpolarised model (`channel_matrix`) treats every antenna as sampling every mode perfectly. Real
@@ -320,7 +321,7 @@ def channel_matrix_polarised(a: float, b: float, d: float, f: float,
     pool = [(f0, kind, idx) for f0, kind, idx in cavity_modes(a, b, d, hi, c) if f0 >= lo]
     if not pool:                                   # tiny cavity: fall back to the nearest modes
         pool = list(cavity_modes(a, b, d, f + width, c))[-max_modes:]
-    rng = _random.Random(11)
+    rng = _random.Random(seed)
     chosen = pool if len(pool) <= max_modes else rng.sample(pool, max_modes)
     chosen.sort()
 
