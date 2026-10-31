@@ -2,7 +2,7 @@
 
 This doc records the bridge between the measured structure map and the swampland
 program, and the runnable system that tests it: `pacland.swampland` +
-`scripts/test_swampland.py` (pure stdlib + numpy; `python -m unittest` green).
+`scripts/swampland_checks.py` (pure stdlib + numpy; `python -m unittest` green).
 
 ## The claim being tested
 
@@ -89,8 +89,8 @@ validated oracle rung.
 ## Reproduce it
 
 ```
-python3 scripts/test_swampland.py
-python3 -m unittest discover -s tests -q   # 1021 tests
+python3 scripts/swampland_checks.py
+python3 -m unittest discover -s tests -q   # 1028 tests
 ```
 
 The module cross-checks its numpy ridge against the canonical stdlib

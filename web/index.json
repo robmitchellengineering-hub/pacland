@@ -742,7 +742,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/swampland-connection.md",
    "kind": "doc",
    "path": "docs/swampland-connection.md",
-   "summary": "This doc records the bridge between the measured structure map and the swampland program, and the runnable system that tests it: pacland.swampland + scripts/testswampland.py (pure stdlib +\u2026",
+   "summary": "This doc records the bridge between the measured structure map and the swampland program, and the runnable system that tests it: pacland.swampland + scripts/swamplandchecks.py (pure stdlib\u2026",
    "title": "The swampland connection \u2014 the constraint-first conjecture as a swampland test"
   },
   {
@@ -1628,6 +1628,13 @@
    "title": "positives.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/preconditions.py",
+   "kind": "script",
+   "path": "scripts/preconditions.py",
+   "summary": "Guards for the instrument, not the result.",
+   "title": "preconditions.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/quintic_periods.py",
    "kind": "script",
    "path": "scripts/quintic_periods.py",
@@ -1789,6 +1796,13 @@
    "title": "spectral_zeros_deep.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/swampland_checks.py",
+   "kind": "script",
+   "path": "scripts/swampland_checks.py",
+   "summary": "Run the swampland-connection report against the data we already hold.",
+   "title": "swampland_checks.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tensions.py",
    "kind": "script",
    "path": "scripts/tensions.py",
@@ -1808,13 +1822,6 @@
    "path": "scripts/test_orbit_injectivity.py",
    "summary": "Test 2 of the unification claim (C3, injectivity) \u2014 do distinct orbits share physics?",
    "title": "test_orbit_injectivity.py"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_swampland.py",
-   "kind": "script",
-   "path": "scripts/test_swampland.py",
-   "summary": "Run the swampland-connection report against the data we already hold.",
-   "title": "test_swampland.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/try_budget.py",
