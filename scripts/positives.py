@@ -63,7 +63,8 @@ def build():
     rb = R.corpus_susy_fraction()
     entries.append({"kind": "measured value",
                     "claim": "SUSY fraction stratified: "
-                             + ", ".join(f"{k} = {v:.1%}" for k, v in rb.values.items()
+                             + ", ".join(f"{k} = {v:.1%}"
+                                         for k, v in sorted(rb.values.items())
                                          if k.startswith("h12")),
                     "why": "the spread is the finding: the pooled number is between the strata",
                     "command": "python3 scripts/robustness.py"})
@@ -95,11 +96,15 @@ def build():
                              + ", ".join(f"n_{r['degree']} = {r['correct']}" for r in nums),
                     "why": "integrality alone is not a check; the inverse multi-cover relation reproduces them",
                     "command": "python3 scripts/gv_basis.py"})
-    return entries
+    # The page must be a function of the engine VALUES, not of the order the engines yield them in.
+    # Filesystem glob order and dict iteration order both vary between machines, and that alone was
+    # enough to make CI see a different file than the author did (2026-10-31).
+    return sorted(entries, key=lambda e: (KIND_ORDER.get(e["kind"], 99), e["claim"]))
 
 
 KINDS = ["exhibited object", "theorem-in-a-window", "recovered definition", "measured value",
          "certified map", "exact integer"]
+KIND_ORDER = {k: i for i, k in enumerate(KINDS)}
 
 
 def render(entries) -> str:
