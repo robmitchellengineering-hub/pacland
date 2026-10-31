@@ -23,6 +23,8 @@ jax.config.update("jax_enable_x64", True)
 
 import jaxvacua as jvc  # noqa: E402
 
+import preconditions as pre  # noqa: E402
+
 
 class Timeout(Exception):
     pass
@@ -39,11 +41,20 @@ def run(h12: int, degree: int, n_target: int, max_batches: int, limit_s: int = 2
     try:
         model = jvc.FluxVacuaFinder(h12=h12, model_ID=1, model_type="KS", maximum_degree=degree,
                                     mirror_instanton=True)
+        pre.require_corrections_on(model, degree)   # degree 0 silently disables them
         vacua = list(model.sample_critical_points(Q=None, n_target=n_target, n_batch=25,
                                                   max_batches=max_batches, isd_mode="ISD-",
                                                   solver="scipy", verbose=False))
+        gaps = []
+        for r in vacua:
+            dw, res = r.get("|DW|"), r.get("residual")
+            if dw is not None and res is not None:
+                try:
+                    gaps.append(pre.require_agree(float(abs(dw)), float(abs(res)), ("|DW|", "residual")))
+                except pre.PreconditionError as e:
+                    gaps.append(str(e))
         susy = sum(1 for r in vacua if bool(getattr(r, "get", lambda *_: False)("is_susy")))
-        return {"ok": True, "critical_points": len(vacua), "susy": susy,
+        return {"ok": True, "critical_points": len(vacua), "susy": susy, "residual_gaps": gaps[:3],
                 "seconds": round(time.time() - t0, 1), "hit_target": len(vacua) >= n_target}
     except Timeout:
         return {"ok": False, "error": f"timeout after {limit_s}s", "seconds": round(time.time() - t0, 1)}

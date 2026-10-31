@@ -567,6 +567,32 @@ the other explodes at h12 = 5 (a scaling/overflow in the DW evaluation at large 
 candidate — `e^K` and the period sum both grow). Until that is settled, **no SUSY hit-rate at h12 ≥ 5 is
 quoted as a result**, only as a provisional number with this table attached.
 
+### The guards — check the instrument, then the measurement (2026-10-29)
+
+Three retractions in one day shared one shape: the number was fine and the **apparatus assumption** was wrong.
+`scripts/preconditions.py` now makes that class of error loud, and every check is tested to fire:
+
+| guard | catches | test |
+|---|---|---|
+| `require_corrections_on(model, degree)` | `maximum_degree = 0` silently disabling mirror instanton corrections, so a "baseline" was not the model | degree 2 with corrections off **raises** |
+| `require_agree(a, b, names)` | two fields describing the same quantity disagreeing by orders of magnitude — `|DW|` 1.7e38 against `residual` 3.8e-37 | that exact pair **raises** |
+| `require_multi_point(n, 3)` | a ladder run at one moduli point, where five points moved the answer by 88% | `n = 1` **raises** |
+
+**The rule they encode:** *check that the instrument measures what you think, before checking what it
+measured.* A falsifier cannot catch a false premise about the setup — only a precondition can.
+
+### Pass markers — the record distinguishes a first pass from a confirmed one
+
+From here, a measured number in this document carries one of two marks:
+
+- **PASS-1** — one run, falsifier satisfied, **not yet reproduced**. Treated as provisional and never quoted
+  in a paper or a certificate.
+- **PASS-2** — reproduced by a second run with a different parameterisation (different degree, seed, budget or
+  point count), or by an independent path. Only PASS-2 numbers leave the repository.
+
+Today's three retractions were all PASS-1 numbers that had been written up as if they were PASS-2. The
+markers exist so that mistake is visible in the document rather than in the next session's surprise.
+
 ### The node stopped polling, and why
 
 The B2 run wrote a `result.json` with `"summary": ,` — an empty summary — which is invalid JSON. The node
