@@ -510,6 +510,39 @@ That has consequences beyond the yield test:
 (10 target × 400 batches). If the SUSY hit rate at h12 = 5 stays at zero with corrections on, the solve is the
 limit. If it rises, the earlier zero was the disabled switch and the wall is smaller than we thought.
 
+### The fair test — corrections ON, and the verdict survives (2026-10-29)
+
+Same budget, same machine, `maximum_degree = 2` so `include_mirror_wsi = True`:
+
+| h12 | degree | critical points | SUSY | time |
+|---|---|---|---|---|
+| **2** | 2 | 11 | **5** | 127 s |
+| **5** | 2 | 10 | **0** | 1,197 s |
+
+**Two facts, and they pull in different directions:**
+
+1. **The disabled switch mattered at h12 = 2.** With corrections on, the SUSY hit rate there goes from **1/10
+   (degree 0) to 5/11 (degree 2)** — the degree-0 measurement was depressed by the forced-off flag, exactly as
+   the source said it would be.
+2. **It did not matter at h12 = 5.** Ten critical points, still **zero** SUSY, with corrections on and a budget
+   that found the target count.
+
+**So the yield conclusion survives the fair test, and gets sharper:** the sampler reaches critical points at
+h12 = 5 at the same rate as at h12 = 2 (10–11 of target, both), and the SUSY success collapses from **45% to
+0%** between those two models. **A solve failure, not a proposal failure and not a truncation failure** — the
+third candidate, and the one that survives all three tests.
+
+### What this does to the earlier claims
+
+| claim | verdict after the fair test |
+|---|---|
+| "degree 2 fixes the series" (#208) | **holds** — `d2 = d3` with corrections on |
+| "degree 2 does not fix the yield" (#214) | **confounded** — it compared corrections off vs on; withdrawn as stated |
+| "the sampler proposes fine; the solve fails" (#244) | **holds, and is now measured with corrections on** — 45% → 0% |
+
+**The next repair is aimed at the solve**, and it now has a clean diagnostic: at h12 = 5 the sampler lands ten
+critical points and the F-term solve fails on every one.
+
 ### The node stopped polling, and why
 
 The B2 run wrote a `result.json` with `"summary": ,` — an empty summary — which is invalid JSON. The node
