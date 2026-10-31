@@ -96,40 +96,77 @@ def degeneracy(a: float, b: float, d: float, f_max: float, c: float = C_LIGHT) -
             "fraction": 1 - len(set(freqs)) / max(len(freqs), 1)}
 
 
-def usable_modes(a: float, b: float, d: float, f_lo: float, f_hi: float, mics: int,
-                 noise_db: float, c: float = C_LIGHT) -> dict:
+def usable_modes(a: float, b: float, d: float, f_lo: float, f_hi: float, probes: int,
+                 noise_db: float, q_factor: float = 50.0, max_modes: int = 40,
+                 c: float = C_LIGHT) -> dict:
     """Identifiability of the mode set: how many directions survive at a given noise floor.
 
-    Same estimator as the room work — the Jacobian of the observation vector with respect to the mode
-    amplitudes, then the Cramer-Rao bound — because the question is identical: how many independent
-    quantities can `mics` probes resolve at this noise?
+    The first version of this returned ZERO usable modes at -60 dB for two and three probes, against 3-7 for
+    the acoustic case. That was a bug in the model, not a difference in the physics:
+
+      - it used arbitrary complex phases instead of the cavity's own field, so every probe saw an
+        independent random vector and the Jacobian columns were nearly collinear in magnitude;
+      - it fixed a 2% damping with no stated Q.
+
+    Now it uses the real rectangular-cavity field, `sin(m pi x/a) sin(n pi y/b) sin(p pi z/d)`, and a stated
+    quality factor. The question is unchanged: how many mode amplitudes can `probes` positions resolve at
+    `noise_db`?
     """
     import itertools
     import numpy as np
 
-    band = [f for f, _, _ in cavity_modes(a, b, d, f_hi, c) if f >= f_lo]
+    band = [(f, idx) for f, _, idx in cavity_modes(a, b, d, f_hi, c) if f >= f_lo]
     if not band:
-        return {"modes_in_band": 0, "usable": 0, "usable_10pct": 0}
-    k = min(len(band), 40)                     # cap: the largest modes in the band
-    freqs = band[-k:]
-    seats = [(a * (0.2 + 0.2 * i), b * (0.25 + 0.2 * j), d * 0.5)
-             for i, j in itertools.product(range(3), repeat=2)][:mics]
+        return {"modes_in_band": 0, "usable_10pct": 0, "usable_25pct": 0}
+    # collapse exact degeneracies FIRST: two modes at the same frequency are one measurement direction
+    seen, chosen = set(), []
+    for f, idx in reversed(band):
+        key = round(f, 6)
+        if key in seen:
+            continue
+        seen.add(key)
+        chosen.append((f, idx))
+    chosen = list(reversed(chosen))[:max_modes]
+    freqs = [f for f, _ in chosen]
+    idxs = [idx for _, idx in chosen]
+
+    # Probes must be spread in THREE dimensions. The first attempt put every probe on the mid-plane z = d/2,
+    # where every even-p mode vanishes identically, so adding probes added no information about half the
+    # modes and the usable count stayed flat at 12 for 1, 2, 3, 4 and 6 probes.
+    lattice = [(a * (0.2 + 0.2 * i), b * (0.25 + 0.2 * j), d * (0.15 + 0.35 * k))
+               for i, j, k in itertools.product(range(3), repeat=3)]
+    seats = lattice[:probes]
+
+    def shape(idx, x, y, z):
+        m, n, p = idx
+        return (math.sin(m * math.pi * x / a) * math.sin(n * math.pi * y / b)
+                * math.sin(p * math.pi * z / d))
+
     noise = 10 ** (noise_db / 20.0)
-    # observation: field amplitude summed over modes; the parameter is each mode's amplitude
-    jac = np.zeros((len(seats) * len(freqs), k), dtype=complex)
-    for si, (x, y, z) in enumerate(seats):
-        for fi, f in enumerate(freqs):
-            for mi, f0 in enumerate(freqs):
-                w = 2 * math.pi * f
+    obs_freqs = [f for f in freqs]
+    rows = []
+    for (x, y, z) in seats:
+        for f in obs_freqs:
+            w, row = 2 * math.pi * f, []
+            for f0, idx in chosen:
                 w0 = 2 * math.pi * f0
-                denom = complex(w0 * w0 - w * w, 0.02 * w * w0)
-                jac[si * len(freqs) + fi, mi] = complex(math.cos(f0), math.sin(f0)) / denom
+                denom = complex(w0 * w0 - w * w, w0 * w / q_factor)
+                row.append(shape(idx, x, y, z) / denom)
+            rows.append(row)
+    jac = np.asarray(rows, dtype=complex)
+    # `noise_db` is defined RELATIVE to the strongest response, not in absolute units: the raw response of a
+    # GHz mode is ~1e-18 and an absolute 1e-3 noise floor makes every direction unidentifiable. Scaling the
+    # Jacobian so its largest entry is 1 makes the number mean "signal-to-noise of the strongest mode", which
+    # is what a measurement actually quotes.
+    peak = float(np.max(np.abs(jac))) or 1.0
+    jac = jac / peak
     j = np.concatenate([jac.real, jac.imag], axis=0)
     f_mat = (j.T @ j) / (noise ** 2)
     eig = np.linalg.eigvalsh(f_mat)
     dir_sd = 1.0 / np.sqrt(np.maximum(eig, 1e-300))
-    return {"modes_in_band": len(band), "cap": k, "probes": len(seats),
-            "standard_deviations": [round(float(x), 4) for x in sorted(dir_sd)[:8]],
+    return {"modes_in_band": len(band), "distinct_in_band": len(seen), "cap": len(chosen),
+            "probes": len(seats), "q_factor": q_factor,
+            "median_dir_sd": float(np.median(dir_sd)),
             "usable_10pct": int((dir_sd < 0.10).sum()),
             "usable_25pct": int((dir_sd < 0.25).sum())}
 

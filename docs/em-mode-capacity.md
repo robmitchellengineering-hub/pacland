@@ -46,24 +46,51 @@ degeneracy fractions rose slightly because the spurious modes were singletons.
 **The test earned its keep on its first run** — and the fix changed three numbers on the page, which is why
 they are quoted with the correction rather than silently updated.
 
-## What does not yet hold, stated plainly
+## Identifiability, rebuilt — and it says something the acoustic case could not
 
-**Two failures, both mine, both recorded rather than reported as physics:**
+The first version returned **zero usable directions at −60 dB**. Three separate bugs, each found by looking
+at the number rather than believing it:
 
-1. **Identifiability returns 0 usable modes at −60 dB for 2 and 3 probes.** The acoustic run gives 3–7 at
-   three mics, so a zero here is a **bug**, not a finding — my Jacobian uses arbitrary complex phases and a
-   fixed 2% modal damping, and the Fisher matrix comes out effectively singular. It needs the same treatment
-   the acoustic version got: a physical mode shape (the actual `sin` products, not phases), and a damping
-   model with a stated Q.
-2. **The ratio statistic is not yet meaningful**: 0.8044 at the cabinet (above the GUE control of 0.6136, so
-   outside the model's range) and 0.3573 at the small room (near Poisson, 0.381) — both dominated by the
-   degeneracy problem above. Until the collapse is done the way the acoustic work does it (collapse first,
-   *then* unfold), these numbers are not results.
+1. **arbitrary complex phases** instead of the cavity's own field — replaced with the real
+   `sin(mπx/a) sin(nπy/b) sin(pπz/d)`;
+2. **no stated Q** — now `Q = 50` explicitly, and the noise floor is defined **relative to the strongest
+   response**, not in absolute units (a GHz response is ~1e-18; an absolute 1e-3 floor makes everything
+   unidentifiable);
+3. **every probe on the mid-plane `z = d/2`**, where *every even-p mode vanishes identically* — so adding
+   probes added no information about half the modes, and the usable count sat flat at 12 for 1, 2, 3, 4 and
+   6 probes. Probes are now spread in three dimensions.
 
-**Falsifier for the next attempt:** if collapsing degeneracies and using true mode shapes still gives zero
-usable directions at −60 dB with three probes, then the electromagnetic case genuinely differs from the
-acoustic one, and the unification claim is wrong for the information part while surviving for the counting
-part.
+**The result, 0.5 m cube, 0.5–3 GHz, 40 modes after collapse, Q = 50, −60 dB:**
+
+| probes | usable @10% | median direction sd |
+|---|---|---|
+| 1 | **17** / 40 | 1.9e5 |
+| 2 | 17 | 1.0e5 |
+| 3 | 17 | 1.0e5 |
+| 4 | **19** | 8.9e4 |
+| 6 | 19 | 1.4e5 |
+| 9 | 19 | 1.1e5 |
+
+**And this is a finding, not a defect:** in a **high-Q** cavity a single probe with a wide spectrum already
+resolves most modes, because the resonances are separated in *frequency*. Probes buy little beyond the
+fourth. **The acoustic case was different because room modes are heavily damped and overlapping in frequency,
+so only *space* separates them.** The same engine, a different answer, for a reason that is physical.
+
+**So the unification holds for the counting and for the *method*, and the answer to "how many sensors" is
+not transferable — which is exactly what the transfer note claimed.** The discipline transfers; the numbers
+do not.
+
+## Still not a result
+
+**The ratio statistic** (0.8044 at the cabinet, outside the GUE control's range of 0.6136; 0.3573 at the room,
+near Poisson) is still degenerate-dominated and is **not quoted as a finding**. Collapse-then-unfold is
+implemented; what is missing is enough *distinct* modes in a band for the statistic to mean anything — 81 in
+the cabinet, which is too few for a spacing distribution.
+
+**Falsifier for the next attempt:** if a band with hundreds of distinct modes still gives a ratio outside
+[0.38, 0.62], the estimator or the collapse is wrong; if it lands near Poisson, then a rectangular cavity is
+integrable, which is the *expected* answer and would make the electrodynamic case a clean control for the
+room case.
 
 ## What this is, and what it is not
 
