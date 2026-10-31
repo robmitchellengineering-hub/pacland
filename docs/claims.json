@@ -1,0 +1,102 @@
+{
+  "format": "claims-registry@1",
+  "note": "Every published number, its status, the script that reproduces it, and the check that could make it wrong. PASS-1 = one run, provisional, never quoted as settled. PASS-2 = reproduced with a different parameterisation. withdrawn = it was published and then failed; kept so the record shows the retraction.",
+  "claims": [
+    {
+      "id": "weyl-mode-count",
+      "claim": "mode count = 8 pi V f^3 / 3 c^3 minus a surface term, fitted against exact enumeration",
+      "status": "PASS-2",
+      "script": "scripts/em_capacity.py",
+      "doc": "docs/em-mode-capacity.md",
+      "evidence": ["room 0.004%", "chamber -0.08%", "acoustic 0.02%"],
+      "falsifier": "an independent mode count disagreeing by more than 1%"
+    },
+    {
+      "id": "degeneracy-fraction",
+      "claim": "a rectangular space has 77-92% exact mode degeneracies",
+      "status": "PASS-2",
+      "script": "scripts/em_capacity.py",
+      "doc": "docs/em-mode-capacity.md",
+      "evidence": ["room 77.6%", "cube 92.1%", "chamber 46.6%"],
+      "falsifier": "a space whose measured spacing statistic survives without degeneracy collapse"
+    },
+    {
+      "id": "scalar-streams",
+      "claim": "a 3x4x2.5 m room supports 3-4 of 4 streams at 20 dB (perfect-polarisation ceiling)",
+      "status": "PASS-2",
+      "script": "scripts/wifi_5ghz.py",
+      "doc": "docs/wifi-5ghz.md",
+      "evidence": ["Q 100/200/400 identical", "layout sweep 3-4"],
+      "falsifier": "a measured 4x4 link giving fewer than 2 or more than 4 streams"
+    },
+    {
+      "id": "polarised-streams",
+      "claim": "with polarisation the count is 3-4 at 20 dB, so polarisation costs at most one stream",
+      "status": "PASS-1",
+      "script": "scripts/node_polarisation_converge.py",
+      "doc": "docs/polarisation.md",
+      "evidence": ["converged in cap to 38,985 modes", "seed-dependent 3-4"],
+      "falsifier": "a cap sweep showing the count still moving at the full window"
+    },
+    {
+      "id": "chamber-luf-closed-form",
+      "claim": "LUF = (Q c^3 / 8 pi V)^(1/3)",
+      "status": "PASS-2",
+      "script": "scripts/chamber.py",
+      "doc": "docs/chamber-analysis.md",
+      "evidence": ["matches bisection to 0.00% over 12 V/Q combinations", "Q x4 -> cube root of 4"],
+      "falsifier": "a chamber whose measured uniformity onset disagrees with the formula"
+    },
+    {
+      "id": "chamber-luf-vs-rule-of-thumb",
+      "claim": "the 3 x fundamental rule of thumb is optimistic by 1.2-2.0x depending on Q",
+      "status": "PASS-1",
+      "script": "scripts/chamber.py",
+      "doc": "docs/chamber-analysis.md",
+      "evidence": ["computed, never measured in a chamber"],
+      "falsifier": "a measured chamber whose field becomes uniform at or below the rule of thumb"
+    },
+    {
+      "id": "thermal-ceiling",
+      "claim": "a two-state ambient link needs eta^2 m = 2[Q^-1(eps)]^2 samples",
+      "status": "PASS-1",
+      "script": "scripts/thermal_noise_bound.py",
+      "doc": "docs/thermal-noise-bound.md",
+      "evidence": ["derived from Fisher information, not measured"],
+      "falsifier": "a working link beating the bound at the same contrast and BER"
+    },
+    {
+      "id": "identifiability-modes",
+      "claim": "17-19 of 40 modes are usable at -60 dB in a high-Q cavity, and probes buy little beyond the fourth",
+      "status": "PASS-1",
+      "script": "scripts/em_capacity.py",
+      "doc": "docs/em-mode-capacity.md",
+      "evidence": ["one parameterisation (Q=50, 0.5 m cube)"],
+      "falsifier": "a second Q or geometry changing the usable count by more than a factor of two"
+    },
+    {
+      "id": "wifi-streams-3-of-4",
+      "claim": "a 4x4 5 GHz link carries 3 of 4 streams at 20 dB, matching practice",
+      "status": "withdrawn",
+      "script": "scripts/wifi_5ghz.py",
+      "doc": "docs/wifi-5ghz.md",
+      "reason": "the number was a property of the receive layout, not the room; superseded by the 3-4 range in scalar-streams"
+    },
+    {
+      "id": "h12-degree2-yield",
+      "claim": "degree 2 instanton truncation fixes the h12>=5 sampler yield",
+      "status": "withdrawn",
+      "script": "scripts/node_b2_applied.py",
+      "doc": "docs/plan-exact-terms.md",
+      "reason": "confounded: maximum_degree=0 silently disables mirror instanton corrections, so the comparison was corrections off vs on"
+    },
+    {
+      "id": "h12-solve-fails",
+      "claim": "the ISD solve, not the sampler, is the h12>=5 wall",
+      "status": "withdrawn",
+      "script": "scripts/node_yield.py",
+      "doc": "docs/plan-exact-terms.md",
+      "reason": "measured by a criterion whose two residual fields disagree by 75 orders of magnitude at the same point"
+    }
+  ]
+}
