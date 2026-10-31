@@ -784,6 +784,35 @@ blocker, recorded rather than worked around.
 
 **Degree is excluded as the cause** by T1: degree 1 and degree 2 give 2 points each on the same budget.
 
+## The rate-wall verdict — arrivals are uniformly rare, not clustered (2026-10-30)
+
+`src/pacland/exactness/rate_wall.py` · 16 tests. Twenty consecutive calls at `h12 = 5`, degree 1, 400 tries each:
+
+```
+0 1 0 0 1 1 1 1 0 1 0 0 0 0 1 1 1 1 1 0     → 11 points in 20 calls
+```
+
+| quantity | value |
+|---|---|
+| mean points/call | 0.55 |
+| variance | 0.26 |
+| **variance / mean** | **0.47** (1 = Poisson, ≫1 = clustered) |
+| calls with ≥ 2 points | **0 observed**, 2.1 expected at Poisson(0.55) |
+| rate per try | **0.00137** (1 in 727) |
+| vs `h12 = 2` | **96×** |
+
+**Verdict: uniformly rare, not clustered.** No call produced two points where a free-Poisson process would have
+produced about two such calls, and the variance sits *below* the mean. Solver dynamics — lucky seeds, occasional
+good runs — would show the opposite. So the wall is a **per-try probability**, i.e. basin volume in 24
+dimensions, not a solver pathology.
+
+**And the under-dispersion suggests something stronger:** a maximum of 1 per call across 20 calls is consistent
+with the sampler **returning at most one point per call**, in which case 0.00137 is a *lower bound* and
+`1 − (1−p)^400 = 0.55` gives `p ≈ 0.002`. Flagged as a suggestion, not asserted.
+
+**What that decides:** better initialisation is a real path (a warm start raises the per-try probability), and a
+different solver is not needed to explain the wall.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

@@ -38,6 +38,47 @@ OBSERVATIONS = (
 )
 
 
+#: Twenty consecutive calls at `h12 = 5`, degree 1, 400 tries each — the arrival experiment.
+ARRIVALS_20 = (0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0)
+
+
+def arrivals(counts=ARRIVALS_20) -> dict:
+    """Are points **uniformly rare** or **clustered** in particular calls?
+
+    The two mechanisms predict different distributions across calls:
+
+        uniformly rare (basin volume)  -> variance / mean ~ 1  (Poisson), and counts above 1 are possible
+        solver dynamics (lucky seeds)  -> variance / mean >> 1, with runs of high counts
+
+    Measured: 11 points in 20 calls, mean 0.55, variance 0.26, **ratio 0.47** — no clustering, and in fact
+    slightly *under*dispersed. Not one call produced two points where Poisson(0.55) expects about two such
+    calls. That is consistent with a **per-try probability** and against dynamics, and the under-dispersion
+    suggests the call itself returns at most one point (a cap rather than a count).
+    """
+    import math
+
+    n = len(counts)
+    total = sum(counts)
+    mean = total / n if n else 0.0
+    var = sum((c - mean) ** 2 for c in counts) / (n - 1) if n > 1 else 0.0
+    lam = mean
+    expected_ge2 = n * (1 - math.exp(-lam) * (1 + lam)) if lam else 0.0
+    observed_ge2 = sum(1 for c in counts if c >= 2)
+    ratio = var / mean if mean else float("inf")
+    return {
+        "calls": n, "points": total, "mean": mean, "variance": var, "max": max(counts) if counts else 0,
+        "variance_over_mean": ratio,
+        "expected_calls_with_two_or_more": expected_ge2,
+        "observed_calls_with_two_or_more": observed_ge2,
+        "verdict": ("uniformly rare (per-try probability), not clustered" if ratio < 1.5
+                    else "clustered — solver dynamics contribute"),
+        "rate_per_try": total / (n * 400) if n else 0.0,
+        "note": ("under-dispersion (0.47) plus a maximum of 1 per call suggests the sampler returns at most "
+                 "one point per call, so the per-try rate is a lower bound: 1 - (1-p)^400 = 0.55 gives p ≈ "
+                 "0.002"),
+    }
+
+
 def rates() -> list:
     """The measured rates, each with the budget it was measured at."""
     out = []
@@ -72,4 +113,4 @@ def the_wall() -> dict:
     }
 
 
-__all__ = ["OBSERVATIONS", "rates", "the_wall"]
+__all__ = ["OBSERVATIONS", "ARRIVALS_20", "arrivals", "rates", "the_wall"]
