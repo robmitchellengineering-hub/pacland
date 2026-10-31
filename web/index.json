@@ -1152,6 +1152,13 @@
    "title": "drugs_second_source.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ds_uplift.py",
+   "kind": "script",
+   "path": "scripts/ds_uplift.py",
+   "summary": "B3 \u2014 de Sitter requires a positive term beyond the F-term potential.",
+   "title": "ds_uplift.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_resolve.py",
    "kind": "script",
    "path": "scripts/econ_resolve.py",

@@ -843,6 +843,42 @@ not capture.
 **So the corpus does contain structure — just not the kind the model class we prespecified could see.** That is
 a correction to the compression verdict, and it is worth stating as one.
 
+## B3 REFUTED as written, replaced by a proved statement — dS needs a lift (2026-10-30)
+
+`src/pacland/oracle/ds_needs_uplift.py` · `python3 scripts/ds_uplift.py` · 9 tests.
+
+**The claim was "dS requires a Kähler modulus, not an uplift".** Executed, it is wrong in that wording and right
+in a sharper one.
+
+**Proved.** For the one-modulus model `K = −3 ln(T+T̄)`, `W = W0 + A e^{−aT}`, at a SUSY point `D_T W = 0`:
+
+```
+V = −3 e^K |W|² < 0     identically
+```
+
+— the *same* identity as the T⁶ result, now with a **Kähler** modulus stabilised. Stabilising a modulus cannot
+produce de Sitter. Verified at `T = 43.58`, `V = −6.27e−9`, identity residual **9.4e−31**, `DW = 1.5e−33`.
+
+**Exhibited.** An uplift `D/(2T)²` lifts the same minimum:
+
+| `D/D_crit` | `V` | verdict |
+|---|---|---|
+| 0 | −6.3e−9 | AdS |
+| 0.5 | −3.1e−9 | AdS |
+| **1.0** | **−7.3e−40** | **Minkowski** |
+| 2.0 | +6.3e−9 | **dS** |
+
+`D_crit = 3|W|²/(2T)` is a **formula**, not a searched value — the test recomputes it from `W` and `T` and
+requires agreement to `1e−30`.
+
+**The surviving statement:** *dS requires a positive term beyond the F-term potential; the modulus stabilises,
+the uplift lifts.* It excludes that the F-term potential alone can give de Sitter, in either sector.
+
+**Method note — this is the second attempt and the difference matters.** The first used `mp.findroot` from a
+guess, silently returned a point where `D_T W ≠ 0`, and reported `V > 0`, contradicting the theorem. This version
+**brackets and bisects** on a stated interval, **raises** if the bracket has no sign change, and asserts the
+identity residual before any uplift scan. The bad-bracket case is a test.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
