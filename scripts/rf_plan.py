@@ -46,6 +46,8 @@ def main(argv=None) -> int:
     ap.add_argument("--snr", type=float, default=20.0, help="design SNR in dB")
     ap.add_argument("--q", type=float, default=200.0, help="modal quality factor")
     ap.add_argument("--survey", help="survey.json from rf_survey_from_iw.py; overrides --snr with a measured value")
+    ap.add_argument("--optimise", action="store_true",
+                    help="search antenna heights and offsets for the most streams, and report the gain")
     ap.add_argument("--json", action="store_true",
                     help="emit the plan as JSON (for a tool to consume) instead of prose")
     ap.add_argument("--chamber", action="store_true",
@@ -116,6 +118,28 @@ def main(argv=None) -> int:
     # 3  placement levers
     print(f"\n3. PLACEMENT LEVERS                                  PASS-2 (reproduced, and it moved the answer)")
     print(f"   receiver height           worth up to {hi - lo} stream(s) across 0.5-0.9 of room height")
+    best_cfg, best_streams = None, scalar
+    if args.optimise:
+        # a real planner SEARCHES: the two parameters PASS-2 identified as the levers, on both ends
+        for tx_hf in (0.5, 0.8, 0.95):
+            for rx_hf in (0.4, 0.6, 0.8, 0.95):
+                for off in (0.0, 0.15, 0.3):
+                    tx = lattice(a, b, d, n, tx_hf)
+                    rx = [( (a - x) * (1 - off) + off * a * 0.1,
+                            (b - y) * (1 - off) + off * b * 0.1,
+                            min(d - 0.15, rx_hf * d)) for (x, y, _z) in tx]
+                    k = E.streams(E.channel_matrix(a, b, d, f, tx, rx, q_factor=args.q), snr)
+                    if k > best_streams:
+                        best_streams, best_cfg = k, (tx_hf, rx_hf, off)
+        if best_cfg:
+            print(f"   best found                {best_streams} of {n} at tx height {best_cfg[0]:.2f}, "
+                  f"rx height {best_cfg[1]:.2f}, mirror offset {best_cfg[2]:.2f}")
+            print(f"   gain over the naive install  +{best_streams - scalar} stream(s)")
+        else:
+            print("   search                    no placement beat the naive install at this SNR")
+            print("   -> at this SNR the room is already giving what it has; placement is not the lever here")
+    else:
+        print("   (run with --optimise to search both ends' heights and the mirror offset)")
     print("   -> a 2D plan cannot express this; the model says height is a design variable")
 
     # 4  chamber question
