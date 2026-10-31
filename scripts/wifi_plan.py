@@ -31,6 +31,18 @@ def random_placement(a, b, d, n, rng):
              rng.uniform(GRID, d - GRID)) for _ in range(n)]
 
 
+def rx_at(tx, a, b, d, height_fraction, offset):
+    """Receive placement as two parameters: how high, and how far off the mirror line.
+
+    The PASS-2 result (docs/wifi-5ghz.md) says the stream count moves with the RECEIVE LAYOUT - raised
+    receivers give 4 of 4 where mid-plane receivers give 3 of 4 at 20 dB. So the search that matters is not
+    12-dimensional random placement; it is these two numbers.
+    """
+    return [((a - x) * (1.0 - offset) + offset * a * 0.1,
+             (b - y) * (1.0 - offset) + offset * b * 0.1,
+             min(d - GRID, height_fraction * d)) for (x, y, z) in tx]
+
+
 def rx_of(tx, a, b, d):
     """Receive positions, mirrored and raised: NEVER co-located with the transmitters.
 
@@ -55,7 +67,9 @@ def main(argv):
     print("=" * 92)
 
     base = lattice(a, b, d, n)
-    h_base = E.channel_matrix(a, b, d, f, base, rx_of(base, a, b, d))
+    # The baseline is the NAIVE install: both ends at mid-height, straight across. Comparing against an
+    # already-good layout was the flaw that made the first search report "the lattice was already best".
+    h_base = E.channel_matrix(a, b, d, f, base, rx_at(base, a, b, d, 0.5, 0.0))
     s_base = E.streams(h_base, snr_db)
     print(f"regular lattice:      {s_base} of {n} streams")
     print("  positions: " + " ".join(f"({x:.2f},{y:.2f},{z:.2f})" for x, y, z in base))
@@ -73,6 +87,19 @@ def main(argv):
     print(f"\nsearched placement:   {best_s} of {n} streams  (best of {tries} random layouts)")
     print("  positions: " + " ".join(f"({x:.2f},{y:.2f},{z:.2f})" for x, y, z in best_pos))
 
+    print("\ntwo-parameter search: receive height and mirror offset (the levers PASS-2 identified)")
+    grid_best, grid_args = s_base, None
+    for hf in (0.5, 0.65, 0.85, 0.95):
+        for off in (0.0, 0.1, 0.2, 0.3):
+            pos_rx = rx_at(base, a, b, d, hf, off)
+            k = E.streams(E.channel_matrix(a, b, d, f, base, pos_rx), snr_db)
+            if k > grid_best:
+                grid_best, grid_args = k, (hf, off)
+    print(f"  best: {grid_best} of {n} streams"
+          + (f"  at receive height {grid_args[0]:.2f} of the room, offset {grid_args[1]:.2f}"
+             if grid_args else "  (the lattice was already best)"))
+    if grid_best > best_s:
+        best_s, best_args = grid_best, grid_args
     if best_s == s_base:
         print(f"\nFALSIFIER FIRED: no placement beat the lattice. At {snr_db:.0f} dB in this geometry,")
         print("placement is not the lever — the room already supports what it supports. Do not sell a search.")
