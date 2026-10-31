@@ -543,6 +543,30 @@ third candidate, and the one that survives all three tests.
 **The next repair is aimed at the solve**, and it now has a clean diagnostic: at h12 = 5 the sampler lands ten
 critical points and the F-term solve fails on every one.
 
+### Diagnosing the solve — the two SUSY criteria disagree by seventy-five orders of magnitude
+
+The sampler returns each critical point with **both** a `|DW|` field and a `residual` field. At h12 = 5,
+degree 2 (corrections on), the two points sampled:
+
+| point | `is_susy` | `\|DW\|` | `residual` | `is_minimum` | V |
+|---|---|---|---|---|---|
+| 0 | false | **1.71e+38** | **3.77e-37** | false | 6.42 |
+| 1 | false | **5.57e+27** | **7.61e-36** | false | 9.60 |
+
+**One field says the F-terms are astronomically unsatisfied; the other says they are satisfied to 36 digits.**
+They cannot both be describing the same equations at the same point.
+
+**What that means for the h12 ≥ 5 verdict:** the falsifier's first branch was *"if `|DW|` is small and
+`is_susy` is false, the classifier is wrong"*. It did not fire — but a criterion that reports `10^38` and a
+residual of `10^-37` at the same point is not a criterion we can grade a hit rate with. **So the 0/10 SUSY
+result at h12 = 5 is not yet trustworthy either**, for a different reason than the instanton switch, and this
+is the third time in one day that a headline has had to be withdrawn on inspection.
+
+**The next step is small and specific:** establish which of the two fields `is_susy` is computed from, and why
+the other explodes at h12 = 5 (a scaling/overflow in the DW evaluation at large moduli is the leading
+candidate — `e^K` and the period sum both grow). Until that is settled, **no SUSY hit-rate at h12 ≥ 5 is
+quoted as a result**, only as a provisional number with this table attached.
+
 ### The node stopped polling, and why
 
 The B2 run wrote a `result.json` with `"summary": ,` — an empty summary — which is invalid JSON. The node
