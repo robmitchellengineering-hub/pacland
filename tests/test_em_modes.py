@@ -12,7 +12,7 @@ class TestExactModes(unittest.TestCase):
         modes = E.cavity_modes(a, a, a, 1e9)
         f101, pol, idx = modes[0]
         self.assertEqual(pol, "TE")
-        self.assertAlmostEqual(idx, (0, 1, 1), msg=f"lowest mode was {idx}")
+        self.assertEqual(tuple(idx), (0, 1, 1), f"lowest mode was {idx}")
         self.assertAlmostEqual(f101, E.C_LIGHT / (2 * a) * math.sqrt(2), places=0)
 
     def test_count_grows_with_bandwidth(self):
