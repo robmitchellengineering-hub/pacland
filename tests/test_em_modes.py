@@ -46,3 +46,29 @@ class TestDegeneracy(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestPolarisation(unittest.TestCase):
+    def test_mode_fields_are_vectors_with_the_right_support(self):
+        # TE modes have no Ez component; TM modes have one
+        te = E.mode_field((1, 1, 1), "TE", 0.3, 0.4, 0.5, 3.0, 4.0, 2.5)
+        tm = E.mode_field((1, 1, 1), "TM", 0.3, 0.4, 0.5, 3.0, 4.0, 2.5)
+        self.assertEqual(te[2], 0.0)
+        self.assertNotEqual(tm[2], 0.0)
+
+    def test_polarisation_changes_the_rank(self):
+        import random
+        rng = random.Random(3)
+        n = 4
+        tx = [(0.6, 3.2, 1.5), (1.2, 2.4, 1.8), (1.8, 1.6, 2.0), (2.4, 0.8, 2.2)]
+        rx = [((3.0 - x) * 0.8 + 0.3, (4.0 - y) * 0.8 + 0.4, z) for (x, y, z) in tx]
+        scalar = E.streams(E.channel_matrix(3.0, 4.0, 2.5, 5.18e9, tx, rx), 20.0)
+        pol = E.streams(E.channel_matrix_polarised(
+            3.0, 4.0, 2.5, 5.18e9, tx, rx,
+            [(rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-1, 1)) for _ in range(n)],
+            [(rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-1, 1)) for _ in range(n)]), 20.0)
+        self.assertLessEqual(pol, scalar)
+
+
+if __name__ == "__main__":
+    unittest.main()
