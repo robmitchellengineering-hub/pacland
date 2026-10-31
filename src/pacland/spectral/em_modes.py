@@ -252,3 +252,79 @@ def streams(h, snr_db: float) -> int:
         return 0
     snr = 10 ** (snr_db / 10.0)
     return int((((sv / sv[0]) ** 2) * snr > 1.0).sum())
+
+
+# ---------------------------------------------------------------------------------------
+# polarisation: the omitted term that makes a stream count a CEILING
+# ---------------------------------------------------------------------------------------
+def mode_field(idx: tuple[int, int, int], kind: str, x: float, y: float, z: float,
+               a: float, b: float, d: float) -> tuple[float, float, float]:
+    """The electric field VECTOR of a rectangular-cavity mode at a point (unnormalised).
+
+    Standard rectangular-cavity fields (Pozar, *Microwave Engineering*, §6.4; Collin, *Field Theory of Guided
+    Waves*), with the conducting-wall boundary conditions:
+
+        TE_mnp:  Ex ~ (n/b) cos(m pi x/a) sin(n pi y/b) sin(p pi z/d)
+                 Ey ~ -(m/a) sin(m pi x/a) cos(n pi y/b) sin(p pi z/d)
+                 Ez = 0
+        TM_mnp:  Ex ~ (m/a) cos(m pi x/a) sin(n pi y/b) sin(p pi z/d)
+                 Ey ~ (n/b) sin(m pi x/a) cos(n pi y/b) sin(p pi z/d)
+                 Ez ~ -( (m/a)^2 + (n/b)^2 ) sin(m pi x/a) sin(n pi y/b) cos(p pi z/d)
+
+    Only the DIRECTION matters for a stream count: the singular-value ratios of the channel matrix are
+    scale-invariant, so no normalisation is applied and none is needed.
+    """
+    import math as _m
+    m, n, p = idx
+    sx, cx = _m.sin(m * _m.pi * x / a), _m.cos(m * _m.pi * x / a)
+    sy, cy = _m.sin(n * _m.pi * y / b), _m.cos(n * _m.pi * y / b)
+    sz, cz = _m.sin(p * _m.pi * z / d), _m.cos(p * _m.pi * z / d)
+    if kind == "TE":
+        kx, ky = n / b, m / a
+        return (kx * cx * sy * sz, -ky * sx * cy * sz, 0.0)
+    kx, ky = m / a, n / b
+    kz = -((m / a) ** 2 + (n / b) ** 2)
+    return (kx * cx * sy * sz, ky * sx * cy * sz, kz * sx * sy * cz)
+
+
+def channel_matrix_polarised(a: float, b: float, d: float, f: float,
+                             tx: list[tuple[float, float, float]],
+                             rx: list[tuple[float, float, float]],
+                             tx_pol: list[tuple[float, float, float]],
+                             rx_pol: list[tuple[float, float, float]],
+                             q_factor: float = 200.0, max_modes: int = 120, c: float = C_LIGHT):
+    """The channel matrix with antenna polarisation projected onto the mode fields.
+
+    The unpolarised model (`channel_matrix`) treats every antenna as sampling every mode perfectly. Real
+    elements are polarised, so a mode whose electric field is perpendicular to an element contributes nothing
+    to it - which removes degrees of freedom and is the leading reason a real 4x4 link carries 2-3 streams
+    where the scalar model says 4.
+    """
+    import numpy as np
+
+    lo, hi = f - 1.0e9, f + 1.0e9
+    seen, chosen = set(), []
+    for f0, kind, idx in cavity_modes(a, b, d, hi, c):
+        if f0 < lo:
+            continue
+        k = round(f0, 3)
+        if k in seen:
+            continue
+        seen.add(k)
+        chosen.append((f0, kind, idx))
+    chosen = chosen[:max_modes]
+
+    def proj(pos, pol, kind, idx):
+        e = mode_field(idx, kind, pos[0], pos[1], pos[2], a, b, d)
+        return pol[0] * e[0] + pol[1] * e[1] + pol[2] * e[2]
+
+    h = np.zeros((len(rx), len(tx)), dtype=complex)
+    for t, (pt, ut) in enumerate(zip(tx, tx_pol)):
+        for r, (pr, ur) in enumerate(zip(rx, rx_pol)):
+            acc = 0j
+            for f0, kind, idx in chosen:
+                w0, w = 2 * math.pi * f0, 2 * math.pi * f
+                acc += proj(pt, ut, kind, idx) * proj(pr, ur, kind, idx) / complex(
+                    w0 * w0 - w * w, w0 * w / q_factor)
+            h[r, t] = acc
+    return h
