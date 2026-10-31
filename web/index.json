@@ -137,6 +137,27 @@
    "title": "The cosmological-constant distribution \u2014 flux vs uplift"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/chamber-analysis.md",
+   "kind": "doc",
+   "path": "docs/chamber-analysis.md",
+   "summary": "A reverberation chamber is judged on its modes. Below some frequency it is under-moded \u2014 the field is a set of isolated resonances, not a diffuse field \u2014 and a test result taken there\u2026",
+   "title": "Reverberation chambers: the usable frequency is not three times the fundamental"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/chamber-command.md",
+   "kind": "doc",
+   "path": "docs/chamber-command.md",
+   "summary": "A test house asks one question of a chamber: is it over-moded at this frequency. This answers it from the chamber's own dimensions and its measured Q, and reports two LUF estimates side by\u2026",
+   "title": "Chamber analysis as one command \u2014 and it caught itself contradicting"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/claims-registry.md",
+   "kind": "doc",
+   "path": "docs/claims-registry.md",
+   "summary": "Every published number in this work now carries a status, the script that reproduces it, the document it appears in, and the check that could make it wrong. Eleven claims are registered\u2026",
+   "title": "The claims registry \u2014 PASS-1, PASS-2 and withdrawn, made mechanical"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-ace-reference-fidelity.md",
    "kind": "doc",
    "path": "docs/climate-ace-reference-fidelity.md",
@@ -333,6 +354,13 @@
    "title": "L5 formalization \u2014 educability as verified knowledge transfer"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/em-mode-capacity.md",
+   "kind": "doc",
+   "path": "docs/em-mode-capacity.md",
+   "summary": "of a confined space are the same calculation for acoustic and electromagnetic fields. Only the speed and the boundary physics differ. If that holds, one engine answers \"how much information\u2026",
+   "title": "The electromagnetic twin \u2014 one engine, two fields"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/encoding.md",
    "kind": "doc",
    "path": "docs/encoding.md",
@@ -345,6 +373,13 @@
    "path": "docs/evolvability.md",
    "summary": "This formalizes the search layer. It maps Valiant's evolvability model onto the L1 genotype and the L3 certificate, and states the one theorem that governs whether L4 can work at all.",
    "title": "L4 formalization \u2014 evolvability over the landscape"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/execution-gate.md",
+   "kind": "doc",
+   "path": "docs/execution-gate.md",
+   "summary": "and drop the file in Downloads \u2014 while a radio:wifi node with a working SSH key was sitting on the mesh. His words: \"asking me to enter cmd line and not knowing how to complete the job on\u2026",
+   "title": "The execution gate \u2014 a command only reaches the operator if no path exists"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/expansion-map.md",
@@ -424,6 +459,13 @@
    "title": "How many microphones identify how many modes?"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/identifiability.md",
+   "kind": "doc",
+   "path": "docs/identifiability.md",
+   "summary": "The registry held identifiability at PASS-1 \u2014 one parameterisation (Q = 50, one space, \u221260 dB). This sweeps a factor of four in Q and four spaces:",
+   "title": "Identifiability, PASS-2: how many modes are usable is a property of the space, not of Q"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/is-the-landscape-chaotic.md",
    "kind": "doc",
    "path": "docs/is-the-landscape-chaotic.md",
@@ -471,6 +513,13 @@
    "path": "docs/linux-node-spec.md",
    "summary": "Why this exists: the flux sampler (JAXVacua + cytools) is Linux-only, and the mesh's only Linux today is two 4 vCPU / 4 GB VMs on win-2. Dual-boot was considered and rejected (manual\u2026",
    "title": "Dedicated Linux compute nodes \u2014 the cheap path to native Linux on the mesh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/measured-2026-10-31.md",
+   "kind": "doc",
+   "path": "docs/measured-2026-10-31.md",
+   "summary": "link speed. No Location permission needed, no command typed by Rob.",
+   "title": "The first real measurement \u2014 two links, taken from the mesh, with no operator involvement"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mitchell-completeness-theorem.md",
@@ -529,6 +578,13 @@
    "title": "The observable measure D \u2014 a toy definition"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/one-command.md",
+   "kind": "doc",
+   "path": "docs/one-command.md",
+   "summary": "python3 scripts/rfplan.py --room 3,4,2.5 --band 5.18 --antennas 4 --snr 20 python3 scripts/rfplan.py --room 3,4,2.5 --band 5.18 --antennas 4 --iw-link link.txt python3 scripts/rfplan.py\u2026",
+   "title": "One command, one room, everything \u2014 `rf_plan.py`"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/one-object-thesis.md",
    "kind": "doc",
    "path": "docs/one-object-thesis.md",
@@ -541,6 +597,13 @@
    "path": "docs/open-questions.md",
    "summary": "Ranked roughly by \"what must be true for the program to have legs.\"",
    "title": "Open questions and honest limits"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/operator-ask-gate.md",
+   "kind": "doc",
+   "path": "docs/operator-ask-gate.md",
+   "summary": "He had already told me the same thing once, in a different form, when I asked him to run iw:",
+   "title": "The operator-ask gate \u2014 if the agent can reach it, the agent does it"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/oracle.md",
@@ -634,11 +697,25 @@
    "title": "The fact-builds \u2014 what to build to get answers rather than pointers"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-meets-link.md",
+   "kind": "doc",
+   "path": "docs/plan-meets-link.md",
+   "summary": "A capture of iw dev <if> link is now an input. The plan reads the measured band, the measured stream count (from the MCS index, not a bitrate), and prints them beside the modelled ceiling:",
+   "title": "The plan meets the link \u2014 one command, and it says whether the measurement can prove anything"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-real-answers.md",
    "kind": "doc",
    "path": "docs/plan-real-answers.md",
    "summary": "negatives into questions. What has not yet happened is a single answer about nature rather than about our data. This is the plan for changing that, and it names what is missing rather than\u2026",
    "title": "Plan \u2014 from falsification to answers"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/polarisation.md",
+   "kind": "doc",
+   "path": "docs/polarisation.md",
+   "summary": "The scalar model treats every antenna as sampling every mode perfectly, which is why it gives 4 of 4 streams at 20 dB where practice gives 2\u20133. Polarisation is the obvious missing term: a\u2026",
+   "title": "Polarisation \u2014 implemented, direction plausible, **not validated**"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/publication-plan.md",
@@ -660,6 +737,34 @@
    "path": "docs/research-fanout.md",
    "summary": "Parallel independent passes are how this project avoids single-angle overreach (the same discipline as the Rule of Three, applied to ideas rather than measurements). This doc is the recipe\u2026",
    "title": "Research fan-out \u2014 the reusable \"compare notes\" tool"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-index.md",
+   "kind": "doc",
+   "path": "docs/rf-index.md",
+   "summary": "python3 scripts/rfplan.py --room L,W,H --band 5.18 --antennas 4 --snr 20",
+   "title": "The RF engine \u2014 one page, for a wireless engineer"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-plan-command.md",
+   "kind": "doc",
+   "path": "docs/rf-plan-command.md",
+   "summary": "The deliverable the whole engine exists for. A wireless engineer runs one command on a confined space and gets the mode structure, the stream count with its spread, the placement levers\u2026",
+   "title": "One command, one room \u2014 `rf_plan.py`"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-survey-from-ap.md",
+   "kind": "doc",
+   "path": "docs/rf-survey-from-ap.md",
+   "summary": "An access point measures almost everything the survey needs. No extra hardware.",
+   "title": "The survey instrument you already own"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-survey.md",
+   "kind": "doc",
+   "path": "docs/rf-survey.md",
+   "summary": "The engine runs on three numbers it does not know: the noise floor, the modal quality factor, and how busy the channel is. All three are cheap to measure, and until they are measured the\u2026",
+   "title": "Survey first \u2014 measure the room, then plan it"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sampling-frontier.md",
@@ -774,6 +879,13 @@
    "title": "Tensions \u2014 facts that cannot both be true as stated"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/thermal-noise-bound.md",
+   "kind": "doc",
+   "path": "docs/thermal-noise-bound.md",
+   "summary": "backscatter links\", PNAS, [doi:10.1073/pnas.2606732123](https://www.pnas.org/doi/abs/10.1073/pnas.2606732123) \u2014 reported as up to 1,000\u00d7 less transmitter energy than RF, with a 100\u00d7 rate\u2026",
+   "title": "A bound for two-state ambient-thermal-noise communication"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/three-machines-plan.md",
    "kind": "doc",
    "path": "docs/three-machines-plan.md",
@@ -828,6 +940,20 @@
    "path": "docs/usage.md",
    "summary": "PACLAND is a verification discipline for string-theory computation \u2014 a toolset, not a physics solver. You feed it flux-vacua data (or a candidate computation), and it returns certified\u2026",
    "title": "Using PACLAND"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/validate-streams.md",
+   "kind": "doc",
+   "path": "docs/validate-streams.md",
+   "summary": "The plan predicts a ceiling. This is the tool that takes real stream counts and says whether the ceiling survived. It exists now so that the moment there is data, the test is one command.",
+   "title": "The measurement that settles the plan \u2014 and the harness ready for it"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/validation-limit.md",
+   "kind": "doc",
+   "path": "docs/validation-limit.md",
+   "summary": "The model says an idealised 3 \u00d7 4 \u00d7 2.5 m room supports 3\u20134 streams of 4 at 20 dB (PASS-2, across Q = 100\u2026400). Practice says hardware delivers 2\u20133, because a real AP does not use every\u2026",
+   "title": "Why this house cannot test the 3\u20134 stream ceiling \u2014 and what would"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verification-config.md",
@@ -893,6 +1019,13 @@
    "title": "What transfers out of this programme, and for what it should not be claimed"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/wifi-5ghz.md",
+   "kind": "doc",
+   "path": "docs/wifi-5ghz.md",
+   "summary": "At 5 GHz the mode count stops being interesting \u2014 a 3 \u00d7 4 \u00d7 2.5 m room holds 59,978 modes in one 80 MHz channel (Weyl estimate 57,450, +4.4%; the surface coefficient was fitted on a wide\u2026",
+   "title": "5 GHz WiFi: how many streams does a room actually carry?"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",
@@ -940,6 +1073,20 @@
    "path": "scripts/certify_vacuum.py",
    "summary": "Certify a real flux vacuum end-to-end through the Verification Vault.",
    "title": "certify_vacuum.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/chamber.py",
+   "kind": "script",
+   "path": "scripts/chamber.py",
+   "summary": "Reverberation-chamber analysis \u2014 the one confined space where the peak-based mode test is valid.",
+   "title": "chamber.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/chamber_plan.py",
+   "kind": "script",
+   "path": "scripts/chamber_plan.py",
+   "summary": "Chamber analysis as one command: is this chamber usable at this frequency, and by how much?",
+   "title": "chamber_plan.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check-site-links.py",
@@ -1299,6 +1446,13 @@
    "title": "economics_vintage_sensitivity.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/em_capacity.py",
+   "kind": "script",
+   "path": "scripts/em_capacity.py",
+   "summary": "The electromagnetic twin of the room analysis: mode count, statistics, identifiability, and the",
+   "title": "em_capacity.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/epidemiology_identifiability.py",
    "kind": "script",
    "path": "scripts/epidemiology_identifiability.py",
@@ -1416,6 +1570,13 @@
    "path": "scripts/gv_basis.py",
    "summary": "B1 fixed - the GV basis convention.",
    "title": "gv_basis.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/identifiability_pass2.py",
+   "kind": "script",
+   "path": "scripts/identifiability_pass2.py",
+   "summary": "PASS-2 for identifiability: does 'how many modes are usable' survive a different parameterisation?",
+   "title": "identifiability_pass2.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ingest_rtdsm_releases.py",
@@ -1607,6 +1768,20 @@
    "title": "node_f3_quintic.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_polarisation_converge.py",
+   "kind": "script",
+   "path": "scripts/node_polarisation_converge.py",
+   "summary": "Converge the polarised stream count \u2014 caps 1k to 20k over the full resonance window.",
+   "title": "node_polarisation_converge.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_polarisation_q.py",
+   "kind": "script",
+   "path": "scripts/node_polarisation_q.py",
+   "summary": "PASS-2 for the polarised stream count: does 3-4 of 4 survive a different Q?",
+   "title": "node_polarisation_q.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_yield.py",
    "kind": "script",
    "path": "scripts/node_yield.py",
@@ -1642,6 +1817,13 @@
    "title": "orbit_content_slice.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/polarisation.py",
+   "kind": "script",
+   "path": "scripts/polarisation.py",
+   "summary": "Does polarisation explain why a real 4x4 link carries 2-3 streams where the scalar model says 4?",
+   "title": "polarisation.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/positives.py",
    "kind": "script",
    "path": "scripts/positives.py",
@@ -1675,6 +1857,20 @@
    "path": "scripts/render_pdf.py",
    "summary": "Render a PACLAND markdown doc to PDF (fpdf2 + Arial Unicode).",
    "title": "render_pdf.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/rf_plan.py",
+   "kind": "script",
+   "path": "scripts/rf_plan.py",
+   "summary": "One command, one room, everything the engine knows \u2014 with its bounds and its falsifiers.",
+   "title": "rf_plan.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/rf_survey_from_iw.py",
+   "kind": "script",
+   "path": "scripts/rf_survey_from_iw.py",
+   "summary": "Turn an access point into the survey instrument \u2014 no extra hardware.",
+   "title": "rf_survey_from_iw.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/robustness.py",
@@ -1852,6 +2048,20 @@
    "title": "test_orbit_injectivity.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/thermal_ceiling_check.py",
+   "kind": "script",
+   "path": "scripts/thermal_ceiling_check.py",
+   "summary": "Check the thermal bound against a simulation \u2014 the second path that makes it PASS-2 or not.",
+   "title": "thermal_ceiling_check.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/thermal_noise_bound.py",
+   "kind": "script",
+   "path": "scripts/thermal_noise_bound.py",
+   "summary": "A bound for two-state ambient-thermal-noise communication.",
+   "title": "thermal_noise_bound.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/try_budget.py",
    "kind": "script",
    "path": "scripts/try_budget.py",
@@ -2013,6 +2223,13 @@
    "title": "validate_sm_rank_test.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_streams.py",
+   "kind": "script",
+   "path": "scripts/validate_streams.py",
+   "summary": "Compare the engine's stream prediction against MEASURED streams \u2014 the test the whole plan waits on.",
+   "title": "validate_streams.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sw_structure.py",
    "kind": "script",
    "path": "scripts/validate_sw_structure.py",
@@ -2088,6 +2305,20 @@
    "path": "scripts/verify_sw_mod.py",
    "summary": "Verify SW's linearised model against the authors' own Dynare file.",
    "title": "verify_sw_mod.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/wifi_5ghz.py",
+   "kind": "script",
+   "path": "scripts/wifi_5ghz.py",
+   "summary": "The engine pointed at 5 GHz WiFi: how many streams can a room actually carry?",
+   "title": "wifi_5ghz.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/wifi_plan.py",
+   "kind": "script",
+   "path": "scripts/wifi_plan.py",
+   "summary": "WiFi planning: where to put the antennas, and how many streams you get.",
+   "title": "wifi_plan.py"
   },
   {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf",
