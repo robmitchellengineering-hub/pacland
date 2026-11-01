@@ -43,6 +43,27 @@ is the one that shows a rise.** Median drop: **−20 dB**.
 **That is the first measured, reproducible property of Rob's house in this project** — not a model, not a simulation:
 ten independent walks, and the signal falls about 20 dB from the near rooms to the far ones.
 
+## CORRECTION — that drop is start-versus-middle, not decay with distance
+
+Asked how close the reconstruction gets without a floor plan, I tested whether the signal actually falls with distance
+travelled. **It does not.** Regressing RSSI against cumulative distance along each walk gives **R² = 0.03 median**
+(range 0.00 to 0.12, and three walks have the wrong sign).
+
+**So the −20 dB figure above is real but it is a comparison, not a curve**: it contrasts the **first 10 m** of a walk
+(near the router) with the **40–100 m span** (in the far rooms). It is not a decay law, because the walks **loop** — a
+walker at 80 m travelled may be back in the strong-signal room.
+
+**What that means:**
+
+| question | answer |
+|---|---|
+| does signal fall with how far you have walked? | **no — R² 0.03** |
+| does it fall between the near rooms and the far ones? | **yes — 20 dB, 9/10 walks** |
+| can a coverage map be made from path distance alone? | **no** — it needs positions, which need the frame |
+
+**This is the honest limit of the no-floor-plan result: it tells you the near rooms are about 20 dB louder than the far
+ones, and nothing finer.**
+
 ## What this means for the product
 
 | claim | status |
