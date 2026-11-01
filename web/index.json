@@ -151,6 +151,20 @@
    "title": "Chamber analysis as one command \u2014 and it caught itself contradicting"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/channel-action.md",
+   "kind": "doc",
+   "path": "docs/channel-action.md",
+   "summary": "AirMatrix has router control. That means this analysis does not end in a recommendation \u2014 it ends in a transaction, and a transaction needs more than a channel number.",
+   "title": "The channel plan as an action, for AirMatrix's router automation"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/channel-plan.md",
+   "kind": "doc",
+   "path": "docs/channel-plan.md",
+   "summary": "The phone heard every BSS in range with its frequency and level. That is an interference census, and it answers a question every installer guesses at.",
+   "title": "Which channel should the access point be on? \u2014 from the scans"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/claims-registry.md",
    "kind": "doc",
    "path": "docs/claims-registry.md",
@@ -298,6 +312,13 @@
    "title": "Deployment \u2014 where PACLAND lives"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drift-is-not-calibratable.md",
+   "kind": "doc",
+   "path": "docs/drift-is-not-calibratable.md",
+   "summary": "Fitting a yaw bias and a scale per loop drives both parameters to the edges of the search range and still leaves 5\u201370% open. No interior solution.",
+   "title": "The loop cannot be closed by a drift model \u2014 measured, not assumed"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-gap-analysis.md",
    "kind": "doc",
    "path": "docs/drugs-gap-analysis.md",
@@ -403,6 +424,13 @@
    "title": "An outside claim through the same machine: Jason Padgett's QIH preprints"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/fading-is-rayleigh.md",
+   "kind": "doc",
+   "path": "docs/fading-is-rayleigh.md",
+   "summary": "certain mode density as a diffuse field: overlapping modes, random phases, so the received amplitude is Rayleigh and the received power is exponential. That is a prediction, and the walks\u2026",
+   "title": "The room is a diffuse cavity \u2014 measured, not assumed"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/falsifiable-predictions.md",
    "kind": "doc",
    "path": "docs/falsifiable-predictions.md",
@@ -450,6 +478,20 @@
    "path": "docs/h12-25-sampling-wall.md",
    "summary": "The overnight h12=25 run on pacland-rog (first-ever h12=25 sampling) found 0 critical points in 13,311 valid candidates (16,000 tried, 8h42m). This is a measured negative result, not a\u2026",
    "title": "h12=25 sampling wall \u2014 the ISD proposal degrades (measured 2026-10-21)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/house-from-walks.md",
+   "kind": "doc",
+   "path": "docs/house-from-walks.md",
+   "summary": "and stops cannot close, and those two are exactly the one-way ones (net displacement 91\u201392% of path).",
+   "title": "Ten walks: what they establish, and what they do not"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/house-map.md",
+   "kind": "doc",
+   "path": "docs/house-map.md",
+   "summary": "Eleven labelled spots, twenty-three BSS, one walk with a phone. The question is how much geometry that contains.",
+   "title": "The house as a 3D shape \u2014 what the walk actually determines"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/identifiability-of-room-modes.md",
@@ -520,6 +562,13 @@
    "path": "docs/measured-2026-10-31.md",
    "summary": "link speed. No Location permission needed, no command typed by Rob.",
    "title": "The first real measurement \u2014 two links, taken from the mesh, with no operator involvement"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/measurement-001.md",
+   "kind": "doc",
+   "path": "docs/measurement-001.md",
+   "summary": "SSID: Telstra3696 freq: 2462.0 signal: -37 dBm rx bitrate: 144.4 MBit/s MCS 15 short GI tx bitrate: 144.4 MBit/s MCS 15 short GI",
+   "title": "Measurement 001 \u2014 the first real link, recorded so it can be re-read"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mitchell-completeness-theorem.md",
@@ -653,6 +702,13 @@
    "path": "docs/phenotype-network.md",
    "summary": "The reframe that fell out of going multipath: stop asking about the genotype\u2192phenotype map (unlearnable) and map the phenotype network instead.",
    "title": "The phenotype network \u2014 the landscape's learnable structure is observable\u2194observable, with the tadpole as hub"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/photo-input.md",
+   "kind": "doc",
+   "path": "docs/photo-input.md",
+   "summary": "runs/phone/photo-1793509531757-spot847/photo.jpg 199,140 bytes 1600x1200",
+   "title": "Photo input \u2014 the path works, end to end"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/physics-compute-roadmap.md",
@@ -837,6 +893,13 @@
    "title": "Statistical selection over the flux landscape \u2014 first pass"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/step-count-repeatability.md",
+   "kind": "doc",
+   "path": "docs/step-count-repeatability.md",
+   "summary": "Two measurements of the same corridor, by the same app, on the same phone:",
+   "title": "The pedometer's own repeatability \u2014 and why it bounds the map"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/structure-map.md",
    "kind": "doc",
    "path": "docs/structure-map.md",
@@ -1012,6 +1075,13 @@
    "title": "W\u2080's weak structure is its own flux dependence \u2014 not the tadpole's scale"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/walk-2026-11-01.md",
+   "kind": "doc",
+   "path": "docs/walk-2026-11-01.md",
+   "summary": "162 samples at 1 Hz over 164 s. RSSI from \u221222 to \u221273 dBm \u2014 a 51 dB range, and the first dense signal profile this project has ever had.",
+   "title": "The first walk that recorded \u2014 and what it caught"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/what-transfers.md",
    "kind": "doc",
    "path": "docs/what-transfers.md",
@@ -1024,6 +1094,13 @@
    "path": "docs/wifi-5ghz.md",
    "summary": "At 5 GHz the mode count stops being interesting \u2014 a 3 \u00d7 4 \u00d7 2.5 m room holds 59,978 modes in one 80 MHz channel (Weyl estimate 57,450, +4.4%; the surface coefficient was fitted on a wide\u2026",
    "title": "5 GHz WiFi: how many streams does a room actually carry?"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/wifi-lidar.md",
+   "kind": "doc",
+   "path": "docs/wifi-lidar.md",
+   "summary": "what the field actually does.",
+   "title": "WiFi as LiDAR \u2014 what closes the gap, and what never will"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
@@ -1087,6 +1164,13 @@
    "path": "scripts/chamber_plan.py",
    "summary": "Chamber analysis as one command: is this chamber usable at this frequency, and by how much?",
    "title": "chamber_plan.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/channel_plan.py",
+   "kind": "script",
+   "path": "scripts/channel_plan.py",
+   "summary": "Which channel should the access point actually be on? Answered from the scans, not from folklore.",
+   "title": "channel_plan.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check-site-links.py",
@@ -1227,6 +1311,13 @@
    "path": "scripts/counterexample.py",
    "summary": "The counterexample engine \u2014 exhaustive window search with known-answer controls.",
    "title": "counterexample.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/coverage_map.py",
+   "kind": "script",
+   "path": "scripts/coverage_map.py",
+   "summary": "The coverage map, ready for a frame \u2014 and run here on an ASSUMED layout to show what the frame buys.",
+   "title": "coverage_map.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/crosscheck_sm_float.py",
@@ -1488,6 +1579,13 @@
    "title": "extract_observables.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fading_test.py",
+   "kind": "script",
+   "path": "scripts/fading_test.py",
+   "summary": "Does the room behave like the diffuse cavity the engine assumes? Measured, at last.",
+   "title": "fading_test.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_carbon_budget.py",
    "kind": "script",
    "path": "scripts/fetch_carbon_budget.py",
@@ -1570,6 +1668,20 @@
    "path": "scripts/gv_basis.py",
    "summary": "B1 fixed - the GV basis convention.",
    "title": "gv_basis.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/house_from_walks.py",
+   "kind": "script",
+   "path": "scripts/house_from_walks.py",
+   "summary": "What ten walks actually establish \u2014 and the one number that survives.",
+   "title": "house_from_walks.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/house_map.py",
+   "kind": "script",
+   "path": "scripts/house_map.py",
+   "summary": "The house as a 3D map, inferred from the walk \u2014 and honest about what is inferred and what is invented.",
+   "title": "house_map.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/identifiability_pass2.py",
@@ -1817,11 +1929,25 @@
    "title": "orbit_content_slice.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/photo_index.py",
+   "kind": "script",
+   "path": "scripts/photo_index.py",
+   "summary": "What photos exist, for which spot, and what a room needs.",
+   "title": "photo_index.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/polarisation.py",
    "kind": "script",
    "path": "scripts/polarisation.py",
    "summary": "Does polarisation explain why a real 4x4 link carries 2-3 streams where the scalar model says 4?",
    "title": "polarisation.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/polarisation_validation.py",
+   "kind": "script",
+   "path": "scripts/polarisation_validation.py",
+   "summary": "Validate the vector mode fields \u2014 the two checks docs/polarisation.md promised and did not do.",
+   "title": "polarisation_validation.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/positives.py",
@@ -2018,6 +2144,20 @@
    "path": "scripts/spectral_zeros_deep.py",
    "summary": "The deep run: 22,491 zeros below t = 20,000, in about thirty seconds.",
    "title": "spectral_zeros_deep.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/state_of_rf.py",
+   "kind": "script",
+   "path": "scripts/state_of_rf.py",
+   "summary": "One board: what has actually been measured.",
+   "title": "state_of_rf.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/step_trace_analysis.py",
+   "kind": "script",
+   "path": "scripts/step_trace_analysis.py",
+   "summary": "Design the step detector from a real waveform instead of from a threshold picked out of the air.",
+   "title": "step_trace_analysis.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/swampland_checks.py",
@@ -2305,6 +2445,13 @@
    "path": "scripts/verify_sw_mod.py",
    "summary": "Verify SW's linearised model against the authors' own Dynare file.",
    "title": "verify_sw_mod.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/walk_plot.py",
+   "kind": "script",
+   "path": "scripts/walk_plot.py",
+   "summary": "The walk, drawn \u2014 and the loop-closure error measured rather than hand-waved.",
+   "title": "walk_plot.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/wifi_5ghz.py",
