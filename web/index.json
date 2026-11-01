@@ -1103,6 +1103,13 @@
    "title": "WiFi as LiDAR \u2014 what closes the gap, and what never will"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/apply_measurements.py",
+   "kind": "script",
+   "path": "scripts/apply_measurements.py",
+   "summary": "Turn ARCore measurements into room dimensions in the layout template.",
+   "title": "apply_measurements.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",
