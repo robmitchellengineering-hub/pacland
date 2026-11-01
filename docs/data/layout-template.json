@@ -1,0 +1,108 @@
+{
+ "_note": "Fill x/y/w/h in metres per room from the photos. rooms[] is the only input the coverage map needs; the dBm values are already measured.",
+ "_source": "12 labelled spots, docs/data/spots-2026-11-01.json",
+ "rooms": [
+  {
+   "name": "Alice's office",
+   "measured_dbm": -61,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": []
+  },
+  {
+   "name": "bathroom",
+   "measured_dbm": -56,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": []
+  },
+  {
+   "name": "bedroom next to router",
+   "measured_dbm": -28,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": [],
+   "aliases": [
+    "bedroom next to router house loop walk"
+   ]
+  },
+  {
+   "name": "bedroom same room as forest router",
+   "measured_dbm": -31,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": []
+  },
+  {
+   "name": "hallway",
+   "measured_dbm": -56,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": []
+  },
+  {
+   "name": "hallway further",
+   "measured_dbm": -56,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": []
+  },
+  {
+   "name": "kitchen",
+   "measured_dbm": -56,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": []
+  },
+  {
+   "name": "lougeroom",
+   "measured_dbm": -34,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": []
+  },
+  {
+   "name": "lounge room",
+   "measured_dbm": -36,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": []
+  },
+  {
+   "name": "spare bedroom",
+   "measured_dbm": -56,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": []
+  },
+  {
+   "name": "tv room",
+   "measured_dbm": -58,
+   "x": null,
+   "y": null,
+   "w": null,
+   "h": null,
+   "photos": []
+  }
+ ]
+}

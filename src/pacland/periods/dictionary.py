@@ -119,6 +119,20 @@ def flux_scaling(d: int = 2, seed: int = 7) -> Entry:
 # ---------------------------------------------------------------------------------------
 # entry 2: the mirror map, z-chart <-> conifold chart
 # ---------------------------------------------------------------------------------------
+def _bound(value: float) -> str:
+    """A residual quoted as an order-of-magnitude BOUND, not as a measurement of floating-point noise.
+
+    This is a generated page, and at 1e-16 the last bit is decided by the platform: the same engine reported 3.4e-16 on
+    macOS and 1.7e-16 on the CI runner, so the page differed between machines and the drift guard failed forever with
+    no way to see why. A number whose value depends on which LAPACK built the numpy is not a claim. `below 1e-15` is.
+    """
+    import math
+    if value <= 0 or not math.isfinite(value):
+        return "below machine precision"
+    exponent = math.ceil(math.log10(value))
+    return f"below 1e{exponent}"
+
+
 def mirror_map(z_sample=(0.55, 0.65, 0.7, 0.75), dps: int = 50) -> Entry:
     """The mirror map between the two charts of the same family: `z` (large complex structure) and
     `u` (conifold).
@@ -169,7 +183,7 @@ def mirror_map(z_sample=(0.55, 0.65, 0.7, 0.75), dps: int = 50) -> Entry:
                   "resonance, F2 M2e), so the map is certified on the span of the other three and the "
                   "fourth is open. Radii: the z series converges for |z| < z_c, the u series for |u| < 1; "
                   "nothing is claimed outside them. The carried-observable residual at z = 0.75 z_c is "
-                  f"{worst:.1e}, which is the truncation of the conifold series, not of the map."),
+                  f"{_bound(worst)}, which is the truncation of the conifold series, not of the map."),
         t_note="T: z -> u = 1 - z/z_c",
         tinv_note="T⁻¹: u -> z = z_c(1 - u)",
     )

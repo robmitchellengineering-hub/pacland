@@ -42,13 +42,13 @@
 
 ## Certified Map (3)
 
-- **S and T duality: the phase law: S: (F,H,tau0) -> (-H, F, -1/tau0);   T: (F,H,tau0) -> (F+H, H, tau0+1); identity 5.6e-17, worth case carried observable 3.4e-16**
+- **S and T duality: the phase law: S: (F,H,tau0) -> (-H, F, -1/tau0);   T: (F,H,tau0) -> (F+H, H, tau0+1); identity below 1e-16, worst case carried observable below 1e-15**
   - why it matters: exact on the T^6 oracle, where K and Pi are closed form
   - reproduce: `python3 scripts/dictionary.py`
-- **flux scaling, d = 2: T: (F, H) -> 2(F, H); identity 0.0e+00, worth case carried observable 0.0e+00**
+- **flux scaling, d = 2: T: (F, H) -> 2(F, H); identity below machine precision, worst case carried observable below machine precision**
   - why it matters: d must be a **positive integer** for the map to be a map of the flux lattice: for real d the scaling of W and N still holds, but the image is not on the lattice
   - reproduce: `python3 scripts/dictionary.py`
-- **the mirror map, z-chart <-> conifold chart: T: z -> u = 1 - z/z_c; identity 1.9e-51, worth case carried observable 6.3e-15**
+- **the mirror map, z-chart <-> conifold chart: T: z -> u = 1 - z/z_c; identity below 1e-50, worst case carried observable below 1e-14**
   - why it matters: **three of four branches**: the exponent-0 branch has no certified translation (double resonance, F2 M2e), so the map is certified on the span of the other thre
   - reproduce: `python3 scripts/dictionary.py`
 

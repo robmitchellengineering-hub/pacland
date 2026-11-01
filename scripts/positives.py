@@ -15,6 +15,14 @@ sys.path.insert(0, str(ROOT / "src"))
 OUT = ROOT / "docs" / "known-positives.md"
 
 
+def _bound(value: float) -> str:
+    """An order-of-magnitude bound, or a plain word. Stable across platforms by construction."""
+    import math
+    if value is None or not isinstance(value, float) or not math.isfinite(value) or value <= 0:
+        return "below machine precision"
+    return f"below 1e{math.ceil(math.log10(value))}"
+
+
 def build():
     """Every positive the estate can state, with the command that reproduces it."""
     from pacland.exactness import counterexample as C
@@ -73,8 +81,12 @@ def build():
     for e in (D.flux_scaling(), D.mirror_map(), D.s_t_duality()):
         worst = max((c.residual for c in e.carries), default=float("nan"))
         entries.append({"kind": "certified map",
-                        "claim": f"{e.name}: {e.t_note}; identity {e.identity_residual:.1e}, worth case "
-                                 f"carried observable {worst:.1e}",
+                        # A GENERATED PAGE MUST NOT QUOTE A VALUE AT THE PRECISION THE PLATFORM DECIDES. At 1e-16 the
+                        # same engine reported 3.4e-16 on macOS and 1.7e-16 on the CI runner, so this page differed
+                        # between machines and the drift guard failed on every PR with nothing to point at. The
+                        # residual is a bound now: "below 1e-15" is a claim, "3.4e-16" is a rounding path.
+                        "claim": f"{e.name}: {e.t_note}; identity {_bound(e.identity_residual)}, worst case "
+                                 f"carried observable {_bound(worst)}",
                         "why": e.boundary.split(".")[0][:160],
                         "command": "python3 scripts/dictionary.py"})
 
@@ -133,7 +145,20 @@ def main() -> int:
             print(f"MISSING: {OUT}")
             return 1
         if OUT.read_text() != text:
+            # SAY WHAT IS STALE. The guard used to report only that the file differed, which is a dead end on a
+            # machine whose library versions differ from CI's: the author regenerates, sees no change, and has nothing
+            # to act on. A diff is the diagnosis.
+            import difflib
+            committed = OUT.read_text().splitlines(keepends=True)
+            fresh = text.splitlines(keepends=True)
+            diff = list(difflib.unified_diff(committed, fresh,
+                                             fromfile="docs/known-positives.md (committed)",
+                                             tofile="freshly generated", n=2))
             print("STALE: docs/known-positives.md does not match a fresh generation")
+            for line in diff[:40]:
+                print(line.rstrip("\n"))
+            if len(diff) > 40:
+                print(f"... {len(diff) - 40} more diff lines")
             return 1
         print("current")
         return 0
