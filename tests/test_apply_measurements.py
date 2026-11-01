@@ -84,6 +84,23 @@ class TestApplyMeasurements(unittest.TestCase):
         self.assertEqual(_module().main(["x", "--root", str(self.root), "--layout", str(self.layout), "--write"]), 1,
                          "the bad room must refuse the write for every room")
 
+    def test_a_label_matches_its_room_despite_case_and_spacing(self):
+        rooms = json.loads((ROOT / "docs" / "data" / "layout-template.json").read_text())["rooms"]
+        mod = _module()
+        self.assertEqual(mod.resolve_room("Kitchen", rooms), "kitchen")
+        self.assertEqual(mod.resolve_room("  kitchen  ", rooms), "kitchen")
+        self.assertEqual(mod.resolve_room("the kitchen", rooms), "kitchen")
+
+    def test_an_unrelated_label_is_not_forced_onto_a_room(self):
+        rooms = json.loads((ROOT / "docs" / "data" / "layout-template.json").read_text())["rooms"]
+        self.assertIsNone(_module().resolve_room("garage", rooms))
+
+    def test_a_mismatched_label_refuses_the_write_and_says_so(self):
+        _write_payload(self.root, "measure-1", "garage", [3.42])
+        _write_payload(self.root, "measure-2", "garage", [2.61])
+        result = _module().main(["x", "--root", str(self.root), "--layout", str(self.layout), "--write"])
+        self.assertEqual(result, 1, "an unmatched room must not be written silently")
+
     def test_nothing_on_the_hub_is_not_an_error(self):
         self.assertEqual(_module().main(["x", "--root", str(self.root)]), 0)
 

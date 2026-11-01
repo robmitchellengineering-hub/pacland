@@ -48,6 +48,30 @@ def load_measurements(root: str):
     return by_room
 
 
+def resolve_room(label: str, rooms: list[dict]) -> str | None:
+    """Match a measurement's room label to a template room, tolerantly - and say nothing when it cannot.
+
+    The label is FREE TEXT typed on the phone ("Kitchen", "kitchen ", "the kitchen") while the template has fixed names,
+    so an exact-match requirement would mean measurements that arrive, parse and then silently fill nothing. Matching is:
+    exact (case-folded) -> one contains the other -> close enough by ratio. Anything else stays unmatched, because
+    guessing which room a measurement belongs to is worse than asking again.
+    """
+    import difflib
+    key = " ".join(label.lower().split())
+    names = {" ".join(r["name"].lower().split()): r["name"] for r in rooms}
+    if key in names:
+        return names[key]
+    for candidate, original in names.items():
+        if key and (key in candidate or candidate in key):
+            return original
+    best, score = None, 0.0
+    for candidate, original in names.items():
+        ratio = difflib.SequenceMatcher(None, key, candidate).ratio()
+        if ratio > score:
+            score, best = ratio, original
+    return best if score >= 0.8 else None
+
+
 def plausible_pair(a: float, b: float) -> bool:
     """A sanity bound on SHAPE, not a duplicate detector.
 
@@ -115,10 +139,20 @@ def main(argv) -> int:
         else:
             print("  -> one measurement is a line, not a room; measure the other side too")
 
+    mapped: dict[str, tuple[float, float]] = {}
     if "--write" in argv and resolved and not problems:
+        rooms = layout["rooms"]
+        for label, dims in resolved.items():
+            target = resolve_room(label, rooms)
+            if target is None:
+                problems.append(f"{label}: no template room matches that label - rename it on the phone or add the "
+                                f"room to the template")
+            else:
+                mapped[target] = dims
+    if "--write" in argv and mapped and not problems:
         for room in layout["rooms"]:
-            if room["name"] in resolved:
-                w, h = resolved[room["name"]]
+            if room["name"] in mapped:
+                w, h = mapped[room["name"]]
                 room["w"] = round(w, 2)
                 room["h"] = round(h, 2)
                 room["measured_from"] = "arcore"
