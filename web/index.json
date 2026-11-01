@@ -1957,6 +1957,13 @@
    "title": "photo_index.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/place_rooms.py",
+   "kind": "script",
+   "path": "scripts/place_rooms.py",
+   "summary": "Put measured rooms somewhere, so the coverage map can exist before a floor plan does.",
+   "title": "place_rooms.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/polarisation.py",
    "kind": "script",
    "path": "scripts/polarisation.py",
