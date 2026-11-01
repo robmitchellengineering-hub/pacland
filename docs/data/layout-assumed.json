@@ -1,0 +1,61 @@
+{
+ "_note": "INVENTED. Replace with a real sketch or a photo-derived plan. Nothing here is Rob's house.",
+ "rooms": [
+  {
+   "name": "bedroom next to",
+   "x": 0,
+   "y": 0,
+   "w": 4,
+   "h": 3.5
+  },
+  {
+   "name": "loungeroom",
+   "x": 4,
+   "y": 0,
+   "w": 5,
+   "h": 3.5
+  },
+  {
+   "name": "kitchen",
+   "x": 9,
+   "y": 0,
+   "w": 3,
+   "h": 3.5
+  },
+  {
+   "name": "hallway",
+   "x": 0,
+   "y": 3.5,
+   "w": 12,
+   "h": 1.6
+  },
+  {
+   "name": "bathroom",
+   "x": 0,
+   "y": 5.1,
+   "w": 2.4,
+   "h": 2.4
+  },
+  {
+   "name": "spare bedroom",
+   "x": 2.4,
+   "y": 5.1,
+   "w": 3.6,
+   "h": 2.4
+  },
+  {
+   "name": "tv room",
+   "x": 6,
+   "y": 5.1,
+   "w": 3.5,
+   "h": 2.4
+  },
+  {
+   "name": "Alice",
+   "x": 9.5,
+   "y": 5.1,
+   "w": 2.5,
+   "h": 2.4
+  }
+ ]
+}
