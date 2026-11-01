@@ -49,23 +49,24 @@ class TestApplyMeasurements(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
-    def test_two_measurements_make_a_room(self):
-        _write_payload(self.root, "measure-1", "kitchen", [3.42])
-        _write_payload(self.root, "measure-2", "kitchen", [2.61])
+    def test_two_walls_in_one_scan_make_a_room(self):
+        # two walls in ONE payload - one session, which is the only way two lengths describe the same room
+        _write_payload(self.root, "measure-1", "kitchen", [3.42, 2.61])
         rooms = _module().load_measurements(str(self.root))
         self.assertEqual(len(rooms["kitchen"]), 2)
-        a, b = sorted(m["metres"] for m in rooms["kitchen"])
-        self.assertTrue(_module().plausible_pair(b, a))
+        pair = _module().room_from_walls(rooms["kitchen"])
+        self.assertEqual(pair, (2.61, 3.42))
 
     def test_one_measurement_is_not_a_room(self):
         _write_payload(self.root, "measure-1", "kitchen", [3.42])
-        result = _module().main(["x", "--root", str(self.root)])
-        self.assertEqual(result, 0, "a single line should report, not fail loudly")
+        self.assertEqual(_module().main(["x", "--root", str(self.root)]), 1,
+                         "one line cannot describe a room, and saying so is the point")
 
-    def test_lengths_alone_cannot_tell_a_square_from_one_wall_twice(self):
-        # A square room is 4.0 x 4.0; the same wall measured twice is 4.0 and 4.0. Length cannot separate them, and the
-        # script must not pretend it can - `same_line` uses the coordinates instead.
-        self.assertTrue(_module().plausible_pair(4.0, 4.0))
+    def test_a_square_room_is_allowed(self):
+        # a square room is 4.0 x 4.0; the duplicate case is caught from the coordinates, not from the lengths
+        a = {"metres": 4.0, "from": [0, 0, 0], "to": [4, 0, 0], "source": "s"}
+        b = {"metres": 4.0, "from": [0, 0, 0], "to": [0, 0, 4], "source": "s"}
+        self.assertEqual(_module().room_from_walls([a, b]), (4.0, 4.0))
 
     def test_the_same_wall_twice_is_caught_from_the_coordinates(self):
         first = {"from": [0, 0, 0], "to": [3.42, 0, 0]}
@@ -100,6 +101,14 @@ class TestApplyMeasurements(unittest.TestCase):
         _write_payload(self.root, "measure-2", "garage", [2.61])
         result = _module().main(["x", "--root", str(self.root), "--layout", str(self.layout), "--write"])
         self.assertEqual(result, 1, "an unmatched room must not be written silently")
+
+    def test_two_walls_from_different_sessions_are_not_a_room(self):
+        # ARCore's world coordinates are relative to the session, so lengths from two scans are unrelated numbers - they
+        # might even be the same wall. This must refuse rather than multiply two guesses together.
+        _write_payload(self.root, "measure-a", "kitchen", [4.15])
+        _write_payload(self.root, "measure-b", "kitchen", [4.73])
+        result = _module().main(["x", "--root", str(self.root), "--layout", str(self.layout), "--write"])
+        self.assertEqual(result, 1)
 
     def test_nothing_on_the_hub_is_not_an_error(self):
         self.assertEqual(_module().main(["x", "--root", str(self.root)]), 0)

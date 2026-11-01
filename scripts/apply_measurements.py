@@ -1,23 +1,28 @@
 """Turn ARCore measurements into room dimensions in the layout template.
 
-The room scan sends capability 'measure' to the hub: a room label and a list of straight-line measurements, each with its
-two endpoints in ARCore world coordinates and its length in metres. This reads them back and puts the numbers where the
+The phone posts capability 'measure' with a room label and a list of straight-line measurements, each with its two
+endpoints in ARCore world coordinates and its length in metres. This reads them back and puts the numbers where the
 coverage map needs them.
 
-    python3 scripts/apply_measurements.py            # report what has been measured
-    python3 scripts/apply_measurements.py --write    # fill w/h in docs/data/layout-template.json
+    python3 scripts/apply_measurements.py [--root DIR] [--layout FILE] [--write]
 
-WHAT IT DOES NOT DO, and this matters more than what it does: it does not know which measurement is the room's width and
-which is its diagonal. A room needs two dimensions; a diagonal is longer than either. So the two longest measurements
-are NOT assumed to be w and h - they are reported with their lengths and the room stays unfilled unless the numbers are
-within 10% of a rectangle's own consistency (see `plausible_pair`).
+THE RULE THAT SHAPES EVERYTHING HERE: **ARCore's world coordinates are per session.** Two scans have unrelated origins
+and axes, so lengths from different sessions are unrelated numbers - they might even be the same wall measured twice. Every
+comparison below happens inside ONE session, and a room is only resolved when that session gave it two usable walls.
 
-FALSIFIER, stated before the run: if a room's measurements disagree with each other by more than 10% when they should be
-repeats, the measurements are not repeatable and filling the template from them would be a guess with a decimal point.
-The script refuses to write in that case and says which room.
+A room needs three numbers, and the phone gives whatever was tapped, so measurements are sorted by DIRECTION:
+
+  a WALL   is mostly horizontal (a hand-height wobble between the two ends is fine)
+  a HEIGHT is mostly vertical
+  anything else - a diagonal, or two points that drifted - is reported and NOT used
+  a horizontal length beyond 1.6x the session's median horizontal is flagged as longer than the room can be
+
+FALSIFIER, stated before the run: if two lengths from one session are used as a room while being the same line, the
+output is an invention. `same_line` checks that from the coordinates, with a 5 cm tolerance in either direction.
 """
 from __future__ import annotations
 
+import difflib
 import glob
 import json
 import math
@@ -28,9 +33,14 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 LAYOUT = ROOT / "docs/data/layout-template.json"
 
+WALL_RATIO = 0.35          # vertical/horizontal below this is a wall
+HEIGHT_RATIO = 1.2         # above this is a height
+OUTLIER_FACTOR = 1.6       # longer than this many medians is not a wall of this room
+SAME_LINE_TOL = 0.05       # metres
 
-def load_measurements(root: str):
-    """Every measurement the phone has uploaded, grouped by room."""
+
+def load_measurements(root: str) -> dict[str, list[dict]]:
+    """Every measurement the phone has uploaded, grouped by room, each tagged with the scan session it came from."""
     by_room: dict[str, list[dict]] = {}
     for d in sorted(glob.glob(os.path.join(root, "measure-*"))):
         try:
@@ -48,15 +58,68 @@ def load_measurements(root: str):
     return by_room
 
 
-def resolve_room(label: str, rooms: list[dict]) -> str | None:
-    """Match a measurement's room label to a template room, tolerantly - and say nothing when it cannot.
+def parts(m: dict) -> tuple[float, float]:
+    """(horizontal, vertical) lengths: ARCore's Y is up, so the floor plane is X-Z."""
+    a, b = m.get("from") or [0, 0, 0], m.get("to") or [0, 0, 0]
+    d = [float(b[i]) - float(a[i]) for i in range(3)]
+    return math.hypot(d[0], d[2]), abs(d[1])
 
-    The label is FREE TEXT typed on the phone ("Kitchen", "kitchen ", "the kitchen") while the template has fixed names,
-    so an exact-match requirement would mean measurements that arrive, parse and then silently fill nothing. Matching is:
-    exact (case-folded) -> one contains the other -> close enough by ratio. Anything else stays unmatched, because
-    guessing which room a measurement belongs to is worse than asking again.
-    """
-    import difflib
+
+def same_line(first: dict, second: dict, tol: float = SAME_LINE_TOL) -> bool:
+    """True when two measurements join the SAME two points in world space - one wall measured twice."""
+    def near(p, q) -> bool:
+        return p is not None and q is not None and all(abs(float(p[i]) - float(q[i])) <= tol for i in range(3))
+
+    return (near(first.get("from"), second.get("from")) and near(first.get("to"), second.get("to"))) or \
+           (near(first.get("from"), second.get("to")) and near(first.get("to"), second.get("from")))
+
+
+def classify(items: list[dict]) -> dict:
+    """Walls, heights and suspects from ONE session's measurements."""
+    horizontal = []
+    for m in items:
+        h, v = parts(m)
+        if h > 1e-6 and v / h <= WALL_RATIO:
+            horizontal.append(h)
+    median = sorted(horizontal)[len(horizontal) // 2] if horizontal else 0.0
+
+    walls, heights, suspect = [], [], []
+    for m in items:
+        h, v = parts(m)
+        if h <= 0.05 and v <= 0.05:
+            continue
+        ratio = v / h if h > 1e-6 else float("inf")
+        if ratio > HEIGHT_RATIO:
+            heights.append(m)
+        elif ratio <= WALL_RATIO:
+            if median and h > OUTLIER_FACTOR * median:
+                suspect.append(m)
+            else:
+                walls.append(m)
+        else:
+            suspect.append(m)
+    walls.sort(key=lambda m: -m["metres"])
+    heights.sort(key=lambda m: -m["metres"])
+    return {"walls": walls, "heights": heights, "suspect": suspect, "median_horizontal": median}
+
+
+def room_from_walls(walls: list[dict]) -> tuple[float, float] | None:
+    """The two longest DISTINCT walls, or None when the session cannot give two."""
+    if len(walls) < 2:
+        return None
+    first = walls[0]
+    second = next((w for w in walls[1:] if not same_line(first, w)), None)
+    if second is None:
+        return None
+    a, b = first["metres"], second["metres"]
+    lo, hi = min(a, b), max(a, b)
+    if lo / hi < 0.25:
+        return None                  # a corridor rather than a room
+    return lo, hi
+
+
+def resolve_room(label: str, rooms: list[dict]) -> str | None:
+    """Match a free-text label to a template room, or return None rather than guess."""
     key = " ".join(label.lower().split())
     names = {" ".join(r["name"].lower().split()): r["name"] for r in rooms}
     if key in names:
@@ -72,78 +135,68 @@ def resolve_room(label: str, rooms: list[dict]) -> str | None:
     return best if score >= 0.8 else None
 
 
-def plausible_pair(a: float, b: float) -> bool:
-    """A sanity bound on SHAPE, not a duplicate detector.
-
-    A room narrower than a quarter of its length is a corridor rather than a room, so that is the bound. It deliberately
-    does NOT try to tell a width from a diagonal, or a room from the same wall measured twice - by length alone those are
-    indistinguishable, and a square room is 4.0 x 4.0. `same_line` does that job, from the coordinates.
-    """
-    if a <= 0 or b <= 0:
-        return False
-    ratio = min(a, b) / max(a, b)
-    return ratio >= 0.25
-
-
-def same_line(first: dict, second: dict, tol: float = 0.05) -> bool:
-    """True when two measurements join the SAME two points in world space - the same wall measured twice.
-
-    The payload carries both endpoints, so this is checkable rather than guessed: if the points coincide within `tol`
-    metres (in either direction) the second measurement adds nothing, and calling that pair of numbers a room would put a
-    wall's length into the plan as both sides of a rectangle.
-    """
-    def near(p, q) -> bool:
-        return p is not None and q is not None and all(
-            abs(float(p[i]) - float(q[i])) <= tol for i in range(3)
-        )
-
-    return (near(first.get("from"), second.get("from")) and near(first.get("to"), second.get("to"))) or \
-           (near(first.get("from"), second.get("to")) and near(first.get("to"), second.get("from")))
-
-
 def main(argv) -> int:
     root = os.path.expanduser("~/harness-mesh/runs/phone")
     if "--root" in argv:
         root = argv[argv.index("--root") + 1]
-    by_room = load_measurements(root)
     layout_path = LAYOUT
     if "--layout" in argv:
         layout_path = pathlib.Path(argv[argv.index("--layout") + 1])
     layout = json.loads(layout_path.read_text())
 
+    by_room = load_measurements(root)
     if not by_room:
         print("no measurements on the hub yet — run ROOM SCAN on the phone and press UPLOAD")
         return 0
 
-    # repeatability first: two measurements of the same thing should agree
-    problems = []
+    problems: list[str] = []
     resolved: dict[str, tuple[float, float]] = {}
+
     for room, items in sorted(by_room.items()):
-        lengths = sorted(i["metres"] for i in items)
-        print(f"\n{room}: {len(items)} measurement(s)")
-        for i in items:
-            print(f"  {i['metres']:.2f} m   ({i['source']})")
-        if len(items) >= 2:
-            ordered = sorted(items, key=lambda i: -i["metres"])
-            long, second = ordered[0], ordered[1]
-            a, b = long["metres"], second["metres"]
-            if same_line(long, second):
-                problems.append(f"{room}: the two longest measurements join the same two points — that is one wall "
-                                f"measured twice, not a room; measure the other wall")
-            elif plausible_pair(a, b):
-                resolved[room] = (b, a)
-                print(f"  -> usable as a room: {b:.2f} x {a:.2f} m")
+        sessions: dict[str, list[dict]] = {}
+        for m in items:
+            sessions.setdefault(m["source"], []).append(m)
+        print(f"\n{room}: {len(items)} measurement(s) in {len(sessions)} scan session(s)")
+
+        best: tuple[float, float] | None = None
+        best_source = ""
+        for source, group in sorted(sessions.items()):
+            cls = classify(group)
+            print(f"  {source}: walls {[round(w['metres'], 2) for w in cls['walls']]}, "
+                  f"heights {[round(h['metres'], 2) for h in cls['heights']]}, "
+                  f"suspect {[round(s['metres'], 2) for s in cls['suspect']]}")
+            for m in cls["suspect"]:
+                h, v = parts(m)
+                print(f"    ! {m['metres']:.2f} m used no direction that fits a room - not used as a wall"
+                      f" (horizontal {h:.2f} m, vertical {v:.2f} m)")
+            if cls["heights"]:
+                top = cls["heights"][0]
+                print(f"    height candidate: {top['metres']:.2f} m measured, vertical span {parts(top)[1]:.2f} m")
             else:
-                problems.append(f"{room}: {a:.2f} m and {b:.2f} m differ by more than 4x — a corridor rather than a "
-                                f"room, or one measurement is wrong")
+                spans = [(parts(m)[1], m) for m in group]
+                best_span, best_m = max(spans) if spans else (0.0, None)
+                if best_span >= 1.5:
+                    print(f"    possible height: a vertical span of {best_span:.2f} m in the "
+                          f"{best_m['metres']:.2f} m measurement - if that was floor to ceiling, the ceiling is "
+                          f"{best_span:.2f} m")
+            pair = room_from_walls(cls["walls"])
+            if pair and (best is None or len(cls["walls"]) > 0):
+                if best is None or pair[0] * pair[1] > best[0] * best[1]:
+                    best, best_source = pair, source
+        if best:
+            resolved[room] = best
+            print(f"  -> usable as a room: {best[0]:.2f} x {best[1]:.2f} m (from {best_source})")
+        elif len(sessions) > 1:
+            problems.append(f"{room}: no single scan session has two usable walls - ARCore's coordinates are per "
+                            f"session, so measure both walls in one scan")
         else:
-            print("  -> one measurement is a line, not a room; measure the other side too")
+            problems.append(f"{room}: {len(items)} measurement(s) and not two walls among them - "
+                            f"measure both walls in one scan")
 
     mapped: dict[str, tuple[float, float]] = {}
     if "--write" in argv and resolved and not problems:
-        rooms = layout["rooms"]
         for label, dims in resolved.items():
-            target = resolve_room(label, rooms)
+            target = resolve_room(label, layout["rooms"])
             if target is None:
                 problems.append(f"{label}: no template room matches that label - rename it on the phone or add the "
                                 f"room to the template")
@@ -157,7 +210,7 @@ def main(argv) -> int:
                 room["h"] = round(h, 2)
                 room["measured_from"] = "arcore"
         layout_path.write_text(json.dumps(layout, indent=1) + "\n")
-        print(f"\nwrote {layout_path} for {len(resolved)} room(s)")
+        print(f"\nwrote {layout_path} for {len(mapped)} room(s)")
     elif "--write" in argv:
         print("\nnot writing: see the problems above")
 
