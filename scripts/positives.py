@@ -133,7 +133,20 @@ def main() -> int:
             print(f"MISSING: {OUT}")
             return 1
         if OUT.read_text() != text:
+            # SAY WHAT IS STALE. The guard used to report only that the file differed, which is a dead end on a
+            # machine whose library versions differ from CI's: the author regenerates, sees no change, and has nothing
+            # to act on. A diff is the diagnosis.
+            import difflib
+            committed = OUT.read_text().splitlines(keepends=True)
+            fresh = text.splitlines(keepends=True)
+            diff = list(difflib.unified_diff(committed, fresh,
+                                             fromfile="docs/known-positives.md (committed)",
+                                             tofile="freshly generated", n=2))
             print("STALE: docs/known-positives.md does not match a fresh generation")
+            for line in diff[:40]:
+                print(line.rstrip("\n"))
+            if len(diff) > 40:
+                print(f"... {len(diff) - 40} more diff lines")
             return 1
         print("current")
         return 0
