@@ -49,17 +49,43 @@ def load_measurements(root: str):
 
 
 def plausible_pair(a: float, b: float) -> bool:
-    """Two sides of a room, not a side and its diagonal: a diagonal is > sqrt(2)/2 of the longer side away."""
+    """A sanity bound on SHAPE, not a duplicate detector.
+
+    A room narrower than a quarter of its length is a corridor rather than a room, so that is the bound. It deliberately
+    does NOT try to tell a width from a diagonal, or a room from the same wall measured twice - by length alone those are
+    indistinguishable, and a square room is 4.0 x 4.0. `same_line` does that job, from the coordinates.
+    """
     if a <= 0 or b <= 0:
         return False
     ratio = min(a, b) / max(a, b)
-    return ratio >= 0.25          # a room narrower than a quarter of its length is a corridor, not a room
+    return ratio >= 0.25
+
+
+def same_line(first: dict, second: dict, tol: float = 0.05) -> bool:
+    """True when two measurements join the SAME two points in world space - the same wall measured twice.
+
+    The payload carries both endpoints, so this is checkable rather than guessed: if the points coincide within `tol`
+    metres (in either direction) the second measurement adds nothing, and calling that pair of numbers a room would put a
+    wall's length into the plan as both sides of a rectangle.
+    """
+    def near(p, q) -> bool:
+        return p is not None and q is not None and all(
+            abs(float(p[i]) - float(q[i])) <= tol for i in range(3)
+        )
+
+    return (near(first.get("from"), second.get("from")) and near(first.get("to"), second.get("to"))) or \
+           (near(first.get("from"), second.get("to")) and near(first.get("to"), second.get("from")))
 
 
 def main(argv) -> int:
     root = os.path.expanduser("~/harness-mesh/runs/phone")
+    if "--root" in argv:
+        root = argv[argv.index("--root") + 1]
     by_room = load_measurements(root)
-    layout = json.loads(LAYOUT.read_text())
+    layout_path = LAYOUT
+    if "--layout" in argv:
+        layout_path = pathlib.Path(argv[argv.index("--layout") + 1])
+    layout = json.loads(layout_path.read_text())
 
     if not by_room:
         print("no measurements on the hub yet — run ROOM SCAN on the phone and press UPLOAD")
@@ -73,14 +99,19 @@ def main(argv) -> int:
         print(f"\n{room}: {len(items)} measurement(s)")
         for i in items:
             print(f"  {i['metres']:.2f} m   ({i['source']})")
-        if len(lengths) >= 2:
-            a, b = lengths[-1], lengths[-2]
-            if plausible_pair(a, b):
+        if len(items) >= 2:
+            ordered = sorted(items, key=lambda i: -i["metres"])
+            long, second = ordered[0], ordered[1]
+            a, b = long["metres"], second["metres"]
+            if same_line(long, second):
+                problems.append(f"{room}: the two longest measurements join the same two points — that is one wall "
+                                f"measured twice, not a room; measure the other wall")
+            elif plausible_pair(a, b):
                 resolved[room] = (b, a)
                 print(f"  -> usable as a room: {b:.2f} x {a:.2f} m")
             else:
-                problems.append(f"{room}: {b:.2f} and {a:.2f} m are too similar to be two different roots "
-                                f"(a diagonal would be longer) — measure width AND length, not the same wall twice")
+                problems.append(f"{room}: {a:.2f} m and {b:.2f} m differ by more than 4x — a corridor rather than a "
+                                f"room, or one measurement is wrong")
         else:
             print("  -> one measurement is a line, not a room; measure the other side too")
 
@@ -91,8 +122,8 @@ def main(argv) -> int:
                 room["w"] = round(w, 2)
                 room["h"] = round(h, 2)
                 room["measured_from"] = "arcore"
-        LAYOUT.write_text(json.dumps(layout, indent=1) + "\n")
-        print(f"\nwrote {LAYOUT.relative_to(ROOT)} for {len(resolved)} room(s)")
+        layout_path.write_text(json.dumps(layout, indent=1) + "\n")
+        print(f"\nwrote {layout_path} for {len(resolved)} room(s)")
     elif "--write" in argv:
         print("\nnot writing: see the problems above")
 
