@@ -59,6 +59,61 @@ def interference(bss, band, centre_mhz, width_mhz):
     return total
 
 
+def action_envelope(bss, scans):
+    """The recommendation as a MACHINE-READABLE ACTION, for router automation to consume.
+
+    An automation that changes a radio needs three things this tool can supply, and one thing it must refuse:
+
+      the action      channel -> channel, with the measured margin and the evidence behind it
+      the verification what to measure AFTER the change, and what would count as failure
+      the rollback    the channel it came from, so a bad outcome is one call away
+
+    and it REFUSES any recommendation inside the measured fading, because an automation that acts on a 3 dB
+    difference will oscillate between channels all night.
+    """
+    import datetime
+    actions, refused = [], []
+    for band, spec in BANDS.items():
+        rows = []
+        for ch, centre in spec["channels"]:
+            p = interference(bss, band, centre, spec["width"])
+            seen = any(b["band"] == band and abs(b["freq"] - centre) <= (spec["width"] / 2 + 10) for b in bss)
+            if seen:
+                rows.append((ch, 10 * math.log10(p) if p > 0 else -120.0))
+        if not rows:
+            continue
+        rows.sort(key=lambda r: r[1])
+        ours = [b for b in bss if b["band"] == band and is_ours(b)]
+        if not ours:
+            continue
+        ours_ch, ours_lvl = ours[0]["ch"], max(b["rssi"] for b in ours)
+        cur = next((lvl for ch, lvl in rows if ch == ours_ch), None)
+        if cur is None:
+            continue
+        best_ch, best_lvl = rows[0]
+        gain = cur - best_lvl
+        entry = {"band": band, "from_channel": ours_ch, "to_channel": best_ch,
+                 "current_interference_dbm": round(cur, 1),
+                 "expected_interference_dbm": round(best_lvl, 1),
+                 "expected_drop_db": round(gain, 1),
+                 "own_level_dbm": ours_lvl,
+                 "verify": {"method": "rescan the same spots after the change",
+                            "pass_if": f"interference on ch {best_ch} stays below {round(cur - 6, 1)} dBm",
+                            "fail_if": f"interference rises above {round(cur - 6, 1)} dBm, or the link rate drops"},
+                 "rollback": {"to_channel": ours_ch}}
+        if gain >= 6.0:
+            entry["confidence"] = "high" if gain >= 12.0 else "medium"
+            actions.append(entry)
+        else:
+            entry["reason"] = "inside the 6 dB fading the instrument measured - acting on this would oscillate"
+            refused.append(entry)
+    return {"format": "rf-channel-action@1",
+            "generated": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+            "observations": {"scans": scans, "networks": len(bss),
+                             "fading_floor_db": 16.0, "minimum_actionable_drop_db": 6.0},
+            "actions": actions, "refused": refused}
+
+
 def main(argv) -> int:
     root = argv[1] if len(argv) > 1 else os.path.expanduser("~/harness-mesh/runs/phone")
     bss = load(root)
@@ -97,4 +152,10 @@ def main(argv) -> int:
 
 
 if __name__ == "__main__":
+    if "--json" in sys.argv:
+        root = os.path.expanduser("~/harness-mesh/runs/phone")
+        bss = load(root)
+        n = len(glob.glob(os.path.join(root, "user-*")))
+        print(json.dumps(action_envelope(bss, n), indent=2))
+        raise SystemExit(0)
     raise SystemExit(main(sys.argv))
