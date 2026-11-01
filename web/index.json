@@ -1726,6 +1726,13 @@
    "title": "issue_vvs.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/layout_check.py",
+   "kind": "script",
+   "path": "scripts/layout_check.py",
+   "summary": "Check a room layout before a coverage map is drawn on it.",
+   "title": "layout_check.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_explainer_pdf.py",
    "kind": "script",
    "path": "scripts/make_explainer_pdf.py",
@@ -1927,6 +1934,13 @@
    "path": "scripts/orbit_content_slice.py",
    "summary": "The orbit-content slice \u2014 does the integer content d = gcd(F,H) carry physics?",
    "title": "orbit_content_slice.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/photo_glue.py",
+   "kind": "script",
+   "path": "scripts/photo_glue.py",
+   "summary": "Attach the photos that have arrived to the rooms in the layout, and say what is still missing.",
+   "title": "photo_glue.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/photo_index.py",

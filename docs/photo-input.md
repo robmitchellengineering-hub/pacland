@@ -41,3 +41,32 @@ a coverage map that is a map, not a demonstration.
 
 `scripts/photo_index.py` lists what has arrived per spot and flags anything too small to use, so the set can be
 checked before an atlas is attempted.
+
+## The two scripts that turn a photo set into a layout
+
+**`scripts/photo_glue.py`** — matches each uploaded photo to a room **by the spot label the phone already sends**, and
+with `--write` records the hub directory names into the template's `photos` list. It also prints the rooms with **no**
+photo, which are the ones that cannot be measured yet.
+
+```
+1 usable photos on the hub, 0 rooms matched, 11 rooms with none
+```
+
+That is the honest state today: **one test photo, no room matched**, and the script says so rather than reporting
+success at a count of zero.
+
+**`scripts/layout_check.py`** — refuses to let an invented or half-filled layout become a picture:
+
+- every room needs four numbers, or it is **not placed** (and is named)
+- rooms must not **overlap** (a wall in two places is two rooms drawn over each other)
+- rooms must not **float** (a house whose rooms do not touch is a diagram)
+- a room's area must be **plausible for its name**
+
+```
+11 rooms: 0 placed, 11 unplaced
+NOT READY: 11 rooms have no position: ...
+```
+
+**It cannot tell whether the dimensions are the right house** — those are consistency checks, not measurements, and
+the script says so on its last line. That distinction is the whole reason it exists: the failure mode it prevents is a
+confident-looking coverage map drawn on invented rooms.
