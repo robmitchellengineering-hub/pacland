@@ -1103,6 +1103,13 @@
    "title": "WiFi as LiDAR \u2014 what closes the gap, and what never will"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/apply_measurements.py",
+   "kind": "script",
+   "path": "scripts/apply_measurements.py",
+   "summary": "Turn ARCore measurements into room dimensions in the layout template.",
+   "title": "apply_measurements.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",
@@ -1948,6 +1955,13 @@
    "path": "scripts/photo_index.py",
    "summary": "What photos exist, for which spot, and what a room needs.",
    "title": "photo_index.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/place_rooms.py",
+   "kind": "script",
+   "path": "scripts/place_rooms.py",
+   "summary": "Put measured rooms somewhere, so the coverage map can exist before a floor plan does.",
+   "title": "place_rooms.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/polarisation.py",

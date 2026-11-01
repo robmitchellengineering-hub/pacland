@@ -71,7 +71,12 @@ def main() -> int:
     # their own heading and ±18% drift, so putting them on a metric floor plan would be a lie with a legend. Drawing
     # nothing is the honest rendering of that fact.
 
+    provisional = [r["name"] for r in layout["rooms"] if r.get("placement") == "provisional"]
+    title_prefix = ("Coverage map — PROVISIONAL PLACEMENT\n"
+                    "sizes measured with ARCore; room positions are a shelf-pack, not a floor plan\n"
+                    if provisional else "")
     ax.set_title(
+        title_prefix +
         "Coverage map — PIPELINE DEMONSTRATION ON AN INVENTED LAYOUT\n"
         "room positions here are made up; the dBm values are the real measurements from 12 spots",
         color="#e6edf3", fontsize=12)
