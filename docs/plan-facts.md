@@ -956,6 +956,33 @@ arithmetic rigidity rather than noise.
 numbers without a measured correction. Any level-statistics argument about the string landscape that leans on
 universality is unsound until that correction is included — and here is its size in our setting.
 
+## The landscape count — the gauge symmetry barely bites, so `10^500` is not inflated (2026-10-31)
+
+`src/pacland/exactness/landscape_count.py` · `python3 scripts/landscape_count.py` · 7 tests.
+
+The claim under test: *"10^500 counts flux vectors, not distinct physics."* Measured exactly on the enumerable
+ladder (`|component| ≤ 1`):
+
+| b3 | flux pairs | primitive orbits | orbits / pairs | `0 < N ≤ 1` |
+|---|---|---|---|---|
+| 2 | 81 | 80 | 0.9877 | 20 |
+| 4 | 6,561 | 6,560 | 0.9998 | 1,480 |
+| 6 | 531,441 | **531,440** | **1.0000** | 107,100 |
+
+**Verdict: REFUTED, on two independent counts.**
+
+1. **The gauge quotient is negligible.** At `b3 = 6` exactly **one** pair out of 531,441 is removed by the
+   scaling symmetry. The flux vectors are almost all distinct orbits, so `10^500` is **not** inflated by gauge
+   copies — my hypothesis was wrong in that direction.
+2. **The content is not a function of the tadpole alone.** At fixed `0 < N ≤ 1` the orbit count runs
+   **20 → 1,480 → 107,100** across `b3 = 2, 4, 6`. It scales with the window, so `L` does not fix the content and
+   the falsifier fires.
+
+**What that leaves standing.** The landscape's gauge-invariant content in this window is essentially the flux
+count itself — the discrete symmetry is a real symmetry but a numerically tiny one here. So the honest position
+is the *opposite* of the one I proposed: `10^500` is not an artefact of counting gauge copies. What the count
+does show is the `b3` dependence, which is the same wall the rate measurement hit.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
