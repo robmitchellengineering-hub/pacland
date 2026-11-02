@@ -1417,6 +1417,27 @@ Every place the programme gets stuck now carries one of four classes:
 explains it" but **"would more work move it?"** — and now that question has a register instead of five rounds of
 hypotheses.
 
+## Hypotheses from cross-referenced walls (2026-11-02)
+
+`src/pacland/exactness/hypotheses.py` · `docs/hypotheses.md` (generated) · 6 tests.
+
+A wall alone is a place we got stuck. **Paired with another it is a constraint**, and the generator question is:
+*what must also be true for both to hold at once?*
+
+Each record cites **at least two walls that exist in the register** — `check_links()` verifies the link, so a
+hypothesis cannot float free of the walls that motivated it.
+
+| id | pairs | claim, in one line |
+|---|---|---|
+| **H-A** | measure wall × enumeration objection | `b3` is the only parameter; the `8.554^b3` exponential is **combinatorics**, not a scale — because `P(x)^(b3/2)` makes exponential growth from a fixed polynomial |
+| **H-B** | measure wall × rate wall | **measure-invariance IS observability** — no sampler can resolve the measure, so the six INVARIANT entries are the whole observable content |
+| **H-C** | arithmetic null × enumeration objection | every exact quantity is a **coefficient of a rational generating function**, which is *why* the transcendental relations are absent |
+
+**H-C is the cheapest and the sharpest:** build the GF for the conifold coefficient sequence and test for a rational
+form (a constant-coefficient linear recurrence). If it is rational, our arithmetic null stops being a failure and
+becomes a **prediction** — the null would be a consequence of rationality rather than evidence against arithmetic
+structure.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
