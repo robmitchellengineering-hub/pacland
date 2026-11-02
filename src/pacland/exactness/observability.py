@@ -38,6 +38,14 @@ class Reading:
     coverage: float | None              # fraction of the space of interest visited, if known
     verdict: str
     why: str
+    #: What this claim POSTULATES. Maudlin's first question is "what is it you're postulating? The evidence for what?"
+    #: A claim with no stated postulate cannot be wrong, so `"none"` is a first-class value, not a missing field.
+    postulates: str = "none"
+
+    @property
+    def ontology(self) -> str:
+        """`stated` when the claim names its beables, `none` when it does not — the classification, not a judgement."""
+        return "none" if self.postulates.strip().lower() in ("", "none") else "stated"
 
 
 def _wilson(k: int, n: int, z: float = 1.96) -> tuple:

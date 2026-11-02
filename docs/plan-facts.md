@@ -1317,6 +1317,30 @@ window reduces the dimension; the symmetry group closes after `N ~ −N`.
 
 **Falsifier:** an invariant that identifies two distinct `|N|` classes would reduce the dimension. None is known.
 
+## The ontology field — Maudlin's test, made mechanical (2026-11-02)
+
+Maudlin [01:22:16]: *"First you want to understand what is it you're postulating… The evidence for what?"* A claim
+that does not say what it postulates **cannot be wrong**, which is the same defect as a framework with no oracle.
+
+`Reading` (the record every observability claim is returned as) now carries:
+
+```python
+postulates: str = "none"      # what this claim postulates; "none" is a first-class value, not a missing field
+
+@property
+def ontology(self) -> str:    # "stated" when it names its beables, "none" when it does not
+```
+
+**`"none"` is the default and it is deliberate** — an unstated ontology is recorded as `none`, not left blank. That
+means a claim cannot acquire an ontology by omission.
+
+**Why it is a classification rather than a judgement:** the same move as `no oracle` in the D17 engines. It does not
+say the claim is bad; it says what kind of claim it is, so a reader can see immediately whether it could ever be
+refuted.
+
+5 tests pin the default, the classification, that whitespace and `"NONE"` cannot smuggle an empty ontology, and that an
+ontology-free claim stays marked rather than hidden.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
