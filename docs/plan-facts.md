@@ -1368,6 +1368,41 @@ same try count changes nothing** (0, 0), so the binding constraint is **search b
 **This is the fifth and final eliminated explanation** for the minimum — after dimension, cone shape, the flux window
 and the (non-existent) per-call timeout.
 
+## The tadpole distribution is a CLOSED FORM — enumeration terminates (2026-11-02)
+
+`src/pacland/exactness/tadpole_distribution.py` · `python3 scripts/tadpole_distribution.py` · 6 tests.
+
+Woit's charge is that enumeration "is not the kind of problem" with a well-defined answer because the search never
+terminates. **For our window it terminates in a formula.**
+
+Each block contributes `f_i h_{i+n} − f_{i+n} h_i` over components in `{−1, 0, 1}`; exhaustively over 81
+combinations:
+
+    P(x) = 4x² + 20x + 33 + 20x⁻¹ + 4x⁻²
+
+Blocks are independent, so
+
+    count(N) = [x^N] P(x)^(b3/2)   minus 1 at N = 0   (the all-zero pair is not primitive)
+
+**Verified exactly against full enumeration at `b3 = 2, 4, 6`** — 80, 6,560 and 531,440 orbits, matching on **every**
+tadpole class, not just in total.
+
+| b3 | orbits | matches |
+|---|---|---|
+| 2 | 80 | ✅ |
+| 4 | 6,560 | ✅ |
+| 6 | 531,440 | ✅ |
+
+**Why this matters more than the count.** `count(N)` is now available at **any** `b3` without enumerating anything —
+`b3 = 100` costs fifty polynomial multiplications. So enumeration here is **a theorem about the window, not a
+sampling of it**, which is precisely the distinction the well-posedness criterion asks for. The `b3 = 8` enumeration
+that an earlier plan called for is unnecessary for the same reason the `max|N|` enumeration was: the answer is a
+formula.
+
+**And it is a positive answer to Susskind's question** ("what does your programme do that the landscape doesn't?"):
+we can compute the distribution at any dimension in closed form, which is a different kind of claim from counting
+solutions one at a time.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
