@@ -998,6 +998,13 @@
    "title": "Prior art and tooling \u2014 what to build on"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/truncation-control.md",
+   "kind": "doc",
+   "path": "docs/truncation-control.md",
+   "summary": "2.7e10 across polytopes). Is the near-null direction a truncation artefact or a real hierarchy? No measurement has settled it, and the sampling wall above h12 = 5 depends on the answer.",
+   "title": "The h12 wall's discriminator, calibrated \u2014 and it is confounded by the thing it measures"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-sessions-synthesis.md",
    "kind": "doc",
    "path": "docs/two-sessions-synthesis.md",
@@ -2368,6 +2375,13 @@
    "path": "scripts/thermal_noise_bound.py",
    "summary": "A bound for two-state ambient-thermal-noise communication.",
    "title": "thermal_noise_bound.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/truncation_control.py",
+   "kind": "script",
+   "path": "scripts/truncation_control.py",
+   "summary": "The control the ISD conditioning wall has never had: a truncation ladder whose answer is known.",
+   "title": "truncation_control.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/truth_bench.py",
