@@ -24,6 +24,15 @@ class Discipline:
 
 DISCIPLINES: tuple[Discipline, ...] = (
     Discipline(
+        slug="edna",
+        name="eDNA detection theory",
+        status="new — methods only, falsifier-fired and narrowed",
+        package="pacland.edna",
+        docs="docs/edna-detection-limit.md",
+        blurb="The limit, not a survey: how many species N samples and a read budget distinguish at a stated error rate. "
+              "Makes no biological claim; the field already has mock communities, so this arm is narrowed to the limit curve.",
+    ),
+    Discipline(
         slug="landscape",
         name="String landscape",
         status="core (built)",
