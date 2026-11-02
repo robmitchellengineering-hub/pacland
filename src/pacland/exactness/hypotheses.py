@@ -46,8 +46,17 @@ HYPOTHESES = (
      "the conifold coefficients have a rational generating function; the arithmetic null is a consequence, not a failure",
      "build the GF for the conifold coefficient sequence and test whether it is rational (a linear recurrence with "
      "constant coefficients); if it is, the null becomes a prediction",
-     "open"),
+     "refuted"),
 )
+
+#: **H-C was tested and REFUTED** (2026-11-02): no constant-coefficient recurrence of order <= 7 reproduces the 37
+#: conifold coefficients (c0..c5 = 1, 37/30, 2309/1800, 286471/225000, 41932661/33750000, 237108737/196875000). So the
+#: sequence is not C-finite at low order, its generating function is not a small rational function, and the arithmetic
+#: null is NOT explained by rationality -- it stands as a bounded wall.
+#:
+#: **Instrument warning:** a Berlekamp-Massey run on 40 terms returned an order-20 recurrence with enormous rational
+#: coefficients and verified perfectly. That is the classic overfit, not a discovery. Recurrence claims must be tested
+#: OUT OF SAMPLE at LOW order, or they measure the number of terms.
 
 #: Valid statuses.
 STATUSES = ("open", "supported", "refuted")
