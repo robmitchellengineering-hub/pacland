@@ -1684,6 +1684,13 @@
    "title": "gv_basis.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/height_error.py",
+   "kind": "script",
+   "path": "scripts/height_error.py",
+   "summary": "How well does the phone measure a ceiling? Rob's house answers it, because every ceiling is the same height.",
+   "title": "height_error.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/house_from_walks.py",
    "kind": "script",
    "path": "scripts/house_from_walks.py",
