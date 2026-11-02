@@ -21,6 +21,8 @@ Guarded by: tests/test_ingest_gate.py
 """
 from __future__ import annotations
 
+import math
+
 #: The sampler's own declared defaults (jaxvacua `data_sampler`).
 MODULI_BOUNDS = (1.0, 5.0)
 
@@ -73,6 +75,21 @@ def classify(row: dict) -> str:
     return "runaway"
 
 
+def wilson(k: int, n: int, z: float = 1.96) -> tuple:
+    """Wilson interval for a proportion — correct for the small, lopsided counts this corpus has.
+
+    Necessary here because the gated counts are tiny at high `b3` (46 in-domain rows at `b3 = 10`): a point estimate
+    on 46 rows cannot support a law, and an interval makes that visible instead of arguable.
+    """
+    if n == 0:
+        return (0.0, 0.0)
+    p = k / n
+    denom = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / denom
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / denom
+    return (max(0.0, centre - half), min(1.0, centre + half))
+
+
 def report(rows: list, b3_of=None) -> dict:
     """Counts and rates, per `b3` when `b3_of` is supplied."""
     b3_of = b3_of or (lambda r: len(r["flux"]) // 2)
@@ -100,6 +117,9 @@ def report(rows: list, b3_of=None) -> dict:
         d["susy_rate_in_domain"] = d["susy_in_domain"] / k if k else 0.0
         d["minima_rate_all"] = d["minima_all"] / n if n else 0.0
         d["minima_rate_in_domain"] = d["minima_in_domain"] / k if k else 0.0
+        d["susy_ci"] = wilson(d["susy_in_domain"], k)
+        d["minima_ci"] = wilson(d["minima_in_domain"], k)
+        d["ci_half_width"] = (d["minima_ci"][1] - d["minima_ci"][0]) / 2
     return per
 
 
@@ -118,4 +138,24 @@ def verdict(per: dict) -> dict:
     }
 
 
-__all__ = ["MODULI_BOUNDS", "LOOSE_BAND", "modulus_scale", "classify", "report", "verdict"]
+def interval_verdict(per: dict, key: str = "minima_rate_in_domain") -> dict:
+    """Do the gated rates' intervals all overlap? That is what 'flat' means, and no more than that."""
+    b3s = sorted(per)
+    los = [per[b3]["minima_ci"][0] for b3 in b3s]
+    his = [per[b3]["minima_ci"][1] for b3 in b3s]
+    overlap = max(los) <= min(his)
+    thin = [b3 for b3 in b3s if per[b3]["in_domain"] < 200]
+    return {
+        "b3": b3s,
+        "rates": [round(per[b3][key], 3) for b3 in b3s],
+        "intervals": [(round(per[b3]["minima_ci"][0], 3), round(per[b3]["minima_ci"][1], 3)) for b3 in b3s],
+        "intervals_overlap": overlap,
+        "under_two_hundred_rows": thin,
+        "statement": ("the intervals overlap, so 'flat' is CONSISTENT with the data but not proven -- "
+                      "and the rungs with under 200 in-domain rows cannot carry a law"
+                      if overlap else "the intervals do not overlap: the rates are distinguishable"),
+    }
+
+
+__all__ = ["MODULI_BOUNDS", "LOOSE_BAND", "wilson", "modulus_scale", "classify", "report", "verdict",
+           "interval_verdict"]

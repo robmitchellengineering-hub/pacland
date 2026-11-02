@@ -69,3 +69,24 @@ class TestTheReportFailsLoudly(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestTheIntervals(unittest.TestCase):
+    """A point estimate on 46 rows cannot carry a law; the interval makes that visible."""
+
+    def test_wilson_is_sane(self):
+        lo, hi = G.wilson(50, 100)
+        self.assertLess(lo, 0.5)
+        self.assertGreater(hi, 0.5)
+        self.assertLess(hi - lo, 0.25)
+
+    def test_a_small_sample_gets_a_wide_interval(self):
+        _, hi_small = G.wilson(40, 50)
+        lo_small, _ = G.wilson(40, 50)
+        lo_big, hi_big = G.wilson(800, 1000)
+        self.assertGreater(hi_small - lo_small, hi_big - lo_big)
+
+    def test_zero_count_is_bounded(self):
+        lo, hi = G.wilson(0, 10)
+        self.assertEqual(lo, 0.0)
+        self.assertGreater(hi, 0.0)
