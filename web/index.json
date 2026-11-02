@@ -970,6 +970,13 @@
    "title": "Tensions \u2014 facts that cannot both be true as stated"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/the-impostor-count.md",
+   "kind": "doc",
+   "path": "docs/the-impostor-count.md",
+   "summary": "wrong \u2014 many boxes share a footprint, and only the algebra that generates the spectrum separates them. The landscape question is identical: given what is observable about a vacuum, how many\u2026",
+   "title": "The impostor count: N, V and |DW| do not determine a vacuum \u2014 the masses do"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/thermal-noise-bound.md",
    "kind": "doc",
    "path": "docs/thermal-noise-bound.md",
@@ -1003,6 +1010,13 @@
    "path": "docs/truncation-control.md",
    "summary": "2.7e10 across polytopes). Is the near-null direction a truncation artefact or a real hierarchy? No measurement has settled it, and the sampling wall above h12 = 5 depends on the answer.",
    "title": "The h12 wall's discriminator, calibrated \u2014 and it is confounded by the thing it measures"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-classifiers.md",
+   "kind": "doc",
+   "path": "docs/two-classifiers.md",
+   "summary": "AirMatrix's rob-site and this repo's scripts/applymeasurements.py both turn ARCore sessions into rooms. They were run on the same five sessions on 2026-11-02, and they disagreed on two of\u2026",
+   "title": "Two classifiers, one dataset: where pacland and AirMatrix disagree"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-sessions-synthesis.md",
@@ -2053,6 +2067,13 @@
    "path": "scripts/observability.py",
    "summary": "The observability engine \u2014 what the corpus can measure, and what it only appears to.",
    "title": "observability.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/observable_degeneracy.py",
+   "kind": "script",
+   "path": "scripts/observable_degeneracy.py",
+   "summary": "Does the observable set determine the vacuum? The impostor count, measured on 14 corpora.",
+   "title": "observable_degeneracy.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_potential.py",
