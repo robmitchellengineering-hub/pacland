@@ -46,7 +46,31 @@ caused it, and falls through to the sampler's own ISD initial guess.
 `dim`, `eig_min`, `eig_max`, `cond(M)` and **the magnitude of the point used** — because the point is what broke the last
 attempt and it must never be silent again.
 
-### The decision rule, written before the numbers arrive
+## Result 1 — h12 = 2 reproduced, at a sane point
+
+**Job `2026-11-02T1921Z`**, at a committed minimum with `|z| = 1.28` and `3.11` (residual 1.5e-11):
+
+| | `M` eig min | `M` eig max | **cond(M)** |
+|---|---|---|---|
+| **measured** | **5.415e-2** | **1.847e1** | **341** |
+| wall document | 7.4e-2 | 1.35e1 | **183** |
+
+**Same order of magnitude on every column, cond within a factor of 1.9.** The difference is which moduli point was used — mine
+is one specific minimum, theirs unknown — so **the document's h12=2 number is real** and my earlier `1.4e135` was the corrupt
+row, not the matrix.
+
+**That settles the first question the document never answered**: the reproduction exists, the script is in the repo, and the
+number comes out.
+
+## The ladder's design problem, and what replaced it
+
+The degree ladder failed because **`maximum_degree` does not change `ISD_matrix`** — every rung returned identical values. So the
+across-h12 comparison must be run **at each h12 with a point in that h12's moduli space**, which for h12 ≥ 5 means the
+sampler's own ISD initial guess (no committed vacua exist above h12 = 4). **Job `2026-11-02T1933Z`** builds a `data_sampler` at
+h12 = 25, takes its initial guess, and measures — and prints the sampler API, because the model class has no
+`initial_guesses_ISD` and that cost one round trip already.
+
+### The decision rule for the h12 = 25 rung
 
 | what comes back | what it means |
 |---|---|
