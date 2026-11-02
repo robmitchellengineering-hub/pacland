@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import glob
 import json
+import math
 import os
 from collections import defaultdict
 
@@ -25,7 +26,23 @@ DATA = os.path.join(os.path.dirname(__file__), "..", "data")
 
 #: How coarsely a real observer could know each number. N is integer and exact; V and |DW| are floats from a numerical
 #: optimiser, so they are compared at a relative precision a measurement could reach.
-REL = {"V": 1e-3, "|DW|": 1e-3}
+#: One significant figure: the coarsest precision a measurement could plausibly claim for a derived float.
+REL = {"V": 1e-1, "|DW|": 1e-1}
+
+
+def _bin(x: float, rel: float) -> float:
+    """A RELATIVE bin, and this function exists because the first version was wrong.
+
+    The original inlined `round(x, -int(round(log10(|x|) - log10(rel))))`. For V ~ 1e-18 with rel = 1e-3 that computes
+    digits = 15, and `round(8.9e-19, 15)` is **0.0** - so every vacuum's V collapsed to zero and most of the |DW| values did
+    too. The "worst class of 43" that followed was an artefact of my own arithmetic, not a property of the physics: at a
+    genuine relative precision the classes are far smaller. Binning is now done on the mantissa.
+    """
+    if not x or not math.isfinite(x):
+        return 0.0
+    mag = math.floor(math.log10(abs(x)))
+    q = rel * (10.0 ** mag)
+    return round(x / q) * q
 
 
 def signature(v: dict, use_masses: bool) -> tuple:
@@ -33,17 +50,11 @@ def signature(v: dict, use_masses: bool) -> tuple:
     parts = [round(float(v.get("Nflux", float("nan"))), 6)]
     for k, rel in REL.items():
         x = v.get(k)
-        if x is None:
-            parts.append(None)
-        else:
-            # a relative bin: the exponent of the magnitude, and the mantissa to `rel`
-            x = float(x)
-            parts.append(round(x, -int(round(__import__("math").log10(abs(x) + 1e-300) - __import__("math").log10(rel))))
-                         if x else 0.0)
+        parts.append(None if x is None else _bin(float(x), rel))
     if use_masses:
         ev = v.get("eigenvalues") or []
         top = sorted(abs(float(e)) for e in ev)[-3:] if ev else []
-        parts.extend(round(t, -int(round(__import__("math").log10(t + 1e-300) - 3))) for t in top)
+        parts.extend(_bin(t, 1e-3) for t in top)
     return tuple(parts)
 
 

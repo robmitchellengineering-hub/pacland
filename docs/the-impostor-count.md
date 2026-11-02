@@ -1,54 +1,55 @@
-# The impostor count: N, V and |DW| do not determine a vacuum — the masses do
+# The impostor count: the observables DO identify a vacuum — my first measurement of this was wrong
 
-**Rob, 2026-11-02**, on the transferable part of the room work:
+**Correction, 2026-11-02, same day as the first version.** The first version of this note reported that `(N, V, |DW|)` left
+up to **43 vacua indistinguishable**, and drew the conclusion that the room's lesson transferred to the landscape. **That
+number was an artefact of my own arithmetic, not a property of the physics.**
 
-> *"The information is in the spectrum … The objectives can't reach it, because a free search over three dimensions can fit
-> any score you write."*
+The binning used was `round(x, -int(round(log10(|x|) - log10(rel))))`. For a vacuum energy `V ~ 8.9e-19` with `rel = 1e-3`
+that computes `digits = 15`, and **`round(8.9e-19, 15)` is `0.0`** — so every vacuum's `V` collapsed to zero and most
+`|DW|` values did too. The classes were made of vacua that shared *nothing*, because two of the three numbers had been erased.
 
-**The same test, run on the landscape.** In a room, a candidate that explained **100% of the measured peaks** was **33.9%
-wrong** — many boxes share a footprint, and only the algebra that generates the spectrum separates them. **The landscape
-question is identical: given what is observable about a vacuum, how many distinct vacua look the same?**
+## The corrected measurement, 5,885 vacua, 14 corpora
 
-## Measured on 5,885 vacua, 14 corpora
+Binning on the mantissa instead of the exponent, at **one significant figure** — the coarsest precision a measurement could
+plausibly claim:
 
-| corpus | vacua | distinct **flux** | distinct **(N, V, \|DW\|)** | worst class | distinct **+ top-3 masses** | worst class |
-|---|---|---|---|---|---|---|
-| h12_2_m1 | 500 | 500 | **93** | **40** | **500** | **1** |
-| h12_2_m3 | 504 | 504 | **62** | **43** | **504** | 1 |
-| h12_2_m7 | 417 | 417 | 99 | 18 | 417 | 1 |
-| h12_4_m2 | 171 | 171 | 13 | 60 | 171 | 1 |
+| corpus | vacua | distinct **flux** | distinct **(N, V, \|DW\|)** | worst class |
+|---|---|---|---|---|
+| h12_2_m1 | 500 | 500 | **500** | **1** |
+| h12_2_m3 | 504 | 504 | 503 | **2** |
+| h12_2_m5 | 500 | 500 | 499 | **2** |
 
-## What it says
+**And against precision, over all corpora:**
 
-1. **Every vacuum has a unique generator** — the flux vector distinguishes all of them (500 flux vectors for 500 vacua).
-2. **The three-number summary collapses them by up to 8×** — 500 vacua into **62** signatures, and **the worst class has 43
-   vacua sharing one.**
-3. **Adding just the three largest mass eigenvalues separates them all** — worst class **1** in every corpus.
+| significant figures | identifiable | worst class |
+|---|---|---|
+| 0 | 0.960 | 5 |
+| 1 | 0.997 | 2 |
+| 2 | 0.999 | 2 |
+| 3 | 1.000 | 1 |
 
-**So: a fit to `(N, V, |DW|)` has, at best, 43 candidates to choose between, and nothing in those three numbers chooses.
-The mass spectrum carries the information that would.**
+## What this actually says
 
-## Why this is the room's lesson and not an analogy
+**The three scalars identify a vacuum almost always** — 99.7% at one significant figure, and **96% even at order-of-magnitude
+precision.** The map from generator to observation is **nearly one-to-one**, not many-to-one.
 
-| room | landscape |
-|---|---|
-| generator: three **dimensions** | generator: **twelve integers** (the flux) |
-| observation: **mode frequencies** | observation: **N, V, \|DW\|, masses** |
-| `f² = A nx² + B ny² + C nz²` — **algebra** | `N = ½ ∫ F∧H` — **bilinear in the integers** |
-| fitting the peaks found a **33.9%-wrong** room | fitting three scalars leaves **43 candidates** |
-| the fix: recover the **lattice** | the fix: recover the **integer flux** |
+**So the room's lesson does NOT transfer as I claimed it did.** There a spectrum that explained 100% of the peaks belonged to
+a room 33.9% wrong, because many boxes share a footprint. **Here, three numbers out of five thousand label a vacuum. The
+landscape is far more identifiable than a room's mode spectrum, not less.**
 
-**In both cases the map from generator to observation is many-to-one, and no regression can invert it. What inverts it is
-the algebra.**
+## What survives from the transfer, and what does not
 
-## What this does not say
+**Survives**: the *method* — measure the degeneracy of the observable set before claiming an inversion is possible, and
+check the claim against a system whose answer is known. **That is what caught this.**
 
-**It does not say the landscape is unidentifiable.** It says **this observable set is**. The mass spectrum already does
-better — the right-hand columns — and the honest next question is *how few masses are needed*, and whether the flux can be
-recovered from them as a lattice problem.
+**Does not survive**: the *conclusion*. The landscape's observables are strongly discriminating, so **an inversion from
+observables to vacuum is not blocked by ambiguity** — the h12 wall is a computational problem, not an information problem.
 
-## The falsifier
+## The falsifier this note failed, and how
 
-> **If a lattice recovery of the flux from the masses and `N` does not beat the observable-set degeneracy — that is, if it
-> cannot pick the right vacuum out of its 43-candidate class more often than chance — then the algebra that works on a room
-> does not transfer, and the landscape's identifiability is a different problem.**
+The first version carried this falsifier: *"if every observable signature is unique, then the observables DO determine the
+vacuum, the room's lesson does not transfer, and this note is wrong about the landscape."*
+
+**That is precisely what the corrected run found, and the falsifier fired.** The note is kept with the correction rather than
+deleted, because the failure is the useful part: **a binning bug produced a headline number, and the falsifier written
+beforehand is what exposed it.**
