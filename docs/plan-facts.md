@@ -1506,6 +1506,34 @@ here is not luck: it is the property of having been written so it could fail.
 **The audit H-E proposes is cheap:** for each register entry, record whether a killing test exists, and check that the
 demoted ones cluster in "no killing test".
 
+## H-E tested: results without a stated falsifier are the ones that get demoted (2026-11-02)
+
+`src/pacland/exactness/killing_tests.py` · `python3 scripts/killing_tests.py` · 7 tests.
+
+The hypothesis: **the survivors are the ones written so they could fail.** Audited on two independently recorded
+columns — was a killing observation named *at publication*, and what is the status now.
+
+| record | falsifier? | status |
+|---|---|---|
+| `max \|N\| = b3` | yes | survives |
+| `count(N) = [x^N] P(x)^(b3/2)` | yes | survives |
+| measure dimension `= b3` | yes | survives |
+| ζ zeros to `6.4e-13` | yes | survives |
+| `A = 8.554` per unit `b3` | **NO** | **demoted** |
+| the accessibility minimum at `b3 = 12` | **NO** | **demoted** |
+| measure-invariance = observability | **NO** | **demoted** |
+
+**Clean separation: 4 of 4 survivors had a stated falsifier, 3 of 3 demotions did not.**
+
+**And the hypotheses behave differently, which matters:** every hypothesis states a falsifier and every one reached a
+verdict — H-C refuted, H-B refuted, H-A supported. **A hypothesis dying cleanly in one run is the system working, not
+failing.** Conflating results with hypotheses is what makes the pattern look either stronger or weaker than it is.
+
+**The caveat, stated plainly: `n = 7` and the "falsifier stated at publication" column is a retrospective judgement
+made by the person whose results were demoted.** A perfect correlation at that size, judged after the fact, is
+suggestive and not decisive. The audit is worth repeating on the estate's full record, with the column assessed before
+the outcome is known.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

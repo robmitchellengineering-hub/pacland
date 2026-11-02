@@ -1901,6 +1901,13 @@
    "title": "issue_vvs.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/killing_tests.py",
+   "kind": "script",
+   "path": "scripts/killing_tests.py",
+   "summary": "H-E: are the survivors the ones a test could have killed?",
+   "title": "killing_tests.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/landscape_count.py",
    "kind": "script",
    "path": "scripts/landscape_count.py",
