@@ -66,3 +66,46 @@ class TestTheCorpus(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestTheTwoParameterStructure(unittest.TestCase):
+    """The successor to H1: BOTH `b3` and `N` matter, and each is monotone.
+
+    H1 died because the tadpole alone does not label the vacuum. But the tadpole is not irrelevant either — inside a
+    fixed `b3` the SUSY fraction climbs steeply with `N`, while at fixed `N` it falls with `b3`. So the vacuum is
+    labelled by `(b3, N)` with a monotone dependence on each, which is a law rather than a null.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        rows = []
+        for c in C.load_corpus():
+            r = c["row"]
+            rows.append((len(r["flux"]) // 2, r.get("Nflux"), bool(r.get("is_susy"))))
+        cls.quartiles = {}
+        for b3 in (6, 8, 10):
+            sel = sorted((N, s) for (bb, N, s) in rows if bb == b3 and N is not None)
+            k = len(sel) // 4
+            frs = []
+            for q in range(4):
+                chunk = sel[q * k:(q + 1) * k] if q < 3 else sel[3 * k:]
+                frs.append(sum(1 for _, x in chunk if x) / len(chunk))
+            cls.quartiles[b3] = frs
+
+    def test_the_fraction_climbs_with_N_inside_each_b3(self):
+        for b3, frs in self.quartiles.items():
+            self.assertGreater(frs[-1], frs[0], f"b3={b3}: {frs}")
+            self.assertGreater(frs[2], frs[1], f"b3={b3}: {frs}")
+
+    def test_the_recorded_quartiles(self):
+        self.assertAlmostEqual(self.quartiles[6][0], 0.076, places=3)
+        self.assertAlmostEqual(self.quartiles[6][3], 0.447, places=3)
+        self.assertAlmostEqual(self.quartiles[10][3], 0.033, places=3)
+
+    def test_a_similar_N_different_b3_differs(self):
+        # b3=6's N 14-30 quartile is 0.345; b3=8's N 19-41 quartile is 0.258 -- so N alone is not enough
+        self.assertGreater(self.quartiles[6][2], self.quartiles[8][2])
+
+    def test_the_whole_range_shrinks_with_b3(self):
+        self.assertGreater(self.quartiles[6][3], self.quartiles[8][3])
+        self.assertGreater(self.quartiles[8][3], self.quartiles[10][3])
