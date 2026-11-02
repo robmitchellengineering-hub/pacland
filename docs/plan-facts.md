@@ -1145,6 +1145,29 @@ more rays ⇒ lower rate — then the `b3 = 14` rung **must carry fewer rays and
 
 `cone_verdict(rays, hp)` returns which.
 
+### The two-parameter structure — the successor to H1 (2026-11-02)
+
+H1 died because the tadpole alone does not label the vacuum. **But the tadpole is not irrelevant either.** Inside a
+fixed `b3` the SUSY fraction climbs steeply with `N` (quartiles by `N`):
+
+| b3 | Q1 (low N) | Q2 | Q3 | Q4 (high N) |
+|---|---|---|---|---|
+| 6 | **0.076** | 0.248 | 0.345 | **0.447** |
+| 8 | **0.022** | 0.126 | 0.258 | **0.403** |
+| 10 | **0.000** | 0.004 | 0.011 | **0.033** |
+
+**Two monotone directions, both real:**
+
+- at **fixed `b3`**, the fraction **rises** with `N` (6× to 18× from Q1 to Q4);
+- at **fixed `N`**, the fraction **falls** with `b3` (0.279 → 0.202 → 0.012 across the whole corpus).
+
+And `N` alone is not enough: `b3 = 6`'s `N` 14–30 quartile is **0.345** while `b3 = 8`'s `N` 19–41 quartile is
+**0.258**.
+
+**So the vacuum is labelled by `(b3, N)` with monotone dependence on each** — a two-parameter law rather than either
+null. That is the sharper statement H1's refutation bought, and it is what any selection principle has to be written
+in terms of.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
