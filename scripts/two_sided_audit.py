@@ -50,6 +50,26 @@ def fit_report(name: str, points, n_params: int = 2) -> dict:
     }
 
 
+def coarsest_explanation(points, tolerance: float = 0.05) -> dict:
+    """RULE 6: among descriptions that explain the data, the COARSEST wins.
+
+    Two candidates, in order of how many free parameters they spend: a constant (one parameter - 'the count does not depend
+    on b3') and an exponential (two). If the constant explains the points to within `tolerance` in log-space, it wins and the
+    exponential is unearned. If it does not, the exponential is the coarsest description that survives - and it still has to
+    answer for its intervals, which is Rule 1's job.
+    """
+    ys = [math.log(v) for _, v in points]
+    mean_y = sum(ys) / len(ys)
+    constant_err = max(abs(y - mean_y) for y in ys)
+    r = fit_report("fit", points)
+    return {
+        "constant_max_log_error": constant_err,
+        "constant_explains": constant_err <= tolerance,
+        "exponential_r2": r["r2"],
+        "chosen": "constant" if constant_err <= tolerance else "exponential",
+    }
+
+
 def main() -> int:
     print("RULE 1 — an exact claim needs no two-sided test; a fit lives or dies by its degrees of freedom\n")
 
@@ -74,6 +94,14 @@ def main() -> int:
 
     rc = fit_report("content", B.CONTENT)
     ra = fit_report("accessibility", B.ACCESSIBILITY)
+    print("RULE 6 - the coarsest description that explains the data\n")
+    for name, points in (("content", B.CONTENT), ("accessibility", B.ACCESSIBILITY)):
+        c = coarsest_explanation(points)
+        state = "EXPLAINS" if c["constant_explains"] else "does not explain"
+        print(f"  {name}: a constant is off by up to {c['constant_max_log_error']:.3f} in log X "
+              f"({state}, tolerance 0.05) -> the coarsest description is the {c['chosen']}")
+    print()
+
     print(f"""
 WHAT THE AUDIT SAYS, claim by claim:
 

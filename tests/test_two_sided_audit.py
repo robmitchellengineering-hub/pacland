@@ -38,6 +38,16 @@ class TestTwoSidedAudit(unittest.TestCase):
         self.assertTrue(r["intervals_agree"])
         self.assertGreater(r["interval_spread"], 1.0)     # agreement is real, but it is not exact
 
+    def test_a_constant_is_rejected_for_the_content(self):
+        c = _module().coarsest_explanation(_module().B.CONTENT)
+        self.assertFalse(c["constant_explains"])
+        self.assertEqual(c["chosen"], "exponential")
+
+    def test_a_constant_wins_when_the_data_do_not_depend_on_b3(self):
+        c = _module().coarsest_explanation(((2, 10.0), (4, 10.0), (6, 10.0)))
+        self.assertTrue(c["constant_explains"])
+        self.assertEqual(c["chosen"], "constant")
+
     def test_r_squared_can_hide_disagreeing_intervals(self):
         # the point of reporting intervals: a high R^2 is compatible with a bad form
         r = _module().fit_report("accessibility", _module().B.ACCESSIBILITY)
