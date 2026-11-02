@@ -1621,6 +1621,13 @@
    "title": "economics_vintage_sensitivity.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/edna_floor.py",
+   "kind": "script",
+   "path": "scripts/edna_floor.py",
+   "summary": "The one parameter still assumed: how much the contamination floor moves the answer.",
+   "title": "edna_floor.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/edna_limit.py",
    "kind": "script",
    "path": "scripts/edna_limit.py",

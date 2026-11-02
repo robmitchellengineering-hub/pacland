@@ -100,6 +100,36 @@ tuned away).
 
 **Both are in the script's own docstring and output**, so the next person reads the correction before the claim.
 
+
+## The one parameter still assumed — and what it costs
+
+**The mock community cannot test the contamination floor**, because it has no blanks: every species in it is supposed to be
+there, so nothing observes "reads arriving for something that is not there". Rather than pretend, `scripts/edna_floor.py`
+computes **what the assumption costs**:
+
+| contamination (reads/sample) | floor | detection limit | species resolved at 1e6 reads |
+|---|---|---|---|
+| 0.001 | 1 | 3.0 | **32,900** |
+| 0.1 | 3 | 5.3 | 24,390 |
+| 1.0 | 15 | 11.9 | 12,200 |
+| 10.0 | 50 | 35.3 | **9,600** |
+
+**A 10,000× range of contamination moves the detection limit by 11.8× and the resolved species count by 71%.**
+
+**So the floor is consequential** — it is the difference between a limit of 3 reads and one of 35, and between resolving
+32,900 and 9,600 species on the same read budget. **It is the weakest number in the discipline, and the one thing still
+assumed rather than measured.**
+
+## What a negative control has to look like
+
+- **field, extraction and PCR blanks from a real survey**, with the reads each taxon drew in the blanks;
+- **the same primer set** as the sample — the floor is amplicon-specific;
+- **enough blanks to estimate a rate**, not just bound it: one blank gives an upper bound.
+
+**Until one arrives**, every number this discipline produces carries the floor as a **stated assumption with its consequence
+computed** — the next best thing to measuring it, and the reason the assumption is written in the output rather than in a
+footnote.
+
 ## The next artefact
 
 **A known-composition synthetic community through a real pipeline**, swept over samples, depth and contamination — producing
