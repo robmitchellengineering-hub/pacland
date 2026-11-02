@@ -830,6 +830,13 @@
    "title": "Research fan-out \u2014 the reusable \"compare notes\" tool"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-claims.md",
+   "kind": "doc",
+   "path": "docs/rf-claims.md",
+   "summary": "Nine numbers, each with the script that reproduces it, the document it appears in, and the check that could make it wrong. Modelled on the physics registry (docs/claims.json), because the\u2026",
+   "title": "The RF claims registry \u2014 what the radio work may quote, and what it may not"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-index.md",
    "kind": "doc",
    "path": "docs/rf-index.md",
