@@ -28,7 +28,7 @@ class TestTheLinks(unittest.TestCase):
 
 class TestTheRecords(unittest.TestCase):
     def test_every_hypothesis_has_a_test_and_a_prediction(self):
-        for hid, title, cited, claim, predicts, test, status in H.HYPOTHESES:
+        for hid, title, cited, claim, predicts, test, status, script in H.HYPOTHESES:
             self.assertGreater(len(predicts), 15, hid)
             self.assertGreater(len(test), 30, hid)
             self.assertIn(status, H.STATUSES)
@@ -43,3 +43,26 @@ class TestThePageDoesNotDrift(unittest.TestCase):
         r = subprocess.run([sys.executable, str(ROOT / "scripts" / "hypotheses.py"), "--check"],
                            capture_output=True, text=True)
         self.assertEqual(r.returncode, 0, r.stderr)
+
+
+class TestTheClaimsRegistryRule(unittest.TestCase):
+    """A decided hypothesis must name a script that exists; open may say "no executable test"."""
+
+    def test_the_rule_passes(self):
+        art = H.check_artefacts()
+        self.assertTrue(art["ok"], art)
+
+    def test_every_decided_hypothesis_has_a_script_on_disk(self):
+        for hid, title, cited, claim, predicts, test, status, script in H.HYPOTHESES:
+            if status in H.DECIDED:
+                self.assertTrue(script, hid)
+                self.assertTrue((ROOT / "scripts" / script).is_file(), f"{hid}: {script}")
+
+    def test_an_open_hypothesis_may_have_none(self):
+        open_ones = [h for h in H.HYPOTHESES if h[6] == "open"]
+        self.assertTrue(open_ones, "expected at least one open hypothesis")
+        self.assertTrue(any(h[7] is None for h in open_ones))
+
+    def test_the_rule_text_is_in_the_page(self):
+        self.assertIn("claims-registry rule", H.render())
+        self.assertIn("no executable test", H.render())

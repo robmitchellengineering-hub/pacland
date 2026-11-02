@@ -1425,6 +1425,13 @@
    "title": "conifold_exponents.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_recurrence.py",
+   "kind": "script",
+   "path": "scripts/conifold_recurrence.py",
+   "summary": "H-C's artefact: does the conifold coefficient sequence have a rational generating function?",
+   "title": "conifold_recurrence.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/connection_form.py",
    "kind": "script",
    "path": "scripts/connection_form.py",
@@ -1899,6 +1906,13 @@
    "path": "scripts/issue_vvs.py",
    "summary": "Issue Valiant Verification certificates for every part that PASSES, and a freshness manifest.",
    "title": "issue_vvs.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/killing_tests.py",
+   "kind": "script",
+   "path": "scripts/killing_tests.py",
+   "summary": "H-E: are the survivors the ones a test could have killed?",
+   "title": "killing_tests.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/landscape_count.py",
@@ -2753,6 +2767,13 @@
    "path": "scripts/wifi_plan.py",
    "summary": "WiFi planning: where to put the antennas, and how many streams you get.",
    "title": "wifi_plan.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/window_dependence.py",
+   "kind": "script",
+   "path": "scripts/window_dependence.py",
+   "summary": "H-A's artefact: the content \"law\" is the window's size growth, not a property of the landscape.",
+   "title": "window_dependence.py"
   },
   {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf",
