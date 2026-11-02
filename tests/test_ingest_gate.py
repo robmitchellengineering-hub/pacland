@@ -1,6 +1,7 @@
 """The ingest gate is a domain check: the sampler's own bounds, reported loudly."""
 import unittest
 
+from pacland.exactness import counterexample as C
 from pacland.exactness import ingest_gate as G
 
 
@@ -90,3 +91,36 @@ class TestTheIntervals(unittest.TestCase):
         lo, hi = G.wilson(0, 10)
         self.assertEqual(lo, 0.0)
         self.assertGreater(hi, 0.0)
+
+
+class TestThePreRegisteredKillingTest(unittest.TestCase):
+    """Does the flat ~0.8 minima rate survive a THRESHOLD change? If it needs the strict band, it was tuned."""
+
+    @classmethod
+    def setUpClass(cls):
+        rows = [c["row"] for c in C.load_corpus()]
+
+        def rate(pred):
+            out = {}
+            for b3 in (6, 8, 10):
+                sel = [r for r in rows if len(r["flux"]) // 2 == b3 and pred(r)]
+                if sel:
+                    out[b3] = sum(1 for r in sel if r.get("is_minimum")) / len(sel)
+            return out
+
+        cls.strict = rate(lambda r: G.classify(r) == "in_domain")
+        cls.loose = rate(lambda r: G.classify(r) in ("in_domain", "loose"))
+        cls.ungated = rate(lambda r: True)
+
+    def test_flat_holds_under_the_strict_band(self):
+        for b3, v in self.strict.items():
+            self.assertGreater(v, 0.7, (b3, v))
+            self.assertLess(v, 0.9, (b3, v))
+
+    def test_flat_survives_the_LOOSE_band_with_a_bigger_sample(self):
+        for b3, v in self.loose.items():
+            self.assertGreater(v, 0.7, (b3, v))
+            self.assertLess(v, 0.9, (b3, v))
+
+    def test_the_ungated_rate_is_the_composition_effect(self):
+        self.assertGreater(self.strict[6] - self.ungated[6], 0.2)
