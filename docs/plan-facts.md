@@ -1007,6 +1007,23 @@ comparison of two measured scales, not a physical rate — and the module says s
 **Falsifier:** a fourth `b3` where either series breaks. The accessibility intervals already differ by more than
 the 25% tolerance — a warning, not yet a refutation.
 
+### The `b3 = 14` extrapolation test, pre-registered (2026-11-02)
+
+`PREDICTION_B3_14` in `src/pacland/exactness/b3_scaling.py`, on record **before** the measurement (dispatch
+`2026-11-02T1020Z`, 20 calls of 400 tries at `h12 = 6`, i.e. `b3 = 14`, beyond the `b3 = 12` anchor):
+
+| branch | points expected in 20 calls |
+|---|---|
+| steepening (apply the 10→12 factor twice) | **1.34** |
+| global fit (`B = 0.481`) | **2.54** |
+
+`check_prediction(points)` returns which branch a measurement lands on, and a test pins both ends — one point →
+steepening, three points → global fit, zero points recorded as a rate rather than a failure.
+
+**Status: dispatched and queued.** The node is running another session's job (`rob-site-crate`, started 10:22Z)
+and a stale entry from 2026-10-23 is also listed as running, so the measurement is waiting on node contention
+rather than on anything in the physics.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
