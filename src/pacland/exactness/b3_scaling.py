@@ -139,5 +139,44 @@ def cone_verdict(rays: int, hp: int) -> dict:
     }
 
 
-__all__ = ["CONTENT", "ACCESSIBILITY", "CONES", "PREDICTION_B3_14", "PREDICTION_CONE_MONOTONE",
-           "check_prediction", "cone_verdict", "per_unit_factor", "scales"]
+#: **The budget test, measured** (`1520Z-budget-test`, 2 calls per arm, `h12 = 5` unless stated). This is what decides
+#: whether the "accessibility minimum" is a landscape property or a work allowance.
+BUDGET_TEST = {
+    "A_base":         {"tries": 400,  "points": [2, 0], "seconds": [99.4, 80.4]},
+    "B_10x_tries":    {"tries": 4000, "points": [8, 8], "seconds": [817.2, 811.5]},
+    "C_deep_newton":  {"tries": 400,  "points": [0, 0], "seconds": [81.7, 76.7]},   # newton_max_iters=1000
+    "h12_6_control":  {"tries": 400,  "points": [6, 8], "seconds": [127.0, 90.3]},
+}
+
+
+def budget_verdict() -> dict:
+    """Decide the accessibility question: does more work recover the yield at the `b3 = 12` rung?
+
+    Arm B gives `b3 = 12` the same 8 points that the `b3 = 14` control produces in one call, at 10x the cost. Arm C
+    (a deeper Newton solve at the same try count) changes nothing. So the "minimum" is a function of the **work
+    allowance**, not of the landscape, and the search breadth -- not the solve depth -- is the binding constraint.
+    """
+    base = BUDGET_TEST["A_base"]["points"]
+    wide = BUDGET_TEST["B_10x_tries"]["points"]
+    deep = BUDGET_TEST["C_deep_newton"]["points"]
+    ctrl = BUDGET_TEST["h12_6_control"]["points"]
+    recovered = sum(wide) >= max(sum(ctrl) * 0.5, 4)
+    depth_helps = sum(deep) > sum(base)
+    return {
+        "base_points": sum(base), "wide_points": sum(wide), "deep_points": sum(deep),
+        "control_points": sum(ctrl),
+        "cost_ratio": BUDGET_TEST["B_10x_tries"]["seconds"][0] / BUDGET_TEST["A_base"]["seconds"][0],
+        "yield_recovered_by_more_tries": recovered,
+        "yield_recovered_by_deeper_solve": depth_helps,
+        "verdict": ("BUDGET ARTEFACT — the 'accessibility minimum' is a function of the work allowance, not of the "
+                    "landscape; with 10x the tries b3=12 yields what b3=14 yields, at 10x the cost. A deeper Newton "
+                    "solve does nothing, so search breadth and not solve depth is the binding constraint."
+                    if recovered and not depth_helps else
+                    "INCONCLUSIVE — see the arms"),
+        "consequence": ("every accessibility number must be quoted as points-per-budget, and the 'minimum at b3=12' "
+                        "is demoted from a landscape property to a sampler observation"),
+    }
+
+
+__all__ = ["CONTENT", "ACCESSIBILITY", "CONES", "PREDICTION_B3_14", "PREDICTION_CONE_MONOTONE", "BUDGET_TEST",
+           "budget_verdict", "check_prediction", "cone_verdict", "per_unit_factor", "scales"]

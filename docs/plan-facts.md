@@ -1341,6 +1341,33 @@ refuted.
 5 tests pin the default, the classification, that whitespace and `"NONE"` cannot smuggle an empty ontology, and that an
 ontology-free claim stays marked rather than hidden.
 
+## Task 5: the "accessibility minimum" is a BUDGET ARTEFACT (2026-11-02)
+
+`BUDGET_TEST` / `budget_verdict()` in `exactness/b3_scaling.py` · 4 tests. Job `1520Z-budget-test`, two calls per arm
+at `h12 = 5`, with `h12 = 6` as control:
+
+| arm | tries/call | points | seconds |
+|---|---|---|---|
+| A base | 400 | **2, 0** | 99.4, 80.4 |
+| **B 10× tries** | 4,000 | **8, 8** | 817.2, 811.5 |
+| C deep Newton (`newton_max_iters=1000`) | 400 | **0, 0** | 81.7, 76.7 |
+| `h12 = 6` control | 400 | 6, 8 | 127.0, 90.3 |
+
+**Verdict: BUDGET ARTEFACT.** With **ten times the tries**, the `b3 = 12` rung yields **16 points across two calls** —
+the same as the `b3 = 14` control's **14** — at **10× the cost** (817 s against 90 s). A **deeper Newton solve at the
+same try count changes nothing** (0, 0), so the binding constraint is **search breadth, not solve depth**.
+
+**Consequences, applied:**
+
+1. the "accessibility minimum at `b3 = 12`" is **demoted** from a landscape property to a **sampler observation**;
+2. every accessibility number must be quoted **as points-per-budget** — the `0.1325` vs `0.00137` comparison is
+   `400 tries` against `400 tries`, and it does not survive 4,000;
+3. the `48×` refutation at `b3 = 14` **stands** (121 points against a pre-registered 1.04–2.54): it was also measured
+   at 400 tries, and more work would only raise both sides.
+
+**This is the fifth and final eliminated explanation** for the minimum — after dimension, cone shape, the flux window
+and the (non-existent) per-call timeout.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
