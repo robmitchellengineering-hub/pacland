@@ -114,3 +114,30 @@ class TestTheConeVerdictIsIn(unittest.TestCase):
     def test_the_verdict_is_refuted(self):
         v = S.cone_verdict(S.CONES[14]["rays"], S.CONES[14]["hp"])
         self.assertIn("REFUTED", v["verdict"])
+
+
+class TestTheBudgetVerdict(unittest.TestCase):
+    """The budget test decides the accessibility question, and the answer is: it was our budget, not the landscape."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.v = S.budget_verdict()
+
+    def test_more_tries_recover_the_yield(self):
+        # base 2+0 points, wide 8+8 points, control (b3=14) 6+8
+        self.assertEqual(self.v["base_points"], 2)
+        self.assertEqual(self.v["wide_points"], 16)
+        self.assertEqual(self.v["control_points"], 14)
+        self.assertTrue(self.v["yield_recovered_by_more_tries"])
+
+    def test_a_deeper_solve_does_not(self):
+        # newton_max_iters=1000 at the same try count: 0 + 0
+        self.assertEqual(self.v["deep_points"], 0)
+        self.assertFalse(self.v["yield_recovered_by_deeper_solve"])
+
+    def test_the_cost_is_tenfold(self):
+        self.assertGreater(self.v["cost_ratio"], 8.0)
+
+    def test_the_verdict_demotes_the_minimum(self):
+        self.assertIn("BUDGET ARTEFACT", self.v["verdict"])
+        self.assertIn("points-per-budget", self.v["consequence"])
