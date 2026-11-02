@@ -1103,6 +1103,13 @@
    "title": "WiFi as LiDAR \u2014 what closes the gap, and what never will"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ap_health.py",
+   "kind": "script",
+   "path": "scripts/ap_health.py",
+   "summary": "One row per access point: what the phone heard, and which APs deserve a look.",
+   "title": "ap_health.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/apply_measurements.py",
    "kind": "script",
    "path": "scripts/apply_measurements.py",
