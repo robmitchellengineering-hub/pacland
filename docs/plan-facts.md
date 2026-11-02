@@ -1099,12 +1099,22 @@ product `A·B = 4.11` that depended on it.
 ratio* against `{π², ζ(3), π²ζ(3), ζ(3)/π², π²/ζ(3), 1/π²}`. *Removes:* the basis-change transcendentals as the
 theory's arithmetic invariants in the standard basis. The wider basis (`π² log` pieces) stays untested.
 
-### Provisional — a direction, not a verdict
+### Refuted — H1, the one-integer vacuum
 
-**5. H1, the one-integer vacuum.** First reading on 80 vacua (`h12 = 3, 4`): SUSY fraction **0.400 at b3 = 8** vs
-**0.050 at b3 = 10**, and at shared `N` the b3=8 rows are SUSY-positive where b3=10 is not (`N=32`: 1/1 vs 0/2).
-**Falsifies H1** — the same tadpole carries different physics at different `b3` — but 80 rows over two dimensions
-is too thin to publish.
+**The tadpole does NOT label the vacuum.** On the full **5,965-row** corpus:
+
+| b3 | n | SUSY | fraction |
+|---|---|---|---|
+| 6 | 3,424 | 955 | **0.279** |
+| 8 | 1,457 | 295 | **0.202** |
+| 10 | 1,084 | 13 | **0.012** |
+
+Monotone decreasing, a factor of 23 from `b3 = 6` to `10`. And at **fixed tadpole** the split is unambiguous —
+`N = 5` gives `27/157` at `b3 = 6`, `1/34` at `b3 = 8`, `0/64` at `b3 = 10`. With **56** shared `N` classes having
+≥20 rows, the same tadpole demonstrably carries different physics at different dimensions.
+
+*Removes:* the collapse of the landscape to a one-parameter family. "Which vacuum" needs **both** `N` and `b3`;
+dimension is **irreducible**, and every headline number in this estate has to carry its `b3`.
 
 ### The measurement that would narrow hardest
 
