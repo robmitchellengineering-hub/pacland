@@ -28,7 +28,7 @@ class TestTheLinks(unittest.TestCase):
 
 class TestTheRecords(unittest.TestCase):
     def test_every_hypothesis_has_a_test_and_a_prediction(self):
-        for hid, title, cited, claim, predicts, test, status in H.HYPOTHESES:
+        for hid, title, cited, claim, predicts, test, status, script in H.HYPOTHESES:
             self.assertGreater(len(predicts), 15, hid)
             self.assertGreater(len(test), 30, hid)
             self.assertIn(status, H.STATUSES)
