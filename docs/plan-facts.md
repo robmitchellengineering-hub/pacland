@@ -1465,6 +1465,29 @@ measure-dependent.
 the output's kind) are orthogonal. A result can be one without the other, and the programme had been treating them as
 interchangeable in the well-posedness argument.
 
+## H-A tested: the "content law" is the WINDOW, not the landscape (2026-11-02)
+
+`tests/test_window_dependence.py` · 5 tests.
+
+H-A said `b3` is the only parameter and every apparent exponential is combinatorics. Tested by changing the window:
+
+| window | count `0<N≤1` at b3=2 | at b3=4 | **per-unit-b3 factor** | `(2·max_abs+1)²` |
+|---|---|---|---|---|
+| `\|component\| ≤ 1` | 20 | 1,480 | **8.60** | **9** |
+| `\|component\| ≤ 2` | 52 | 30,984 | **24.41** | **25** |
+
+**The factor is the window's own size growth.** `8.554` was never a law of the landscape: it is `≈ 9 = (2·1+1)²`, the
+number of component choices per block squared. Widen the window and the "law" changes to `≈ 25`.
+
+**Consequences:**
+
+1. **H-A is SUPPORTED** — the exponential is combinatorics, exactly as predicted;
+2. **`A = 8.554` is DEMOTED from a law to a window artefact.** It must move from the INVARIANT column of the
+   measure register to DEPENDENT, and in the wall register it is a DISSOLVES entry.
+
+**This is the programme working as designed:** a headline result, quoted for days as our one clean exponential, is
+demoted by a test that took one computation.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
