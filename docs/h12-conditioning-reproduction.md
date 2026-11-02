@@ -70,6 +70,39 @@ sampler's own ISD initial guess (no committed vacua exist above h12 = 4). **Job 
 h12 = 25, takes its initial guess, and measures — and prints the sampler API, because the model class has no
 `initial_guesses_ISD` and that cost one round trip already.
 
+
+## The API, learned by asking
+
+**Job `2026-11-02T1933Z` failed on its first line and paid for itself anyway**: it printed both constructors.
+
+```
+data_sampler(model, flux_bounds=(-10,10), axion_bounds=(-0.5,0.5), dilaton_bounds=(2,10),
+             moduli_bounds=(1.0,5.0), stretching=0.0, exclude_walls=None, cone_cutoff=None,
+             use_jax=False, seed=42)
+FluxVacuaFinder(h12=..., model_ID=..., model_type='KS', limit='LCS', maximum_degree=0, ..., moduli_bounds=(1.0,5.0), seed=42)
+```
+
+**`data_sampler` takes a MODEL, not an `h12`.** So the sampler's ISD initial guess is reached as:
+
+```python
+model   = jvc.FluxVacuaFinder(h12=h, model_ID=1, model_type="KS", maximum_degree=0)
+sampler = jvc.data_sampler(model)
+guess   = sampler.initial_guesses_ISD(2)
+```
+
+**And the default `moduli_bounds=(1.0, 5.0)` independently confirms the sanity window** used to reject the corpus's corrupt
+rows: the sampler itself only ever places moduli in **O(1)–O(5)**, so a committed row with `|z| = 8.5e29` was never a point this
+model can produce.
+
+## Status of the across-h12 row
+
+**Job `2026-11-02T1953Z`** measures `cond(M)` at h12 = 2, 5, 10, 25 using the sampler's own ISD guess, against the document's
+**1.8e2 / 1.1e10 / 2.9e6 / 4.8e6**.
+
+**What is already established**: the **h12 = 2 rung is reproduced** (341 against 183, same order, at a committed minimum with
+`|z| = 1.28`). **What is not**: anything above it, because no committed vacua exist for h12 ≥ 5 and the sampler API had to be
+learned first.
+
 ### The decision rule for the h12 = 25 rung
 
 | what comes back | what it means |
