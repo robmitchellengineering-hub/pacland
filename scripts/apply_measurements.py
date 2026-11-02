@@ -34,6 +34,15 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 LAYOUT = ROOT / "docs/data/layout-template.json"
 
 WALL_RATIO = 0.35          # vertical/horizontal below this is a wall
+# A ROOM'S LONG WALL IS NOT AN OUTLIER. The first version rejected any wall longer than 1.6x the session's median, which is
+# exactly what a rectangular room looks like when two of its three measured lines are the short ones: a 3.85 x 2.24 m room
+# measured as 2.14, 2.24, 3.85 had its LONGEST wall thrown out as a suspect, and the room came back as 2.14 x 2.24.
+# The bound is now absolute (no room in this programme is longer than this) plus a ratio that only applies when there are
+# enough walls for a median to mean anything.
+MAX_WALL_M = 15.0
+#: A line shorter than this is a door, a window or a partial drag - not a wall. The 1.14 m line in a 5 x 5 m room was
+#: being treated as one of the room's dimensions.
+MIN_WALL_M = 1.5
 HEIGHT_RATIO = 1.2         # above this is a height
 OUTLIER_FACTOR = 1.6       # longer than this many medians is not a wall of this room
 SAME_LINE_TOL = 0.05       # metres
@@ -92,7 +101,7 @@ def classify(items: list[dict]) -> dict:
         if ratio > HEIGHT_RATIO:
             heights.append(m)
         elif ratio <= WALL_RATIO:
-            if median and h > OUTLIER_FACTOR * median:
+            if h > MAX_WALL_M or (walls and h > 3.0 * min(w["metres"] for w in walls)):
                 suspect.append(m)
             else:
                 walls.append(m)
@@ -100,15 +109,48 @@ def classify(items: list[dict]) -> dict:
             suspect.append(m)
     walls.sort(key=lambda m: -m["metres"])
     heights.sort(key=lambda m: -m["metres"])
+    # THE DIAGONAL BOUND WAS TRIED AND REMOVED. It rejected the bedroom's impossible 5.98 m line (diagonal 3.74 m) and also
+    # rejected the spare room's 3.85 m wall (diagonal of its two short walls 3.10 m), turning one correct room into a
+    # 2.14 x 2.24 m one. A rule that fixes one session by breaking another is not a rule; both sessions are ambiguous
+    # about which line is a wall, and the answer is more measurements, not a tighter bound.
+    walls = [w for w in walls if w["metres"] >= MIN_WALL_M]
     return {"walls": walls, "heights": heights, "suspect": suspect, "median_horizontal": median}
 
 
+def drop_impossible_walls(walls: list[dict]) -> tuple[list[dict], list[dict]]:
+    """A WALL CANNOT BE LONGER THAN THE ROOM'S DIAGONAL.
+
+    A session in the 2.62 x 2.67 m bedroom carried a 5.98 m line classified as a wall: the room's own diagonal is 3.74 m, so
+    no wall of that room can be 5.98 m. The line is a mis-tap or a walk across two walls; either way it is not a wall, and
+    admitting it turned the bedroom into a 2.67 x 5.98 m room that does not exist.
+
+    The bound is the diagonal of the two SHORTEST distinct walls - the smallest room those walls could enclose - and it is
+    generous by 5% so a real long wall is not lost to rounding.
+    """
+    if len(walls) < 3:
+        return walls, []
+    ordered = sorted(walls, key=lambda w: w["metres"])
+    a, b = ordered[0]["metres"], ordered[1]["metres"]
+    diag = (a * a + b * b) ** 0.5
+    keep = [w for w in walls if w["metres"] <= diag * 1.05]
+    dropped = [w for w in walls if w["metres"] > diag * 1.05]
+    if len(keep) < 2:
+        return walls, []
+    return keep, dropped
+
+
 def room_from_walls(walls: list[dict]) -> tuple[float, float] | None:
-    """The two longest DISTINCT walls, or None when the session cannot give two."""
+    """The two longest DISTINCT walls, or None when the session cannot give two.
+
+    THE DOCSTRING WAS RIGHT AND THE CODE WAS NOT. It said "the two longest", and it took `walls[0]` - the first one measured -
+    and the first line that was not the same line. Sessions are uploaded in measurement order, so "first" is whatever the
+    phone happened to record first, not the longest.
+    """
     if len(walls) < 2:
         return None
-    first = walls[0]
-    second = next((w for w in walls[1:] if not same_line(first, w)), None)
+    ordered = sorted(walls, key=lambda w: -w["metres"])
+    first = ordered[0]
+    second = next((w for w in ordered[1:] if not same_line(first, w)), None)
     if second is None:
         return None
     a, b = first["metres"], second["metres"]
@@ -116,6 +158,36 @@ def room_from_walls(walls: list[dict]) -> tuple[float, float] | None:
     if lo / hi < 0.25:
         return None                  # a corridor rather than a room
     return lo, hi
+
+
+def pairing_alternatives(walls: list[dict]) -> list[tuple[float, float]]:
+    """The room candidates a session supports, when more than one is defensible.
+
+    Two sessions with three walls each are the reason this exists:
+
+        bedroom   2.62, 2.67, 5.98 (+ 2.74)   - a 2.62 x 2.67 room whose diagonal is 3.74, plus a 5.98 m line
+        spare     2.14, 2.24, 3.85 (+ 2.70)   - a 2.14 x 2.24 room, or a 2.24 x 3.85 one
+
+    **No geometric rule separates them.** A diagonal bound rejects the bedroom's 5.98 and also the spare room's genuine
+    3.85; a ceiling multiple can be tuned to two sessions and is then fitted, not derived. So the honest output is BOTH
+    candidates, and the decision goes where the evidence is: the operator knows which room it is, and a fourth wall settles
+    it without asking anybody.
+    """
+    if len(walls) < 3:
+        return []
+    ordered = sorted(walls, key=lambda w: -w["metres"])
+    out = []
+    seen = set()
+    for i, first in enumerate(ordered):
+        for second in ordered[i + 1:]:
+            if same_line(first, second):
+                continue
+            key = (round(min(first["metres"], second["metres"]), 2), round(max(first["metres"], second["metres"]), 2))
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(key)
+    return out
 
 
 def resolve_room(label: str, rooms: list[dict]) -> str | None:

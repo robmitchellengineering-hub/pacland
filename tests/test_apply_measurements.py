@@ -122,5 +122,43 @@ class TestApplyMeasurements(unittest.TestCase):
         self.assertEqual(list(rooms), ["kitchen"])
 
 
+class TestTheRulesTheRealDataBroke(unittest.TestCase):
+    """Two rules that were wrong, found by comparing against airmatrix's independent implementation."""
+
+    def test_the_first_wall_measured_is_not_automatically_the_longest(self):
+        # walls arrive in measurement order; the room is the two LONGEST distinct lines
+        walls = [{"metres": 2.24, "from": [0, 0, 0], "to": [2.24, 0, 0]},
+                 {"metres": 2.14, "from": [0, 0, 0], "to": [0, 0, 2.14]},
+                 {"metres": 3.85, "from": [0, 0, 2.14], "to": [3.85, 0, 2.14]}]
+        pair = _module().room_from_walls(walls)
+        self.assertAlmostEqual(pair[1], 3.85, places=2)
+
+    def test_a_long_wall_in_a_rectangular_room_is_not_an_outlier(self):
+        # 3.85 against walls of 2.14 and 2.24 is a normal room, not a mistake
+        items = [
+            {"metres": 2.14, "from": [0, 0, 0], "to": [2.14, 0, 0]},
+            {"metres": 3.85, "from": [0, 0, 0], "to": [0, 0, 3.85]},
+            {"metres": 2.24, "from": [0, 0, 3.85], "to": [2.24, 0, 3.85]},
+        ]
+        c = _module().classify(items)
+        self.assertEqual(len(c["walls"]), 3)
+        self.assertEqual(c["suspect"], [])
+
+    def test_a_door_width_line_is_not_a_wall(self):
+        walls = [{"metres": 1.14, "from": [0, 0, 0], "to": [1.14, 0, 0]},
+                 {"metres": 5.03, "from": [0, 0, 1], "to": [5.03, 0, 1]},
+                 {"metres": 5.28, "from": [0, 0, 2], "to": [0, 0, 7.28]}]
+        c = _module().classify(walls)
+        self.assertNotIn(1.14, [round(w["metres"], 2) for w in c["walls"]])
+
+    def test_two_defensible_rooms_are_both_reported(self):
+        walls = [{"metres": 2.14, "from": [0, 0, 0], "to": [2.14, 0, 0]},
+                 {"metres": 3.85, "from": [0, 0, 0], "to": [0, 0, 3.85]},
+                 {"metres": 2.24, "from": [0, 0, 3.85], "to": [2.24, 0, 3.85]}]
+        alts = _module().pairing_alternatives(walls)
+        self.assertIn((2.24, 3.85), alts)
+        self.assertIn((2.14, 2.24), alts)
+
+
 if __name__ == "__main__":
     unittest.main()

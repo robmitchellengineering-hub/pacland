@@ -998,6 +998,13 @@
    "title": "Prior art and tooling \u2014 what to build on"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-classifiers.md",
+   "kind": "doc",
+   "path": "docs/two-classifiers.md",
+   "summary": "AirMatrix's rob-site and this repo's scripts/applymeasurements.py both turn ARCore sessions into rooms. They were run on the same five sessions on 2026-11-02, and they disagreed on two of\u2026",
+   "title": "Two classifiers, one dataset: where pacland and AirMatrix disagree"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-sessions-synthesis.md",
    "kind": "doc",
    "path": "docs/two-sessions-synthesis.md",
