@@ -90,3 +90,27 @@ class TestTheConePrediction(unittest.TestCase):
 
     def test_a_large_cone_refutes(self):
         self.assertIn("REFUTED", S.cone_verdict(7, 14)["verdict"])
+
+
+class TestTheConeVerdictIsIn(unittest.TestCase):
+    """The pre-registered prediction was REFUTED by the measurement: rays = 8, not <= 4."""
+
+    def test_the_measured_shape_is_recorded(self):
+        self.assertEqual(S.CONES[14]["rays"], 8)
+        self.assertEqual(S.CONES[14]["hp"], 7)
+
+    def test_the_rays_rise_monotonically_with_b3(self):
+        # 2, 4, 5, 8 -- the cone gets bigger at every rung
+        rays = [S.CONES[b]["rays"] for b in (6, 10, 12, 14)]
+        self.assertEqual(rays, sorted(rays))
+        self.assertEqual(rays, [2, 4, 5, 8])
+
+    def test_the_rate_does_NOT_follow_the_rays(self):
+        # the rate dips at b3=12 (0.00137) and recovers at b3=14 (0.0151) while rays only grow
+        rates = [S.CONES[b]["rate"] for b in (6, 10, 12, 14)]
+        self.assertLess(rates[2], rates[1])
+        self.assertGreater(rates[3], rates[2])
+
+    def test_the_verdict_is_refuted(self):
+        v = S.cone_verdict(S.CONES[14]["rays"], S.CONES[14]["hp"])
+        self.assertIn("REFUTED", v["verdict"])
