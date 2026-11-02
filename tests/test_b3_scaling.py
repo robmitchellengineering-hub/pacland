@@ -70,3 +70,23 @@ class TestThePreRegisteredPrediction(unittest.TestCase):
     def test_zero_points_is_recorded_as_a_rate_not_a_failure(self):
         r = S.check_prediction(0)
         self.assertEqual(r["measured_rate"], 0.0)
+
+
+class TestTheConePrediction(unittest.TestCase):
+    """Pre-registered before h12=6's shape was read: the rate must track cone structure monotonically."""
+
+    def test_the_three_measured_rungs(self):
+        self.assertEqual(S.CONES[6]["rays"], 2)
+        self.assertEqual(S.CONES[10]["rays"], 4)
+        self.assertEqual(S.CONES[12]["rays"], 5)
+
+    def test_the_prediction_follows_from_the_measured_rate(self):
+        # b3=14's rate is 10x the b3=12 rate, so under monotonicity it must have FEWER rays
+        self.assertGreater(S.CONES[14]["rate"], 10 * S.CONES[12]["rate"])
+        self.assertLess(S.PREDICTION_CONE_MONOTONE["rays_max"], S.CONES[12]["rays"])
+
+    def test_a_small_cone_confirms(self):
+        self.assertIn("tracks cone structure", S.cone_verdict(3, 9)["verdict"])
+
+    def test_a_large_cone_refutes(self):
+        self.assertIn("REFUTED", S.cone_verdict(7, 14)["verdict"])
