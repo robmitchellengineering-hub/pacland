@@ -2265,6 +2265,13 @@
    "title": "thermal_noise_bound.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/truth_bench.py",
+   "kind": "script",
+   "path": "scripts/truth_bench.py",
+   "summary": "A truth bench: how far can a spectrum statistic move before the answer is lost?",
+   "title": "truth_bench.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/try_budget.py",
    "kind": "script",
    "path": "scripts/try_budget.py",
