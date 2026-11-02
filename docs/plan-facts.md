@@ -1389,6 +1389,34 @@ of it** — exactly the distinction the well-posedness criterion asks for. It al
 compute the distribution at any dimension in closed form, which is a different kind of claim from counting solutions
 one at a time.
 
+## The wall register — whose wall is it? (2026-11-02)
+
+`src/pacland/exactness/walls.py` · `docs/walls.md` (generated) · 6 tests.
+
+Every place the programme gets stuck now carries one of four classes:
+
+| class | meaning | count |
+|---|---|---|
+| **PROVABLE** | a theorem that the obstruction cannot be removed — **a constraint on the theory** | 1 |
+| **BOUNDED** | a real negative with a stated domain | 2 |
+| **DISSOLVES** | gone with more work or a bigger budget — it was our instrument | 3 |
+| **INFRASTRUCTURE** | a library or data gap | 1 |
+
+**Only PROVABLE walls constrain a unification.** A dissolving wall is a measurement error wearing a law's clothes.
+
+**The entries that cost us the most:**
+
+- **The rate wall** (DISSOLVES) — looked like a power law with an "accessibility minimum" at `b3 = 12`; was a fixed
+  work allowance. With 10× the tries `b3 = 12` yields 16 points against `b3 = 14`'s 14, at 10× the cost, and a
+  deeper Newton solve changes nothing. **Five candidate explanations were eliminated before the budget was suspected.**
+- **The measure wall** (PROVABLE) — looked like a failure to find the right measure; is a measure space of dimension
+  exactly `b3`.
+- **The enumeration objection** (DISSOLVES) — Woit's charge; three planned enumerations turned out to be formulae.
+
+**This is the operational lesson of the whole programme:** when a wall appears, the first question is not "what
+explains it" but **"would more work move it?"** — and now that question has a register instead of five rounds of
+hypotheses.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
