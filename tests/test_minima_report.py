@@ -51,3 +51,20 @@ class TestTheGatedRates(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestTheIntervalVerdict(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        rows = [c["row"] for c in C.load_corpus()]
+        cls.per = G.report(rows)
+
+    def test_the_intervals_overlap_so_flat_is_consistent_not_proven(self):
+        iv = G.interval_verdict(self.per)
+        self.assertTrue(iv["intervals_overlap"])
+        self.assertIn("CONSISTENT", iv["statement"])
+        self.assertIn("not proven", iv["statement"])
+
+    def test_the_thin_rungs_are_named(self):
+        iv = G.interval_verdict(self.per)
+        self.assertIn(10, iv["under_two_hundred_rows"])

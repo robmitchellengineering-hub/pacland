@@ -27,6 +27,14 @@ def main() -> int:
               f"{d['susy_rate_all']:>8.1%} {d['susy_rate_in_domain']:>10.1%} "
               f"{d['minima_rate_all']:>10.1%} {d['minima_rate_in_domain']:>12.1%}")
 
+    print(f"\n  with 95% Wilson intervals on the gated minima rate:")
+    for b3, d in sorted(per.items()):
+        lo, hi = d["minima_ci"]
+        print(f"    b3={b3}: {d['minima_rate_in_domain']:.3f}  [{lo:.3f}, {hi:.3f}]  n={d['in_domain']}"
+              + ("   <-- under 200 rows" if d["in_domain"] < 200 else ""))
+    iv = G.interval_verdict(per)
+    print(f"\n  {iv['statement']}")
+
     tot = sum(d["rows"] for d in per.values())
     run = sum(d["runaway"] for d in per.values())
     print(f"\n  corpus: {tot} rows, {run} outside the declared bounds ({run/tot:.1%})")

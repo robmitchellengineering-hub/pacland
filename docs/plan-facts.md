@@ -1615,6 +1615,33 @@ smaller set of genuine points, most of which are not SUSY."**
 **Consequence for the record:** any figure quoted without its gated column is a figure about the corpus, not the theory.
 The `minima_rate_all` column is retained deliberately, so the composition effect is visible rather than hidden.
 
+## Error bars on the gated figures — what "flat" is allowed to mean (2026-11-02)
+
+`wilson()` and `interval_verdict()` in `ingest_gate.py` · 5 new tests.
+
+| b3 | gated minima rate | 95% Wilson interval | n (in-domain) |
+|---|---|---|---|
+| 6 | 0.787 | **[0.756, 0.816]** | 720 |
+| 8 | 0.846 | **[0.801, 0.883]** | 293 |
+| 10 | 0.804 | **[0.668, 0.893]** | **46** |
+
+**The intervals overlap, so "flat" is CONSISTENT with the data and NOT proven.** `b3 = 6` and `b3 = 8` overlap only
+barely (0.816 against 0.801); **`b3 = 10` has 46 rows and a half-width of ±11 points**, so it cannot carry a law in
+either direction.
+
+**The binding constraint is row count, not method.** Supply of genuine points falls `720 → 293 → 46` — about 4× per
+step. At `b3 = 12` that extrapolates to roughly ten points, which is to say **the empirical programme is essentially
+finished at these model sizes**, and anything further must be a theorem rather than a measurement.
+
+**Two candidate laws, with their status stated honestly:**
+
+1. **the runaway share rises steeply with `b3`** (37.9% → 50.4% → 91.0%) — rests on 3,424 / 1,457 / 1,084 rows, so it
+   is the **most solid** of the empirical results, and it is a law *about the sampler*, which is why it belongs in the
+   wall register as a DISSOLVES mechanism rather than in the results column;
+2. **the minima fraction is `b3`-independent at ≈ 0.8** — currently consistent, not proven. Its killing test is
+   cheap: recompute at `max_abs = 2` or on a second model ID. A number that moves there was never a law — which is
+   exactly how `A = 8.554` died.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
