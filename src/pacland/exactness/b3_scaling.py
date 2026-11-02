@@ -81,4 +81,33 @@ def scales() -> dict:
     }
 
 
-__all__ = ["CONTENT", "ACCESSIBILITY", "per_unit_factor", "scales"]
+#: The extrapolation test, **pre-registered** before the `b3 = 14` measurement (dispatch
+#: `2026-11-02T1020Z-pacland-rog-h12-6-rate`, 20 calls of 400 tries). Two branches, because the accessibility
+#: intervals disagree: the steepening one and the global fit. The measurement decides between them.
+PREDICTION_B3_14 = {
+    "b3": 14,
+    "steepening_branch_per_try": 0.00137 * 0.308 ** 2,     # apply the 10->12 factor twice
+    "global_fit_per_try": 0.00137 * 0.481 ** 2,
+    "calls": 20,
+    "tries_per_call": 400,
+}
+PREDICTION_B3_14["steepening_points"] = PREDICTION_B3_14["steepening_branch_per_try"] * 20 * 400
+PREDICTION_B3_14["global_fit_points"] = PREDICTION_B3_14["global_fit_per_try"] * 20 * 400
+
+
+def check_prediction(measured_points, calls: int = 20, tries_per_call: int = 400) -> dict:
+    """Compare a measured point count against the two pre-registered branches."""
+    measured_rate = measured_points / (calls * tries_per_call)
+    steep = PREDICTION_B3_14["steepening_branch_per_try"]
+    glob = PREDICTION_B3_14["global_fit_per_try"]
+    return {
+        "measured_points": measured_points, "measured_rate": measured_rate,
+        "steepening_branch": steep, "global_fit": glob,
+        "ratio_to_steepening": measured_rate / steep if steep else float("inf"),
+        "ratio_to_global": measured_rate / glob if glob else float("inf"),
+        "verdict": ("closer to the steepening branch" if abs(measured_rate / steep - 1) < abs(measured_rate / glob - 1)
+                    else "closer to the global fit"),
+    }
+
+
+__all__ = ["CONTENT", "ACCESSIBILITY", "PREDICTION_B3_14", "check_prediction", "per_unit_factor", "scales"]

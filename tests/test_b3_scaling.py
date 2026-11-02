@@ -49,3 +49,24 @@ class TestTheProduct(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestThePreRegisteredPrediction(unittest.TestCase):
+    """The b3=14 extrapolation test, on record before the measurement."""
+
+    def test_the_two_branches_differ_by_about_2x(self):
+        p = S.PREDICTION_B3_14
+        self.assertAlmostEqual(p["steepening_points"], 1.04, places=1)
+        self.assertAlmostEqual(p["global_fit_points"], 2.54, places=1)
+
+    def test_a_measurement_of_one_point_lands_on_the_steepening_branch(self):
+        r = S.check_prediction(1)
+        self.assertIn("steepening", r["verdict"])
+
+    def test_a_measurement_of_three_points_lands_on_the_global_fit(self):
+        r = S.check_prediction(3)
+        self.assertIn("global", r["verdict"])
+
+    def test_zero_points_is_recorded_as_a_rate_not_a_failure(self):
+        r = S.check_prediction(0)
+        self.assertEqual(r["measured_rate"], 0.0)
