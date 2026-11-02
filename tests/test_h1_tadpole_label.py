@@ -109,3 +109,48 @@ class TestTheTwoParameterStructure(unittest.TestCase):
     def test_the_whole_range_shrinks_with_b3(self):
         self.assertGreater(self.quartiles[6][3], self.quartiles[8][3])
         self.assertGreater(self.quartiles[8][3], self.quartiles[10][3])
+
+
+class TestTheRatioCollapse(unittest.TestCase):
+    """One number, `N/b3`, collapses the SUSY fraction — for `b3 <= 8`. At `b3 = 10` the collapse FAILS.
+
+    That failure is the interesting part: it lines up with the accessibility minimum, and it says a single-ratio law
+    of the landscape holds at small dimension and breaks at larger.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        rows = []
+        for c in C.load_corpus():
+            r = c["row"]
+            b3 = len(r["flux"]) // 2
+            N = r.get("Nflux")
+            if N is None or N <= 0:
+                continue
+            rows.append((b3, float(N), bool(r.get("is_susy"))))
+        cls.rows = rows
+        cls.bins = [(0, 2), (2, 4), (4, 8), (8, 16), (16, 64)]
+
+    def _frac(self, b3, lo, hi):
+        v = [s for (b, N, s) in self.rows if b == b3 and lo <= N / b3 < hi]
+        return (sum(v), len(v))
+
+    def test_b3_6_and_8_agree_at_matched_ratio(self):
+        # 4-8 bin: 0.385 vs 0.362 ; 8-16 bin: 0.446 vs 0.420
+        for lo, hi in ((4, 8), (8, 16)):
+            s6, n6 = self._frac(6, lo, hi)
+            s8, n8 = self._frac(8, lo, hi)
+            self.assertAlmostEqual(s6 / n6, s8 / n8, delta=0.05, msg=f"bin {lo}-{hi}")
+
+    def test_b3_10_breaks_the_collapse(self):
+        # 0-2 bin: 0.154 and 0.061 for b3 = 6, 8, but 0.005 for b3 = 10
+        s6, n6 = self._frac(6, 0, 2)
+        s10, n10 = self._frac(10, 0, 2)
+        self.assertGreater(s6 / n6, 20 * (s10 / n10))
+
+    def test_the_pooled_curve_is_monotone_in_the_ratio(self):
+        frs = []
+        for lo, hi in self.bins:
+            v = [s for (b, N, s) in self.rows if lo <= N / b < hi]
+            frs.append(sum(v) / len(v))
+        self.assertEqual(frs, sorted(frs))

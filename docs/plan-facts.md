@@ -1168,6 +1168,28 @@ And `N` alone is not enough: `b3 = 6`'s `N` 14–30 quartile is **0.345** while 
 null. That is the sharper statement H1's refutation bought, and it is what any selection principle has to be written
 in terms of.
 
+### One ratio collapses the law — until `b3 = 10` (2026-11-02)
+
+Bold hypothesis: the SUSY fraction depends only on the **single ratio `N/b3`**, not on `(b3, N)` separately.
+
+| `N/b3` | pooled | b3=6 | b3=8 | **b3=10** |
+|---|---|---|---|---|
+| 0–2 | 0.092 | 0.154 | 0.061 | **0.005** |
+| 2–4 | 0.249 | 0.315 | 0.197 | **0.023** |
+| 4–8 | 0.348 | **0.385** | **0.362** | 0.053 |
+| 8–16 | 0.435 | **0.446** | **0.420** | — |
+| 16–64 | 0.500 | 0.495 | — | — |
+
+**`b3 = 6` and `b3 = 8` collapse onto one curve to within 0.03** at matched ratio (0.385 vs 0.362; 0.446 vs 0.420) —
+the ratio is the right variable. **`b3 = 10` does not join it**: at `N/b3` in 0–2 it gives **0.005** against 0.154,
+a factor of 30.
+
+**So a single-ratio law of the landscape holds for `b3 ≤ 8` and breaks at `b3 = 10`.** That break lines up with the
+accessibility minimum near `b3 = 12`, and both now point at a **change of regime** in the same interval — reached from
+two unrelated observables (a corpus of vacua, and a sampler's hit rate).
+
+**Falsifier:** a fourth `b3` where the collapse resumes, or where `b3 = 8` itself departs from `b3 = 6`.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
