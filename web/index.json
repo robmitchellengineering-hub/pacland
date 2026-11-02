@@ -2058,7 +2058,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/minima_correlation.py",
    "kind": "script",
    "path": "scripts/minima_correlation.py",
-   "summary": "Is the ~0.8 minima rate derivable from the lattice? If nothing correlates, it is model-specific.",
+   "summary": "Is the ~0.8 minima rate derivable from the lattice?",
    "title": "minima_correlation.py"
   },
   {
