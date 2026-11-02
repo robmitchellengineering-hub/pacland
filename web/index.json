@@ -893,6 +893,13 @@
    "title": "What transfers out of this programme, and for what it should not be claimed"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/arithmetic_stats.py",
+   "kind": "script",
+   "path": "scripts/arithmetic_stats.py",
+   "summary": "Do the landscape's statistical arguments assume a universality arithmetic objects break?",
+   "title": "arithmetic_stats.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",

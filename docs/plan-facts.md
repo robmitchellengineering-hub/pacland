@@ -935,6 +935,27 @@ Eight of the twenty `h12 = 4` calls are in (the run is slow; each call returns s
 **This is the honest shape of a first confirmation:** the claim's structure passed its own test, its number did
 not, and the missing measurement is exactly the one that would settle which is wrong.
 
+## Arithmetic statistics — BGS universality fails on the objects we study (2026-10-31)
+
+`src/pacland/spectral/arithmetic_stats.py` · `python3 scripts/arithmetic_stats.py` · 10 tests.
+
+BGS says chaotic ⇒ GOE (ratio 0.5307), integrable ⇒ Poisson (0.386). It is **false for arithmetic systems**,
+which are too symmetric and give intermediate statistics. Every object this estate studies is arithmetic.
+
+| spectrum | n | ratio | nearest | gap |
+|---|---|---|---|---|
+| ζ zeros | 400 | **0.617** | GOE | 0.086 |
+| `n² + m²` distinct | 400 | **0.495** | GOE | 0.036 |
+| uniform random (control) | 400 | **0.383** | **Poisson** | 0.003 |
+
+**The control is what validates the instrument**: a random set lands on Poisson to three decimals. Both arithmetic
+spectra then sit **above both references** — the zeros at 0.617 are *more rigid than GOE*, which is the known
+arithmetic rigidity rather than noise.
+
+**Consequence, stated plainly:** BGS universality cannot be quoted for the landscape's lattices, zeta zeros or toric
+numbers without a measured correction. Any level-statistics argument about the string landscape that leans on
+universality is unsound until that correction is included — and here is its size in our setting.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
