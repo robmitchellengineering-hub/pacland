@@ -1270,6 +1270,26 @@ per call is the cap, not the sampler's natural yield.
 **The fix for any future run:** set `n_target` well above the expected yield (e.g. 200) so the cap cannot bind, or
 report the cap along with every rate. Until then the series should be quoted as "cap-limited at `b3 = 6`".
 
+## The measure-invariance audit — 6 invariant, 6 dependent (2026-11-02)
+
+`src/pacland/exactness/measure_invariance.py` · `docs/measure-invariance.md` (generated) · 5 tests.
+
+Albert [01:39:47]: *"any probability distribution whatsoever… is perfectly logically compatible with the classical
+equations of motion."* Carroll [01:37:27]: for parameters and laws **no measure is derived**. So a result that moves
+with a stipulated measure is **not truth-apt** — it reports a convention.
+
+| class | count | examples |
+|---|---|---|
+| **INVARIANT** | **6** | `max \|N\| = b3`; exact conifold rationals; ζ zeros to 6.4e-13; `A = 8.554`; the 1-in-531,441 quotient; arithmetic rigidity 0.617 |
+| **DEPENDENT** | **6** | the SUSY fractions; the `N/b3` collapse; the 5.05× measure spread; the accessibility series; the `b3=6` cap artefact; Poisson mass spectra |
+
+**The split is not arbitrary — it tracks exactly the theorem-versus-sampling criterion** of the well-posedness reply.
+INVARIANT results are the ones that terminate in a theorem or an exact count; DEPENDENT ones are corpus or sampler
+observables.
+
+**A DEPENDENT result is not withdrawn** — it must be quoted with its measure or corpus attached. The register is
+generated and `--check`-guarded, so a new result cannot slip into the invariant column by being described favourably.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
