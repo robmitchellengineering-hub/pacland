@@ -2384,6 +2384,13 @@
    "title": "tadpole_bound.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tadpole_distribution.py",
+   "kind": "script",
+   "path": "scripts/tadpole_distribution.py",
+   "summary": "The tadpole distribution as a closed form.",
+   "title": "tadpole_distribution.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tensions.py",
    "kind": "script",
    "path": "scripts/tensions.py",
