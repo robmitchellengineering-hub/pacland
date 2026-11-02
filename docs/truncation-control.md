@@ -55,3 +55,26 @@ experiment in the physics programme.
 > **If the boundary fraction is flat across h12 and the condition number still climbs by four orders of magnitude, then the
 > near-null direction is real and the wall is physics, not series truncation** — and the h12 ≥ 5 sampling problem becomes a
 > numerical-hardware problem rather than a foundational one.
+
+## The measure that decides it, and where it is running
+
+**The truncation is `maximum_degree`, not h12.** The diagnostic builds
+`FluxVacuaFinder(h12=…, model_ID=1, model_type="KS", maximum_degree=0)` — **degree 0 is a truncated series**, and it is the
+default in the script. So the ladder that decides truncation-versus-hierarchy is **the same model and the same moduli point
+at increasing degree**, not different h12 values (a different h12 is a different Calabi–Yau, not a truncation of this one).
+
+**Job sent 2026-11-02T1613Z** to `pacland-rog` (the node with `/home/rob/cytools-venv` and `jaxvacua`): degree 0, 1, 2, 3,
+one moduli point from the model's own ISD initial guess, printing `dim`, `eig_min`, `eig_max`, `cond(M)` and the
+**boundary weight** of the near-null eigenvector at each.
+
+### The decision rule, written before the numbers arrive
+
+| what the table shows | what it means |
+|---|---|
+| **boundary weight moves with degree, and `cond(M)` falls as degree rises** | **the wall is the series.** Truncation manufactures the near-null direction; the fix is to sample at higher degree or precondition against it, and h12 ≥ 5 is a numerics problem |
+| **boundary weight is flat while `cond(M)` climbs** | **the near-null direction is physical**, the wall is real, and the sampling difficulty is a property of the landscape |
+| **the model fails to build at all at some degree** | the ladder stops there; report the last rung that built and say so |
+
+**The synthetic control says the first row is the likely one**: on a constructed matrix the boundary weight fell from 1.000
+to 0.006 after truncating three coordinates, so **the signature is highly sensitive to what is included** — but the real
+matrix has a different structure, which is why the measurement rather than the control is the answer.
