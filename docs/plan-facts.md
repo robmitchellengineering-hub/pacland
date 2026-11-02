@@ -1190,6 +1190,40 @@ two unrelated observables (a corpus of vacua, and a sampler's hit rate).
 
 **Falsifier:** a fourth `b3` where the collapse resumes, or where `b3 = 8` itself departs from `b3 = 6`.
 
+### A third instrument says NO — the mass spectra show no regime change (2026-11-02)
+
+Two instruments pointed at a change of regime near `b3 = 10–12`: the corpus's `N/b3` collapse breaking at `b3 = 10`,
+and the sampler's accessibility minimum at `b3 = 12`. A **third, independent** observable sits in the same corpus —
+the log-mass spectra — and a regime change should show in the level statistics.
+
+Ratio statistic on the pooled log-masses per `b3`:
+
+| b3 | n | ratio | nearest |
+|---|---|---|---|
+| 6 | 19,366 | 0.387 | **Poisson** (gap 0.001) |
+| 8 | 11,243 | 0.382 | **Poisson** (gap 0.004) |
+| 10 | 10,416 | 0.377 | **Poisson** (gap 0.009) |
+
+**No break. All three on Poisson to within 0.01, none near GOE's 0.531.**
+
+So the regime change is **not spectral**. It is specific to *which vacua exist* (the SUSY fraction) and *how
+reachable they are* (the sampler), not to the statistical character of the mass levels — which argues against reading
+the `b3 = 10` break as a universal structural transition.
+
+**A second consequence, independent of the first.** Flux-vacuum mass spectra are **Poisson-like at every `b3`
+measured**, so they are integrable-like rather than chaotic. Any landscape argument assuming random-matrix typicality
+for vacuum mass spectra is using the **wrong null** — the arithmetic-rigidity conclusion (ζ zeros 0.617, *above*
+GOE) reached from a completely different direction.
+
+**And the accessibility series refined at 19 of 20 calls** (counts `6,6,2,3,8,7,8,7,7,4,1,8,5,7,6,5,10,8,10` = 118
+points):
+
+| b3 | 6 | 10 | **12** | **14** |
+|---|---|---|---|---|
+| points/try | 0.1325 | 0.0145 | **0.00137** | **0.0155** |
+
+A **dip and a recovery**, not a decay: `b3 = 14` returns to the `b3 = 10` level after the 11× deeper minimum.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
