@@ -2055,6 +2055,13 @@
    "title": "mine_structure.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/minima_report.py",
+   "kind": "script",
+   "path": "scripts/minima_report.py",
+   "summary": "Minima-only reporting: the numbers that are about the landscape, with the runaway share beside them.",
+   "title": "minima_report.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/no_ds_t6.py",
    "kind": "script",
    "path": "scripts/no_ds_t6.py",
