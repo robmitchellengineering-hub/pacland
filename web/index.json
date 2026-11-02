@@ -1873,6 +1873,13 @@
    "title": "identifiability_pass2.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ingest_gate.py",
+   "kind": "script",
+   "path": "scripts/ingest_gate.py",
+   "summary": "The ingest gate: how much of the corpus is outside the sampler's own declared domain?",
+   "title": "ingest_gate.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ingest_rtdsm_releases.py",
    "kind": "script",
    "path": "scripts/ingest_rtdsm_releases.py",
