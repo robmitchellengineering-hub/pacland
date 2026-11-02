@@ -61,6 +61,45 @@ distinguished from the library's own background."*
 **May not**: that a species is present, absent, rare, or threatened. **That is a biological claim and this arm does not make
 them.**
 
+
+## The bench, on a REAL mock community — and the test that could not fail
+
+**Data**: a published mock-community run with a **known composition** — eight bacterial species at stated relative abundances,
+five polymerases × four PCR cycle numbers = **160 species-conditions**, each with the expected abundance beside the observed
+count. Table: `data/edna/mock_bias_species.tsv` (Schloss lab, Sze et al., mSphere 2019 — public, and it carries the truth).
+
+**The first test was vacuous, and the script now says so before it runs.** At full depth **all 160 species-conditions were
+detected** — the shallowest run still had 1,022 reads for eight species — so the empirical detection probability was **1.000
+everywhere and the law could not fail**. *A test that cannot fail is not a test.*
+
+**So the test is a rarefaction**: subsample each real run down to a stated depth, keeping the real composition and the assay's
+own biases, and ask whether the species survives. 67,200 species-draws over seven depths.
+
+### The measured curve
+
+| expected reads | n | **observed P** | Poisson P | gap |
+|---|---|---|---|---|
+| **0.3 – 1.0** | 1,200 | **0.716** | 0.504 | **+0.211** |
+| 1.0 – 3.0 | 4,800 | 0.898 | 0.847 | +0.051 |
+| 3.0 – 10.0 | 16,800 | 0.980 | 0.997 | −0.017 |
+| 10.0 + | 25,200 | 1.000 | 1.000 | 0.000 |
+
+### What it says — a correction, not a confirmation
+
+- **Above ~3 expected reads the Poisson law is excellent.** The counting law holds where it is claimed to hold.
+- **Below ~1 expected read it is wrong, and in the safe direction**: **observed 0.716 against a predicted 0.504**. Real reads are
+  **more clustered than a pure Poisson process**, so a species at a fraction of a read is still often caught.
+- **So the closed-form limit is CONSERVATIVE at the bottom of the range** — the opposite of how a limit is usually assumed to
+  fail. The formula is right in the middle and pessimistic at the edge.
+
+### Why this is the discipline working
+
+**The falsifier was written before the data was touched**, and the run **falsified the tidy version of the law** — twice:
+once because the test could not fail (fixed by rarefaction), once because the law is biased low at the edge (recorded, not
+tuned away).
+
+**Both are in the script's own docstring and output**, so the next person reads the correction before the claim.
+
 ## The next artefact
 
 **A known-composition synthetic community through a real pipeline**, swept over samples, depth and contamination — producing

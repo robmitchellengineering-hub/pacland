@@ -1628,6 +1628,13 @@
    "title": "edna_limit.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/edna_mock.py",
+   "kind": "script",
+   "path": "scripts/edna_mock.py",
+   "summary": "The truth bench for eDNA, on a REAL mock community: known composition in, observed counts out.",
+   "title": "edna_mock.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/em_capacity.py",
    "kind": "script",
    "path": "scripts/em_capacity.py",
