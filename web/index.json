@@ -2111,6 +2111,13 @@
    "title": "observability.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/observability_axes.py",
+   "kind": "script",
+   "path": "scripts/observability_axes.py",
+   "summary": "H-B: is measure-invariance the same as observability?",
+   "title": "observability_axes.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/observable_degeneracy.py",
    "kind": "script",
    "path": "scripts/observable_degeneracy.py",
