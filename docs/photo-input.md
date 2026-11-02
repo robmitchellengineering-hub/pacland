@@ -70,3 +70,22 @@ NOT READY: 11 rooms have no position: ...
 **It cannot tell whether the dimensions are the right house** — those are consistency checks, not measurements, and
 the script says so on its last line. That distinction is the whole reason it exists: the failure mode it prevents is a
 confident-looking coverage map drawn on invented rooms.
+
+## The measurement endpoint, proved with a synthetic payload
+
+**`scripts/apply_measurements.py`** — reads capability `measure` from the hub, groups by room, and fills the template's
+`w`/`h`. Proved end to end with a posted measurement: `POST` returned 200, the script reported
+`usable as a room: 2.61 x 3.42 m`, and `--write` put **2.61 x 3.42** into the kitchen row. The synthetic record was then
+deleted and the template restored, so nothing invented survives in the tree.
+
+**What it refuses to do matters more than what it does.** It cannot know which line is a width and which is a diagonal,
+so it will not guess:
+
+- one measurement is **a line, not a room** — it says so and leaves the room blank;
+- two measurements **within 25% of each other** are probably the same wall measured twice, and it says that instead of
+  calling them a room;
+- if any room fails, **`--write` refuses the whole file**, because a layout half-filled from bad numbers is worse than an
+  empty one.
+
+**This is the loop closing**: tap two points on the phone, press UPLOAD, run one command, and the blank `w`/`h` in the
+template become real metres with their provenance recorded.

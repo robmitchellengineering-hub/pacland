@@ -95,6 +95,13 @@
    "title": "Architecture \u2014 six layers"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/arcore-over-pdr.md",
+   "kind": "doc",
+   "path": "docs/arcore-over-pdr.md",
+   "summary": "and the data says so more bluntly than the feeling does.",
+   "title": "The metre is ARCore. Step counting is not a measurement."
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/arxiv-submission.md",
    "kind": "doc",
    "path": "docs/arxiv-submission.md",
@@ -1103,6 +1110,27 @@
    "title": "WiFi as LiDAR \u2014 what closes the gap, and what never will"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/working-across-the-estate.md",
+   "kind": "doc",
+   "path": "docs/working-across-the-estate.md",
+   "summary": "paying for it; each line names the failure that bought it. All of them are mirrored on the Mac.",
+   "title": "Working across the estate from this repo"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ap_health.py",
+   "kind": "script",
+   "path": "scripts/ap_health.py",
+   "summary": "One row per access point: what the phone heard, and which APs deserve a look.",
+   "title": "ap_health.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/apply_measurements.py",
+   "kind": "script",
+   "path": "scripts/apply_measurements.py",
+   "summary": "Turn ARCore measurements into room dimensions in the layout template.",
+   "title": "apply_measurements.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",
@@ -1670,6 +1698,13 @@
    "title": "gv_basis.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/height_error.py",
+   "kind": "script",
+   "path": "scripts/height_error.py",
+   "summary": "How well does the phone measure a ceiling? Rob's house answers it, because every ceiling is the same height.",
+   "title": "height_error.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/house_from_walks.py",
    "kind": "script",
    "path": "scripts/house_from_walks.py",
@@ -1948,6 +1983,20 @@
    "path": "scripts/photo_index.py",
    "summary": "What photos exist, for which spot, and what a room needs.",
    "title": "photo_index.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/place_rooms.py",
+   "kind": "script",
+   "path": "scripts/place_rooms.py",
+   "summary": "Put measured rooms somewhere, so the coverage map can exist before a floor plan does.",
+   "title": "place_rooms.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/placement_plan.py",
+   "kind": "script",
+   "path": "scripts/placement_plan.py",
+   "summary": "Analyse, diagnose, fix: where the access point should be, from what was measured.",
+   "title": "placement_plan.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/polarisation.py",

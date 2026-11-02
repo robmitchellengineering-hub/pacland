@@ -77,7 +77,9 @@ def main(argv) -> int:
         area = r["w"] * r["h"]
         for key, (lo, hi) in PLAUSIBLE.items():
             if key in r["name"].lower():
-                if not lo <= area <= hi:
+                # INCLUSIVE, with a tolerance: a 2.62 x 2.67 m bedroom is 7.00 m^2 and the bedroom bound starts at 7.0,
+                # so a floating-point comparison called a correct room implausible.
+                if not (lo - 0.05) <= area <= (hi + 0.05):
                     problems.append(f"{r['name']}: {area:.1f} m^2 is outside the plausible {lo}-{hi} m^2 for that room")
                 break
         if r["w"] <= 0 or r["h"] <= 0:

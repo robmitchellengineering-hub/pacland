@@ -1,0 +1,698 @@
+{
+ "scans": 17,
+ "aps": [
+  {
+   "ssid": "MSB",
+   "bssid": "78:20:51:1f:fd:73",
+   "band": "2.4 GHz",
+   "channel": 8,
+   "sightings": 8,
+   "best": -80,
+   "median": -84,
+   "worst": -85,
+   "spread": 5,
+   "loudest": [
+    "bedroom next to router",
+    -80
+   ],
+   "quietest": [
+    "bedroom same room as forest router",
+    -85
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -80 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "HIGHLAND",
+   "bssid": "b8:d4:bc:44:64:d5",
+   "band": "2.4 GHz",
+   "channel": 2,
+   "sightings": 8,
+   "best": -81,
+   "median": -84,
+   "worst": -89,
+   "spread": 8,
+   "loudest": [
+    "bedroom next to router",
+    -81
+   ],
+   "quietest": [
+    "lougeroom",
+    -89
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -81 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "VarelaMain",
+   "bssid": "44:35:b9:09:d1:03",
+   "band": "2.4 GHz",
+   "channel": 1,
+   "sightings": 4,
+   "best": -81,
+   "median": -85,
+   "worst": -86,
+   "spread": 5,
+   "loudest": [
+    "bedroom same room as forest router",
+    -81
+   ],
+   "quietest": [
+    "bedroom next to router",
+    -86
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -81 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "TP-Link_Outdoor_F5E434",
+   "bssid": "30:de:4b:f5:e4:34",
+   "band": "5 GHz",
+   "channel": 149,
+   "sightings": 3,
+   "best": -80,
+   "median": -80,
+   "worst": -81,
+   "spread": 1,
+   "loudest": [
+    "Alice's office",
+    -80
+   ],
+   "quietest": [
+    "lougeroom",
+    -81
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -80 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "GuestWiFi",
+   "bssid": "62:35:b9:09:d1:00",
+   "band": "2.4 GHz",
+   "channel": 1,
+   "sightings": 3,
+   "best": -81,
+   "median": -84,
+   "worst": -85,
+   "spread": 4,
+   "loudest": [
+    "bedroom same room as forest router",
+    -81
+   ],
+   "quietest": [
+    "bedroom same room as forest router",
+    -85
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -81 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "Bio24only",
+   "bssid": "56:3d:d1:b5:af:7c",
+   "band": "2.4 GHz",
+   "channel": 1,
+   "sightings": 2,
+   "best": -87,
+   "median": -87,
+   "worst": -87,
+   "spread": 0,
+   "loudest": [
+    "kitchen",
+    -87
+   ],
+   "quietest": [
+    "kitchen",
+    -87
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -87 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "BioShop",
+   "bssid": "50:3d:d1:b5:af:7c",
+   "band": "2.4 GHz",
+   "channel": 1,
+   "sightings": 2,
+   "best": -87,
+   "median": -87,
+   "worst": -87,
+   "spread": 0,
+   "loudest": [
+    "kitchen",
+    -87
+   ],
+   "quietest": [
+    "kitchen",
+    -87
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -87 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "DIRECT-epson-026d-0-001",
+   "bssid": "e2:bb:9e:5b:27:a8",
+   "band": "2.4 GHz",
+   "channel": 6,
+   "sightings": 1,
+   "best": -80,
+   "median": -80,
+   "worst": -80,
+   "spread": 0,
+   "loudest": [
+    "bedroom same room as forest router",
+    -80
+   ],
+   "quietest": [
+    "bedroom same room as forest router",
+    -80
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -80 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "Telstra2CD5",
+   "bssid": "44:a5:6e:88:79:d5",
+   "band": "2.4 GHz",
+   "channel": 11,
+   "sightings": 1,
+   "best": -80,
+   "median": -80,
+   "worst": -80,
+   "spread": 0,
+   "loudest": [
+    "Alice's office",
+    -80
+   ],
+   "quietest": [
+    "Alice's office",
+    -80
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -80 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "The Foundry-5G",
+   "bssid": "6c:cd:d6:ca:60:1e",
+   "band": "5 GHz",
+   "channel": 36,
+   "sightings": 1,
+   "best": -80,
+   "median": -80,
+   "worst": -80,
+   "spread": 0,
+   "loudest": [
+    "bedroom next to router house loop walk",
+    -80
+   ],
+   "quietest": [
+    "bedroom next to router house loop walk",
+    -80
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -80 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "(hidden)",
+   "bssid": "90:bf:d9:bc:f8:8c",
+   "band": "2.4 GHz",
+   "channel": 12,
+   "sightings": 1,
+   "best": -82,
+   "median": -82,
+   "worst": -82,
+   "spread": 0,
+   "loudest": [
+    "tv room",
+    -82
+   ],
+   "quietest": [
+    "tv room",
+    -82
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -82 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "B910S_RTX_2960004355",
+   "bssid": "c0:f5:35:da:f9:bb",
+   "band": "2.4 GHz",
+   "channel": 6,
+   "sightings": 1,
+   "best": -83,
+   "median": -83,
+   "worst": -83,
+   "spread": 0,
+   "loudest": [
+    "hallway",
+    -83
+   ],
+   "quietest": [
+    "hallway",
+    -83
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -83 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "ONTHENET_2G_39207",
+   "bssid": "34:e8:94:2c:c9:ab",
+   "band": "2.4 GHz",
+   "channel": 4,
+   "sightings": 1,
+   "best": -84,
+   "median": -84,
+   "worst": -84,
+   "spread": 0,
+   "loudest": [
+    "Alice's office",
+    -84
+   ],
+   "quietest": [
+    "Alice's office",
+    -84
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -84 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "Telstra29D3",
+   "bssid": "14:59:c0:eb:d8:f9",
+   "band": "2.4 GHz",
+   "channel": 1,
+   "sightings": 1,
+   "best": -86,
+   "median": -86,
+   "worst": -86,
+   "spread": 0,
+   "loudest": [
+    "Alice's office",
+    -86
+   ],
+   "quietest": [
+    "Alice's office",
+    -86
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -86 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "JBL BAR 800_DEDC.l085,",
+   "bssid": "fa:8f:ca:83:83:34",
+   "band": "2.4 GHz",
+   "channel": 1,
+   "sightings": 1,
+   "best": -86,
+   "median": -86,
+   "worst": -86,
+   "spread": 0,
+   "loudest": [
+    "Alice's office",
+    -86
+   ],
+   "quietest": [
+    "Alice's office",
+    -86
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -86 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "(hidden)",
+   "bssid": "52:91:e3:28:12:98",
+   "band": "2.4 GHz",
+   "channel": 1,
+   "sightings": 1,
+   "best": -87,
+   "median": -87,
+   "worst": -87,
+   "spread": 0,
+   "loudest": [
+    "tv room",
+    -87
+   ],
+   "quietest": [
+    "tv room",
+    -87
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -87 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "(hidden)",
+   "bssid": "18:df:c1:1b:fc:bc",
+   "band": "2.4 GHz",
+   "channel": 6,
+   "sightings": 1,
+   "best": -87,
+   "median": -87,
+   "worst": -87,
+   "spread": 0,
+   "loudest": [
+    "bedroom next to router",
+    -87
+   ],
+   "quietest": [
+    "bedroom next to router",
+    -87
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -87 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "(hidden)",
+   "bssid": "18:df:c1:09:9a:9e",
+   "band": "2.4 GHz",
+   "channel": 6,
+   "sightings": 1,
+   "best": -87,
+   "median": -87,
+   "worst": -87,
+   "spread": 0,
+   "loudest": [
+    "bedroom next to router house loop walk",
+    -87
+   ],
+   "quietest": [
+    "bedroom next to router house loop walk",
+    -87
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -87 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "Aussie Broadband 8002",
+   "bssid": "f8:ca:59:c1:8d:af",
+   "band": "5 GHz",
+   "channel": 44,
+   "sightings": 1,
+   "best": -89,
+   "median": -89,
+   "worst": -89,
+   "spread": 0,
+   "loudest": [
+    "hallway",
+    -89
+   ],
+   "quietest": [
+    "hallway",
+    -89
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -89 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "Telstra2CD5-5G",
+   "bssid": "44:a5:6e:88:79:d6",
+   "band": "5 GHz",
+   "channel": 149,
+   "sightings": 1,
+   "best": -89,
+   "median": -89,
+   "worst": -89,
+   "spread": 0,
+   "loudest": [
+    "bedroom next to router house loop walk",
+    -89
+   ],
+   "quietest": [
+    "bedroom next to router house loop walk",
+    -89
+   ],
+   "verdict": "weak everywhere",
+   "why": "never above -89 dBm - far away, or failing, and one scan at its own position would tell which"
+  },
+  {
+   "ssid": "Forest",
+   "bssid": "18:69:45:fd:26:57",
+   "band": "5 GHz",
+   "channel": 36,
+   "sightings": 17,
+   "best": -28,
+   "median": -56,
+   "worst": -61,
+   "spread": 33,
+   "loudest": [
+    "bedroom next to router",
+    -28
+   ],
+   "quietest": [
+    "Alice's office",
+    -61
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "Pretty fly for s WiFi",
+   "bssid": "18:69:45:fd:26:56",
+   "band": "2.4 GHz",
+   "channel": 11,
+   "sightings": 17,
+   "best": -33,
+   "median": -56,
+   "worst": -70,
+   "spread": 37,
+   "loudest": [
+    "bedroom next to router",
+    -33
+   ],
+   "quietest": [
+    "bedroom next to router",
+    -70
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "AustralCafe",
+   "bssid": "40:49:7c:52:22:c6",
+   "band": "5 GHz",
+   "channel": 36,
+   "sightings": 17,
+   "best": -59,
+   "median": -67,
+   "worst": -78,
+   "spread": 19,
+   "loudest": [
+    "lounge room",
+    -59
+   ],
+   "quietest": [
+    "tv room",
+    -78
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "Aussie Broadband 8002",
+   "bssid": "f8:ca:59:c1:8d:b0",
+   "band": "2.4 GHz",
+   "channel": 9,
+   "sightings": 12,
+   "best": -73,
+   "median": -81,
+   "worst": -84,
+   "spread": 11,
+   "loudest": [
+    "bedroom next to router house loop walk",
+    -73
+   ],
+   "quietest": [
+    "bedroom same room as forest router",
+    -84
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "TelstraD38F36_EXT",
+   "bssid": "62:a7:b9:fa:f7:2b",
+   "band": "5 GHz",
+   "channel": 52,
+   "sightings": 9,
+   "best": -72,
+   "median": -86,
+   "worst": -90,
+   "spread": 18,
+   "loudest": [
+    "hallway",
+    -72
+   ],
+   "quietest": [
+    "bedroom same room as forest router",
+    -90
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "AustralCafe",
+   "bssid": "40:49:7c:52:22:c5",
+   "band": "2.4 GHz",
+   "channel": 11,
+   "sightings": 8,
+   "best": -55,
+   "median": -72,
+   "worst": -77,
+   "spread": 22,
+   "loudest": [
+    "bedroom next to router",
+    -55
+   ],
+   "quietest": [
+    "hallway further",
+    -77
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "(hidden)",
+   "bssid": "40:49:7c:52:22:c8",
+   "band": "5 GHz",
+   "channel": 36,
+   "sightings": 7,
+   "best": -67,
+   "median": -74,
+   "worst": -78,
+   "spread": 11,
+   "loudest": [
+    "kitchen",
+    -67
+   ],
+   "quietest": [
+    "tv room",
+    -78
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "(hidden)",
+   "bssid": "40:49:7c:52:22:c4",
+   "band": "5 GHz",
+   "channel": 36,
+   "sightings": 7,
+   "best": -67,
+   "median": -74,
+   "worst": -77,
+   "spread": 10,
+   "loudest": [
+    "kitchen",
+    -67
+   ],
+   "quietest": [
+    "tv room",
+    -77
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "TelstraD38F36_EXT",
+   "bssid": "6a:a7:b9:fa:f7:28",
+   "band": "2.4 GHz",
+   "channel": 13,
+   "sightings": 7,
+   "best": -74,
+   "median": -84,
+   "worst": -86,
+   "spread": 12,
+   "loudest": [
+    "bedroom next to router house loop walk",
+    -74
+   ],
+   "quietest": [
+    "bedroom same room as forest router",
+    -86
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "The Foundry",
+   "bssid": "6c:cd:d6:ca:60:1d",
+   "band": "2.4 GHz",
+   "channel": 11,
+   "sightings": 6,
+   "best": -70,
+   "median": -76,
+   "worst": -82,
+   "spread": 12,
+   "loudest": [
+    "bedroom next to router house loop walk",
+    -70
+   ],
+   "quietest": [
+    "hallway",
+    -82
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "(hidden)",
+   "bssid": "40:49:7c:52:22:c3",
+   "band": "2.4 GHz",
+   "channel": 11,
+   "sightings": 4,
+   "best": -55,
+   "median": -62,
+   "worst": -69,
+   "spread": 14,
+   "loudest": [
+    "bedroom next to router",
+    -55
+   ],
+   "quietest": [
+    "bedroom next to router house loop walk",
+    -69
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "(hidden)",
+   "bssid": "40:49:7c:52:22:c7",
+   "band": "2.4 GHz",
+   "channel": 11,
+   "sightings": 3,
+   "best": -55,
+   "median": -60,
+   "worst": -66,
+   "spread": 11,
+   "loudest": [
+    "bedroom next to router",
+    -55
+   ],
+   "quietest": [
+    "bedroom next to router house loop walk",
+    -66
+   ],
+   "verdict": "heard",
+   "why": ""
+  },
+  {
+   "ssid": "TelstraD38F36",
+   "bssid": "d4:35:1d:d3:8f:36",
+   "band": "2.4 GHz",
+   "channel": 13,
+   "sightings": 3,
+   "best": -79,
+   "median": -80,
+   "worst": -83,
+   "spread": 4,
+   "loudest": [
+    "hallway",
+    -79
+   ],
+   "quietest": [
+    "tv room",
+    -83
+   ],
+   "verdict": "heard",
+   "why": ""
+  }
+ ]
+}
