@@ -1666,6 +1666,36 @@ derive ≈0.8 from the counting, which we have not done.
 37.9% → 50.4% → 91.0%, resting on 3,424 / 1,457 / 1,084 rows. It is the most solid empirical fact we have, and it is a
 fact about our instrument.
 
+## Pre-registered test, run: the 0.8 minima rate is MODEL-SPECIFIC (2026-11-02)
+
+`scripts/minima_correlation.py` · `tests/test_minima_correlation.py` · 4 tests.
+
+**Registered before looking:** *if `is_minimum` correlates with no computable lattice invariant, then 0.8 cannot come
+out of the counting and must be retired as a model-specific fact.*
+
+In-domain rows, `n = 1,059`, minima rate 0.805:
+
+| invariant | correlation with `is_minimum` |
+|---|---|
+| `b3` | **0.052** |
+| `N` | **0.039** |
+| `support` | **0.108** |
+| `max_comp` | **0.033** |
+| `primitive` | constant — carries no information |
+| `log\|DW\|` | **−0.407** |
+| `V` | −0.125 |
+
+**Every lattice invariant is at or below 0.11.** So the minima rate **cannot be derived from the counting**, and the
+theorem route to it is closed.
+
+**The one real predictor is `log|DW|` at −0.407 — and that is the dynamical SUSY order parameter, not a lattice
+invariant.** In other words the "prediction" is that minima are near-SUSY, which is what "minimum" already meant. Not a
+derivation.
+
+**Verdict: `minima ≈ 0.8` is retired as a law.** It is a fact about the Hessian landscape of this model, robust to the
+window and to the sampling threshold, and not a property of the lattice. It stays in the record labelled
+**model-specific**, which is a different column from "law" and a different column from "refuted".
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
