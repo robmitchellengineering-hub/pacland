@@ -1488,6 +1488,24 @@ number of component choices per block squared. Widen the window and the "law" ch
 **This is the programme working as designed:** a headline result, quoted for days as our one clean exponential, is
 demoted by a test that took one computation.
 
+## The hypothesis engine after H-A and H-B: 5 hypotheses, 2 refuted, 1 supported (2026-11-02)
+
+| id | crosses | status |
+|---|---|---|
+| H-A | measure wall × enumeration objection | **supported** — the exponential is the window (demotes `A = 8.554`) |
+| H-B | measure wall × rate wall | **refuted** — invariance and exactness are orthogonal |
+| H-C | arithmetic null × enumeration objection | **refuted** — no low-order rational GF |
+| **H-D** | rate wall × measure wall | open — *the window is the only free choice, so every "law" must be quoted with its window* |
+| **H-E** | enumeration objection × arithmetic null | open — *the only surviving results are the ones a test could have killed* |
+
+**H-E is the one worth running next.** Every demoted result — `A = 8.554`, the accessibility minimum,
+measure-invariance, the rational GF — was demoted by a test that **could have gone the other way**. Every survivor
+(`max|N| = b3`, the closed form, measure dimension `b3`) has a stated falsifier. If that pattern holds, survivorship
+here is not luck: it is the property of having been written so it could fail.
+
+**The audit H-E proposes is cheap:** for each register entry, record whether a killing test exists, and check that the
+demoted ones cluster in "no killing test".
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

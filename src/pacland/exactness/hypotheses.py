@@ -23,9 +23,10 @@ HYPOTHESES = (
      "incompatible until the closed form is read: P(x)^(b3/2) produces exponential growth from a FIXED polynomial. "
      "So the exponential is combinatorics, not a fundamental scale, and the only free parameter is b3.",
      "no quantity grows in b3 faster than a polynomial-power count; every apparent exponential is a multinomial",
-     "look for any b3-scaling faster than a polynomial power; if none exists the exponential carries no independent "
-     "content and a one-integer unification is viable",
-     "open"),
+     "DONE 2026-11-02: widen the window and the 'law' changes. 0<N<=1 counts go 20 -> 1,480 (per-unit-b3 8.60) at "
+     "max_abs=1 but 52 -> 30,984 (24.41) at max_abs=2, matching (2*max_abs+1)^2 = 9 and 25. The exponential IS the "
+     "window, so A = 8.554 is demoted to a window artefact; the hypothesis itself is SUPPORTED",
+     "supported"),
     ("H-B",
      "measure-invariance IS observability",
      ("the measure wall: no principle selects a measure", "the rate wall: yield falls ~100x from b3=6 to b3=12"),
@@ -33,9 +34,11 @@ HYPOTHESES = (
      "Therefore the only observables are the measure-invariant ones -- which makes the six INVARIANT entries, not the "
      "demoted ones, the entire observable content of the landscape.",
      "the measure-invariant set and the computable-without-a-sampler set coincide",
-     "classify statistics by whether they are computable from exact counts alone; any statistic that is invariant yet "
-     "needs a sampler, or vice versa, breaks the hypothesis",
-     "open"),
+     "DONE 2026-11-02: cross-tabulated on two independent axes (6 invariant+exact, 2 invariant-not-exact -- zeta zeros "
+     "and arithmetic rigidity are floats, 1 exact-not-invariant -- the 5.05x measure spread, 3 neither). The coincidence "
+     "fails in both directions, so invariance and exactness are orthogonal; only the weaker claim survives (invariance "
+     "implies no sampler is needed)",
+     "refuted"),
     ("H-C",
      "every exact result is a coefficient of a rational generating function",
      ("the arithmetic null: no relation below 10^8 among the connection coefficients", "the enumeration objection: 'that's not the kind of problem it is at all'"),
@@ -47,6 +50,28 @@ HYPOTHESES = (
      "build the GF for the conifold coefficient sequence and test whether it is rational (a linear recurrence with "
      "constant coefficients); if it is, the null becomes a prediction",
      "refuted"),
+    ("H-D",
+     "the window is the only free choice, so every 'law' must be stated with its window",
+     ("the rate wall: yield falls ~100x from b3=6 to b3=12", "the measure wall: no principle selects a measure"),
+     "A = 8.554 turned out to be the window's own size growth (9 at max_abs=1, 25 at max_abs=2). If the window sets the "
+     "scale of every apparent law, then no result may be quoted without its window, and the correct object is the "
+     "window-INDEPENDENT part of each statement.",
+     "for every result there is a window-independent core: a ratio, an integer, or a theorem that survives changing "
+     "max_abs",
+     "recompute each 'law' at max_abs = 1 and 2 and separate what changes from what does not; a result that changes "
+     "with the window is a window fact, one that does not is a candidate theorem",
+     "open"),
+    ("H-E",
+     "the only surviving results are the ones a test could have killed",
+     ("the enumeration objection: 'that's not the kind of problem it is at all'", "the arithmetic null: no relation below 10^8 among the connection coefficients"),
+     "Every result demoted so far (A = 8.554, the accessibility minimum, measure-invariance = observability, the rational "
+     "GF) was demoted by a test that COULD have gone the other way. Every survivor (max|N| = b3, the closed form, "
+     "measure dimension b3) has a stated falsifier. Hypothesis: survivorship here is not luck but the property of "
+     "having been written so it could fail.",
+     "results without a stated falsifier are the ones that later get demoted; results with one survive",
+     "audit the register: for each entry record whether a killing test exists; the demoted ones should cluster in 'no "
+     "killing test' and the survivors in 'has one'",
+     "open"),
 )
 
 #: **H-C was tested and REFUTED** (2026-11-02): no constant-coefficient recurrence of order <= 7 reproduces the 37
