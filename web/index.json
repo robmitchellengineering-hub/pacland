@@ -1138,6 +1138,13 @@
    "title": "arithmetic_stats.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/b3_scaling.py",
+   "kind": "script",
+   "path": "scripts/b3_scaling.py",
+   "summary": "The two b3 scales and their product.",
+   "title": "b3_scaling.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",
