@@ -104,3 +104,35 @@ those terms come in; a real hierarchy persists while `dim` grows.
 
 **So the table to read is `cond` and `dim` together across degree, with the boundary weight as the third column — not the
 boundary weight alone.**
+
+## The ladder ran, and it falsified the ladder
+
+**Job `2026-11-02T1619Z` finished on `pacland-rog`** with a real committed moduli point. The result:
+
+| degree | dim | eig_min | eig_max | cond(M) | boundary weight |
+|---|---|---|---|---|---|
+| 0 | 6 | 9.415e-46 | 1.323e+90 | 1.405e+135 | 1.1e-30 |
+| 1 | 6 | 9.415e-46 | 1.323e+90 | 1.405e+135 | 1.1e-30 |
+| 2 | 6 | 9.415e-46 | 1.323e+90 | 1.405e+135 | 1.1e-30 |
+| 3 | 6 | 9.415e-46 | 1.323e+90 | 1.405e+135 | 1.1e-30 |
+
+**Every row is identical to twelve significant figures.** So `maximum_degree` — the parameter I identified as the truncation
+knob — **does not change `ISD_matrix` at all** for this model at h12 = 2. **The ladder is not a ladder**, and it cannot settle
+truncation-versus-hierarchy.
+
+**That is the experiment falsifying its own design**, and it is worth more than a clean null result: it says the truncation is
+**not in `maximum_degree`**, so the wall document's "series truncation at degree 1" is either about a different parameter or a
+different object than the matrix this diagnostic measures.
+
+**Two other numbers matter and neither is comfortable:**
+
+- **cond(M) = 1.4e135** here, against the wall document's **1.8e2 at h12 = 2**. Those are not the same object measured at
+  different precisions — **they are three orders of magnitude apart in the exponent**, and one of the two numbers is wrong.
+- **the near-null direction's boundary weight is 1e-30**, which reads as "entirely moduli, therefore physical" — **but with
+  cond ~1e135 the eigenvector is numerically meaningless**, so that reading is not available. The composition metric has no
+  power at this conditioning.
+
+**What to do next is now specific**: find which parameter *does* change `ISD_matrix` (the period series degree as the model
+builds it, not `maximum_degree`), and reconcile the 1.8e2 versus 1.4e135 discrepancy before either number is used again. Until
+then this note's central question stays open, and the honest state is that **the measurement could not be made with the
+instrument as built**.
