@@ -6,7 +6,7 @@ Every place the programme gets stuck, classified by **whose wall it is**. Two da
 budget as a law of nature; months went into treating a provable underdetermination as a missing measure.
 Nothing recorded which walls had already been classified, so each was re-litigated.
 
-**3 dissolve · 1 provable · 1 infrastructure · 2 bounded · 7 total**
+**4 dissolve · 1 provable · 1 infrastructure · 2 bounded · 8 total**
 
 **Only PROVABLE walls constrain a unification.** A dissolving wall is a measurement error wearing a law's
 clothes.
@@ -46,6 +46,12 @@ clothes.
 - **looked like:** the high end of the accessibility series
 - **actually is:** the n_target = 20 cap: 20-21 points per call IS the ceiling, so the figure is a lower bound
 - **evidence:** merged ad17e0f
+
+### the runaway tail: half the corpus is outside the sampler's own moduli bounds
+
+- **looked like:** a corpus of 5,965 flux vacua, with a SUSY fraction falling 27.9% -> 20.2% -> 1.2% across b3 = 6,8,10
+- **actually is:** a supply property of the sampler. Enforcing the declared bounds (1.0, 5.0) leaves 720/293/46 usable points and the runaway share rises 37.9% -> 50.4% -> 91.0%. Over genuine points the minima rate is flat at ~0.8 and the SUSY fraction is 43.3/40.6/4.3%
+- **evidence:** merged 32d7113 (gate), 38c865a (minima-only), 65fcdfb (error bars)
 
 ### the enumeration objection: 'that's not the kind of problem it is at all'
 

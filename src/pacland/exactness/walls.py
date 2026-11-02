@@ -56,6 +56,13 @@ REGISTER = (
      "a real negative with a stated domain: not additive, not multiplicative, no ratio relation, at that bound. The "
      "wider basis (with pi^2 log pieces) is untested",
      "U2 run 2026-11-02"),
+    ("the runaway tail: half the corpus is outside the sampler's own moduli bounds",
+     "DISSOLVES",
+     "a corpus of 5,965 flux vacua, with a SUSY fraction falling 27.9% -> 20.2% -> 1.2% across b3 = 6,8,10",
+     "a supply property of the sampler. Enforcing the declared bounds (1.0, 5.0) leaves 720/293/46 usable points and the "
+     "runaway share rises 37.9% -> 50.4% -> 91.0%. Over genuine points the minima rate is flat at ~0.8 and the SUSY "
+     "fraction is 43.3/40.6/4.3%",
+     "merged 32d7113 (gate), 38c865a (minima-only), 65fcdfb (error bars)"),
     ("the enumeration objection: 'that's not the kind of problem it is at all'",
      "DISSOLVES",
      "Woit's charge that enumeration never terminates",

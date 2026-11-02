@@ -1642,6 +1642,30 @@ finished at these model sizes**, and anything further must be a theorem rather t
    cheap: recompute at `max_abs = 2` or on a second model ID. A number that moves there was never a law — which is
    exactly how `A = 8.554` died.
 
+## The killing test passed: minima ≈ 0.8 is robust to the threshold (2026-11-02)
+
+Pre-registered before running: *if the flat rate needs the strict band, it was tuned.*
+
+| band | b3=6 | b3=8 | b3=10 |
+|---|---|---|---|
+| strict `(1.0, 5.0)` | 0.787 (n=720) | 0.846 (n=293) | 0.804 (n=46) |
+| **loose `(1e-3, 1e3)`** | **0.795 (n=2,128)** | **0.835 (n=723)** | **0.827 (n=98)** |
+| ungated | 0.494 | 0.415 | 0.075 |
+
+**The flat rate survives the threshold change, and does so with three times the sample** (2,128 / 723 / 98 against
+720 / 293 / 46). It is not a tuned band.
+
+**But it is still not a theorem.** It is a robust empirical regularity — the difference between "consistent" and
+"robust to a pre-registered perturbation", which is a real upgrade and not a proof. The theorem route would be to
+derive ≈0.8 from the counting, which we have not done.
+
+**The ungated column is the composition effect stated plainly:** 49.4% → 7.5% raw against ~0.8 gated. Nearly all the
+"non-minima" rows were never points this theory produces.
+
+**And the runaway law is now registered as a wall** (`DISSOLVES`, merged in `scripts/walls.py`): runaway share rises
+37.9% → 50.4% → 91.0%, resting on 3,424 / 1,457 / 1,084 rows. It is the most solid empirical fact we have, and it is a
+fact about our instrument.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
