@@ -1052,6 +1052,31 @@ for that polytope — all three of `_hyperplanes`, `_rays`, `_extremal_rays` are
 infrastructure gap, not a physical one, and `h12 = 6` was confirmed to *have* its cone data, so the failure is
 rung-specific.
 
+## `max |N| = b3` is a theorem (2026-11-02)
+
+`src/pacland/exactness/tadpole_bound.py` · `python3 scripts/tadpole_bound.py` · 5 tests.
+
+The symplectic pairing on the `|component| ≤ 1` window is `N = Σ_{i=1..n} (F_i H_{i+n} − F_{i+n} H_i)`, `n = b3/2`.
+
+**Bound.** Each bracket is a difference of two products of components bounded by 1, so each lies in `[−2, 2]`.
+There are `n` brackets, so `|N| ≤ 2n = b3`.
+
+**Attainment.** `F_i = F_{i+n} = 1`, `H_i = −1`, `H_{i+n} = 1` gives every bracket `= 2`, hence `N = b3` exactly.
+
+| b3 | theorem | construction | exhaustive |
+|---|---|---|---|
+| 2 | 2 | 2 | 2 |
+| 4 | 4 | 4 | 4 |
+| 6 | 6 | 6 | 6 |
+| 8 | 8 | 8 | 8 |
+
+**So the earlier ladder (`b3 = 2, 4, 6`) was three samples of a theorem**, not a pattern awaiting a fourth rung, and
+the `b3 = 8` enumeration the plan asked for was unnecessary — the proof covers every even `b3`.
+
+**What it means for the landscape count.** The cap is **linear in the dimension**, so any count over flux vectors
+without the topology's cap overestimates what the geometry can carry — which is the honest content behind the
+`10^500` critique, and it does *not* depend on the gauge quotient (measured negligible: 1 pair in 531,441).
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

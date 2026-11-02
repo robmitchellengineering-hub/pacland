@@ -2251,6 +2251,13 @@
    "title": "swampland_checks.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tadpole_bound.py",
+   "kind": "script",
+   "path": "scripts/tadpole_bound.py",
+   "summary": "max |N| = b3, as a theorem rather than a table.",
+   "title": "tadpole_bound.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tensions.py",
    "kind": "script",
    "path": "scripts/tensions.py",
