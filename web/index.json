@@ -578,6 +578,13 @@
    "title": "Measurement 001 \u2014 the first real link, recorded so it can be re-read"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/methods-from-the-bench.md",
+   "kind": "doc",
+   "path": "docs/methods-from-the-bench.md",
+   "summary": "extrapolate results and methods back to physics work on unifying string theory.\"",
+   "title": "Methods from the bench: what a known-answer inverse problem teaches the landscape"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mitchell-completeness-theorem.md",
    "kind": "doc",
    "path": "docs/mitchell-completeness-theorem.md",
@@ -984,6 +991,13 @@
    "title": "Two sessions, one result \u2014 synthesis"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-sided-audit.md",
+   "kind": "doc",
+   "path": "docs/two-sided-audit.md",
+   "summary": "The bench's first rule came from a room \u2014 a candidate that explained 100% of the measured peaks was 33.9% wrong, because more free structure can always cover more data.\u2026",
+   "title": "Rule 1 applied to the landscape: which claims it touches, and which it does not"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/unification-claim.md",
    "kind": "doc",
    "path": "docs/unification-claim.md",
@@ -1143,6 +1157,13 @@
    "path": "scripts/b3_scaling.py",
    "summary": "The two b3 scales and their product.",
    "title": "b3_scaling.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/band_sweep.py",
+   "kind": "script",
+   "path": "scripts/band_sweep.py",
+   "summary": "How much does bandwidth buy? The information-versus-frequency curve, on a room whose answer is known.",
+   "title": "band_sweep.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
@@ -1782,6 +1803,13 @@
    "title": "landscape_count.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/lattice_recovery.py",
+   "kind": "script",
+   "path": "scripts/lattice_recovery.py",
+   "summary": "Recovering a room's dimensions by LABEL RECOVERY, not by fitting.",
+   "title": "lattice_recovery.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/layout_check.py",
    "kind": "script",
    "path": "scripts/layout_check.py",
@@ -2293,11 +2321,25 @@
    "title": "thermal_noise_bound.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/truth_bench.py",
+   "kind": "script",
+   "path": "scripts/truth_bench.py",
+   "summary": "A truth bench: how far can a spectrum statistic move before the answer is lost?",
+   "title": "truth_bench.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/try_budget.py",
    "kind": "script",
    "path": "scripts/try_budget.py",
    "summary": "The try-budget wrapper \u2014 a budget in the units the API actually exposes.",
    "title": "try_budget.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/two_sided_audit.py",
+   "kind": "script",
+   "path": "scripts/two_sided_audit.py",
+   "summary": "Rule 1 of the bench, applied to the landscape's own claims: exact, or a fit?",
+   "title": "two_sided_audit.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_all_theorems.py",
