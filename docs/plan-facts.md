@@ -1438,6 +1438,33 @@ form (a constant-coefficient linear recurrence). If it is rational, our arithmet
 becomes a **prediction** — the null would be a consequence of rationality rather than evidence against arithmetic
 structure.
 
+## H-B tested: invariance and exactness are DIFFERENT axes (2026-11-02)
+
+`src/pacland/exactness/observability_axes.py` · `python3 scripts/observability_axes.py` · 6 tests.
+
+The hypothesis: since the measure space is provably `b3`-dimensional and no sampler can resolve it, the measure-invariant
+set and the "computable without a sampler" set should be **the same set**. Tested on two independently recorded axes:
+
+|  | EXACT | not exact |
+|---|---|---|
+| **INVARIANT** | **6** | **2** |
+| **DEPENDENT** | **1** | 3 |
+
+**The coincidence fails in both directions, so H-B is refuted as stated.**
+
+- **invariant but not exact**: the ζ zeros `6.4e-13` and the arithmetic rigidity `0.617` — deterministic and
+  sampler-free, but the output is a **float**, not an exact object;
+- **exact but not invariant**: the `5.05×` measure spread — computed **exactly** over measures and still not
+  truth-apt.
+
+**What survives is weaker and true: invariance implies no sampler is needed.** Every INVARIANT row is computable
+without a sampler, even where the answer is a float. The converse fails — an exactly computed quantity can still be
+measure-dependent.
+
+**The lesson is a distinction we had been blurring:** "invariant" (a fact about measures) and "exact" (a fact about
+the output's kind) are orthogonal. A result can be one without the other, and the programme had been treating them as
+interchangeable in the well-posedness argument.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
