@@ -90,7 +90,7 @@ validated oracle rung.
 
 ```
 python3 scripts/swampland_checks.py
-python3 -m unittest discover -s tests -q   # 1276 tests
+python3 -m unittest discover -s tests -q   # 1300 tests
 ```
 
 The module cross-checks its numpy ridge against the canonical stdlib
