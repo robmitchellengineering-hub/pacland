@@ -592,6 +592,13 @@
    "title": "Measurement 001 \u2014 the first real link, recorded so it can be re-read"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/method-transfer.md",
+   "kind": "doc",
+   "path": "docs/method-transfer.md",
+   "summary": "an analogy is not transferred, so every row ends in something that can be built or checked.",
+   "title": "What the physics discipline can give the other disciplines"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/methods-from-the-bench.md",
    "kind": "doc",
    "path": "docs/methods-from-the-bench.md",
@@ -973,8 +980,8 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/the-impostor-count.md",
    "kind": "doc",
    "path": "docs/the-impostor-count.md",
-   "summary": "wrong \u2014 many boxes share a footprint, and only the algebra that generates the spectrum separates them. The landscape question is identical: given what is observable about a vacuum, how many\u2026",
-   "title": "The impostor count: N, V and |DW| do not determine a vacuum \u2014 the masses do"
+   "summary": "up to 43 vacua indistinguishable, and drew the conclusion that the room's lesson transferred to the landscape. That number was an artefact of my own arithmetic, not a property of the\u2026",
+   "title": "The impostor count: the observables DO identify a vacuum \u2014 my first measurement of this was wrong"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/thermal-noise-bound.md",
@@ -1815,6 +1822,13 @@
    "path": "scripts/house_map.py",
    "summary": "The house as a 3D map, inferred from the walk \u2014 and honest about what is inferred and what is invented.",
    "title": "house_map.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/identifiability_curve.py",
+   "kind": "script",
+   "path": "scripts/identifiability_curve.py",
+   "summary": "How many numbers does it take to identify a vacuum? The curve, and the lattice's own degeneracy.",
+   "title": "identifiability_curve.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/identifiability_pass2.py",
