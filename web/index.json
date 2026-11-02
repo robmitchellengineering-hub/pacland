@@ -991,6 +991,13 @@
    "title": "Two sessions, one result \u2014 synthesis"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-sided-audit.md",
+   "kind": "doc",
+   "path": "docs/two-sided-audit.md",
+   "summary": "The bench's first rule came from a room \u2014 a candidate that explained 100% of the measured peaks was 33.9% wrong, because more free structure can always cover more data.\u2026",
+   "title": "Rule 1 applied to the landscape: which claims it touches, and which it does not"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/unification-claim.md",
    "kind": "doc",
    "path": "docs/unification-claim.md",
@@ -2326,6 +2333,13 @@
    "path": "scripts/try_budget.py",
    "summary": "The try-budget wrapper \u2014 a budget in the units the API actually exposes.",
    "title": "try_budget.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/two_sided_audit.py",
+   "kind": "script",
+   "path": "scripts/two_sided_audit.py",
+   "summary": "Rule 1 of the bench, applied to the landscape's own claims: exact, or a fit?",
+   "title": "two_sided_audit.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_all_theorems.py",
