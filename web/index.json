@@ -592,6 +592,13 @@
    "title": "Measurement 001 \u2014 the first real link, recorded so it can be re-read"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/method-transfer.md",
+   "kind": "doc",
+   "path": "docs/method-transfer.md",
+   "summary": "an analogy is not transferred, so every row ends in something that can be built or checked.",
+   "title": "What the physics discipline can give the other disciplines"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/methods-from-the-bench.md",
    "kind": "doc",
    "path": "docs/methods-from-the-bench.md",
@@ -823,6 +830,13 @@
    "title": "Research fan-out \u2014 the reusable \"compare notes\" tool"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-claims.md",
+   "kind": "doc",
+   "path": "docs/rf-claims.md",
+   "summary": "Nine numbers, each with the script that reproduces it, the document it appears in, and the check that could make it wrong. Modelled on the physics registry (docs/claims.json), because the\u2026",
+   "title": "The RF claims registry \u2014 what the radio work may quote, and what it may not"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-index.md",
    "kind": "doc",
    "path": "docs/rf-index.md",
@@ -970,6 +984,13 @@
    "title": "Tensions \u2014 facts that cannot both be true as stated"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/the-impostor-count.md",
+   "kind": "doc",
+   "path": "docs/the-impostor-count.md",
+   "summary": "up to 43 vacua indistinguishable, and drew the conclusion that the room's lesson transferred to the landscape. That number was an artefact of my own arithmetic, not a property of the\u2026",
+   "title": "The impostor count: the observables DO identify a vacuum \u2014 my first measurement of this was wrong"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/thermal-noise-bound.md",
    "kind": "doc",
    "path": "docs/thermal-noise-bound.md",
@@ -996,6 +1017,20 @@
    "path": "docs/tooling.md",
    "summary": "Existing public work that shortens the path. Each entry maps to a PACLAND layer (docs/architecture.md) and says whether it is directly integrable (a library with a pip install) or\u2026",
    "title": "Prior art and tooling \u2014 what to build on"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/truncation-control.md",
+   "kind": "doc",
+   "path": "docs/truncation-control.md",
+   "summary": "2.7e10 across polytopes). Is the near-null direction a truncation artefact or a real hierarchy? No measurement has settled it, and the sampling wall above h12 = 5 depends on the answer.",
+   "title": "The h12 wall's discriminator, calibrated \u2014 and it is confounded by the thing it measures"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-classifiers.md",
+   "kind": "doc",
+   "path": "docs/two-classifiers.md",
+   "summary": "AirMatrix's rob-site and this repo's scripts/applymeasurements.py both turn ARCore sessions into rooms. They were run on the same five sessions on 2026-11-02, and they disagreed on two of\u2026",
+   "title": "Two classifiers, one dataset: where pacland and AirMatrix disagree"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-sessions-synthesis.md",
@@ -1796,6 +1831,13 @@
    "title": "house_map.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/identifiability_curve.py",
+   "kind": "script",
+   "path": "scripts/identifiability_curve.py",
+   "summary": "How many numbers does it take to identify a vacuum? The curve, and the lattice's own degeneracy.",
+   "title": "identifiability_curve.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/identifiability_pass2.py",
    "kind": "script",
    "path": "scripts/identifiability_pass2.py",
@@ -2046,6 +2088,13 @@
    "path": "scripts/observability.py",
    "summary": "The observability engine \u2014 what the corpus can measure, and what it only appears to.",
    "title": "observability.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/observable_degeneracy.py",
+   "kind": "script",
+   "path": "scripts/observable_degeneracy.py",
+   "summary": "Does the observable set determine the vacuum? The impostor count, measured on 14 corpora.",
+   "title": "observable_degeneracy.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_potential.py",
@@ -2368,6 +2417,13 @@
    "path": "scripts/thermal_noise_bound.py",
    "summary": "A bound for two-state ambient-thermal-noise communication.",
    "title": "thermal_noise_bound.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/truncation_control.py",
+   "kind": "script",
+   "path": "scripts/truncation_control.py",
+   "summary": "The control the ISD conditioning wall has never had: a truncation ladder whose answer is known.",
+   "title": "truncation_control.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/truth_bench.py",

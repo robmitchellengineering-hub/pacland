@@ -1,0 +1,115 @@
+{
+ "format": "rf-claims@1",
+ "note": "Every number the RF work quotes, with the script that reproduces it, the document it appears in, and the check that could make it wrong. Modelled on docs/claims.json: PASS-2 = reproduced by an independent path, PASS-1 = one run with its falsifier satisfied, withdrawn = published then failed and is evidence of the retraction only.",
+ "claims": [
+  {
+   "id": "ceiling-height",
+   "claim": "the site ceiling height is 2.58 m and the phone's floor-to-ceiling error is +/- 0.09 m, because three separately measured ceilings agree only to 18 cm while the building's ceilings are identical",
+   "status": "PASS-2",
+   "script": "scripts/height_error.py",
+   "doc": "docs/arcore-over-pdr.md",
+   "evidence": [
+    "three ARCore sessions: 2.65, 2.47, 2.62 m",
+    "Rob's statement that every ceiling in the house is the same height"
+   ],
+   "falsifier": "a tape measurement of any ceiling differing from 2.58 m by more than 0.09 m, or two ceilings in the house measured as different heights"
+  },
+  {
+   "id": "arcore-beats-step-counting",
+   "claim": "ARCore is the instrument for any distance in metres and step counting is not a measurement: three walks of the same 30 m gave 92, 92 and 62 counts, implying strides of 0.326 and 0.484 m from the same body",
+   "status": "PASS-2",
+   "script": "scripts/fading_test.py",
+   "doc": "docs/arcore-over-pdr.md",
+   "evidence": [
+    "stride calibration 0.326 m and 0.484 m, a 48% disagreement",
+    "loop closure 9-25% of path length, median 17.6%",
+    "two walls of one room agree to 1 cm (6.05 and 6.05 m)"
+   ],
+   "falsifier": "a tape measure agreeing with a step-derived distance better than with the ARCore distance on the same room"
+  },
+  {
+   "id": "fading-floor",
+   "claim": "at a fixed spot with nothing moving the level varies by 16 dB, and over consecutive samples the power is exponential (std/mean 1.21 against Rayleigh's 1.00)",
+   "status": "PASS-2",
+   "script": "scripts/fading_test.py",
+   "doc": "docs/fading-is-rayleigh.md",
+   "evidence": [
+    "16 dB spread at one spot",
+    "std/mean 1.21 across the decay series",
+    "the same shape in two rooms"
+   ],
+   "falsifier": "a fixed-spot series in a room with the same construction showing a spread under 6 dB, or a Gaussian rather than exponential power distribution"
+  },
+  {
+   "id": "action-floor",
+   "claim": "no RF finding below 6 dB is a finding, because that is inside the instrument's own noise against a 16 dB fading floor",
+   "status": "PASS-2",
+   "script": "scripts/channel_plan.py",
+   "doc": "docs/channel-plan.md",
+   "evidence": [
+    "the 16 dB fading measurement",
+    "the channel plan refuses every gain under 6 dB"
+   ],
+   "falsifier": "a change under 6 dB that reproduces as a level shift on a later scan"
+  },
+  {
+   "id": "two-four-ghz-channel-gain",
+   "claim": "moving the venue 2.4 GHz access point from channel 11 to channel 1 removes 24 dB of measured interference, because channel 11 is the busiest channel in the neighbourhood",
+   "status": "PASS-1",
+   "script": "scripts/channel_plan.py",
+   "doc": "docs/channel-plan.md",
+   "evidence": [
+    "17 spot scans, 33 networks, channel 11 occupied by the strongest non-house network at -33 dBm"
+   ],
+   "falsifier": "a post-change scan of the same spots showing the interference on channel 1 above -56 dBm, or no level change where the plan predicted 24 dB"
+  },
+  {
+   "id": "five-ghz-channel-gain",
+   "claim": "moving the 5 GHz radio from channel 36 to channel 40 or 44 removes 31-34 dB of measured interference",
+   "status": "PASS-1",
+   "script": "scripts/channel_plan.py",
+   "doc": "docs/channel-plan.md",
+   "evidence": [
+    "one channel plan over the same 17 scans",
+    "rob-site's independent fleet plan on the same data proposes ch 36 -> ch 40 for 34.0 dB"
+   ],
+   "falsifier": "a post-change scan of the same spots showing no level change, or interference on the new channel above the 6 dB action floor"
+  },
+  {
+   "id": "house-level-spread",
+   "claim": "the house's measured level spread is 33 dB, from -28 dBm in the router bedroom to -61 dBm in Alice's office, with a cliff between -36 and -56 mid-house",
+   "status": "PASS-2",
+   "script": "scripts/apply_measurements.py",
+   "doc": "docs/walk-2026-11-01.md",
+   "evidence": [
+    "12 spot scans across the rooms",
+    "9 of 10 walks agree on the same profile"
+   ],
+   "falsifier": "a repeat scan showing Alice's office within 10 dB of the router bedroom"
+  },
+  {
+   "id": "room-diffuse-field",
+   "claim": "the room is a diffuse cavity: the level distribution across a walk is consistent with Rayleigh fading rather than a single strong path",
+   "status": "PASS-1",
+   "script": "scripts/fading_test.py",
+   "doc": "docs/fading-is-rayleigh.md",
+   "evidence": [
+    "std/mean 1.21 on the walk series"
+   ],
+   "falsifier": "a room with the same construction where the distribution is visibly single-path (a dominant direct ray) in the same measurement"
+  },
+  {
+   "id": "lattice-recovery",
+   "claim": "a room's dimensions can be recovered from its mode spectrum to under 2% with half the modes missing and 1 Hz of jitter, when the ceiling is known as a prior",
+   "status": "PASS-1",
+   "script": "scripts/lattice_recovery.py",
+   "doc": "docs/methods-from-the-bench.md",
+   "evidence": [
+    "1.83% with 50% of modes dropped and 1 Hz jitter",
+    "0.92% with 30% dropped",
+    "exact on a clean spectrum"
+   ],
+   "falsifier": "recovery failing on a measured room spectrum (not a simulated one) at the same damage"
+  }
+ ]
+}
