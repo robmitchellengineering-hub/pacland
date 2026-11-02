@@ -116,10 +116,11 @@ CONES = {
     6:  {"hp": 3,  "rays": 2, "rate": 0.1325},
     10: {"hp": 11, "rays": 4, "rate": 0.0145},
     12: {"hp": 12, "rays": 5, "rate": 0.00137},
-    14: {"hp": None, "rays": None, "rate": 0.0141},
+    14: {"hp": 7, "rays": 8, "rate": 0.015125},   # MEASURED: hp=[7,6], rays=[8,6], 121 points in 20 calls
 }
 
-#: **Pre-registered before reading `h12 = 6`'s shape.** If the rate tracks cone structure monotonically, the
+#: **Pre-registered before reading `h12 = 6`'s shape — and the shape REFUTED it** (rays = 8, not <= 4).
+#: If the rate tracks cone structure monotonically, the
 #: `b3 = 14` rung — whose rate (0.0141) is TEN TIMES the `b3 = 12` rung (0.00137) — must carry FEWER rays and FEWER
 #: hyperplanes than `b3 = 12` does. The monotone-in-cone hypothesis therefore predicts `rays <= 4` and `hp <= 10`.
 PREDICTION_CONE_MONOTONE = {"rays_max": 4, "hp_max": 10}

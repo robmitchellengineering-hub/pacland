@@ -1139,6 +1139,27 @@ more rays ⇒ lower rate — then the `b3 = 14` rung **must carry fewer rays and
 
 **Prediction: `rays ≤ 4` and `hp ≤ 10`.**
 
+**MEASURED (2026-11-02, after the node loop was restarted): `rays = [8, 6]`, `hp = [7, 6]` — i.e. `rays = 8`, `hp = 7`.**
+
+| b3 | hyperplanes | rays | points/try |
+|---|---|---|---|
+| 6 | 3 | 2 | 0.1325 |
+| 10 | 11 | 4 | 0.0145 |
+| 12 | 12 | 5 | 0.00137 |
+| **14** | **7** | **8** | **0.015125** |
+
+**VERDICT: the pre-registered prediction is REFUTED.** `hp = 7 ≤ 10` fits, but **`rays = 8 > 4`**, so the rate does
+**not** track cone structure monotonically.
+
+**The rays rise at every rung (2 → 4 → 5 → 8) while the rate dips at `b3 = 12` and recovers at `14`.** A monotone
+function of the cone cannot produce a dip-and-recovery, so **the accessibility minimum is not explained by cone
+shape**, and `b3` was not a proxy for the cone either.
+
+**What survives, and it is the more interesting thing.** The minimum is real (121 points measured at `b3 = 14`
+against a pre-registered 1.04–2.54), the cone grows monotonically, and nothing in the cone data explains the dip.
+So the accessibility minimum has a cause **outside** both `b3` and the cone's ray/hyperplane count — the honest
+statement is that we have measured it and cannot yet explain it.
+
 - **If it holds**, the accessibility minimum is a **cone-shape effect**, and `b3` was a proxy for the cone all along.
 - **If `h12 = 6` has 6+ rays**, the monotone-cone hypothesis is **refuted**, and the minimum is a `b3`/window effect
   with no cone explanation — a full result either way.
