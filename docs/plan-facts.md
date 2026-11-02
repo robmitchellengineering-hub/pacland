@@ -1245,6 +1245,31 @@ points):
 
 A **dip and a recovery**, not a decay: `b3 = 14` returns to the `b3 = 10` level after the 11× deeper minimum.
 
+### A measurement caveat that changes how the accessibility series must be read (2026-11-02)
+
+The solver diagnostics (`1131Z-solver-conditioning`) returned, at `h12 = 2`:
+
+```
+DIAG h12=2 call=0 points=21 seconds=43.1
+DIAG h12=2 call=1 points=20 seconds=15.8
+```
+
+**Every call is capped at `n_target = 20`.** So a "points per try" figure computed as
+`points / (calls × 400 tries)` is a **lower bound** whenever the cap binds — and at `b3 = 6` it does: 20–21 points
+per call is the cap, not the sampler's natural yield.
+
+**Consequences, stated precisely:**
+
+- the `b3 = 6` value `0.1325`/try is a **lower bound**, not a measurement — the true yield is at least that, probably
+  higher;
+- the **dip at `b3 = 12` (0.00137) and the recovery at `b3 = 14` (0.0151) are NOT affected**, because neither rung
+  comes close to the cap (1–10 points per call over 20 calls). **The dip-and-recovery is real**;
+- but the *shape* of the full curve — how far it falls from `b3 = 6` — is **understated**, because the starting point
+  is capped.
+
+**The fix for any future run:** set `n_target` well above the expected yield (e.g. 200) so the cap cannot bind, or
+report the cap along with every rate. Until then the series should be quoted as "cap-limited at `b3 = 6`".
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
