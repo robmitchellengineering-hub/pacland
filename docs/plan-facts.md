@@ -1534,6 +1534,30 @@ made by the person whose results were demoted.** A perfect correlation at that s
 suggestive and not decisive. The audit is worth repeating on the estate's full record, with the column assessed before
 the outcome is known.
 
+## The claims-registry rule for hypotheses (2026-11-02)
+
+> **A hypothesis whose status is `supported` or `refuted` must name a script that exists in the repository. `open` may
+> say "no executable test".**
+
+Three lines of policy, enforced by `check_artefacts()` and called from `scripts/hypotheses.py --check`.
+
+**It immediately flagged three decided hypotheses with no artefact** — H-A, H-C and H-E were all marked decided while
+naming nothing re-runnable. That is the same defect the claims-registry guard caught on its first run, when a script it
+cited did not exist at all.
+
+**The fix was to write the artefacts, not to weaken the rule:**
+
+| hypothesis | artefact |
+|---|---|
+| H-A | `scripts/window_dependence.py` — the factor tracks the window (8.60 at `max_abs=1`, 24.41 at `max_abs=2`) |
+| H-B | `scripts/observability_axes.py` — the invariance × exactness cross-tab |
+| H-C | `scripts/conifold_recurrence.py` — out-of-sample, low-order, and it prints *why* BM is not evidence |
+| H-E | `scripts/killing_tests.py` — the stated-falsifier audit |
+| H-F | `scripts/hypotheses.py` — the rule checking itself |
+
+**H-F is the rule as a hypothesis**, so the engine now audits its own bookkeeping: if a future hypothesis is marked
+decided without a script, `--check` fails and the suite goes red.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

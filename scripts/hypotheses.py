@@ -20,6 +20,11 @@ def main(argv) -> int:
     if not link["ok"]:
         print(f"broken wall links: {link['missing']} too few walls: {link['too_few_walls']}", file=sys.stderr)
         return 1
+    art = H.check_artefacts()
+    if not art["ok"]:
+        print(f"claims-registry rule: decided without a script {art['decided_without_a_script']}; "
+              f"named script missing {art['named_script_missing']}", file=sys.stderr)
+        return 1
     text = H.render()
     if "--check" in argv:
         current = TARGET.read_text(encoding="utf-8") if TARGET.is_file() else ""

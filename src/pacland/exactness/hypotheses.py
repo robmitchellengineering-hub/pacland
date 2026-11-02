@@ -6,13 +6,21 @@ hypotheses: *what must also be true for both of these to hold at once?*
 Every hypothesis here must cite **at least two walls that exist in the wall register** — the link is checked, not
 asserted, so a hypothesis cannot float free of the walls that motivated it.
 
+**The claims-registry rule:** *a hypothesis whose status is ``supported`` or ``refuted`` must name a script that exists
+in the repository; ``open`` may say "no executable test".* A decided hypothesis with no artefact is a claim nobody can
+re-run — the same defect the claims-registry guard caught on its first run, when a script it cited did not exist.
+
 Regenerate:  python3 scripts/hypotheses.py
 Verify:      python3 scripts/hypotheses.py --check
 Guarded by:  tests/test_hypotheses.py
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 from . import walls
+
+ROOT = Path(__file__).resolve().parents[3]
 
 #: (id, title, walls it pairs, the claim, what it predicts, how to test it, status)
 HYPOTHESES = (
@@ -26,52 +34,58 @@ HYPOTHESES = (
      "DONE 2026-11-02: widen the window and the 'law' changes. 0<N<=1 counts go 20 -> 1,480 (per-unit-b3 8.60) at "
      "max_abs=1 but 52 -> 30,984 (24.41) at max_abs=2, matching (2*max_abs+1)^2 = 9 and 25. The exponential IS the "
      "window, so A = 8.554 is demoted to a window artefact; the hypothesis itself is SUPPORTED",
-     "supported"),
+     "supported",
+     "window_dependence.py"),
     ("H-B",
      "measure-invariance IS observability",
      ("the measure wall: no principle selects a measure", "the rate wall: yield falls ~100x from b3=6 to b3=12"),
      "The measure is provably free and the sampler is budget-limited, so no sampler can ever resolve the measure. "
-     "Therefore the only observables are the measure-invariant ones -- which makes the six INVARIANT entries, not the "
-     "demoted ones, the entire observable content of the landscape.",
+     "Therefore the only observables are the measure-invariant ones.",
      "the measure-invariant set and the computable-without-a-sampler set coincide",
-     "DONE 2026-11-02: cross-tabulated on two independent axes (6 invariant+exact, 2 invariant-not-exact -- zeta zeros "
-     "and arithmetic rigidity are floats, 1 exact-not-invariant -- the 5.05x measure spread, 3 neither). The coincidence "
-     "fails in both directions, so invariance and exactness are orthogonal; only the weaker claim survives (invariance "
-     "implies no sampler is needed)",
-     "refuted"),
+     "DONE 2026-11-02: cross-tabulated on two independent axes (6 invariant+exact, 2 invariant-not-exact, 1 "
+     "exact-not-invariant, 3 neither). The coincidence fails in both directions, so invariance and exactness are "
+     "orthogonal; only the weaker claim survives (invariance implies no sampler is needed)",
+     "refuted",
+     "observability_axes.py"),
     ("H-C",
      "every exact result is a coefficient of a rational generating function",
      ("the arithmetic null: no relation below 10^8 among the connection coefficients", "the enumeration objection: 'that's not the kind of problem it is at all'"),
-     "The tadpole closed form is a coefficient of a rational function; the conifold coefficients are rational "
-     "(37/30, 2309/1800); and nothing additive links them to transcendentals. Hypothesis: EVERY exact quantity here "
-     "is a coefficient of a rational generating function -- which is precisely WHY the transcendental relations are "
-     "absent. The zeta zeros are the contrast: not coefficients of a rational GF.",
-     "the conifold coefficients have a rational generating function; the arithmetic null is a consequence, not a failure",
-     "build the GF for the conifold coefficient sequence and test whether it is rational (a linear recurrence with "
-     "constant coefficients); if it is, the null becomes a prediction",
-     "refuted"),
+     "The tadpole closed form is a coefficient of a rational function and the conifold coefficients are rational, so "
+     "perhaps every exact quantity here is a coefficient of a rational GF -- which would explain the transcendental null.",
+     "the conifold coefficients have a rational generating function",
+     "DONE 2026-11-02: no constant-coefficient recurrence of order <= 7 reproduces the 37 coefficients, tested OUT OF "
+     "SAMPLE. The null is not explained by rationality and stands as a bounded wall",
+     "refuted",
+     "conifold_recurrence.py"),
     ("H-D",
      "the window is the only free choice, so every 'law' must be stated with its window",
      ("the rate wall: yield falls ~100x from b3=6 to b3=12", "the measure wall: no principle selects a measure"),
-     "A = 8.554 turned out to be the window's own size growth (9 at max_abs=1, 25 at max_abs=2). If the window sets the "
-     "scale of every apparent law, then no result may be quoted without its window, and the correct object is the "
-     "window-INDEPENDENT part of each statement.",
-     "for every result there is a window-independent core: a ratio, an integer, or a theorem that survives changing "
-     "max_abs",
-     "recompute each 'law' at max_abs = 1 and 2 and separate what changes from what does not; a result that changes "
-     "with the window is a window fact, one that does not is a candidate theorem",
-     "open"),
+     "A = 8.554 turned out to be the window's own size growth. If the window sets the scale of every apparent law, no "
+     "result may be quoted without its window, and the correct object is the window-INDEPENDENT core of each statement.",
+     "for every result there is a window-independent core: a ratio, an integer, or a theorem that survives changing max_abs",
+     "recompute each 'law' at max_abs = 1 and 2 and separate what changes from what does not",
+     "open",
+     None),
     ("H-E",
      "the only surviving results are the ones a test could have killed",
      ("the enumeration objection: 'that's not the kind of problem it is at all'", "the arithmetic null: no relation below 10^8 among the connection coefficients"),
-     "Every result demoted so far (A = 8.554, the accessibility minimum, measure-invariance = observability, the rational "
-     "GF) was demoted by a test that COULD have gone the other way. Every survivor (max|N| = b3, the closed form, "
-     "measure dimension b3) has a stated falsifier. Hypothesis: survivorship here is not luck but the property of "
-     "having been written so it could fail.",
-     "results without a stated falsifier are the ones that later get demoted; results with one survive",
-     "audit the register: for each entry record whether a killing test exists; the demoted ones should cluster in 'no "
-     "killing test' and the survivors in 'has one'",
-     "open"),
+     "Every demoted result was demoted by a test that COULD have gone the other way; every survivor has a stated "
+     "falsifier. Hypothesis: survivorship here is the property of having been written so it could fail.",
+     "results without a stated falsifier are the ones that later get demoted",
+     "DONE 2026-11-02: audit of 7 results and 3 hypotheses. 4 of 4 survivors had a stated falsifier, 3 of 3 demotions "
+     "did not. n is small and the column was judged retrospectively, so it is suggestive rather than decisive",
+     "supported",
+     "killing_tests.py"),
+    ("H-F",
+     "a decided hypothesis must name a re-runnable artefact",
+     ("the enumeration objection: 'that's not the kind of problem it is at all'", "h12 = 3 has no cone data"),
+     "A hypothesis marked supported or refuted without a script is a claim nobody can re-run. The claims-registry rule: "
+     "supported/refuted must name a script that exists; open may say 'no executable test'.",
+     "every decided hypothesis carries a script that exists; the check fails on a missing one",
+     "run scripts/hypotheses.py --check: it exits non-zero if a decided hypothesis names no script or a script that "
+     "is not in the repository",
+     "supported",
+     "hypotheses.py"),
 )
 
 #: **H-C was tested and REFUTED** (2026-11-02): no constant-coefficient recurrence of order <= 7 reproduces the 37
@@ -91,11 +105,14 @@ def _wall_names() -> set:
     return {name for name, *_rest in walls.REGISTER}
 
 
+DECIDED = ("supported", "refuted")
+
+
 def check_links() -> dict:
     """Every cited wall must exist in the register, and each hypothesis must pair at least two."""
     known = _wall_names()
     missing, thin = [], []
-    for hid, title, cited, claim, predicts, test, status in HYPOTHESES:
+    for hid, title, cited, claim, predicts, test, status, script in HYPOTHESES:
         for w in cited:
             if w not in known:
                 missing.append((hid, w))
@@ -104,10 +121,30 @@ def check_links() -> dict:
     return {"missing": missing, "too_few_walls": thin, "ok": not missing and not thin}
 
 
+def check_artefacts() -> dict:
+    """**The claims-registry rule.** A decided hypothesis must name a script that exists in the repository.
+
+    ``open`` may say "no executable test" (script is None). A ``supported`` or ``refuted`` hypothesis with no script is
+    a claim nobody can re-run -- the defect the claims-registry guard caught on its first run, when a script it cited
+    did not exist at all.
+    """
+    unbacked, broken = [], []
+    for hid, title, cited, claim, predicts, test, status, script in HYPOTHESES:
+        if status in DECIDED:
+            if not script:
+                unbacked.append(hid)
+            elif not (ROOT / "scripts" / script).is_file():
+                broken.append((hid, script))
+        elif script and not (ROOT / "scripts" / script).is_file():
+            broken.append((hid, script))
+    return {"decided_without_a_script": unbacked, "named_script_missing": broken,
+            "ok": not unbacked and not broken}
+
+
 def counts() -> dict:
     out = {s: 0 for s in STATUSES}
-    for *_rest, status in HYPOTHESES:
-        out[status] += 1
+    for rec in HYPOTHESES:
+        out[rec[6]] += 1
     out["total"] = len(HYPOTHESES)
     return out
 
@@ -127,14 +164,19 @@ def render() -> str:
         "Every hypothesis cites at least two walls **that exist in the wall register** — the link is checked by",
         "`check_links()`, so a hypothesis cannot float free of the walls that motivated it.",
         "",
+        "**The claims-registry rule:** a hypothesis whose status is `supported` or `refuted` **must name a script that",
+        "exists in the repository**; `open` may say \"no executable test\". A decided hypothesis with no artefact is a",
+        "claim nobody can re-run. `check_artefacts()` enforces it and `scripts/hypotheses.py --check` fails on it.",
+        "",
     ]
-    for hid, title, cited, claim, predicts, test, status in HYPOTHESES:
+    for hid, title, cited, claim, predicts, test, status, script in HYPOTHESES:
         lines += [f"## {hid} — {title}", ""]
-        lines += [f"**status:** {status}", ""]
+        lines += [f"**status:** {status}" + (f" · **script:** `scripts/{script}`" if script else
+                                             " · **script:** none (no executable test)"), ""]
         lines += ["**pairs these walls:**"] + [f"- {w}" for w in cited] + [""]
         lines += [f"**claim.** {claim}", "", f"**predicts.** {predicts}", "",
                   f"**test.** {test}", ""]
     return "\n".join(lines) + "\n"
 
 
-__all__ = ["HYPOTHESES", "STATUSES", "check_links", "counts", "render"]
+__all__ = ["HYPOTHESES", "STATUSES", "DECIDED", "check_links", "check_artefacts", "counts", "render"]
