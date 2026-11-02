@@ -1971,6 +1971,13 @@
    "title": "place_rooms.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/placement_plan.py",
+   "kind": "script",
+   "path": "scripts/placement_plan.py",
+   "summary": "Analyse, diagnose, fix: where the access point should be, from what was measured.",
+   "title": "placement_plan.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/polarisation.py",
    "kind": "script",
    "path": "scripts/polarisation.py",
