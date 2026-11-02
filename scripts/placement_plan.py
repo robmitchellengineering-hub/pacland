@@ -80,7 +80,10 @@ def plan(levels: dict[str, float], ap_position: tuple[float, float], rooms: list
         if all(r.get(k) is not None for k in ("x", "y", "w", "h")):
             room_centres[canonical(r["name"])] = (r["x"] + r["w"] / 2, r["y"] + r["h"] / 2)
     scored = []
-    best_room = min(levels, key=lambda k: levels[k])       # the strongest room (smallest deficit)
+    # THE STRONGEST ROOM, which is the one a move must not degrade. `min(levels, ...)` returns the WEAKEST room, and the
+    # first version used it as "the best room" - so the constraint that protects the good end of the house was being
+    # applied to the bad end, and the plan's headline number was about the wrong room.
+    best_room = max(levels, key=lambda k: levels[k])
     for cand in candidates:
         predicted = {}
         for room, level in levels.items():

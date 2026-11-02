@@ -1110,6 +1110,13 @@
    "title": "WiFi as LiDAR \u2014 what closes the gap, and what never will"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/working-across-the-estate.md",
+   "kind": "doc",
+   "path": "docs/working-across-the-estate.md",
+   "summary": "paying for it; each line names the failure that bought it. All of them are mirrored on the Mac.",
+   "title": "Working across the estate from this repo"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ap_health.py",
    "kind": "script",
    "path": "scripts/ap_health.py",
