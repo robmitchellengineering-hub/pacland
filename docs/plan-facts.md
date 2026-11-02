@@ -1290,6 +1290,33 @@ observables.
 **A DEPENDENT result is not withdrawn** — it must be quoted with its measure or corpus attached. The register is
 generated and `--check`-guarded, so a new result cannot slip into the invariant column by being described favourably.
 
+## The measure is underdetermined — an exact dimension, not a complaint (2026-11-02)
+
+`src/pacland/exactness/underdetermination.py` · `python3 scripts/underdetermination.py` · 8 tests.
+
+Albert [01:39:47]: *"Any probability distribution whatsoever… is perfectly logically compatible with the classical
+equations of motion."* Made concrete on the fully enumerated window (`|component| ≤ 1`):
+
+| b3 | orbits | distinct `N` | distinct `\|N\|` | measure dim |
+|---|---|---|---|---|
+| 2 | 80 | 5 | 3 | **2** |
+| 4 | 6,560 | 9 | 5 | **4** |
+| 6 | 531,440 | 13 | 7 | **6** |
+
+Two exact statements fall out:
+
+1. **Every integer tadpole from `−b3` to `+b3` is attained** — `distinct N = 2b3+1`, which requires the proven bound
+   `max |N| = b3` and shows the bound is not merely an inequality but a complete ladder.
+2. **The measure space has dimension exactly `b3`.** The Lagrangian symmetries identify `N` with `−N` (flip `F`, or
+   swap `F` and `H`) and stop there; component permutations and simultaneous sign flips act trivially. A measure
+   constant on invariant classes is a point in the simplex of the `b3+1` classes, so it has `b3` degrees of freedom —
+   6 at `b3 = 6`, 12 at `b3 = 12`.
+
+**So the measure is underdetermined by the data, and that is a proof rather than a failure.** No invariant of the
+window reduces the dimension; the symmetry group closes after `N ~ −N`.
+
+**Falsifier:** an invariant that identifies two distinct `|N|` classes would reduce the dimension. None is known.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

@@ -2363,6 +2363,13 @@
    "title": "two_sided_audit.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/underdetermination.py",
+   "kind": "script",
+   "path": "scripts/underdetermination.py",
+   "summary": "The exact dimension of the measure space.",
+   "title": "underdetermination.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_all_theorems.py",
    "kind": "script",
    "path": "scripts/validate_all_theorems.py",
