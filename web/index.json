@@ -578,6 +578,13 @@
    "title": "Measurement 001 \u2014 the first real link, recorded so it can be re-read"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/methods-from-the-bench.md",
+   "kind": "doc",
+   "path": "docs/methods-from-the-bench.md",
+   "summary": "extrapolate results and methods back to physics work on unifying string theory.\"",
+   "title": "Methods from the bench: what a known-answer inverse problem teaches the landscape"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mitchell-completeness-theorem.md",
    "kind": "doc",
    "path": "docs/mitchell-completeness-theorem.md",
@@ -1143,6 +1150,13 @@
    "path": "scripts/b3_scaling.py",
    "summary": "The two b3 scales and their product.",
    "title": "b3_scaling.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/band_sweep.py",
+   "kind": "script",
+   "path": "scripts/band_sweep.py",
+   "summary": "How much does bandwidth buy? The information-versus-frequency curve, on a room whose answer is known.",
+   "title": "band_sweep.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
@@ -1782,6 +1796,13 @@
    "title": "landscape_count.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/lattice_recovery.py",
+   "kind": "script",
+   "path": "scripts/lattice_recovery.py",
+   "summary": "Recovering a room's dimensions by LABEL RECOVERY, not by fitting.",
+   "title": "lattice_recovery.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/layout_check.py",
    "kind": "script",
    "path": "scripts/layout_check.py",
@@ -2291,6 +2312,13 @@
    "path": "scripts/thermal_noise_bound.py",
    "summary": "A bound for two-state ambient-thermal-noise communication.",
    "title": "thermal_noise_bound.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/truth_bench.py",
+   "kind": "script",
+   "path": "scripts/truth_bench.py",
+   "summary": "A truth bench: how far can a spectrum statistic move before the answer is lost?",
+   "title": "truth_bench.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/try_budget.py",
