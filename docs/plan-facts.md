@@ -1077,6 +1077,42 @@ the `b3 = 8` enumeration the plan asked for was unnecessary — the proof covers
 without the topology's cap overestimates what the geometry can carry — which is the honest content behind the
 `10^500` critique, and it does *not* depend on the gauge quotient (measured negligible: 1 pair in 531,441).
 
+## The unification thread — what survived, what died, and what that removes (2026-11-02)
+
+### Solid
+
+**1. The content law.** `A = 8.554` per unit `b3`, intervals `8.602` / `8.507` agreeing to **0.6%**.
+
+**2. `max |N| = b3` is a theorem** (`tadpole_bound.py`). Each bracket of `N = Σ_i (F_i H_{i+n} − F_{i+n} H_i)` lies
+in `[−2, 2]`, so `|N| ≤ 2n = b3`; attained by `F_i = F_{i+n} = 1`, `H_i = −1`, `H_{i+n} = 1`. *Removes:* the
+picture in which counting flux vectors tells you how much physics the topology can carry — the cap is **linear in
+the dimension**, and it does not rely on the gauge quotient (1 pair removed in 531,441).
+
+### Refuted
+
+**3. The accessibility exponential.** `B = 0.481` predicted **1.04–2.54** points in 20 calls at `b3 = 14`; sixteen
+calls gave `6,6,2,3,8,7,8,7,7,4,1,8,5,7` and rising — roughly **50× over**, and the series is **non-monotone**:
+`0.1325 → 0.0145 → 0.00137 → 0.0141` per try. *Removes:* the exponential model of sampler reachability, and the
+product `A·B = 4.11` that depended on it.
+
+**4. U2 — the coefficients as arithmetic multiples.** No relation below `10⁸` for any coefficient *or any pairwise
+ratio* against `{π², ζ(3), π²ζ(3), ζ(3)/π², π²/ζ(3), 1/π²}`. *Removes:* the basis-change transcendentals as the
+theory's arithmetic invariants in the standard basis. The wider basis (`π² log` pieces) stays untested.
+
+### Provisional — a direction, not a verdict
+
+**5. H1, the one-integer vacuum.** First reading on 80 vacua (`h12 = 3, 4`): SUSY fraction **0.400 at b3 = 8** vs
+**0.050 at b3 = 10**, and at shared `N` the b3=8 rows are SUSY-positive where b3=10 is not (`N=32`: 1/1 vs 0/2).
+**Falsifies H1** — the same tadpole carries different physics at different `b3` — but 80 rows over two dimensions
+is too thin to publish.
+
+### The measurement that would narrow hardest
+
+**SUSY fraction at fixed `N` on a corpus spanning at least four `b3`.** H1 is the only surviving hypothesis that
+would collapse the landscape to a one-parameter family, and it is currently decided by 80 rows. A thousand rows
+across `b3 = 6, 8, 10, 12` settles it: constant-at-fixed-`N` means the tadpole is the label; anything else means
+dimension is irreducible and every headline number needs its `b3`.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
