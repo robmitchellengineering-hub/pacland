@@ -1,6 +1,7 @@
 """The ingest gate is a domain check: the sampler's own bounds, reported loudly."""
 import unittest
 
+from pacland.exactness import counterexample as C
 from pacland.exactness import ingest_gate as G
 
 
