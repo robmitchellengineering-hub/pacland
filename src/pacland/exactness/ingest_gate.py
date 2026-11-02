@@ -80,20 +80,26 @@ def report(rows: list, b3_of=None) -> dict:
     for r in rows:
         b3 = b3_of(r)
         d = per.setdefault(b3, {"rows": 0, "in_domain": 0, "loose": 0, "runaway": 0,
-                                "susy_all": 0, "susy_in_domain": 0})
+                                "susy_all": 0, "susy_in_domain": 0,
+                                "minima_all": 0, "minima_in_domain": 0})
         cls = classify(r)
         d["rows"] += 1
         d[cls] += 1
         susy = bool(r.get("is_susy"))
         d["susy_all"] += susy
+        minimum = bool(r.get("is_minimum"))
+        d["minima_all"] += minimum
         if cls == "in_domain":
             d["susy_in_domain"] += susy
+            d["minima_in_domain"] += minimum
     for d in per.values():
         n = d["rows"]
         k = d["in_domain"]
         d["runaway_share"] = d["runaway"] / n if n else 0.0
         d["susy_rate_all"] = d["susy_all"] / n if n else 0.0
         d["susy_rate_in_domain"] = d["susy_in_domain"] / k if k else 0.0
+        d["minima_rate_all"] = d["minima_all"] / n if n else 0.0
+        d["minima_rate_in_domain"] = d["minima_in_domain"] / k if k else 0.0
     return per
 
 

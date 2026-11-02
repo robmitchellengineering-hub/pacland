@@ -1587,6 +1587,34 @@ stores a complex number as `[re, im]`, not as a Python `complex`; the parser rai
 returned `inf`, and every row was classified runaway. **A parse failure silently promoted to a data verdict** — the same
 mistake as a `-1` sentinel. The parser now raises, and a test pins that it does.
 
+## Minima-only reporting: over genuine rows the minima rate is FLAT (2026-11-02)
+
+`scripts/minima_report.py` · `tests/test_minima_report.py` · 5 tests.
+
+Gated at the sampler's declared bounds, with the runaway share beside every figure:
+
+| b3 | rows | runaway | SUSY all | SUSY gated | minima all | **minima gated** |
+|---|---|---|---|---|---|---|
+| 6 | 3,424 | 37.9% | 27.9% | 43.3% | 49.4% | **78.8%** |
+| 8 | 1,457 | 50.4% | 20.2% | 40.6% | 41.5% | **84.6%** |
+| 10 | 1,084 | 91.0% | 1.2% | 4.3% | 7.5% | **80.4%** |
+
+**Three findings, in order of how much they change the record:**
+
+1. **The minima rate does not decline.** Over genuine in-domain rows it is **78.8 / 84.6 / 80.4%** — flat to within 6
+   points. The apparent collapse from 49.4% to 7.5% was **entirely composition**. This is the single largest correction
+   the gate produced.
+2. **The SUSY decline survives but flattens** — `43.3 → 40.6 → 4.3%` against a raw `27.9 → 20.2 → 1.2%`. Real, and
+   smaller than quoted.
+3. **The `N/b3` climb survives the gate** at all three `b3` (quartile rises 0.383 → 0.439, 0.288 → 0.514,
+   0.000 → 0.077). That result is not a runaway artefact.
+
+**So the honest headline is not "fewer minima at higher b3" — it is "roughly the same fraction of minima, on a much
+smaller set of genuine points, most of which are not SUSY."**
+
+**Consequence for the record:** any figure quoted without its gated column is a figure about the corpus, not the theory.
+The `minima_rate_all` column is retained deliberately, so the composition effect is visible rather than hidden.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
