@@ -1768,6 +1768,13 @@
    "title": "issue_vvs.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/landscape_count.py",
+   "kind": "script",
+   "path": "scripts/landscape_count.py",
+   "summary": "Does the discrete gauge symmetry shrink the 10^500?",
+   "title": "landscape_count.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/layout_check.py",
    "kind": "script",
    "path": "scripts/layout_check.py",
