@@ -1558,6 +1558,35 @@ cited did not exist at all.
 **H-F is the rule as a hypothesis**, so the engine now audits its own bookkeeping: if a future hypothesis is marked
 decided without a script, `--check` fails and the suite goes red.
 
+## The ingest gate: half the corpus is outside the model's own domain (2026-11-02)
+
+`src/pacland/exactness/ingest_gate.py` · `python3 scripts/ingest_gate.py` · 8 tests.
+
+`data_sampler`'s default is `moduli_bounds = (1.0, 5.0)`. A row at `|z| = 8.5e29` cannot have come from that sampler, so
+it is **not a vacuum this model produces**. Enforcing that is a **domain check**, not a hygiene convention — it belongs
+in the same class as `max |N| = b3`.
+
+| b3 | rows | in-domain | runaway | runaway share | SUSY all rows | SUSY in-domain |
+|---|---|---|---|---|---|---|
+| 6 | 3,424 | 720 | 1,296 | **37.9%** | 27.9% | **43.3%** |
+| 8 | 1,457 | 293 | 734 | **50.4%** | 20.2% | **40.6%** |
+| 10 | 1,084 | 46 | 986 | **91.0%** | 1.2% | **4.3%** |
+
+**3,016 of 5,965 rows (50.6%) are outside the declared bounds.**
+
+**Cross-check against an independent implementation:** runaway shares `37.9 / 50.4 / 91.0%` reproduce `38 / 52 / 91%`
+computed separately. Two implementations, same numbers.
+
+**What it means:** the SUSY decline is **largely composition**, not landscape. Over in-domain rows the fall is
+`43.3% → 40.6% → 4.3%` — still falling, but the low end is a different claim from `27.9% → 1.2%`. **Every aggregate that
+did not apply this gate was computed over rows the theory cannot produce**, including the earlier `N/b3` collapse and
+the two-parameter law, which are hereby pending re-derivation under the gate.
+
+**The instrument note, because it nearly shipped as a finding:** the first run reported **100% runaway**. The corpus
+stores a complex number as `[re, im]`, not as a Python `complex`; the parser raised, a `except` clause swallowed it and
+returned `inf`, and every row was classified runaway. **A parse failure silently promoted to a data verdict** — the same
+mistake as a `-1` sentinel. The parser now raises, and a test pins that it does.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
