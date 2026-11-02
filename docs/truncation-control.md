@@ -78,3 +78,29 @@ one moduli point from the model's own ISD initial guess, printing `dim`, `eig_mi
 **The synthetic control says the first row is the likely one**: on a constructed matrix the boundary weight fell from 1.000
 to 0.006 after truncating three coordinates, so **the signature is highly sensitive to what is included** — but the real
 matrix has a different structure, which is why the measurement rather than the control is the answer.
+
+## The control at the real matrix size, and what it changes
+
+The real matrix is dim 4 at h12 = 2 and about 50 at h12 = 25. The control was rerun at those sizes:
+
+| n | boundary weight, complete | boundary weight after dropping 3 coordinates |
+|---|---|---|
+| 9 | 1.000 | 0.249 |
+| 17 | 1.000 | 0.037 |
+| 33 | 1.000 | **0.009** |
+| 51 | 1.000 | 0.018 |
+| 101 | 1.000 | 0.009 |
+
+**The rule to read the real measurement by:**
+
+- **boundary weight near 1.0** — the near-null direction sits on the last two coordinates. **Truncation signature.**
+- **boundary weight near 0** — it is spread through the moduli. **Physical hierarchy.**
+
+**And the trap that makes this hard, stated plainly**: dropping just **three** coordinates takes a genuinely
+boundary-concentrated direction from 1.000 to **0.009**. So **a low boundary weight does not, by itself, prove the direction
+is physical** — the basis it is measured against has already moved. **What distinguishes the two is what happens as the
+degree RISES**: a truncation artefact is created by the terms that were left out, so the near-null gap should *shrink* as
+those terms come in; a real hierarchy persists while `dim` grows.
+
+**So the table to read is `cond` and `dim` together across degree, with the boundary weight as the third column — not the
+boundary weight alone.**
