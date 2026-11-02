@@ -983,6 +983,30 @@ count itself — the discrete symmetry is a real symmetry but a numerically tiny
 is the *opposite* of the one I proposed: `10^500` is not an artefact of counting gauge copies. What the count
 does show is the `b3` dependence, which is the same wall the rate measurement hit.
 
+## The two `b3` scales, and their product (2026-10-31)
+
+`src/pacland/exactness/b3_scaling.py` · `python3 scripts/b3_scaling.py` · 10 tests.
+
+| scale | per-unit-`b3` factor | per-interval | consistent? |
+|---|---|---|---|
+| **content** (exact orbits, `0 < N ≤ 1`) | **A = 8.554** | 8.602 (2→4), 8.507 (4→6) | **yes — 0.6% spread** |
+| **accessibility** (points per try) | B = 0.481 | 0.575 (6→10), **0.308 (10→12)** | **no — it steepens** |
+
+**Product `A·B` = 4.11**, range **2.63 – 4.92** across the intervals, so **reachable content grows with `b3`** on
+every interval.
+
+**The honest split.** The *content* half is a clean exponential — its two intervals agree to 0.6%, which is what
+makes `A = 8.55` quotable as a law. The *accessibility* half is **not** exponential: the per-unit factor more
+than halves between the two intervals (0.575 → 0.308), so a single `B` would hide a steepening. The product is
+above 1 either way, which is why the claim survives, but it survives as a bound rather than a formula.
+
+**The caveat that limits it.** Content is counted in the *enumerable* window, which grows like `3^(2b3)`; the
+sampler draws from its own range, and nothing establishes the two scale together. So `A·B` is a heuristic
+comparison of two measured scales, not a physical rate — and the module says so in its own returned record.
+
+**Falsifier:** a fourth `b3` where either series breaks. The accessibility intervals already differ by more than
+the 25% tolerance — a warning, not yet a refutation.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
