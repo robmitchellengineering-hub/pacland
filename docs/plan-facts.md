@@ -1024,6 +1024,34 @@ steepening, three points → global fit, zero points recorded as a rate rather t
 and a stale entry from 2026-10-23 is also listed as running, so the measurement is waiting on node contention
 rather than on anything in the physics.
 
+### The composed `b3` statement (written 2026-11-02, Phase 2 still open)
+
+**One sentence, with both factors and the window:**
+
+> Per unit of `b3`, the gauge-invariant content in the `|component| ≤ 1` window multiplies by **A = 8.554** and the
+> sampler's points-per-try by **B = 0.481**, so the *reachable* content scales as **`(A·B)^b3 ≈ 4.11^b3`** — it
+> grows with dimension, and the growth is carried almost entirely by the content factor.
+
+**Three things keep it honest.**
+
+1. `A` is a clean exponential — intervals 8.602 and 8.507, agreeing to **0.6%**.
+2. `B` is **not** — 0.575 over `b3 = 6→10`, **0.308** over `10→12`; it steepens, so a single `B` hides a trend.
+3. The product is above 1 on **every** interval (range **2.63 – 4.92**), so the claim stands as a **bound, not a
+   formula**.
+
+**The caveat that limits it.** Content is counted in the *enumerable* window (`3^(2b3)`-sized); the sampler draws
+from its own range; nothing establishes that the two scale together. `A·B` compares two measured scales and is
+**not a physical rate** — recorded so the claim cannot be upgraded later by accident.
+
+**What would falsify it.** A fourth `b3` where either series breaks. The accessibility intervals already differ by
+more than the 25% tolerance — a warning, not yet a refutation. The `b3 = 14` point (`h12 = 6`) is the next chance:
+pre-registered branches are **1.04** points in 20 calls (steepening) against **2.54** (global fit).
+
+**And the infrastructure note:** `h12 = 3` (`b3 = 8`) remains unmeasurable because `jaxvacua` carries no cone data
+for that polytope — all three of `_hyperplanes`, `_rays`, `_extremal_rays` are `None` (measured). That is an
+infrastructure gap, not a physical one, and `h12 = 6` was confirmed to *have* its cone data, so the failure is
+rung-specific.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at
