@@ -1123,6 +1123,28 @@ would collapse the landscape to a one-parameter family, and it is currently deci
 across `b3 = 6, 8, 10, 12` settles it: constant-at-fixed-`N` means the tadpole is the label; anything else means
 dimension is irreducible and every headline number needs its `b3`.
 
+### Task 1, pre-registered: what `h12 = 6`'s cone shape must look like (2026-11-02)
+
+`PREDICTION_CONE_MONOTONE` in `b3_scaling.py`, written **before** reading `h12 = 6`'s rays/hyperplanes.
+
+| b3 | hyperplanes | rays | points/try |
+|---|---|---|---|
+| 6 | 3 | 2 | 0.1325 |
+| 10 | 11 | 4 | 0.0145 |
+| 12 | 12 | 5 | 0.00137 |
+| **14** | **?** | **?** | **0.0141** |
+
+The rate at `b3 = 14` is **ten times** the `b3 = 12` rate. If the rate tracks cone structure monotonically —
+more rays ⇒ lower rate — then the `b3 = 14` rung **must carry fewer rays and fewer hyperplanes** than `b3 = 12`:
+
+**Prediction: `rays ≤ 4` and `hp ≤ 10`.**
+
+- **If it holds**, the accessibility minimum is a **cone-shape effect**, and `b3` was a proxy for the cone all along.
+- **If `h12 = 6` has 6+ rays**, the monotone-cone hypothesis is **refuted**, and the minimum is a `b3`/window effect
+  with no cone explanation — a full result either way.
+
+`cone_verdict(rays, hp)` returns which.
+
 ## F3 — the brane invariant ring (later · node · no dependency on F2)
 
 **The fact.** Either a second exact invariant beyond the tadpole, or the theorem that there is none at

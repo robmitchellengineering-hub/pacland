@@ -110,4 +110,33 @@ def check_prediction(measured_points, calls: int = 20, tries_per_call: int = 400
     }
 
 
-__all__ = ["CONTENT", "ACCESSIBILITY", "PREDICTION_B3_14", "check_prediction", "per_unit_factor", "scales"]
+#: Measured cone data per rung: (b3, hyperplanes, rays, points-per-try). The three inner points are measured; the
+#: fourth's rate is measured (0.0141) but its cone SHAPE was not yet recorded when this prediction was written.
+CONES = {
+    6:  {"hp": 3,  "rays": 2, "rate": 0.1325},
+    10: {"hp": 11, "rays": 4, "rate": 0.0145},
+    12: {"hp": 12, "rays": 5, "rate": 0.00137},
+    14: {"hp": None, "rays": None, "rate": 0.0141},
+}
+
+#: **Pre-registered before reading `h12 = 6`'s shape.** If the rate tracks cone structure monotonically, the
+#: `b3 = 14` rung — whose rate (0.0141) is TEN TIMES the `b3 = 12` rung (0.00137) — must carry FEWER rays and FEWER
+#: hyperplanes than `b3 = 12` does. The monotone-in-cone hypothesis therefore predicts `rays <= 4` and `hp <= 10`.
+PREDICTION_CONE_MONOTONE = {"rays_max": 4, "hp_max": 10}
+
+
+def cone_verdict(rays: int, hp: int) -> dict:
+    """Judge a measured `(rays, hp)` for `b3 = 14` against the pre-registered monotone prediction."""
+    fits = rays <= PREDICTION_CONE_MONOTONE["rays_max"] and hp <= PREDICTION_CONE_MONOTONE["hp_max"]
+    return {
+        "rays": rays, "hp": hp,
+        "predicted_rays_max": PREDICTION_CONE_MONOTONE["rays_max"],
+        "predicted_hp_max": PREDICTION_CONE_MONOTONE["hp_max"],
+        "verdict": ("rate tracks cone structure — the minimum is a cone-shape effect"
+                    if fits else
+                    "REFUTED: cone structure is NOT monotone in the rate, so the minimum is not explained by it"),
+    }
+
+
+__all__ = ["CONTENT", "ACCESSIBILITY", "CONES", "PREDICTION_B3_14", "PREDICTION_CONE_MONOTONE",
+           "check_prediction", "cone_verdict", "per_unit_factor", "scales"]
