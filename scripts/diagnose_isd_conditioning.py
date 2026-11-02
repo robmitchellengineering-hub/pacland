@@ -41,13 +41,30 @@ DEFAULT_H12 = [2, 3, 4, 5, 10, 15, 20, 25]
 
 
 def committed_moduli(h12):
-    """A real, in-cone moduli point from the committed corpus, if this h12 has one."""
+    """A real, in-cone moduli point from the committed corpus, if this h12 has one.
+
+    **THE RANGE CHECK EXISTS BECAUSE THE FIRST VERSION FED GARBAGE.** With no check, the function returned the first row whose
+    `moduli` had length h12 - and the committed h12=2 corpus carries values like `-1.98e20 + 8.51e29i`, which are not a point in
+    moduli space. The diagnostic then measured a matrix built at an absurd point and reported cond(M) = 1.4e135, against the wall
+    document's 1.8e2. **A complex-structure modulus of a Calabi-Yau at large volume is O(1)-O(100); anything outside that is a
+    corrupt row, not a measurement.**
+
+    Rows outside the window are skipped with a printed reason, so the choice of point is never silent.
+    """
+    MIN_ABS, MAX_ABS = 1e-3, 1e3
     for fn in sorted(glob.glob(f"data/h12_{h12}_m*_stats.json")):
         doc = json.load(open(fn))
         for r in doc.get("vacua", []):
             m = r.get("moduli")
-            if m and len(m) == h12:
-                return np.array([complex(a, b) for a, b in m]), fn.split("/")[-1]
+            if not m or len(m) != h12:
+                continue
+            pts = [complex(a, b) for a, b in m]
+            bad = [z for z in pts if not (MIN_ABS <= abs(z) <= MAX_ABS)]
+            if bad:
+                print(f"  [moduli] rejected a row in {fn.split('/')[-1]}: |z| = {max(abs(z) for z in bad):.2e} "
+                      f"is outside [{MIN_ABS:g}, {MAX_ABS:g}]", flush=True)
+                continue
+            return np.array(pts), fn.split("/")[-1]
     return None, None
 
 
