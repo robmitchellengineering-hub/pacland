@@ -34,3 +34,24 @@ Live surfaces (both serving `web/index.html`, the same static demo):
   (encrypted). Do not copy it out; decrypt in-process like the deploy scripts in
   `/tmp` did on 2026-10-18.
 - arXiv: not yet submitted — needs Rob's arXiv account (https://arxiv.org/register).
+
+## State, 2026-11-03 — what actually publishes, and what does not
+
+`docs/deployment.md` above describes the *intended* path. This is the measured one.
+
+- **Uploading works** — `POST https://api.netlify.com/api/v1/sites/29e7c912-…/deploys` with a zip of
+  `web/` returns 200 and publishes: `pacland.netlify.app` served the full build (423 index items).
+- **The domain does not follow the upload**, because `pacland.morpheus.nz` is claimed by **two other
+  Netlify sites** (`4bc468b4-2150-424d-b709-15f47f7b2e88`, `a6870cad-7d1b-4ba2-9f7e-f0ff01c507c2`), neither
+  in the account whose token is stored. Attaching it to `29e7c912-…` is refused with
+  `must be unique`. One of the two is `pacland-main`, which the DNS CNAME pointed at.
+- **GitHub Pages is the working path.** `vvs.morpheus.nz` is served this way (`vvs-site`, `pages.cname`),
+  and pacland now is too: `scripts/deploy-pages.sh` mirrors `web/` onto `gh-pages`, the repo's Pages site
+  carries `cname = pacland.morpheus.nz`, and the Cloudflare CNAME `pacland` points at
+  `robmitchellengineering-hub.github.io`.
+- **The cost of that path:** Pages is a manual mirror (`deploy-pages.sh`) — a merge to `main` does not
+  publish to the domain by itself. Making it automatic needs a Pages Actions workflow
+  (`actions/upload-pages-artifact` with `path: web/`), which legacy Pages build settings cannot express
+  (`/web` is rejected; only `/` and `/docs` are allowed).
+- **Certificate timing:** after the CNAME moved to Pages, the domain answered on **http** before **https**;
+  Pages issues the certificate asynchronously. Do not move a live domain to Pages without expecting that gap.
