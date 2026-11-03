@@ -410,6 +410,13 @@
    "title": "Encoding \u2014 the genotype (L1)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-conjectures.md",
+   "kind": "doc",
+   "path": "docs/energy-conjectures.md",
+   "summary": "Five claims, each stated so it can be wrong, each with the observation that would kill it. Two are computed here (arithmetic on published constants); three are registered but not yet run\u2026",
+   "title": "Energy conjectures \u2014 registered, with their falsifiers"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/evolvability.md",
    "kind": "doc",
    "path": "docs/evolvability.md",
@@ -1710,6 +1717,41 @@
    "path": "scripts/em_capacity.py",
    "summary": "The electromagnetic twin of the room analysis: mode count, statistics, identifiability, and the",
    "title": "em_capacity.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_drift_ecs.py",
+   "kind": "script",
+   "path": "scripts/energy_drift_ecs.py",
+   "summary": "Climate: does conservation drift transfer linearly into ECS?",
+   "title": "energy_drift_ecs.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_fusion_exponent.py",
+   "kind": "script",
+   "path": "scripts/energy_fusion_exponent.py",
+   "summary": "Fusion: is the 0.93 current exponent physics, or cross-machine collinearity?",
+   "title": "energy_fusion_exponent.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_li_s_ceiling.py",
+   "kind": "script",
+   "path": "scripts/energy_li_s_ceiling.py",
+   "summary": "The Li\u2013S ceiling: specific energy is set by the electrolyte/sulfur ratio.",
+   "title": "energy_li_s_ceiling.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_lithium_ceiling.py",
+   "kind": "script",
+   "path": "scripts/energy_lithium_ceiling.py",
+   "summary": "Lithium mass balance, not cost, caps Li-ion deployment near 3.2 TWh/yr.",
+   "title": "energy_lithium_ceiling.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_verify_joules.py",
+   "kind": "script",
+   "path": "scripts/energy_verify_joules.py",
+   "summary": "The energy floor of verification, and the crossover against re-execution.",
+   "title": "energy_verify_joules.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/epidemiology_identifiability.py",

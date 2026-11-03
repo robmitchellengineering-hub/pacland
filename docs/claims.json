@@ -1,6 +1,6 @@
 {
   "format": "claims-registry@1",
-  "note": "Every published number, its status, the script that reproduces it, and the check that could make it wrong. PASS-1 = one run, provisional, never quoted as settled. PASS-2 = reproduced with a different parameterisation. withdrawn = it was published and then failed; kept so the record shows the retraction.",
+  "note": "Every published number, its status, the script that reproduces it, and the check that could make it wrong. PASS-1 = one run, provisional, never quoted as settled. PASS-2 = reproduced with a different parameterisation. withdrawn = it was published and then failed; kept so the record shows the retraction. | registered = falsifier and script on record, no run yet",
   "claims": [
     {
       "id": "weyl-mode-count",
@@ -135,6 +135,53 @@
         "a working mesh path + asked_operator raises"
       ],
       "falsifier": "a session that asks the operator to run something while a path exists"
+    },
+    {
+      "id": "lithium-mass-ceiling",
+      "claim": "lithium mass balance, not cost, caps Li-ion deployment near 3.2 TWh/yr (0.41 kg LCE/kWh at 1.3 Mt LCE world supply)",
+      "status": "PASS-1",
+      "script": "scripts/energy_lithium_ceiling.py",
+      "doc": "docs/energy-conjectures.md",
+      "evidence": [
+        "computed from USGS 2025 (1.3 Mt LCE) and 5.32 kg LCE per kg Li \u2014 one derivation, not two independent lines"
+      ],
+      "falsifier": "> 5 TWh/yr of Li-ion from < 1.5 Mt LCE primary supply, with no more than a 2x lithium price rise"
+    },
+    {
+      "id": "li-s-electrolyte-ceiling",
+      "claim": "Li-S specific energy is set by the electrolyte/sulfur ratio: 680 Wh/kg is the asymptote at r=3 uL/mg, and <= 542 Wh/kg is reachable at q <= 12",
+      "status": "PASS-1",
+      "script": "scripts/energy_li_s_ceiling.py",
+      "doc": "docs/energy-conjectures.md",
+      "evidence": [
+        "computed from published Li2S constants (2.15 V, 1672 mAh/g) and a materials budget \u2014 one derivation",
+        "the draft claim said 680 was reachable; this run showed it is the q->infinity asymptote and the finite ceiling is 542"
+      ],
+      "falsifier": "any full cell (>= 1 Ah, >= 50 cycles, total mass) measured above 680 Wh/kg at r >= 3 uL/mg"
+    },
+    {
+      "id": "fusion-confinement-exponent",
+      "claim": "the 0.93 current exponent of IPB98(y,2) is between-machine collinearity; the within-machine exponent is 0.55 +/- 0.12, so ITER needs H98 ~ 1.15",
+      "status": "registered",
+      "script": "scripts/energy_fusion_exponent.py",
+      "doc": "docs/energy-conjectures.md",
+      "falsifier": "a within-machine exponent >= 0.85 (95% CI), or SPARC's first H-mode tau_E within +/-10% of the IPB98 line at 8.7 MA / 12.2 T"
+    },
+    {
+      "id": "climate-drift-ecs-transfer",
+      "claim": "conservation drift transfers linearly into ECS (slope 1.0 +/- 0.2; 0.76 K per W/m2), so abrupt-4xCO2 ECS needs a one-line correction",
+      "status": "registered",
+      "script": "scripts/energy_drift_ecs.py",
+      "doc": "docs/energy-conjectures.md",
+      "falsifier": "slope > 1.3 or < 0.7, or |dECS|/|eps| outside [0.4, 1.2] K per W/m2"
+    },
+    {
+      "id": "verification-joule-floor",
+      "claim": "verification has a 1-3 uJ floor per check and a crossover at 10^4-10^6 ops per item, above which witness checking beats re-execution",
+      "status": "registered",
+      "script": "scripts/energy_verify_joules.py",
+      "doc": "docs/energy-conjectures.md",
+      "falsifier": "a measured floor outside 0.3-10 uJ per check, or a crossover outside 10^3-10^7 ops per item"
     }
   ]
 }
