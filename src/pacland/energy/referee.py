@@ -27,6 +27,7 @@ from .lattice import (
     CONSTRAINTS,
     DERIVATION,
     KILLED,
+    MEASURED,
     SURVIVES,
     TESTABLE_NOW,
     UNKNOWN,
@@ -74,7 +75,7 @@ def self_test() -> int:
     machine, and the machine's claims are about its own ordering, not about the world.
     """
     verified = Constraint("C3", "unitarity-no-ghost", "no ghost", "a ghost", DERIVATION, TESTABLE_NOW,
-                          source="a primary source", verified_on="2026-11-03")
+                          bound_kind=MEASURED, source="a primary source", verified_on="2026-11-03")
     unverified = Constraint("C12", "semiclassical-limit-exists", "a limit exists", "no limit",
                             DERIVATION, TESTABLE_NOW)
 
