@@ -186,13 +186,14 @@
     {
       "id": "tadpole-count-b3-8",
       "claim": "the tadpole closed form count(N) = [x^N] P(x)^(b3/2) holds at b3 = 8: 43,046,720 primitive orbits, every class matching full enumeration",
-      "status": "PASS-1",
+      "status": "PASS-2",
       "script": "scripts/tadpole_distribution.py",
       "doc": "docs/deterministic-in-use.md",
       "evidence": [
-        "full enumeration of 43,046,721 pairs at b3 = 8 on pacland-rog: matches true, 43,046,720 orbits = total_predicted, 194.2 s (job 2026-11-03T1037Z-pacland-rog-b3-8-exact-count)"
+        "full enumeration at b3 = 8 through the numpy pipeline (tadpole_distribution.verify): matches true, 43,046,720 orbits = total_predicted, 194.2 s (job 2026-11-03T1037Z-pacland-rog-b3-8-exact-count)",
+        "independent pure-Python nested-loop implementation (no numpy, no polynomial): 43,046,720 orbits, 17 classes, exact match on every class, 69 s (job 2026-11-03T1102Z-pacland-rog-independent-count-b3-8)"
       ],
-      "falsifier": "the independent implementation (scripts/tadpole_independent_count.py) disagreeing at any rung, or a re-run on different hardware producing a different total; PASS-2 needs the independent run at b3 = 8, which is not yet done"
+      "falsifier": "a third implementation disagreeing at any rung, or a re-run on different hardware producing a different total; the b3 <= 6 agreement is guarded by tests/test_tadpole_independent.py"
     },
     {
       "id": "ecs-per-forcing-slope",

@@ -43,8 +43,15 @@ nested loops over the definition, `math.gcd` for primitivity, **no numpy, no pol
 so agreement is evidence rather than a tautology. It agrees exactly at `b3 = 2, 4, 6` (6,560 / 531,440
 orbits, every class), and `tests/test_tadpole_independent.py` keeps it that way.
 
-**What is still owed:** that independent run at `b3 = 8` (43M pairs, minutes on a node, too slow for CI).
-Until it runs, the b3 = 8 claim is **PASS-1** — one line of evidence — not PASS-2.
+**And it has now run at `b3 = 8`** (`pacland-rog`, job `2026-11-03T1102Z-pacland-rog-independent-count-b3-8`):
+
+```
+primitive orbits : 43,046,720      classes: 17      all pairs - 1: 43,046,720
+agreement        : YES — exact match on every class        elapsed: 69 s
+```
+
+Two implementations that share no code path agree at every rung up to `b3 = 8`. The claim is **PASS-2** on
+that basis: two independent lines, not one run repeated.
 
 ## What would falsify it
 
