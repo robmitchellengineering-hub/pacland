@@ -1729,7 +1729,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_drift_ecs.py",
    "kind": "script",
    "path": "scripts/energy_drift_ecs.py",
-   "summary": "Climate: does conservation drift transfer linearly into ECS?",
+   "summary": "Climate: does conservation drift transfer into ECS, and at what coefficient?",
    "title": "energy_drift_ecs.py"
   },
   {

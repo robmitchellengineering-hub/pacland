@@ -4,6 +4,7 @@ must refuse rather than print a number they have not earned.
 The refusal tests matter more than the arithmetic ones: a registered claim whose script happily produces
 a verdict would be exactly the "gate that cannot fail" this repository exists to avoid.
 """
+import json
 import pathlib
 import subprocess
 import sys
@@ -15,6 +16,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import energy_li_s_ceiling as LIS  # noqa: E402
 import energy_lithium_ceiling as LIC  # noqa: E402
+import energy_drift_ecs as EDE  # noqa: E402
 
 
 class TestLiSCeiling(unittest.TestCase):
@@ -43,6 +45,23 @@ class TestLithiumCeiling(unittest.TestCase):
     def test_a_leakier_chemistry_lowers_the_ceiling(self):
         self.assertLess(LIC.deployment_ceiling_twh(1.3e6, LIC.lce_per_kwh(1.9)),
                         LIC.deployment_ceiling_twh(1.3e6, LIC.lce_per_kwh(1.75)))
+
+
+class TestClimateTransfer(unittest.TestCase):
+    def _table(self):
+        return json.loads((ROOT / "data" / "climate" / "cmip6_ecs_models.json").read_text())["models"]
+
+    def test_forcing_does_not_predict_ecs_across_models(self):
+        # the refutation this run produced: the slope is negative, so 0.76 K per W/m2 is not a slope
+        models = self._table()
+        slope = EDE.ols_slope([m["erf2x_wm2"] for m in models], [m["ecs_K"] for m in models])
+        self.assertLess(slope, 0.3, f"slope {slope:.3f} no longer refutes the draft claim")
+
+    def test_the_drift_join_covers_most_of_the_ledger(self):
+        models = {m["model"]: m["ecs_K"] for m in self._table()}
+        drift = json.loads((ROOT / "data" / "climate" / "cmip6_drift.json").read_text())["models"]
+        joined = [r for r in drift if r["model"] in models]
+        self.assertGreaterEqual(len(joined), 15, f"only {len(joined)} models join drift to ECS")
 
 
 class TestRegisteredClaimsRefuse(unittest.TestCase):

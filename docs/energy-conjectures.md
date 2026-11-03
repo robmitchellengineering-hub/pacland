@@ -61,7 +61,23 @@ the IPB98 line at 8.7 MA / 12.2 T.
 **Why it is not computed here:** it needs the ITPA global H-mode database, which is not in this repository.
 `scripts/energy_fusion_exponent.py` refuses without it and says how to supply it.
 
-## 4 · `climate-drift-ecs-transfer` — registered, partly prepared
+## 4 · `climate-drift-ecs-transfer` — registered; its first form has been REFUTED
+
+**Measured (this run).** The claim's coefficient was taken as a cross-model slope: does ECS rise with
+forcing? Across **53 CMIP6 models** (Zelinka et al. 2020, ECS and ERF2x):
+
+```
+slope dECS/dERF2x = -0.547 K per W/m2   95% CI [-1.274, +0.326]   R2 0.04
+```
+
+**There is no relation.** `0.76` lies outside the CI, so it is **not** a cross-model coefficient — it is a
+ratio of AR6's *assessed* values (3.0 K / 3.93 W/m²). The feedback parameter varies far more across models
+than the forcing does, which is why forcing cannot stand in for it. The draft claim is refuted in that form.
+
+**What survives, and it is still open:** the *drift-to-ECS* transfer, `dECS/deps`, which needs a per-model
+abrupt-4xCO2 regression with and without the correction. On the 17 models that have both a drift residual
+and an ECS, the rank correlation is **+0.17** — weak, and a correlation is not a transfer. That claim stays
+registered until the per-model fits exist.
 
 **Claim.** A model's conservation residual `ε` in piControl transfers **linearly** to its ECS:
 slope of `log|ΔECS|` on `log|ε|` is 1.0 ± 0.2, with `|ΔECS|/|ε| ≈ 0.76 K per W/m²`

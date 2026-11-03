@@ -173,7 +173,7 @@
       "status": "registered",
       "script": "scripts/energy_drift_ecs.py",
       "doc": "docs/energy-conjectures.md",
-      "falsifier": "slope > 1.3 or < 0.7, or |dECS|/|eps| outside [0.4, 1.2] K per W/m2"
+      "falsifier": "a per-model abrupt-4xCO2 fit showing the induced dECS is not linear in the drift residual eps, or a transfer coefficient outside [0.4, 1.2] K per W/m2"
     },
     {
       "id": "verification-joule-floor",
@@ -193,6 +193,17 @@
         "full enumeration of 43,046,721 pairs at b3 = 8 on pacland-rog: matches true, 43,046,720 orbits = total_predicted, 194.2 s (job 2026-11-03T1037Z-pacland-rog-b3-8-exact-count)"
       ],
       "falsifier": "the independent implementation (scripts/tadpole_independent_count.py) disagreeing at any rung, or a re-run on different hardware producing a different total; PASS-2 needs the independent run at b3 = 8, which is not yet done"
+    },
+    {
+      "id": "ecs-per-forcing-slope",
+      "claim": "across 53 CMIP6 models the ECS-per-forcing slope is -0.547 K per W/m2 (95% CI [-1.274, +0.326], R2 0.04) \u2014 forcing does not predict ECS across models, so the 0.76 K per W/m2 of the draft energy claim is a ratio of assessed values, not a slope",
+      "status": "PASS-1",
+      "script": "scripts/energy_drift_ecs.py",
+      "doc": "docs/energy-conjectures.md",
+      "evidence": [
+        "OLS + 2000-draw bootstrap on the Zelinka et al. 2020 table (53 models, ECS and ERF2x), computed 2026-11-03 \u2014 one dataset, one method"
+      ],
+      "falsifier": "a different ECS/ERF2x compilation, or a weighting of the same one, giving a slope above +0.3 with a CI excluding zero"
     }
   ]
 }
