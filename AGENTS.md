@@ -3,6 +3,16 @@
 > **Don't ask a complex system for its values — ask for its constraints, its count, and its
 > deficit. Everything else is covariance, not knowledge.**
 
+## Publishing this site (2026-11-03)
+
+`pacland.morpheus.nz` is **GitHub Pages** built from `gh-pages`, mirrored by `scripts/deploy-pages.sh` from
+`web/`. A merge to `main` does **not** publish; the script does, and Pages builds in ~60–90 s. Netlify cannot
+serve this domain (it is claimed by two other Netlify sites), and the DNS CNAME must stay a **proxied**
+Cloudflare record to `robmitchellengineering-hub.github.io` — the proxy is what serves HTTPS.
+
+**Verify with a fetch, never with a green check:** `curl -s https://pacland.morpheus.nz/ | grep -c "<your
+string>"`. Full procedure: `docs/deployment.md` § "State, 2026-11-03" and the `site-publish` skill.
+
 ## Multi-discipline workflow — the core on `main`, every expansion on its own branch
 
 PACLAND is one **core** discipline (the string landscape — the founding spine) plus several
