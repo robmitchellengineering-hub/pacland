@@ -32,6 +32,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from .evidence import class_for
+
 # The machine classes are imported vocabulary, not invented: pacland.swampland classifies every
 # conjecture the same three ways, and this module speaks it unchanged.
 TESTABLE_NOW = "TESTABLE-NOW"
@@ -296,13 +298,14 @@ def table(evidence: dict[tuple[str, str], Evidence] | None = None) -> list[dict]
                 rows.append({
                     "candidate": cand.id, "constraint": con.id, "name": con.name,
                     "verdict": UNKNOWN, "reason": "does not claim a string completion - condition not asked",
-                    "machine": con.machine,
+                    "machine": con.machine, "reason_class": class_for(cand.id, con.id),
                 })
                 continue
             v, why = verdict(con, evidence.get((cand.id, con.id)))
             rows.append({
                 "candidate": cand.id, "constraint": con.id, "name": con.name,
                 "verdict": v, "reason": why, "machine": con.machine,
+                "reason_class": class_for(cand.id, con.id),
             })
     return rows
 

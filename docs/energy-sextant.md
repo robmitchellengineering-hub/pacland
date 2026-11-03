@@ -127,6 +127,40 @@ Deciding requires the candidate's own predicted value, which is SX-1.
 There is deliberately **no path from "nothing found" to `SURVIVES`**, including the six rows where the
 condition is not asked at all.
 
+### SX-1, started: *why* each cell is undecided
+
+A table of 78 blank cells is a wall. The referee now reports **which kind** of blank each one is, because
+the classes imply different work:
+
+| class | meaning | work it implies | cells |
+|---|---|---|---|
+| `COMPUTED-HERE` | an in-repo computation decides it | nothing to do | 1 |
+| `COMPUTED-ELSEWHERE` | a published computation decides it | read the paper, score the cell | 0 |
+| `CONTESTED` | the framework's literature disputes it | cannot be scored until the dispute resolves | 4 |
+| `NOT-ESTABLISHED` | the framework's own open problem | a research programme, not a task | 0 |
+| `NO-PREDICTION` | the framework makes no such prediction | the condition does not apply | 0 |
+| `NOT-RESEARCHED` | no citation entered yet | **a task list — nobody has looked** | 73 |
+
+`NOT-RESEARCHED` exists to keep the last distinction honest: "we looked and the field has no answer" and
+"we have not looked" must never share a cell value, or the table becomes an excuse. A `Note` with any
+other class and no source cannot be constructed.
+
+The five researched cells, each read from the paper's own abstract:
+
+| cell | class | what is actually shown |
+|---|---|---|
+| `lqg-spinfoam × C12` | `CONTESTED` | large-spin asymptotics recover the **Regge action** — asymptotic, not the full GR limit ([1010.4886](https://arxiv.org/abs/1010.4886), [1201.2187](https://arxiv.org/abs/1201.2187)) |
+| `asymptotic-safety × C3` | `CONTESTED` | ghost-free forms via field redefinitions vs. a 2026 claim of BRST violation and "fundamental limitations" ([2311.12097](https://arxiv.org/abs/2311.12097), [2601.08886](https://arxiv.org/abs/2601.08886)) |
+| `causal-sets × C2` | `CONTESTED` | Lorentz invariance claimed to follow from Poisson sprinkling; locality still being defined ([1309.3403](https://arxiv.org/abs/1309.3403)) |
+| `lqg-spinfoam × C1` | `CONTESTED` | perturbations on a flat background give **linearised** gravity, not the Newtonian limit ([1812.02110](https://arxiv.org/abs/1812.02110)) |
+| `strings-adscft × C11` | `COMPUTED-HERE` | `T⁶`: distance conjecture and WGC exact, no de Sitter vacuum — cell stays `UNKNOWN` because the predicate is about the framework |
+
+**The pattern is the finding.** Every researched cell is `CONTESTED`: each framework demonstrates its
+condition in a limit, a model, or at leading order, and none demonstrates it in full. That is why the
+field cannot choose — not for want of ideas, but because every framework is *partially computed*.
+
+A `CONTESTED` cell is not a failure of the referee. It is the true state of the subject.
+
 ## 5. The target equation — named, not gestured at
 
 Two carriers run in parallel, because betting the programme on one derivation is not a plan.
