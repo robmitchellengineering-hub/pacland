@@ -1509,6 +1509,13 @@
    "title": "demo_certificate_t6.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/deploy-netlify.mjs",
+   "kind": "script",
+   "path": "scripts/deploy-netlify.mjs",
+   "summary": "",
+   "title": "deploy-netlify.mjs"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/deploy-pages.sh",
    "kind": "script",
    "path": "scripts/deploy-pages.sh",
