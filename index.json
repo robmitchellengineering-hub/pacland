@@ -95,10 +95,17 @@
    "title": "Architecture \u2014 six layers"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/arcore-over-pdr.md",
+   "kind": "doc",
+   "path": "docs/arcore-over-pdr.md",
+   "summary": "and the data says so more bluntly than the feeling does.",
+   "title": "The metre is ARCore. Step counting is not a measurement."
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/arxiv-submission.md",
    "kind": "doc",
    "path": "docs/arxiv-submission.md",
-   "summary": "Five technical papers plus one flagship synthesis are ready. This is everything arXiv needs, so the only remaining steps are things only Rob can do (create/own the account, receive the\u2026",
+   "summary": "Five technical papers plus one flagship synthesis are ready. Edited 2026-10-29 before submission: the theorem's scope note (one symplectic pair), and a worked-failure section in the\u2026",
    "title": "arXiv submission package \u2014 turn-key"
   },
   {
@@ -116,6 +123,13 @@
    "title": "Computing the uncomputable \u2014 a cartography of the boundary"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/catchup-2026-10-29.md",
+   "kind": "doc",
+   "path": "docs/catchup-2026-10-29.md",
+   "summary": "Two sessions worked this repo today, on two nodes. This is the synthesis: the results with their numbers, the failure pattern that produced them, and what any of it is good for.",
+   "title": "Catch-up \u2014 2026-10-29: what we learned, and what it is for"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/causal-battery.md",
    "kind": "doc",
    "path": "docs/causal-battery.md",
@@ -128,6 +142,48 @@
    "path": "docs/cc-distribution.md",
    "summary": "flight). Read tier labels \u2014 proven / measured / conjectured \u2014 and never read one into another.",
    "title": "The cosmological-constant distribution \u2014 flux vs uplift"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/certificate-integrity.md",
+   "kind": "doc",
+   "path": "docs/certificate-integrity.md",
+   "summary": "A certificate is only evidence if someone who does not trust the issuer can check it. This page is the check, and it is deliberately short: three files and a command that ships with every\u2026",
+   "title": "Certificate integrity \u2014 how to check one without trusting us"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/chamber-analysis.md",
+   "kind": "doc",
+   "path": "docs/chamber-analysis.md",
+   "summary": "A reverberation chamber is judged on its modes. Below some frequency it is under-moded \u2014 the field is a set of isolated resonances, not a diffuse field \u2014 and a test result taken there\u2026",
+   "title": "Reverberation chambers: the usable frequency is not three times the fundamental"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/chamber-command.md",
+   "kind": "doc",
+   "path": "docs/chamber-command.md",
+   "summary": "A test house asks one question of a chamber: is it over-moded at this frequency. This answers it from the chamber's own dimensions and its measured Q, and reports two LUF estimates side by\u2026",
+   "title": "Chamber analysis as one command \u2014 and it caught itself contradicting"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/channel-action.md",
+   "kind": "doc",
+   "path": "docs/channel-action.md",
+   "summary": "AirMatrix has router control. That means this analysis does not end in a recommendation \u2014 it ends in a transaction, and a transaction needs more than a channel number.",
+   "title": "The channel plan as an action, for AirMatrix's router automation"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/channel-plan.md",
+   "kind": "doc",
+   "path": "docs/channel-plan.md",
+   "summary": "The phone heard every BSS in range with its frequency and level. That is an interference census, and it answers a question every installer guesses at.",
+   "title": "Which channel should the access point be on? \u2014 from the scans"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/claims-registry.md",
+   "kind": "doc",
+   "path": "docs/claims-registry.md",
+   "summary": "Every published number in this work now carries a status, the script that reproduces it, the document it appears in, and the check that could make it wrong. Eleven claims are registered\u2026",
+   "title": "The claims registry \u2014 PASS-1, PASS-2 and withdrawn, made mechanical"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-ace-reference-fidelity.md",
@@ -242,6 +298,13 @@
    "title": "The constraint/observable split \u2014 the structure miner's answer"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/cycles.md",
+   "kind": "doc",
+   "path": "docs/cycles.md",
+   "summary": "",
+   "title": "Cycles \u2014 the no \u2192 question \u2192 yes \u2192 no loop, closed ones only"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/darboux-connection.md",
    "kind": "doc",
    "path": "docs/darboux-connection.md",
@@ -261,6 +324,20 @@
    "path": "docs/deployment.md",
    "summary": "Live surfaces (both serving web/index.html, the same static demo):",
    "title": "Deployment \u2014 where PACLAND lives"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/deterministic-in-use.md",
+   "kind": "doc",
+   "path": "docs/deterministic-in-use.md",
+   "summary": "in an exact count verified against full enumeration \u2014 no sampler, no probability, no run-to-run variance. The physics is deterministic in its use there, even though nothing here touches\u2026",
+   "title": "Deterministic in use \u2014 the scoped claim"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drift-is-not-calibratable.md",
+   "kind": "doc",
+   "path": "docs/drift-is-not-calibratable.md",
+   "summary": "Fitting a yaw bias and a scale per loop drives both parameters to the edges of the search range and still leaves 5\u201370% open. No interior solution.",
+   "title": "The loop cannot be closed by a drift model \u2014 measured, not assumed"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-gap-analysis.md",
@@ -312,11 +389,25 @@
    "title": "Economics verification deficit \u2014 discipline #3 (playbook item #3)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/edna-detection-limit.md",
+   "kind": "doc",
+   "path": "docs/edna-detection-limit.md",
+   "summary": "three in src/pacland/edna/init.py: methods only, enter through the control, the falsifier first.",
+   "title": "eDNA detection theory \u2014 a methods-only discipline, and the pass it had to survive first"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/educability.md",
    "kind": "doc",
    "path": "docs/educability.md",
    "summary": "This formalizes the meta-loop: how verified knowledge accumulates and transfers across generations \u2014 and across sources \u2014 without redoing the search that produced it. It is the PACLAND\u2026",
    "title": "L5 formalization \u2014 educability as verified knowledge transfer"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/em-mode-capacity.md",
+   "kind": "doc",
+   "path": "docs/em-mode-capacity.md",
+   "summary": "of a confined space are the same calculation for acoustic and electromagnetic fields. Only the speed and the boundary physics differ. If that holds, one engine answers \"how much information\u2026",
+   "title": "The electromagnetic twin \u2014 one engine, two fields"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/encoding.md",
@@ -326,11 +417,32 @@
    "title": "Encoding \u2014 the genotype (L1)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-conjectures.md",
+   "kind": "doc",
+   "path": "docs/energy-conjectures.md",
+   "summary": "Five claims, each stated so it can be wrong, each with the observation that would kill it. Two are computed here (arithmetic on published constants); three are registered but not yet run\u2026",
+   "title": "Energy conjectures \u2014 registered, with their falsifiers"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md",
+   "kind": "doc",
+   "path": "docs/energy-sextant.md",
+   "summary": "honest state of the field, not a gap in this repo. Nothing here is a physics result.",
+   "title": "SEXTANT \u2014 an equation for quantum gravity, or the proof that the field cannot choose one"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/evolvability.md",
    "kind": "doc",
    "path": "docs/evolvability.md",
    "summary": "This formalizes the search layer. It maps Valiant's evolvability model onto the L1 genotype and the L3 certificate, and states the one theorem that governs whether L4 can work at all.",
    "title": "L4 formalization \u2014 evolvability over the landscape"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/execution-gate.md",
+   "kind": "doc",
+   "path": "docs/execution-gate.md",
+   "summary": "and drop the file in Downloads \u2014 while a radio:wifi node with a working SSH key was sitting on the mesh. His words: \"asking me to enter cmd line and not knowing how to complete the job on\u2026",
+   "title": "The execution gate \u2014 a command only reaches the operator if no path exists"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/expansion-map.md",
@@ -340,11 +452,25 @@
    "title": "PACLAND expansion map \u2014 where the method applies next"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/explainer-acoustic-analysis.md",
+   "kind": "doc",
+   "path": "docs/explainer-acoustic-analysis.md",
+   "summary": "What it does, what already works, and what it will let us do. The detailed maths is in [identifiability-of-room-modes.md](identifiability-of-room-modes.md); the programme plan is\u2026",
+   "title": "The audio analysis \u2014 in plain English"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/external-claims-padgett.md",
    "kind": "doc",
    "path": "docs/external-claims-padgett.md",
    "summary": "Asked to look at Jason Padgett's research. This is the record of what exists, what in it is checkable, and what the checks returned. It is not a judgement of the man \u2014 the machine is\u2026",
    "title": "An outside claim through the same machine: Jason Padgett's QIH preprints"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/fading-is-rayleigh.md",
+   "kind": "doc",
+   "path": "docs/fading-is-rayleigh.md",
+   "summary": "certain mode density as a diffuse field: overlapping modes, random phases, so the received amplitude is Rayleigh and the received power is exponential. That is a prediction, and the walks\u2026",
+   "title": "The room is a diffuse cavity \u2014 measured, not assumed"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/falsifiable-predictions.md",
@@ -359,6 +485,13 @@
    "path": "docs/falsification-status.md",
    "summary": "Principle, what has been actively checked versus what remains open.",
    "title": "Falsification status \u2014 what is checked, and the two honest gaps"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/field-audit.md",
+   "kind": "doc",
+   "path": "docs/field-audit.md",
+   "summary": "A checkable audit, not a vibe. The research (three parallel gap analyses, 2026-10-18) found that no ML-for-the-landscape tool emits a calibrated error model. This document makes that\u2026",
+   "title": "Verification audit of the ML-for-the-string-landscape field"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/finance-claims.md",
@@ -389,11 +522,60 @@
    "title": "h12=25 sampling wall \u2014 the ISD proposal degrades (measured 2026-10-21)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/house-from-walks.md",
+   "kind": "doc",
+   "path": "docs/house-from-walks.md",
+   "summary": "and stops cannot close, and those two are exactly the one-way ones (net displacement 91\u201392% of path).",
+   "title": "Ten walks: what they establish, and what they do not"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/house-map.md",
+   "kind": "doc",
+   "path": "docs/house-map.md",
+   "summary": "Eleven labelled spots, twenty-three BSS, one walk with a phone. The question is how much geometry that contains.",
+   "title": "The house as a 3D shape \u2014 what the walk actually determines"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/hypotheses.md",
+   "kind": "doc",
+   "path": "docs/hypotheses.md",
+   "summary": "Generated by python3 scripts/hypotheses.py. Do not edit by hand.",
+   "title": "Hypotheses from cross-referenced walls"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/identifiability-of-room-modes.md",
    "kind": "doc",
    "path": "docs/identifiability-of-room-modes.md",
    "summary": "The question the audio lab's correction engine depends on, and one nobody publishes an answer to. Answered the way we answered Smets\u2013Wouters: by the rank of the Jacobian of what is observed\u2026",
    "title": "How many microphones identify how many modes?"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/identifiability.md",
+   "kind": "doc",
+   "path": "docs/identifiability.md",
+   "summary": "The registry held identifiability at PASS-1 \u2014 one parameterisation (Q = 50, one space, \u221260 dB). This sweeps a factor of four in Q and four spaces:",
+   "title": "Identifiability, PASS-2: how many modes are usable is a property of the space, not of Q"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/is-the-landscape-chaotic.md",
+   "kind": "doc",
+   "path": "docs/is-the-landscape-chaotic.md",
+   "summary": "Rob asked for the biggest questions, and this is question 1 from the arm's agenda (docs/quantum-arm-agenda.md). This is the honest state of it after a first attempt.",
+   "title": "Is the landscape chaotic? \u2014 the question, and what it takes to answer it"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/joint-structure.md",
+   "kind": "doc",
+   "path": "docs/joint-structure.md",
+   "summary": "The swing that landed, after the first test missed.",
+   "title": "The structure is joint, not marginal \u2014 W0 is random alone but correlated with the gauge couplings"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/known-positives.md",
+   "kind": "doc",
+   "path": "docs/known-positives.md",
+   "summary": "",
+   "title": "What we know \u2014 the positive side"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/learnability-negative.md",
@@ -403,11 +585,60 @@
    "title": "The flux landscape is not evolvable \u2014 a negative result, assembled from existing work"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/learnability-spectrum.md",
+   "kind": "doc",
+   "path": "docs/learnability-spectrum.md",
+   "summary": "Refined result from the paired flux\u2194observable data (107 real SUSY flux vacua, data/fluxobservables.json). This is the verification angle: not mining for structure, but certifying where\u2026",
+   "title": "The learnability boundary \u2014 linear fails, quadratic carries structure, W0 is random"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/learnable-through-phenotype.md",
+   "kind": "doc",
+   "path": "docs/learnable-through-phenotype.md",
+   "summary": "The sharpest learnability result so far, and it reframes the governing question.",
+   "title": "W0 is learnable through the phenotype, not the genotype"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/linux-node-spec.md",
    "kind": "doc",
    "path": "docs/linux-node-spec.md",
    "summary": "Why this exists: the flux sampler (JAXVacua + cytools) is Linux-only, and the mesh's only Linux today is two 4 vCPU / 4 GB VMs on win-2. Dual-boot was considered and rejected (manual\u2026",
    "title": "Dedicated Linux compute nodes \u2014 the cheap path to native Linux on the mesh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/measure-invariance.md",
+   "kind": "doc",
+   "path": "docs/measure-invariance.md",
+   "summary": "Generated by python3 scripts/measureaudit.py. Do not edit by hand.",
+   "title": "The measure-invariance audit"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/measured-2026-10-31.md",
+   "kind": "doc",
+   "path": "docs/measured-2026-10-31.md",
+   "summary": "link speed. No Location permission needed, no command typed by Rob.",
+   "title": "The first real measurement \u2014 two links, taken from the mesh, with no operator involvement"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/measurement-001.md",
+   "kind": "doc",
+   "path": "docs/measurement-001.md",
+   "summary": "SSID: Telstra3696 freq: 2462.0 signal: -37 dBm rx bitrate: 144.4 MBit/s MCS 15 short GI tx bitrate: 144.4 MBit/s MCS 15 short GI",
+   "title": "Measurement 001 \u2014 the first real link, recorded so it can be re-read"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/method-transfer.md",
+   "kind": "doc",
+   "path": "docs/method-transfer.md",
+   "summary": "an analogy is not transferred, so every row ends in something that can be built or checked.",
+   "title": "What the physics discipline can give the other disciplines"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/methods-from-the-bench.md",
+   "kind": "doc",
+   "path": "docs/methods-from-the-bench.md",
+   "summary": "extrapolate results and methods back to physics work on unifying string theory.\"",
+   "title": "Methods from the bench: what a known-answer inverse problem teaches the landscape"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mitchell-completeness-theorem.md",
@@ -452,11 +683,25 @@
    "title": "A New Approach: Constraint-First String Theory"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/nonlinear-edges.md",
+   "kind": "doc",
+   "path": "docs/nonlinear-edges.md",
+   "summary": "Spearman (rank) vs Pearson (linear) on the phenotype network, n \u2248 101.",
+   "title": "Nonlinear edges \u2014 the phenotype network is more structured than linear correlation showed, and the tadpole hub"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/observable-measure.md",
    "kind": "doc",
    "path": "docs/observable-measure.md",
    "summary": "This makes the certificate in verification-formal.md concrete. D is the measure over observables that defines what \"close to our universe\" means; until it is pinned down, every certificate\u2026",
    "title": "The observable measure D \u2014 a toy definition"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/one-command.md",
+   "kind": "doc",
+   "path": "docs/one-command.md",
+   "summary": "python3 scripts/rfplan.py --room 3,4,2.5 --band 5.18 --antennas 4 --snr 20 python3 scripts/rfplan.py --room 3,4,2.5 --band 5.18 --antennas 4 --iw-link link.txt python3 scripts/rfplan.py\u2026",
+   "title": "One command, one room, everything \u2014 `rf_plan.py`"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/one-object-thesis.md",
@@ -471,6 +716,13 @@
    "path": "docs/open-questions.md",
    "summary": "Ranked roughly by \"what must be true for the program to have legs.\"",
    "title": "Open questions and honest limits"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/operator-ask-gate.md",
+   "kind": "doc",
+   "path": "docs/operator-ask-gate.md",
+   "summary": "He had already told me the same thing once, in a different form, when I asked him to run iw:",
+   "title": "The operator-ask gate \u2014 if the agent can reach it, the agent does it"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/oracle.md",
@@ -501,11 +753,32 @@
    "title": "Outreach \u2014 Zenodo metadata and the four endorsement emails"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/partial-markov-blanket.md",
+   "kind": "doc",
+   "path": "docs/partial-markov-blanket.md",
+   "summary": "The sufficient-statistic result, generalized and given its honest boundary.",
+   "title": "The phenotype is a partial Markov blanket \u2014 and the dilaton is the leak"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/partner-appeals.md",
    "kind": "doc",
    "path": "docs/partner-appeals.md",
    "summary": "The program has a machine-checked core and a short list of things it cannot yet compute. Each of those is a sharp, falsifiable problem a partner with the right expertise can advance \u2014 and\u2026",
    "title": "Partner appeals \u2014 the open problems, framed as collaborations"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/phenotype-network.md",
+   "kind": "doc",
+   "path": "docs/phenotype-network.md",
+   "summary": "The reframe that fell out of going multipath: stop asking about the genotype\u2192phenotype map (unlearnable) and map the phenotype network instead.",
+   "title": "The phenotype network \u2014 the landscape's learnable structure is observable\u2194observable, with the tadpole as hub"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/photo-input.md",
+   "kind": "doc",
+   "path": "docs/photo-input.md",
+   "summary": "runs/phone/photo-1793509531757-spot847/photo.jpg 199,140 bytes 1600x1200",
+   "title": "Photo input \u2014 the path works, end to end"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/physics-compute-roadmap.md",
@@ -515,11 +788,74 @@
    "title": "Physics compute \u2014 removing the GPU, and whether pooling cheap machines works"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-bold-claims.md",
+   "kind": "doc",
+   "path": "docs/plan-bold-claims.md",
+   "summary": "contribute to a unified theory. AirMatrix is where findings become hardware; this is where they become structure. Every claim in this document is judged by one question: does it constrain\u2026",
+   "title": "Bold but provable \u2014 the research arm, pointed at unification"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-brane-ring.md",
+   "kind": "doc",
+   "path": "docs/plan-brane-ring.md",
+   "summary": "first figures landed (F1 #212, F2-M1 #213), because they change the direction \u2014 this records why.",
+   "title": "F3 \u2014 the brane invariant ring: the one build that can overturn our own claim"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-dictionary-engine.md",
+   "kind": "doc",
+   "path": "docs/plan-dictionary-engine.md",
+   "summary": "engine yields certain negatives, and only construction or equivalence can yield a certain positive \u2014 so the next instruments are a dictionary engine (certified equivalences) and a\u2026",
+   "title": "Plan \u2014 the dictionary engine"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-exact-terms.md",
+   "kind": "doc",
+   "path": "docs/plan-exact-terms.md",
+   "summary": "Planning room (~/Documents/DeepSeek), 2026-10-29, v2. Decisions: D9 (this folder owns intent, the repo owns code), D10 (job \u2192 plan \u2192 decision), D14 (pacland is the method at maximum\u2026",
+   "title": "The exactness programme \u2014 every kind of exactness we can use, and what each one decides"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-facts.md",
+   "kind": "doc",
+   "path": "docs/plan-facts.md",
+   "summary": "Planning room (~/Documents/DeepSeek), 2026-10-29. Decisions: D9 (this folder owns intent, the repo owns code), D10 (job \u2192 plan \u2192 decision), D14 (pacland is the method at maximum\u2026",
+   "title": "The fact-builds \u2014 what to build to get answers rather than pointers"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-meets-link.md",
+   "kind": "doc",
+   "path": "docs/plan-meets-link.md",
+   "summary": "A capture of iw dev <if> link is now an input. The plan reads the measured band, the measured stream count (from the MCS index, not a bitrate), and prints them beside the modelled ceiling:",
+   "title": "The plan meets the link \u2014 one command, and it says whether the measurement can prove anything"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/plan-real-answers.md",
+   "kind": "doc",
+   "path": "docs/plan-real-answers.md",
+   "summary": "negatives into questions. What has not yet happened is a single answer about nature rather than about our data. This is the plan for changing that, and it names what is missing rather than\u2026",
+   "title": "Plan \u2014 from falsification to answers"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/polarisation.md",
+   "kind": "doc",
+   "path": "docs/polarisation.md",
+   "summary": "The scalar model treats every antenna as sampling every mode perfectly, which is why it gives 4 of 4 streams at 20 dB where practice gives 2\u20133. Polarisation is the obvious missing term: a\u2026",
+   "title": "Polarisation \u2014 implemented, direction plausible, **not validated**"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/publication-plan.md",
    "kind": "doc",
    "path": "docs/publication-plan.md",
    "summary": "The goal is not \"publish\" first \u2014 it is get the work in front of the people who can check it. Everything else (endorsement, arXiv, citation) follows from one expert saying \"yes, this is\u2026",
    "title": "Publication plan \u2014 the independent-researcher path to being checked"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-arm-agenda.md",
+   "kind": "doc",
+   "path": "docs/quantum-arm-agenda.md",
+   "summary": "Rob, 2026-10-28: \"what we are looking for are answers to the biggest questions in the universe.\"",
+   "title": "The quantum arm: the biggest questions we can actually reach"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/research-fanout.md",
@@ -529,11 +865,53 @@
    "title": "Research fan-out \u2014 the reusable \"compare notes\" tool"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-claims.md",
+   "kind": "doc",
+   "path": "docs/rf-claims.md",
+   "summary": "Nine numbers, each with the script that reproduces it, the document it appears in, and the check that could make it wrong. Modelled on the physics registry (docs/claims.json), because the\u2026",
+   "title": "The RF claims registry \u2014 what the radio work may quote, and what it may not"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-index.md",
+   "kind": "doc",
+   "path": "docs/rf-index.md",
+   "summary": "python3 scripts/rfplan.py --room L,W,H --band 5.18 --antennas 4 --snr 20",
+   "title": "The RF engine \u2014 one page, for a wireless engineer"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-plan-command.md",
+   "kind": "doc",
+   "path": "docs/rf-plan-command.md",
+   "summary": "The deliverable the whole engine exists for. A wireless engineer runs one command on a confined space and gets the mode structure, the stream count with its spread, the placement levers\u2026",
+   "title": "One command, one room \u2014 `rf_plan.py`"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-survey-from-ap.md",
+   "kind": "doc",
+   "path": "docs/rf-survey-from-ap.md",
+   "summary": "An access point measures almost everything the survey needs. No extra hardware.",
+   "title": "The survey instrument you already own"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/rf-survey.md",
+   "kind": "doc",
+   "path": "docs/rf-survey.md",
+   "summary": "The engine runs on three numbers it does not know: the noise floor, the modal quality factor, and how busy the channel is. All three are cheap to measure, and until they are measured the\u2026",
+   "title": "Survey first \u2014 measure the room, then plan it"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sampling-frontier.md",
    "kind": "doc",
    "path": "docs/sampling-frontier.md",
    "summary": "The \"bigger systems\" run at h12=25 returned 0 vacua; the question was whether that is a bug or the physics. It is the physics, and the boundary is now measured.",
    "title": "Sampling frontier \u2014 the stabilised regime ends at h12 = 4 (measured 2026-10-22)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/selection-uniformity.md",
+   "kind": "doc",
+   "path": "docs/selection-uniformity.md",
+   "summary": "A speculative but falsifiable claim, advanced deliberately (this is the \"swing\": a real chance to be wrong, stated so it can be checked).",
+   "title": "The flux-vacua ensemble provides no selection \u2014 a bold claim about the measure problem"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/selection.md",
@@ -592,6 +970,13 @@
    "title": "Statistical selection over the flux landscape \u2014 first pass"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/step-count-repeatability.md",
+   "kind": "doc",
+   "path": "docs/step-count-repeatability.md",
+   "summary": "Two measurements of the same corridor, by the same app, on the same phone:",
+   "title": "The pedometer's own repeatability \u2014 and why it bounds the map"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/structure-map.md",
    "kind": "doc",
    "path": "docs/structure-map.md",
@@ -599,11 +984,25 @@
    "title": "The structure map \u2014 every observable classified (Rule-of-Three verified)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sufficient-statistic.md",
+   "kind": "doc",
+   "path": "docs/sufficient-statistic.md",
+   "summary": "The first clean causal (mediation) result, not just correlation.",
+   "title": "The tadpole is a sufficient statistic \u2014 flux acts on the mass spectrum only through one scalar"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/swampland-connection.md",
    "kind": "doc",
    "path": "docs/swampland-connection.md",
-   "summary": "This doc records the bridge between the measured structure map and the swampland program, and the runnable system that tests it: pacland.swampland + scripts/testswampland.py (pure stdlib +\u2026",
+   "summary": "This doc records the bridge between the measured structure map and the swampland program, and the runnable system that tests it: pacland.swampland + scripts/swamplandchecks.py (pure stdlib\u2026",
    "title": "The swampland connection \u2014 the constraint-first conjecture as a swampland test"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/synthesis.md",
+   "kind": "doc",
+   "path": "docs/synthesis.md",
+   "summary": "Consolidation of the verify-lead findings (2026-10-18). Each reframe is a link; the individual docs carry the numbers.",
+   "title": "Synthesis \u2014 the landscape's learnable structure is a small, nearly-closed phenotype network"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/t6-exact-oracle.md",
@@ -611,6 +1010,27 @@
    "path": "docs/t6-exact-oracle.md",
    "summary": "on T\u2076 = (T\u00b2)\u00b3, replacing the toy exacttoric (whose tadpole was a placeholder). Every observable is a closed form, so the oracle's systematic error is identically zero \u2014 the verifier is\u2026",
    "title": "The exact T\u2076 toroidal orbifold oracle \u2014 build #2 done properly"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/tensions.md",
+   "kind": "doc",
+   "path": "docs/tensions.md",
+   "summary": "Facts: - h12 = 5 sampler yield was zero at instanton degree 0, 1 and 2 at 400 tries each - #208 concluded the h12 >= 5 wall is degree-1 truncation and that degree 2 fixes it",
+   "title": "Tensions \u2014 facts that cannot both be true as stated"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/the-impostor-count.md",
+   "kind": "doc",
+   "path": "docs/the-impostor-count.md",
+   "summary": "up to 43 vacua indistinguishable, and drew the conclusion that the room's lesson transferred to the landscape. That number was an artefact of my own arithmetic, not a property of the\u2026",
+   "title": "The impostor count: the observables DO identify a vacuum \u2014 my first measurement of this was wrong"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/thermal-noise-bound.md",
+   "kind": "doc",
+   "path": "docs/thermal-noise-bound.md",
+   "summary": "backscatter links\", PNAS, [doi:10.1073/pnas.2606732123](https://www.pnas.org/doi/abs/10.1073/pnas.2606732123) \u2014 reported as up to 1,000\u00d7 less transmitter energy than RF, with a 100\u00d7 rate\u2026",
+   "title": "A bound for two-state ambient-thermal-noise communication"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/three-machines-plan.md",
@@ -634,11 +1054,32 @@
    "title": "Prior art and tooling \u2014 what to build on"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/truncation-control.md",
+   "kind": "doc",
+   "path": "docs/truncation-control.md",
+   "summary": "2.7e10 across polytopes). Is the near-null direction a truncation artefact or a real hierarchy? No measurement has settled it, and the sampling wall above h12 = 5 depends on the answer.",
+   "title": "The h12 wall's discriminator, calibrated \u2014 and it is confounded by the thing it measures"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-classifiers.md",
+   "kind": "doc",
+   "path": "docs/two-classifiers.md",
+   "summary": "AirMatrix's rob-site and this repo's scripts/applymeasurements.py both turn ARCore sessions into rooms. They were run on the same five sessions on 2026-11-02, and they disagreed on two of\u2026",
+   "title": "Two classifiers, one dataset: where pacland and AirMatrix disagree"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-sessions-synthesis.md",
    "kind": "doc",
    "path": "docs/two-sessions-synthesis.md",
    "summary": "Two parallel sessions attacked the same problem from different angles and landed on the same core insight. This doc merges them, because the combined picture is stronger than either alone.",
    "title": "Two sessions, one result \u2014 synthesis"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/two-sided-audit.md",
+   "kind": "doc",
+   "path": "docs/two-sided-audit.md",
+   "summary": "The bench's first rule came from a room \u2014 a candidate that explained 100% of the measured peaks was 33.9% wrong, because more free structure can always cover more data.\u2026",
+   "title": "Rule 1 applied to the landscape: which claims it touches, and which it does not"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/unification-claim.md",
@@ -667,6 +1108,20 @@
    "path": "docs/usage.md",
    "summary": "PACLAND is a verification discipline for string-theory computation \u2014 a toolset, not a physics solver. You feed it flux-vacua data (or a candidate computation), and it returns certified\u2026",
    "title": "Using PACLAND"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/validate-streams.md",
+   "kind": "doc",
+   "path": "docs/validate-streams.md",
+   "summary": "The plan predicts a ceiling. This is the tool that takes real stream counts and says whether the ceiling survived. It exists now so that the moment there is data, the test is one command.",
+   "title": "The measurement that settles the plan \u2014 and the harness ready for it"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/validation-limit.md",
+   "kind": "doc",
+   "path": "docs/validation-limit.md",
+   "summary": "The model says an idealised 3 \u00d7 4 \u00d7 2.5 m room supports 3\u20134 streams of 4 at 20 dB (PASS-2, across Q = 100\u2026400). Practice says hardware delivers 2\u20133, because a real AP does not use every\u2026",
+   "title": "Why this house cannot test the 3\u20134 stream ceiling \u2014 and what would"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verification-config.md",
@@ -725,6 +1180,90 @@
    "title": "W\u2080's weak structure is its own flux dependence \u2014 not the tadpole's scale"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/walk-2026-11-01.md",
+   "kind": "doc",
+   "path": "docs/walk-2026-11-01.md",
+   "summary": "162 samples at 1 Hz over 164 s. RSSI from \u221222 to \u221273 dBm \u2014 a 51 dB range, and the first dense signal profile this project has ever had.",
+   "title": "The first walk that recorded \u2014 and what it caught"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/walls.md",
+   "kind": "doc",
+   "path": "docs/walls.md",
+   "summary": "Generated by python3 scripts/walls.py. Do not edit by hand.",
+   "title": "The wall register"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/well-posedness-reply.md",
+   "kind": "doc",
+   "path": "docs/well-posedness-reply.md",
+   "summary": "Peter Woit's criticism of the string programme includes one sentence that applies to us and is not aimed at string theory at all:",
+   "title": "Is our question well-posed? A reply to Woit's charge, in his terms"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/what-transfers.md",
+   "kind": "doc",
+   "path": "docs/what-transfers.md",
+   "summary": "Written for a reader from another discipline. The question is narrow and answerable: which parts of this work are discipline-independent, what would each need to be used elsewhere, and\u2026",
+   "title": "What transfers out of this programme, and for what it should not be claimed"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/wifi-5ghz.md",
+   "kind": "doc",
+   "path": "docs/wifi-5ghz.md",
+   "summary": "At 5 GHz the mode count stops being interesting \u2014 a 3 \u00d7 4 \u00d7 2.5 m room holds 59,978 modes in one 80 MHz channel (Weyl estimate 57,450, +4.4%; the surface coefficient was fitted on a wide\u2026",
+   "title": "5 GHz WiFi: how many streams does a room actually carry?"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/wifi-lidar.md",
+   "kind": "doc",
+   "path": "docs/wifi-lidar.md",
+   "summary": "what the field actually does.",
+   "title": "WiFi as LiDAR \u2014 what closes the gap, and what never will"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/working-across-the-estate.md",
+   "kind": "doc",
+   "path": "docs/working-across-the-estate.md",
+   "summary": "paying for it; each line names the failure that bought it. All of them are mirrored on the Mac.",
+   "title": "Working across the estate from this repo"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ap_health.py",
+   "kind": "script",
+   "path": "scripts/ap_health.py",
+   "summary": "One row per access point: what the phone heard, and which APs deserve a look.",
+   "title": "ap_health.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/apply_measurements.py",
+   "kind": "script",
+   "path": "scripts/apply_measurements.py",
+   "summary": "Turn ARCore measurements into room dimensions in the layout template.",
+   "title": "apply_measurements.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/arithmetic_stats.py",
+   "kind": "script",
+   "path": "scripts/arithmetic_stats.py",
+   "summary": "Do the landscape's statistical arguments assume a universality arithmetic objects break?",
+   "title": "arithmetic_stats.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/b3_scaling.py",
+   "kind": "script",
+   "path": "scripts/b3_scaling.py",
+   "summary": "The two b3 scales and their product.",
+   "title": "b3_scaling.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/band_sweep.py",
+   "kind": "script",
+   "path": "scripts/band_sweep.py",
+   "summary": "How much does bandwidth buy? The information-versus-frequency curve, on a room whose answer is known.",
+   "title": "band_sweep.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",
@@ -767,6 +1306,34 @@
    "title": "causal_battery.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/certify_vacuum.py",
+   "kind": "script",
+   "path": "scripts/certify_vacuum.py",
+   "summary": "Certify a real flux vacuum end-to-end through the Verification Vault.",
+   "title": "certify_vacuum.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/chamber.py",
+   "kind": "script",
+   "path": "scripts/chamber.py",
+   "summary": "Reverberation-chamber analysis \u2014 the one confined space where the peak-based mode test is valid.",
+   "title": "chamber.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/chamber_plan.py",
+   "kind": "script",
+   "path": "scripts/chamber_plan.py",
+   "summary": "Chamber analysis as one command: is this chamber usable at this frequency, and by how much?",
+   "title": "chamber_plan.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/channel_plan.py",
+   "kind": "script",
+   "path": "scripts/channel_plan.py",
+   "summary": "Which channel should the access point actually be on? Answered from the scans, not from folklore.",
+   "title": "channel_plan.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check-site-links.py",
    "kind": "script",
    "path": "scripts/check-site-links.py",
@@ -777,7 +1344,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check_certificates_current.py",
    "kind": "script",
    "path": "scripts/check_certificates_current.py",
-   "summary": "Reproducibility, checked mechanically: do the committed certificates match a fresh run?",
+   "summary": "Reproducibility and integrity, checked mechanically.",
    "title": "check_certificates_current.py"
   },
   {
@@ -865,11 +1432,74 @@
    "title": "climb_deficit.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/compression.py",
+   "kind": "script",
+   "path": "scripts/compression.py",
+   "summary": "The compression engine \u2014 does the corpus predict, or is it a list?",
+   "title": "compression.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_connection.py",
+   "kind": "script",
+   "path": "scripts/conifold_connection.py",
+   "summary": "F2 M2c - the connection at the conifold, and the test that it closes.",
+   "title": "conifold_connection.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_exponents.py",
+   "kind": "script",
+   "path": "scripts/conifold_exponents.py",
+   "summary": "F2 M2a - the conifold's local exponents, computed exactly.",
+   "title": "conifold_exponents.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_recurrence.py",
+   "kind": "script",
+   "path": "scripts/conifold_recurrence.py",
+   "summary": "H-C's artefact: does the conifold coefficient sequence have a rational generating function?",
+   "title": "conifold_recurrence.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/connection_form.py",
+   "kind": "script",
+   "path": "scripts/connection_form.py",
+   "summary": "The connection matrix: is there a closed algebraic form?",
+   "title": "connection_form.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/continuation.py",
+   "kind": "script",
+   "path": "scripts/continuation.py",
+   "summary": "Route C \u2014 a period outside the large-complex-structure radius.",
+   "title": "continuation.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/counterexample.py",
+   "kind": "script",
+   "path": "scripts/counterexample.py",
+   "summary": "The counterexample engine \u2014 exhaustive window search with known-answer controls.",
+   "title": "counterexample.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/coverage_map.py",
+   "kind": "script",
+   "path": "scripts/coverage_map.py",
+   "summary": "The coverage map, ready for a frame \u2014 and run here on an ASSUMED layout to show what the frame buys.",
+   "title": "coverage_map.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/crosscheck_sm_float.py",
    "kind": "script",
    "path": "scripts/crosscheck_sm_float.py",
    "summary": "Rule of Three, arm 2 \u2014 an INDEPENDENT float re-derivation of the two SM exact results.",
    "title": "crosscheck_sm_float.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/cycles.py",
+   "kind": "script",
+   "path": "scripts/cycles.py",
+   "summary": "The cycle log \u2014 one line per closed loop of the no -> question -> yes -> no process.",
+   "title": "cycles.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/demo_certificate_t6.py",
@@ -907,6 +1537,13 @@
    "title": "diagnose_truncation.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/dictionary.py",
+   "kind": "script",
+   "path": "scripts/dictionary.py",
+   "summary": "The dictionary engine \u2014 first entry: flux scaling.",
+   "title": "dictionary.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/drugs_recovery.py",
    "kind": "script",
    "path": "scripts/drugs_recovery.py",
@@ -919,6 +1556,13 @@
    "path": "scripts/drugs_second_source.py",
    "summary": "Class 5 for drug discovery: the same potency, from two independent databases.",
    "title": "drugs_second_source.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ds_uplift.py",
+   "kind": "script",
+   "path": "scripts/ds_uplift.py",
+   "summary": "B3 \u2014 de Sitter requires a positive term beyond the F-term potential.",
+   "title": "ds_uplift.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/econ_resolve.py",
@@ -1061,6 +1705,69 @@
    "title": "economics_vintage_sensitivity.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/edna_floor.py",
+   "kind": "script",
+   "path": "scripts/edna_floor.py",
+   "summary": "The one parameter still assumed: how much the contamination floor moves the answer.",
+   "title": "edna_floor.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/edna_limit.py",
+   "kind": "script",
+   "path": "scripts/edna_limit.py",
+   "summary": "The truth bench for eDNA: a synthetic community whose answer is known, swept over effort and contamination.",
+   "title": "edna_limit.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/edna_mock.py",
+   "kind": "script",
+   "path": "scripts/edna_mock.py",
+   "summary": "The truth bench for eDNA, on a REAL mock community: known composition in, observed counts out.",
+   "title": "edna_mock.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/em_capacity.py",
+   "kind": "script",
+   "path": "scripts/em_capacity.py",
+   "summary": "The electromagnetic twin of the room analysis: mode count, statistics, identifiability, and the",
+   "title": "em_capacity.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_drift_ecs.py",
+   "kind": "script",
+   "path": "scripts/energy_drift_ecs.py",
+   "summary": "Climate: does conservation drift transfer into ECS, and at what coefficient?",
+   "title": "energy_drift_ecs.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_fusion_exponent.py",
+   "kind": "script",
+   "path": "scripts/energy_fusion_exponent.py",
+   "summary": "Fusion: is the 0.93 current exponent physics, or cross-machine collinearity?",
+   "title": "energy_fusion_exponent.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_li_s_ceiling.py",
+   "kind": "script",
+   "path": "scripts/energy_li_s_ceiling.py",
+   "summary": "The Li\u2013S ceiling: specific energy is set by the electrolyte/sulfur ratio.",
+   "title": "energy_li_s_ceiling.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_lithium_ceiling.py",
+   "kind": "script",
+   "path": "scripts/energy_lithium_ceiling.py",
+   "summary": "Lithium mass balance, not cost, caps Li-ion deployment near 3.2 TWh/yr.",
+   "title": "energy_lithium_ceiling.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/energy_verify_joules.py",
+   "kind": "script",
+   "path": "scripts/energy_verify_joules.py",
+   "summary": "The energy floor of verification, and the crossover against re-execution.",
+   "title": "energy_verify_joules.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/epidemiology_identifiability.py",
    "kind": "script",
    "path": "scripts/epidemiology_identifiability.py",
@@ -1068,11 +1775,39 @@
    "title": "epidemiology_identifiability.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/exact_series.py",
+   "kind": "script",
+   "path": "scripts/exact_series.py",
+   "summary": "Route C exact sub-item \u2014 the conifold coefficients, exactly.",
+   "title": "exact_series.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/exactness.py",
+   "kind": "script",
+   "path": "scripts/exactness.py",
+   "summary": "The exactness instruments \u2014 the four kinds of exactness that work in the interior.",
+   "title": "exactness.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/existence.py",
+   "kind": "script",
+   "path": "scripts/existence.py",
+   "summary": "The existence engine \u2014 exhibit the object, or say none is in the window.",
+   "title": "existence.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/extract_observables.py",
    "kind": "script",
    "path": "scripts/extract_observables.py",
    "summary": "Extract a richer per-vacuum observable vector (L2 stage 5, partial).",
    "title": "extract_observables.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fading_test.py",
+   "kind": "script",
+   "path": "scripts/fading_test.py",
+   "summary": "Does the room behave like the diffuse cavity the engine assumes? Measured, at last.",
+   "title": "fading_test.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fetch_carbon_budget.py",
@@ -1152,6 +1887,62 @@
    "title": "gpu_bootstrap.sh"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/gv_basis.py",
+   "kind": "script",
+   "path": "scripts/gv_basis.py",
+   "summary": "B1 fixed - the GV basis convention.",
+   "title": "gv_basis.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/height_error.py",
+   "kind": "script",
+   "path": "scripts/height_error.py",
+   "summary": "How well does the phone measure a ceiling? Rob's house answers it, because every ceiling is the same height.",
+   "title": "height_error.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/house_from_walks.py",
+   "kind": "script",
+   "path": "scripts/house_from_walks.py",
+   "summary": "What ten walks actually establish \u2014 and the one number that survives.",
+   "title": "house_from_walks.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/house_map.py",
+   "kind": "script",
+   "path": "scripts/house_map.py",
+   "summary": "The house as a 3D map, inferred from the walk \u2014 and honest about what is inferred and what is invented.",
+   "title": "house_map.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/hypotheses.py",
+   "kind": "script",
+   "path": "scripts/hypotheses.py",
+   "summary": "Regenerate or verify the hypothesis cross-reference.",
+   "title": "hypotheses.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/identifiability_curve.py",
+   "kind": "script",
+   "path": "scripts/identifiability_curve.py",
+   "summary": "How many numbers does it take to identify a vacuum? The curve, and the lattice's own degeneracy.",
+   "title": "identifiability_curve.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/identifiability_pass2.py",
+   "kind": "script",
+   "path": "scripts/identifiability_pass2.py",
+   "summary": "PASS-2 for identifiability: does 'how many modes are usable' survive a different parameterisation?",
+   "title": "identifiability_pass2.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ingest_gate.py",
+   "kind": "script",
+   "path": "scripts/ingest_gate.py",
+   "summary": "The ingest gate: how much of the corpus is outside the sampler's own declared domain?",
+   "title": "ingest_gate.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ingest_rtdsm_releases.py",
    "kind": "script",
    "path": "scripts/ingest_rtdsm_releases.py",
@@ -1166,6 +1957,13 @@
    "title": "install_cytools.sh"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/invariant.py",
+   "kind": "script",
+   "path": "scripts/invariant.py",
+   "summary": "The invariant I(b3) \u2014 one integer behind classification and accessibility.",
+   "title": "invariant.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/issue_certificate.py",
    "kind": "script",
    "path": "scripts/issue_certificate.py",
@@ -1178,6 +1976,34 @@
    "path": "scripts/issue_vvs.py",
    "summary": "Issue Valiant Verification certificates for every part that PASSES, and a freshness manifest.",
    "title": "issue_vvs.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/killing_tests.py",
+   "kind": "script",
+   "path": "scripts/killing_tests.py",
+   "summary": "H-E: are the survivors the ones a test could have killed?",
+   "title": "killing_tests.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/landscape_count.py",
+   "kind": "script",
+   "path": "scripts/landscape_count.py",
+   "summary": "Does the discrete gauge symmetry shrink the 10^500?",
+   "title": "landscape_count.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/lattice_recovery.py",
+   "kind": "script",
+   "path": "scripts/lattice_recovery.py",
+   "summary": "Recovering a room's dimensions by LABEL RECOVERY, not by fitting.",
+   "title": "lattice_recovery.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/layout_check.py",
+   "kind": "script",
+   "path": "scripts/layout_check.py",
+   "summary": "Check a room layout before a coverage map is drawn on it.",
+   "title": "layout_check.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_explainer_pdf.py",
@@ -1208,6 +2034,13 @@
    "title": "make_startalk_pdf.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_audit.py",
+   "kind": "script",
+   "path": "scripts/measure_audit.py",
+   "summary": "Regenerate or verify the measure-invariance register.",
+   "title": "measure_audit.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_constraint_learnability.py",
    "kind": "script",
    "path": "scripts/measure_constraint_learnability.py",
@@ -1236,6 +2069,13 @@
    "title": "measure_elimination_curve.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_engine.py",
+   "kind": "script",
+   "path": "scripts/measure_engine.py",
+   "summary": "F1 \u2014 the measure engine.",
+   "title": "measure_engine.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_flux_learnability.py",
    "kind": "script",
    "path": "scripts/measure_flux_learnability.py",
@@ -1248,6 +2088,13 @@
    "path": "scripts/measure_learnability.py",
    "summary": "Measure learnability + selection statistics on the real flux-vacua sample.",
    "title": "measure_learnability.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_learnability_spectrum.py",
+   "kind": "script",
+   "path": "scripts/measure_learnability_spectrum.py",
+   "summary": "Learnability spectrum \u2014 linear flux->observable R^2 + F-test (verification angle).",
+   "title": "measure_learnability_spectrum.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_phase_law.py",
@@ -1271,6 +2118,125 @@
    "title": "mine_structure.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/minima_correlation.py",
+   "kind": "script",
+   "path": "scripts/minima_correlation.py",
+   "summary": "Is the ~0.8 minima rate derivable from the lattice?",
+   "title": "minima_correlation.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/minima_report.py",
+   "kind": "script",
+   "path": "scripts/minima_report.py",
+   "summary": "Minima-only reporting: the numbers that are about the landscape, with the runaway share beside them.",
+   "title": "minima_report.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/no_ds_t6.py",
+   "kind": "script",
+   "path": "scripts/no_ds_t6.py",
+   "summary": "Route B \u2014 the T^6 oracle has no de Sitter vacuum, and it is proved rather than sampled.",
+   "title": "no_ds_t6.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b1_b3_probe.py",
+   "kind": "script",
+   "path": "scripts/node_b1_b3_probe.py",
+   "summary": "B1 + B3 capability probe \u2014 what the oracle stack actually exposes, and the first real check of each.",
+   "title": "node_b1_b3_probe.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b1_gv.py",
+   "kind": "script",
+   "path": "scripts/node_b1_gv.py",
+   "summary": "B1 \u2014 GV integrality, extracted from the computed prepotential at several points.",
+   "title": "node_b1_gv.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b2_applied.py",
+   "kind": "script",
+   "path": "scripts/node_b2_applied.py",
+   "summary": "B2 APPLIED \u2014 does degree 2 actually find vacua that degree 0/1 could not?",
+   "title": "node_b2_applied.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b2_followup.py",
+   "kind": "script",
+   "path": "scripts/node_b2_followup.py",
+   "summary": "B2 follow-up \u2014 the falsifier fired at h12=10 and not at h12=25, so settle two things before believing it.",
+   "title": "node_b2_followup.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_b2_truncation.py",
+   "kind": "script",
+   "path": "scripts/node_b2_truncation.py",
+   "summary": "B2 \u2014 the truncation ladder: does cond(M) move when the instanton series is carried further?",
+   "title": "node_b2_truncation.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_f3_quintic.py",
+   "kind": "script",
+   "path": "scripts/node_f3_quintic.py",
+   "summary": "F3 rung 1 \u2014 the quintic's brane data, and the first candidate invariant tested.",
+   "title": "node_f3_quintic.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_polarisation_converge.py",
+   "kind": "script",
+   "path": "scripts/node_polarisation_converge.py",
+   "summary": "Converge the polarised stream count \u2014 caps 1k to 20k over the full resonance window.",
+   "title": "node_polarisation_converge.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_polarisation_q.py",
+   "kind": "script",
+   "path": "scripts/node_polarisation_q.py",
+   "summary": "PASS-2 for the polarised stream count: does 3-4 of 4 survive a different Q?",
+   "title": "node_polarisation_q.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/node_yield.py",
+   "kind": "script",
+   "path": "scripts/node_yield.py",
+   "summary": "Does the sampler actually FIND vacua at a real budget?",
+   "title": "node_yield.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/observability.py",
+   "kind": "script",
+   "path": "scripts/observability.py",
+   "summary": "The observability engine \u2014 what the corpus can measure, and what it only appears to.",
+   "title": "observability.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/observability_axes.py",
+   "kind": "script",
+   "path": "scripts/observability_axes.py",
+   "summary": "H-B: is measure-invariance the same as observability?",
+   "title": "observability_axes.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/observable_degeneracy.py",
+   "kind": "script",
+   "path": "scripts/observable_degeneracy.py",
+   "summary": "Does the observable set determine the vacuum? The impostor count, measured on 14 corpora.",
+   "title": "observable_degeneracy.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_potential.py",
+   "kind": "script",
+   "path": "scripts/oracle_potential.py",
+   "summary": "The IIB scalar potential on T^6 \u2014 validated before it is believed.",
+   "title": "oracle_potential.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/oracle_vacua.py",
+   "kind": "script",
+   "path": "scripts/oracle_vacua.py",
+   "summary": "Solving the vacua: DW = 0 by Newton, validated by construction, and what the integer lattice gives.",
+   "title": "oracle_vacua.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/orbit_content_slice.py",
    "kind": "script",
    "path": "scripts/orbit_content_slice.py",
@@ -1278,11 +2244,102 @@
    "title": "orbit_content_slice.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/photo_glue.py",
+   "kind": "script",
+   "path": "scripts/photo_glue.py",
+   "summary": "Attach the photos that have arrived to the rooms in the layout, and say what is still missing.",
+   "title": "photo_glue.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/photo_index.py",
+   "kind": "script",
+   "path": "scripts/photo_index.py",
+   "summary": "What photos exist, for which spot, and what a room needs.",
+   "title": "photo_index.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/place_rooms.py",
+   "kind": "script",
+   "path": "scripts/place_rooms.py",
+   "summary": "Put measured rooms somewhere, so the coverage map can exist before a floor plan does.",
+   "title": "place_rooms.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/placement_plan.py",
+   "kind": "script",
+   "path": "scripts/placement_plan.py",
+   "summary": "Analyse, diagnose, fix: where the access point should be, from what was measured.",
+   "title": "placement_plan.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/polarisation.py",
+   "kind": "script",
+   "path": "scripts/polarisation.py",
+   "summary": "Does polarisation explain why a real 4x4 link carries 2-3 streams where the scalar model says 4?",
+   "title": "polarisation.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/polarisation_validation.py",
+   "kind": "script",
+   "path": "scripts/polarisation_validation.py",
+   "summary": "Validate the vector mode fields \u2014 the two checks docs/polarisation.md promised and did not do.",
+   "title": "polarisation_validation.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/positives.py",
+   "kind": "script",
+   "path": "scripts/positives.py",
+   "summary": "The positives page \u2014 every established positive, regenerated from the engines themselves.",
+   "title": "positives.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/preconditions.py",
+   "kind": "script",
+   "path": "scripts/preconditions.py",
+   "summary": "Guards for the instrument, not the result.",
+   "title": "preconditions.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/quintic_periods.py",
+   "kind": "script",
+   "path": "scripts/quintic_periods.py",
+   "summary": "F2 M1 \u2014 the quintic's Picard-Fuchs operator, solved and bounded.",
+   "title": "quintic_periods.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/rate_wall.py",
+   "kind": "script",
+   "path": "scripts/rate_wall.py",
+   "summary": "The rate wall \u2014 where the sampler loses candidates as h12 grows.",
+   "title": "rate_wall.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/render_pdf.py",
    "kind": "script",
    "path": "scripts/render_pdf.py",
    "summary": "Render a PACLAND markdown doc to PDF (fpdf2 + Arial Unicode).",
    "title": "render_pdf.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/rf_plan.py",
+   "kind": "script",
+   "path": "scripts/rf_plan.py",
+   "summary": "One command, one room, everything the engine knows \u2014 with its bounds and its falsifiers.",
+   "title": "rf_plan.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/rf_survey_from_iw.py",
+   "kind": "script",
+   "path": "scripts/rf_survey_from_iw.py",
+   "summary": "Turn an access point into the survey instrument \u2014 no extra hardware.",
+   "title": "rf_survey_from_iw.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/robustness.py",
+   "kind": "script",
+   "path": "scripts/robustness.py",
+   "summary": "The robustness engine \u2014 the menu behind a quoted number.",
+   "title": "robustness.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/run-tests.sh",
@@ -1355,6 +2412,13 @@
    "title": "sample_vacua.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/scaling.py",
+   "kind": "script",
+   "path": "scripts/scaling.py",
+   "summary": "Route A \u2014 the scaling study: which lattice facts survive a change of b3?",
+   "title": "scaling.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/scan_isd_conditioning.py",
    "kind": "script",
    "path": "scripts/scan_isd_conditioning.py",
@@ -1374,6 +2438,13 @@
    "path": "scripts/shard_vacua.sh",
    "summary": "shard_vacua.sh \u2014 shard the h12=25 flux-vacua sampling across the mesh's Linux nodes.",
    "title": "shard_vacua.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sign_manifest.py",
+   "kind": "script",
+   "path": "scripts/sign_manifest.py",
+   "summary": "Sign the certificate manifest with an OpenSSH (ed25519) key, and publish the public key.",
+   "title": "sign_manifest.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_explicit.py",
@@ -1411,6 +2482,62 @@
    "title": "spectral_zeros.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_zeros_deep.py",
+   "kind": "script",
+   "path": "scripts/spectral_zeros_deep.py",
+   "summary": "The deep run: 22,491 zeros below t = 20,000, in about thirty seconds.",
+   "title": "spectral_zeros_deep.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/state_of_rf.py",
+   "kind": "script",
+   "path": "scripts/state_of_rf.py",
+   "summary": "One board: what has actually been measured.",
+   "title": "state_of_rf.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/step_trace_analysis.py",
+   "kind": "script",
+   "path": "scripts/step_trace_analysis.py",
+   "summary": "Design the step detector from a real waveform instead of from a threshold picked out of the air.",
+   "title": "step_trace_analysis.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/swampland_checks.py",
+   "kind": "script",
+   "path": "scripts/swampland_checks.py",
+   "summary": "Run the swampland-connection report against the data we already hold.",
+   "title": "swampland_checks.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tadpole_bound.py",
+   "kind": "script",
+   "path": "scripts/tadpole_bound.py",
+   "summary": "max |N| = b3, as a theorem rather than a table.",
+   "title": "tadpole_bound.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tadpole_distribution.py",
+   "kind": "script",
+   "path": "scripts/tadpole_distribution.py",
+   "summary": "The tadpole distribution as a closed form.",
+   "title": "tadpole_distribution.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tadpole_independent_count.py",
+   "kind": "script",
+   "path": "scripts/tadpole_independent_count.py",
+   "summary": "An independent count of the tadpole distribution \u2014 pure Python, no numpy, no polynomial.",
+   "title": "tadpole_independent_count.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tensions.py",
+   "kind": "script",
+   "path": "scripts/tensions.py",
+   "summary": "The tension register \u2014 pairs of established facts that cannot both be true as stated.",
+   "title": "tensions.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_g2_sdual_stability.py",
    "kind": "script",
    "path": "scripts/test_g2_sdual_stability.py",
@@ -1425,11 +2552,53 @@
    "title": "test_orbit_injectivity.py"
   },
   {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_swampland.py",
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/thermal_ceiling_check.py",
    "kind": "script",
-   "path": "scripts/test_swampland.py",
-   "summary": "Run the swampland-connection report against the data we already hold.",
-   "title": "test_swampland.py"
+   "path": "scripts/thermal_ceiling_check.py",
+   "summary": "Check the thermal bound against a simulation \u2014 the second path that makes it PASS-2 or not.",
+   "title": "thermal_ceiling_check.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/thermal_noise_bound.py",
+   "kind": "script",
+   "path": "scripts/thermal_noise_bound.py",
+   "summary": "A bound for two-state ambient-thermal-noise communication.",
+   "title": "thermal_noise_bound.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/truncation_control.py",
+   "kind": "script",
+   "path": "scripts/truncation_control.py",
+   "summary": "The control the ISD conditioning wall has never had: a truncation ladder whose answer is known.",
+   "title": "truncation_control.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/truth_bench.py",
+   "kind": "script",
+   "path": "scripts/truth_bench.py",
+   "summary": "A truth bench: how far can a spectrum statistic move before the answer is lost?",
+   "title": "truth_bench.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/try_budget.py",
+   "kind": "script",
+   "path": "scripts/try_budget.py",
+   "summary": "The try-budget wrapper \u2014 a budget in the units the API actually exposes.",
+   "title": "try_budget.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/two_sided_audit.py",
+   "kind": "script",
+   "path": "scripts/two_sided_audit.py",
+   "summary": "Rule 1 of the bench, applied to the landscape's own claims: exact, or a fit?",
+   "title": "two_sided_audit.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/underdetermination.py",
+   "kind": "script",
+   "path": "scripts/underdetermination.py",
+   "summary": "The exact dimension of the measure space.",
+   "title": "underdetermination.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_all_theorems.py",
@@ -1586,6 +2755,13 @@
    "title": "validate_sm_rank_test.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_streams.py",
+   "kind": "script",
+   "path": "scripts/validate_streams.py",
+   "summary": "Compare the engine's stream prediction against MEASURED streams \u2014 the test the whole plan waits on.",
+   "title": "validate_streams.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sw_structure.py",
    "kind": "script",
    "path": "scripts/validate_sw_structure.py",
@@ -1621,11 +2797,25 @@
    "title": "validate_tadpole.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_uniqueness_at_scale.py",
+   "kind": "script",
+   "path": "scripts/validate_uniqueness_at_scale.py",
+   "summary": "Mitchell's uniqueness theorem, at scale \u2014 the full symplectic algebra, and more than one flux pair.",
+   "title": "validate_uniqueness_at_scale.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_uv_completions.py",
    "kind": "script",
    "path": "scripts/validate_uv_completions.py",
    "summary": "Validate the UV-completion catalog (Machine 3) against the literature collapse",
    "title": "validate_uv_completions.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify_certificates.py",
+   "kind": "script",
+   "path": "scripts/verify_certificates.py",
+   "summary": "Verify a certificate set offline \u2014 the check a stranger can run.",
+   "title": "verify_certificates.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify_deficit_numbers.py",
@@ -1654,6 +2844,41 @@
    "path": "scripts/verify_sw_mod.py",
    "summary": "Verify SW's linearised model against the authors' own Dynare file.",
    "title": "verify_sw_mod.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/walk_plot.py",
+   "kind": "script",
+   "path": "scripts/walk_plot.py",
+   "summary": "The walk, drawn \u2014 and the loop-closure error measured rather than hand-waved.",
+   "title": "walk_plot.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/walls.py",
+   "kind": "script",
+   "path": "scripts/walls.py",
+   "summary": "Regenerate or verify the wall register.",
+   "title": "walls.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/wifi_5ghz.py",
+   "kind": "script",
+   "path": "scripts/wifi_5ghz.py",
+   "summary": "The engine pointed at 5 GHz WiFi: how many streams can a room actually carry?",
+   "title": "wifi_5ghz.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/wifi_plan.py",
+   "kind": "script",
+   "path": "scripts/wifi_plan.py",
+   "summary": "WiFi planning: where to put the antennas, and how many streams you get.",
+   "title": "wifi_plan.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/window_dependence.py",
+   "kind": "script",
+   "path": "scripts/window_dependence.py",
+   "summary": "H-A's artefact: the content \"law\" is the window's size growth, not a property of the landscape.",
+   "title": "window_dependence.py"
   },
   {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf",
@@ -1738,6 +2963,20 @@
    "path": "web/climate.html",
    "summary": "page on this site",
    "title": "Climate figures \u2014 the four graphs drawn from the data"
+  },
+  {
+   "href": "./cones-3d.html",
+   "kind": "page",
+   "path": "web/cones-3d.html",
+   "summary": "page on this site",
+   "title": "cones-3d"
+  },
+  {
+   "href": "./energy.html",
+   "kind": "page",
+   "path": "web/energy.html",
+   "summary": "page on this site",
+   "title": "energy"
   },
   {
    "href": "./index.html",

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantum gravity — PACLAND</title>
+<style>
+  :root{--ink:#15181f;--muted:#5a6072;--line:#e3e6ee;--accent:#1b4fd8;--bg:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:880px;margin:0 auto;padding:1.6rem 1.2rem 4rem}
+  h1{font-size:1.6rem;margin:.2rem 0 .2rem;line-height:1.25}
+  .sub{color:var(--muted);margin:0 0 1.6rem}
+  h2{font-size:1.05rem;margin:2.4rem 0 .4rem;border-top:1px solid var(--line);padding-top:1.2rem}
+  h3{font-size:.95rem;margin:1.4rem 0 .3rem}
+  p{margin:.5rem 0}
+  .note{color:var(--muted);font-size:.92rem}
+  code{font:13px ui-monospace,Menlo,monospace;background:#f4f6fa;padding:.1rem .3rem;border-radius:3px}
+  pre{background:#f4f6fa;border:1px solid var(--line);border-radius:6px;padding:.8rem 1rem;overflow-x:auto;
+      font:12px ui-monospace,Menlo,monospace;line-height:1.5}
+  table{border-collapse:collapse;width:100%;margin:.7rem 0 1rem;font-size:.88rem}
+  th,td{text-align:left;padding:.4rem .55rem;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--accent);background:#f4f6fa;font-weight:600}
+  td.kill{color:#c0392b;font-weight:600}
+  td.surv{color:#1e7b34;font-weight:600}
+  td.unk{color:var(--muted)}
+  @media (max-width:520px){table{font-size:.8rem}th,td{padding:.35rem .32rem}}
+  @media (max-width:520px){pre{white-space:pre-wrap;overflow-wrap:anywhere}}
+  @media (max-width:344px){table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}
+  .back{font-size:.9rem;margin-bottom:1rem}
+  .back a,a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .big{font-size:1.05rem}
+  blockquote{margin:1rem 0;padding:.6rem 1rem;border-left:3px solid var(--accent);background:#f7f9fd;color:#26304a}
+</style></head><body><div class="wrap">
+<p class="back"><a href="./index.html">← back to PACLAND</a></p>
+
+<h1>Quantum gravity: the referee, and where it stops</h1>
+<p class="sub">Thirteen conditions, six frameworks, and one rule — <strong>no verdict without a reader</strong>.
+Every number here comes from code in <code>src/pacland/energy/</code> and can be re-run.</p>
+
+<h2>1 · Why a referee and not another theory</h2>
+<p>Graviton perturbation theory is non-renormalisable: <code>[G_N] = −2</code>, so a new counterterm is needed at
+every loop order. The consequence is a <strong>degeneracy, not a mystery</strong> — infinitely many ultraviolet
+completions reduce to Einstein gravity below the Planck scale, so every candidate framework matches every
+current observation automatically. Below the Planck scale they <em>are</em> general relativity.</p>
+<p>Discrimination can therefore only come from an observable where a completion must deviate, or from a
+condition a framework must satisfy and does not. The field checks the second one framework at a time, inside
+each community. This is the joint check.</p>
+
+<h2>2 · The table — 78 cells, and how many are actually decided</h2>
+<table>
+<tr><th>framework</th><th>conditions it cannot be evaluated on</th><th>class</th><th>evaluable</th></tr>
+<tr><td><code>strings-adscft</code></td><td><strong>C6</strong></td><td>CONTESTED</td><td>1 of 13</td></tr>
+<tr><td><code>lqg-spinfoam</code></td><td><strong>C1</strong>, C6, C12</td><td>CONTESTED</td><td>0 of 13</td></tr>
+<tr><td><code>asymptotic-safety</code></td><td><strong>C3</strong>, C6</td><td>CONTESTED</td><td>0 of 13</td></tr>
+<tr><td><code>cdt</code></td><td><strong>C6</strong></td><td>NO-PREDICTION</td><td>0 of 13</td></tr>
+<tr><td><code>causal-sets</code></td><td><strong>C2</strong>, C6</td><td>CONTESTED</td><td>0 of 13</td></tr>
+<tr><td><code>gft</code></td><td><strong>C6</strong></td><td>NO-PREDICTION</td><td>0 of 13</td></tr>
+</table>
+<p class="big">Verdicts: <strong>KILLED 0 · SURVIVES 0 · UNKNOWN 78</strong>.</p>
+<p>Why each cell is undecided, from <code>python3 -m pacland.energy.referee</code>:</p>
+<pre>why undecided: COMPUTED-HERE 1, CONTESTED 7, NO-PREDICTION 3, NOT-RESEARCHED 67</pre>
+<p>A <strong>blocker</strong> is <code>CONTESTED</code>, <code>NOT-ESTABLISHED</code> or
+<code>NO-PREDICTION</code> — a finding about the <em>framework</em>. <code>NOT-RESEARCHED</code> never counts:
+"we have not looked" is a gap here, not a property of the framework. The claim that all six are blocked can
+fail, and a test shows how — delete the C6 entries for <code>cdt</code> and <code>gft</code> and it goes false.</p>
+
+<h2>3 · The condition that decides everything: C6</h2>
+<p>C6 asks for an account of the vacuum energy, <code>ρ_Λ/M_Pl⁴ = 1.1e-123</code>. It is the cheapest place to
+test whether a framework can survive all thirteen, so the whole row was researched.</p>
+<table>
+<tr><th>framework</th><th>position</th></tr>
+<tr><td><code>causal-sets</code></td><td><strong>predicts a magnitude</strong> — an "everpresent Λ", right order, constrained by CMB isotropy (not excluded)</td></tr>
+<tr><td><code>asymptotic-safety</code></td><td>claims to solve it by predicting <code>Λ = 0</code>; the observed <code>Λ &gt; 0</code> is then a <strong>tension</strong></td></tr>
+<tr><td><code>strings-adscft</code></td><td>landscape + anthropic selection: an order of magnitude, not a value</td></tr>
+<tr><td><code>lqg-spinfoam</code>, <code>gft</code>, <code>cdt</code></td><td>no account found — the arXiv search that came back empty is recorded as the source</td></tr>
+</table>
+<blockquote><strong>No framework can survive all thirteen conditions.</strong> Three engage and are contested,
+three make no claim, none is a pass. And C6 cannot kill either, by construction: failing to account for Λ is
+<code>UNKNOWN</code>, not <code>KILLED</code>, or all six would die by fiat on a question nobody has solved.</blockquote>
+
+<h2>4 · The six bounds that were actually read</h2>
+<table>
+<tr><th>id</th><th>bound</th><th>source</th></tr>
+<tr><td>C6</td><td><code>ρ_Λ/M_Pl⁴ = 1.1e-123</code>; <code>Λ/M_Pl² = 2.9e-122</code></td><td>Planck 2018, arXiv:1807.06209</td></tr>
+<tr><td>C7</td><td>linear dispersion: QG scale significantly above <code>M_Pl</code></td><td>Fermi GRB 090510, arXiv:0908.1832</td></tr>
+<tr><td>C8</td><td><code>−3e-15 ≤ (v_gw−c)/c ≤ +7e-16</code></td><td>GW170817, arXiv:1710.05834</td></tr>
+<tr><td>C9</td><td><code>η(Ti,Pt) = [−1.5 ± 2.3 ± 1.5]e-15</code></td><td>MICROSCOPE, arXiv:2209.15487</td></tr>
+<tr><td>C10</td><td>M87* shadow <code>42 ± 3 μas</code></td><td>EHT, arXiv:1906.11238</td></tr>
+<tr><td>C13</td><td><code>r₀.₀₅ &lt; 0.036</code></td><td>BICEP/Keck, arXiv:2110.00483</td></tr>
+</table>
+<p class="note">C1 (Cassini's γ) is <strong>refused</strong>: the Nature paper is paywalled and the Semantic
+Scholar API returns <code>"abstract": null</code>. It stays in <code>PENDING_BOUNDS</code> with a test that keeps
+it there. Quoting it second-hand is exactly what the gate prevents.</p>
+
+<h2>5 · Carrier A, rung 1 — the fixed point, against its own closed form</h2>
+<p>The functional renormalisation group, Einstein–Hilbert truncation, Litim's optimised cutoff
+(arXiv:hep-th/0312114). <code>python3 -m pacland.energy.frg</code>:</p>
+<pre>lambda*        = 0.2500000000
+g* (physical)  = 1.1780972451      closed form 1.1780972451
+beta at fixpt  = (0.00e+00, 0.00e+00)
+eta*           = -2.000000         (expected 2 - d = -2)
+theta          = 1.666678 +/- 4.307624 i   (paper: (5 +/- i sqrt(167))/3)
+matches closed form: True</pre>
+<p>Three independent published results reproduced. The exponents are <strong>complex</strong>, and that is the
+published answer — the paper gives <code>θ± = (5 ± i√167)/3</code> and records that the pair stays complex for
+<code>2.56 &lt; d &lt; 21.4</code>. A solver that refuses complex exponents fails on the known answer; ours did,
+before the paper's LaTeX was read.</p>
+
+<h2>6 · The cubic, and negative gravity — how a misread formula nearly shipped</h2>
+<p>The beta functions were first extracted from the <strong>PDF</strong>, where the superscripts are mangled: the
+text is ambiguous between <code>d³g</code> and <code>d·3·g</code>. The "obvious" reading drops a <code>+2</code>
+from <code>P2</code>. That produces a <strong>cubic</strong> where the paper says the condition is
+<strong>quadratic</strong>, and it drives <code>g</code> <strong>negative</strong> while still converging.</p>
+<h3>Why the general object is a quartic, and the paper's quadratic</h3>
+<p>At a fixed point <code>P2 = 0</code> forces <code>g* = (λ−½)²/(4d)</code>. Substituting into
+<code>P1</code> gives</p>
+<pre>P1 = (d+2)·(2λ−1)²·Q(λ) / (4d),      Q(λ) = A λ² + B λ + C
+A = 4d(d−4)(d+1)      B = −4d(d²−d−4)      C = d(d²−d−4)</pre>
+<p>So <code>P1</code> is a <strong>quartic</strong> that factors as <code>(2λ−1)² × quadratic</code>.
+Dividing by <code>g* ∝ (2λ−1)²</code> — which is what "insert into <code>P1/g* = 0</code>" means — leaves the
+<strong>quadratic</strong> the paper describes, with real roots for <code>d ≥ (1+√17)/2 = 2.5616</code>.</p>
+<p>The cubic appears only at <strong>d = 4</strong>, because the quadratic's leading coefficient
+<code>A = 4d(d−4)(d+1)</code> <strong>vanishes</strong> there. The equation degenerates to linear, giving
+<code>λ* = ¼</code> — which is exactly the <code>0/0</code> limit of the paper's closed form.</p>
+<h3>Negative gravity is an artefact, not a branch</h3>
+<p>Dropping the <code>+2</code> forces <code>g = λ(λ−1)/4</code>, which is negative for <code>0 &lt; λ &lt; 1</code>.
+At <code>d = 4</code> that "solves" at</p>
+<pre>λ = 0.000000   g = −0.000000
+λ = 0.233756   g = −0.044778
+λ = 0.891244   g = −0.024232</pre>
+<p><code>g &lt; 0</code> means <code>G &lt; 0</code> — a wrong-sign kinetic term, a ghost. But these are not even
+fixed points of the true flow: the correct <code>P2</code> evaluates to <code>+2</code> at every one of them, so
+<code>β_g ≠ 0</code>. And the correct equation gives <code>g* = (λ−½)²/4d ≥ 0</code> for every
+<code>λ</code> — <strong>the Einstein–Hilbert truncation has no negative-<code>g</code> fixed point at all.</strong></p>
+<blockquote>The wrong formula produced a mathematically consistent, physically impossible fixed point. That is
+why the source of a formula is part of the result, and why the misreading is now a mutation test rather than a
+sentence in a report.</blockquote>
+
+<h2>7 · Rung 2 — one rung reached, the rest refused</h2>
+<p>The polynomial <code>f(R)</code> truncation (Machado &amp; Saueressig, arXiv:0712.0445), flow equation,
+ansatz and result tables read from the LaTeX source. <code>python3 -m pacland.energy.frg_poly</code>:</p>
+<pre>n=1  u* = [+0.00523, −0.02021]                     paper: [+0.00523, −0.02020]   MATCH
+n=2  u* = [+0.00374, −0.02111, +0.00337]           paper: [+0.00333, −0.01250, +0.00149]   mismatch
+n=3  u* = [+0.00098, −0.01093, +0.00172, +0.00015] paper: [+0.00518, −0.01960, +0.00070, −0.01040]   mismatch</pre>
+<p><code>n = 1</code> reproduces the published fixed point <strong>exactly</strong>. <code>n ≥ 2</code> does not,
+and the paper says why: its trace decomposition carries a <strong>single-mode contribution</strong>
+<code>D₁(d,0)·(1/P_k)·∂_tR_k</code> evaluated at <code>−D² = Λ₁(d,0)</code>, which is not a heat-kernel term and
+so does not appear in the dimensionless flow equation. The authors' own footnote attributes the difference to
+exactly that term.</p>
+<p><strong>So rung 2 claims no ladder.</strong> It claims the machinery is correct and that the published
+<code>n ≥ 2</code> ladder cannot be reproduced from the published flow equation alone. A test asserts the
+mismatches are reported, so they cannot be tuned into agreement later without deleting the test —
+because <em>a truncation ladder that silently omits a term looks exactly like a converging ladder.</em></p>
+
+<h2>8 · What this is not</h2>
+<ul>
+<li>Not a theory of everything — the repo has already shown no connecting equation derives the 19 Standard-Model parameters.</li>
+<li>Not a claim to have solved quantum gravity. It claims to <em>decide between candidates</em>, and to say honestly when it cannot.</li>
+<li>Not a kill. Nothing here is promoted to <code>KILLED</code> or <code>SURVIVES</code> without a named source.</li>
+</ul>
+
+<h2>Re-run any of it</h2>
+<pre>PYTHONPATH=src python3 -m pacland.energy.referee     # the 78 cells, each with a reason class
+PYTHONPATH=src python3 -m pacland.energy.profile     # 6/6 frameworks blocked
+PYTHONPATH=src python3 -m pacland.energy.frg         # rung 1: fixed point vs the closed form
+PYTHONPATH=src python3 -m pacland.energy.frg_poly    # rung 2: n=1 exact, n>=2 mismatch by design</pre>
+<p class="note">Full write-up: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md">docs/energy-sextant.md</a>
+· code: <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/src/pacland/energy">src/pacland/energy</a>
+· claims: <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-conjectures.md">docs/energy-conjectures.md</a></p>
+
+<p class="back"><a href="./index.html">← back to PACLAND</a></p>
+</div></body></html>
