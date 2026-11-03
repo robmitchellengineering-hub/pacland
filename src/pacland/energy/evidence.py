@@ -11,6 +11,7 @@ The classes are deliberately different in kind, because they imply different wor
     CONTESTED            the framework's literature disputes it       -> the cell cannot be scored today
     NOT-ESTABLISHED      the framework's own open problem, unsolved   -> a research programme, not a task
     NO-PREDICTION        the framework makes no such prediction       -> the condition does not apply
+                         (its "source" is the search that came back empty, so it is reproducible)
     NOT-RESEARCHED       nobody has entered a citation yet            -> **a task list, not a finding**
 
 `NOT-RESEARCHED` exists to keep the last two honest. "We looked and the field has no answer" and "we
@@ -90,6 +91,34 @@ EVIDENCE: dict[tuple[str, str], Note] = {
         "perturbations of a spin-foam model on a flat background give LINEARISED gravity - not the "
         "Newtonian / post-Newtonian limit that C1's bound constrains",
         "arXiv:1812.02110",
+    ),
+    ("strings-adscft", "C6"): Note(
+        CONTESTED,
+        "engaged through the landscape plus anthropic selection, which predicts an ORDER OF MAGNITUDE "
+        "rather than a value - a selection argument, and contested as an explanation rather than as a "
+        "calculation",
+        "arXiv:hep-th/0703160, arXiv:0901.2414",
+    ),
+    ("lqg-spinfoam", "C6"): Note(
+        NO_PREDICTION,
+        "no account of the magnitude of Lambda was found; the search below returned nothing that "
+        "addresses rho_Lambda/M_Pl^4",
+        "arXiv API search: abs:\"loop quantum gravity\" AND abs:\"cosmological constant problem\" "
+        "-> no paper accounting for the magnitude",
+    ),
+    ("gft", "C6"): Note(
+        NO_PREDICTION,
+        "no account of the magnitude of Lambda was found; the search returned bounce and cosmology "
+        "papers, none addressing rho_Lambda/M_Pl^4",
+        "arXiv API search: abs:\"group field theory\" AND abs:\"cosmological constant\" -> no paper "
+        "accounting for the magnitude",
+    ),
+    ("cdt", "C6"): Note(
+        NO_PREDICTION,
+        "no account of the magnitude of Lambda was found; the search returned 4D-emergence papers, "
+        "none addressing rho_Lambda/M_Pl^4",
+        "arXiv API search: abs:\"causal dynamical triangulations\" AND abs:\"cosmological constant\" "
+        "-> no paper accounting for the magnitude",
     ),
     ("causal-sets", "C6"): Note(
         CONTESTED,

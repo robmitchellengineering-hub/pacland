@@ -163,6 +163,28 @@ field cannot choose — not for want of ideas, but because every framework is *p
 
 A `CONTESTED` cell is not a failure of the referee. It is the true state of the subject.
 
+### C6 is closed — and it closes the terminal clause
+
+C6 asks for an account of `ρ_Λ/M_Pl⁴ = 1.1e-123`. It is now researched for all six frameworks:
+
+| framework | class | position |
+|---|---|---|
+| `causal-sets` | `CONTESTED` | predicts a **magnitude** — an "everpresent Λ", right order, constrained by CMB isotropy |
+| `asymptotic-safety` | `CONTESTED` | claims to solve it by predicting `Λ = 0`; the observed `Λ > 0` is then a tension |
+| `strings-adscft` | `CONTESTED` | landscape + anthropic selection, predicting an order of magnitude, not a value |
+| `lqg-spinfoam` | `NO-PREDICTION` | no account found — the search returned nothing addressing the magnitude |
+| `gft` | `NO-PREDICTION` | no account found — bounce/cosmology papers only |
+| `cdt` | `NO-PREDICTION` | no account found — 4D-emergence papers only |
+
+**No framework can survive all thirteen conditions.** — three engage and are contested, three make no
+claim, and none is a pass. And C6 cannot kill either, by construction: failing to account for `Λ` is
+`UNKNOWN`, not `KILLED`, because otherwise all six frameworks would die by fiat on a question nobody has
+solved.
+
+So the programme's terminal clause — *"killed with evidence, or survives all thirteen"* — is unreachable
+**by doing the work honestly**, not by failing to do it. That is the answer, and it is stronger than a
+verdict: the field's impasse is a property of the evidence record, not of the referee.
+
 ## 5. The target equation — named, not gestured at
 
 Two carriers run in parallel, because betting the programme on one derivation is not a plan.
