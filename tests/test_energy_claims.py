@@ -88,5 +88,27 @@ class TestRegisteredClaimsRefuse(unittest.TestCase):
         self.assertIn("10^4", r.stdout)
 
 
+class TestEveryProgrammeScriptRunsOrRefuses(unittest.TestCase):
+    """A registered claim whose script neither runs nor refuses cleanly is a dead entry in the registry."""
+
+    PROGRAMME = {
+        "lithium-mass-ceiling", "li-s-electrolyte-ceiling", "fusion-confinement-exponent",
+        "climate-drift-ecs-transfer", "verification-joule-floor", "ecs-per-forcing-slope",
+    }
+
+    def test_each_script_terminates_with_a_verdict_or_a_refusal(self):
+        reg = json.loads((ROOT / "docs" / "claims.json").read_text())
+        for c in reg["claims"]:
+            if c["id"] not in self.PROGRAMME:
+                continue
+            with self.subTest(claim=c["id"]):
+                r = subprocess.run([sys.executable, str(ROOT / c["script"])],
+                                   capture_output=True, text=True, timeout=900)
+                self.assertIn(r.returncode, (0, 2),
+                              f"{c['id']}: {c['script']} exited {r.returncode}: {r.stderr[-400:]}")
+                self.assertTrue(r.returncode == 0 or "REFUSED" in r.stdout,
+                                f"{c['id']}: exit 2 without a REFUSED line")
+
+
 if __name__ == "__main__":
     unittest.main()

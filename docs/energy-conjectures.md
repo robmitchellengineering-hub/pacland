@@ -14,6 +14,7 @@ The registry entry is what stops a claim being quietly softened after the data a
 | `fusion-confinement-exponent` | the 0.93 current exponent is between-machine; within-machine it is **0.55 ± 0.12** | registered |
 | `climate-drift-ecs-transfer` | drift → ECS transfer is linear, **0.76 K per W/m²** | registered |
 | `verification-joule-floor` | verification has a **µJ floor** (1–3 µJ/check) and a crossover at 10⁴–10⁶ ops | registered |
+| `ecs-per-forcing-slope` | forcing does **not** predict ECS across 53 CMIP6 models (slope −0.55, R² 0.04) | computed (PASS-1) |
 
 A *registered* claim has a falsifier and a script and no evidence yet. It is deliberately not "PASS-1":
 PASS-1 means one run happened, and for these three it has not.
