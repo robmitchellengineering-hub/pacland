@@ -40,6 +40,16 @@ from pacland.energy import (  # noqa: E402
     verified_bounds,
 )
 from pacland.energy import vacuum as V  # noqa: E402
+from pacland.energy.evidence import (  # noqa: E402
+    COMPUTED_HERE,
+    CONTESTED,
+    NOT_RESEARCHED,
+    REASON_CLASSES,
+    WORK,
+    Note,
+    class_for,
+    counts,
+)
 from pacland.energy.lattice import ARGUMENT, DERIVATION, KILLED, SURVIVES, UNKNOWN  # noqa: E402
 
 
@@ -132,6 +142,44 @@ class TestVacuumEnergy(unittest.TestCase):
         """rho/M_Pl^4 and Lambda/M_Pl^2 are not the same number — v0 wrote the ratio that does not exist."""
         self.assertAlmostEqual(V.lambda_over_planck2() / V.rho_lambda_over_planck4(),
                                8.0 * math.pi, delta=1e-6)
+
+
+class TestWhyUndecided(unittest.TestCase):
+    """An all-UNKNOWN table is only worth reading if each cell says which kind of undecided it is."""
+
+    def test_the_classes_account_for_every_cell(self):
+        c = counts()
+        self.assertEqual(sum(c.values()), 78)
+        self.assertEqual(set(c), set(REASON_CLASSES))
+
+    def test_five_cells_have_been_researched_and_seventy_three_have_not(self):
+        c = counts()
+        self.assertEqual(c[NOT_RESEARCHED], 73)
+        self.assertEqual(c[CONTESTED], 4)
+        self.assertEqual(c[COMPUTED_HERE], 1)
+
+    def test_a_researched_class_cannot_exist_without_a_source(self):
+        with self.assertRaises(ValueError):
+            Note(CONTESTED, "trust me")
+        with self.assertRaises(ValueError):
+            Note(COMPUTED_HERE, "ran it")
+
+    def test_not_researched_cannot_carry_a_source(self):
+        """The whole point of the class is that nobody looked; a citation would make it a lie."""
+        with self.assertRaises(ValueError):
+            Note(NOT_RESEARCHED, "no citation", "arXiv:1234.5678")
+
+    def test_every_class_says_what_work_it_implies(self):
+        for cls in REASON_CLASSES:
+            self.assertIn(cls, WORK)
+
+    def test_the_contested_cells_name_where_they_were_read(self):
+        for cand, con in [("lqg-spinfoam", "C12"), ("asymptotic-safety", "C3"),
+                          ("causal-sets", "C2"), ("lqg-spinfoam", "C1")]:
+            self.assertEqual(class_for(cand, con), CONTESTED, (cand, con))
+
+    def test_the_render_reports_the_breakdown(self):
+        self.assertIn("why undecided:", render(table()))
 
 
 class TestTheThreeRefusals(unittest.TestCase):
