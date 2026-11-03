@@ -152,11 +152,16 @@ class TestWhyUndecided(unittest.TestCase):
         self.assertEqual(sum(c.values()), 78)
         self.assertEqual(set(c), set(REASON_CLASSES))
 
-    def test_five_cells_have_been_researched_and_seventy_three_have_not(self):
+    def test_seven_cells_have_been_researched_and_seventy_one_have_not(self):
         c = counts()
-        self.assertEqual(c[NOT_RESEARCHED], 73)
-        self.assertEqual(c[CONTESTED], 4)
+        self.assertEqual(c[NOT_RESEARCHED], 71)
+        self.assertEqual(c[CONTESTED], 6)
         self.assertEqual(c[COMPUTED_HERE], 1)
+
+    def test_the_cosmological_constant_cells_name_what_the_frameworks_claim(self):
+        """C6 is the condition that decides "survives all thirteen", so its cells must be explicit."""
+        for cand in ("causal-sets", "asymptotic-safety"):
+            self.assertEqual(class_for(cand, "C6"), CONTESTED, cand)
 
     def test_a_researched_class_cannot_exist_without_a_source(self):
         with self.assertRaises(ValueError):
@@ -175,7 +180,8 @@ class TestWhyUndecided(unittest.TestCase):
 
     def test_the_contested_cells_name_where_they_were_read(self):
         for cand, con in [("lqg-spinfoam", "C12"), ("asymptotic-safety", "C3"),
-                          ("causal-sets", "C2"), ("lqg-spinfoam", "C1")]:
+                          ("causal-sets", "C2"), ("lqg-spinfoam", "C1"),
+                          ("causal-sets", "C6"), ("asymptotic-safety", "C6")]:
             self.assertEqual(class_for(cand, con), CONTESTED, (cand, con))
 
     def test_the_render_reports_the_breakdown(self):

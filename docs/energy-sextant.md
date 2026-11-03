@@ -136,16 +136,16 @@ the classes imply different work:
 |---|---|---|---|
 | `COMPUTED-HERE` | an in-repo computation decides it | nothing to do | 1 |
 | `COMPUTED-ELSEWHERE` | a published computation decides it | read the paper, score the cell | 0 |
-| `CONTESTED` | the framework's literature disputes it | cannot be scored until the dispute resolves | 4 |
+| `CONTESTED` | the framework's literature disputes it | cannot be scored until the dispute resolves | 6 |
 | `NOT-ESTABLISHED` | the framework's own open problem | a research programme, not a task | 0 |
 | `NO-PREDICTION` | the framework makes no such prediction | the condition does not apply | 0 |
-| `NOT-RESEARCHED` | no citation entered yet | **a task list — nobody has looked** | 73 |
+| `NOT-RESEARCHED` | no citation entered yet | **a task list — nobody has looked** | 71 |
 
 `NOT-RESEARCHED` exists to keep the last distinction honest: "we looked and the field has no answer" and
 "we have not looked" must never share a cell value, or the table becomes an excuse. A `Note` with any
 other class and no source cannot be constructed.
 
-The five researched cells, each read from the paper's own abstract:
+The seven researched cells, each read from the paper's own abstract:
 
 | cell | class | what is actually shown |
 |---|---|---|
@@ -153,6 +153,8 @@ The five researched cells, each read from the paper's own abstract:
 | `asymptotic-safety × C3` | `CONTESTED` | ghost-free forms via field redefinitions vs. a 2026 claim of BRST violation and "fundamental limitations" ([2311.12097](https://arxiv.org/abs/2311.12097), [2601.08886](https://arxiv.org/abs/2601.08886)) |
 | `causal-sets × C2` | `CONTESTED` | Lorentz invariance claimed to follow from Poisson sprinkling; locality still being defined ([1309.3403](https://arxiv.org/abs/1309.3403)) |
 | `lqg-spinfoam × C1` | `CONTESTED` | perturbations on a flat background give **linearised** gravity, not the Newtonian limit ([1812.02110](https://arxiv.org/abs/1812.02110)) |
+| `causal-sets × C6` | `CONTESTED` | the only framework of the six with a prediction for the **magnitude** of `Λ` — an "everpresent Lambda" of the right order, strongly constrained by CMB isotropy | [astro-ph/0209274](https://arxiv.org/abs/astro-ph/0209274), [1210.2589](https://arxiv.org/abs/1210.2589), [gr-qc/0612128](https://arxiv.org/abs/gr-qc/0612128) |
+| `asymptotic-safety × C6` | `CONTESTED` | the FRG claim that graviton fluctuations drive `Λ → 0` "solves" the problem by predicting `Λ = 0` — so the observed `Λ > 0` is a tension, not a success | [1704.08040](https://arxiv.org/abs/1704.08040), [1501.05848](https://arxiv.org/abs/1501.05848) |
 | `strings-adscft × C11` | `COMPUTED-HERE` | `T⁶`: distance conjecture and WGC exact, no de Sitter vacuum — cell stays `UNKNOWN` because the predicate is about the framework |
 
 **The pattern is the finding.** Every researched cell is `CONTESTED`: each framework demonstrates its
