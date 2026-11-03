@@ -52,7 +52,7 @@ vocabulary `pacland.swampland` already uses (`TESTABLE-NOW` / `NEEDS-BIGGER-MACH
 | C3 | no propagating ghost — or a stated Lee–Wick/PT resolution with a unitary S-matrix | derivation | TESTABLE-NOW |
 | C4 | exactly two graviton polarisations, or the extra modes screened | derivation | TESTABLE-NOW |
 | C5 | `S = A/4G` with coefficient 1, not a fitted normalisation | derivation | TESTABLE-NOW |
-| C6 | an account of `Λ/M_Pl⁴ ~ 1e-122`, or a plain admission there is none | argument | NOT-TESTABLE-IN-TRUNCATION |
+| C6 | an account of the vacuum energy, `ρ_Λ/M_Pl⁴ = 1.1e-123` (≡ `Λ/M_Pl² = 2.9e-122`), or a plain admission there is none | argument | NOT-TESTABLE-IN-TRUNCATION |
 | C7 | Planck-scale dispersion modification below the observed bound | observation | TESTABLE-NOW |
 | C8 | `v_gw = c` to multimessenger precision | observation | TESTABLE-NOW |
 | C9 | new scalars screened, or below equivalence-principle bounds | observation | TESTABLE-NOW |
@@ -78,8 +78,54 @@ Two deliberate non-kills:
 
 There is deliberately **no path from "nothing found" to `SURVIVES`**. A bound counts only when it has
 been read from a primary source (`verified_on` is set, and the dataclass refuses one without a
-`source`). Today no bound in the lattice has been read, so every cell is `UNKNOWN` — including the
-six separate rows where the condition is not asked at all.
+`source`).
+
+### SX-0, part done (2026-11-03): four bounds read, three named as gaps
+
+Attempting SX-0 found a defect in the lattice itself: **`bound` was doing three jobs**, and the gate
+"every constraint has a verified bound" could not be met honestly. Unitarity and the graviton degrees of
+freedom are not numbers — there is nothing to verify from a paper, and demanding a bound for them would
+have produced a fabricated one. The field `bound_kind` now separates them:
+
+| kind | meaning | count |
+|---|---|---|
+| `measured` | an external measurement — this is what "verify the bound" means | 7 |
+| `theorem` | a proven result (`S = A/4G`, the `T⁶` saturation) — verified by the proof | 2 |
+| `procedure` | a derivation condition with no number (C2, C3, C4, C12) | 4 |
+
+Six of the seven measured bounds are now read from their own papers (or, for C6, computed from the
+paper's own constants):
+
+| id | bound | source |
+|---|---|---|
+| C6 | `ρ_Λ/M_Pl⁴ = 1.1e-123` (≡ `Λ/M_Pl² = 2.9e-122`) | [arXiv:1807.06209](https://arxiv.org/abs/1807.06209), A&A 641:A6 — `H₀ = 67.4 ± 0.5`, `Ω_m = 0.315 ± 0.007`, arithmetic in `energy.vacuum` |
+| C7 | linear dispersion: the quantum-gravity mass scale is *significantly above* `M_Pl` | [arXiv:0908.1832](https://arxiv.org/abs/0908.1832), Nature 462:331 (2009) |
+| C8 | `-3e-15 <= (v_gw - c)/c <= +7e-16` | [arXiv:1710.05834](https://arxiv.org/abs/1710.05834), ApJL 848:L13 (2017) |
+| C9 | `η(Ti,Pt) = [-1.5 ± 2.3 ± 1.5]e-15` at 1σ | [arXiv:2209.15487](https://arxiv.org/abs/2209.15487), PRL 129:121102 (2022) |
+| C10 | M87* shadow diameter `42 +/- 3` micro-as | [arXiv:1906.11238](https://arxiv.org/abs/1906.11238), ApJ 875:L1 (2019) |
+| C13 | `r_0.05 < 0.036` at 95% confidence | [arXiv:2110.00483](https://arxiv.org/abs/2110.00483), PRL 127:151301 (2021) |
+
+**C6 found a dimensional error in v0.** The lattice said `Λ/M_Pl⁴ ~ 1e-122`, which is not a ratio that
+exists: the cosmological constant has mass dimension 2, so `Λ/M_Pl²` is the dimensionless statement and
+`ρ_Λ/M_Pl⁴` is the other one. Both are ≈1e-122 — which is precisely how the error survived a reading.
+`energy.vacuum` computes both from Planck's abstract, and a test asserts they differ by exactly `8π`.
+
+One bound is **not** read, and is named in `PENDING_BOUNDS` so it cannot be quietly forgotten:
+
+- **C1** — Cassini's post-Newtonian `γ`: Nature 425, 374 (2003) is paywalled and was not fetched. The
+  bound is quoted everywhere second-hand; quoting it without reading the paper is the failure this gate
+  exists to prevent.
+
+Two of the six verified bounds cover only *half* their condition, and say so in the record: C10 verifies
+the shadow but not the ringdown; C13 verifies the tensor-to-scalar ratio but not the spectral index or
+its running; C9 verifies the laboratory half, since its solar-system half is C1. A half-verified
+condition is not a verified condition.
+
+**Every cell is still `UNKNOWN`.** A verified bound makes a condition *evaluable*; it does not decide it.
+Deciding requires the candidate's own predicted value, which is SX-1.
+
+There is deliberately **no path from "nothing found" to `SURVIVES`**, including the six rows where the
+condition is not asked at all.
 
 ## 5. The target equation — named, not gestured at
 
@@ -154,10 +200,12 @@ not have to be right to be worth running.
 ## 9. Reproduce
 
 ```
-python3 -m pacland.energy.referee            # the 78-cell table, as it stands
-python3 -m pacland.energy.referee --self-test # prove the machine can KILL, and cannot pass by absence
-python3 -m unittest tests.test_energy_sextant -v
+PYTHONPATH=src python3 -m pacland.energy.referee              # the 78-cell table, as it stands
+PYTHONPATH=src python3 -m pacland.energy.referee --self-test  # prove it can KILL, and cannot pass by absence
+PYTHONPATH=src python3 -m unittest tests.test_energy_sextant -v
 ```
+
+(`PYTHONPATH=src` because the checkout is not installed; the tests set it themselves.)
 
 ## 10. What makes it real
 
