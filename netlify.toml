@@ -6,5 +6,13 @@
 # check the site's Deploys list rather than re-editing the page. (2026-10-26: the card
 # update in #127 went live only after this file changed, because deploys queued while
 # the account was over its usage cap and were not replayed when it was lifted.)
+# 2026-11-04: forced republish. Measured before this change — pacland.morpheus.nz serves
+# 91,276 bytes of index.html and an index.json with 256 items, against main's 424; it has
+# not moved since at least 2026-11-02, while deploy previews for the same repo build fine
+# (deploy-preview-396 serves web/energy.html). So builds work and production publishing is
+# what is stuck. The 2026-10-26 note below records the same shape and the same fix: a change
+# to THIS FILE went live when queued content deploys did not. Touching it is the cheap test
+# before asking for a site-settings change.
+
 [build]
   publish = "web/"
