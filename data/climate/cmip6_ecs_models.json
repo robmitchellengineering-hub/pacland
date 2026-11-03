@@ -1,0 +1,276 @@
+{
+ "description": "CMIP6 equilibrium climate sensitivity and 2xCO2 effective radiative forcing, per model.",
+ "source": "Zelinka et al. (2020), 'Causes of higher climate sensitivity in CMIP6 models', GRL 47, e2019GL085782 \u2014 table mirrored machine-readable at huggingface.co/datasets/RealSR/benchmark (data_raw/zelinka_cmip6_ecs.csv), fetched 2026-11-03.",
+ "unit": {
+  "ecs_K": "K",
+  "erf2x_wm2": "W/m2"
+ },
+ "note": "ECS and ERF2x only; the per-model abrupt-4xCO2 regression that would turn a drift residual into a dECS is not here.",
+ "models": [
+  {
+   "model": "ACCESS-CM2",
+   "ecs_K": 4.66,
+   "erf2x_wm2": 3.43
+  },
+  {
+   "model": "ACCESS-ESM1-5",
+   "ecs_K": 3.88,
+   "erf2x_wm2": 2.83
+  },
+  {
+   "model": "AWI-CM-1-1-MR",
+   "ecs_K": 3.16,
+   "erf2x_wm2": 3.63
+  },
+  {
+   "model": "BCC-CSM2-MR",
+   "ecs_K": 3.02,
+   "erf2x_wm2": 3.11
+  },
+  {
+   "model": "BCC-ESM1",
+   "ecs_K": 3.25,
+   "erf2x_wm2": 3.01
+  },
+  {
+   "model": "CAMS-CSM1-0",
+   "ecs_K": 2.29,
+   "erf2x_wm2": 4.17
+  },
+  {
+   "model": "CESM2",
+   "ecs_K": 5.15,
+   "erf2x_wm2": 3.27
+  },
+  {
+   "model": "CESM2-FV2",
+   "ecs_K": 5.16,
+   "erf2x_wm2": 2.86
+  },
+  {
+   "model": "CESM2-WACCM",
+   "ecs_K": 4.68,
+   "erf2x_wm2": 3.3
+  },
+  {
+   "model": "CESM2-WACCM-FV2",
+   "ecs_K": 4.8,
+   "erf2x_wm2": 2.92
+  },
+  {
+   "model": "CIESM",
+   "ecs_K": 5.63,
+   "erf2x_wm2": 3.86
+  },
+  {
+   "model": "CMCC-CM2-SR5",
+   "ecs_K": 3.55,
+   "erf2x_wm2": 3.79
+  },
+  {
+   "model": "CMCC-ESM2",
+   "ecs_K": 3.58,
+   "erf2x_wm2": 3.75
+  },
+  {
+   "model": "CNRM-CM6-1",
+   "ecs_K": 4.9,
+   "erf2x_wm2": 3.64
+  },
+  {
+   "model": "CNRM-CM6-1-HR",
+   "ecs_K": 4.33,
+   "erf2x_wm2": 3.96
+  },
+  {
+   "model": "CNRM-ESM2-1",
+   "ecs_K": 4.79,
+   "erf2x_wm2": 2.97
+  },
+  {
+   "model": "CanESM5",
+   "ecs_K": 5.64,
+   "erf2x_wm2": 3.68
+  },
+  {
+   "model": "E3SM-1-0",
+   "ecs_K": 5.31,
+   "erf2x_wm2": 3.33
+  },
+  {
+   "model": "EC-Earth3",
+   "ecs_K": 4.26,
+   "erf2x_wm2": 3.22
+  },
+  {
+   "model": "EC-Earth3-AerChem",
+   "ecs_K": 3.87,
+   "erf2x_wm2": 3.63
+  },
+  {
+   "model": "EC-Earth3-CC",
+   "ecs_K": 4.23,
+   "erf2x_wm2": 3.25
+  },
+  {
+   "model": "EC-Earth3-Veg",
+   "ecs_K": 4.33,
+   "erf2x_wm2": 3.37
+  },
+  {
+   "model": "EC-Earth3-Veg-LR",
+   "ecs_K": 4.23,
+   "erf2x_wm2": 3.25
+  },
+  {
+   "model": "FGOALS-f3-L",
+   "ecs_K": 2.98,
+   "erf2x_wm2": 4.17
+  },
+  {
+   "model": "FGOALS-g3",
+   "ecs_K": 2.87,
+   "erf2x_wm2": 3.58
+  },
+  {
+   "model": "GFDL-CM4",
+   "ecs_K": 3.89,
+   "erf2x_wm2": 3.19
+  },
+  {
+   "model": "GFDL-ESM4",
+   "ecs_K": 2.65,
+   "erf2x_wm2": 3.77
+  },
+  {
+   "model": "GISS-E2-1-G",
+   "ecs_K": 2.71,
+   "erf2x_wm2": 3.95
+  },
+  {
+   "model": "GISS-E2-1-H",
+   "ecs_K": 3.12,
+   "erf2x_wm2": 3.53
+  },
+  {
+   "model": "GISS-E2-2-G",
+   "ecs_K": 2.43,
+   "erf2x_wm2": 3.65
+  },
+  {
+   "model": "GISS-E2-2-H",
+   "ecs_K": 2.68,
+   "erf2x_wm2": 3.42
+  },
+  {
+   "model": "HadGEM3-GC31-LL",
+   "ecs_K": 5.55,
+   "erf2x_wm2": 3.49
+  },
+  {
+   "model": "HadGEM3-GC31-MM",
+   "ecs_K": 5.44,
+   "erf2x_wm2": 3.57
+  },
+  {
+   "model": "IITM-ESM",
+   "ecs_K": 2.37,
+   "erf2x_wm2": 4.51
+  },
+  {
+   "model": "INM-CM4-8",
+   "ecs_K": 1.83,
+   "erf2x_wm2": 2.7
+  },
+  {
+   "model": "INM-CM5-0",
+   "ecs_K": 1.92,
+   "erf2x_wm2": 2.92
+  },
+  {
+   "model": "IPSL-CM5A2-INCA",
+   "ecs_K": 3.82,
+   "erf2x_wm2": 3.07
+  },
+  {
+   "model": "IPSL-CM6A-LR",
+   "ecs_K": 4.7,
+   "erf2x_wm2": 3.58
+  },
+  {
+   "model": "IPSL-CM6A-LR-INCA",
+   "ecs_K": 4.13,
+   "erf2x_wm2": 3.15
+  },
+  {
+   "model": "KACE-1-0-G",
+   "ecs_K": 4.75,
+   "erf2x_wm2": 3.41
+  },
+  {
+   "model": "MIROC-ES2L",
+   "ecs_K": 2.66,
+   "erf2x_wm2": 4.11
+  },
+  {
+   "model": "MIROC6",
+   "ecs_K": 2.6,
+   "erf2x_wm2": 3.65
+  },
+  {
+   "model": "MPI-ESM-1-2-HAM",
+   "ecs_K": 2.95,
+   "erf2x_wm2": 4.16
+  },
+  {
+   "model": "MPI-ESM1-2-HR",
+   "ecs_K": 2.98,
+   "erf2x_wm2": 3.65
+  },
+  {
+   "model": "MPI-ESM1-2-LR",
+   "ecs_K": 3.03,
+   "erf2x_wm2": 4.22
+  },
+  {
+   "model": "MRI-ESM2-0",
+   "ecs_K": 3.13,
+   "erf2x_wm2": 3.43
+  },
+  {
+   "model": "NESM3",
+   "ecs_K": 4.76,
+   "erf2x_wm2": 3.73
+  },
+  {
+   "model": "NorCPM1",
+   "ecs_K": 3.03,
+   "erf2x_wm2": 3.34
+  },
+  {
+   "model": "NorESM2-LM",
+   "ecs_K": 2.56,
+   "erf2x_wm2": 3.43
+  },
+  {
+   "model": "NorESM2-MM",
+   "ecs_K": 2.49,
+   "erf2x_wm2": 3.73
+  },
+  {
+   "model": "SAM0-UNICON",
+   "ecs_K": 3.72,
+   "erf2x_wm2": 3.89
+  },
+  {
+   "model": "TaiESM1",
+   "ecs_K": 4.36,
+   "erf2x_wm2": 3.85
+  },
+  {
+   "model": "UKESM1-0-LL",
+   "ecs_K": 5.36,
+   "erf2x_wm2": 3.61
+  }
+ ]
+}
