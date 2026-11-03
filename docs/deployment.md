@@ -13,10 +13,38 @@ Live surfaces (both serving `web/index.html`, the same static demo):
 
 ## Republish after a `web/index.html` change
 
+**One command (preferred — it does steps 1 and 2 for you and verifies the result):**
+
+```
+node scripts/deploy-netlify.mjs            # zip origin/main's web/, POST, wait for ready, verify
+node scripts/deploy-netlify.mjs --dry-run  # build the zip only, post nothing
+node scripts/deploy-netlify.mjs --site <id|name>   # target a different Netlify site
+```
+
+It reads the Netlify token from its documented home (the Morpheus production DB) and decrypts it in
+process with the prod `ENCRYPTION_KEY`; it never prints the token, and it verifies the deployed bytes
+rather than trusting the POST's status code.
+
+By hand, if you prefer:
+
 1. Re-zip: `(cd web && zip -r /tmp/pacland-site.zip .)`
-2. POST the zip to the Netlify deploy endpoint, or redeploy via the API
-   (`POST /api/v1/sites/29e7c912-9a79-4cb3-a7e8-f491dc385c0e/deploys`).
-3. GitHub Pages: copy `web/index.html` to the `gh-pages` branch and push.
+2. `POST /api/v1/sites/29e7c912-9a79-4cb3-a7e8-f491dc385c0e/deploys` with `Content-Type: application/zip`
+   and `Authorization: Bearer <token>`.
+3. GitHub Pages: `scripts/deploy-pages.sh`.
+
+### The site-id trap (measured 2026-11-04)
+
+`29e7c912…` is the site named **pacland**. It has **no custom domain**; its default domain is
+`pacland.netlify.app`. `pacland.morpheus.nz` is Cloudflare-proxied to a **different** site,
+`pacland-main.netlify.app`, which the token cannot see — `GET /sites` returns only `pacland`,
+`web-page-test-muks1p48` and `morpheus2`.
+
+So a successful deploy updates `pacland.netlify.app` and **not** the canonical domain. Any session
+that sees "deploy succeeded, domain unchanged" should read this paragraph instead of re-deriving it.
+
+Fix, either one line:
+- point the Cloudflare `pacland` CNAME at `pacland.netlify.app`, or
+- add `pacland.morpheus.nz` as a custom domain on the `pacland` site (Netlify → Domain management).
 
 ## Gotchas
 
