@@ -43,6 +43,7 @@ from pacland.energy import vacuum as V  # noqa: E402
 from pacland.energy.evidence import (  # noqa: E402
     COMPUTED_HERE,
     CONTESTED,
+    NO_PREDICTION,
     NOT_RESEARCHED,
     REASON_CLASSES,
     WORK,
@@ -152,10 +153,11 @@ class TestWhyUndecided(unittest.TestCase):
         self.assertEqual(sum(c.values()), 78)
         self.assertEqual(set(c), set(REASON_CLASSES))
 
-    def test_seven_cells_have_been_researched_and_seventy_one_have_not(self):
+    def test_eleven_cells_have_been_researched_and_sixty_seven_have_not(self):
         c = counts()
-        self.assertEqual(c[NOT_RESEARCHED], 71)
-        self.assertEqual(c[CONTESTED], 6)
+        self.assertEqual(c[NOT_RESEARCHED], 67)
+        self.assertEqual(c[CONTESTED], 7)
+        self.assertEqual(c[NO_PREDICTION], 3)
         self.assertEqual(c[COMPUTED_HERE], 1)
 
     def test_the_cosmological_constant_cells_name_what_the_frameworks_claim(self):
@@ -186,6 +188,31 @@ class TestWhyUndecided(unittest.TestCase):
 
     def test_the_render_reports_the_breakdown(self):
         self.assertIn("why undecided:", render(table()))
+
+
+class TestTheTerminalClause(unittest.TestCase):
+    """C6 decides whether any framework can survive all thirteen conditions. It is now closed."""
+
+    def test_the_c6_row_is_complete(self):
+        for cand in CANDIDATES:
+            self.assertNotEqual(class_for(cand.id, "C6"), NOT_RESEARCHED, cand.id)
+
+    def test_no_framework_passes_c6(self):
+        """Three engage and are contested; three make no claim. None is a pass."""
+        classes = {c.id: class_for(c.id, "C6") for c in CANDIDATES}
+        self.assertEqual(set(classes.values()), {CONTESTED, NO_PREDICTION})
+        self.assertEqual(sum(1 for v in classes.values() if v == CONTESTED), 3)
+        self.assertEqual(sum(1 for v in classes.values() if v == NO_PREDICTION), 3)
+
+    def test_c6_cannot_kill_either(self):
+        """By design: failing to account for Lambda is UNKNOWN, not KILLED - otherwise all six die."""
+        c6 = next(c for c in CONSTRAINTS if c.id == "C6")
+        self.assertEqual(c6.fails_as, UNKNOWN)
+
+    def test_the_consequence_is_recorded_where_it_can_be_read(self):
+        doc = pathlib.Path(__file__).resolve().parents[1] / "docs" / "energy-sextant.md"
+        text = doc.read_text()
+        self.assertIn("No framework can survive all thirteen conditions.", text)
 
 
 class TestTheThreeRefusals(unittest.TestCase):
