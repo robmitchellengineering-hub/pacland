@@ -22,6 +22,7 @@ from __future__ import annotations
 import json
 import sys
 
+from .evidence import REASON_CLASSES, counts
 from .lattice import (
     CANDIDATES,
     CONSTRAINTS,
@@ -60,6 +61,8 @@ def render(rows: list[dict]) -> str:
         f"**{s['cells']} cells — KILLED {s[KILLED]} · SURVIVES {s[SURVIVES]} · UNKNOWN {s[UNKNOWN]}**",
         "",
         "? = no verifier has run against a verified bound. Not a pass.",
+        "",
+        "why undecided: " + ", ".join(f"{k} {v}" for k, v in counts().items() if v),
     ]
     return "\n".join(lines)
 
