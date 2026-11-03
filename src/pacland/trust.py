@@ -107,7 +107,7 @@ def _ai_entries() -> list[TrustEntry]:
     # The verified-badge lane: repos that adopted valiant.json and pass.
     return [
         TrustEntry("ai", "valiant.json adoption — pacland", "clean",
-                   "unit-tests gate green (178 tests)",
+                   "unit-tests gate green (count in README, guarded by tests/test_doc_claims.py)",
                    "valiant.json (this repo)"),
         TrustEntry("ai", "valiant.json adoption — harness-mesh", "clean",
                    "11 guards, 33 mutations, each proven to go red",
