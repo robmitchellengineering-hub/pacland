@@ -144,6 +144,13 @@
    "title": "The cosmological-constant distribution \u2014 flux vs uplift"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/certificate-integrity.md",
+   "kind": "doc",
+   "path": "docs/certificate-integrity.md",
+   "summary": "A certificate is only evidence if someone who does not trust the issuer can check it. This page is the check, and it is deliberately short: three files and a command that ships with every\u2026",
+   "title": "Certificate integrity \u2014 how to check one without trusting us"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/chamber-analysis.md",
    "kind": "doc",
    "path": "docs/chamber-analysis.md",
@@ -1316,7 +1323,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check_certificates_current.py",
    "kind": "script",
    "path": "scripts/check_certificates_current.py",
-   "summary": "Reproducibility, checked mechanically: do the committed certificates match a fresh run?",
+   "summary": "Reproducibility and integrity, checked mechanically.",
    "title": "check_certificates_current.py"
   },
   {
@@ -2377,6 +2384,13 @@
    "title": "shard_vacua.sh"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sign_manifest.py",
+   "kind": "script",
+   "path": "scripts/sign_manifest.py",
+   "summary": "Sign the certificate manifest with an OpenSSH (ed25519) key, and publish the public key.",
+   "title": "sign_manifest.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_explicit.py",
    "kind": "script",
    "path": "scripts/spectral_explicit.py",
@@ -2732,6 +2746,13 @@
    "path": "scripts/validate_uv_completions.py",
    "summary": "Validate the UV-completion catalog (Machine 3) against the literature collapse",
    "title": "validate_uv_completions.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify_certificates.py",
+   "kind": "script",
+   "path": "scripts/verify_certificates.py",
+   "summary": "Verify a certificate set offline \u2014 the check a stranger can run.",
+   "title": "verify_certificates.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify_deficit_numbers.py",
