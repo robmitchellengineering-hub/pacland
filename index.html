@@ -95,6 +95,10 @@
   .callout { border-left: 4px solid var(--accent); background: #eef1f8; padding: .9rem 1.1rem; border-radius: 0 8px 8px 0; margin: 1.2rem 0; }
   .callout p { margin: .3rem 0; }
   footer { border-top: 1px solid var(--line); padding: 1.5rem; text-align: center; color: var(--muted); font-size: .85rem; }
+h2{scroll-margin-top:6rem}
+#deterministic~table{width:auto;max-width:calc(100% - 1.8rem)}
+#deterministic~table td,#deterministic~table th{overflow-wrap:normal}
+@media (max-width:600px){#deterministic~table td,#deterministic~table th{padding:.55rem .45rem}}
 </style>
 </head>
 <body>
@@ -118,6 +122,7 @@
   <p class="lede">Most claims — in physics, economics, climate, or the software an AI just wrote for you — cannot be checked. PACLAND measures <strong>how much of a claim can be checked</strong>, and refuses the rest.</p>
   <p class="muted">Mitchell’s Principle of Constraint-First Unification: a theory of everything predicts <em>relations</em>, never <em>values</em> — applied one field at a time, starting with the string landscape.</p>
   <p class="hero-actions">
+    <a class="btn" href="#deterministic">The deterministic result</a>
     <a class="btn" href="#what">What it is</a>
     <a class="btn" href="#calculators">Try the calculators</a>
     <a class="btn" href="./viz.html">See the 3D geometry</a>
@@ -178,6 +183,34 @@
 
 <details class="fold">
 <summary>The unification, stated correctly</summary>
+<h2 id="deterministic">Deterministic in use — 43,046,720 vacua, counted exactly</h2>
+<p class="lead">A part of quantum gravity is now <strong>deterministic in use</strong>. Not deterministic in the sense of hidden variables or the measurement problem — in the sense that <strong>every question this sector can answer is answered by an exact count</strong>: no sampler, no probability, and no run-to-run variance.</p>
+<table>
+  <thead><tr><th>b₃</th><th>flux pairs in the window</th><th>orbits verified</th><th>matches the closed form</th></tr></thead>
+  <tbody>
+    <tr><td>2</td><td>81</td><td>80</td><td>yes</td></tr>
+    <tr><td>4</td><td>6,561</td><td>6,560</td><td>yes</td></tr>
+    <tr><td>6</td><td>531,441</td><td>531,440</td><td>yes</td></tr>
+    <tr><td><strong>8</strong></td><td><strong>43,046,721</strong></td><td><strong>43,046,720</strong></td><td><strong>yes</strong></td></tr>
+  </tbody>
+</table>
+<p>The tadpole count is a closed form — <code>count(N) = [xᴺ] P(x)^(b₃/2)</code> with <code>P = 4x² + 20x + 33 + 20x⁻¹ + 4x⁻²</code> — and at <code>b₃ = 8</code> it was checked against <strong>full enumeration of every one of those 43 million pairs</strong>. Every tadpole class matches. Then it was checked again by a second implementation that shares no code path with the first (nested loops over the definition, no numpy, no polynomial): same 43,046,720 orbits, same 17 classes, in 69 seconds.</p>
+
+<div class="callout">
+  <p><strong>Why this is a gap and not a slogan.</strong> The alternative method for these same questions is sampling with a budget, and it cannot reach this. Sampling needs a per-point search and returns <strong>0.00137 points per try</strong> at <code>b₃ = 12</code>; 43 million exact pairs is a computation no sampling budget arrives at. So the sector has a region where the answer is a <em>number</em>, not a distribution — and that is a thing the statistical treatment of the landscape cannot say about itself.</p>
+</div>
+
+<p><strong>What it is, precisely — the two qualifiers are the claim.</strong> Drop either and it stops being true.</p>
+<table>
+  <thead><tr><th>qualifier</th><th>what it excludes</th></tr></thead>
+  <tbody>
+    <tr><td><strong>the flux sector</strong></td><td>not quantum mechanics: no amplitudes are computed, the Born rule never appears, and Bell is untouched — nothing here could address it.</td></tr>
+    <tr><td><strong>the enumerable window</strong></td><td>not the physical flux range: today <code>b₃ ≤ 8</code>, while the quintic is <code>b₃ = 204</code>. The exact tier reaches about 4% of the way there.</td></tr>
+  </tbody>
+</table>
+<p class="muted">The falsifiers, stated so they can be used: a third implementation disagreeing at any rung, or a re-run on different hardware producing a different total. Both would mean the count is not deterministic after all. The <code>b₃ ≤ 6</code> agreement is guarded by a test; the <code>b₃ = 8</code> result is registered in the claims ledger with two independent lines of evidence.</p>
+<p class="links"><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/deterministic-in-use.md">the claim, in full →</a><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tadpole_independent_count.py">the independent count</a><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/claims.json">the claims ledger</a></p>
+
 <h2 id="physics">Physics — the whole argument, in one place</h2>
 <p class="lead">The founding discipline. Everything below the fold is a part of it; this is how the parts fit together. Read this, then open any part that matters to you.</p>
 
