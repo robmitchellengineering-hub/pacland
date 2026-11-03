@@ -91,6 +91,21 @@ EVIDENCE: dict[tuple[str, str], Note] = {
         "Newtonian / post-Newtonian limit that C1's bound constrains",
         "arXiv:1812.02110",
     ),
+    ("causal-sets", "C6"): Note(
+        CONTESTED,
+        "causal set theory predicts an 'everpresent Lambda' - a fluctuating, time-dependent "
+        "cosmological constant of the right order of magnitude. It is the only one of the six with a "
+        "prediction for the MAGNITUDE, and the prediction is strongly constrained by microwave-background "
+        "isotropy (though not excluded)",
+        "arXiv:astro-ph/0209274, arXiv:1210.2589, arXiv:gr-qc/0612128",
+    ),
+    ("asymptotic-safety", "C6"): Note(
+        CONTESTED,
+        "the FRG claim is that graviton fluctuations drive the cosmological constant towards zero, which "
+        "solves the problem by predicting Lambda = 0 - so the observed Lambda > 0 is a tension rather "
+        "than a success",
+        "arXiv:1704.08040, arXiv:1501.05848",
+    ),
     ("strings-adscft", "C11"): Note(
         COMPUTED_HERE,
         "in the T^6 model the distance conjecture (alpha = 1) and the WGC (z = 1) hold exactly and there "
