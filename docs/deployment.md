@@ -32,33 +32,21 @@ By hand, if you prefer:
    and `Authorization: Bearer <token>`.
 3. GitHub Pages: `scripts/deploy-pages.sh`.
 
-### The site-id trap (measured 2026-11-04)
+### Where the domain actually points (measured 2026-11-04)
 
-`29e7c912…` is the site named **pacland**. It has **no custom domain**; its default domain is
-`pacland.netlify.app`. `pacland.morpheus.nz` is Cloudflare-proxied to a **different** site,
-`pacland-main.netlify.app`, which the token cannot see — `GET /sites` returns only `pacland`,
-`web-page-test-muks1p48` and `morpheus2`.
+**`pacland.morpheus.nz` is served by GitHub Pages, not Netlify.** Cloudflare proxies the CNAME to
+`robmitchellengineering-hub.github.io`, and Pages builds from the `gh-pages` branch — which
+`scripts/deploy-pages.sh` mirrors from `web/`. A merge to `main` does **not** publish; the script does,
+and Pages takes ~60-90 s.
 
-So a successful deploy updates `pacland.netlify.app` and **not** the canonical domain. Any session
-that sees "deploy succeeded, domain unchanged" should read this paragraph instead of re-deriving it.
+Netlify is a *preview* path only: site `29e7c912…` is `pacland` with no custom domain, and the domain is
+claimed by two other Netlify sites (`4bc468b4-…`, `a6870cad-…`) so attaching it is refused —
+`must be unique`. The stored token belongs to the Valiant Music account and cannot touch
+`pacland-main`, whose production deploys stopped landing anyway.
 
-Fix, either one line:
-- point the Cloudflare `pacland` CNAME at `pacland.netlify.app`, or
-- add `pacland.morpheus.nz` as a custom domain on the `pacland` site (Netlify → Domain management).
+So `node scripts/deploy-netlify.mjs` publishes `pacland.netlify.app` (a preview);
+`bash scripts/deploy-pages.sh` publishes the domain.
 
-## Gotchas
-
-- **New Netlify sites default to account SSO (`sso_login: true`)**, which serves
-  `HTTP 401 "Login Redirect"` → `app.netlify.com/edge-access`. A site created via
-  the API under Rob's token must be un-walled with
-  `PATCH /api/v1/sites/{id}` body `{"sso_login": false}`. Done for this site.
-- **Custom domain `pacland.morpheus.nz` is live** (Cloudflare CNAME `pacland` →
-  `pacland.netlify.app`). The canonical address in every doc is now
-  `pacland.morpheus.nz`; `pacland.netlify.app` remains only as the Netlify backend.
-
-## Credentials (never in chat or this file)
-
-- Rob's Netlify token: Morpheus prod DB `user_settings.connections.netlify.token`
-  (encrypted). Do not copy it out; decrypt in-process like the deploy scripts in
-  `/tmp` did on 2026-10-18.
-- arXiv: not yet submitted — needs Rob's arXiv account (https://arxiv.org/register).
+**Verification is not satisfiable by a green CI or a merge** — fetch the live URL and grep for a string
+from the change. Measured on 2026-11-04: after the mirror ran, the live page went from 95,151 bytes
+without the Energy card to 92,532 with it, `index.json` at 424 items.

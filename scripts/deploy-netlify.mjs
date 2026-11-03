@@ -23,12 +23,11 @@
  *
  * It never prints the token.
  *
- * THE SITE ID MATTERS. `docs/deployment.md` names `29e7c912-…` (`pacland`, default domain
- * pacland.netlify.app). That site has **no custom domain**, and pacland.morpheus.nz is
- * currently proxied by Cloudflare to a *different* site (`pacland-main.netlify.app`) which the
- * token cannot see. So a successful run of this script updates pacland.netlify.app and NOT the
- * canonical domain, until the DNS/site mismatch is resolved. `--site` exists so the right site
- * can be named the moment it is reachable.
+ * THIS PUBLISHES A PREVIEW, NOT THE DOMAIN. pacland.morpheus.nz is served by GitHub Pages
+ * (Cloudflare CNAME -> robmitchellengineering-hub.github.io, built from `gh-pages`) and is published
+ * by `scripts/deploy-pages.sh`. Netlify site `29e7c912-…` (`pacland`) has no custom domain and cannot
+ * claim one — the domain is held by two other Netlify sites. So this script is the fast preview path;
+ * the domain path is deploy-pages.sh. See docs/deployment.md.
  */
 import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
@@ -143,6 +142,6 @@ console.log(`verified: ${url} -> HTTP ${page.status}, ${html.length} bytes, Ener
 const published = await (await api(token, `/sites/${site}`)).json();
 console.log(`published on ${published.default_domain}${published.custom_domain ? ' / ' + published.custom_domain : ''}`);
 if (!published.custom_domain) {
-  console.log('NOTE: this site has no custom domain. If the canonical domain still shows old content,');
-  console.log('      it is served by another Netlify site — see docs/deployment.md, "the site-id trap".');
+  console.log('NOTE: this site has no custom domain — it is a PREVIEW target. The canonical domain is');
+  console.log('      published by scripts/deploy-pages.sh (GitHub Pages). See docs/deployment.md.');
 }
