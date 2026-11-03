@@ -326,6 +326,13 @@
    "title": "Deployment \u2014 where PACLAND lives"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/deterministic-in-use.md",
+   "kind": "doc",
+   "path": "docs/deterministic-in-use.md",
+   "summary": "in an exact count verified against full enumeration \u2014 no sampler, no probability, no run-to-run variance. The physics is deterministic in its use there, even though nothing here touches\u2026",
+   "title": "Deterministic in use \u2014 the scoped claim"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drift-is-not-calibratable.md",
    "kind": "doc",
    "path": "docs/drift-is-not-calibratable.md",
@@ -2508,6 +2515,13 @@
    "path": "scripts/tadpole_distribution.py",
    "summary": "The tadpole distribution as a closed form.",
    "title": "tadpole_distribution.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tadpole_independent_count.py",
+   "kind": "script",
+   "path": "scripts/tadpole_independent_count.py",
+   "summary": "An independent count of the tadpole distribution \u2014 pure Python, no numpy, no polynomial.",
+   "title": "tadpole_independent_count.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tensions.py",
