@@ -160,6 +160,39 @@ modified Friedmann equation
 with `ρ_c` computable from the condensate kinetics and a GR limit that must carry the measured `G_N`.
 Falsifier: the coefficient must land inside the BBN/CMB window, or the carrier is dead.
 
+### Carrier A, rung 1 — built, and checked against its own closed form
+
+`src/pacland/energy/frg.py` implements the Einstein–Hilbert truncation of the flow with Litim's
+optimised cutoff ([hep-th/0312114](https://arxiv.org/abs/hep-th/0312114)) — two couplings, equations
+(4)–(5), solved by a small Newton iteration. It reproduces the paper's own closed form and exponents:
+
+```
+$ PYTHONPATH=src python3 -m pacland.energy.frg
+  lambda*        = 0.2500000000
+  g* (physical)  = 1.1780972451      closed form 1.1780972451
+  beta at fixpt  = (0.00e+00, 0.00e+00)
+  eta*           = -2.000000         (expected 2 - d = -2)
+  theta          = 1.666678 +/- 4.307624 i   (paper: (5 +/- i sqrt(167))/3)
+  matches closed form: True
+```
+
+**The exponents are complex, and that is the published answer** — the paper gives
+`θ± = (5 ± i√167)/3`, i.e. `1.667 ± 4.308 i`, and records that the pair stays complex for
+`2.56 < d < 21.4`. A solver that refuses complex exponents here fails on the known answer; this one did,
+before the paper's LaTeX was read.
+
+**Where the formula came from is part of the result.** The beta functions were first extracted from the
+PDF, where the superscripts are mangled — the text is ambiguous between `d³g` and `d·3·g`, and the
+"obvious" reading produces a cubic where the paper says the condition is quadratic. They were re-read
+from the arXiv **LaTeX source**, which is unambiguous. A test re-runs the solver with the `+2` dropped
+from `P2` (the mangled reading) and shows the answer moves to a negative `g` — plausible-looking, and
+wrong.
+
+**What this rung supports, and what it does not.** It supports exactly: *the Einstein–Hilbert truncation
+with this cutoff has a non-Gaussian fixed point at these coordinates, with these complex exponents.*
+Reproducing a published fixed point is **not** evidence that it survives the next truncation — that is
+the open question in the field, and the ladder above rung 1 is not built.
+
 ## 6. Phases, gates, and the pre-registration
 
 | # | phase | gate |
