@@ -24,6 +24,17 @@ class Discipline:
 
 DISCIPLINES: tuple[Discipline, ...] = (
     Discipline(
+        slug="energy",
+        name="Energy — ceilings, and the vacuum",
+        status="registered — five energy claims; SEXTANT referee built, 6 of 7 bounds read, every verdict UNKNOWN",
+        package="pacland.energy",
+        docs="docs/energy-sextant.md",
+        blurb="Two arms under one wall. Stored-energy ceilings (lithium mass, Li–S electrolyte, fusion scaling, the joule "
+              "cost of verification) and the SEXTANT referee for candidate quantum-gravity frameworks: 13 conditions x 6 "
+              "frameworks, KILLED/SURVIVES/UNKNOWN, with UNKNOWN wherever no verifier has run against a read bound. "
+              "The discipline's own bound was written before any framework was scored, so a verdict cannot be softened after the fact.",
+    ),
+    Discipline(
         slug="edna",
         name="eDNA detection theory",
         status="new — methods only, falsifier-fired and narrowed",
