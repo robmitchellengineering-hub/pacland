@@ -9,7 +9,7 @@ import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 REG = json.loads((ROOT / "docs" / "claims.json").read_text())
-VALID = {"PASS-1", "PASS-2", "withdrawn"}
+VALID = {"PASS-1", "PASS-2", "withdrawn", "registered"}
 
 
 class TestRegistryShape(unittest.TestCase):
@@ -54,6 +54,15 @@ class TestPass2MeansReproduced(unittest.TestCase):
             if c["status"] == "PASS-2":
                 self.assertGreaterEqual(len(c.get("evidence", [])), 2,
                                         f"{c['id']} is PASS-2 with fewer than two evidence lines")
+
+    def test_registered_claims_are_not_dressed_up_as_results(self):
+        for c in REG["claims"]:
+            if c["status"] != "registered":
+                continue
+            self.assertIn("falsifier", c, f"{c['id']} registered without a falsifier")
+            self.assertEqual(c.get("evidence", []), [],
+                             f"{c['id']} is registered but carries evidence — use PASS-1")
+            self.assertTrue((ROOT / c["script"]).is_file(), f"{c['id']} registered without a script")
 
     def test_pass1_does_not_claim_reproduction(self):
         for c in REG["claims"]:
