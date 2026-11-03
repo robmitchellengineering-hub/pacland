@@ -185,6 +185,31 @@ So the programme's terminal clause — *"killed with evidence, or survives all t
 **by doing the work honestly**, not by failing to do it. That is the answer, and it is stronger than a
 verdict: the field's impasse is a property of the evidence record, not of the referee.
 
+### The evaluability profile — the claim, as a computation
+
+```
+$ PYTHONPATH=src python3 -m pacland.energy.profile
+| framework | conditions it cannot be evaluated on | class | evaluable | unresearched |
+|---|---|---|---|---|
+| `strings-adscft` | **C6** | `CONTESTED` | 1 | 11 |
+| `lqg-spinfoam` | **C1** (+2) | `CONTESTED` | 0 | 10 |
+| `asymptotic-safety` | **C3** (+1) | `CONTESTED` | 0 | 11 |
+| `cdt` | **C6** | `NO-PREDICTION` | 0 | 12 |
+| `causal-sets` | **C2** (+1) | `CONTESTED` | 0 | 11 |
+| `gft` | **C6** | `NO-PREDICTION` | 0 | 12 |
+
+**6/6 frameworks are blocked** — 10 blocking cells in total.
+```
+
+The rule that keeps this honest, and that a test enforces: **a blocker is `CONTESTED`,
+`NOT-ESTABLISHED` or `NO-PREDICTION` — a finding about the framework. `NOT-RESEARCHED` never counts**,
+because "we have not looked" is a gap in this repo, not a property of the framework. A framework whose
+only non-scores are gaps is *not* blocked by this profile, however many gaps there are.
+
+The claim can fail, and a mutation test shows how: delete the `C6` entries for `cdt` and `gft` and both
+rows become unblocked, so the claim goes false. That is what makes the headline an assertion rather than
+a restatement of the default.
+
 ## 5. The target equation — named, not gestured at
 
 Two carriers run in parallel, because betting the programme on one derivation is not a plan.
