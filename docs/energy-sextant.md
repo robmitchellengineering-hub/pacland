@@ -274,7 +274,45 @@ wrong.
 **What this rung supports, and what it does not.** It supports exactly: *the Einstein–Hilbert truncation
 with this cutoff has a non-Gaussian fixed point at these coordinates, with these complex exponents.*
 Reproducing a published fixed point is **not** evidence that it survives the next truncation — that is
-the open question in the field, and the ladder above rung 1 is not built.
+the open question in the field, and rung 1 says nothing about it.
+
+### Carrier A, rung 2 — the ladder reaches one rung and refuses to flatter the rest
+
+`src/pacland/energy/frg_poly.py` carries the same flow into the polynomial ansatz
+`f(R) = Σ uᵢRⁱ`, from Machado & Saueressig ([arXiv:0712.0445](https://arxiv.org/abs/0712.0445)) — flow
+equation, ansatz and both result tables read from the LaTeX source.
+
+```
+$ PYTHONPATH=src python3 -m pacland.energy.frg_poly
+  n=1  u* = [+0.00523, -0.02021]  |beta| = 6.1e-16  matches paper: True
+        paper: [+0.00523, -0.02020]
+  n=2  u* = [+0.00374, -0.02111, +0.00337]  |beta| = 3.9e-17  matches paper: False
+        paper: [+0.00333, -0.01250, +0.00149]
+  n=3  u* = [+0.00098, -0.01093, +0.00172, +0.00015]  |beta| = 6.0e-16  matches paper: False
+        paper: [+0.00518, -0.01960, +0.00070, -0.01040]
+```
+
+**`n = 1` reproduces the published fixed point exactly. `n ≥ 2` does not — and the paper says why.** Its
+trace decomposition (eq. `traces`) carries a **single-mode contribution**
+
+```
+D₁(d,0) · (1/P_k) · ∂_t R_k     evaluated at  −D² = Λ₁(d,0)
+```
+
+which is not a heat-kernel term and so does not appear in the dimensionless flow equation. The authors'
+own footnote attributes the difference between their tables and the earlier CPR computation to exactly
+that term. Our `n ≥ 2` rows differ from their table in the way a missing term of that kind would produce,
+and `n = 1` is insensitive to it.
+
+**What this establishes.** The polynomial machinery is correct — `n = 1` is an exact known-answer match —
+and the published `n ≥ 2` ladder **cannot be reproduced from the published flow equation alone**. It does
+*not* establish a ladder: no claim of convergence or drift is made.
+
+That distinction is the whole point. **A truncation ladder that silently omits a term looks exactly like
+a converging ladder.** A test asserts the `n ≥ 2` rows are reported as mismatches, so they cannot be
+tuned into agreement later without deleting the test.
+
+Closing rung 2 needs the single-mode term extracted and added; that is named work, not a mystery.
 
 ## 6. Phases, gates, and the pre-registration
 
