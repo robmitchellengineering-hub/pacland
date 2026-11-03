@@ -2972,6 +2972,13 @@
    "title": "cones-3d"
   },
   {
+   "href": "./energy.html",
+   "kind": "page",
+   "path": "web/energy.html",
+   "summary": "page on this site",
+   "title": "energy"
+  },
+  {
    "href": "./index.html",
    "kind": "page",
    "path": "web/index.html",
