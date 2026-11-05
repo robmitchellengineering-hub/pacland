@@ -157,6 +157,40 @@ theorem additive_rat (a : ℝ → ℝ) (hadd : ∀ x y, a (x + y) = a x + a y) :
   rw [h2] at h
   simpa using h
 
+/-- **Cauchy's equation with a regularity condition.** An additive map
+`ℝ → ℝ` bounded on `[-1,1]` is ℝ-linear: `a x = x · a 1`. -/
+theorem additive_linear_of_bounded (a : ℝ → ℝ)
+    (hadd : ∀ x y, a (x + y) = a x + a y)
+    (hbounded : ∃ M : ℝ, ∀ x, |x| ≤ 1 → |a x| ≤ M) :
+    ∀ x, a x = x * a 1 := by
+  have hcont0 : ContinuousAt a 0 := additive_continuousAt_zero_of_bounded a hadd hbounded
+  have hcont : Continuous a := additive_continuous_of_continuousAt_zero a hadd hcont0
+  let g : ℝ → ℝ := fun x => a x - x * a 1
+  have hg_cont : Continuous g := by
+    dsimp [g]
+    exact hcont.sub (continuous_id.mul continuous_const)
+  have hg_zero : ∀ q : ℚ, g (q : ℝ) = 0 := by
+    intro q
+    dsimp [g]
+    have hq := additive_rat a hadd q
+    linarith
+  have hg : g = 0 := by
+    have hE_closed : IsClosed {x | g x = 0} := isClosed_eq hg_cont continuous_const
+    have hsubset : Set.range (Rat.cast : ℚ → ℝ) ⊆ {x | g x = 0} := by
+      rintro _ ⟨q, rfl⟩
+      exact hg_zero q
+    have hdense : DenseRange (Rat.cast : ℚ → ℝ) := Rat.denseRange_cast
+    have hclosure : closure (Set.range (Rat.cast : ℚ → ℝ)) = Set.univ := hdense.closure_range
+    have hE_sup : Set.univ ⊆ {x | g x = 0} := by
+      rw [← hclosure]
+      exact closure_minimal hsubset hE_closed
+    ext x
+    exact hE_sup (Set.mem_univ x)
+  intro x
+  have hx := congr_fun hg x
+  dsimp [g] at hx
+  linarith
+
 end Cauchy
 
 end
