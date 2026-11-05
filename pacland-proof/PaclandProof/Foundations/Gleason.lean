@@ -260,6 +260,27 @@ theorem quadratic_form (F : (Fin 2 → ℝ) → ℝ)
   simp [pow_two]
   ring
 
+/-- The weak bound (a step toward ℝ-linearity): for `F ≥ 0`, `|B(v,w)| ≤ (F v + F w)/2`.
+It is the local-boundedness that, with additivity, forces `B` ℝ-linear. -/
+theorem polarization_bound (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (hnonneg : ∀ v, 0 ≤ F v)
+    (v w : Fin 2 → ℝ) :
+    |polarization F v w| ≤ (F v + F w) / 2 := by
+  unfold polarization
+  rw [abs_div, abs_of_pos (by norm_num : 0 < (4 : ℝ))]
+  have habs : |F (v + w) - F (v - w)| ≤ F (v + w) + F (v - w) := by
+    rw [abs_sub_le_iff]
+    constructor
+    · linarith [hnonneg (v - w)]
+    · linarith [hnonneg (v + w)]
+  have htotal : F (v + w) + F (v - w) = 2 * F v + 2 * F w := hpar v w
+  calc
+    |F (v + w) - F (v - w)| / 4 ≤ (F (v + w) + F (v - w)) / 4 :=
+      div_le_div_of_nonneg_right habs (by norm_num)
+    _ = (F v + F w) / 2 := by rw [htotal]; ring
+
 end Gleason
 
 end
