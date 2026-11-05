@@ -147,6 +147,16 @@ theorem forty_five_additivity (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3
   rw [add_comm] at h
   exact h
 
+/-- **Evenness** — a frame function is even: `f(-x) = f x` for unit `x`, once we
+have a perpendicular unit `v ⊥ x` (the `α = 0, β = 1` case of the 2D additivity).
+This is what the homogeneous extension needs for `c < 0`. -/
+theorem even_of_frame (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (x v : Fin 3 → ℝ) (hx : unitVec3 x) (hv : unitVec3 v) (horth : orthVec3 x v) :
+    f (-x) = f x := by
+  have h := two_dim_additivity f hf x v hx hv horth 0 1 (by norm_num)
+  have h' : f v + f (-x) = f x + f v := by simpa using h
+  linarith
+
 end GleasonLemma
 
 end
