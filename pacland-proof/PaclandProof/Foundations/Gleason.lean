@@ -183,6 +183,29 @@ theorem polarization_diag_hom (F : (Fin 2 → ℝ) → ℝ)
   rw [h1, h2]
   ring
 
+/-- The polarization is `ℕ`-homogeneous in its first argument:
+`B(n·v, w) = n·B(v, w)`. This is the seed of `ℚ`-linearity (then `ℝ`-linearity by
+a regularity bound — the Jordan–von Neumann step). -/
+theorem polarization_nsmul (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (n : ℕ) (v w : Fin 2 → ℝ) :
+    polarization F (n • v) w = (n : ℝ) * polarization F v w := by
+  induction n with
+  | zero =>
+      have hz : (0 : ℕ) • v = 0 := by rfl
+      rw [hz]
+      have h0 : polarization F 0 w = 0 := polarization_zero F hhom w
+      rw [h0]
+      norm_num
+  | succ n ih =>
+      have hsucc : (n + 1) • v = n • v + v := rfl
+      rw [hsucc]
+      rw [polarization_add F hhom hpar (n • v) v w]
+      rw [ih]
+      norm_num [Nat.cast_add, Nat.cast_one]
+      ring
+
 end Gleason
 
 end
