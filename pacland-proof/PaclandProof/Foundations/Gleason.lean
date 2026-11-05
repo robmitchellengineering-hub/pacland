@@ -424,6 +424,23 @@ theorem densityMatrix_psd (F : (Fin 2 → ℝ) → ℝ)
     simp [densityMatrix, Matrix.det_fin_two]
     nlinarith [hcs]
 
+/-- **Step 3, the assembly, stated whole.** A positive homogeneous frame function
+(`H` + `P` + `F ≥ 0`, plus the frame sum `F e₀ + F e₁ = 1`) is the Born rule with a
+PSD trace-1 density matrix. -/
+theorem gleason_assembly (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (hnonneg : ∀ v, 0 ≤ F v)
+    (hframe : F e0 + F e1 = 1) :
+    (∀ v, F v = SelfDual.trProd (densityMatrix F) (SelfDual.outer v)) ∧
+    Gleason2D.psd2 (densityMatrix F) ∧
+    (densityMatrix F).trace = 1 := by
+  constructor
+  · exact born_rule F hhom hpar hnonneg
+  constructor
+  · exact densityMatrix_psd F hhom hpar hnonneg
+  · rw [densityMatrix_trace F, hframe]
+
 end Gleason
 
 end
