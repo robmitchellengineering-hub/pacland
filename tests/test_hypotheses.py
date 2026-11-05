@@ -66,3 +66,23 @@ class TestTheClaimsRegistryRule(unittest.TestCase):
     def test_the_rule_text_is_in_the_page(self):
         self.assertIn("claims-registry rule", H.render())
         self.assertIn("no executable test", H.render())
+
+
+class TestBeliefView(unittest.TestCase):
+    """Build 4 — every hypothesis now carries a numeric (prior, B, posterior)."""
+
+    def test_six_views_in_register_order(self):
+        view = H.belief_view()
+        self.assertEqual([h[0] for h in view], [h[0] for h in H.HYPOTHESES])
+
+    def test_supported_moves_up_refuted_moves_down_open_holds(self):
+        by = {hid: (p, b, post) for hid, p, b, post in H.belief_view()}
+        self.assertGreater(by["H-A"][2], by["H-A"][0])   # supported -> up
+        self.assertLess(by["H-B"][2], by["H-B"][0])      # refuted -> down
+        self.assertEqual(by["H-D"][1], 1.0)              # open -> no test
+        self.assertEqual(by["H-D"][2], by["H-D"][0])
+
+    def test_bayes_factor_matches_the_standard_test(self):
+        by = {hid: (p, b, post) for hid, p, b, post in H.belief_view()}
+        self.assertAlmostEqual(by["H-A"][1], 0.80 / 0.20)   # tp/fp
+        self.assertAlmostEqual(by["H-B"][1], 0.20 / 0.80)   # (1-tp)/(1-fp)

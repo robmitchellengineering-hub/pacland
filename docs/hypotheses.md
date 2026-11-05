@@ -18,6 +18,8 @@ claim nobody can re-run. `check_artefacts()` enforces it and `scripts/hypotheses
 
 **status:** supported · **script:** `scripts/window_dependence.py`
 
+**belief:** prior 0.50 → B 4.00 → posterior 0.80
+
 **pairs these walls:**
 - the measure wall: no principle selects a measure
 - the enumeration objection: 'that's not the kind of problem it is at all'
@@ -31,6 +33,8 @@ claim nobody can re-run. `check_artefacts()` enforces it and `scripts/hypotheses
 ## H-B — measure-invariance IS observability
 
 **status:** refuted · **script:** `scripts/observability_axes.py`
+
+**belief:** prior 0.55 → B 0.25 → posterior 0.23
 
 **pairs these walls:**
 - the measure wall: no principle selects a measure
@@ -46,6 +50,8 @@ claim nobody can re-run. `check_artefacts()` enforces it and `scripts/hypotheses
 
 **status:** refuted · **script:** `scripts/conifold_recurrence.py`
 
+**belief:** prior 0.45 → B 0.25 → posterior 0.17
+
 **pairs these walls:**
 - the arithmetic null: no relation below 10^8 among the connection coefficients
 - the enumeration objection: 'that's not the kind of problem it is at all'
@@ -59,6 +65,8 @@ claim nobody can re-run. `check_artefacts()` enforces it and `scripts/hypotheses
 ## H-D — the window is the only free choice, so every 'law' must be stated with its window
 
 **status:** open · **script:** none (no executable test)
+
+**belief:** prior 0.50 — no test yet
 
 **pairs these walls:**
 - the rate wall: yield falls ~100x from b3=6 to b3=12
@@ -74,6 +82,8 @@ claim nobody can re-run. `check_artefacts()` enforces it and `scripts/hypotheses
 
 **status:** supported · **script:** `scripts/killing_tests.py`
 
+**belief:** prior 0.60 → B 4.00 → posterior 0.86
+
 **pairs these walls:**
 - the enumeration objection: 'that's not the kind of problem it is at all'
 - the arithmetic null: no relation below 10^8 among the connection coefficients
@@ -87,6 +97,8 @@ claim nobody can re-run. `check_artefacts()` enforces it and `scripts/hypotheses
 ## H-F — a decided hypothesis must name a re-runnable artefact
 
 **status:** supported · **script:** `scripts/hypotheses.py`
+
+**belief:** prior 0.70 → B 4.00 → posterior 0.90
 
 **pairs these walls:**
 - the enumeration objection: 'that's not the kind of problem it is at all'
