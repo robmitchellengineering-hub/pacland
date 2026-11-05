@@ -64,10 +64,14 @@ Source: Gleason 1957, Ann. Math. 66:543; Zurek envariance 2003/2005.
 Named hypotheses:
 - `h_additivity` — probability adds over orthogonal projectors.
 - `h_noncontextuality` — the measure depends only on the projector, not the frame.
+- `h_dim_ge_three` — the Hilbert-space dimension is at least 3. (Gleason's theorem
+  is FALSE in dimension 2: there are additive frame functions not induced by any
+  density matrix, so this hypothesis is load-bearing, not decoration.)
 Conclusion: the only such measure is `Tr(ρP)` (the Born rule). -/
 structure F3 where
   h_additivity : Prop
   h_noncontextuality : Prop
+  h_dim_ge_three : Prop
   conclusion_born_rule : Prop
 
 /-- F4 — Lorentz-invariant deterministic guidance no-go.

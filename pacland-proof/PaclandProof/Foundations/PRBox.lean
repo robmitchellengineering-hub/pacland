@@ -64,6 +64,17 @@ theorem prbox_nonlocal : chsh prbox > 2 := by
   rw [prbox_chsh]
   norm_num
 
+/-- The quantum (Tsirelson) bound `2√2` is strictly below the PR-box value `4`.
+This is the last link of the F2 negative: the box is no-signaling yet sits above
+the quantum bound, so no-signaling does not single out quantum mechanics. -/
+theorem tsirelson_lt_prbox : (2 * Real.sqrt 2 : ℝ) < 4 := by
+  have h : (Real.sqrt 2 : ℝ) < 2 := by
+    have hsq : (Real.sqrt 2 : ℝ) ^ 2 = 2 := by
+      rw [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
+    have hnn : (0 : ℝ) ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
+    nlinarith
+  nlinarith
+
 end PRBox
 
 end
