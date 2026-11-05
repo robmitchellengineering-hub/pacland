@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PACLAND — a verification discipline, one field at a time</title>
-<meta name="description" content="A probably-approximately-correct verification discipline applied one field at a time — the string landscape first, then climate, drug discovery, and more. Certified deficit, measured priors, a boundary map of the computable, and machine-checked theorems.">
+<title>PACLAND — verification, then belief, one field at a time</title>
+<meta name="description" content="A probably-approximately-correct verification discipline applied one field at a time — the string landscape first, then climate, economics, and more. It measures how much of a claim can be checked, refuses the rest, and now says, for what's still open: what to believe, what to test next, and how honest that belief has been.">
 <style>
   :root { --ink: #1a1f2e; --muted: #5a6072; --accent: #142a5e; --line: #e3e6ee; --bg: #fbfbfd; }
   * { box-sizing: border-box; }
@@ -117,9 +117,9 @@ h2{scroll-margin-top:6rem}
     <a class="find" href="./all.html">find anything →</a>
   </nav>
 <section class="hero">
-  <p class="kicker">a verification discipline</p>
+  <p class="kicker">verification, then belief</p>
   <h1>PACLAND</h1>
-  <p class="lede">Most claims — in physics, economics, climate, or the software an AI just wrote for you — cannot be checked. PACLAND measures <strong>how much of a claim can be checked</strong>, and refuses the rest.</p>
+  <p class="lede">Most claims — in physics, economics, climate, or the software an AI just wrote for you — cannot be checked. PACLAND measures <strong>how much of a claim can be checked</strong> and refuses the rest. And for what's still open, it now also answers <strong>what to believe, what to test next, and how honest that belief has been</strong>.</p>
   <p class="muted">Mitchell’s Principle of Constraint-First Unification: a theory of everything predicts <em>relations</em>, never <em>values</em> — applied one field at a time, starting with the string landscape.</p>
   <p class="hero-actions">
     <a class="btn" href="#deterministic">The deterministic result</a>
@@ -138,8 +138,8 @@ h2{scroll-margin-top:6rem}
   </div>
   <div class="card">
     <h3>What it does</h3>
-    <p class="muted">Three gates that stop an unverified number reaching a decision: the <strong>null gate</strong> (beat “tomorrow equals today” or say you didn't), the <strong>identification gate</strong> (an estimate must be recoverable before it is published), and the <strong>admissibility gate</strong> (a fitted model that breaks a constraint does not get a table).</p>
-    <p><a href="#solutions">the three gates</a></p>
+    <p class="muted">Three gates stop an unverified number reaching a decision — and a <strong>belief layer</strong> scores what the gates leave open. The gates: <strong>null</strong> (beat “tomorrow equals today” or say you didn't), <strong>identification</strong> (an estimate must be recoverable before it is published), <strong>admissibility</strong> (a fitted model that breaks a constraint does not get a table). The belief layer: <strong>believe · allocate · calibrate · guarantee</strong>.</p>
+    <p><a href="#solutions">the three gates</a> · <a href="#belief">the belief layer</a></p>
   </div>
   <div class="card">
     <h3>Why it matters</h3>
@@ -151,9 +151,39 @@ h2{scroll-margin-top:6rem}
 <section class="strip">
   <div><strong>190</strong><span>artifacts indexed</span></div>
   <div><strong>6</strong><span>models scored</span></div>
-  <div><strong>2</strong><span>disciplines running the same bar</span></div>
   <div><strong>3</strong><span>gates, all three have refused something</span></div>
+  <div><strong>8</strong><span>belief-layer builds</span></div>
+  <div><strong>1</strong><span>calibration ledger — honest about being overconfident</span></div>
 </section>
+
+<h2 id="belief">The belief layer — what to believe, and what to test next</h2>
+<p class="lead">Verification says <em>what is proven and what is refuted</em>. The belief layer answers the two questions verification cannot: <em>how much should I believe each unproven hypothesis, and which one do I test next</em>. It does this the way PACLAND does everything — as a number, checked against reality, never an adjective.</p>
+<div class="grid grid--3">
+  <div class="card">
+    <h3>Believe</h3>
+    <p class="muted">Every unproven hypothesis carries a numeric degree of belief — a <strong>prior → Bayes factor → posterior</strong>, computed from its test, instead of a bare “supported / refuted”.</p>
+  </div>
+  <div class="card">
+    <h3>Allocate</h3>
+    <p class="muted">Rank hypotheses by <strong>expected information gain per unit cost</strong>, and the next test is the one that learns the most per dollar — “drive real answers faster” as arithmetic, not a slogan.</p>
+  </div>
+  <div class="card">
+    <h3>Calibrate</h3>
+    <p class="muted">Every confidence claim is scored against what actually happened (Brier / log). First result: our own confidence was <strong>overconfident</strong> — Brier 0.41 against a 0.25 base-rate, the Tetlock finding, now on our own ledger.</p>
+  </div>
+  <div class="card">
+    <h3>Guarantee</h3>
+    <p class="muted">A posterior carries a <strong>PAC-Bayes bound</strong> — “probably approximately correct” for a degree of belief, with a stated confidence. That is what makes the belief layer <em>PACLAND</em>, not just “we added Bayes”.</p>
+  </div>
+  <div class="card">
+    <h3>Know when not to converge</h3>
+    <p class="muted">A <strong>C/P detector</strong> separates hypotheses that converge (shared evidence) from those that are genuinely plural — like a set-identified economics model, where the honest output is the <em>weighted set</em>, never a fake point.</p>
+  </div>
+  <div class="card">
+    <h3>Why it matters</h3>
+    <p class="muted">A verification badge tells you what is proven. A belief layer tells you <strong>what is worth believing and worth testing next</strong> — the difference between a lie detector and a decision engine.</p>
+  </div>
+</div>
 
 <h2 id="calculators">Calculators — for a quick reference, and for confidence</h2>
 <p class="lead">Two things you can check in a browser, no install. Both are the same arithmetic the repo runs.</p>
