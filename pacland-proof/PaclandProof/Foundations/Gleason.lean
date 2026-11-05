@@ -1,5 +1,6 @@
 import Mathlib
 import PaclandProof.Foundations.Cauchy
+import PaclandProof.Foundations.SelfDual
 
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
@@ -321,6 +322,29 @@ theorem quadratic_form_of_nonneg (F : (Fin 2 → ℝ) → ℝ)
     (v : Fin 2 → ℝ) :
     F v = (v 0) ^ 2 * F e0 + 2 * v 0 * v 1 * polarization F e0 e1 + (v 1) ^ 2 * F e1 := by
   exact quadratic_form F hhom hpar (polarization_linear F hhom hpar hnonneg) v
+
+/-- The density matrix determined by `F` on the standard basis. -/
+def densityMatrix (F : (Fin 2 → ℝ) → ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  !![F e0, polarization F e0 e1; polarization F e0 e1, F e1]
+
+/-- **Step 3 (assembly), the Born-rule identity.** `F(v) = Tr(ρ · vvᵀ)` where `ρ`
+is the density matrix above. -/
+theorem born_rule (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (hnonneg : ∀ v, 0 ≤ F v)
+    (v : Fin 2 → ℝ) :
+    F v = SelfDual.trProd (densityMatrix F) (SelfDual.outer v) := by
+  rw [SelfDual.trProd_outer]
+  rw [quadratic_form_of_nonneg F hhom hpar hnonneg v]
+  simp [densityMatrix, Matrix.mulVec, dotProduct, Fin.sum_univ_two, sq]
+  ring
+
+/-- The trace of the density matrix is `F e₀ + F e₁` (so a *frame* function — one
+that sums to `1` over the frame `{e₀, e₁}` — gives `Tr ρ = 1`). -/
+theorem densityMatrix_trace (F : (Fin 2 → ℝ) → ℝ) :
+    (densityMatrix F).trace = F e0 + F e1 := by
+  simp [densityMatrix, Matrix.trace, Fin.sum_univ_two]
 
 end Gleason
 
