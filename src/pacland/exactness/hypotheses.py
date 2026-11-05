@@ -19,6 +19,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from . import walls
+from ..belief import Likelihood, bayes_factor, posterior
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -107,6 +108,41 @@ def _wall_names() -> set:
 
 DECIDED = ("supported", "refuted")
 
+#: Assigned priors (hid -> P(H)), documented and reproducible — the same convention as
+#: ``retrofit.CONFIDENCE_PRIOR``. To be calibrated against outcomes as they land.
+BELIEF_PRIOR = {
+    "H-A": 0.50,
+    "H-B": 0.55,
+    "H-C": 0.45,
+    "H-D": 0.50,
+    "H-E": 0.60,
+    "H-F": 0.70,
+}
+
+#: An assumed, calibratable test: 80% sensitive, 20% false-positive. The Bayes factor a
+#: status implies comes from THIS likelihood — stated so it can be corrected later.
+STANDARD_TEST = Likelihood(0.80, 0.20)
+
+
+def belief_view() -> list[tuple[str, float, float, float]]:
+    """The numeric belief per hypothesis: ``(hid, prior, B, posterior)``.
+
+    ``supported`` -> a positive result under STANDARD_TEST (B = tp/fp);
+    ``refuted``   -> a negative result (B = (1-tp)/(1-fp));
+    ``open``      -> no test yet, B = 1 and posterior = prior.
+    """
+    out = []
+    for hid, title, cited, claim, predicts, test, status, script in HYPOTHESES:
+        prior = BELIEF_PRIOR[hid]
+        if status == "supported":
+            b, post = bayes_factor(STANDARD_TEST, True), posterior(prior, STANDARD_TEST, True)
+        elif status == "refuted":
+            b, post = bayes_factor(STANDARD_TEST, False), posterior(prior, STANDARD_TEST, False)
+        else:
+            b, post = 1.0, prior
+        out.append((hid, prior, b, post))
+    return out
+
 
 def check_links() -> dict:
     """Every cited wall must exist in the register, and each hypothesis must pair at least two."""
@@ -169,14 +205,21 @@ def render() -> str:
         "claim nobody can re-run. `check_artefacts()` enforces it and `scripts/hypotheses.py --check` fails on it.",
         "",
     ]
+    belief = {hid: (p, b, post) for hid, p, b, post in belief_view()}
     for hid, title, cited, claim, predicts, test, status, script in HYPOTHESES:
         lines += [f"## {hid} — {title}", ""]
         lines += [f"**status:** {status}" + (f" · **script:** `scripts/{script}`" if script else
                                              " · **script:** none (no executable test)"), ""]
+        p, b, post = belief[hid]
+        if status == "open":
+            lines += [f"**belief:** prior {p:.2f} — no test yet", ""]
+        else:
+            lines += [f"**belief:** prior {p:.2f} → B {b:.2f} → posterior {post:.2f}", ""]
         lines += ["**pairs these walls:**"] + [f"- {w}" for w in cited] + [""]
         lines += [f"**claim.** {claim}", "", f"**predicts.** {predicts}", "",
                   f"**test.** {test}", ""]
     return "\n".join(lines) + "\n"
 
 
-__all__ = ["HYPOTHESES", "STATUSES", "DECIDED", "check_links", "check_artefacts", "counts", "render"]
+__all__ = ["HYPOTHESES", "STATUSES", "DECIDED", "BELIEF_PRIOR", "STANDARD_TEST",
+           "belief_view", "check_links", "check_artefacts", "counts", "render"]

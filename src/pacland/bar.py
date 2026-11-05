@@ -39,6 +39,7 @@ SLOTS = (
     "trust_entry",            # a board tier with named evidence
     "falsifiable_prediction", # a registered claim that could die
     "reproduce",              # one command, green
+    "calibration",            # a scored confidence record (Brier/log) — external, never self-asserted
 )
 
 #: A model's *kind* decides which slots it owes. An oracle is not a forecaster; a
@@ -117,6 +118,13 @@ def audit_model(model: Model, root: str | None = None) -> list[str]:
             out.append(
                 f"{model.name}: claims out_of_sample but {ev!r} names no real-time vintage "
                 "source — a current-vintage backtest is not out of sample"
+            )
+        if slot == "calibration" and not any(
+            k in ev.lower() for k in ("brier", "log score", "score", "calibrat", "retrofit")
+        ):
+            out.append(
+                f"{model.name}: claims calibration but {ev!r} names no scored record — "
+                "calibration is an external score, never a self-assertion"
             )
     return out
 

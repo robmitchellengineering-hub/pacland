@@ -121,15 +121,15 @@ class TestStartingSet(unittest.TestCase):
         for slot in ("exact_structure", "deficit", "rule_of_three", "guard_suite",
                      "falsifiable_prediction", "reproduce"):
             self.assertIn(slot, nk.done, f"NK3 does not claim {slot}")
-        # ...and now it owes no slot at all; it is weak only because the run it passed
-        # lost to the null (see TestOutcomeRule).
-        self.assertEqual(set(nk.missing()), set())
+        # ...and it owes only calibration (no scored confidence record yet); it is
+        # weak because the run it passed lost to the null (see TestOutcomeRule).
+        self.assertEqual(set(nk.missing()), {"calibration"})
 
     def test_the_workhorse_forecast_model_owes_the_rest_of_the_bar(self):
         sw = next(m for m in ROSTER if m.name.startswith("Smets–Wouters"))
         self.assertEqual(sw.kind, "forecast")
-        # everything but the two that need the model estimated
-        self.assertEqual(set(sw.missing()), {"out_of_sample", "benchmark"})
+        # everything but the two that need the model estimated, plus calibration
+        self.assertEqual(set(sw.missing()), {"out_of_sample", "benchmark", "calibration"})
         self.assertEqual(sw.tier(ROOT), "weak")
 
     def test_sw_claims_exact_structure_only_because_every_condition_is_settled(self):
@@ -152,6 +152,7 @@ class TestOutcomeRule(unittest.TestCase):
         done = frozenset(REQUIRED["forecast"])
         ev = {slot: "src/pacland/economics/nk3.py" for slot in done}
         ev["out_of_sample"] = "ALFRED real-time vintages"
+        ev["calibration"] = "src/pacland/retrofit.py"
         lost = Model(name="lost", kind="forecast", role="probe", exact_content="c",
                      free="f", done=done, evidence=ev, outcome="loses_to_null")
         won = Model(name="won", kind="forecast", role="probe", exact_content="c",
@@ -161,7 +162,7 @@ class TestOutcomeRule(unittest.TestCase):
 
     def test_nk3_owes_no_slot_and_is_still_weak(self):
         nk = next(m for m in ROSTER if m.name.startswith("New Keynesian"))
-        self.assertEqual(nk.missing(), ())
+        self.assertEqual(nk.missing(), ("calibration",))
         self.assertEqual(nk.outcome, "loses_to_null")
         self.assertEqual(nk.tier(ROOT), "weak")
 

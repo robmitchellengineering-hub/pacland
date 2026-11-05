@@ -46,7 +46,7 @@ class TestTheDiscriminator(unittest.TestCase):
 class TestTheFinding(unittest.TestCase):
     def test_one_slot_is_still_owed_by_every_model(self):
         f = R.transfer_finding()
-        self.assertEqual(f["owed_by_every_model"], ["falsifiable_prediction"])
+        self.assertEqual(f["owed_by_every_model"], ["calibration", "falsifiable_prediction"])
 
     def test_the_null_slots_are_now_claimed(self):
         for m in R.CLIMATE_ROSTER:

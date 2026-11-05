@@ -31,12 +31,14 @@ class TestTier(unittest.TestCase):
         done = frozenset(REQUIRED["forecast"])
         ev = {s: "src/pacland/bar.py" for s in done}
         ev["out_of_sample"] = "ALFRED real-time vintages"
+        ev["calibration"] = "src/pacland/retrofit.py"  # a scored record, not a self-assertion
         self.assertEqual(_model(done=done, evidence=ev).tier(), "clean")
 
     def test_lost_run_is_never_clean(self):
         done = frozenset(REQUIRED["forecast"])
         ev = {s: "src/pacland/bar.py" for s in done}
         ev["out_of_sample"] = "ALFRED real-time vintages"
+        ev["calibration"] = "src/pacland/retrofit.py"
         self.assertEqual(_model(done=done, evidence=ev, outcome="loses_to_null").tier(), "weak")
 
 
@@ -57,6 +59,16 @@ class TestAudit(unittest.TestCase):
     def test_a_citation_is_accepted_as_evidence(self):
         m = _model(done=frozenset({"falsifiable_prediction"}),
                    evidence={"falsifiable_prediction": "Meese & Rogoff 1983"})
+        self.assertEqual(audit_model(m), [])
+
+    def test_calibration_needs_a_scored_record(self):
+        m = _model(done=frozenset({"calibration"}),
+                   evidence={"calibration": "src/pacland/bar.py"})
+        self.assertIn("scored record", " ".join(audit_model(m)))
+
+    def test_calibration_accepts_a_scored_record(self):
+        m = _model(done=frozenset({"calibration"}),
+                   evidence={"calibration": "src/pacland/retrofit.py"})
         self.assertEqual(audit_model(m), [])
 
     def test_unknown_kind_is_refused(self):
