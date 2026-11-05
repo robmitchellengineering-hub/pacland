@@ -78,10 +78,59 @@ def constraint_set_model(government_balance, foreign_balance):
     }
 
 
+def prior_weighted_set(candidates, prior_weights):
+    """The belief layer's Mode-P answer to a set-identified parameter (build 7).
+
+    ``guard_point_identified`` / ``constraint_set_model`` refuse a point where only a
+    set is identified. This is what the refusal leaves open: weight the identified set
+    by a PRIOR and report that weighted set, flagged as a prior — never a point, and
+    never a data update. A set-identified model has an empty likelihood (the data
+    cannot separate the candidates), so the posterior IS the normalised prior.
+
+    ``candidates``     the identified set (a list of candidate values).
+    ``prior_weights``  the prior weight of each candidate (non-negative, sum > 0).
+    Returns a report whose ``posterior`` is the normalised prior, ``mode`` is
+    ``"pluralism"`` (the belief layer's Mode P), and ``flag`` states that the
+    weighting is a prior, not a likelihood.
+    """
+    if not candidates:
+        raise ValueError("the identified set is empty — nothing to weight")
+    if len(candidates) != len(prior_weights):
+        raise ValueError("every candidate needs a prior weight")
+    total = sum(prior_weights)
+    if total <= 0:
+        raise ValueError("prior weights must sum to something positive")
+    posterior = [w / total for w in prior_weights]
+    return {
+        "mode": "pluralism",            # set-identified -> empty likelihood -> Mode P
+        "set": candidates,
+        "prior": list(prior_weights),   # flagged: the weighting is a prior
+        "posterior": posterior,         # prior-weighted (== normalised prior)
+        "flag": "the weighting is a PRIOR: no data separated these candidates",
+        "refused": "no point emitted from an unidentified region",
+    }
+
+
+def sectoral_balance_prior_weighted(government_balance, foreign_balance,
+                                    saving_candidates, saving_prior):
+    """``S − I`` is identified; ``S`` and ``I`` are not. Weight candidate ``S`` values
+    by a prior and return the prior-weighted ``(S, I)`` set on the identified line.
+
+    This is the concrete instance of the mantle answer for economics: the identified
+    line ``S − I = private_balance`` is the declared universe, the prior over ``S`` is
+    the declared weighting, and the output is the weighted set — never a point.
+    """
+    private, _ = sectoral_balance_set(government_balance, foreign_balance)
+    candidates = [(s, s - private) for s in saving_candidates]
+    return prior_weighted_set(candidates, saving_prior)
+
+
 __all__ = [
     "cobb_douglas_aggregate_excess_demand",
     "aggregate_from_distribution",
     "guard_point_identified",
     "sectoral_balance_set",
     "constraint_set_model",
+    "prior_weighted_set",
+    "sectoral_balance_prior_weighted",
 ]
