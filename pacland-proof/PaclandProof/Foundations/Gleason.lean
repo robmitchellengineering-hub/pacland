@@ -159,6 +159,30 @@ theorem polarization_add (F : (Fin 2 → ℝ) → ℝ)
   rw [hdx, hdy] at h
   nlinarith
 
+/-- The diagonal is ℝ-homogeneous: `B(c·v, v) = c·B(v, v)`. This is the clean half
+of the Jordan–von Neumann ℝ-linearity step, and follows from `F`'s homogeneity
+alone (via `F((c±1)·v) = (c±1)² F v`). -/
+theorem polarization_diag_hom (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (c : ℝ) (v : Fin 2 → ℝ) :
+    polarization F (c • v) v = c * polarization F v v := by
+  have hp : polarization F v v = F v := polarization_recovers F hhom v
+  rw [hp]
+  unfold polarization
+  have hplus : c • v + v = (c + 1) • v := by
+    ext i
+    simp
+    ring
+  have hminus : c • v - v = (c - 1) • v := by
+    ext i
+    simp
+    ring
+  rw [hplus, hminus]
+  have h1 : F ((c + 1) • v) = (c + 1) ^ 2 * F v := hhom (c + 1) v
+  have h2 : F ((c - 1) • v) = (c - 1) ^ 2 * F v := hhom (c - 1) v
+  rw [h1, h2]
+  ring
+
 end Gleason
 
 end
