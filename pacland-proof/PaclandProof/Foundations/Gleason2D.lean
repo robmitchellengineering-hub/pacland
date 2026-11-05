@@ -79,6 +79,23 @@ theorem no_born_dim2_counterexample :
   rw [hhalf] at hf
   norm_num at hf
 
+/-- The basis and equal-norm diagonal vectors used in the polarization identity. -/
+def e1 : Fin 2 → ℝ := ![1, 0]
+def e2 : Fin 2 → ℝ := ![0, 1]
+def e1plus : Fin 2 → ℝ := ![1, 1]
+def e1minus : Fin 2 → ℝ := ![1, -1]
+
+/-- **The Born polarization identity** (the "quadratic-form law" that Gleason's
+theorem forces for general frame functions in dimension ≥ 3). For `u ⊥ v` with
+`|u| = |v|`, a Born form satisfies `f(u+v) + f(u−v) = f(u) + f(v)`. Here
+`u = e₁`, `v = e₂`, so `f(e₁+e₂) + f(e₁−e₂) = f(e₁) + f(e₂)`. -/
+theorem born_polarization (M : Matrix (Fin 2) (Fin 2) ℝ) (hsym : M 1 0 = M 0 1) :
+    born M e1plus + born M e1minus = born M e1 + born M e2 := by
+  unfold born
+  norm_num [Matrix.mulVec, dotProduct, Fin.sum_univ_two, e1, e2, e1plus, e1minus]
+  rw [hsym]
+  ring_nf
+
 end Gleason2D
 
 end
