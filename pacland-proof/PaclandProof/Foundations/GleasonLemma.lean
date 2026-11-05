@@ -131,6 +131,22 @@ theorem two_dim_additivity (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
     hf u v z hu hv hz_unit horth (cross_orth_left u v) (cross_orth_right u v)
   linarith
 
+/-- **The 45° additivity** — the concrete form the continuity estimate feeds on:
+for unit `u ⊥ v`, `f((u+v)/√2) + f((u-v)/√2) = f u + f v`, written here in the
+equivalent smul form `(1/√2)•u + (1/√2)•v = (u+v)/√2`. -/
+theorem forty_five_additivity (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (u v : Fin 3 → ℝ) (hu : unitVec3 u) (hv : unitVec3 v) (horth : orthVec3 u v) :
+    f ((1 / √2) • u + (1 / √2) • v) + f ((1 / √2) • u + (-1 / √2) • v) = f u + f v := by
+  have hαβ : (1 / √2) ^ 2 + (-1 / √2) ^ 2 = 1 := by
+    rw [div_pow, div_pow]
+    rw [show (√2 : ℝ) ^ 2 = 2 by exact Real.sq_sqrt (by norm_num)]
+    norm_num
+  have h := two_dim_additivity f hf u v hu hv horth (1 / √2) (-1 / √2) hαβ
+  have hneg : -(-1 / √2 : ℝ) = 1 / √2 := by ring_nf
+  rw [hneg] at h
+  rw [add_comm] at h
+  exact h
+
 end GleasonLemma
 
 end
