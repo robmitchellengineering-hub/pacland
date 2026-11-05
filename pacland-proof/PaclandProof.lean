@@ -9,3 +9,4 @@ import PaclandProof.Foundations.Envariance
 import PaclandProof.Foundations.NoGo
 import PaclandProof.Foundations.SelfDual
 import PaclandProof.Foundations.Gleason
+import PaclandProof.Foundations.Cauchy
