@@ -139,6 +139,24 @@ theorem additive_continuous_of_continuousAt_zero (a : ℝ → ℝ)
     linarith
   simpa [Real.dist_eq, hdiff] using hay
 
+/-- Convert a raw additive map to an `AddMonoidHom`. -/
+def toAddMonoidHom (a : ℝ → ℝ) (hadd : ∀ x y, a (x + y) = a x + a y) : ℝ →+ ℝ where
+  toFun := a
+  map_zero' := additive_zero a hadd
+  map_add' := hadd
+
+/-- An additive map is ℚ-homogeneous: `a(q) = q · a 1` for `q ∈ ℚ`. -/
+theorem additive_rat (a : ℝ → ℝ) (hadd : ∀ x y, a (x + y) = a x + a y) :
+    ∀ q : ℚ, a (q : ℝ) = (q : ℝ) * a 1 := by
+  intro q
+  have h := map_rat_smul (toAddMonoidHom a hadd) q (1 : ℝ)
+  change a (q • (1 : ℝ)) = q • a (1 : ℝ) at h
+  have h2 : q • a 1 = (q : ℝ) * a 1 := by
+    rw [← Rat.cast_smul_eq_qsmul ℝ q (a 1)]
+    simp
+  rw [h2] at h
+  simpa using h
+
 end Cauchy
 
 end
