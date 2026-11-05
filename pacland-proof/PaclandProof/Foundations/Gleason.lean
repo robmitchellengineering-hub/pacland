@@ -1,4 +1,5 @@
 import Mathlib
+import PaclandProof.Foundations.Cauchy
 
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
@@ -280,6 +281,46 @@ theorem polarization_bound (F : (Fin 2 → ℝ) → ℝ)
     |F (v + w) - F (v - w)| / 4 ≤ (F (v + w) + F (v - w)) / 4 :=
       div_le_div_of_nonneg_right habs (by norm_num)
     _ = (F v + F w) / 2 := by rw [htotal]; ring
+
+/-- **The ℝ-linearity of `B`** (the Jordan–von Neumann step, closed). `F ≥ 0`
+gives the weak bound, so `c ↦ B(c·v, w)` is additive and bounded on `[-1,1]`,
+hence ℝ-linear by Cauchy's equation. -/
+theorem polarization_linear (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (hnonneg : ∀ v, 0 ≤ F v)
+    (c : ℝ) (v w : Fin 2 → ℝ) :
+    polarization F (c • v) w = c * polarization F v w := by
+  have hadd_map : ∀ (x y : ℝ), polarization F ((x + y) • v) w =
+      polarization F (x • v) w + polarization F (y • v) w := by
+    intro x y
+    rw [add_smul x y v]
+    exact polarization_add F hhom hpar (x • v) (y • v) w
+  have hbounded : ∃ M : ℝ, ∀ (x : ℝ), |x| ≤ 1 → |polarization F (x • v) w| ≤ M := by
+    refine ⟨(F v + F w) / 2, ?_⟩
+    intro x hx
+    have hb := polarization_bound F hhom hpar hnonneg (x • v) w
+    rw [hhom x v] at hb
+    have hxabs : -1 ≤ x ∧ x ≤ 1 := abs_le.mp hx
+    have hx2 : x ^ 2 ≤ 1 := by nlinarith [hxabs.1, hxabs.2]
+    have hxf : x ^ 2 * F v ≤ F v := by
+      have := mul_le_mul_of_nonneg_right hx2 (hnonneg v)
+      simpa using this
+    linarith
+  have hlin := Cauchy.additive_linear_of_bounded (fun c => polarization F (c • v) w) hadd_map hbounded
+  have hc := hlin c
+  simpa [one_smul] using hc
+
+/-- **Step 1, unconditionally closed.** From `H` (homogeneity) + `P` (parallelogram)
++ `F ≥ 0`, `F` is the quadratic form `v ↦ v₀²F(e₀) + 2v₀v₁·B(e₀,e₁) + v₁²F(e₁)` —
+the `ℝ`-linearity is no longer an assumption. -/
+theorem quadratic_form_of_nonneg (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (hnonneg : ∀ v, 0 ≤ F v)
+    (v : Fin 2 → ℝ) :
+    F v = (v 0) ^ 2 * F e0 + 2 * v 0 * v 1 * polarization F e0 e1 + (v 1) ^ 2 * F e1 := by
+  exact quadratic_form F hhom hpar (polarization_linear F hhom hpar hnonneg) v
 
 end Gleason
 
