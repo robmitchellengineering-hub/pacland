@@ -346,6 +346,84 @@ theorem densityMatrix_trace (F : (Fin 2 → ℝ) → ℝ) :
     (densityMatrix F).trace = F e0 + F e1 := by
   simp [densityMatrix, Matrix.trace, Fin.sum_univ_two]
 
+/-- The quadratic expansion along a line: `F(v + t·w) = F v + 2t·B(v,w) + t²·F w`
+(the bilinear form is ℝ-linear now, so the discriminant argument opens). -/
+theorem F_add_smul (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (hnonneg : ∀ v, 0 ≤ F v)
+    (v w : Fin 2 → ℝ) (t : ℝ) :
+    F (v + t • w) = F v + 2 * t * polarization F v w + t ^ 2 * F w := by
+  have hlin : ∀ (c : ℝ) (v w : Fin 2 → ℝ), polarization F (c • v) w = c * polarization F v w :=
+    polarization_linear F hhom hpar hnonneg
+  have htw : polarization F (t • w) (t • w) = t ^ 2 * F w := by
+    rw [hlin t w (t • w)]
+    rw [polarization_smul_right F hhom hlin t w w]
+    rw [polarization_recovers F hhom w]
+    ring
+  calc
+    F (v + t • w) = polarization F (v + t • w) (v + t • w) := by
+      exact (polarization_recovers F hhom (v + t • w)).symm
+    _ = polarization F v v + 2 * polarization F v (t • w) + polarization F (t • w) (t • w) := by
+      exact polarization_expand_diag F hhom hpar v (t • w)
+    _ = F v + 2 * t * polarization F v w + t ^ 2 * F w := by
+      rw [polarization_recovers F hhom v, htw]
+      rw [polarization_smul_right F hhom hlin t v w]
+      ring
+
+/-- **Cauchy–Schwarz for `B`.** `B(v,w)² ≤ F(v)·F(w)` from `F ≥ 0` and the
+ℝ-bilinearity: `F(v + t·w) = F v + 2t·B + t²·F w ≥ 0` forces the discriminant
+`B² − F(v)F(w) ≤ 0`. This is the self-duality core: `F ≥ 0` ⟹ the density matrix
+is PSD. -/
+theorem polarization_cauchy_schwarz (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (hnonneg : ∀ v, 0 ≤ F v)
+    (v w : Fin 2 → ℝ) :
+    (polarization F v w) ^ 2 ≤ F v * F w := by
+  by_cases hFw : F w = 0
+  · have hBzero : polarization F v w = 0 := by
+      by_contra hB
+      let t : ℝ := -(F v + 1) / (2 * polarization F v w)
+      have hnonneg_t : 0 ≤ F (v + t • w) := hnonneg (v + t • w)
+      have hval : F (v + t • w) = -1 := by
+        rw [F_add_smul F hhom hpar hnonneg v w t, hFw]
+        simp only [mul_zero, add_zero]
+        dsimp [t]
+        field_simp [hB]
+        ring
+      linarith
+    rw [hBzero, hFw]
+    norm_num
+  · have hFwpos : 0 < F w := lt_of_le_of_ne (hnonneg w) (Ne.symm hFw)
+    let t : ℝ := - polarization F v w / F w
+    have hnonneg_t : 0 ≤ F (v + t • w) := hnonneg (v + t • w)
+    have hval : F (v + t • w) = F v - (polarization F v w) ^ 2 / F w := by
+      rw [F_add_smul F hhom hpar hnonneg v w t]
+      dsimp [t]
+      field_simp [hFw]
+      ring
+    have hle : (polarization F v w) ^ 2 / F w ≤ F v := by
+      nlinarith [hnonneg_t, hval]
+    exact (div_le_iff₀ hFwpos).1 hle
+
+/-- **The density matrix is PSD** (the self-duality close). `F ≥ 0` gives
+`F e₀ ≥ 0`, `F e₁ ≥ 0`, and `det ρ = F(e₀)F(e₁) − B² ≥ 0` by Cauchy–Schwarz. -/
+theorem densityMatrix_psd (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (hnonneg : ∀ v, 0 ≤ F v) :
+    Gleason2D.psd2 (densityMatrix F) := by
+  constructor
+  · simp [densityMatrix]
+    exact hnonneg e0
+  constructor
+  · simp [densityMatrix]
+    exact hnonneg e1
+  · have hcs := polarization_cauchy_schwarz F hhom hpar hnonneg e0 e1
+    simp [densityMatrix, Matrix.det_fin_two]
+    nlinarith [hcs]
+
 end Gleason
 
 end
