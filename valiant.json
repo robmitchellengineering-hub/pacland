@@ -25,6 +25,23 @@
         "-c",
         "PYTHONPATH=src python3 -m unittest tests.test_climate_reference_model -q"
       ]
+    },
+    {
+      "name": "lake-build",
+      "expectStderr": false,
+      "cmd": [
+        "sh",
+        "-c",
+        "cd pacland-proof && export PATH=\"$HOME/.elan/bin:$PATH\" && lake build"
+      ]
+    },
+    {
+      "name": "hinge-ledger",
+      "expectStderr": false,
+      "cmd": [
+        "python3",
+        "scripts/verify-hinges.py"
+      ]
     }
   ],
   "ledger": false,
