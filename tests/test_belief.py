@@ -11,8 +11,10 @@ from pacland.belief import (
     brier_score,
     detect_mode,
     eig,
+    kl_bernoulli,
     log_score,
     mean_brier,
+    pac_bayes_bound,
     posterior,
     rank_by_eig,
     require_convergence,
@@ -164,6 +166,48 @@ class TestDetectorMutations(unittest.TestCase):
         mutated = self._convergent()
         mutated[1] = Belief(name="b", prior=0.5, likelihood=None, ground_truth_available=True)
         self.assertEqual(detect_mode(mutated).mode, Mode.UNDERDETERMINED)
+
+
+class TestPacBayes(unittest.TestCase):
+    """Build 8 — the crown: a posterior now carries an (epsilon, delta) guarantee."""
+
+    def test_kl_is_zero_at_identity(self):
+        self.assertEqual(kl_bernoulli(0.5, 0.5), 0.0)
+        self.assertEqual(kl_bernoulli(0.7, 0.7), 0.0)
+
+    def test_kl_is_asymmetric_and_positive_off_identity(self):
+        self.assertGreater(kl_bernoulli(0.9, 0.5), 0.0)
+        self.assertNotEqual(kl_bernoulli(0.9, 0.5), kl_bernoulli(0.5, 0.9))
+
+    def test_kl_is_infinite_across_an_impossible_event(self):
+        # posterior 1.0 against prior 0.5: the prior said the event was impossible
+        self.assertEqual(kl_bernoulli(1.0, 0.5), float("inf"))
+        self.assertEqual(kl_bernoulli(1.0, 1.0), 0.0)  # no move -> no cost
+
+    def test_bound_matches_hand_computed_value(self):
+        # prior 0.5 -> posterior 0.8, m=100, delta=0.05
+        # KL = 0.8 ln(1.6) + 0.2 ln(0.4); ln(100/0.05) = ln(2000)
+        kl = 0.8 * math.log(0.8 / 0.5) + 0.2 * math.log(0.2 / 0.5)
+        expected = math.sqrt((kl + math.log(100 / 0.05)) / (2 * 100))
+        self.assertAlmostEqual(pac_bayes_bound(0.5, 0.8, 100, 0.05), expected, places=12)
+
+    def test_bound_grows_with_move_and_shrinks_with_evidence(self):
+        # a bigger KL (further move) -> a looser bound
+        self.assertGreater(
+            pac_bayes_bound(0.5, 0.9, 100, 0.05),
+            pac_bayes_bound(0.5, 0.6, 100, 0.05),
+        )
+        # more evidence -> a tighter bound
+        self.assertLess(
+            pac_bayes_bound(0.5, 0.8, 1000, 0.05),
+            pac_bayes_bound(0.5, 0.8, 100, 0.05),
+        )
+
+    def test_bound_refuses_bad_inputs(self):
+        with self.assertRaises(ValueError):
+            pac_bayes_bound(0.5, 0.8, 0, 0.05)      # m must be positive
+        with self.assertRaises(ValueError):
+            pac_bayes_bound(0.5, 0.8, 100, 0.0)     # delta must be in (0, 1]
 
 
 if __name__ == "__main__":
