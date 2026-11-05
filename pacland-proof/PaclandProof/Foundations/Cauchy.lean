@@ -113,6 +113,32 @@ theorem additive_continuousAt_zero_of_bounded (a : ℝ → ℝ)
   have haxlt : |a x| < ε := lt_of_le_of_lt hax hn
   simpa [Real.dist_eq, additive_zero a hadd] using haxlt
 
+/-- Additivity + continuity at `0` forces continuity everywhere
+(`a y − a x = a (y − x)` translates the neighbourhood). -/
+theorem additive_continuous_of_continuousAt_zero (a : ℝ → ℝ)
+    (hadd : ∀ x y, a (x + y) = a x + a y)
+    (hcont0 : ContinuousAt a 0) :
+    Continuous a := by
+  rw [continuous_iff_continuousAt]
+  intro x
+  rw [Metric.continuousAt_iff]
+  intro ε hε
+  rcases (Metric.continuousAt_iff.mp hcont0) ε hε with ⟨δ, hδpos, hδ⟩
+  refine ⟨δ, hδpos, ?_⟩
+  intro y hy
+  have hyx : |y - x| < δ := by
+    simpa [Real.dist_eq] using hy
+  have hay : |a (y - x)| < ε := by
+    have hd : dist (y - x) 0 < δ := by simpa [Real.dist_eq] using hyx
+    have h' := hδ hd
+    simpa [Real.dist_eq, additive_zero a hadd] using h'
+  have hdiff : a y - a x = a (y - x) := by
+    have h := hadd x (y - x)
+    have hxy : x + (y - x) = y := by ring
+    rw [hxy] at h
+    linarith
+  simpa [Real.dist_eq, hdiff] using hay
+
 end Cauchy
 
 end
