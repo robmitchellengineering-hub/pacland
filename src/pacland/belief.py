@@ -216,6 +216,43 @@ def update(belief: Belief, positive: bool) -> Belief:
     )
 
 
+def kl_bernoulli(q: float, p: float) -> float:
+    """``KL(Bernoulli(q) || Bernoulli(p))`` — the cost of moving a belief from prior
+    ``p`` to posterior ``q``.
+
+    Zero iff ``q == p``; infinite when the posterior assigns probability 1 to an event
+    the prior calls impossible (the pluralism/divergence signal). This is the term the
+    PAC-Bayes bound charges for how far the evidence moved the belief.
+    """
+    if q <= 0.0 or q >= 1.0:
+        return 0.0 if q == p else float("inf")
+    if p <= 0.0 or p >= 1.0:
+        return 0.0 if q == p else float("inf")
+    return q * math.log(q / p) + (1.0 - q) * math.log((1.0 - q) / (1.0 - p))
+
+
+def pac_bayes_bound(prior: float, posterior: float, m: int, delta: float) -> float:
+    """McAllester's additive PAC-Bayes bound (the crown, build 8).
+
+    With probability >= ``1 - delta``, the generalization error of a posterior
+    ``posterior`` (moved from prior ``prior`` after ``m`` observations) exceeds its
+    empirical error by at most this gap::
+
+        sqrt((KL(q||p) + ln(m/delta)) / (2m))
+
+    The gap charges ``KL(q||p)`` — how far the evidence moved the belief — plus a
+    sample-size term, amortised over twice the evidence. This is what makes the belief
+    layer *PACLAND* rather than "we added Bayes": a degree of belief now carries a
+    "probably approximately correct" guarantee, not just a number.
+    """
+    if m <= 0:
+        raise ValueError("m must be positive")
+    if not (0.0 < delta <= 1.0):
+        raise ValueError("delta must be in (0, 1]")
+    kl = kl_bernoulli(posterior, prior)
+    return math.sqrt((kl + math.log(m / delta)) / (2.0 * m))
+
+
 __all__ = [
     "Belief",
     "Likelihood",
@@ -226,8 +263,10 @@ __all__ = [
     "brier_score",
     "detect_mode",
     "eig",
+    "kl_bernoulli",
     "log_score",
     "mean_brier",
+    "pac_bayes_bound",
     "posterior",
     "rank_by_eig",
     "require_convergence",
