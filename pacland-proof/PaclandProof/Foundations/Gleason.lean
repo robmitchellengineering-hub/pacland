@@ -59,6 +59,44 @@ theorem polarization_recovers (F : (Fin 2 → ℝ) → ℝ)
   rw [h2, h0]
   ring
 
+/-- Homogeneity degree 2 forces evenness: `F(-v) = F(v)` (take `c = -1`). -/
+theorem F_even (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (v : Fin 2 → ℝ) : F (-v) = F v := by
+  have h := hhom (-1) v
+  have hsmul : (-1 : ℝ) • v = -v := by
+    ext i
+    simp
+  rw [hsmul] at h
+  norm_num at h
+  exact h
+
+/-- The polarization is symmetric: `B(v,w) = B(w,v)`. -/
+theorem polarization_symm (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (v w : Fin 2 → ℝ) : polarization F v w = polarization F w v := by
+  unfold polarization
+  have h1 : F (v + w) = F (w + v) := by rw [add_comm]
+  have h2 : F (v - w) = F (w - v) := by
+    have hnegg : v - w = -(w - v) := by
+      ext i
+      simp
+    rw [hnegg]
+    exact F_even F hhom (w - v)
+  rw [h1, h2]
+
+/-- The polarization vanishes on the zero vector: `B(0,w) = 0`. -/
+theorem polarization_zero (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (w : Fin 2 → ℝ) : polarization F 0 w = 0 := by
+  unfold polarization
+  have h1 : F (0 + w) = F w := by rw [zero_add]
+  have h2 : F (0 - w) = F w := by
+    rw [zero_sub]
+    exact F_even F hhom w
+  rw [h1, h2]
+  ring
+
 end Gleason
 
 end
