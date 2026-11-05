@@ -66,6 +66,53 @@ theorem additive_nsmul (a : ℝ → ℝ) (hadd : ∀ x y, a (x + y) = a x + a y)
         _ = (n : ℝ) * a x + a x := by rw [ih x]
         _ = ((n + 1 : ℕ) : ℝ) * a x := by rw [← hcast]; ring
 
+/-- Additivity + bounded on `[-1,1]` forces continuity at `0`. -/
+theorem additive_continuousAt_zero_of_bounded (a : ℝ → ℝ)
+    (hadd : ∀ x y, a (x + y) = a x + a y)
+    (hbounded : ∃ M : ℝ, ∀ x, |x| ≤ 1 → |a x| ≤ M) :
+    ContinuousAt a 0 := by
+  rcases hbounded with ⟨M, hM⟩
+  rw [Metric.continuousAt_iff]
+  intro ε hε
+  obtain ⟨n, hnpos, hn⟩ : ∃ n : ℕ, (0 : ℝ) < (n : ℝ) ∧ M / (n : ℝ) < ε := by
+    by_cases hMle : M ≤ 0
+    · refine ⟨1, by norm_num, ?_⟩
+      simpa using lt_of_le_of_lt hMle hε
+    · have hMpos : 0 < M := lt_of_not_ge hMle
+      obtain ⟨n, hn⟩ := exists_nat_gt (M / ε)
+      have hn0 : n ≠ 0 := by
+        intro h0
+        have hn' : M / ε < (0 : ℝ) := by simpa [h0] using hn
+        linarith [div_pos hMpos hε]
+      have hnpos' : (0 : ℝ) < (n : ℝ) := by
+        exact_mod_cast (Nat.pos_of_ne_zero hn0)
+      refine ⟨n, hnpos', ?_⟩
+      rw [div_lt_iff₀ hε] at hn
+      rw [div_lt_iff₀ hnpos']
+      rw [mul_comm ε (n : ℝ)]
+      exact hn
+  refine ⟨1 / (n : ℝ), by positivity, ?_⟩
+  intro x hx
+  have hx' : |x| < 1 / (n : ℝ) := by
+    simpa [Real.dist_eq] using hx
+  have hnx : |(n : ℝ) * x| ≤ 1 := by
+    calc
+      |(n : ℝ) * x| = (n : ℝ) * |x| := by rw [abs_mul, abs_of_pos hnpos]
+      _ ≤ (n : ℝ) * (1 / (n : ℝ)) := by
+        exact mul_le_mul_of_nonneg_left (le_of_lt hx') (le_of_lt hnpos)
+      _ = 1 := by field_simp [ne_of_gt hnpos]
+  have hax : |a x| ≤ M / (n : ℝ) := by
+    have h := additive_nsmul a hadd n x
+    have hb : |a (n • x)| ≤ M := hM (n • x) (by simpa [nsmul_eq_mul] using hnx)
+    rw [h] at hb
+    rw [abs_mul, abs_of_pos hnpos] at hb
+    have hb' : |a x| * (n : ℝ) ≤ M := by
+      have hmc : (n : ℝ) * |a x| = |a x| * (n : ℝ) := mul_comm _ _
+      rwa [hmc] at hb
+    exact (le_div_iff₀ hnpos).2 hb'
+  have haxlt : |a x| < ε := lt_of_le_of_lt hax hn
+  simpa [Real.dist_eq, additive_zero a hadd] using haxlt
+
 end Cauchy
 
 end
