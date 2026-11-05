@@ -7,6 +7,8 @@ from pacland.economics.identification import (
     cobb_douglas_aggregate_excess_demand,
     constraint_set_model,
     guard_point_identified,
+    prior_weighted_set,
+    sectoral_balance_prior_weighted,
     sectoral_balance_set,
 )
 
@@ -41,6 +43,48 @@ class TestEconomicsIdentification(unittest.TestCase):
         model = constraint_set_model(F("-1774.684"), F("-246.023"))
         self.assertEqual(model["identified"]["private_balance"], F("2020.707"))
         self.assertIn("no point forecast", model["refused"])
+
+
+class TestPriorWeightedSet(unittest.TestCase):
+    """Build 7 — the prior-weighted posterior over the identified set (Mode P)."""
+
+    def test_posterior_sums_to_one(self):
+        r = prior_weighted_set(["a", "b", "c"], [1, 1, 2])
+        self.assertAlmostEqual(sum(r["posterior"]), 1.0)
+
+    def test_posterior_is_the_normalised_prior(self):
+        r = prior_weighted_set(["a", "b", "c"], [1, 1, 2])
+        self.assertEqual(r["posterior"], [0.25, 0.25, 0.5])
+
+    def test_flag_names_the_prior_and_the_mode(self):
+        r = prior_weighted_set(["a", "b"], [3, 1])
+        self.assertEqual(r["mode"], "pluralism")
+        self.assertIn("PRIOR", r["flag"])
+        self.assertIn("no point emitted", r["refused"])
+
+    def test_empty_set_refuses(self):
+        with self.assertRaises(ValueError):
+            prior_weighted_set([], [])
+
+    def test_length_mismatch_refuses(self):
+        with self.assertRaises(ValueError):
+            prior_weighted_set(["a", "b"], [1])
+
+    def test_zero_total_refuses(self):
+        with self.assertRaises(ValueError):
+            prior_weighted_set(["a", "b"], [0, 0])
+
+    def test_sectoral_balance_prior_weighted_keeps_the_identified_line(self):
+        r = sectoral_balance_prior_weighted(
+            F("-1774.684"), F("-246.023"),
+            saving_candidates=[F("1000"), F("2000")],
+            saving_prior=[1, 3],
+        )
+        # S − I must equal the identified private balance for every candidate
+        private = F("2020.707")
+        for (s, i) in r["set"]:
+            self.assertEqual(s - i, private)
+        self.assertEqual(r["posterior"], [0.25, 0.75])
 
 
 if __name__ == "__main__":
