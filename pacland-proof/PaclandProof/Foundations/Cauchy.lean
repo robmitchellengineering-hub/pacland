@@ -50,6 +50,22 @@ theorem additive_nat (a : ℝ → ℝ) (hadd : ∀ x y, a (x + y) = a x + a y) :
         _ = (n : ℝ) * a 1 + a 1 := by rw [ih]
         _ = ((n + 1 : ℕ) : ℝ) * a 1 := by rw [← hcast]; ring
 
+/-- Additivity forces `a(n • x) = n · a x` for naturals (the general form the
+continuity proof needs, not just `x = 1`). -/
+theorem additive_nsmul (a : ℝ → ℝ) (hadd : ∀ x y, a (x + y) = a x + a y) :
+    ∀ n : ℕ, ∀ x, a (n • x) = (n : ℝ) * a x := by
+  intro n
+  induction n with
+  | zero => intro x; simp [additive_zero a hadd]
+  | succ n ih =>
+      intro x
+      have hcast : (n : ℝ) + 1 = ((n + 1 : ℕ) : ℝ) := by norm_num
+      calc
+        a ((n + 1 : ℕ) • x) = a (n • x + x) := by rfl
+        _ = a (n • x) + a x := hadd (n • x) x
+        _ = (n : ℝ) * a x + a x := by rw [ih x]
+        _ = ((n + 1 : ℕ) : ℝ) * a x := by rw [← hcast]; ring
+
 end Cauchy
 
 end
