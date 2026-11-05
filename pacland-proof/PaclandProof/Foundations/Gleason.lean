@@ -97,6 +97,68 @@ theorem polarization_zero (F : (Fin 2 → ℝ) → ℝ)
   rw [h1, h2]
   ring
 
+/-- The parallelogram law descends to the polarization:
+`B(x+y, z) + B(x−y, z) = 2·B(x, z)`. Proved by applying the parallelogram law
+twice (with `x+z` and `x−z`) and telescoping. -/
+theorem polarization_parallelogram (F : (Fin 2 → ℝ) → ℝ)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (x y z : Fin 2 → ℝ) :
+    polarization F (x + y) z + polarization F (x - y) z = 2 * polarization F x z := by
+  unfold polarization
+  have h1 : F (x + y + z) + F (x - y + z) = 2 * F (x + z) + 2 * F y := by
+    have h := hpar (x + z) y
+    have hA : x + z + y = x + y + z := by abel
+    have hB : x + z - y = x - y + z := by abel
+    rwa [hA, hB] at h
+  have h2 : F (x + y - z) + F (x - y - z) = 2 * F (x - z) + 2 * F y := by
+    have h := hpar (x - z) y
+    have hA : x - z + y = x + y - z := by abel
+    have hB : x - z - y = x - y - z := by abel
+    rwa [hA, hB] at h
+  nlinarith [h1, h2]
+
+/-- The polarization doubles: `B(2x, z) = 2·B(x, z)`. -/
+theorem polarization_double (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (x z : Fin 2 → ℝ) :
+    polarization F ((2 : ℝ) • x) z = 2 * polarization F x z := by
+  have h := polarization_parallelogram F hpar x x z
+  have hsum : x + x = (2 : ℝ) • x := by
+    ext i
+    simp
+    ring
+  have hdiff : x - x = 0 := by
+    ext i
+    simp
+  have hz : polarization F 0 z = 0 := polarization_zero F hhom z
+  rw [hsum, hdiff, hz] at h
+  simpa using h
+
+/-- The polarization is additive in its first argument:
+`B(x+y, z) = B(x, z) + B(y, z)`. -/
+theorem polarization_add (F : (Fin 2 → ℝ) → ℝ)
+    (hhom : ∀ (c : ℝ) (v : Fin 2 → ℝ), F (c • v) = c ^ 2 * F v)
+    (hpar : ∀ v w, F (v + w) + F (v - w) = 2 * F v + 2 * F w)
+    (x y z : Fin 2 → ℝ) :
+    polarization F (x + y) z = polarization F x z + polarization F y z := by
+  have h := polarization_parallelogram F hpar (x + y) (x - y) z
+  have hA : (x + y) + (x - y) = (2 : ℝ) • x := by
+    ext i
+    simp
+    ring
+  have hB : (x + y) - (x - y) = (2 : ℝ) • y := by
+    ext i
+    simp
+    ring
+  rw [hA, hB] at h
+  have hdx : polarization F ((2 : ℝ) • x) z = 2 * polarization F x z :=
+    polarization_double F hhom hpar x z
+  have hdy : polarization F ((2 : ℝ) • y) z = 2 * polarization F y z :=
+    polarization_double F hhom hpar y z
+  rw [hdx, hdy] at h
+  nlinarith
+
 end Gleason
 
 end
