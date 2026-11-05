@@ -4,3 +4,4 @@ import PaclandProof.Transitivity
 import PaclandProof.Foundations.Hinges
 import PaclandProof.Foundations.PRBox
 import PaclandProof.Foundations.Assumptions
+import PaclandProof.Foundations.Gleason2D
