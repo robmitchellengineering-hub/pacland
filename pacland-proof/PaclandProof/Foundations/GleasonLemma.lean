@@ -408,6 +408,19 @@ theorem rot90p_preserves_proj (p x : Fin 3 → ℝ) (hp : unitVec3 p) :
   rw [h1, hpp, hcp]
   ring
 
+/-- `ρ` is linear: `ρ(x − y) = ρx − ρy`. -/
+theorem rot90p_sub (p x y : Fin 3 → ℝ) :
+    rot90p p (x - y) = rot90p p x - rot90p p y := by
+  dsimp [rot90p]
+  have hdot : dotProduct (x - y) p = dotProduct x p - dotProduct y p := by
+    simp [dotProduct, Fin.sum_univ_three]
+    ring
+  have hcross : cross p (x - y) = cross p x - cross p y := by
+    ext i; fin_cases i <;> simp [cross, Fin.sum_univ_three] <;> ring
+  rw [hdot, hcross]
+  ext i
+  fin_cases i <;> simp [Pi.smul_apply, sub_eq_add_neg] <;> ring
+
 /-- **`ρ²` is the 180°-rotation about `p`**: `ρ(ρ x) = 2(x·p)·p − x`. -/
 theorem rot90p_sq (p x : Fin 3 → ℝ) (hp : unitVec3 p) :
     rot90p p (rot90p p x) = 2 * dotProduct x p • p - x := by
@@ -447,6 +460,12 @@ theorem rot90p_orthogonal (p x y : Fin 3 → ℝ) (hp : unitVec3 p) :
             have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
             rw [hpp]
             ring
+
+/-- `ρ` is an isometry: `‖ρx − ρy‖² = ‖x − y‖²` (for unit `p`). -/
+theorem rot90p_isometry (p x y : Fin 3 → ℝ) (hp : unitVec3 p) :
+    dotProduct (rot90p p x - rot90p p y) (rot90p p x - rot90p p y) = dotProduct (x - y) (x - y) := by
+  rw [← rot90p_sub p x y]
+  exact rot90p_orthogonal p (x - y) (x - y) hp
 
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
