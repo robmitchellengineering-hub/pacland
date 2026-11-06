@@ -101,3 +101,25 @@ overstatement before it shipped.
 
 *Sources: the five structured verdicts are in `research/sm-conjecture-fanout.js`; the
 run itself returned the aggregated results this note synthesizes.*
+
+## Update 2026-11-07 — the invariant-ring dimension drop is now computed (item 2 closed)
+
+`scripts/validate_sm_invariant_dimension.py` computes the Krull dimension of the SM
+coupling orbit space at three group levels (exact cross-section, cross-checked against the
+rank test's Lie-algebra orbit ranks):
+
+| group | Yukawa invariants | total | drop |
+|---|---|---|---|
+| SM (flavor only) | 13 | **19** | 0 |
+| SU(5) (`Y_d = Y_e`) | 10 | **14** | 5 (3 mass ties + 2 gauge) |
+| SO(10) (`Y_u = Y_d = Y_e`) | 3 | **7** | 12 (6 mass unifications + 4 CKM + 2 gauge) |
+
+**This closes the "no clean duality group" question: that phrase is FALSE as stated.** The
+GUT embeddings DO act on the couplings and DO shrink the orbit space (19 → 14 → 7). The
+precise truth replaces the stale `sm-frontier.md` line: the SM's *own* flavor symmetry leaves
+19; the only *known* larger groups are the GUTs, which reduce it — but of their relations only
+gauge unification (drop 2) survives data, the Yukawa unifications are numerically wrong.
+
+The remaining "empty gap" is the **full Hilbert/Molien series** (degree-by-degree, not just
+the Krull dimension), which needs Molien/Hilbert–Serre — still absent from mathlib, the named
+Lean target.
