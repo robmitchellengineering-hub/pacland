@@ -2458,7 +2458,59 @@ theorem continuity_from_frame (x w z x₀ w₀ z₀ : Fin 3 → ℝ) (ε : ℝ)
   have htri := abs_add_le (f w₀ - f w) (f z₀ - f z)
   nlinarith [htri, hw', hz']
 
+/-- Squared latitude of `s` relative to the pole `p`: `(s·p)²`. -/
+def lat (p s : Fin 3 → ℝ) : ℝ := (dotProduct s p) ^ 2
+
+/-- Northern hemisphere: unit vectors on `p`'s side (`0 ≤ t·p`). -/
+def northern (p : Fin 3 → ℝ) : Set (Fin 3 → ℝ) := {t | unitVec3 t ∧ 0 ≤ dotProduct t p}
+
+/-- Equator: unit vectors orthogonal to `p`. -/
+def equator (p : Fin 3 → ℝ) : Set (Fin 3 → ℝ) := {t | unitVec3 t ∧ dotProduct t p = 0}
+
+/-- The "south-perpendicular" of `s`: a unit vector ⊥ `s` in the plane `(p, s)`. -/
+noncomputable def sperp (p s : Fin 3 → ℝ) : Fin 3 → ℝ :=
+  Real.sqrt (1 - (dotProduct p s) ^ 2) • p
+    - (dotProduct p s) • ((Real.sqrt (dotProduct (s - (dotProduct p s) • p) (s - (dotProduct p s) • p)))⁻¹
+      • (s - (dotProduct p s) • p))
+
+/-- Descent circle of `s`: northern points orthogonal to `sperp p s`. -/
+def descent (p s : Fin 3 → ℝ) : Set (Fin 3 → ℝ) :=
+  {t | t ∈ northern p ∧ dotProduct (sperp p s) t = 0}
+
+/-- `lat` is nonnegative. -/
+theorem lat_nonneg (p s : Fin 3 → ℝ) : 0 ≤ lat p s := by dsimp [lat]; exact sq_nonneg _
+
+/-- `lat` is even in `s`: `lat p (-s) = lat p s`. -/
+theorem lat_neg (p s : Fin 3 → ℝ) : lat p (-s) = lat p s := by
+  dsimp [lat]
+  simp [dotProduct, Fin.sum_univ_three, Pi.neg_apply]
+  ring
+
+/-- `lat` is `≤ 1` on unit vectors. -/
+theorem lat_le_one (p s : Fin 3 → ℝ) (hp : unitVec3 p) (hs : unitVec3 s) : lat p s ≤ 1 := by
+  have h := dotProduct_abs_le_norm s p
+  have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+  have hss : dotProduct s s = 1 := by simpa [unitVec3] using hs
+  rw [hss, hpp, Real.sqrt_one, mul_one] at h
+  -- |s·p| ≤ 1, so (s·p)² ≤ 1
+  dsimp [lat]
+  have hsq := sq_le_sq.mpr (show |dotProduct s p| ≤ |(1 : ℝ)| by simpa using h)
+  simpa [one_pow] using hsq
+
+/-- **P3** (frame pair swap): for two orthonormal triples `{u,s,t}` and `{u,s',t'}` sharing
+`u`, `f s + f t = f s' + f t'`. -/
+theorem frameFunction_pair_swap (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    {u s t s' t' : Fin 3 → ℝ}
+    (hu : unitVec3 u) (hs : unitVec3 s) (ht : unitVec3 t) (hs' : unitVec3 s') (ht' : unitVec3 t')
+    (hus : orthVec3 u s) (hut : orthVec3 u t) (hst : orthVec3 s t)
+    (hus' : orthVec3 u s') (hut' : orthVec3 u t') (hs't' : orthVec3 s' t') :
+    f s + f t = f s' + f t' := by
+  have h1 : f u + f s + f t = 1 := hf u s t hu hs ht hus hut hst
+  have h2 : f u + f s' + f t' = 1 := hf u s' t' hu hs' ht' hus' hut' hs't'
+  linarith
+
 end GleasonLemma
+
 
 
 
