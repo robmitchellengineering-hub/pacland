@@ -211,6 +211,53 @@ def oracles() -> list[tuple[str, str]]:
     ]
 
 
+def belief() -> list[tuple[str, str]]:
+    """One page: the belief layer — what to believe, in words a 15-year-old can follow."""
+    return [
+        ("title", "PACLAND · Belief, in plain words"),
+        ("subtitle", "Verification says what is proven. This says what to believe about the rest, and what to check next."),
+
+        ("h", "1 · The question"),
+        ("p", "Verification has a clear job: proven or refuted, with a machine-checked reason. But most "
+              "interesting claims are still open. What should you believe about them, and which should you "
+              "check next?"),
+
+        ("h", "2 · What we found"),
+        ("b", "\u201cHow sure are you\u201d has to be a number that behaves like a probability — otherwise a "
+              "set of bets can lose you money no matter what. A belief is a number from 0 to 1."),
+        ("b", "A test moves the number a fixed way (Bayes' rule): new belief equals old belief times how much "
+              "more likely the result is if you are right. A weak test moves it a little; a strong one a lot."),
+        ("b", "You can rank \u201cwhat to check next\u201d first. Each claim scores how much the next test "
+              "would move its belief, divided by cost. The top of the list is the next job."),
+        ("b", "\u201cConfidence\u201d is itself checkable: say \u201c70% sure\u201d a hundred times and you "
+              "should be right about 70. Scored that way, our own early confidence was overconfident — as "
+              "experts usually are. A ledger records it."),
+        ("b", "Some questions never settle. When data cannot separate two answers, the honest output is the "
+              "whole set, weighted by a prior, never one fake answer."),
+
+        ("h", "3 · The best we have right now"),
+        ("p", "A running belief layer with four parts, plus a detector that knows which of two situations a "
+              "claim is in: \u201cconverge\u201d (shared evidence pulls everyone to one answer) or "
+              "\u201cplural\u201d (it never will, and the report says so). And a guarantee: a belief carries "
+              "a probably-approximately-correct bound, so \u201cI believe 70%\u201d comes with a stated margin."),
+
+        ("h", "4 · How we refine it"),
+        ("b", "Score more beliefs against more outcomes, so the calibration number outgrows \u201cn is "
+              "small\u201d."),
+        ("b", "State every prior as a prior, never as a finding."),
+        ("b", "Run the detector first: a plural claim reports the weighted set, not a fake point."),
+
+        ("h", "5 · What this means for the world"),
+        ("p", "A decision engine, not just a lie detector. Verification says what is proven; belief says what "
+              "is worth believing and testing next — so a researcher, a regulator, or an AI spends its next "
+              "hour where it learns the most."),
+
+        ("h", "6 · What this cannot do"),
+        ("p", "It cannot make an unproven claim proven, or conjure a value that was never in the data. It is "
+              "honest about its limits — which is why the number can be trusted."),
+    ]
+
+
 def all_pages() -> dict[str, list[tuple[str, str]]]:
     return {"landscape": landscape(), "climate": climate(), "economics": economics(),
-            "oracles": oracles()}
+            "oracles": oracles(), "belief": belief()}

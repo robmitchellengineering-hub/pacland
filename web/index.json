@@ -2034,13 +2034,6 @@
    "title": "make_plain_speak.py"
   },
   {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_startalk_pdf.py",
-   "kind": "script",
-   "path": "scripts/make_startalk_pdf.py",
-   "summary": "Generate the PACLAND StarTalk-style explainer PDF (repo root).",
-   "title": "make_startalk_pdf.py"
-  },
-  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_audit.py",
    "kind": "script",
    "path": "scripts/measure_audit.py",
@@ -2888,6 +2881,13 @@
    "title": "window_dependence.py"
   },
   {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-belief-plain-speak.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-belief-plain-speak.pdf",
+   "summary": "explainer PDF",
+   "title": "belief plain speak"
+  },
+  {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf",
    "kind": "pdf",
    "path": "PACLAND-climate-explainer.pdf",
@@ -2942,13 +2942,6 @@
    "path": "PACLAND-oracles-plain-speak.pdf",
    "summary": "explainer PDF",
    "title": "oracles plain speak"
-  },
-  {
-   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-startalk.pdf",
-   "kind": "pdf",
-   "path": "PACLAND-startalk.pdf",
-   "summary": "explainer PDF",
-   "title": "startalk"
   },
   {
    "href": "./all.html",
