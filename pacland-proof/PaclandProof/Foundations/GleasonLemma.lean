@@ -2366,5 +2366,32 @@ theorem l6_contraction (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p)
       rwa [h1, h2])
   nlinarith [hcross, hsq]
 
+/-- **L6 (one induction step)** — continuity at the equator point `e` follows from
+continuity at `p` (radius `r`) and at `e×p` (radius `r²/12 + r`): if `f` is within `ε` of
+its value on those two neighborhoods, then `|f u − f e| < 2ε` for `‖u−e‖ < r²/12`. This is
+the recursive step the continuity proof iterates. -/
+theorem continuity_step (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (r ε : ℝ) (hr : 0 < r) (hr1 : r < 1)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (hcont_p : ∀ x, unitVec3 x → dotProduct (x - p) (x - p) < r ^ 2 → |f x - f p| < ε)
+    (hcont_ep : ∀ x, unitVec3 x → dotProduct (x - cross e p) (x - cross e p) < (r ^ 2 / 12 + r) ^ 2 → |f x - f (cross e p)| < ε)
+    (u : Fin 3 → ℝ) (hu : unitVec3 u) (hne : dotProduct u (l5_v e p r) ^ 2 ≠ 1)
+    (hδ : dotProduct (u - e) (u - e) < (r ^ 2 / 12) ^ 2) :
+    |f u - f e| < 2 * ε := by
+  have hvu : unitVec3 (l5_v e p r) := l5_v_unit e p he hp hep r hr hr1
+  have hrel := oscillation_relation e p he hp hep (l5_v e p r) hvu u hu hne f hf
+  have hphiu : unitVec3 (phi_map u (l5_v e p r)) := phi_map_unit u (l5_v e p r) hu hvu hne
+  have h1 : |f p - f (phi_map u (l5_v e p r))| < ε := by
+    have h := hcont_p (phi_map u (l5_v e p r)) hphiu (oscillation_transfer_norm e p he hp hep r hr hr1 u hu hδ)
+    simpa [abs_sub_comm] using h
+  have hcu : unitVec3 (cross u (phi_map u (l5_v e p r))) := cross_unit u (phi_map u (l5_v e p r)) hu hphiu (phi_map_orth u (l5_v e p r) hu)
+  have h2 : |f (cross e p) - f (cross u (phi_map u (l5_v e p r)))| < ε := by
+    have h := hcont_ep (cross u (phi_map u (l5_v e p r))) hcu (l6_contraction e p he hp hep r hr hr1 u hu hne hδ)
+    simpa [abs_sub_comm] using h
+  rw [hrel]
+  have htri := abs_add_le (f p - f (phi_map u (l5_v e p r))) (f (cross e p) - f (cross u (phi_map u (l5_v e p r))))
+  nlinarith [htri, h1, h2]
+
 end GleasonLemma
+
 
