@@ -231,6 +231,115 @@ theorem sqrt_smul (c : ℝ) (a : ℝ) (ha : 0 ≤ a) :
   rw [Real.sqrt_eq_iff_eq_sq (mul_nonneg (sq_nonneg c) ha) (mul_nonneg (abs_nonneg c) (Real.sqrt_nonneg a))]
   conv_lhs => rw [← sq_abs, ← Real.sq_sqrt ha, ← mul_pow]
 
+/-- `normSq v = 0 ↔ v = 0` (the squared norm is nondegenerate). -/
+theorem normSq_eq_zero_iff (v : Fin 3 → ℝ) : normSq v = 0 ↔ v = 0 := by
+  constructor
+  · intro h
+    ext i
+    have hsum : v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2 = 0 := by
+      simpa [normSq, dotProduct, Fin.sum_univ_three, sq] using h
+    fin_cases i
+    · have hle : v 0 ^ 2 ≤ 0 := by nlinarith [hsum, sq_nonneg (v 1), sq_nonneg (v 2)]
+      exact sq_eq_zero_iff.mp (le_antisymm hle (sq_nonneg (v 0)))
+    · have hle : v 1 ^ 2 ≤ 0 := by nlinarith [hsum, sq_nonneg (v 0), sq_nonneg (v 2)]
+      exact sq_eq_zero_iff.mp (le_antisymm hle (sq_nonneg (v 1)))
+    · have hle : v 2 ^ 2 ≤ 0 := by nlinarith [hsum, sq_nonneg (v 0), sq_nonneg (v 1)]
+      exact sq_eq_zero_iff.mp (le_antisymm hle (sq_nonneg (v 2)))
+  · intro h
+    subst h
+    simp [normSq, dotProduct, Fin.sum_univ_three]
+
+/-- `√(normSq v) ≠ 0` for `v ≠ 0`. -/
+theorem sqrt_normSq_ne_zero (v : Fin 3 → ℝ) (hv : v ≠ 0) :
+    Real.sqrt (normSq v) ≠ 0 := by
+  intro hz
+  have hnonneg : 0 ≤ normSq v := by
+    dsimp [normSq]; simp [dotProduct, Fin.sum_univ_three]
+    nlinarith [sq_nonneg (v 0), sq_nonneg (v 1), sq_nonneg (v 2)]
+  have hz' : normSq v = 0 := by
+    rw [← Real.sq_sqrt hnonneg]
+    rw [hz]
+    norm_num
+  exact hv ((normSq_eq_zero_iff v).1 hz')
+
+/-- `(√(normSq v))⁻¹ • v` is a unit vector (for `v ≠ 0`). -/
+theorem unit_smul_inv_sqrt (v : Fin 3 → ℝ) (hv : v ≠ 0) :
+    unitVec3 ((Real.sqrt (normSq v))⁻¹ • v) := by
+  have hnonneg : 0 ≤ normSq v := by
+    dsimp [normSq]; simp [dotProduct, Fin.sum_univ_three]
+    nlinarith [sq_nonneg (v 0), sq_nonneg (v 1), sq_nonneg (v 2)]
+  have hne : Real.sqrt (normSq v) ≠ 0 := sqrt_normSq_ne_zero v hv
+  dsimp [unitVec3]
+  change normSq ((Real.sqrt (normSq v))⁻¹ • v) = 1
+  rw [normSq_smul]
+  field_simp [hne]
+  rw [Real.sq_sqrt hnonneg]
+
+/-- `(c·a)⁻¹·c = a⁻¹` for nonzero `c`, `a`. -/
+theorem inv_mul_self_eq (c a : ℝ) (hc : c ≠ 0) (ha : a ≠ 0) :
+    (c * a)⁻¹ * c = a⁻¹ := by
+  field_simp [hc, ha]
+
+/-- The extension is even: `F(−v) = F v` (from the frame function's evenness). -/
+theorem extend_even (f : (Fin 3 → ℝ) → ℝ)
+    (hf_even : ∀ v, unitVec3 v → f (-v) = f v) :
+    ∀ v, extend f (-v) = extend f v := by
+  intro v
+  dsimp [extend]
+  have hsq : normSq (-v) = normSq v := by
+    dsimp [normSq]
+    simp [dotProduct, Fin.sum_univ_three]
+  rw [hsq]
+  by_cases hv : v = 0
+  · subst hv
+    simp [normSq, dotProduct, Fin.sum_univ_three]
+  · have hunit : unitVec3 ((Real.sqrt (normSq v))⁻¹ • v) := unit_smul_inv_sqrt v hv
+    have hneg : (Real.sqrt (normSq v))⁻¹ • (-v) = -((Real.sqrt (normSq v))⁻¹ • v) := by
+      ext i
+      simp [neg_smul, mul_neg]
+    rw [hneg, hf_even ((Real.sqrt (normSq v))⁻¹ • v) hunit]
+
+/-- **The extension is homogeneous** — `F(c·v) = c²·F(v)` (the `H` that step 1
+consumes), using the evenness for the `c < 0` case. -/
+theorem extend_homogeneous (f : (Fin 3 → ℝ) → ℝ)
+    (hf_even : ∀ v, unitVec3 v → f (-v) = f v) :
+    ∀ (c : ℝ) (v : Fin 3 → ℝ), extend f (c • v) = c ^ 2 * extend f v := by
+  intro c v
+  have h_nonneg : ∀ (d : ℝ), 0 ≤ d → extend f (d • v) = d ^ 2 * extend f v := by
+    intro d hd
+    by_cases hv : v = 0
+    · subst hv
+      simp [extend, normSq, dotProduct, Fin.sum_univ_three]
+    · dsimp [extend]
+      rw [normSq_smul d v]
+      have hsq_nonneg : 0 ≤ normSq v := by
+        dsimp [normSq]; simp [dotProduct, Fin.sum_univ_three]
+        nlinarith [sq_nonneg (v 0), sq_nonneg (v 1), sq_nonneg (v 2)]
+      have hsqrt : Real.sqrt (d ^ 2 * normSq v) = d * Real.sqrt (normSq v) := by
+        simpa [abs_of_nonneg hd] using sqrt_smul d (normSq v) hsq_nonneg
+      rw [hsqrt]
+      by_cases hd0 : d = 0
+      · subst hd0
+        simp [normSq, dotProduct, Fin.sum_univ_three]
+      · have hscal : (d * Real.sqrt (normSq v))⁻¹ • (d • v) = (Real.sqrt (normSq v))⁻¹ • v := by
+          ext i
+          have hsc : (d * Real.sqrt (normSq v))⁻¹ * d = (Real.sqrt (normSq v))⁻¹ :=
+            inv_mul_self_eq d (Real.sqrt (normSq v)) hd0 (sqrt_normSq_ne_zero v hv)
+          calc
+            ((d * Real.sqrt (normSq v))⁻¹ • (d • v)) i
+                = (d * Real.sqrt (normSq v))⁻¹ * (d * v i) := by simp
+            _ = ((d * Real.sqrt (normSq v))⁻¹ * d) * v i := by ring
+            _ = (Real.sqrt (normSq v))⁻¹ * v i := by rw [hsc]
+            _ = ((Real.sqrt (normSq v))⁻¹ • v) i := by simp
+        rw [hscal]
+        ring
+  by_cases hcpos : 0 ≤ c
+  · exact h_nonneg c hcpos
+  · have hcneg : c = -|c| := by rw [abs_of_neg (lt_of_not_ge hcpos)]; ring
+    rw [hcneg, neg_smul, extend_even f hf_even]
+    rw [neg_sq]
+    exact h_nonneg |c| (abs_nonneg c)
+
 end GleasonLemma
 
 end
