@@ -2246,7 +2246,81 @@ theorem oscillation_relation (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitV
   dsimp [lu] at h
   exact h
 
+/-- The cross product is bounded by the product of norms: `‖a×b‖² ≤ ‖a‖²·‖b‖²`
+(Binet–Cauchy). -/
+theorem cross_norm_le (a b : Fin 3 → ℝ) :
+    dotProduct (cross a b) (cross a b) ≤ dotProduct a a * dotProduct b b := by
+  have h := cross_dot_cross a b a b
+  have hab : dotProduct a b * dotProduct b a ≥ 0 := by
+    rw [dotProduct_symm b a]
+    exact mul_self_nonneg (dotProduct a b)
+  rw [h]
+  nlinarith
+
+/-- `cross` is linear in the first argument. -/
+theorem cross_add_left (u w z : Fin 3 → ℝ) : cross (u + w) z = cross u z + cross w z := by
+  ext i; fin_cases i <;> simp [cross, Fin.sum_univ_three] <;> ring
+
+/-- `cross` is linear in the second argument. -/
+theorem cross_add_right (u w z : Fin 3 → ℝ) : cross u (w + z) = cross u w + cross u z := by
+  ext i; fin_cases i <;> simp [cross, Fin.sum_univ_three] <;> ring
+
+/-- `cross` is homogeneous in the first argument: `(c•a) × b = c • (a × b)`. -/
+theorem cross_smul_left (c : ℝ) (a b : Fin 3 → ℝ) : cross (c • a) b = c • cross a b := by
+  ext i; fin_cases i <;> simp [cross, Fin.sum_univ_three, Pi.smul_apply] <;> ring
+
+/-- The triangle inequality in squared-norm form: `‖X+Y‖² ≤ (‖X‖+‖Y‖)²`. -/
+theorem norm_sq_triangle (X Y : Fin 3 → ℝ) :
+    dotProduct (X + Y) (X + Y) ≤ (Real.sqrt (dotProduct X X) + Real.sqrt (dotProduct Y Y)) ^ 2 := by
+  have hcs := dotProduct_abs_le_norm X Y
+  have hle : dotProduct X Y ≤ Real.sqrt (dotProduct X X) * Real.sqrt (dotProduct Y Y) :=
+    le_trans (le_abs_self (dotProduct X Y)) hcs
+  calc
+    dotProduct (X + Y) (X + Y) = dotProduct X X + 2 * dotProduct X Y + dotProduct Y Y := by
+      simp [dotProduct, Fin.sum_univ_three]
+      ring
+    _ ≤ dotProduct X X + 2 * (Real.sqrt (dotProduct X X) * Real.sqrt (dotProduct Y Y)) + dotProduct Y Y := by
+      nlinarith [hle]
+    _ = (Real.sqrt (dotProduct X X) + Real.sqrt (dotProduct Y Y)) ^ 2 := by
+      rw [add_sq]
+      have hX : (Real.sqrt (dotProduct X X)) ^ 2 = dotProduct X X := Real.sq_sqrt (dotProduct_self_nonneg X)
+      have hY : (Real.sqrt (dotProduct Y Y)) ^ 2 = dotProduct Y Y := Real.sq_sqrt (dotProduct_self_nonneg Y)
+      rw [hX, hY]
+      ring
+
+/-- **Cross-product continuity bound** — the geometric bridge from `‖λu − p‖` and `‖u − e‖`
+to the second oscillation term: `‖u×λu − e×p‖ ≤ ‖u−e‖·‖λu‖ + ‖e‖·‖λu − p‖` (squared). -/
+theorem cross_sub_norm_le (u w e z : Fin 3 → ℝ) :
+    dotProduct (cross u w - cross e z) (cross u w - cross e z)
+      ≤ (Real.sqrt (dotProduct (u - e) (u - e)) * Real.sqrt (dotProduct w w)
+          + Real.sqrt (dotProduct e e) * Real.sqrt (dotProduct (w - z) (w - z))) ^ 2 := by
+  have hdecomp : cross u w - cross e z = cross (u - e) w + cross e (w - z) := by
+    ext i; fin_cases i <;> simp [cross, sub_eq_add_neg] <;> ring
+  rw [hdecomp]
+  have htri := norm_sq_triangle (cross (u - e) w) (cross e (w - z))
+  have h1 : Real.sqrt (dotProduct (cross (u - e) w) (cross (u - e) w)) ≤ Real.sqrt (dotProduct (u - e) (u - e)) * Real.sqrt (dotProduct w w) := by
+    have h := cross_norm_le (u - e) w
+    have hsqrt := Real.sqrt_le_sqrt h
+    rw [Real.sqrt_mul (dotProduct_self_nonneg (u - e)) (dotProduct w w)] at hsqrt
+    exact hsqrt
+  have h2 : Real.sqrt (dotProduct (cross e (w - z)) (cross e (w - z))) ≤ Real.sqrt (dotProduct e e) * Real.sqrt (dotProduct (w - z) (w - z)) := by
+    have h := cross_norm_le e (w - z)
+    have hsqrt := Real.sqrt_le_sqrt h
+    rw [Real.sqrt_mul (dotProduct_self_nonneg e) (dotProduct (w - z) (w - z))] at hsqrt
+    exact hsqrt
+  have hsum : Real.sqrt (dotProduct (cross (u - e) w) (cross (u - e) w)) + Real.sqrt (dotProduct (cross e (w - z)) (cross e (w - z)))
+      ≤ Real.sqrt (dotProduct (u - e) (u - e)) * Real.sqrt (dotProduct w w) + Real.sqrt (dotProduct e e) * Real.sqrt (dotProduct (w - z) (w - z)) :=
+    add_le_add h1 h2
+  have hnonneg : 0 ≤ Real.sqrt (dotProduct (cross (u - e) w) (cross (u - e) w)) + Real.sqrt (dotProduct (cross e (w - z)) (cross e (w - z))) :=
+    add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+  have hb : 0 ≤ Real.sqrt (dotProduct (u - e) (u - e)) * Real.sqrt (dotProduct w w) + Real.sqrt (dotProduct e e) * Real.sqrt (dotProduct (w - z) (w - z)) :=
+    add_nonneg (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)) (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))
+  have hsumbound : (Real.sqrt (dotProduct (cross (u - e) w) (cross (u - e) w)) + Real.sqrt (dotProduct (cross e (w - z)) (cross e (w - z)))) ^ 2
+      ≤ (Real.sqrt (dotProduct (u - e) (u - e)) * Real.sqrt (dotProduct w w) + Real.sqrt (dotProduct e e) * Real.sqrt (dotProduct (w - z) (w - z))) ^ 2 := by
+    exact sq_le_sq.mpr (by
+      show |Real.sqrt (dotProduct (cross (u - e) w) (cross (u - e) w)) + Real.sqrt (dotProduct (cross e (w - z)) (cross e (w - z)))| ≤
+           |Real.sqrt (dotProduct (u - e) (u - e)) * Real.sqrt (dotProduct w w) + Real.sqrt (dotProduct e e) * Real.sqrt (dotProduct (w - z) (w - z))|
+      rwa [abs_of_nonneg hnonneg, abs_of_nonneg hb])
+  exact le_trans htri hsumbound
+
 end GleasonLemma
-
-
-end
