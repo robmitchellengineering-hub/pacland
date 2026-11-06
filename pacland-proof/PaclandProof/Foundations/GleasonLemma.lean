@@ -485,6 +485,122 @@ theorem extend_homogeneous (f : (Fin 3 → ℝ) → ℝ)
     rw [neg_sq]
     exact h_nonneg |c| (abs_nonneg c)
 
+/-- Bilinear expansion of `(αu + βv + γw) · (αu + βv + γw)`. -/
+theorem dotProduct_expand_three (u v w : Fin 3 → ℝ) (α β γ : ℝ) :
+    dotProduct (α • u + β • v + γ • w) (α • u + β • v + γ • w)
+    = α ^ 2 * dotProduct u u + β ^ 2 * dotProduct v v + γ ^ 2 * dotProduct w w
+      + 2 * α * β * dotProduct u v + 2 * α * γ * dotProduct u w + 2 * β * γ * dotProduct v w := by
+  simp [dotProduct, Fin.sum_univ_three]
+  ring
+
+/-- Linearity of `(αu + βv + γw) · z` in `(α, β, γ)`. -/
+theorem dotProduct_add_smul_three (u v w z : Fin 3 → ℝ) (α β γ : ℝ) :
+    dotProduct (α • u + β • v + γ • w) z = α * dotProduct u z + β * dotProduct v z + γ * dotProduct w z := by
+  simp [dotProduct, Fin.sum_univ_three]
+  ring
+
+/-- **Realizability** (the dim-≥-3 step): for unit `p` and `a + b + c = 1`
+(nonnegative), there is an orthonormal triple whose squared projections onto `p`
+are exactly `a, b, c`. -/
+theorem realize (p : Fin 3 → ℝ) (hp : unitVec3 p) (a b c : ℝ)
+    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (habc : a + b + c = 1) :
+    ∃ t1 t2 t3, unitVec3 t1 ∧ unitVec3 t2 ∧ unitVec3 t3 ∧
+      orthVec3 t1 t2 ∧ orthVec3 t1 t3 ∧ orthVec3 t2 t3 ∧
+      (dotProduct t1 p) ^ 2 = a ∧ (dotProduct t2 p) ^ 2 = b ∧ (dotProduct t3 p) ^ 2 = c := by
+  rcases exists_perp p hp with ⟨q, hq, hpq⟩
+  by_cases ha1 : a = 1
+  · refine ⟨p, q, cross p q, hp, hq, cross_unit p q hp hq hpq, hpq, cross_orth_left p q, cross_orth_right p q, ?_, ?_, ?_⟩
+    · have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+      simp [hpp, ha1]
+    · have hqp : dotProduct q p = 0 := by rw [dotProduct_symm]; simpa [orthVec3] using hpq
+      have hb0 : b = 0 := by nlinarith [habc, ha1, hb]
+      simp [hqp, hb0]
+    · have hcp : dotProduct (cross p q) p = 0 := by
+        rw [dotProduct_symm]
+        simpa [orthVec3] using cross_orth_left p q
+      have hc0 : c = 0 := by nlinarith [habc, ha1, hc]
+      simp [hcp, hc0]
+  · have ha_lt1 : a < 1 := lt_of_le_of_ne (by linarith [ha, habc, hb, hc]) ha1
+    let t1 := Real.sqrt a • p + Real.sqrt (1 - a) • q
+    let t2 := Real.sqrt b • p + (-(Real.sqrt a * Real.sqrt b / Real.sqrt (1 - a))) • q + (Real.sqrt c / Real.sqrt (1 - a)) • (cross p q)
+    let t3 := cross t1 t2
+    have ht1 : unitVec3 t1 ∧ (dotProduct t1 p) ^ 2 = a := unit_smul_of_latitude p q hp hq hpq a ha (by linarith)
+    have ht2_unit : unitVec3 t2 := by
+      rw [unitVec3]
+      dsimp [t2]
+      rw [dotProduct_expand_three p q (cross p q) (Real.sqrt b) (-(Real.sqrt a * Real.sqrt b / Real.sqrt (1 - a))) (Real.sqrt c / Real.sqrt (1 - a))]
+      have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+      have hqq : dotProduct q q = 1 := by simpa [unitVec3] using hq
+      have hrr : dotProduct (cross p q) (cross p q) = 1 := by simpa [unitVec3] using cross_unit p q hp hq hpq
+      have hpq' : dotProduct p q = 0 := by simpa [orthVec3] using hpq
+      have hpr : dotProduct p (cross p q) = 0 := by simpa [orthVec3] using cross_orth_left p q
+      have hqr : dotProduct q (cross p q) = 0 := by simpa [orthVec3] using cross_orth_right p q
+      rw [hpp, hqq, hrr, hpq', hpr, hqr]
+      have ha_sq : (Real.sqrt a) ^ 2 = a := Real.sq_sqrt ha
+      have hb_sq : (Real.sqrt b) ^ 2 = b := Real.sq_sqrt hb
+      have hc_sq : (Real.sqrt c) ^ 2 = c := Real.sq_sqrt hc
+      have h1a_sq : (Real.sqrt (1 - a)) ^ 2 = 1 - a := Real.sq_sqrt (by linarith)
+      have hab_c : a * b + c = (1 - a) * (1 - b) := by nlinarith [habc]
+      ring_nf
+      field_simp [show (1 - a) ≠ 0 by linarith]
+      nlinarith [ha_sq, hb_sq, hc_sq, h1a_sq, hab_c]
+    have ht2_p : (dotProduct t2 p) ^ 2 = b := by
+      dsimp [t2]
+      have h : dotProduct t2 p = Real.sqrt b := by
+        rw [dotProduct_add_smul_three p q (cross p q) p (Real.sqrt b) (-(Real.sqrt a * Real.sqrt b / Real.sqrt (1 - a))) (Real.sqrt c / Real.sqrt (1 - a))]
+        have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+        have hqp : dotProduct q p = 0 := by rw [dotProduct_symm]; simpa [orthVec3] using hpq
+        have hrp : dotProduct (cross p q) p = 0 := by rw [dotProduct_symm]; simpa [orthVec3] using cross_orth_left p q
+        rw [hpp, hqp, hrp]
+        ring
+      rw [h]
+      exact Real.sq_sqrt hb
+    have ht2_orth : orthVec3 t2 t1 := by
+      rw [orthVec3]
+      dsimp [t2]
+      rw [dotProduct_add_smul_three p q (cross p q) t1 (Real.sqrt b) (-(Real.sqrt a * Real.sqrt b / Real.sqrt (1 - a))) (Real.sqrt c / Real.sqrt (1 - a))]
+      have hpt1 : dotProduct p t1 = Real.sqrt a := by
+        rw [dotProduct_symm]
+        dsimp [t1]
+        rw [dotProduct_add_smul p q p (Real.sqrt a) (Real.sqrt (1 - a))]
+        have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+        have hqp : dotProduct q p = 0 := by rw [dotProduct_symm]; simpa [orthVec3] using hpq
+        rw [hpp, hqp]
+        ring
+      have hqt1 : dotProduct q t1 = Real.sqrt (1 - a) := by
+        rw [dotProduct_symm]
+        dsimp [t1]
+        rw [dotProduct_add_smul p q q (Real.sqrt a) (Real.sqrt (1 - a))]
+        have hpq' : dotProduct p q = 0 := by simpa [orthVec3] using hpq
+        have hqq : dotProduct q q = 1 := by simpa [unitVec3] using hq
+        rw [hpq', hqq]
+        ring
+      have hrt1 : dotProduct (cross p q) t1 = 0 := by
+        rw [dotProduct_symm]
+        dsimp [t1]
+        rw [dotProduct_add_smul p q (cross p q) (Real.sqrt a) (Real.sqrt (1 - a))]
+        have hpr : dotProduct p (cross p q) = 0 := by simpa [orthVec3] using cross_orth_left p q
+        have hqr : dotProduct q (cross p q) = 0 := by simpa [orthVec3] using cross_orth_right p q
+        rw [hpr, hqr]
+        ring
+      rw [hpt1, hqt1, hrt1]
+      field_simp [show Real.sqrt (1 - a) ≠ 0 by positivity]
+      ring
+    have ht2_orth' : orthVec3 t1 t2 := by
+      simpa [orthVec3, dotProduct_symm] using ht2_orth
+    have ht3_unit : unitVec3 t3 := cross_unit t1 t2 ht1.1 ht2_unit ht2_orth'
+    have ht3_orth1 : orthVec3 t1 t3 := by dsimp [t3]; exact cross_orth_left t1 t2
+    have ht3_orth2 : orthVec3 t2 t3 := by dsimp [t3]; exact cross_orth_right t1 t2
+    have ht3_p : (dotProduct t3 p) ^ 2 = c := by
+      dsimp [t3]
+      have hparseval := parseval t1 t2 p ht1.1 ht2_unit ht2_orth'
+      -- (t1·p)² + (t2·p)² + (t3·p)² = p·p = 1, and (t1·p)² = a, (t2·p)² = b
+      have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+      rw [hpp] at hparseval
+      rw [ht1.2, ht2_p] at hparseval
+      nlinarith [hparseval, habc]
+    refine ⟨t1, t2, t3, ht1.1, ht2_unit, ht3_unit, ht2_orth', ht3_orth1, ht3_orth2, ht1.2, ht2_p, ht3_p⟩
+
 end GleasonLemma
 
 end
