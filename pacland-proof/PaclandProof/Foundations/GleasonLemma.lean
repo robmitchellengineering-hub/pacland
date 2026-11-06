@@ -1076,6 +1076,26 @@ theorem symm_latitude_affine (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitV
   rw [← hF_eq, hFt, hF1, hF0]
   ring
 
+/-- **The recover-`f` key relation.** For `Q` the quadratic matching `f` at `p, q, p×q`
+and `f' = f − Q`, if `g = f + f∘ρ` is latitude-invariant then `f'(t) + f'(ρt) = 0`
+(since `g = f + f∘ρ = Q + Q∘ρ`). -/
+theorem f_minus_Q_antisymm (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 q) (hpq : orthVec3 p q)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (hpos : ∀ x, unitVec3 x → 0 ≤ f x)
+    (hg_lat : ∀ t t', unitVec3 t → unitVec3 t' → (dotProduct t p) ^ 2 = (dotProduct t' p) ^ 2 → symm p f t = symm p f t')
+    (t : Fin 3 → ℝ) (ht : unitVec3 t) :
+    (f t - (f p * (dotProduct t p) ^ 2 + f q * (dotProduct t q) ^ 2 + f (cross p q) * (dotProduct t (cross p q)) ^ 2))
+      + (f (rot90p p t) - (f p * (dotProduct (rot90p p t) p) ^ 2 + f q * (dotProduct (rot90p p t) q) ^ 2 + f (cross p q) * (dotProduct (rot90p p t) (cross p q)) ^ 2)) = 0 := by
+  let Q : (Fin 3 → ℝ) → ℝ := fun x => f p * (dotProduct x p) ^ 2 + f q * (dotProduct x q) ^ 2 + f (cross p q) * (dotProduct x (cross p q)) ^ 2
+  change (f t - Q t) + (f (rot90p p t) - Q (rot90p p t)) = 0
+  have hg : symm p f t = (3 * f p - 1) * (dotProduct t p) ^ 2 + (1 - f p) :=
+    symm_latitude_affine p q hp hq hpq f hf hpos hg_lat t ht
+  have hQ : Q t + Q (rot90p p t) = (3 * f p - 1) * (dotProduct t p) ^ 2 + (1 - f p) := by
+    simpa [Q] using (quadratic_symm p q hp hq hpq f hf t ht)
+  dsimp [symm] at hg
+  rw [← hQ] at hg
+  nlinarith [hg]
+
 /-- **The assembly** (Gleason's theorem, dim 3, conditional on latitude
 invariance). A nonnegative frame function `f` that depends only on the squared
 projection `(t·p)²` is affine in it: `f t = (f p − f q)·(t·p)² + f q`, i.e.
