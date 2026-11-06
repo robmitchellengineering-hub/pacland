@@ -22,7 +22,7 @@ receive the endorsement) — no content work is left.
 
 ## Paper 1 — Mitchell's Completeness Theorem (submit first)
 
-- **Title.** `Mitchell's Completeness Theorem: no exact invariant selector in the flux landscape`
+- **Title.** `Mitchell's Completeness Theorem: no exact polynomial invariant selector in the flux landscape`
 - **Author.** `Rob Mitchell`
 - **Primary subject class.** `hep-th` (High Energy Physics – Theory)
 - **Abstract.** (paste verbatim — full text in `paper/constraint-first-theorem.tex`)
@@ -37,7 +37,7 @@ duality group acts transitively on each non-zero tadpole level set; over the int
 group Sp(b3,Z) the orbits are instead classified by the content d = gcd(F,H)
 (d^2 | N), giving finitely many orbits per tadpole. Consequence — a no-fingerprint
 no-go on exact selectors: no exact, polynomial, duality-invariant function of the
-flux can single out a vacuum. This rules out exact invariant selectors; it does not
+flux can single out a vacuum. This rules out exact polynomial invariant selectors; it does not
 exclude statistical, moduli-dependent, or non-polynomial selection. The exact content
 of a theory of everything is constrained to two classes — consistency constraints and
 topological labels — and nothing else. The statement is falsifiable: a single
