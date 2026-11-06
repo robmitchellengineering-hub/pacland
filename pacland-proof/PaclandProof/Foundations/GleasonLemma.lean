@@ -1113,6 +1113,23 @@ theorem f_minus_Q_antisymm (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec
   rw [← hQ] at hg
   nlinarith [hg]
 
+/-- **`f' = f − Q` is 180°-invariant** (`f'(t) = f'(ρ²t)`), since both `f` (via
+`f_rho2_inv_of_g_lat_inv`) and `Q` (via `rot90p_sq_proj`) are. -/
+theorem f_prime_rho2_inv (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 q) (hpq : orthVec3 p q)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (hpos : ∀ x, unitVec3 x → 0 ≤ f x)
+    (hg_lat : ∀ t t', unitVec3 t → unitVec3 t' → (dotProduct t p) ^ 2 = (dotProduct t' p) ^ 2 → symm p f t = symm p f t')
+    (t : Fin 3 → ℝ) (ht : unitVec3 t) :
+    (f t - (f p * (dotProduct t p) ^ 2 + f q * (dotProduct t q) ^ 2 + f (cross p q) * (dotProduct t (cross p q)) ^ 2))
+      = (f (rot90p p (rot90p p t)) - (f p * (dotProduct (rot90p p (rot90p p t)) p) ^ 2 + f q * (dotProduct (rot90p p (rot90p p t)) q) ^ 2 + f (cross p q) * (dotProduct (rot90p p (rot90p p t)) (cross p q)) ^ 2)) := by
+  have hf_inv : f t = f (rot90p p (rot90p p t)) := f_rho2_inv_of_g_lat_inv p hp f hg_lat t ht
+  have hQ_inv : (f p * (dotProduct t p) ^ 2 + f q * (dotProduct t q) ^ 2 + f (cross p q) * (dotProduct t (cross p q)) ^ 2)
+      = (f p * (dotProduct (rot90p p (rot90p p t)) p) ^ 2 + f q * (dotProduct (rot90p p (rot90p p t)) q) ^ 2 + f (cross p q) * (dotProduct (rot90p p (rot90p p t)) (cross p q)) ^ 2) := by
+    have hproj := rot90p_sq_proj p q hp hq hpq t
+    rw [hproj.1, hproj.2.1, hproj.2.2]
+    ring
+  rw [hf_inv, hQ_inv]
+
 /-- **The assembly** (Gleason's theorem, dim 3, conditional on latitude
 invariance). A nonnegative frame function `f` that depends only on the squared
 projection `(t·p)²` is affine in it: `f t = (f p − f q)·(t·p)² + f q`, i.e.
