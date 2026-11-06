@@ -2434,7 +2434,15 @@ theorem unit_sphere_compact : IsCompact ({x : EuclideanSpace ℝ (Fin 3) | ‖x�
     simp [sub_zero]
     exact hx.le
 
+/-- **Heine–Cantor**: a frame function that is continuous on the sphere is uniformly
+continuous there (compactness of S²). The last analytic step the continuity proof feeds into. -/
+theorem uniformContinuousOn_sphere_of_continuousOn (f : (Fin 3 → ℝ) → ℝ)
+    (hcont : ContinuousOn (fun x : EuclideanSpace ℝ (Fin 3) => f x) ({x : EuclideanSpace ℝ (Fin 3) | ‖x‖ = 1} : Set (EuclideanSpace ℝ (Fin 3)))) :
+    UniformContinuousOn (fun x : EuclideanSpace ℝ (Fin 3) => f x) ({x : EuclideanSpace ℝ (Fin 3) | ‖x‖ = 1} : Set (EuclideanSpace ℝ (Fin 3))) :=
+  unit_sphere_compact.uniformContinuousOn_of_continuous hcont
+
 end GleasonLemma
+
 
 
 
