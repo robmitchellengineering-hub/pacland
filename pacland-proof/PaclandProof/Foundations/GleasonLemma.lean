@@ -769,6 +769,52 @@ theorem monotonicity_bound (g : (Fin 3 → ℝ) → ℝ) (f : (Fin 3 → ℝ) �
     g r ≤ g s + 2 * f p := by
   linarith [h_identity, h_eq, h_bound]
 
+/-- **The great-circle frames.** For the great circle with normal `n` and a point `q` on it
+(`q ⊥ n`), let `r = n×q`. For any `φ`, the points `s = cos φ·q + sin φ·r` and
+`t = −sin φ·q + cos φ·r` give two orthonormal triples `{r,q,n}` and `{s,t,n}` (all eight
+unit/orthogonality facts at once). -/
+theorem great_circle_frames (q n : Fin 3 → ℝ) (hq : unitVec3 q) (hn : unitVec3 n) (hqn : orthVec3 q n)
+    (φ : ℝ) :
+    let r := cross n q
+    let s := Real.cos φ • q + Real.sin φ • r
+    let t := -Real.sin φ • q + Real.cos φ • r
+    unitVec3 r ∧ orthVec3 r q ∧ orthVec3 r n ∧
+    unitVec3 s ∧ unitVec3 t ∧ orthVec3 s t ∧ orthVec3 s n ∧ orthVec3 t n := by
+  intro r s t
+  have hnr : orthVec3 n q := by simpa [orthVec3, dotProduct_symm] using hqn
+  have hr_unit : unitVec3 r := cross_unit n q hn hq hnr
+  have hrq : orthVec3 r q := by simpa [orthVec3, dotProduct_symm] using cross_orth_right n q
+  have hrn : orthVec3 r n := by simpa [orthVec3, dotProduct_symm] using cross_orth_left n q
+  have hqr : dotProduct q r = 0 := by
+    rw [dotProduct_symm q r]
+    exact hrq
+  have hs_unit : unitVec3 s := by
+    change dotProduct (Real.cos φ • q + Real.sin φ • r) (Real.cos φ • q + Real.sin φ • r) = 1
+    rw [dotProduct_expand q r (Real.cos φ) (Real.sin φ)]
+    rw [hq, hr_unit, hqr]
+    nlinarith [Real.sin_sq_add_cos_sq φ]
+  have ht_unit : unitVec3 t := by
+    change dotProduct (-Real.sin φ • q + Real.cos φ • r) (-Real.sin φ • q + Real.cos φ • r) = 1
+    rw [dotProduct_expand q r (-Real.sin φ) (Real.cos φ)]
+    rw [hq, hr_unit, hqr]
+    nlinarith [Real.sin_sq_add_cos_sq φ]
+  have hst : orthVec3 s t := by
+    change dotProduct (Real.cos φ • q + Real.sin φ • r) (-Real.sin φ • q + Real.cos φ • r) = 0
+    rw [dotProduct_expand_mixed q r (Real.cos φ) (Real.sin φ)]
+    rw [hq, hr_unit, hqr]
+    ring
+  have hsn : orthVec3 s n := by
+    change dotProduct (Real.cos φ • q + Real.sin φ • r) n = 0
+    rw [dotProduct_add_smul q r n (Real.cos φ) (Real.sin φ)]
+    rw [hqn, hrn]
+    ring
+  have htn : orthVec3 t n := by
+    change dotProduct (-Real.sin φ • q + Real.cos φ • r) n = 0
+    rw [dotProduct_add_smul q r n (-Real.sin φ) (Real.cos φ)]
+    rw [hqn, hrn]
+    ring
+  exact ⟨hr_unit, hrq, hrn, hs_unit, ht_unit, hst, hsn, htn⟩
+
 /-- **The transport** — an increment is invariant under the 90° rotation of its
 straddle axis: for unit `u ⊥ v`, `a² + b² = 1`,
 `f(a·u + b·v) − f(a·u − b·v) = f(b·u + a·v) − f(−b·u + a·v)`. The continuity
