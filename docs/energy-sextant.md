@@ -210,6 +210,40 @@ The claim can fail, and a mutation test shows how: delete the `C6` entries for `
 rows become unblocked, so the claim goes false. That is what makes the headline an assertion rather than
 a restatement of the default.
 
+### Move 1 — the triage: which NOT-RESEARCHED cell to look at next
+
+```
+$ PYTHONPATH=src python3 -m pacland.energy.triage
+62 NOT-RESEARCHED cells, ordered by the structural triage (score = discrimination x decidability / cost).
+
+| # | candidate | constraint | name | score | hours |
+|---|---|---|---|---|---|
+| 1 | `cdt` | C5 | bekenstein-hawking-coefficient | 4.000 | 1.4 |
+| 2 | `causal-sets` | C5 | bekenstein-hawking-coefficient | 4.000 | 1.4 |
+| 3 | `gft` | C5 | bekenstein-hawking-coefficient | 4.000 | 1.4 |
+| 4 | `asymptotic-safety` | C5 | bekenstein-hawking-coefficient | 3.500 | 1.6 |
+| 5 | `strings-adscft` | C5 | bekenstein-hawking-coefficient | 2.800 | 2.0 |
+| 6 | `lqg-spinfoam` | C5 | bekenstein-hawking-coefficient | 2.800 | 2.0 |
+| … | | | | | |
+```
+
+**The head of the list is the next cell to research.** It is a structural triage, not a Bayesian
+posterior, and the reason is computed rather than asserted: the C/P detector classifies the cell
+space as `UNDERDETERMINED` (no honest per-cell likelihood exists before anyone has looked), so a full
+expected-information-gain ranking is refused — fabricating 62 likelihoods would be exactly the GIGO
+the belief layer exists to prevent. Three documented inputs order the cells instead:
+**discrimination** (how much a verdict on this condition moves "which framework is alive/dead", sourced
+to the lattice's own notes), **decidability** (a triage weight anchored by the base rate — 11 cells
+researched, 0 definitive), and **cost** (research hours, with a per-framework literature-size
+multiplier). On the one honestly-scoreable slice — C3 (unitarity/ghost, with its Stelle control) and
+C5 (entropy coefficient 1) — EIG runs and, under the uniform base-rate prior, collapses to "cheapest
+first", which is the cross-check that the triage is the informative order for the rest.
+
+The result today: **C5 is the first row** — the cleanest binary with known answers — then C3 and C4.
+Cells whose measured bound is unread (`C1`, Cassini) are flagged `bound unread` and cannot be scored
+until `PENDING_BOUNDS` is closed. The ordering is meant to move as cells are researched, exactly like
+the reason-class counts above.
+
 ## 5. The target equation — named, not gestured at
 
 Two carriers run in parallel, because betting the programme on one derivation is not a plan.
