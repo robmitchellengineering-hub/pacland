@@ -191,14 +191,14 @@ verdict: the field's impasse is a property of the evidence record, not of the re
 $ PYTHONPATH=src python3 -m pacland.energy.profile
 | framework | conditions it cannot be evaluated on | class | evaluable | unresearched |
 |---|---|---|---|---|
-| `strings-adscft` | **C6** | `CONTESTED` | 1 | 11 |
-| `lqg-spinfoam` | **C1** (+2) | `CONTESTED` | 0 | 10 |
-| `asymptotic-safety` | **C3** (+1) | `CONTESTED` | 0 | 11 |
-| `cdt` | **C6** | `NO-PREDICTION` | 0 | 12 |
-| `causal-sets` | **C2** (+1) | `CONTESTED` | 0 | 11 |
-| `gft` | **C6** | `NO-PREDICTION` | 0 | 12 |
+| `strings-adscft` | **C6** | `CONTESTED` | 2 | 10 |
+| `lqg-spinfoam` | **C1** (+3) | `CONTESTED` | 0 | 9 |
+| `asymptotic-safety` | **C3** (+2) | `CONTESTED` | 0 | 10 |
+| `cdt` | **C5** (+1) | `NOT-ESTABLISHED` | 0 | 11 |
+| `causal-sets` | **C2** (+2) | `CONTESTED` | 0 | 10 |
+| `gft` | **C5** (+1) | `CONTESTED` | 0 | 11 |
 
-**6/6 frameworks are blocked** — 10 blocking cells in total.
+**6/6 frameworks are blocked** — 15 blocking cells in total.
 ```
 
 The rule that keeps this honest, and that a test enforces: **a blocker is `CONTESTED`,
@@ -209,6 +209,76 @@ only non-scores are gaps is *not* blocked by this profile, however many gaps the
 The claim can fail, and a mutation test shows how: delete the `C6` entries for `cdt` and `gft` and both
 rows become unblocked, so the claim goes false. That is what makes the headline an assertion rather than
 a restatement of the default.
+
+### Move 1 — the triage: which NOT-RESEARCHED cell to look at next
+
+```
+$ PYTHONPATH=src python3 -m pacland.energy.triage
+51 NOT-RESEARCHED cells, ordered by the structural triage (score = discrimination x decidability / cost).
+
+| # | candidate | constraint | name | score | hours |
+|---|---|---|---|---|---|
+| 1 | `causal-sets` | C4 | graviton-degrees-of-freedom | 1.786 | 1.4 |
+| 2 | `cdt` | C4 | graviton-degrees-of-freedom | 1.786 | 1.4 |
+| 3 | `gft` | C4 | graviton-degrees-of-freedom | 1.786 | 1.4 |
+| 4 | `asymptotic-safety` | C4 | graviton-degrees-of-freedom | 1.562 | 1.6 |
+| 5 | `lqg-spinfoam` | C4 | graviton-degrees-of-freedom | 1.250 | 2.0 |
+| 6 | `strings-adscft` | C4 | graviton-degrees-of-freedom | 1.250 | 2.0 |
+| … | | | | | |
+```
+
+**The head of the list is the next cell to research.** It is a structural triage, not a Bayesian
+posterior, and the reason is computed rather than asserted: the C/P detector classifies the cell
+space as `UNDERDETERMINED` (no honest per-cell likelihood exists before anyone has looked), so a full
+expected-information-gain ranking is refused — fabricating 51 likelihoods would be exactly the GIGO
+the belief layer exists to prevent. Three documented inputs order the cells instead:
+**discrimination** (how much a verdict on this condition moves "which framework is alive/dead", sourced
+to the lattice's own notes), **decidability** (a triage weight anchored by the base rate — 22 cells
+researched, 0 definitive), and **cost** (research hours, with a per-framework literature-size
+multiplier). The two honestly-scoreable constraints (C3 and C5) are now both fully researched, so the
+Mode-C EIG slice is empty.
+
+The result of the first two passes: **C5 then C3 were researched** (see below), and the head has moved
+to **C4** (graviton degrees of freedom). Cells whose measured bound is unread (`C1`, Cassini) are
+flagged `bound unread` and cannot be scored until `PENDING_BOUNDS` is closed. The ordering moves as
+cells are researched, exactly like the reason-class counts above.
+
+### Move 1's first pass — the C5 row, scored
+
+Six probes, one per framework, primary sources only, returned:
+
+| framework | class | the result |
+|---|---|---|
+| `strings-adscft` | `COMPUTED-ELSEWHERE` | Strominger–Vafa derive S = A/4 with coefficient exactly 1, for 5D extremal BPS black holes — a specific class, not generic |
+| `lqg-spinfoam` | `CONTESTED` | the Immirzi parameter was a tuned free normalisation; the later "Immirzi-independent" SU(2) counting is disputed |
+| `asymptotic-safety` | `CONTESTED` | S = A/4G only as the IR limit of the RG-improved entropy — a leading-order area law |
+| `causal-sets` | `CONTESTED` | S ∝ A in 1+1 dimensions only, no exact 1/4; the links proposal fails beyond 2D |
+| `gft` | `CONTESTED` | 1/4 recovered only by imposing semiclassical consistency, omitting the microscopic dynamics |
+| `cdt` | `NOT-ESTABLISHED` | no black-hole entropy coefficient computed; an open direction |
+
+The finding is the SEXTANT diagnosis again, on the cleanest constraint: **even the one condition with a
+clean binary oracle and known answers is demonstrated in full by exactly one framework, and only for a
+special class — five of six are contested or unestablished.** The triage did its job: it sent us to the
+most decisive cell, and the answer is "even here the field is partial."
+
+### Move 1's second pass — the C3 row, scored
+
+Five more probes, one per unresearched framework (asymptotic-safety/C3 was already `CONTESTED`):
+
+| framework | class | the result |
+|---|---|---|
+| `strings-adscft` | `COMPUTED-ELSEWHERE` | the no-ghost theorem + tree-level S-matrix unitarity — perturbative, non-perturbative unproven |
+| `cdt` | `CONTESTED` | transfer matrix self-adjoint/reflection-positive on the lattice, but no continuum unitary spectrum |
+| `lqg-spinfoam` | `NOT-ESTABLISHED` | positive kinematical inner product, but a unitary physical spectrum is an open problem |
+| `gft` | `NOT-ESTABLISHED` | unitarity neither proven nor mandatory in a third-quantised setting |
+| `causal-sets` | `NO-PREDICTION` | no dynamics/spectrum, so no ghost or unitarity statement can arise |
+
+**C3 was the kill-capable constraint** — the one with a positive control (Stelle gravity has a ghost, so
+the condition provably *can* kill) — and it killed nothing. No framework has a demonstrated propagating
+ghost; one has a published unitarity result (perturbative only) and the rest have the question open,
+contested, or absent. That is the pivot: the two most decisive rows (C5, C3) both come back with no kill,
+so "the field cannot discriminate" is now as strong as the evidence can make it, and the programme's
+remaining positive engine is SX-3 (the double-copy oracle), not more cell-grinding.
 
 ## 5. The target equation — named, not gestured at
 

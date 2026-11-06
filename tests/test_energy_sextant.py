@@ -41,8 +41,10 @@ from pacland.energy import (  # noqa: E402
 )
 from pacland.energy import vacuum as V  # noqa: E402
 from pacland.energy.evidence import (  # noqa: E402
+    COMPUTED_ELSEWHERE,
     COMPUTED_HERE,
     CONTESTED,
+    NOT_ESTABLISHED,
     NO_PREDICTION,
     NOT_RESEARCHED,
     REASON_CLASSES,
@@ -153,12 +155,14 @@ class TestWhyUndecided(unittest.TestCase):
         self.assertEqual(sum(c.values()), 78)
         self.assertEqual(set(c), set(REASON_CLASSES))
 
-    def test_eleven_cells_have_been_researched_and_sixty_seven_have_not(self):
+    def test_twenty_two_cells_have_been_researched_and_fifty_six_have_not(self):
         c = counts()
-        self.assertEqual(c[NOT_RESEARCHED], 67)
-        self.assertEqual(c[CONTESTED], 7)
-        self.assertEqual(c[NO_PREDICTION], 3)
+        self.assertEqual(c[NOT_RESEARCHED], 56)
+        self.assertEqual(c[CONTESTED], 12)
+        self.assertEqual(c[NO_PREDICTION], 4)
         self.assertEqual(c[COMPUTED_HERE], 1)
+        self.assertEqual(c[COMPUTED_ELSEWHERE], 2)
+        self.assertEqual(c[NOT_ESTABLISHED], 3)
 
     def test_the_cosmological_constant_cells_name_what_the_frameworks_claim(self):
         """C6 is the condition that decides "survives all thirteen", so its cells must be explicit."""
@@ -213,6 +217,43 @@ class TestTheTerminalClause(unittest.TestCase):
         doc = pathlib.Path(__file__).resolve().parents[1] / "docs" / "energy-sextant.md"
         text = doc.read_text()
         self.assertIn("No framework can survive all thirteen conditions.", text)
+
+
+class TestTheC5Row(unittest.TestCase):
+    """C5 (Bekenstein-Hawking coefficient 1) is the first row the triage sent us to. It is now scored:
+    one framework demonstrates it in a special class, four are contested, one has not established it."""
+
+    def test_the_c5_row_is_complete(self):
+        for cand in CANDIDATES:
+            self.assertNotEqual(class_for(cand.id, "C5"), NOT_RESEARCHED, cand.id)
+
+    def test_only_string_theory_demonstrates_the_coefficient(self):
+        self.assertEqual(class_for("strings-adscft", "C5"), COMPUTED_ELSEWHERE)
+
+    def test_four_are_contested_and_one_is_not_established(self):
+        for cand in ("lqg-spinfoam", "asymptotic-safety", "causal-sets", "gft"):
+            self.assertEqual(class_for(cand, "C5"), CONTESTED, cand)
+        self.assertEqual(class_for("cdt", "C5"), NOT_ESTABLISHED)
+
+
+class TestTheC3Row(unittest.TestCase):
+    """C3 (unitarity/no-ghost) is the second row the triage sent us to. It is now scored: the one
+    constraint with a positive control (Stelle) produced no demonstrated ghost in any framework —
+    one published unitarity result, the rest contested, unestablished, or absent."""
+
+    def test_the_c3_row_is_complete(self):
+        for cand in CANDIDATES:
+            self.assertNotEqual(class_for(cand.id, "C3"), NOT_RESEARCHED, cand.id)
+
+    def test_string_theory_has_a_published_unitarity_result(self):
+        self.assertEqual(class_for("strings-adscft", "C3"), COMPUTED_ELSEWHERE)
+
+    def test_the_rest_are_contested_unestablished_or_absent(self):
+        self.assertEqual(class_for("cdt", "C3"), CONTESTED)
+        self.assertEqual(class_for("asymptotic-safety", "C3"), CONTESTED)
+        for cand in ("lqg-spinfoam", "gft"):
+            self.assertEqual(class_for(cand, "C3"), NOT_ESTABLISHED, cand)
+        self.assertEqual(class_for("causal-sets", "C3"), NO_PREDICTION)
 
 
 class TestTheThreeRefusals(unittest.TestCase):
