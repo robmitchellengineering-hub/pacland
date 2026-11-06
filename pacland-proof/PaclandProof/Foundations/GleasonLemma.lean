@@ -2392,6 +2392,27 @@ theorem continuity_step (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p
   have htri := abs_add_le (f p - f (phi_map u (l5_v e p r))) (f (cross e p) - f (cross u (phi_map u (l5_v e p r))))
   nlinarith [htri, h1, h2]
 
+/-- **L6 (reverse step)** — continuity at the pole `p` from continuity at equator points:
+if `{u, v, w}` is a frame with `v ≈ v₀`, `w ≈ w₀` (where `{p, v₀, w₀}` is the pole frame, both
+`v₀, w₀ ⊥ p`), and `f` is within `ε` at `v₀, w₀`, then `|f u − f p| < 2ε`. The reverse of
+`continuity_step`; the two together close the continuity induction. -/
+theorem continuity_at_pole (p : Fin 3 → ℝ) (hp : unitVec3 p)
+    (ε : ℝ)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (u v w v₀ w₀ : Fin 3 → ℝ)
+    (hu : unitVec3 u) (hv : unitVec3 v) (hw : unitVec3 w) (hv₀ : unitVec3 v₀) (hw₀ : unitVec3 w₀)
+    (huv : orthVec3 u v) (huw : orthVec3 u w) (hvw : orthVec3 v w)
+    (hpv₀ : orthVec3 p v₀) (hpw₀ : orthVec3 p w₀) (hv₀w₀ : orthVec3 v₀ w₀)
+    (hcont_v : |f v - f v₀| < ε) (hcont_w : |f w - f w₀| < ε) :
+    |f u - f p| < 2 * ε := by
+  have h := two_frame_diff f hf u v w p v₀ w₀ hu hv hw hp hv₀ hw₀ huv huw hvw hpv₀ hpw₀ hv₀w₀
+  rw [h]
+  have hv' : |f v₀ - f v| < ε := by simpa [abs_sub_comm] using hcont_v
+  have hw' : |f w₀ - f w| < ε := by simpa [abs_sub_comm] using hcont_w
+  have htri := abs_add_le (f v₀ - f v) (f w₀ - f w)
+  nlinarith [htri, hv', hw']
+
 end GleasonLemma
+
 
 
