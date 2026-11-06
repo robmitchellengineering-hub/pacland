@@ -901,6 +901,152 @@ theorem l5_f7 (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : o
   rw [l5_f7_algebra e p he hp hep r u]
 
 
+/-- **L5 F2**: from `|(u−e)·v| ≤ a·δ²/2 + s₀·δ` bound `|u·v| < 1 − 23r²/288`. -/
+theorem l5_f2 (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (r : ℝ) (hr : 0 < r) (hr1 : r < 1) (u : Fin 3 → ℝ) (hu : unitVec3 u)
+    (δ : ℝ) (hδpos : 0 ≤ δ) (hδlt : δ < r ^ 2 / 12)
+    (hF1 : |dotProduct (u - e) (l5_v e p r)| ≤ (1 - r ^ 2 / 8) * δ ^ 2 / 2 + (r / 2) * Real.sqrt (1 - r ^ 2 / 16) * δ) :
+    |dotProduct u (l5_v e p r)| < 1 - 23 * r ^ 2 / 288 := by
+  let γ : ℝ := Real.sqrt (1 - r ^ 2 / 16)
+  let a : ℝ := 1 - r ^ 2 / 8
+  let s₀ : ℝ := (r / 2) * γ
+  have hsc := l5_scalars r hr hr1
+  dsimp [γ, a, s₀] at hsc
+  have ha_lt : a < 1 := hsc.2.1.2
+  have ha_gt0 : 0 < a := by
+    have h : 7 / 8 < a := hsc.2.1.1
+    linarith
+  have hs₀_lt : s₀ < r / 2 := hsc.2.2.1.2
+  have hs₀_gt0 : 0 < s₀ := by
+    have h : r / 4 < s₀ := hsc.2.2.1.1
+    linarith [h, hr]
+  have hdots := l5_v_dots e p he hp hep r
+  have hve : dotProduct (l5_v e p r) e = a := by
+    dsimp [a]
+    exact hdots.1
+  have hsub := dotProduct_sub_left u e (l5_v e p r)
+  have hsymm : dotProduct e (l5_v e p r) = dotProduct (l5_v e p r) e :=
+    dotProduct_symm e (l5_v e p r)
+  have hev : dotProduct e (l5_v e p r) = a := by
+    rw [hsymm, hve]
+  have hF1' : |dotProduct (u - e) (l5_v e p r)| ≤ a * δ ^ 2 / 2 + s₀ * δ := by
+    dsimp [a, s₀, γ]
+    exact hF1
+  have hc_eq : dotProduct u (l5_v e p r) = dotProduct (u - e) (l5_v e p r) + a := by
+    linarith [hsub, hev]
+  have htri : |dotProduct u (l5_v e p r)| ≤ |dotProduct (u - e) (l5_v e p r)| + a := by
+    calc
+      |dotProduct u (l5_v e p r)| = |dotProduct (u - e) (l5_v e p r) + a| := by rw [hc_eq]
+      _ ≤ |dotProduct (u - e) (l5_v e p r)| + |a| := abs_add_le _ _
+      _ = |dotProduct (u - e) (l5_v e p r)| + a := by rw [abs_of_pos ha_gt0]
+  have hM_nonneg : 0 ≤ r ^ 2 / 12 := by linarith [sq_nonneg r]
+  have hδsq_lt : δ ^ 2 < (r ^ 2 / 12) ^ 2 := by
+    rw [sq_lt_sq]
+    rw [abs_of_nonneg hδpos, abs_of_nonneg hM_nonneg]
+    exact hδlt
+  have hδsq_bound : δ ^ 2 < r ^ 4 / 144 := by
+    have h : (r ^ 2 / 12) ^ 2 = r ^ 4 / 144 := by ring
+    rwa [← h]
+  have hr4_pos : 0 < r ^ 4 := by nlinarith [hr]
+  have hadsq_lt : a * δ ^ 2 / 2 < r ^ 4 / 288 := by
+    have hstep : a * δ ^ 2 < a * (r ^ 4 / 144) :=
+      mul_lt_mul_of_pos_left hδsq_bound ha_gt0
+    have hdiv : a * (r ^ 4 / 144) < r ^ 4 / 144 := by
+      have hr4over144_pos : 0 < r ^ 4 / 144 := by nlinarith [hr4_pos]
+      have h : a * (r ^ 4 / 144) < 1 * (r ^ 4 / 144) :=
+        mul_lt_mul_of_pos_right ha_lt hr4over144_pos
+      simpa using h
+    have hstep2 : a * δ ^ 2 < r ^ 4 / 144 := lt_trans hstep hdiv
+    linarith [hstep2]
+  have hr2over12_pos : 0 < r ^ 2 / 12 := by nlinarith [hr]
+  have hs₀δ_lt : s₀ * δ < (r / 2) * (r ^ 2 / 12) := by
+    have h1 : s₀ * δ < s₀ * (r ^ 2 / 12) := mul_lt_mul_of_pos_left hδlt hs₀_gt0
+    have h2 : s₀ * (r ^ 2 / 12) < (r / 2) * (r ^ 2 / 12) :=
+      mul_lt_mul_of_pos_right hs₀_lt hr2over12_pos
+    exact lt_trans h1 h2
+  have hs₀δ_bound : s₀ * δ < r ^ 3 / 24 := by
+    have h : (r / 2) * (r ^ 2 / 12) = r ^ 3 / 24 := by ring
+    rw [← h]
+    exact hs₀δ_lt
+  have hsum : |dotProduct u (l5_v e p r)| < a + r ^ 4 / 288 + r ^ 3 / 24 := by
+    have hmid1 : |dotProduct u (l5_v e p r)| ≤ a * δ ^ 2 / 2 + s₀ * δ + a := by
+      calc
+        |dotProduct u (l5_v e p r)| ≤ |dotProduct (u - e) (l5_v e p r)| + a := htri
+        _ ≤ a * δ ^ 2 / 2 + s₀ * δ + a := by linarith [hF1']
+    have hmid2 : a * δ ^ 2 / 2 + s₀ * δ + a < a + r ^ 4 / 288 + r ^ 3 / 24 := by
+      linarith [hadsq_lt, hs₀δ_bound]
+    exact lt_of_le_of_lt hmid1 hmid2
+  have hr2_pos : 0 < r ^ 2 := by nlinarith [hr]
+  have hr2_lt1 : r ^ 2 < 1 := by nlinarith [hr, hr1]
+  have hr3_lt : r ^ 3 < r ^ 2 := by
+    have hfac : r ^ 3 - r ^ 2 = r ^ 2 * (r - 1) := by ring
+    have hneg : r - 1 < 0 := by linarith [hr1]
+    have hprod : r ^ 2 * (r - 1) < 0 := mul_neg_of_pos_of_neg hr2_pos hneg
+    linarith [hfac, hprod]
+  have hr4_lt : r ^ 4 < r ^ 2 := by
+    have hfac : r ^ 4 - r ^ 2 = r ^ 2 * (r ^ 2 - 1) := by ring
+    have hneg : r ^ 2 - 1 < 0 := by linarith [hr2_lt1]
+    have hprod : r ^ 2 * (r ^ 2 - 1) < 0 := mul_neg_of_pos_of_neg hr2_pos hneg
+    linarith [hfac, hprod]
+  have hfinal_arith : a + r ^ 4 / 288 + r ^ 3 / 24 < 1 - 23 * r ^ 2 / 288 := by
+    dsimp [a]
+    have h1 : r ^ 4 / 288 < r ^ 2 / 288 := by linarith [hr4_lt]
+    have h2 : r ^ 3 / 24 < r ^ 2 / 24 := by linarith [hr3_lt]
+    linarith [h1, h2]
+  exact lt_trans hsum hfinal_arith
+
+/-- **L5 F3**: `|c| < 1 − 23r²/288` gives `√(1−c²) > r/3`. -/
+theorem l5_f3 (r : ℝ) (hr : 0 < r) (hr1 : r < 1)
+    (c : ℝ) (hF2 : |c| < 1 - 23 * r ^ 2 / 288) :
+    Real.sqrt (1 - c ^ 2) > r / 3 := by
+  have hr2_lt1 : r ^ 2 < 1 := by nlinarith [hr, hr1]
+  have hb_pos : 0 < 1 - 23 * r ^ 2 / 288 := by
+    have h : 23 * r ^ 2 / 288 < 1 := by linarith [hr2_lt1]
+    linarith
+  have hb_nonneg : 0 ≤ 1 - 23 * r ^ 2 / 288 := by linarith [hb_pos]
+  have hc_sq : c ^ 2 < (1 - 23 * r ^ 2 / 288) ^ 2 := by
+    have h : |c| < |1 - 23 * r ^ 2 / 288| := by
+      rwa [abs_of_nonneg hb_nonneg]
+    exact sq_lt_sq.mpr h
+  have hsq : (r / 3) ^ 2 < 1 - c ^ 2 := by
+    have hchain : 1 - c ^ 2 > 1 - (1 - 23 * r ^ 2 / 288) ^ 2 := by
+      linarith [hc_sq]
+    have hr2_pos : 0 < r ^ 2 := by nlinarith [hr]
+    have hr4_lt2 : r ^ 4 < r ^ 2 := by
+      have hfac : r ^ 4 - r ^ 2 = r ^ 2 * (r ^ 2 - 1) := by ring
+      have hneg : r ^ 2 - 1 < 0 := by linarith [hr2_lt1]
+      have hprod : r ^ 2 * (r ^ 2 - 1) < 0 := mul_neg_of_pos_of_neg hr2_pos hneg
+      linarith [hfac, hprod]
+    have hmid : 1 - (1 - 23 * r ^ 2 / 288) ^ 2 > r ^ 2 * 12719 / 82944 := by
+      have h : 1 - (1 - 23 * r ^ 2 / 288) ^ 2 = r ^ 2 * 12719 / 82944 + 529 * (r ^ 2 - r ^ 4) / 82944 := by
+        ring
+      rw [h]
+      have hdiff : 0 < 529 * (r ^ 2 - r ^ 4) / 82944 := by
+        have h1 : 0 < r ^ 2 - r ^ 4 := by linarith [hr4_lt2]
+        have hcoef : 0 < (529 : ℝ) := by norm_num
+        have hden : 0 < (82944 : ℝ) := by norm_num
+        have h2 : 0 < 529 * (r ^ 2 - r ^ 4) := mul_pos hcoef h1
+        exact div_pos h2 hden
+      linarith [hdiff]
+    have hcoef : (1 : ℝ) / 9 < 12719 / 82944 := by norm_num
+    have hlast : (r / 3) ^ 2 < r ^ 2 * 12719 / 82944 := by
+      have h : r ^ 2 * (1 / 9) < r ^ 2 * (12719 / 82944) :=
+        mul_lt_mul_of_pos_left hcoef hr2_pos
+      calc
+        (r / 3) ^ 2 = r ^ 2 * (1 / 9) := by ring
+        _ < r ^ 2 * (12719 / 82944) := h
+        _ = r ^ 2 * 12719 / 82944 := by ring
+    linarith [hchain, hmid, hlast]
+  have hr3_nonneg : 0 ≤ r / 3 := by linarith [hr]
+  have hsqrt_nonneg : 0 ≤ Real.sqrt (1 - c ^ 2) := Real.sqrt_nonneg _
+  have hnonneg_1c : 0 ≤ 1 - c ^ 2 := by linarith [hsq, sq_nonneg (r / 3)]
+  have hsq_sqrt : (Real.sqrt (1 - c ^ 2)) ^ 2 = 1 - c ^ 2 := Real.sq_sqrt hnonneg_1c
+  have h : (r / 3) ^ 2 < (Real.sqrt (1 - c ^ 2)) ^ 2 := by
+    rw [hsq_sqrt]
+    exact hsq
+  have h' : |r / 3| < |Real.sqrt (1 - c ^ 2)| := sq_lt_sq.mp h
+  rwa [abs_of_nonneg hr3_nonneg, abs_of_nonneg hsqrt_nonneg] at h'
+
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
   f x + f (rot90p p x)
