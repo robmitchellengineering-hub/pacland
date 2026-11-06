@@ -187,6 +187,12 @@ theorem dotProduct_sub_left (u v z : Fin 3 → ℝ) :
   simp [dotProduct, Fin.sum_univ_three, sub_eq_add_neg, Pi.neg_apply]
   ring
 
+/-- Linearity of `z · (αu + βv)` in the second argument. -/
+theorem dotProduct_add_smul_right (z u v : Fin 3 → ℝ) (α β : ℝ) :
+    dotProduct z (α • u + β • v) = α * dotProduct z u + β * dotProduct z v := by
+  simp [dotProduct, Fin.sum_univ_three, Pi.smul_apply]
+  ring
+
 /-- Linearity of `z · (u − v)`. -/
 theorem dotProduct_sub_right (z u v : Fin 3 → ℝ) :
     dotProduct z (u - v) = dotProduct z u - dotProduct z v := by
@@ -784,6 +790,116 @@ theorem l5_v_unit (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep
   rw [hee, hpp, hep0]
   rw [mul_pow, hγsq]
   ring
+
+/-- **L5 F1**: `|(u−e)·v| ≤ a·δ²/2 + s₀·δ` — the sharp bound using `w·e = −δ²/2`. -/
+theorem l5_f1 (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (r : ℝ) (hr : 0 < r) (hr1 : r < 1) (u : Fin 3 → ℝ) (hu : unitVec3 u)
+    (δ : ℝ) (hδpos : 0 ≤ δ) (hδsq : δ ^ 2 = dotProduct (u - e) (u - e)) :
+    |dotProduct (u - e) (l5_v e p r)| ≤ (1 - r ^ 2 / 8) * δ ^ 2 / 2 + (r / 2) * Real.sqrt (1 - r ^ 2 / 16) * δ := by
+  let w : Fin 3 → ℝ := u - e
+  let γ : ℝ := Real.sqrt (1 - r ^ 2 / 16)
+  let a : ℝ := 1 - r ^ 2 / 8
+  let s₀ : ℝ := (r / 2) * γ
+  have hsc := l5_scalars r hr hr1
+  dsimp [γ, a, s₀] at hsc
+  have ha_gt : 7 / 8 < a := hsc.2.1.1
+  have hs₀_gt : r / 4 < s₀ := hsc.2.2.1.1
+  have hε : dotProduct w (l5_v e p r) = a * dotProduct w e + (-s₀) * dotProduct w p := by
+    dsimp [l5_v]
+    rw [dotProduct_add_smul_right w e p (1 - r ^ 2 / 8) (-(r / 2) * Real.sqrt (1 - r ^ 2 / 16))]
+    dsimp [a, s₀, γ]
+    ring
+  have hwe : dotProduct w e = - δ ^ 2 / 2 := by
+    dsimp [w]
+    rw [l5_f0 u e hu he]
+    rw [hδsq]
+  have hwp : |dotProduct w p| ≤ δ := by
+    have hcs := dotProduct_abs_le_norm (u - e) p
+    have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+    rw [hpp] at hcs
+    have hsqrt : Real.sqrt (dotProduct (u - e) (u - e)) = δ := by
+      rw [← hδsq]
+      rw [Real.sqrt_sq_eq_abs δ]
+      exact abs_of_nonneg hδpos
+    dsimp [w]
+    rw [hsqrt] at hcs
+    rw [Real.sqrt_one] at hcs
+    simpa using hcs
+  calc
+    |dotProduct w (l5_v e p r)|
+        ≤ a * |dotProduct w e| + s₀ * |dotProduct w p| := by
+          rw [hε]
+          have ha_nonneg : 0 ≤ a := by nlinarith [ha_gt]
+          have hs₀_nonneg : 0 ≤ s₀ := by nlinarith [hs₀_gt, hr]
+          calc
+            |a * dotProduct w e + (-s₀) * dotProduct w p|
+                ≤ |a * dotProduct w e| + |(-s₀) * dotProduct w p| := abs_add_le _ _
+            _ = a * |dotProduct w e| + s₀ * |dotProduct w p| := by
+                  rw [abs_mul, abs_mul, abs_of_nonneg ha_nonneg, abs_neg, abs_of_nonneg hs₀_nonneg]
+    _ ≤ a * (δ ^ 2 / 2) + s₀ * δ := by
+          have hwe_abs : |dotProduct w e| = δ ^ 2 / 2 := by
+            rw [hwe]
+            rw [abs_of_nonpos (by nlinarith [sq_nonneg δ] : -δ ^ 2 / 2 ≤ 0)]
+            ring
+          rw [hwe_abs]
+          nlinarith [hwp]
+    _ = (1 - r ^ 2 / 8) * δ ^ 2 / 2 + (r / 2) * Real.sqrt (1 - r ^ 2 / 16) * δ := by
+          dsimp [a, s₀, γ]
+          ring
+
+/-- **L5 F7 (algebraic part)**: the vector identity
+`c·u − v − s·p = a·(u−e) + ε·u + (s₀−s)·p`. -/
+theorem l5_f7_algebra (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p) (r : ℝ) (u : Fin 3 → ℝ) :
+    (dotProduct u (l5_v e p r)) • u - l5_v e p r - (Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2)) • p
+      = (1 - r ^ 2 / 8) • (u - e) + (dotProduct (u - e) (l5_v e p r)) • u
+        + ((r / 2) * Real.sqrt (1 - r ^ 2 / 16) - Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2)) • p := by
+  let a : ℝ := 1 - r ^ 2 / 8
+  let s₀ : ℝ := (r / 2) * Real.sqrt (1 - r ^ 2 / 16)
+  let ε : ℝ := dotProduct (u - e) (l5_v e p r)
+  let c : ℝ := dotProduct u (l5_v e p r)
+  have hc : c = ε + a := by
+    have hve0 : dotProduct (l5_v e p r) e = 1 - r ^ 2 / 8 := (l5_v_dots e p he hp hep r).1
+    have hve : dotProduct e (l5_v e p r) = a := by
+      rw [dotProduct_symm e (l5_v e p r)]
+      dsimp [a]
+      exact hve0
+    dsimp [c, ε]
+    nlinarith [dotProduct_sub_left u e (l5_v e p r), hve]
+  have hv : l5_v e p r = a • e + (-s₀) • p := by
+    ext i; fin_cases i <;> simp [l5_v, a, s₀, Pi.smul_apply]
+  calc
+    (dotProduct u (l5_v e p r)) • u - l5_v e p r - (Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2)) • p
+        = c • u - (a • e + (-s₀) • p) - (Real.sqrt (1 - c ^ 2)) • p := by
+            dsimp [c]
+            rw [hv]
+    _ = c • u - a • e + s₀ • p - (Real.sqrt (1 - c ^ 2)) • p := by
+            ext i; fin_cases i <;> simp [Pi.smul_apply, sub_eq_add_neg] <;> ring
+    _ = (a + ε) • u - a • e + (s₀ - Real.sqrt (1 - c ^ 2)) • p := by
+            rw [hc]
+            ext i; fin_cases i <;> simp [Pi.smul_apply, sub_eq_add_neg] <;> ring
+    _ = a • (u - e) + ε • u + (s₀ - Real.sqrt (1 - c ^ 2)) • p := by
+            ext i; fin_cases i <;> simp [Pi.smul_apply, sub_eq_add_neg] <;> ring
+    _ = (1 - r ^ 2 / 8) • (u - e) + (dotProduct (u - e) (l5_v e p r)) • u
+          + ((r / 2) * Real.sqrt (1 - r ^ 2 / 16) - Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2)) • p := by
+            dsimp [a, ε, c, s₀]
+
+/-- **L5 F7 (smul part)**: `(1/s)·x − p = (1/s)·(x − s·p)` for `s ≠ 0`. -/
+theorem l5_f7_smul (s : ℝ) (x p : Fin 3 → ℝ) (hs : s ≠ 0) :
+    (1 / s) • x - p = (1 / s) • (x - s • p) := by
+  ext i
+  fin_cases i <;> simp [Pi.smul_apply, sub_eq_add_neg] <;> field_simp [hs] <;> ring
+
+/-- **L5 F7**: `λ(u) − p = (a·w + ε·u + (s₀−s)·p)/s`. -/
+theorem l5_f7 (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p) (r : ℝ) (u : Fin 3 → ℝ)
+    (hs : Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2) ≠ 0) :
+    phi_map u (l5_v e p r) - p
+      = (1 / Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2))
+        • ((1 - r ^ 2 / 8) • (u - e) + (dotProduct (u - e) (l5_v e p r)) • u
+          + ((r / 2) * Real.sqrt (1 - r ^ 2 / 16) - Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2)) • p) := by
+  dsimp [phi_map]
+  rw [l5_f7_smul (Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2)) ((dotProduct u (l5_v e p r)) • u - l5_v e p r) p hs]
+  rw [l5_f7_algebra e p he hp hep r u]
+
 
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
