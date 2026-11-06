@@ -123,3 +123,19 @@ gauge unification (drop 2) survives data, the Yukawa unifications are numericall
 The remaining "empty gap" is the **full Hilbert/Molien series** (degree-by-degree, not just
 the Krull dimension), which needs Molien/Hilbert–Serre — still absent from mathlib, the named
 Lean target.
+
+## Update 2026-11-07 (2) — the syzygy-refined Hilbert series is now EXACT (gap closed)
+
+`scripts/validate_sm_molien_weyl.py` computes the Molien–Weyl series (torus constant-term +
+Weyl averaging, validated against the single-matrix classical result) and finds the exact
+closed form — including the Jarlskog syzygy, which the earlier free-ring approximation missed:
+
+    H_Yukawa(t) = (1 − t²⁴) / ((1−t²)³ (1−t⁴)⁴ (1−t⁶)⁵ (1−t⁸) (1−t¹²))
+
+* The **14 generators** (degrees 2×3, 4×4, 6×5, 8, 12) correct the earlier 13-generator count:
+  the missing ones are `tr(Hᵤ²H_d²)` (degree 8) and the CP-odd **Jarlskog** `J` (degree 12).
+* The **numerator (1 − t²⁴)** is the Jarlskog identity `J² = (CP-even polynomial)` — one
+  syzygy at degree 24, cutting the Krull dimension from 14 to **13** (9 masses + 4 CKM),
+  matching the Lie-algebra rank test.
+* This is the "Molien/Hilbert–Serre" step the Lean plan named as an empty gap — now *computed*
+  (sympy), though not yet *kernel-checked* in Lean.
