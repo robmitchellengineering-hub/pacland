@@ -1319,6 +1319,183 @@ theorem l5_f6 (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : o
     nlinarith [hmid, hscale]
   change |s₀ - s| < (7 / 3) * δ
   exact lt_of_mul_lt_mul_left hprod_lt (le_of_lt hpos)
+/-- `0 ≤ x·x` (sum of squares). -/
+theorem dotProduct_self_nonneg (x : Fin 3 → ℝ) : 0 ≤ dotProduct x x := by
+  have h : dotProduct x x = x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2 := by
+    simp [dotProduct, Fin.sum_univ_three]
+    ring
+  rw [h]
+  nlinarith [sq_nonneg (x 0), sq_nonneg (x 1), sq_nonneg (x 2)]
+
+-- The nlinarith bounds in the L5 F-chain exceed the default heartbeat budget.
+set_option maxHeartbeats 4000000 in
+/-- **L5 (the oscillation-transfer norm estimate, Richman–Bridges Lemma 14).** For the equator
+point `e`, the pole `p`, and `v = a·e + b·p` due south of `e` at distance `r/2`, if `‖u−e‖ < r²/12`
+then `‖λ(u) − p‖ < r` (in fact `< (103/120)r`). This is the single geometric step of the
+continuity proof. -/
+theorem oscillation_transfer_norm (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (r : ℝ) (hr : 0 < r) (hr1 : r < 1) (u : Fin 3 → ℝ) (hu : unitVec3 u)
+    (hδ : dotProduct (u - e) (u - e) < (r ^ 2 / 12) ^ 2) :
+    dotProduct (phi_map u (l5_v e p r) - p) (phi_map u (l5_v e p r) - p) < r ^ 2 := by
+  let w : Fin 3 → ℝ := u - e
+  let δ : ℝ := Real.sqrt (dotProduct w w)
+  have hδsq : δ ^ 2 = dotProduct w w := by
+    dsimp [δ]
+    exact Real.sq_sqrt (by dsimp [w]; exact dotProduct_self_nonneg (u - e))
+  have hδnonneg : 0 ≤ δ := by dsimp [δ]; exact Real.sqrt_nonneg _
+  have hδ_small : δ < r ^ 2 / 12 := by
+    have hlt : δ ^ 2 < (r ^ 2 / 12) ^ 2 := by rw [hδsq]; dsimp [w]; exact hδ
+    have hnonneg : 0 ≤ r ^ 2 / 12 := by nlinarith [sq_nonneg r]
+    simpa [abs_of_nonneg hδnonneg, abs_of_nonneg hnonneg] using (sq_lt_sq.mp hlt)
+  by_cases hδzero : δ = 0
+  · -- u = e, so λ(u) = p
+    have hw0 : dotProduct (u - e) (u - e) = 0 := by
+      have hδsq0 : δ ^ 2 = 0 := by rw [hδzero]; norm_num
+      rw [hδsq] at hδsq0
+      dsimp [w] at hδsq0
+      exact hδsq0
+    have hsub0 : u - e = 0 := by
+      ext i
+      fin_cases i
+      · have hsum : ((u - e) 0) ^ 2 + ((u - e) 1) ^ 2 + ((u - e) 2) ^ 2 = 0 := by
+          simpa [dotProduct, Fin.sum_univ_three, sq] using hw0
+        have hsq : ((u - e) 0) ^ 2 = 0 := by nlinarith [hsum, sq_nonneg ((u - e) 0), sq_nonneg ((u - e) 1), sq_nonneg ((u - e) 2)]
+        exact sq_eq_zero_iff.mp hsq
+      · have hsum : ((u - e) 0) ^ 2 + ((u - e) 1) ^ 2 + ((u - e) 2) ^ 2 = 0 := by
+          simpa [dotProduct, Fin.sum_univ_three, sq] using hw0
+        have hsq : ((u - e) 1) ^ 2 = 0 := by nlinarith [hsum, sq_nonneg ((u - e) 0), sq_nonneg ((u - e) 1), sq_nonneg ((u - e) 2)]
+        exact sq_eq_zero_iff.mp hsq
+      · have hsum : ((u - e) 0) ^ 2 + ((u - e) 1) ^ 2 + ((u - e) 2) ^ 2 = 0 := by
+          simpa [dotProduct, Fin.sum_univ_three, sq] using hw0
+        have hsq : ((u - e) 2) ^ 2 = 0 := by nlinarith [hsum, sq_nonneg ((u - e) 0), sq_nonneg ((u - e) 1), sq_nonneg ((u - e) 2)]
+        exact sq_eq_zero_iff.mp hsq
+    have hue : u = e := sub_eq_zero.mp hsub0
+    have hphi : phi_map u (l5_v e p r) = p := by
+      rw [hue]
+      refine phi_map_eq_pole e p (l5_v e p r) he hp hep (1 - r ^ 2 / 8) (-(r / 2) * Real.sqrt (1 - r ^ 2 / 16)) rfl ?_ (l5_v_unit e p he hp hep r hr hr1)
+      have hsqrt_pos : 0 < Real.sqrt (1 - r ^ 2 / 16) :=
+        Real.sqrt_pos.2 (by nlinarith [sq_nonneg r] : 0 < 1 - r ^ 2 / 16)
+      nlinarith [hr, hsqrt_pos]
+    rw [hphi]
+    simp
+    nlinarith [hr]
+  · -- δ > 0: the F-chain
+    have hδpos : 0 < δ := lt_of_le_of_ne hδnonneg (by intro h; exact hδzero (Eq.symm h))
+    have hF1 := l5_f1 e p he hp hep r hr hr1 u hu δ hδnonneg hδsq
+    have hF2 := l5_f2 e p he hp hep r hr hr1 u hu δ hδnonneg hδ_small hF1
+    have hF3 := l5_f3 r hr hr1 (dotProduct u (l5_v e p r)) hF2
+    have hF4 := l5_f4 e p he hp hep r hr hr1 u hu δ hδpos hδ_small hδsq hF1
+    have hF5 := l5_f5 r hr hr1 (Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2)) hF3
+    have hs : (Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2)) ^ 2 = 1 - (dotProduct u (l5_v e p r)) ^ 2 := by
+      exact Real.sq_sqrt (by
+        have hcs := dotProduct_abs_le_norm u (l5_v e p r)
+        have huu : dotProduct u u = 1 := by simpa [unitVec3] using hu
+        have hvv : dotProduct (l5_v e p r) (l5_v e p r) = 1 := by simpa [unitVec3] using l5_v_unit e p he hp hep r hr hr1
+        rw [huu, hvv] at hcs
+        have h1 : |dotProduct u (l5_v e p r)| ≤ 1 := by simpa [Real.sqrt_one] using hcs
+        have hsq : (dotProduct u (l5_v e p r)) ^ 2 ≤ 1 := by
+          have hsqabs : (dotProduct u (l5_v e p r)) ^ 2 = |dotProduct u (l5_v e p r)| ^ 2 := (sq_abs (dotProduct u (l5_v e p r))).symm
+          rw [hsqabs]
+          nlinarith [h1, abs_nonneg (dotProduct u (l5_v e p r))]
+        nlinarith)
+    have hF6 := l5_f6 e p he hp hep r hr hr1 u hu δ hδpos hδ_small (Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2)) hs hF3 hF1
+    have hs_ne : Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2) ≠ 0 := by
+      have hpos : 0 < Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2) := by linarith [hF3, hr]
+      exact ne_of_gt hpos
+    have hF7 := l5_f7 e p he hp hep r u hs_ne
+    -- combine F4, F6, F3, F7
+    let s : ℝ := Real.sqrt (1 - (dotProduct u (l5_v e p r)) ^ 2)
+    let Y : Fin 3 → ℝ := (1 - r ^ 2 / 8) • (u - e) + (dotProduct (u - e) (l5_v e p r)) • u
+    let c : ℝ := (r / 2) * Real.sqrt (1 - r ^ 2 / 16) - s
+    let X : Fin 3 → ℝ := Y + c • p
+    have hs_pos : 0 < s := by dsimp [s]; linarith [hF3, hr]
+    have hs2_ne : s ^ 2 ≠ 0 := by nlinarith [hs_pos]
+    have hYp_le : |dotProduct Y p| ≤ (11 / 10) * δ := by
+      have hcs := dotProduct_abs_le_norm Y p
+      have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+      rw [hpp] at hcs
+      have hcs' : |dotProduct Y p| ≤ Real.sqrt (dotProduct Y Y) := by simpa using hcs
+      have hY_sqrt_lt : Real.sqrt (dotProduct Y Y) < (11 / 10) * δ := by
+        have hYpos : 0 ≤ dotProduct Y Y := dotProduct_self_nonneg Y
+        have hnonneg : 0 ≤ (11 / 10) * δ := by nlinarith [hδpos]
+        have hsq : (Real.sqrt (dotProduct Y Y)) ^ 2 < ((11 / 10) * δ) ^ 2 := by
+          rw [Real.sq_sqrt hYpos]
+          dsimp [Y]
+          exact hF4
+        have h := sq_lt_sq.mp hsq
+        simpa [abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg hnonneg] using h
+      nlinarith [hcs', hY_sqrt_lt]
+    have hX_sq : dotProduct X X = dotProduct Y Y + 2 * c * dotProduct Y p + c ^ 2 := by
+      dsimp [X]
+      change dotProduct (Y + c • p) (Y + c • p) = dotProduct Y Y + 2 * c * dotProduct Y p + c ^ 2
+      rw [show Y + c • p = (1 : ℝ) • Y + c • p by simp]
+      rw [dotProduct_expand Y p (1 : ℝ) c]
+      have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+      rw [hpp]
+      ring
+    have hX_sq_lt : dotProduct X X < ((103 / 30) * δ) ^ 2 := by
+      have hcyp_le : c * dotProduct Y p ≤ (7 / 3) * δ * ((11 / 10) * δ) := by
+        have h1 : c * dotProduct Y p ≤ |c| * |dotProduct Y p| := by
+          have h : c * dotProduct Y p ≤ |c * dotProduct Y p| := le_abs_self _
+          rwa [abs_mul] at h
+        have h2 : |c| * |dotProduct Y p| ≤ (7 / 3) * δ * ((11 / 10) * δ) := by
+          have hpos : 0 ≤ (7 / 3) * δ := by nlinarith [hδpos]
+          have hA : |c| * |dotProduct Y p| ≤ (7 / 3) * δ * |dotProduct Y p| :=
+            mul_le_mul_of_nonneg_right (le_of_lt (by dsimp [c]; exact hF6)) (abs_nonneg _)
+          have hB : (7 / 3) * δ * |dotProduct Y p| ≤ (7 / 3) * δ * ((11 / 10) * δ) :=
+            mul_le_mul_of_nonneg_left hYp_le hpos
+          exact le_trans hA hB
+        exact le_trans h1 h2
+      have hc_sq_lt : c ^ 2 < ((7 / 3) * δ) ^ 2 := by
+        have hnonneg : 0 ≤ (7 / 3) * δ := by nlinarith [hδpos]
+        have h : |c| < |(7 / 3) * δ| := by
+          dsimp [c]
+          simpa [abs_of_nonneg hnonneg] using hF6
+        exact sq_lt_sq.mpr h
+      rw [hX_sq]
+      nlinarith [hF4, hcyp_le, hc_sq_lt]
+    have hmain_eq : dotProduct (phi_map u (l5_v e p r) - p) (phi_map u (l5_v e p r) - p) = (1 / s) ^ 2 * dotProduct X X := by
+      rw [hF7]
+      dsimp [s]
+      change dotProduct ((1 / s) • X) ((1 / s) • X) = (1 / s) ^ 2 * dotProduct X X
+      simp [dotProduct, Fin.sum_univ_three, Pi.smul_apply]
+      ring
+    have hX_r4 : dotProduct X X < r ^ 4 / 9 := by
+      have hδ_bound : ((103 / 30) * δ) ^ 2 < ((103 / 30) * (r ^ 2 / 12)) ^ 2 := by
+        have hnonneg1 : 0 ≤ (103 / 30) * δ := by nlinarith [hδpos]
+        have hnonneg2 : 0 ≤ (103 / 30) * (r ^ 2 / 12) := by nlinarith [hr]
+        have hlt : (103 / 30) * δ < (103 / 30) * (r ^ 2 / 12) :=
+          mul_lt_mul_of_pos_left hδ_small (by norm_num : 0 < (103 / 30 : ℝ))
+        exact sq_lt_sq.mpr (by simpa [abs_of_nonneg hnonneg1, abs_of_nonneg hnonneg2] using hlt)
+      have hconst : ((103 / 30) * (r ^ 2 / 12)) ^ 2 < r ^ 4 / 9 := by
+        ring_nf
+        nlinarith [sq_nonneg r]
+      nlinarith [hX_sq_lt, hδ_bound, hconst]
+    have hs2_gt : r ^ 2 * s ^ 2 > r ^ 4 / 9 := by
+      have hs2 : s ^ 2 > (r / 3) ^ 2 := by
+        have hnonneg : 0 ≤ r / 3 := by linarith [hr]
+        exact sq_lt_sq.mpr (by simpa [abs_of_nonneg hnonneg, abs_of_nonneg (le_of_lt hs_pos)] using (by dsimp [s]; exact hF3))
+      have hr2_pos : 0 < r ^ 2 := sq_pos_of_pos hr
+      have h : r ^ 2 * s ^ 2 > r ^ 2 * (r / 3) ^ 2 := mul_lt_mul_of_pos_left hs2 hr2_pos
+      have h' : r ^ 2 * (r / 3) ^ 2 = r ^ 4 / 9 := by ring
+      nlinarith [h, h']
+    have hX_r2s2 : dotProduct X X < r ^ 2 * s ^ 2 := by nlinarith [hX_r4, hs2_gt]
+    have hfin : (1 / s) ^ 2 * dotProduct X X < r ^ 2 := by
+      have hs2_pos : 0 < s ^ 2 := sq_pos_of_pos hs_pos
+      have hpos : 0 < (1 / s) ^ 2 := sq_pos_of_pos (one_div_pos.mpr hs_pos)
+      have h := mul_lt_mul_of_pos_left hX_r2s2 hpos
+      have h1 : (1 / s) ^ 2 * (r ^ 2 * s ^ 2) = r ^ 2 := by
+        have hcomm : (1 / s) ^ 2 * (r ^ 2 * s ^ 2) = ((1 / s) ^ 2 * s ^ 2) * r ^ 2 := by ring
+        have hunit : (1 / s) ^ 2 * s ^ 2 = 1 := by
+          rw [← mul_pow]
+          rw [one_div, inv_mul_cancel₀ hs_ne]
+          norm_num
+        rw [hcomm, hunit]
+        ring
+      nlinarith [h, h1]
+    rw [hmain_eq]
+    exact hfin
+
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
   f x + f (rot90p p x)
