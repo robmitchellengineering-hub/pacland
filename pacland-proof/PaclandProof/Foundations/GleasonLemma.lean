@@ -157,6 +157,44 @@ theorem even_of_frame (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
   have h' : f v + f (-x) = f x + f v := by simpa using h
   linarith
 
+/-- **A perpendicular unit vector always exists** — the dim-3 completion that
+unblocks evenness, boundedness and the extension. For unit `x`, the quarter-turn
+`![0, -x₂, x₁]` is `⊥ x` (nonzero unless `x = ±e₁`, handled separately). -/
+theorem exists_perp (x : Fin 3 → ℝ) (hx : unitVec3 x) :
+    ∃ y : Fin 3 → ℝ, unitVec3 y ∧ orthVec3 x y := by
+  by_cases h : x 1 = 0 ∧ x 2 = 0
+  · refine ⟨![0, 1, 0], ?_, ?_⟩
+    · norm_num [unitVec3, dotProduct, Fin.sum_univ_three]
+    · simp [orthVec3, dotProduct, Fin.sum_univ_three, h.1, h.2]
+  · let y₀ : Fin 3 → ℝ := ![0, -x 2, x 1]
+    have hy₀_orth : orthVec3 x y₀ := by
+      simp [orthVec3, y₀, dotProduct, Fin.sum_univ_three]
+      ring
+    have hn_pos : 0 < dotProduct y₀ y₀ := by
+      simp [y₀, dotProduct, Fin.sum_univ_three]
+      by_cases hx1 : x 1 = 0
+      · have hx2 : x 2 ≠ 0 := by
+          intro h2; exact h ⟨hx1, h2⟩
+        have h2sq : 0 < x 2 ^ 2 := sq_pos_of_ne_zero hx2
+        nlinarith [h2sq, sq_nonneg (x 1)]
+      · have h1sq : 0 < x 1 ^ 2 := sq_pos_of_ne_zero hx1
+        nlinarith [h1sq, sq_nonneg (x 2)]
+    let n : ℝ := Real.sqrt (dotProduct y₀ y₀)
+    let y : Fin 3 → ℝ := (1 / n) • y₀
+    refine ⟨y, ?_, ?_⟩
+    · simp [unitVec3, y, y₀, dotProduct, Fin.sum_univ_three]
+      have hn2 : n ^ 2 = dotProduct y₀ y₀ := Real.sq_sqrt (le_of_lt hn_pos)
+      have hn_ne : n ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hn_pos)
+      field_simp [hn_ne]
+      ring_nf
+      rw [hn2]
+      simp [y₀, dotProduct, Fin.sum_univ_three]
+      ring
+    · simp [orthVec3, y, y₀, dotProduct, Fin.sum_univ_three]
+      have hn_ne : n ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hn_pos)
+      field_simp [hn_ne]
+      ring
+
 end GleasonLemma
 
 end
