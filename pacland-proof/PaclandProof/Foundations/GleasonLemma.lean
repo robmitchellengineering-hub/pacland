@@ -391,6 +391,11 @@ theorem cross_triple (a b c : Fin 3 → ℝ) :
   ext i
   fin_cases i <;> simp [cross, dotProduct, Fin.sum_univ_three] <;> ring
 
+/-- `a × a = 0`. -/
+theorem cross_self (a : Fin 3 → ℝ) : cross a a = 0 := by
+  ext i
+  fin_cases i <;> simp [cross, Fin.sum_univ_three] <;> ring
+
 /-- **`ρ` preserves the projection onto `p`**: `(ρx)·p = x·p` (for unit `p`). -/
 theorem rot90p_preserves_proj (p x : Fin 3 → ℝ) (hp : unitVec3 p) :
     dotProduct (rot90p p x) p = dotProduct x p := by
