@@ -408,6 +408,37 @@ theorem rot90p_preserves_proj (p x : Fin 3 → ℝ) (hp : unitVec3 p) :
   rw [h1, hpp, hcp]
   ring
 
+/-- `ρ` rotates the plane `p⊥`: for `q ⊥ p` and `r = p×q`, `(ρt)·q = −t·r` and
+`(ρt)·r = t·q` — the 90° rotation sends `(t·q, t·r) ↦ (−t·r, t·q)`. -/
+theorem rot90p_rotates_plane (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 q) (hpq : orthVec3 p q)
+    (t : Fin 3 → ℝ) :
+    dotProduct (rot90p p t) q = - dotProduct t (cross p q) ∧
+    dotProduct (rot90p p t) (cross p q) = dotProduct t q := by
+  constructor
+  · dsimp [rot90p]
+    have h1 : dotProduct ((dotProduct t p) • p + cross p t) q
+        = (dotProduct t p) * dotProduct p q + dotProduct (cross p t) q := by
+      simpa only [one_smul, one_mul] using (dotProduct_add_smul p (cross p t) q (dotProduct t p) 1)
+    have hpq0 : dotProduct p q = 0 := by simpa [orthVec3] using hpq
+    have hptq : dotProduct (cross p t) q = - dotProduct t (cross p q) := by
+      simp [cross, dotProduct, Fin.sum_univ_three]
+      ring
+    rw [h1, hpq0, hptq]
+    ring
+  · dsimp [rot90p]
+    have h1 : dotProduct ((dotProduct t p) • p + cross p t) (cross p q)
+        = (dotProduct t p) * dotProduct p (cross p q) + dotProduct (cross p t) (cross p q) := by
+      simpa only [one_smul, one_mul] using (dotProduct_add_smul p (cross p t) (cross p q) (dotProduct t p) 1)
+    have hpr0 : dotProduct p (cross p q) = 0 := by simpa [orthVec3] using cross_orth_left p q
+    have hptpq : dotProduct (cross p t) (cross p q) = dotProduct t q := by
+      rw [cross_dot_cross p t p q]
+      have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+      have hpq0 : dotProduct p q = 0 := by simpa [orthVec3] using hpq
+      rw [hpp, hpq0]
+      ring
+    rw [h1, hpr0, hptpq]
+    ring
+
 /-- `ρ` is linear: `ρ(x − y) = ρx − ρy`. -/
 theorem rot90p_sub (p x y : Fin 3 → ℝ) :
     rot90p p (x - y) = rot90p p x - rot90p p y := by
