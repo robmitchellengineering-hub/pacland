@@ -214,36 +214,34 @@ a restatement of the default.
 
 ```
 $ PYTHONPATH=src python3 -m pacland.energy.triage
-62 NOT-RESEARCHED cells, ordered by the structural triage (score = discrimination x decidability / cost).
+51 NOT-RESEARCHED cells, ordered by the structural triage (score = discrimination x decidability / cost).
 
 | # | candidate | constraint | name | score | hours |
 |---|---|---|---|---|---|
-| 1 | `cdt` | C5 | bekenstein-hawking-coefficient | 4.000 | 1.4 |
-| 2 | `causal-sets` | C5 | bekenstein-hawking-coefficient | 4.000 | 1.4 |
-| 3 | `gft` | C5 | bekenstein-hawking-coefficient | 4.000 | 1.4 |
-| 4 | `asymptotic-safety` | C5 | bekenstein-hawking-coefficient | 3.500 | 1.6 |
-| 5 | `strings-adscft` | C5 | bekenstein-hawking-coefficient | 2.800 | 2.0 |
-| 6 | `lqg-spinfoam` | C5 | bekenstein-hawking-coefficient | 2.800 | 2.0 |
+| 1 | `causal-sets` | C4 | graviton-degrees-of-freedom | 1.786 | 1.4 |
+| 2 | `cdt` | C4 | graviton-degrees-of-freedom | 1.786 | 1.4 |
+| 3 | `gft` | C4 | graviton-degrees-of-freedom | 1.786 | 1.4 |
+| 4 | `asymptotic-safety` | C4 | graviton-degrees-of-freedom | 1.562 | 1.6 |
+| 5 | `lqg-spinfoam` | C4 | graviton-degrees-of-freedom | 1.250 | 2.0 |
+| 6 | `strings-adscft` | C4 | graviton-degrees-of-freedom | 1.250 | 2.0 |
 | … | | | | | |
 ```
 
 **The head of the list is the next cell to research.** It is a structural triage, not a Bayesian
 posterior, and the reason is computed rather than asserted: the C/P detector classifies the cell
 space as `UNDERDETERMINED` (no honest per-cell likelihood exists before anyone has looked), so a full
-expected-information-gain ranking is refused — fabricating 62 likelihoods would be exactly the GIGO
+expected-information-gain ranking is refused — fabricating 51 likelihoods would be exactly the GIGO
 the belief layer exists to prevent. Three documented inputs order the cells instead:
 **discrimination** (how much a verdict on this condition moves "which framework is alive/dead", sourced
-to the lattice's own notes), **decidability** (a triage weight anchored by the base rate — 11 cells
+to the lattice's own notes), **decidability** (a triage weight anchored by the base rate — 22 cells
 researched, 0 definitive), and **cost** (research hours, with a per-framework literature-size
-multiplier). On the one honestly-scoreable slice — C3 (unitarity/ghost, with its Stelle control) and
-C5 (entropy coefficient 1) — EIG runs and, under the uniform base-rate prior, collapses to "cheapest
-first", which is the cross-check that the triage is the informative order for the rest.
+multiplier). The two honestly-scoreable constraints (C3 and C5) are now both fully researched, so the
+Mode-C EIG slice is empty.
 
-The result of the first pass: **C5 was researched first** (the cleanest binary with known answers), and
-the row is now scored — see below — so the head has moved to **C3** (unitarity/ghost, the constraint
-whose positive control, Stelle, can actually kill). Cells whose measured bound is unread (`C1`,
-Cassini) are flagged `bound unread` and cannot be scored until `PENDING_BOUNDS` is closed. The ordering
-moves as cells are researched, exactly like the reason-class counts above.
+The result of the first two passes: **C5 then C3 were researched** (see below), and the head has moved
+to **C4** (graviton degrees of freedom). Cells whose measured bound is unread (`C1`, Cassini) are
+flagged `bound unread` and cannot be scored until `PENDING_BOUNDS` is closed. The ordering moves as
+cells are researched, exactly like the reason-class counts above.
 
 ### Move 1's first pass — the C5 row, scored
 
@@ -262,6 +260,25 @@ The finding is the SEXTANT diagnosis again, on the cleanest constraint: **even t
 clean binary oracle and known answers is demonstrated in full by exactly one framework, and only for a
 special class — five of six are contested or unestablished.** The triage did its job: it sent us to the
 most decisive cell, and the answer is "even here the field is partial."
+
+### Move 1's second pass — the C3 row, scored
+
+Five more probes, one per unresearched framework (asymptotic-safety/C3 was already `CONTESTED`):
+
+| framework | class | the result |
+|---|---|---|
+| `strings-adscft` | `COMPUTED-ELSEWHERE` | the no-ghost theorem + tree-level S-matrix unitarity — perturbative, non-perturbative unproven |
+| `cdt` | `CONTESTED` | transfer matrix self-adjoint/reflection-positive on the lattice, but no continuum unitary spectrum |
+| `lqg-spinfoam` | `NOT-ESTABLISHED` | positive kinematical inner product, but a unitary physical spectrum is an open problem |
+| `gft` | `NOT-ESTABLISHED` | unitarity neither proven nor mandatory in a third-quantised setting |
+| `causal-sets` | `NO-PREDICTION` | no dynamics/spectrum, so no ghost or unitarity statement can arise |
+
+**C3 was the kill-capable constraint** — the one with a positive control (Stelle gravity has a ghost, so
+the condition provably *can* kill) — and it killed nothing. No framework has a demonstrated propagating
+ghost; one has a published unitarity result (perturbative only) and the rest have the question open,
+contested, or absent. That is the pivot: the two most decisive rows (C5, C3) both come back with no kill,
+so "the field cannot discriminate" is now as strong as the evidence can make it, and the programme's
+remaining positive engine is SX-3 (the double-copy oracle), not more cell-grinding.
 
 ## 5. The target equation — named, not gestured at
 

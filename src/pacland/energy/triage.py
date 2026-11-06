@@ -146,6 +146,8 @@ def mode_c_slice() -> list[tuple[str, float]]:
                cost=COST[k] * LITERATURE[c], ground_truth_available=True)
         for c, k in unresearched() if k in ("C3", "C5")
     ]
+    if not beliefs:
+        return []  # the two honestly-scoreable rows are now fully researched
     return rank_by_eig(beliefs)
 
 
@@ -169,8 +171,12 @@ def render() -> str:
         "",
         "EIG on the honest Mode-C slice (C3, C5), uniform base-rate prior:",
     ]
-    for name, eig_per_cost in mode_c_slice():
-        lines.append(f"  {name:24s} EIG/cost = {eig_per_cost:.4f}")
+    slice_results = mode_c_slice()
+    if slice_results:
+        for name, eig_per_cost in slice_results:
+            lines.append(f"  {name:24s} EIG/cost = {eig_per_cost:.4f}")
+    else:
+        lines.append("  (the Mode-C slice is empty — C3 and C5 are now fully researched)")
     lines += [
         "",
         "The head of the list is the next cell to research. Cells flagged 'bound unread' are blocked:",

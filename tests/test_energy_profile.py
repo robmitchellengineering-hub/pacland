@@ -55,7 +55,7 @@ class TestTheClaimCannotBeSatisfiedByThisRepoMarkingItsOwnHomework(unittest.Test
     def test_a_framework_with_only_unresearched_gaps_is_not_blocked(self):
         """If a framework's only non-scores were NOT-RESEARCHED, the profile must not claim it is blocked."""
         row = next(r for r in P.profile() if r.candidate_id == "strings-adscft")
-        self.assertEqual(len(row.unresearched), 10)
+        self.assertEqual(len(row.unresearched), 9)
         self.assertTrue(row.is_blocked, "strings is blocked - but by C6, a real finding, not by the gaps")
 
     def test_the_blocked_cells_match_the_evidence_record(self):
@@ -67,26 +67,21 @@ class TestTheClaimCannotBeSatisfiedByThisRepoMarkingItsOwnHomework(unittest.Test
 
 
 class TestTheMutation(unittest.TestCase):
-    def test_without_the_c6_and_c5_entries_two_frameworks_would_be_unblocked(self):
+    def test_without_the_c6_entry_strings_would_be_unblocked(self):
         """The claim depends on real entries, not on the default.
 
-        Drop the C6 *and* C5 notes for `cdt` and `gft` and those two rows become unblocked — so the
-        claim would be false. That is what makes the assertion above meaningful. (Move 1's first pass
-        scored C5 and added a second blocker to each, so the mutation must drop both.)
+        Drop the C6 note for `strings-adscft` — its only blocker — and that row becomes unblocked, so
+        the claim would be false. That is what makes the assertion meaningful.
         """
         from pacland.energy import evidence as E
 
-        reinstated = {}
-        for cand in ("cdt", "gft"):
-            for con in ("C6", "C5"):
-                key = (cand, con)
-                reinstated[key] = E.EVIDENCE.pop(key)
+        reinstated = E.EVIDENCE.pop(("strings-adscft", "C6"))
         try:
             self.assertFalse(P.every_framework_is_blocked())
             unblocked = [r.candidate_id for r in P.profile() if not r.is_blocked]
-            self.assertEqual(sorted(unblocked), ["cdt", "gft"])
+            self.assertEqual(unblocked, ["strings-adscft"])
         finally:
-            E.EVIDENCE.update(reinstated)
+            E.EVIDENCE[("strings-adscft", "C6")] = reinstated
         self.assertTrue(P.every_framework_is_blocked(), "restored")
 
 

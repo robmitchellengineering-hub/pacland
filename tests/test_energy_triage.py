@@ -36,14 +36,14 @@ class TestTheTaskList(unittest.TestCase):
         # 78 cells minus the 5 string-only C11 cells asked of no non-string candidate.
         self.assertEqual(len(researchable()), 73)
 
-    def test_fifty_six_researchable_cells_are_unresearched(self):
-        # 73 researchable minus the 17 carrying a citation (1 computed-here + 1 computed-elsewhere
-        # + 11 contested + 3 no-prediction + 1 not-established).
-        self.assertEqual(len(unresearched()), 56)
+    def test_fifty_one_researchable_cells_are_unresearched(self):
+        # 73 researchable minus the 22 carrying a citation (1 computed-here + 2 computed-elsewhere
+        # + 12 contested + 4 no-prediction + 3 not-established).
+        self.assertEqual(len(unresearched()), 51)
 
     def test_the_triage_covers_every_unresearched_cell_exactly_once(self):
         rows = triage()
-        self.assertEqual(len(rows), 56)
+        self.assertEqual(len(rows), 51)
         self.assertEqual({(r.candidate, r.constraint) for r in rows},
                          set(unresearched()))
 
@@ -57,15 +57,11 @@ class TestTheHonestyContract(unittest.TestCase):
         is the guard that keeps the triage from pretending to be a posterior."""
         self.assertEqual(mode_verdict(), Mode.UNDERDETERMINED)
 
-    def test_the_mode_c_slice_is_convergent_and_complete(self):
-        """C3 and C5 have a clean binary oracle and a known answer: the one slice where a
-        likelihood is honestly stateable. ``rank_by_eig`` raises outside Mode C, so returning
-        12 results is itself the proof the slice is convergent."""
-        names = [n for n, _ in mode_c_slice()]
-        # C5 is now fully researched (Move 1's first pass), so only the 5 unresearched C3 cells
-        # remain in the slice (asymptotic-safety/C3 is already CONTESTED).
-        self.assertEqual(len(names), 5)
-        self.assertTrue(all(n.endswith("C3") for n in names))
+    def test_the_mode_c_slice_is_now_empty(self):
+        """C3 and C5 — the only constraints with a clean binary oracle and known answer — are both
+        fully researched now, so the honestly-scoreable slice is empty and must return [] rather
+        than raise."""
+        self.assertEqual(mode_c_slice(), [])
 
     def test_the_rubric_covers_every_constraint(self):
         ids = {c.id for c in CONSTRAINTS}
@@ -91,11 +87,11 @@ class TestTheHonestyContract(unittest.TestCase):
 
 class TestTheHeadOfTheList(unittest.TestCase):
     def test_the_head_is_the_cheapest_decisive_row_today(self):
-        """Current truth: C5 was researched first (Move 1's first pass), so the head has moved to C3
-        (unitarity/ghost — the constraint whose positive control, Stelle, can actually kill). The
-        triage is meant to move exactly like this; update the pin each time the head is researched."""
+        """Current truth: C5 then C3 were researched (Move 1's first two passes), so the head has
+        moved to C4 (graviton degrees of freedom). The triage is meant to move exactly like this;
+        update the pin each time the head is researched."""
         head = {(r.candidate, r.constraint) for r in triage()[:3]}
-        self.assertEqual(head, {(c, "C3") for c in ("causal-sets", "cdt", "gft")})
+        self.assertEqual(head, {(c, "C4") for c in ("causal-sets", "cdt", "gft")})
 
     def test_the_head_is_the_self_consistent_argmax(self):
         """The ordering is by score, so the first row must be the maximum score. A regression in

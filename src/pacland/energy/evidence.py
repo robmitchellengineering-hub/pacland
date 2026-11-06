@@ -185,6 +185,41 @@ EVIDENCE: dict[tuple[str, str], Note] = {
         "normalisation, not an independent derivation of coefficient 1",
         "arXiv:1510.06991",
     ),
+    ("strings-adscft", "C3"): Note(
+        COMPUTED_ELSEWHERE,
+        "the no-ghost theorem (Brower, Goddard-Thorn) proves the covariant spectrum has no propagating "
+        "negative-norm ghost in the critical dimension, and arXiv:2201.11575 proves tree-level S-matrix "
+        "unitarity - a perturbative result, with non-perturbative unitarity unproven",
+        "arXiv:2201.11575, Phys.Rev.D 6 (1972) 1655, Phys.Lett.B 40 (1972) 235",
+    ),
+    ("lqg-spinfoam", "C3"): Note(
+        NOT_ESTABLISHED,
+        "background-independent with a positive-definite kinematical inner product (no perturbative "
+        "ghost), but a ghost-free unitary physical spectrum is not demonstrated - the graviton two-point "
+        "function reaches the classical limit only at leading semiclassical order, and a unitary "
+        "S-matrix / physical inner product is an explicit open problem",
+        "arXiv:2310.20147, arXiv:gr-qc/0604044, arXiv:1103.1428",
+    ),
+    ("cdt", "C3"): Note(
+        CONTESTED,
+        "the transfer matrix is self-adjoint and bounded with reflection positivity at finite lattice "
+        "volume (a unitary Hamiltonian, no ghost in the regularised theory), but a ghost-free unitary "
+        "continuum spectrum / Lorentzian S-matrix is not demonstrated",
+        "arXiv:hep-th/0002050, arXiv:1302.2210, arXiv:0906.3947, arXiv:1905.08669",
+    ),
+    ("causal-sets", "C3"): Note(
+        NO_PREDICTION,
+        "a kinematic framework with no full quantum dynamics, graviton spectrum or S-matrix, so there "
+        "is no physical spectrum in which a propagating ghost (or a unitarity statement) could arise",
+        "arXiv:1103.6272, arXiv:2504.12919",
+    ),
+    ("gft", "C3"): Note(
+        NOT_ESTABLISHED,
+        "no primary source demonstrates a ghost-free unitary physical spectrum - the Lorentzian "
+        "EPRL/FK vertex is studied only for finiteness and divergences, and GFT's literature treats "
+        "conventional S-matrix unitarity as neither proven nor mandatory in a third-quantised setting",
+        "arXiv:gr-qc/0607032, arXiv:hep-th/0505016, arXiv:1102.2226, arXiv:1407.3027",
+    ),
 }
 
 
