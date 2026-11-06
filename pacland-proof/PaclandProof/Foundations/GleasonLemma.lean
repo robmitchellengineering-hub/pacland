@@ -439,6 +439,23 @@ theorem rot90p_rotates_plane (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitV
     rw [h1, hpr0, hptpq]
     ring
 
+/-- `ρ²` fixes `p` and negates the plane `p⊥`: `(ρ²t)·p = t·p`, `(ρ²t)·q = −t·q`,
+`(ρ²t)·(p×q) = −t·(p×q)`. -/
+theorem rot90p_sq_proj (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 q) (hpq : orthVec3 p q)
+    (t : Fin 3 → ℝ) :
+    dotProduct (rot90p p (rot90p p t)) p = dotProduct t p ∧
+    dotProduct (rot90p p (rot90p p t)) q = - dotProduct t q ∧
+    dotProduct (rot90p p (rot90p p t)) (cross p q) = - dotProduct t (cross p q) := by
+  constructor
+  · rw [rot90p_preserves_proj p (rot90p p t) hp, rot90p_preserves_proj p t hp]
+  constructor
+  · have h1 := (rot90p_rotates_plane p q hp hq hpq (rot90p p t)).1
+    have h2 := (rot90p_rotates_plane p q hp hq hpq t).2
+    rw [h1, h2]
+  · have h1 := (rot90p_rotates_plane p q hp hq hpq (rot90p p t)).2
+    have h2 := (rot90p_rotates_plane p q hp hq hpq t).1
+    rw [h1, h2]
+
 /-- **The quadratic's symmetrization matches `g`'s latitude dependence.** For
 `Q(x) = f p·(x·p)² + f q·(x·q)² + f r·(x·r)²` (`r = p×q`), Parseval and the frame sum give
 `Q t + Q(ρt) = (3·f p − 1)·(t·p)² + (1 − f p)` — the exact relation the recover-`f` step
