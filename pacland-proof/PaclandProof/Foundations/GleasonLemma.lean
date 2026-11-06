@@ -649,6 +649,48 @@ theorem phi_map_unit (u v : Fin 3 → ℝ) (hu : unitVec3 u) (hv : unitVec3 v)
               exact hne this
             field_simp [hne']
 
+/-- **L5 scalar setup.** For `0 < r < 1`, with `γ := √(1−r²/16)`, `a := 1−r²/8`,
+`s₀ := (r/2)γ`: `1/2 < γ < 1`, `7/8 < a < 1`, `r/4 < s₀ < r/2`, and `a² + s₀² = 1`. -/
+theorem l5_scalars (r : ℝ) (hr : 0 < r) (hr1 : r < 1) :
+    let γ := Real.sqrt (1 - r ^ 2 / 16)
+    let a := 1 - r ^ 2 / 8
+    let s₀ := (r / 2) * γ
+    (1 / 2 < γ ∧ γ < 1) ∧ (7 / 8 < a ∧ a < 1) ∧ (r / 4 < s₀ ∧ s₀ < r / 2) ∧ (a ^ 2 + s₀ ^ 2 = 1) := by
+  intro γ a s₀
+  have hr2 : r ^ 2 < 1 := by nlinarith [hr, hr1]
+  have hγsq : γ ^ 2 = 1 - r ^ 2 / 16 := by
+    dsimp [γ]
+    exact Real.sq_sqrt (by nlinarith [sq_nonneg r] : 0 ≤ 1 - r ^ 2 / 16)
+  have hγ_nonneg : 0 ≤ γ := by dsimp [γ]; exact Real.sqrt_nonneg _
+  have hγ_gt : 1 / 2 < γ := by
+    have hγsq_gt : γ ^ 2 > (1 / 2 : ℝ) ^ 2 := by
+      rw [hγsq]
+      nlinarith [hr2]
+    nlinarith [hγsq_gt, hγ_nonneg, sq_nonneg (1 / 2 : ℝ)]
+  have hγ_lt : γ < 1 := by
+    have hγsq_lt : γ ^ 2 < 1 := by rw [hγsq]; nlinarith [sq_nonneg r]
+    nlinarith [hγsq_lt, hγ_nonneg]
+  have ha_gt : 7 / 8 < a := by
+    dsimp [a]
+    nlinarith [hr2]
+  have ha_lt : a < 1 := by
+    dsimp [a]
+    nlinarith [sq_nonneg r]
+  have hs₀_gt : r / 4 < s₀ := by
+    dsimp [s₀]
+    nlinarith [hγ_gt, hr]
+  have hs₀_lt : s₀ < r / 2 := by
+    dsimp [s₀]
+    nlinarith [hγ_lt, hr]
+  have hs₀sq : s₀ ^ 2 = r ^ 2 / 4 * γ ^ 2 := by
+    dsimp [s₀]
+    ring
+  have hsum : a ^ 2 + s₀ ^ 2 = 1 := by
+    dsimp [a]
+    rw [hs₀sq, hγsq]
+    ring
+  exact ⟨⟨hγ_gt, hγ_lt⟩, ⟨ha_gt, ha_lt⟩, ⟨hs₀_gt, hs₀_lt⟩, hsum⟩
+
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
   f x + f (rot90p p x)
