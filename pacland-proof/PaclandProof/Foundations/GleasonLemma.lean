@@ -391,17 +391,23 @@ theorem cross_triple (a b c : Fin 3 → ℝ) :
   ext i
   fin_cases i <;> simp [cross, dotProduct, Fin.sum_univ_three] <;> ring
 
+/-- **`ρ` preserves the projection onto `p`**: `(ρx)·p = x·p` (for unit `p`). -/
+theorem rot90p_preserves_proj (p x : Fin 3 → ℝ) (hp : unitVec3 p) :
+    dotProduct (rot90p p x) p = dotProduct x p := by
+  dsimp [rot90p]
+  have h1 : dotProduct ((dotProduct x p) • p + cross p x) p
+      = (dotProduct x p) * dotProduct p p + dotProduct (cross p x) p := by
+    simpa only [one_smul, one_mul] using (dotProduct_add_smul p (cross p x) p (dotProduct x p) 1)
+  have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+  have hcp : dotProduct (cross p x) p = 0 := by rw [dotProduct_symm]; simpa [orthVec3] using cross_orth_left p x
+  rw [h1, hpp, hcp]
+  ring
+
 /-- **`ρ²` is the 180°-rotation about `p`**: `ρ(ρ x) = 2(x·p)·p − x`. -/
 theorem rot90p_sq (p x : Fin 3 → ℝ) (hp : unitVec3 p) :
     rot90p p (rot90p p x) = 2 * dotProduct x p • p - x := by
   have hdot : dotProduct ((dotProduct x p) • p + cross p x) p = dotProduct x p := by
-    have h1 : dotProduct ((dotProduct x p) • p + cross p x) p
-        = (dotProduct x p) * dotProduct p p + dotProduct (cross p x) p := by
-      simpa only [one_smul, one_mul] using (dotProduct_add_smul p (cross p x) p (dotProduct x p) 1)
-    have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
-    have hcp : dotProduct (cross p x) p = 0 := by rw [dotProduct_symm]; simpa [orthVec3] using cross_orth_left p x
-    rw [h1, hpp, hcp]
-    ring
+    exact rot90p_preserves_proj p x hp
   have hcross : cross p ((dotProduct x p) • p + cross p x) = dotProduct x p • p - x := by
     have hb : cross p ((dotProduct x p) • p + cross p x)
         = (dotProduct x p) • cross p p + cross p (cross p x) := by
@@ -440,6 +446,13 @@ theorem rot90p_orthogonal (p x y : Fin 3 → ℝ) (hp : unitVec3 p) :
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
   f x + f (rot90p p x)
+
+/-- **The symmetrization difference** `g x − g(ρx) = f x − f(ρ²x)` — the relation
+the recover-`f` step uses (a 180° rotation as `ρ²`). -/
+theorem symm_sub_rot90 (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) :
+    symm p f x - symm p f (rot90p p x) = f x - f (rot90p p (rot90p p x)) := by
+  dsimp [symm]
+  ring
 
 /-- **The symmetrization is a weight-2 frame function**: `Σ g(eᵢ) = 2` over every
 orthonormal basis (since `ρ` is orthogonal, `{ρeᵢ}` is again a frame). -/
