@@ -604,6 +604,19 @@ theorem symm_nonneg (p x : Fin 3 → ℝ) (hp : unitVec3 p) (hx : unitVec3 x)
   have hρx : unitVec3 (rot90p p x) := by simpa [unitVec3, rot90p_orthogonal p x x hp] using hx
   nlinarith [hpos x hx, hpos (rot90p p x) hρx]
 
+/-- The symmetrization is bounded: `0 ≤ g x ≤ 2` (for a nonnegative frame function). -/
+theorem symm_bounded (p x : Fin 3 → ℝ) (hp : unitVec3 p) (hx : unitVec3 x)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (hpos : ∀ y, unitVec3 y → 0 ≤ f y) :
+    0 ≤ symm p f x ∧ symm p f x ≤ 2 := by
+  constructor
+  · exact symm_nonneg p x hp hx f hpos
+  · have hρx : unitVec3 (rot90p p x) := by simpa [unitVec3, rot90p_orthogonal p x x hp] using hx
+    have hfx : f x ≤ 1 := frameFunction3_bounded f hf hpos x hx
+    have hfρx : f (rot90p p x) ≤ 1 := frameFunction3_bounded f hf hpos (rot90p p x) hρx
+    dsimp [symm]
+    linarith
+
 /-- The symmetrization's value on the equator (`e ⊥ p`) is `1 − f p`. -/
 theorem symm_eq_equator (p : Fin 3 → ℝ) (hp : unitVec3 p)
     (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
