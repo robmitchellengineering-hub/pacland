@@ -556,6 +556,11 @@ theorem rot90p_isometry (p x y : Fin 3 → ℝ) (hp : unitVec3 p) :
   rw [← rot90p_sub p x y]
   exact rot90p_orthogonal p (x - y) (x - y) hp
 
+/-- `ρ` preserves unit vectors: `ρx` is unit when `x` is. -/
+theorem rot90p_unit (p x : Fin 3 → ℝ) (hp : unitVec3 p) (hx : unitVec3 x) :
+    unitVec3 (rot90p p x) := by
+  simpa [unitVec3, rot90p_orthogonal p x x hp] using hx
+
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
   f x + f (rot90p p x)
