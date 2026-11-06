@@ -2323,4 +2323,48 @@ theorem cross_sub_norm_le (u w e z : Fin 3 → ℝ) :
       rwa [abs_of_nonneg hnonneg, abs_of_nonneg hb])
   exact le_trans htri hsumbound
 
+/-- **L6 (the contraction)** — the φ-map's second leg: for `u` near `e` (`‖u−e‖ < r²/12`),
+`u×λu` is within `r²/12 + r` of `e×p` (combining L5 `‖λu − p‖ < r` with the cross-product
+bound). This is the geometric contraction the continuity iteration runs on. -/
+theorem l6_contraction (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (r : ℝ) (hr : 0 < r) (hr1 : r < 1)
+    (u : Fin 3 → ℝ) (hu : unitVec3 u) (hne : dotProduct u (l5_v e p r) ^ 2 ≠ 1)
+    (hδ : dotProduct (u - e) (u - e) < (r ^ 2 / 12) ^ 2) :
+    dotProduct (cross u (phi_map u (l5_v e p r)) - cross e p) (cross u (phi_map u (l5_v e p r)) - cross e p) < (r ^ 2 / 12 + r) ^ 2 := by
+  have hphi := oscillation_transfer_norm e p he hp hep r hr hr1 u hu hδ
+  have hphi_unit : unitVec3 (phi_map u (l5_v e p r)) :=
+    phi_map_unit u (l5_v e p r) hu (l5_v_unit e p he hp hep r hr hr1) hne
+  have hcross := cross_sub_norm_le u (phi_map u (l5_v e p r)) e p
+  have hδ' : Real.sqrt (dotProduct (u - e) (u - e)) < r ^ 2 / 12 := by
+    have hlt := sq_lt_sq.mp (show (Real.sqrt (dotProduct (u - e) (u - e))) ^ 2 < (r ^ 2 / 12) ^ 2 by
+      rw [Real.sq_sqrt (dotProduct_self_nonneg (u - e))]
+      exact hδ)
+    have h1 : |Real.sqrt (dotProduct (u - e) (u - e))| = Real.sqrt (dotProduct (u - e) (u - e)) := abs_of_nonneg (Real.sqrt_nonneg _)
+    have h2 : |r ^ 2 / 12| = r ^ 2 / 12 := abs_of_nonneg (by nlinarith [sq_nonneg r])
+    rwa [h1, h2] at hlt
+  have hphip : Real.sqrt (dotProduct (phi_map u (l5_v e p r) - p) (phi_map u (l5_v e p r) - p)) < r := by
+    have hlt := sq_lt_sq.mp (show (Real.sqrt (dotProduct (phi_map u (l5_v e p r) - p) (phi_map u (l5_v e p r) - p))) ^ 2 < r ^ 2 by
+      rw [Real.sq_sqrt (dotProduct_self_nonneg (phi_map u (l5_v e p r) - p))]
+      exact hphi)
+    have h1 : |Real.sqrt (dotProduct (phi_map u (l5_v e p r) - p) (phi_map u (l5_v e p r) - p))| = Real.sqrt (dotProduct (phi_map u (l5_v e p r) - p) (phi_map u (l5_v e p r) - p)) := abs_of_nonneg (Real.sqrt_nonneg _)
+    have h2 : |r| = r := abs_of_nonneg (le_of_lt hr)
+    rwa [h1, h2] at hlt
+  have hphi_norm : Real.sqrt (dotProduct (phi_map u (l5_v e p r)) (phi_map u (l5_v e p r))) = 1 := by
+    have h : dotProduct (phi_map u (l5_v e p r)) (phi_map u (l5_v e p r)) = 1 := by simpa [unitVec3] using hphi_unit
+    rw [h, Real.sqrt_one]
+  have he_norm : Real.sqrt (dotProduct e e) = 1 := by
+    have h : dotProduct e e = 1 := by simpa [unitVec3] using he
+    rw [h, Real.sqrt_one]
+  rw [hphi_norm, he_norm] at hcross
+  have hsum_lt : Real.sqrt (dotProduct (u - e) (u - e)) + Real.sqrt (dotProduct (phi_map u (l5_v e p r) - p) (phi_map u (l5_v e p r) - p)) < r ^ 2 / 12 + r := by
+    nlinarith [hδ', hphip]
+  have hsq : (Real.sqrt (dotProduct (u - e) (u - e)) + Real.sqrt (dotProduct (phi_map u (l5_v e p r) - p) (phi_map u (l5_v e p r) - p))) ^ 2 < (r ^ 2 / 12 + r) ^ 2 := by
+    exact sq_lt_sq.mpr (by
+      have h1 : |Real.sqrt (dotProduct (u - e) (u - e)) + Real.sqrt (dotProduct (phi_map u (l5_v e p r) - p) (phi_map u (l5_v e p r) - p))| = Real.sqrt (dotProduct (u - e) (u - e)) + Real.sqrt (dotProduct (phi_map u (l5_v e p r) - p) (phi_map u (l5_v e p r) - p)) :=
+        abs_of_nonneg (add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))
+      have h2 : |r ^ 2 / 12 + r| = r ^ 2 / 12 + r := abs_of_nonneg (by nlinarith [hr])
+      rwa [h1, h2])
+  nlinarith [hcross, hsq]
+
 end GleasonLemma
+
