@@ -451,6 +451,22 @@ theorem symm_eq_equator (p : Fin 3 → ℝ) (hp : unitVec3 p)
   rw [hρe]
   exact symmetrization_equator_constant p hp f hf e he hep
 
+/-- **The upper bound `g t ≤ 1 + f p`** — from the weight-2 frame property
+(`g t + g q + g n = 2`), nonnegativity (`g n ≥ 0`), and the equator value
+(`g q = 1 − f p`). This supplies the monotonicity_bound hypothesis. -/
+theorem symm_le_bound (p q n t : Fin 3 → ℝ) (hp : unitVec3 p)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (hpos : ∀ y, unitVec3 y → 0 ≤ f y)
+    (hq : unitVec3 q) (hn : unitVec3 n) (ht : unitVec3 t)
+    (htq : orthVec3 t q) (htn : orthVec3 t n) (hqn : orthVec3 q n)
+    (hqp : orthVec3 q p) :
+    symm p f t ≤ 1 + f p := by
+  have hframe : symm p f t + symm p f q + symm p f n = 2 :=
+    symm_is_frame p hp f hf t q n ht hq hn htq htn hqn
+  have heq : symm p f q = 1 - f p := symm_eq_equator p hp f hf q hq hqp
+  have hnn : 0 ≤ symm p f n := symm_nonneg p n hp hn f hpos
+  linarith
+
 /-- **The great-circle identity (★)** — for a weight-2 frame function `g`, if
 `{r,q,n}` and `{s,t,n}` are orthonormal triples sharing the normal `n`, then
 `g r + g q = g s + g t`. This is the identity behind Richman–Bridges' monotonicity
