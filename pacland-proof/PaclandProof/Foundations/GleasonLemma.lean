@@ -563,6 +563,20 @@ theorem symm_two_dim_additivity (p : Fin 3 → ℝ) (hp : unitVec3 p)
     symm_is_frame p hp f hf u v z hu hv hz_unit horth (cross_orth_left u v) (cross_orth_right u v)
   linarith
 
+/-- **The transport for `g`** — the increment is invariant under the 90° rotation
+of its straddle axis: `g(a·u+b·v) − g(a·u−b·v) = g(b·u+a·v) − g(−b·u+a·v)`. The
+key observation behind Richman–Bridges' oscillation transfer. -/
+theorem symm_transport (p : Fin 3 → ℝ) (hp : unitVec3 p)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (u v : Fin 3 → ℝ) (hu : unitVec3 u) (hv : unitVec3 v) (horth : orthVec3 u v)
+    (a b : ℝ) (hαβ : a ^ 2 + b ^ 2 = 1) :
+    symm p f (a • u + b • v) - symm p f (a • u + (-b) • v)
+      = symm p f (b • u + a • v) - symm p f ((-b) • u + a • v) := by
+  have h1 := symm_two_dim_additivity p hp f hf u v hu hv horth a b hαβ
+  have h2 := symm_two_dim_additivity p hp f hf u v hu hv horth a (-b) (by simpa [sq] using hαβ)
+  rw [show -(-b) = b by ring] at h2
+  nlinarith [h1, h2]
+
 /-- The symmetrization is nonnegative when `f` is (on unit vectors). -/
 theorem symm_nonneg (p x : Fin 3 → ℝ) (hp : unitVec3 p) (hx : unitVec3 x)
     (f : (Fin 3 → ℝ) → ℝ) (hpos : ∀ y, unitVec3 y → 0 ≤ f y) :
