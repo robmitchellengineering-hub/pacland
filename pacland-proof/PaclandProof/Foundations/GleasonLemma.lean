@@ -181,6 +181,18 @@ theorem dotProduct_add_smul (u v z : Fin 3 → ℝ) (α β : ℝ) :
   simp [dotProduct, Fin.sum_univ_three]
   ring
 
+/-- Linearity of `(u − v) · z`. -/
+theorem dotProduct_sub_left (u v z : Fin 3 → ℝ) :
+    dotProduct (u - v) z = dotProduct u z - dotProduct v z := by
+  simp [dotProduct, Fin.sum_univ_three, sub_eq_add_neg, Pi.neg_apply]
+  ring
+
+/-- Linearity of `z · (u − v)`. -/
+theorem dotProduct_sub_right (z u v : Fin 3 → ℝ) :
+    dotProduct z (u - v) = dotProduct z u - dotProduct z v := by
+  simp [dotProduct, Fin.sum_univ_three, sub_eq_add_neg, Pi.neg_apply]
+  ring
+
 /-- The dot product is symmetric. -/
 theorem dotProduct_symm (u v : Fin 3 → ℝ) : dotProduct u v = dotProduct v u := by
   simp [dotProduct, Fin.sum_univ_three]
@@ -384,6 +396,33 @@ theorem cross_dot_cross (a b c d : Fin 3 → ℝ) :
     dotProduct (cross a b) (cross c d) = dotProduct a c * dotProduct b d - dotProduct a d * dotProduct b c := by
   simp [cross, dotProduct, Fin.sum_univ_three]
   ring
+
+/-- **Cauchy–Schwarz**: `|x·y| ≤ ‖x‖·‖y‖`. -/
+theorem dotProduct_abs_le_norm (x y : Fin 3 → ℝ) :
+    |dotProduct x y| ≤ Real.sqrt (dotProduct x x) * Real.sqrt (dotProduct y y) := by
+  have hxy : dotProduct (cross x y) (cross x y) = dotProduct x x * dotProduct y y - (dotProduct x y) ^ 2 := by
+    rw [cross_dot_cross x y x y]
+    simp [dotProduct_symm]
+    ring
+  have hnonneg : 0 ≤ dotProduct (cross x y) (cross x y) := by
+    simp [dotProduct, Fin.sum_univ_three]
+    nlinarith [sq_nonneg ((cross x y) 0), sq_nonneg ((cross x y) 1), sq_nonneg ((cross x y) 2)]
+  have hsq_le : (dotProduct x y) ^ 2 ≤ dotProduct x x * dotProduct y y := by nlinarith [hxy, hnonneg]
+  have hxx : 0 ≤ dotProduct x x := by
+    simp [dotProduct, Fin.sum_univ_three]
+    nlinarith [sq_nonneg (x 0), sq_nonneg (x 1), sq_nonneg (x 2)]
+  have hyy : 0 ≤ dotProduct y y := by
+    simp [dotProduct, Fin.sum_univ_three]
+    nlinarith [sq_nonneg (y 0), sq_nonneg (y 1), sq_nonneg (y 2)]
+  have hprod : (Real.sqrt (dotProduct x x) * Real.sqrt (dotProduct y y)) ^ 2 = dotProduct x x * dotProduct y y := by
+    rw [mul_pow]
+    rw [Real.sq_sqrt hxx, Real.sq_sqrt hyy]
+  have hfinal : (dotProduct x y) ^ 2 ≤ (Real.sqrt (dotProduct x x) * Real.sqrt (dotProduct y y)) ^ 2 := by
+    rw [hprod]
+    exact hsq_le
+  have hnonneg_prod : 0 ≤ Real.sqrt (dotProduct x x) * Real.sqrt (dotProduct y y) :=
+    mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+  simpa [abs_of_nonneg hnonneg_prod] using (sq_le_sq.mp hfinal)
 
 /-- **BAC–CAB**: `a × (b × c) = (a·c)·b − (a·b)·c`. -/
 theorem cross_triple (a b c : Fin 3 → ℝ) :
