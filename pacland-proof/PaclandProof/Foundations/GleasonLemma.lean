@@ -333,6 +333,22 @@ theorem frameFunction3_bounded (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction
   have hnonneg_z : 0 ≤ f z := hpos z hz
   linarith
 
+/-- **Two-frame relation** — the functional equation behind Gleason's continuity.
+For two orthonormal frames `{t,w,z}` and `{t',w',z'}` (the latitude-`a` setup: `t,t'`
+at the same latitude with a 90° longitude shift, `w,w'` their polar partners, `z,z'`
+the plane normals), the frame property forces
+`f t − f t' = (f w' − f w) + (f z' − f z)`. -/
+theorem two_frame_diff (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (t w z t' w' z' : Fin 3 → ℝ)
+    (ht : unitVec3 t) (hw : unitVec3 w) (hz : unitVec3 z)
+    (ht' : unitVec3 t') (hw' : unitVec3 w') (hz' : unitVec3 z')
+    (h12 : orthVec3 t w) (h13 : orthVec3 t z) (h23 : orthVec3 w z)
+    (h12' : orthVec3 t' w') (h13' : orthVec3 t' z') (h23' : orthVec3 w' z') :
+    f t - f t' = (f w' - f w) + (f z' - f z) := by
+  have h1 : f t + f w + f z = 1 := hf t w z ht hw hz h12 h13 h23
+  have h2 : f t' + f w' + f z' = 1 := hf t' w' z' ht' hw' hz' h12' h13' h23'
+  linarith
+
 /-- **The cross-plane consistency** — for unit `x ⊥ y`, the 2D sum is
 `f x + f y = 1 − f(x×y)`, i.e. depends only on the plane's normal `x×y`. This is
 the fact (absent in the 2D-additivity-only picture) that forces continuity. -/
