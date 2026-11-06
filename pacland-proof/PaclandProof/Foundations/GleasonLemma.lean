@@ -185,6 +185,31 @@ theorem dotProduct_symm (u v : Fin 3 → ℝ) : dotProduct u v = dotProduct v u 
   simp [dotProduct, Fin.sum_univ_three]
   ring
 
+/-- The "latitude `a`" unit vector `√a·p + √(1−a)·q` (for `p ⊥ q`): it is unit and
+its squared projection onto `p` is exactly `a`. Building block for realizability. -/
+theorem unit_smul_of_latitude (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 q)
+    (hpq : orthVec3 p q) (a : ℝ) (ha : 0 ≤ a) (ha1 : a ≤ 1) :
+    unitVec3 (Real.sqrt a • p + Real.sqrt (1 - a) • q) ∧
+    (dotProduct (Real.sqrt a • p + Real.sqrt (1 - a) • q) p) ^ 2 = a := by
+  have hsqrt_a : (Real.sqrt a) ^ 2 = a := Real.sq_sqrt ha
+  have hsqrt_1a : (Real.sqrt (1 - a)) ^ 2 = 1 - a := Real.sq_sqrt (by linarith)
+  constructor
+  · rw [unitVec3, dotProduct_expand p q (Real.sqrt a) (Real.sqrt (1 - a))]
+    have hp' : dotProduct p p = 1 := by simpa [unitVec3] using hp
+    have hq' : dotProduct q q = 1 := by simpa [unitVec3] using hq
+    have hpq' : dotProduct p q = 0 := by simpa [orthVec3] using hpq
+    rw [hp', hq', hpq', hsqrt_a, hsqrt_1a]
+    ring
+  · have hdot : dotProduct (Real.sqrt a • p + Real.sqrt (1 - a) • q) p = Real.sqrt a := by
+      rw [dotProduct_add_smul p q p (Real.sqrt a) (Real.sqrt (1 - a))]
+      have hp' : dotProduct p p = 1 := by simpa [unitVec3] using hp
+      have hqp : dotProduct q p = 0 := by
+        rw [dotProduct_symm]
+        simpa [orthVec3] using hpq
+      rw [hp', hqp]
+      ring
+    rw [hdot, hsqrt_a]
+
 /-- **The 2D additivity** (the algebraic heart of Gleason's lemma). For unit
 `u ⊥ v` and `w = αu + βv` (with `α² + β² = 1`), the frames `{w, w', u×v}` and
 `{u, v, u×v}` force `f w + f w' = f u + f v`, where `w' = −βu + αv`. -/
