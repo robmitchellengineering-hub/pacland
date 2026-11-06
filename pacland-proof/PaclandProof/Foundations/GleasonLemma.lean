@@ -439,6 +439,47 @@ theorem rot90p_rotates_plane (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitV
     rw [h1, hpr0, hptpq]
     ring
 
+/-- **The quadratic's symmetrization matches `g`'s latitude dependence.** For
+`Q(x) = f p·(x·p)² + f q·(x·q)² + f r·(x·r)²` (`r = p×q`), Parseval and the frame sum give
+`Q t + Q(ρt) = (3·f p − 1)·(t·p)² + (1 − f p)` — the exact relation the recover-`f` step
+uses (RB Theorem 23) to force `f = Q`. -/
+theorem quadratic_symm (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 q) (hpq : orthVec3 p q)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (t : Fin 3 → ℝ) (ht : unitVec3 t) :
+    (f p * (dotProduct t p) ^ 2 + f q * (dotProduct t q) ^ 2 + f (cross p q) * (dotProduct t (cross p q)) ^ 2)
+      + (f p * (dotProduct (rot90p p t) p) ^ 2 + f q * (dotProduct (rot90p p t) q) ^ 2 + f (cross p q) * (dotProduct (rot90p p t) (cross p q)) ^ 2)
+      = (3 * f p - 1) * (dotProduct t p) ^ 2 + (1 - f p) := by
+  have hsqsum : (dotProduct t q) ^ 2 + (dotProduct t (cross p q)) ^ 2 = 1 - (dotProduct t p) ^ 2 := by
+    have hpv := parseval p q t hp hq hpq
+    rw [dotProduct_symm p t, dotProduct_symm q t, dotProduct_symm (cross p q) t] at hpv
+    have htt : dotProduct t t = 1 := by simpa [unitVec3] using ht
+    rw [htt] at hpv
+    linarith
+  have hfsum : f q + f (cross p q) = 1 - f p := by
+    have hfr : unitVec3 (cross p q) := cross_unit p q hp hq hpq
+    have hframe : f p + f q + f (cross p q) = 1 := hf p q (cross p q) hp hq hfr hpq (cross_orth_left p q) (cross_orth_right p q)
+    linarith
+  have hproj : (dotProduct (rot90p p t) p) ^ 2 = (dotProduct t p) ^ 2 := by
+    rw [rot90p_preserves_proj p t hp]
+  have hρq : (dotProduct (rot90p p t) q) ^ 2 = (dotProduct t (cross p q)) ^ 2 := by
+    have h := (rot90p_rotates_plane p q hp hq hpq t).1
+    rw [h]
+    ring
+  have hρr : (dotProduct (rot90p p t) (cross p q)) ^ 2 = (dotProduct t q) ^ 2 := by
+    have h := (rot90p_rotates_plane p q hp hq hpq t).2
+    rw [h]
+  calc
+    (f p * (dotProduct t p) ^ 2 + f q * (dotProduct t q) ^ 2 + f (cross p q) * (dotProduct t (cross p q)) ^ 2)
+      + (f p * (dotProduct (rot90p p t) p) ^ 2 + f q * (dotProduct (rot90p p t) q) ^ 2 + f (cross p q) * (dotProduct (rot90p p t) (cross p q)) ^ 2)
+        = f p * (dotProduct t p) ^ 2 + f q * (dotProduct t q) ^ 2 + f (cross p q) * (dotProduct t (cross p q)) ^ 2
+          + f p * (dotProduct t p) ^ 2 + f q * (dotProduct t (cross p q)) ^ 2 + f (cross p q) * (dotProduct t q) ^ 2 := by
+            rw [hproj, hρq, hρr]
+            ring
+    _ = 2 * f p * (dotProduct t p) ^ 2 + (f q + f (cross p q)) * ((dotProduct t q) ^ 2 + (dotProduct t (cross p q)) ^ 2) := by ring
+    _ = 2 * f p * (dotProduct t p) ^ 2 + (1 - f p) * (1 - (dotProduct t p) ^ 2) := by
+            rw [hfsum, hsqsum]
+    _ = (3 * f p - 1) * (dotProduct t p) ^ 2 + (1 - f p) := by ring
+
 /-- `ρ` is linear: `ρ(x − y) = ρx − ρy`. -/
 theorem rot90p_sub (p x y : Fin 3 → ℝ) :
     rot90p p (x - y) = rot90p p x - rot90p p y := by
