@@ -1130,6 +1130,31 @@ theorem f_prime_rho2_inv (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 
     ring
   rw [hf_inv, hQ_inv]
 
+/-- **`f' = f − Q` is bounded by 1** (both `f` and the quadratic `Q` lie in `[0,1]`). -/
+theorem f_prime_bounded (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 q) (hpq : orthVec3 p q)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (hpos : ∀ x, unitVec3 x → 0 ≤ f x)
+    (t : Fin 3 → ℝ) (ht : unitVec3 t) :
+    |f t - (f p * (dotProduct t p) ^ 2 + f q * (dotProduct t q) ^ 2 + f (cross p q) * (dotProduct t (cross p q)) ^ 2)| ≤ 1 := by
+  have hft : 0 ≤ f t ∧ f t ≤ 1 := ⟨hpos t ht, frameFunction3_bounded f hf hpos t ht⟩
+  have hfr : unitVec3 (cross p q) := cross_unit p q hp hq hpq
+  have hfq : 0 ≤ f q ∧ f q ≤ 1 := ⟨hpos q hq, frameFunction3_bounded f hf hpos q hq⟩
+  have hfp : 0 ≤ f p ∧ f p ≤ 1 := ⟨hpos p hp, frameFunction3_bounded f hf hpos p hp⟩
+  have hfrb : 0 ≤ f (cross p q) ∧ f (cross p q) ≤ 1 := ⟨hpos (cross p q) hfr, frameFunction3_bounded f hf hpos (cross p q) hfr⟩
+  have hQ_nonneg : 0 ≤ f p * (dotProduct t p) ^ 2 + f q * (dotProduct t q) ^ 2 + f (cross p q) * (dotProduct t (cross p q)) ^ 2 := by
+    nlinarith [sq_nonneg (dotProduct t p), sq_nonneg (dotProduct t q), sq_nonneg (dotProduct t (cross p q)), hfp.1, hfq.1, hfrb.1]
+  have hQ_le : f p * (dotProduct t p) ^ 2 + f q * (dotProduct t q) ^ 2 + f (cross p q) * (dotProduct t (cross p q)) ^ 2 ≤ 1 := by
+    have hparseval := parseval p q t hp hq hpq
+    rw [dotProduct_symm p t, dotProduct_symm q t, dotProduct_symm (cross p q) t] at hparseval
+    have htt : dotProduct t t = 1 := by simpa [unitVec3] using ht
+    rw [htt] at hparseval
+    have h1 : f p * (dotProduct t p) ^ 2 ≤ 1 * (dotProduct t p) ^ 2 := mul_le_mul_of_nonneg_right hfp.2 (sq_nonneg _)
+    have h2 : f q * (dotProduct t q) ^ 2 ≤ 1 * (dotProduct t q) ^ 2 := mul_le_mul_of_nonneg_right hfq.2 (sq_nonneg _)
+    have h3 : f (cross p q) * (dotProduct t (cross p q)) ^ 2 ≤ 1 * (dotProduct t (cross p q)) ^ 2 := mul_le_mul_of_nonneg_right hfrb.2 (sq_nonneg _)
+    nlinarith [h1, h2, h3, hparseval]
+  rw [abs_le]
+  constructor <;> nlinarith [hft.1, hft.2, hQ_nonneg, hQ_le]
+
 /-- **The assembly** (Gleason's theorem, dim 3, conditional on latitude
 invariance). A nonnegative frame function `f` that depends only on the squared
 projection `(t·p)²` is affine in it: `f t = (f p − f q)·(t·p)² + f q`, i.e.
