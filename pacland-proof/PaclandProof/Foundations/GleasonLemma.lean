@@ -2509,7 +2509,91 @@ theorem frameFunction_pair_swap (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunctio
   have h2 : f u + f s' + f t' = 1 := hf u s' t' hu hs' ht' hus' hut' hs't'
   linarith
 
+/-- For unit `a`, `cross a b = 0 ⟹ (a·b)² = 1` (Binet–Cauchy). -/
+theorem sq_dot_eq_one_of_cross_zero (a b : Fin 3 → ℝ) (ha : unitVec3 a) (hb : unitVec3 b)
+    (hcross : cross a b = 0) : (dotProduct a b) ^ 2 = 1 := by
+  have h := cross_dot_cross a b a b
+  have h0 : dotProduct (cross a b) (cross a b) = 0 := by rw [hcross]; simp [dotProduct, Fin.sum_univ_three]
+  have haa : dotProduct a a = 1 := by simpa [unitVec3] using ha
+  have hbb : dotProduct b b = 1 := by simpa [unitVec3] using hb
+  have hsymm : dotProduct a b * dotProduct b a = (dotProduct a b) ^ 2 := by rw [dotProduct_symm b a]; ring
+  nlinarith [h, h0, haa, hbb, hsymm]
+
+/-- For unit `a`, `(a·b)² = 1 ⟹ b = (a·b) • a` (Cauchy–Schwarz equality case). -/
+theorem eq_smul_of_sq_dot_eq_one (a b : Fin 3 → ℝ) (ha : unitVec3 a) (hb : unitVec3 b)
+    (hsq : (dotProduct a b) ^ 2 = 1) : b = (dotProduct a b) • a := by
+  have hdiff : normSq (b - (dotProduct a b) • a) = 0 := by
+    dsimp [normSq]
+    set c := dotProduct a b
+    have hrewrite : b - c • a = (1 : ℝ) • b + (-c) • a := by
+      ext i; fin_cases i <;> simp [Pi.smul_apply, sub_eq_add_neg] <;> ring
+    rw [hrewrite]
+    rw [dotProduct_expand b a 1 (-c)]
+    have haa : dotProduct a a = 1 := by simpa [unitVec3] using ha
+    have hbb : dotProduct b b = 1 := by simpa [unitVec3] using hb
+    rw [haa, hbb, dotProduct_symm b a]
+    ring_nf
+    nlinarith [hsq]
+  exact sub_eq_zero.mp ((normSq_eq_zero_iff (b - (dotProduct a b) • a)).1 hdiff)
+
+/-- For unit `s, t`, a unit vector ⊥ both exists (the shared vector of P3/P4). -/
+theorem exists_unit_orthogonal_to_pair (s t : Fin 3 → ℝ) (hs : unitVec3 s) (ht : unitVec3 t) :
+    ∃ u : Fin 3 → ℝ, unitVec3 u ∧ orthVec3 s u ∧ orthVec3 t u := by
+  by_cases hcross : cross s t = 0
+  · obtain ⟨u, hu, hsu⟩ := exists_perp s hs
+    have hsq := sq_dot_eq_one_of_cross_zero s t hs ht hcross
+    have htsmul : t = (dotProduct s t) • s := eq_smul_of_sq_dot_eq_one s t hs ht hsq
+    have htu : orthVec3 t u := by
+      rw [htsmul]
+      dsimp [orthVec3]
+      rw [dotProduct_symm ((dotProduct s t) • s) u]
+      rw [dotProduct_smul_right u s (dotProduct s t)]
+      have hsu' : dotProduct u s = 0 := by simpa [orthVec3, dotProduct_symm] using hsu
+      simp [hsu']
+    exact ⟨u, hu, hsu, htu⟩
+  · let u := (Real.sqrt (dotProduct (cross s t) (cross s t)))⁻¹ • cross s t
+    have hne : cross s t ≠ 0 := by
+      intro h
+      exact hcross h
+    have hu : unitVec3 u := by
+      dsimp [u]
+      exact unit_smul_inv_sqrt (cross s t) hne
+    have hsu : orthVec3 s u := by
+      dsimp [u, orthVec3]
+      rw [dotProduct_smul_right s (cross s t) ((Real.sqrt (dotProduct (cross s t) (cross s t)))⁻¹)]
+      have h0 : dotProduct s (cross s t) = 0 := by simpa [orthVec3] using cross_orth_left s t
+      simp [h0]
+    have htu : orthVec3 t u := by
+      dsimp [u, orthVec3]
+      rw [dotProduct_smul_right t (cross s t) ((Real.sqrt (dotProduct (cross s t) (cross s t)))⁻¹)]
+      have h0 : dotProduct t (cross s t) = 0 := by simpa [orthVec3] using cross_orth_right s t
+      simp [h0]
+    exact ⟨u, hu, hsu, htu⟩
+
+/-- **P4**: if `f s > M − ξ` (near the sup), there is `t ⊥ s` with `f t < m + ξ` (near the inf). -/
+theorem frameFunction_P4 (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (M m : ℝ) (hM : ∀ x, unitVec3 x → f x ≤ M)
+    (hm : ∀ ε > 0, ∃ x, unitVec3 x ∧ f x < m + ε)
+    {s : Fin 3 → ℝ} (hs : unitVec3 s) {ξ : ℝ} (hfs : M - ξ < f s) :
+    ∃ t : Fin 3 → ℝ, unitVec3 t ∧ orthVec3 s t ∧ f t < m + ξ := by
+  set δ : ℝ := ξ - (M - f s) with hδ_def
+  have hδpos : 0 < δ := by rw [hδ_def]; linarith
+  obtain ⟨t', ht'unit, ht'lt⟩ := hm δ hδpos
+  obtain ⟨u, huunit, hus, hut'⟩ := exists_unit_orthogonal_to_pair s t' hs ht'unit
+  obtain ⟨t, htunit, hts, htu⟩ := exists_unit_orthogonal_to_pair s u hs huunit
+  obtain ⟨s', hs'unit, hs't', hs'u⟩ := exists_unit_orthogonal_to_pair t' u ht'unit huunit
+  have hus_u : orthVec3 u s := by simpa [orthVec3, dotProduct_symm] using hus
+  have hut'_u : orthVec3 u t' := by simpa [orthVec3, dotProduct_symm] using hut'
+  have hs't'_u : orthVec3 s' t' := by simpa [orthVec3, dotProduct_symm] using hs't'
+  have h := frameFunction_pair_swap f hf huunit hs htunit hs'unit ht'unit
+    hus_u htu hts hs'u hut'_u hs't'_u
+  have hs'M : f s' ≤ M := hM s' hs'unit
+  refine ⟨t, htunit, hts, ?_⟩
+  rw [hδ_def] at ht'lt
+  nlinarith
+
 end GleasonLemma
+
 
 
 
