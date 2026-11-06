@@ -45,3 +45,21 @@ Key lemmas (CKM §2–§6):
 6. Close: `gleason_assembly` with `hlat` discharged.
 
 All of this is **finite/algebraic** — no `ContinuousOn`/`UniformContinuousOn`/compactness closure needed for the Born rule itself.
+
+## STATUS: DONE (rounds 92–94)
+
+The CKM route is **vendored, ported, and bridged** — Gleason's theorem is now machine-checked in
+pacland-proof, green, committed (branch `foundations/qf0-hinge-ledger`):
+
+- `Gleason/` (17 files, Apache 2.0, from Bobart0/gleason-theorem-lean v1.0.3) — the full proof:
+  real-3D core (`frameFunction_regular` = Born rule) + complex n≥3 (`Gleason.gleason`) + Busch.
+  Ported to Mathlib v4.35 (6 trivial `Set.restrict`→`Set.domRestrict` deprecation fixes).
+  `#print axioms` on `Gleason.gleason` = **propext + Classical.choice + Quot.sound only**; 0 sorries.
+- `PaclandProof/Foundations/GleasonBridge.lean` — bridges our native encoding
+  (`Fin 3 → ℝ` + `dotProduct` + `FrameFunction3`) to theirs:
+  `inner_eq_dotProduct`, `unitVec3_of_norm_eq_one`, `orthVec3_of_inner_zero`,
+  `frameFunction3_to_isFrameFunction`, and the final
+  **`gleason_born_rule`**: every nonnegative `FrameFunction3 f` is a quadratic form (Born rule).
+
+Full `lake build` green (9081 jobs). The "continuity" step (objective's step 2) is superseded by
+the CKM descent-chain proof, which is strictly more elementary (no continuity/compactness needed).
