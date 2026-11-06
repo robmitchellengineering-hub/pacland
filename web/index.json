@@ -333,6 +333,13 @@
    "title": "Deterministic in use \u2014 the scoped claim"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/deterministic-ledger.md",
+   "kind": "doc",
+   "path": "docs/deterministic-ledger.md",
+   "summary": "machine-checked proof \u2014 with no sampler, no probability, no run-to-run variance. This is the inventory of those results, so \"deterministic in use\" is a category we can point at, not one\u2026",
+   "title": "The deterministic ledger \u2014 every result that is exact in its use"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drift-is-not-calibratable.md",
    "kind": "doc",
    "path": "docs/drift-is-not-calibratable.md",
