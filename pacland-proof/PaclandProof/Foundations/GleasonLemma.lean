@@ -948,6 +948,62 @@ theorem sq_dot_le_one_of_unit (u v : Fin 3 → ℝ) (hu : unitVec3 u) (hv : unit
   have hv' : dotProduct v v = 1 := by simpa [unitVec3] using hv
   nlinarith [hnonneg, hu', hv']
 
+/-- **Constant-on-latitudes for `g`** (conditional on its latitude invariance): if
+the symmetrization depends only on `(t·p)²`, then it is affine in it,
+`g t = (3·f p − 1)·(t·p)² + (1 − f p)`. The recursion (`affine_of_triple_sum`)
+applied to `F(a) = g(√a·p + √(1−a)·q)` via the realizability. -/
+theorem symm_latitude_affine (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 q) (hpq : orthVec3 p q)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (hpos : ∀ x, unitVec3 x → 0 ≤ f x)
+    (hg_lat : ∀ t t', unitVec3 t → unitVec3 t' → (dotProduct t p) ^ 2 = (dotProduct t' p) ^ 2 → symm p f t = symm p f t') :
+    ∀ t, unitVec3 t → symm p f t = (3 * f p - 1) * (dotProduct t p) ^ 2 + (1 - f p) := by
+  let F : ℝ → ℝ := fun a => symm p f (Real.sqrt a • p + Real.sqrt (1 - a) • q)
+  have hF_bounded : ∃ M : ℝ, ∀ a, 0 ≤ a → a ≤ 1 → |F a| ≤ M := by
+    refine ⟨2, ?_⟩
+    intro a ha ha1
+    have hta : unitVec3 (Real.sqrt a • p + Real.sqrt (1 - a) • q) :=
+      (unit_smul_of_latitude p q hp hq hpq a ha ha1).1
+    have hb := symm_bounded p (Real.sqrt a • p + Real.sqrt (1 - a) • q) hp hta f hf hpos
+    dsimp [F]
+    rw [abs_of_nonneg hb.1]
+    exact hb.2
+  have hF : ∀ a b c, 0 ≤ a → 0 ≤ b → 0 ≤ c → a + b + c = 1 → F a + F b + F c = F 1 + 2 * F 0 := by
+    intro a b c ha hb hc habc
+    rcases realize p hp a b c ha hb hc habc with ⟨t1, t2, t3, ht1, ht2, ht3, h12, h13, h23, hp1, hp2, hp3⟩
+    have hFa : F a = symm p f t1 := by
+      dsimp [F]
+      exact hg_lat _ t1 (unit_smul_of_latitude p q hp hq hpq a ha (by linarith)).1 ht1
+        (by rw [(unit_smul_of_latitude p q hp hq hpq a ha (by linarith)).2, hp1])
+    have hFb : F b = symm p f t2 := by
+      dsimp [F]
+      exact hg_lat _ t2 (unit_smul_of_latitude p q hp hq hpq b hb (by linarith)).1 ht2
+        (by rw [(unit_smul_of_latitude p q hp hq hpq b hb (by linarith)).2, hp2])
+    have hFc : F c = symm p f t3 := by
+      dsimp [F]
+      exact hg_lat _ t3 (unit_smul_of_latitude p q hp hq hpq c hc (by linarith)).1 ht3
+        (by rw [(unit_smul_of_latitude p q hp hq hpq c hc (by linarith)).2, hp3])
+    have hframe : symm p f t1 + symm p f t2 + symm p f t3 = 2 :=
+      symm_is_frame p hp f hf t1 t2 t3 ht1 ht2 ht3 h12 h13 h23
+    have hF1 : F 1 = 2 * f p := by dsimp [F]; simpa [Real.sqrt_one, Real.sqrt_zero] using (symm_eq_pole p hp f)
+    have hF0 : F 0 = 1 - f p := by dsimp [F]; simpa [Real.sqrt_one, Real.sqrt_zero] using (symm_eq_equator p hp f hf q hq (by simpa [orthVec3, dotProduct_symm] using hpq))
+    rw [hFa, hFb, hFc, hF1, hF0]
+    linarith [hframe]
+  have hFlin := Cauchy.affine_of_triple_sum F hF hF_bounded
+  have hF1 : F 1 = 2 * f p := by dsimp [F]; simpa [Real.sqrt_one, Real.sqrt_zero] using (symm_eq_pole p hp f)
+  have hF0 : F 0 = 1 - f p := by dsimp [F]; simpa [Real.sqrt_one, Real.sqrt_zero] using (symm_eq_equator p hp f hf q hq (by simpa [orthVec3, dotProduct_symm] using hpq))
+  intro t ht
+  have hproj_nonneg : 0 ≤ (dotProduct t p) ^ 2 := sq_nonneg _
+  have hproj_le : (dotProduct t p) ^ 2 ≤ 1 := sq_dot_le_one_of_unit t p ht hp
+  have hFt := hFlin ((dotProduct t p) ^ 2) hproj_nonneg hproj_le
+  have hF_eq : F ((dotProduct t p) ^ 2) = symm p f t := by
+    dsimp [F]
+    apply hg_lat
+    · exact (unit_smul_of_latitude p q hp hq hpq ((dotProduct t p) ^ 2) hproj_nonneg hproj_le).1
+    · exact ht
+    · rw [(unit_smul_of_latitude p q hp hq hpq ((dotProduct t p) ^ 2) hproj_nonneg hproj_le).2]
+  rw [← hF_eq, hFt, hF1, hF0]
+  ring
+
 /-- **The assembly** (Gleason's theorem, dim 3, conditional on latitude
 invariance). A nonnegative frame function `f` that depends only on the squared
 projection `(t·p)²` is affine in it: `f t = (f p − f q)·(t·p)² + f q`, i.e.
