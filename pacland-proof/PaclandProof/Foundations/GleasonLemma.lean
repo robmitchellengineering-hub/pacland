@@ -454,6 +454,24 @@ theorem symm_sub_rot90 (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fi
   dsimp [symm]
   ring
 
+/-- **From `g` latitude-invariant, `f` is 180°-longitude invariant**: if the
+symmetrization depends only on `(t·p)²`, then `f x = f(ρ²x)` (since `ρ` preserves
+the projection and `g x − g(ρx) = f x − f(ρ²x)`). The key recover-`f` step. -/
+theorem f_rho2_inv_of_g_lat_inv (p : Fin 3 → ℝ) (hp : unitVec3 p)
+    (f : (Fin 3 → ℝ) → ℝ)
+    (hg_lat : ∀ t t', unitVec3 t → unitVec3 t' → (dotProduct t p) ^ 2 = (dotProduct t' p) ^ 2 →
+      symm p f t = symm p f t')
+    (x : Fin 3 → ℝ) (hx : unitVec3 x) :
+    f x = f (rot90p p (rot90p p x)) := by
+  have hρx : unitVec3 (rot90p p x) := by simpa [unitVec3, rot90p_orthogonal p x x hp] using hx
+  have hproj : (dotProduct x p) ^ 2 = (dotProduct (rot90p p x) p) ^ 2 := by
+    rw [rot90p_preserves_proj p x hp]
+  have hg : symm p f x = symm p f (rot90p p x) := hg_lat x (rot90p p x) hx hρx hproj
+  have hdiff := symm_sub_rot90 p f x
+  have hzero : symm p f x - symm p f (rot90p p x) = 0 := by linarith [hg]
+  rw [hzero] at hdiff
+  linarith
+
 /-- **The symmetrization is a weight-2 frame function**: `Σ g(eᵢ) = 2` over every
 orthonormal basis (since `ρ` is orthogonal, `{ρeᵢ}` is again a frame). -/
 theorem symm_is_frame (p : Fin 3 → ℝ) (hp : unitVec3 p)
