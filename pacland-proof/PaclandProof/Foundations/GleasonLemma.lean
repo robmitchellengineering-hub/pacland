@@ -391,6 +391,38 @@ theorem cross_triple (a b c : Fin 3 → ℝ) :
   ext i
   fin_cases i <;> simp [cross, dotProduct, Fin.sum_univ_three] <;> ring
 
+/-- **`ρ²` is the 180°-rotation about `p`**: `ρ(ρ x) = 2(x·p)·p − x`. -/
+theorem rot90p_sq (p x : Fin 3 → ℝ) (hp : unitVec3 p) :
+    rot90p p (rot90p p x) = 2 * dotProduct x p • p - x := by
+  have hdot : dotProduct ((dotProduct x p) • p + cross p x) p = dotProduct x p := by
+    have h1 : dotProduct ((dotProduct x p) • p + cross p x) p
+        = (dotProduct x p) * dotProduct p p + dotProduct (cross p x) p := by
+      simpa only [one_smul, one_mul] using (dotProduct_add_smul p (cross p x) p (dotProduct x p) 1)
+    have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+    have hcp : dotProduct (cross p x) p = 0 := by rw [dotProduct_symm]; simpa [orthVec3] using cross_orth_left p x
+    rw [h1, hpp, hcp]
+    ring
+  have hcross : cross p ((dotProduct x p) • p + cross p x) = dotProduct x p • p - x := by
+    have hb : cross p ((dotProduct x p) • p + cross p x)
+        = (dotProduct x p) • cross p p + cross p (cross p x) := by
+      ext i; fin_cases i <;> simp [cross, Fin.sum_univ_three] <;> ring
+    have h0 : (dotProduct x p) • cross p p = 0 := by
+      have hself : cross p p = 0 := by ext i; fin_cases i <;> simp [cross, Fin.sum_univ_three] <;> ring
+      rw [hself]
+      simp
+    rw [hb, h0, cross_triple p p x]
+    have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+    have hxp : dotProduct p x = dotProduct x p := dotProduct_symm p x
+    rw [hpp, hxp]
+    simp [one_smul]
+  calc
+    rot90p p (rot90p p x)
+        = dotProduct x p • p + cross p ((dotProduct x p) • p + cross p x) := by
+            dsimp [rot90p]
+            rw [hdot]
+    _ = dotProduct x p • p + (dotProduct x p • p - x) := by rw [hcross]
+    _ = 2 * dotProduct x p • p - x := by ring
+
 /-- **`rot90p` is orthogonal** (for unit `p`): it preserves the dot product. -/
 theorem rot90p_orthogonal (p x y : Fin 3 → ℝ) (hp : unitVec3 p) :
     dotProduct (rot90p p x) (rot90p p y) = dotProduct x y := by
