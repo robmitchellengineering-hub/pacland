@@ -224,6 +224,13 @@ theorem normSq_smul (c : ℝ) (v : Fin 3 → ℝ) : normSq (c • v) = c ^ 2 * n
 noncomputable def extend (f : (Fin 3 → ℝ) → ℝ) : (Fin 3 → ℝ) → ℝ :=
   fun v => normSq v * f ((Real.sqrt (normSq v))⁻¹ • v)
 
+/-- `√(c²·a) = |c|·√a` for `a ≥ 0` — the scalar fact the extension's homogeneity
+turns on. -/
+theorem sqrt_smul (c : ℝ) (a : ℝ) (ha : 0 ≤ a) :
+    Real.sqrt (c ^ 2 * a) = |c| * Real.sqrt a := by
+  rw [Real.sqrt_eq_iff_eq_sq (mul_nonneg (sq_nonneg c) ha) (mul_nonneg (abs_nonneg c) (Real.sqrt_nonneg a))]
+  conv_lhs => rw [← sq_abs, ← Real.sq_sqrt ha, ← mul_pow]
+
 end GleasonLemma
 
 end
