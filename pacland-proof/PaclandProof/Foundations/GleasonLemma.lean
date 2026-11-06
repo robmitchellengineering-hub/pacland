@@ -210,6 +210,16 @@ theorem frameFunction3_bounded (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction
   have hnonneg_z : 0 ≤ f z := hpos z hz
   linarith
 
+/-- **The cross-plane consistency** — for unit `x ⊥ y`, the 2D sum is
+`f x + f y = 1 − f(x×y)`, i.e. depends only on the plane's normal `x×y`. This is
+the fact (absent in the 2D-additivity-only picture) that forces continuity. -/
+theorem two_dim_sum_eq_one_minus_z (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (x y : Fin 3 → ℝ) (hx : unitVec3 x) (hy : unitVec3 y) (hxy : orthVec3 x y) :
+    f x + f y = 1 - f (cross x y) := by
+  have hz : unitVec3 (cross x y) := cross_unit x y hx hy hxy
+  have h := hf x y (cross x y) hx hy hz hxy (cross_orth_left x y) (cross_orth_right x y)
+  linarith
+
 /-- The squared norm. -/
 def normSq (v : Fin 3 → ℝ) : ℝ := dotProduct v v
 
