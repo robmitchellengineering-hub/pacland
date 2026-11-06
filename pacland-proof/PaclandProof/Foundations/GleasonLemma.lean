@@ -385,6 +385,12 @@ theorem cross_dot_cross (a b c d : Fin 3 → ℝ) :
   simp [cross, dotProduct, Fin.sum_univ_three]
   ring
 
+/-- **BAC–CAB**: `a × (b × c) = (a·c)·b − (a·b)·c`. -/
+theorem cross_triple (a b c : Fin 3 → ℝ) :
+    cross a (cross b c) = dotProduct a c • b - dotProduct a b • c := by
+  ext i
+  fin_cases i <;> simp [cross, dotProduct, Fin.sum_univ_three] <;> ring
+
 /-- **`rot90p` is orthogonal** (for unit `p`): it preserves the dot product. -/
 theorem rot90p_orthogonal (p x y : Fin 3 → ℝ) (hp : unitVec3 p) :
     dotProduct (rot90p p x) (rot90p p y) = dotProduct x y := by
