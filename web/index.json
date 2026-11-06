@@ -2027,6 +2027,13 @@
    "title": "make_explainers.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_headline_pdf.py",
+   "kind": "script",
+   "path": "scripts/make_headline_pdf.py",
+   "summary": "Generate the PACLAND headline PDF (repo root) \u2014 \"what it is, and why it matters\".",
+   "title": "make_headline_pdf.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_plain_speak.py",
    "kind": "script",
    "path": "scripts/make_plain_speak.py",
@@ -2942,6 +2949,13 @@
    "path": "PACLAND-oracles-plain-speak.pdf",
    "summary": "explainer PDF",
    "title": "oracles plain speak"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-what-and-why.pdf",
+   "summary": "explainer PDF",
+   "title": "what and why"
   },
   {
    "href": "./all.html",
