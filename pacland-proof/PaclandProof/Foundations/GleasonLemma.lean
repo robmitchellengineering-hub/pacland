@@ -2441,7 +2441,25 @@ theorem uniformContinuousOn_sphere_of_continuousOn (f : (Fin 3 → ℝ) → ℝ)
     UniformContinuousOn (fun x : EuclideanSpace ℝ (Fin 3) => f x) ({x : EuclideanSpace ℝ (Fin 3) | ‖x‖ = 1} : Set (EuclideanSpace ℝ (Fin 3))) :=
   unit_sphere_compact.uniformContinuousOn_of_continuous hcont
 
+/-- **The general induction step** — continuity at `x` from continuity at the other two
+vectors of a nearby frame `{x,w,z} ≈ {x₀,w₀,z₀}`. (`continuity_at_pole` is the `x₀ = p` case.)
+This is the `two_frame_diff` step the continuity induction iterates. -/
+theorem continuity_from_frame (x w z x₀ w₀ z₀ : Fin 3 → ℝ) (ε : ℝ)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (hx : unitVec3 x) (hw : unitVec3 w) (hz : unitVec3 z) (hx₀ : unitVec3 x₀) (hw₀ : unitVec3 w₀) (hz₀ : unitVec3 z₀)
+    (hxw : orthVec3 x w) (hxz : orthVec3 x z) (hwz : orthVec3 w z)
+    (hx₀w₀ : orthVec3 x₀ w₀) (hx₀z₀ : orthVec3 x₀ z₀) (hw₀z₀ : orthVec3 w₀ z₀)
+    (hcont_w : |f w - f w₀| < ε) (hcont_z : |f z - f z₀| < ε) :
+    |f x - f x₀| < 2 * ε := by
+  have h := two_frame_diff f hf x w z x₀ w₀ z₀ hx hw hz hx₀ hw₀ hz₀ hxw hxz hwz hx₀w₀ hx₀z₀ hw₀z₀
+  rw [h]
+  have hw' : |f w₀ - f w| < ε := by simpa [abs_sub_comm] using hcont_w
+  have hz' : |f z₀ - f z| < ε := by simpa [abs_sub_comm] using hcont_z
+  have htri := abs_add_le (f w₀ - f w) (f z₀ - f z)
+  nlinarith [htri, hw', hz']
+
 end GleasonLemma
+
 
 
 
