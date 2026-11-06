@@ -518,6 +518,51 @@ theorem symm_is_frame (p : Fin 3 → ℝ) (hp : unitVec3 p)
   dsimp [symm]
   linarith
 
+/-- **The 2D additivity for the symmetrization** `g = f + f∘ρ`: for unit `u ⊥ v`
+and `α² + β² = 1`, `g(αu + βv) + g(−βu + αv) = g u + g v`. (The weight-2 version
+of `two_dim_additivity`, the prerequisite for the transport/great-circle argument.) -/
+theorem symm_two_dim_additivity (p : Fin 3 → ℝ) (hp : unitVec3 p)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (u v : Fin 3 → ℝ) (hu : unitVec3 u) (hv : unitVec3 v) (horth : orthVec3 u v)
+    (α β : ℝ) (hαβ : α ^ 2 + β ^ 2 = 1) :
+    symm p f (α • u + β • v) + symm p f ((-β) • u + α • v) = symm p f u + symm p f v := by
+  let w : Fin 3 → ℝ := α • u + β • v
+  let w' : Fin 3 → ℝ := (-β) • u + α • v
+  let z : Fin 3 → ℝ := cross u v
+  have hw_unit : unitVec3 w := by
+    change dotProduct (α • u + β • v) (α • u + β • v) = 1
+    rw [dotProduct_expand u v α β]
+    rw [hu, hv, horth]
+    nlinarith [hαβ]
+  have hw'_unit : unitVec3 w' := by
+    change dotProduct ((-β) • u + α • v) ((-β) • u + α • v) = 1
+    rw [dotProduct_expand u v (-β) α]
+    rw [hu, hv, horth]
+    nlinarith [hαβ]
+  have hw_orth : orthVec3 w w' := by
+    change dotProduct (α • u + β • v) ((-β) • u + α • v) = 0
+    rw [dotProduct_expand_mixed u v α β]
+    rw [hu, hv, horth]
+    ring
+  have hz_unit : unitVec3 z := cross_unit u v hu hv horth
+  have huz : dotProduct u z = 0 := by simpa [orthVec3] using cross_orth_left u v
+  have hvz : dotProduct v z = 0 := by simpa [orthVec3] using cross_orth_right u v
+  have hz_orth_w : orthVec3 w z := by
+    change dotProduct (α • u + β • v) z = 0
+    rw [dotProduct_add_smul u v z α β]
+    rw [huz, hvz]
+    ring
+  have hz_orth_w' : orthVec3 w' z := by
+    change dotProduct ((-β) • u + α • v) z = 0
+    rw [dotProduct_add_smul u v z (-β) α]
+    rw [huz, hvz]
+    ring
+  have hframe1 : symm p f w + symm p f w' + symm p f z = 2 :=
+    symm_is_frame p hp f hf w w' z hw_unit hw'_unit hz_unit hw_orth hz_orth_w hz_orth_w'
+  have hframe2 : symm p f u + symm p f v + symm p f z = 2 :=
+    symm_is_frame p hp f hf u v z hu hv hz_unit horth (cross_orth_left u v) (cross_orth_right u v)
+  linarith
+
 /-- The symmetrization is nonnegative when `f` is (on unit vectors). -/
 theorem symm_nonneg (p x : Fin 3 → ℝ) (hp : unitVec3 p) (hx : unitVec3 x)
     (f : (Fin 3 → ℝ) → ℝ) (hpos : ∀ y, unitVec3 y → 0 ≤ f y) :
