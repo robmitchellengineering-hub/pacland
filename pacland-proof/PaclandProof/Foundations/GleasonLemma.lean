@@ -195,6 +195,21 @@ theorem exists_perp (x : Fin 3 → ℝ) (hx : unitVec3 x) :
       field_simp [hn_ne]
       ring
 
+/-- **Boundedness** — a nonnegative frame function is `≤ 1` on every unit vector:
+complete `x` to the frame `{x, y, x×y}` and use `f x + f y + f z = 1`. -/
+theorem frameFunction3_bounded (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (hpos : ∀ x, unitVec3 x → 0 ≤ f x)
+    (x : Fin 3 → ℝ) (hx : unitVec3 x) :
+    f x ≤ 1 := by
+  rcases exists_perp x hx with ⟨y, hy, horth⟩
+  let z : Fin 3 → ℝ := cross x y
+  have hz : unitVec3 z := cross_unit x y hx hy horth
+  have hframe : f x + f y + f z = 1 :=
+    hf x y z hx hy hz horth (cross_orth_left x y) (cross_orth_right x y)
+  have hnonneg_y : 0 ≤ f y := hpos y hy
+  have hnonneg_z : 0 ≤ f z := hpos z hz
+  linarith
+
 end GleasonLemma
 
 end
