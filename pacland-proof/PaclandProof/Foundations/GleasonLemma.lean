@@ -607,6 +607,48 @@ theorem phi_map_eq_pole (e p v : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3
   rw [hmul]
   rw [one_smul]
 
+/-- **`λ(u)` is a unit vector** (for unit `u,v` with `u ≠ ±v`). -/
+theorem phi_map_unit (u v : Fin 3 → ℝ) (hu : unitVec3 u) (hv : unitVec3 v)
+    (hne : dotProduct u v ^ 2 ≠ 1) :
+    unitVec3 (phi_map u v) := by
+  have hcs : (dotProduct u v) ^ 2 ≤ 1 := by
+    have h := cross_dot_cross u v u v
+    rw [dotProduct_symm v u] at h
+    have huu : dotProduct u u = 1 := by simpa [unitVec3] using hu
+    have hvv : dotProduct v v = 1 := by simpa [unitVec3] using hv
+    have hnonneg : 0 ≤ dotProduct (cross u v) (cross u v) := by
+      simp [dotProduct, Fin.sum_univ_three]
+      nlinarith [sq_nonneg ((cross u v) 0), sq_nonneg ((cross u v) 1), sq_nonneg ((cross u v) 2)]
+    nlinarith [h, huu, hvv, hnonneg]
+  have ha_le : 0 ≤ 1 - (dotProduct u v) ^ 2 := by linarith
+  have hw : dotProduct ((dotProduct u v) • u - v) ((dotProduct u v) • u - v) = 1 - (dotProduct u v) ^ 2 := by
+    calc
+      dotProduct ((dotProduct u v) • u - v) ((dotProduct u v) • u - v)
+          = (dotProduct u v) ^ 2 * dotProduct u u - 2 * dotProduct u v * dotProduct u v + dotProduct v v := by
+            simp [dotProduct, Fin.sum_univ_three, sub_eq_add_neg, Pi.smul_apply, Pi.neg_apply]
+            ring
+      _ = 1 - (dotProduct u v) ^ 2 := by
+            rw [hu, hv]
+            ring
+  have hcsq : (1 / Real.sqrt (1 - (dotProduct u v) ^ 2)) ^ 2 = 1 / (1 - (dotProduct u v) ^ 2) := by
+    have hsqrt_sq : (Real.sqrt (1 - (dotProduct u v) ^ 2)) ^ 2 = 1 - (dotProduct u v) ^ 2 := Real.sq_sqrt ha_le
+    rw [← hsqrt_sq]
+    simp
+  calc
+    dotProduct (phi_map u v) (phi_map u v)
+        = (1 / Real.sqrt (1 - (dotProduct u v) ^ 2)) ^ 2 * dotProduct ((dotProduct u v) • u - v) ((dotProduct u v) • u - v) := by
+            dsimp [phi_map]
+            simp [dotProduct, Fin.sum_univ_three, Pi.smul_apply]
+            ring_nf
+    _ = (1 / (1 - (dotProduct u v) ^ 2)) * (1 - (dotProduct u v) ^ 2) := by
+            rw [hcsq, hw]
+    _ = 1 := by
+            have hne' : 1 - (dotProduct u v) ^ 2 ≠ 0 := by
+              intro h
+              have : (dotProduct u v) ^ 2 = 1 := by linarith
+              exact hne this
+            field_simp [hne']
+
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
   f x + f (rot90p p x)
