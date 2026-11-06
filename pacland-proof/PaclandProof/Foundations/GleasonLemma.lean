@@ -2208,6 +2208,45 @@ theorem gleason_assembly (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 
     · rw [(unit_smul_of_latitude p q hp hq hpq ((dotProduct t p) ^ 2) hproj_nonneg hproj_le).2]
   rw [← hF_eq_ft, hFt, hF1, hF0]
 
+/-- `u · (c • x) = c · (u · x)` — scalar moves out of the second argument. -/
+theorem dotProduct_smul_right (u x : Fin 3 → ℝ) (c : ℝ) :
+    dotProduct u (c • x) = c * dotProduct u x := by
+  simp [dotProduct, Fin.sum_univ_three, Pi.smul_apply]
+  ring
+
+/-- The φ-map is perpendicular to its argument: `λ(u) ⊥ u`. -/
+theorem phi_map_orth (u v : Fin 3 → ℝ) (hu : unitVec3 u) : orthVec3 u (phi_map u v) := by
+  dsimp [phi_map, orthVec3]
+  rw [dotProduct_smul_right u ((dotProduct u v) • u - v) (1 / Real.sqrt (1 - (dotProduct u v) ^ 2))]
+  rw [dotProduct_sub_right u ((dotProduct u v) • u) v]
+  rw [dotProduct_smul_right u u (dotProduct u v)]
+  have huu : dotProduct u u = 1 := by simpa [unitVec3] using hu
+  rw [huu]
+  ring
+
+/-- **L6 (the oscillation relation)** — the frame identity that the continuity proof iterates.
+For the frames `{u, λ(u), u×λ(u)}` and `{e, p, e×p}` (with `λ(e) = p`), the frame property gives
+`f u − f e = (f p − f(λ u)) + (f(e×p) − f(u×λ u))`. -/
+theorem oscillation_relation (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (v : Fin 3 → ℝ) (hv : unitVec3 v)
+    (u : Fin 3 → ℝ) (hu : unitVec3 u) (hne : dotProduct u v ^ 2 ≠ 1)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f) :
+    f u - f e = (f p - f (phi_map u v)) + (f (cross e p) - f (cross u (phi_map u v))) := by
+  let lu : Fin 3 → ℝ := phi_map u v
+  have hlu : unitVec3 lu := by dsimp [lu]; exact phi_map_unit u v hu hv hne
+  have hul : orthVec3 u lu := by dsimp [lu]; exact phi_map_orth u v hu
+  have hz : unitVec3 (cross u lu) := cross_unit u lu hu hlu hul
+  have hez : unitVec3 (cross e p) := cross_unit e p he hp hep
+  have huz : orthVec3 u (cross u lu) := cross_orth_left u lu
+  have hlz : orthVec3 lu (cross u lu) := cross_orth_right u lu
+  have hel : orthVec3 e p := hep
+  have hez_orth : orthVec3 e (cross e p) := cross_orth_left e p
+  have hpz : orthVec3 p (cross e p) := cross_orth_right e p
+  have h := two_frame_diff f hf u lu (cross u lu) e p (cross e p) hu hlu hz he hp hez hul huz hlz hel hez_orth hpz
+  dsimp [lu] at h
+  exact h
+
 end GleasonLemma
+
 
 end
