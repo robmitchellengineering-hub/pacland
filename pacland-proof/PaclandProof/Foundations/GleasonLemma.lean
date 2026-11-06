@@ -2412,7 +2412,30 @@ theorem continuity_at_pole (p : Fin 3 → ℝ) (hp : unitVec3 p)
   have htri := abs_add_le (f v₀ - f v) (f w₀ - f w)
   nlinarith [htri, hv', hw']
 
+open scoped RealInnerProductSpace
+
+/-- `‖x‖² = x·x` — the Euclidean norm squared agrees with our dot product. -/
+theorem normSq_eq_dotProduct (x : EuclideanSpace ℝ (Fin 3)) :
+    ‖x‖ ^ 2 = dotProduct x x := by
+  rw [PiLp.norm_eq_of_L2]
+  rw [Real.sq_sqrt]
+  · simp [dotProduct, Fin.sum_univ_three, Real.norm_eq_abs, sq_abs]
+    ring
+  · exact Finset.sum_nonneg (fun i _ => sq_nonneg _)
+
+/-- The unit sphere `{x | ‖x‖ = 1}` is compact (Heine–Borel: closed and bounded in ℝ³). -/
+theorem unit_sphere_compact : IsCompact ({x : EuclideanSpace ℝ (Fin 3) | ‖x‖ = 1} : Set (EuclideanSpace ℝ (Fin 3))) := by
+  have hball : IsCompact (Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 1) := isCompact_closedBall 0 1
+  refine hball.of_isClosed_subset ?hclosed ?hsub
+  · exact isClosed_eq continuous_norm continuous_const
+  · intro x hx
+    rw [Metric.mem_closedBall]
+    rw [dist_eq_norm]
+    simp [sub_zero]
+    exact hx.le
+
 end GleasonLemma
+
 
 
 
