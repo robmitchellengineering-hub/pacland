@@ -359,6 +359,26 @@ theorem two_dim_sum_eq_one_minus_z (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunc
   have h := hf x y (cross x y) hx hy hz hxy (cross_orth_left x y) (cross_orth_right x y)
   linarith
 
+/-- **The 90°-rotation about `p`.** `ρ x = (x·p)·p + p×x` fixes `p` and rotates the
+plane `p⊥` by 90°. On the equator (`x ⊥ p`) it is just `p×x`. -/
+def rot90p (p x : Fin 3 → ℝ) : Fin 3 → ℝ :=
+  (dotProduct x p) • p + cross p x
+
+/-- **Symmetrization is constant on the equator** (the first step of Gleason's
+continuity). For `e ⊥ p`, the frame `{e, ρe, p}` is orthonormal (with `ρe = p×e`),
+so `f e + f(ρe) + f p = 1`, i.e. the symmetrized value `f e + f(p×e)` is the
+constant `1 − f p`. This is what the 2D step function lacks (no 3D equator circle). -/
+theorem symmetrization_equator_constant (p : Fin 3 → ℝ) (hp : unitVec3 p)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (e : Fin 3 → ℝ) (he : unitVec3 e) (hep : orthVec3 e p) :
+    f e + f (cross p e) = 1 - f p := by
+  have hpe : orthVec3 p e := by simpa [orthVec3, dotProduct_symm] using hep
+  have hz : unitVec3 (cross p e) := cross_unit p e hp he hpe
+  have hez : orthVec3 e (cross p e) := cross_orth_right p e
+  have hzp : orthVec3 (cross p e) p := by simpa [orthVec3, dotProduct_symm] using cross_orth_left p e
+  have hframe : f e + f (cross p e) + f p = 1 := hf e (cross p e) p he hz hp hez hep hzp
+  linarith
+
 /-- **The transport** — an increment is invariant under the 90° rotation of its
 straddle axis: for unit `u ⊥ v`, `a² + b² = 1`,
 `f(a·u + b·v) − f(a·u − b·v) = f(b·u + a·v) − f(−b·u + a·v)`. The continuity
