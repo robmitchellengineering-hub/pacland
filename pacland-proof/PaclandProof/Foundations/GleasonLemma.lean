@@ -210,6 +210,20 @@ theorem frameFunction3_bounded (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction
   have hnonneg_z : 0 ≤ f z := hpos z hz
   linarith
 
+/-- The squared norm. -/
+def normSq (v : Fin 3 → ℝ) : ℝ := dotProduct v v
+
+/-- `normSq (c • v) = c² · normSq v`. -/
+theorem normSq_smul (c : ℝ) (v : Fin 3 → ℝ) : normSq (c • v) = c ^ 2 * normSq v := by
+  dsimp [normSq]
+  simp [dotProduct, Fin.sum_univ_three]
+  ring
+
+/-- The homogeneous extension `F(v) = ‖v‖²·f(v/‖v‖)` (defined for all `v`, since
+`F 0 = 0`). -/
+noncomputable def extend (f : (Fin 3 → ℝ) → ℝ) : (Fin 3 → ℝ) → ℝ :=
+  fun v => normSq v * f ((Real.sqrt (normSq v))⁻¹ • v)
+
 end GleasonLemma
 
 end
