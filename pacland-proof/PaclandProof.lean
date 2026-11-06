@@ -12,3 +12,4 @@ import PaclandProof.Foundations.Gleason
 import PaclandProof.Foundations.Cauchy
 import PaclandProof.Foundations.FrameFunction
 import PaclandProof.Foundations.GleasonLemma
+import PaclandProof.Foundations.GleasonBridge
