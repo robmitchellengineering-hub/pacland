@@ -429,6 +429,28 @@ theorem symm_is_frame (p : Fin 3 → ℝ) (hp : unitVec3 p)
   dsimp [symm]
   linarith
 
+/-- The symmetrization is nonnegative when `f` is (on unit vectors). -/
+theorem symm_nonneg (p x : Fin 3 → ℝ) (hp : unitVec3 p) (hx : unitVec3 x)
+    (f : (Fin 3 → ℝ) → ℝ) (hpos : ∀ y, unitVec3 y → 0 ≤ f y) :
+    0 ≤ symm p f x := by
+  dsimp [symm]
+  have hρx : unitVec3 (rot90p p x) := by simpa [unitVec3, rot90p_orthogonal p x x hp] using hx
+  nlinarith [hpos x hx, hpos (rot90p p x) hρx]
+
+/-- The symmetrization's value on the equator (`e ⊥ p`) is `1 − f p`. -/
+theorem symm_eq_equator (p : Fin 3 → ℝ) (hp : unitVec3 p)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (e : Fin 3 → ℝ) (he : unitVec3 e) (hep : orthVec3 e p) :
+    symm p f e = 1 - f p := by
+  dsimp [symm]
+  have hep' : dotProduct e p = 0 := by simpa [orthVec3] using hep
+  have hρe : rot90p p e = cross p e := by
+    dsimp [rot90p]
+    rw [hep']
+    simp
+  rw [hρe]
+  exact symmetrization_equator_constant p hp f hf e he hep
+
 /-- **The great-circle identity (★)** — for a weight-2 frame function `g`, if
 `{r,q,n}` and `{s,t,n}` are orthonormal triples sharing the normal `n`, then
 `g r + g q = g s + g t`. This is the identity behind Richman–Bridges' monotonicity
