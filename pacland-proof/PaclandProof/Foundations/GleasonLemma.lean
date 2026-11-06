@@ -379,6 +379,56 @@ theorem symmetrization_equator_constant (p : Fin 3 → ℝ) (hp : unitVec3 p)
   have hframe : f e + f (cross p e) + f p = 1 := hf e (cross p e) p he hz hp hez hep hzp
   linarith
 
+/-- **Binet–Cauchy**: `(a×b)·(c×d) = (a·c)(b·d) − (a·d)(b·c)`. -/
+theorem cross_dot_cross (a b c d : Fin 3 → ℝ) :
+    dotProduct (cross a b) (cross c d) = dotProduct a c * dotProduct b d - dotProduct a d * dotProduct b c := by
+  simp [cross, dotProduct, Fin.sum_univ_three]
+  ring
+
+/-- **`rot90p` is orthogonal** (for unit `p`): it preserves the dot product. -/
+theorem rot90p_orthogonal (p x y : Fin 3 → ℝ) (hp : unitVec3 p) :
+    dotProduct (rot90p p x) (rot90p p y) = dotProduct x y := by
+  dsimp [rot90p]
+  calc
+    dotProduct ((dotProduct x p) • p + cross p x) ((dotProduct y p) • p + cross p y)
+        = dotProduct p p * dotProduct x y + (dotProduct x p) * (dotProduct y p) * (dotProduct p p - 1) := by
+            simp [dotProduct, cross, Fin.sum_univ_three]
+            ring
+    _ = dotProduct x y := by
+            have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+            rw [hpp]
+            ring
+
+/-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
+def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
+  f x + f (rot90p p x)
+
+/-- **The symmetrization is a weight-2 frame function**: `Σ g(eᵢ) = 2` over every
+orthonormal basis (since `ρ` is orthogonal, `{ρeᵢ}` is again a frame). -/
+theorem symm_is_frame (p : Fin 3 → ℝ) (hp : unitVec3 p)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f) :
+    ∀ e1 e2 e3, unitVec3 e1 → unitVec3 e2 → unitVec3 e3 →
+      orthVec3 e1 e2 → orthVec3 e1 e3 → orthVec3 e2 e3 →
+      symm p f e1 + symm p f e2 + symm p f e3 = 2 := by
+  intro e1 e2 e3 h1 h2 h3 h12 h13 h23
+  have hρ1 : unitVec3 (rot90p p e1) := by
+    simpa [unitVec3, rot90p_orthogonal p e1 e1 hp] using h1
+  have hρ2 : unitVec3 (rot90p p e2) := by
+    simpa [unitVec3, rot90p_orthogonal p e2 e2 hp] using h2
+  have hρ3 : unitVec3 (rot90p p e3) := by
+    simpa [unitVec3, rot90p_orthogonal p e3 e3 hp] using h3
+  have hρ12 : orthVec3 (rot90p p e1) (rot90p p e2) := by
+    simpa [orthVec3, rot90p_orthogonal p e1 e2 hp] using h12
+  have hρ13 : orthVec3 (rot90p p e1) (rot90p p e3) := by
+    simpa [orthVec3, rot90p_orthogonal p e1 e3 hp] using h13
+  have hρ23 : orthVec3 (rot90p p e2) (rot90p p e3) := by
+    simpa [orthVec3, rot90p_orthogonal p e2 e3 hp] using h23
+  have hf0 : f e1 + f e2 + f e3 = 1 := hf e1 e2 e3 h1 h2 h3 h12 h13 h23
+  have hfρ : f (rot90p p e1) + f (rot90p p e2) + f (rot90p p e3) = 1 :=
+    hf (rot90p p e1) (rot90p p e2) (rot90p p e3) hρ1 hρ2 hρ3 hρ12 hρ13 hρ23
+  dsimp [symm]
+  linarith
+
 /-- **The transport** — an increment is invariant under the 90° rotation of its
 straddle axis: for unit `u ⊥ v`, `a² + b² = 1`,
 `f(a·u + b·v) − f(a·u − b·v) = f(b·u + a·v) − f(−b·u + a·v)`. The continuity
