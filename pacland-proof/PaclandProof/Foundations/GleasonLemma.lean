@@ -57,6 +57,103 @@ theorem cross_unit (u v : Fin 3 → ℝ) (hu : unitVec3 u) (hv : unitVec3 v)
     simpa [orthVec3, dotProduct, Fin.sum_univ_three] using horth
   nlinarith [hu', hv', horth']
 
+/-- **Parseval** (Binet–Cauchy): for orthonormal `u ⊥ v`, the triple `{u, v, u×v}` is
+orthonormal, so `(u·p)² + (v·p)² + ((u×v)·p)² = p·p`. -/
+theorem parseval (u v p : Fin 3 → ℝ)
+    (hu : unitVec3 u) (hv : unitVec3 v) (horth : orthVec3 u v) :
+    (dotProduct u p) ^ 2 + (dotProduct v p) ^ 2 + (dotProduct (cross u v) p) ^ 2 = dotProduct p p := by
+  have hu' : u 0 ^ 2 + u 1 ^ 2 + u 2 ^ 2 = 1 := by
+    simpa [unitVec3, dotProduct, Fin.sum_univ_three, sq] using hu
+  have hv' : v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2 = 1 := by
+    simpa [unitVec3, dotProduct, Fin.sum_univ_three, sq] using hv
+  have horth' : u 0 * v 0 + u 1 * v 1 + u 2 * v 2 = 0 := by
+    simpa [orthVec3, dotProduct, Fin.sum_univ_three] using horth
+  -- diagonal "row" facts (Lagrange identity)
+  have hr0 : u 0 ^ 2 + v 0 ^ 2 + (u 1 * v 2 - u 2 * v 1) ^ 2 = 1 := by
+    have hu0 : u 1 ^ 2 + u 2 ^ 2 = 1 - u 0 ^ 2 := by linarith [hu']
+    have hv0 : v 1 ^ 2 + v 2 ^ 2 = 1 - v 0 ^ 2 := by linarith [hv']
+    have horth0 : u 1 * v 1 + u 2 * v 2 = -(u 0 * v 0) := by linarith [horth']
+    calc
+      u 0 ^ 2 + v 0 ^ 2 + (u 1 * v 2 - u 2 * v 1) ^ 2
+          = u 0 ^ 2 + v 0 ^ 2 + (u 1 ^ 2 + u 2 ^ 2) * (v 1 ^ 2 + v 2 ^ 2) - (u 1 * v 1 + u 2 * v 2) ^ 2 := by ring
+      _ = u 0 ^ 2 + v 0 ^ 2 + (1 - u 0 ^ 2) * (1 - v 0 ^ 2) - (u 0 * v 0) ^ 2 := by
+          rw [hu0, hv0, horth0]
+          ring
+      _ = 1 := by ring
+  have hr1 : u 1 ^ 2 + v 1 ^ 2 + (u 2 * v 0 - u 0 * v 2) ^ 2 = 1 := by
+    have hu1 : u 2 ^ 2 + u 0 ^ 2 = 1 - u 1 ^ 2 := by linarith [hu']
+    have hv1 : v 2 ^ 2 + v 0 ^ 2 = 1 - v 1 ^ 2 := by linarith [hv']
+    have horth1 : u 2 * v 2 + u 0 * v 0 = -(u 1 * v 1) := by linarith [horth']
+    calc
+      u 1 ^ 2 + v 1 ^ 2 + (u 2 * v 0 - u 0 * v 2) ^ 2
+          = u 1 ^ 2 + v 1 ^ 2 + (u 2 ^ 2 + u 0 ^ 2) * (v 2 ^ 2 + v 0 ^ 2) - (u 2 * v 2 + u 0 * v 0) ^ 2 := by ring
+      _ = u 1 ^ 2 + v 1 ^ 2 + (1 - u 1 ^ 2) * (1 - v 1 ^ 2) - (u 1 * v 1) ^ 2 := by
+          rw [hu1, hv1, horth1]
+          ring
+      _ = 1 := by ring
+  have hr2 : u 2 ^ 2 + v 2 ^ 2 + (u 0 * v 1 - u 1 * v 0) ^ 2 = 1 := by
+    have hu2 : u 0 ^ 2 + u 1 ^ 2 = 1 - u 2 ^ 2 := by linarith [hu']
+    have hv2 : v 0 ^ 2 + v 1 ^ 2 = 1 - v 2 ^ 2 := by linarith [hv']
+    have horth2 : u 0 * v 0 + u 1 * v 1 = -(u 2 * v 2) := by linarith [horth']
+    calc
+      u 2 ^ 2 + v 2 ^ 2 + (u 0 * v 1 - u 1 * v 0) ^ 2
+          = u 2 ^ 2 + v 2 ^ 2 + (u 0 ^ 2 + u 1 ^ 2) * (v 0 ^ 2 + v 1 ^ 2) - (u 0 * v 0 + u 1 * v 1) ^ 2 := by ring
+      _ = u 2 ^ 2 + v 2 ^ 2 + (1 - u 2 ^ 2) * (1 - v 2 ^ 2) - (u 2 * v 2) ^ 2 := by
+          rw [hu2, hv2, horth2]
+          ring
+      _ = 1 := by ring
+  -- off-diagonal "row" facts
+  have hc01 : u 0 * u 1 + v 0 * v 1 + (u 1 * v 2 - u 2 * v 1) * (u 2 * v 0 - u 0 * v 2) = 0 := by
+    have h1 : 1 - (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2) = 0 := by linarith [hv']
+    have h2 : 1 - (u 0 ^ 2 + u 1 ^ 2 + u 2 ^ 2) = 0 := by linarith [hu']
+    have h : u 0 * u 1 + v 0 * v 1 + (u 1 * v 2 - u 2 * v 1) * (u 2 * v 0 - u 0 * v 2)
+        = (u 0 * v 0 + u 1 * v 1 + u 2 * v 2) * (u 0 * v 1 + u 1 * v 0)
+          + u 0 * u 1 * (1 - (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2))
+          + v 0 * v 1 * (1 - (u 0 ^ 2 + u 1 ^ 2 + u 2 ^ 2)) := by ring
+    rw [h1, h2] at h
+    have h' : u 0 * u 1 + v 0 * v 1 + (u 1 * v 2 - u 2 * v 1) * (u 2 * v 0 - u 0 * v 2)
+        = (u 0 * v 0 + u 1 * v 1 + u 2 * v 2) * (u 0 * v 1 + u 1 * v 0) := by simpa using h
+    rw [h', horth']
+    ring
+  have hc02 : u 0 * u 2 + v 0 * v 2 + (u 1 * v 2 - u 2 * v 1) * (u 0 * v 1 - u 1 * v 0) = 0 := by
+    have h1 : 1 - (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2) = 0 := by linarith [hv']
+    have h2 : 1 - (u 0 ^ 2 + u 1 ^ 2 + u 2 ^ 2) = 0 := by linarith [hu']
+    have h : u 0 * u 2 + v 0 * v 2 + (u 1 * v 2 - u 2 * v 1) * (u 0 * v 1 - u 1 * v 0)
+        = (u 0 * v 0 + u 1 * v 1 + u 2 * v 2) * (u 0 * v 2 + u 2 * v 0)
+          + u 0 * u 2 * (1 - (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2))
+          + v 0 * v 2 * (1 - (u 0 ^ 2 + u 1 ^ 2 + u 2 ^ 2)) := by ring
+    rw [h1, h2] at h
+    have h' : u 0 * u 2 + v 0 * v 2 + (u 1 * v 2 - u 2 * v 1) * (u 0 * v 1 - u 1 * v 0)
+        = (u 0 * v 0 + u 1 * v 1 + u 2 * v 2) * (u 0 * v 2 + u 2 * v 0) := by simpa using h
+    rw [h', horth']
+    ring
+  have hc12 : u 1 * u 2 + v 1 * v 2 + (u 2 * v 0 - u 0 * v 2) * (u 0 * v 1 - u 1 * v 0) = 0 := by
+    have h1 : 1 - (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2) = 0 := by linarith [hv']
+    have h2 : 1 - (u 0 ^ 2 + u 1 ^ 2 + u 2 ^ 2) = 0 := by linarith [hu']
+    have h : u 1 * u 2 + v 1 * v 2 + (u 2 * v 0 - u 0 * v 2) * (u 0 * v 1 - u 1 * v 0)
+        = (u 0 * v 0 + u 1 * v 1 + u 2 * v 2) * (u 1 * v 2 + u 2 * v 1)
+          + u 1 * u 2 * (1 - (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2))
+          + v 1 * v 2 * (1 - (u 0 ^ 2 + u 1 ^ 2 + u 2 ^ 2)) := by ring
+    rw [h1, h2] at h
+    have h' : u 1 * u 2 + v 1 * v 2 + (u 2 * v 0 - u 0 * v 2) * (u 0 * v 1 - u 1 * v 0)
+        = (u 0 * v 0 + u 1 * v 1 + u 2 * v 2) * (u 1 * v 2 + u 2 * v 1) := by simpa using h
+    rw [h', horth']
+    ring
+  have hr0' : u 0 ^ 2 + v 0 ^ 2 + (u 1 * v 2 - u 2 * v 1) ^ 2 - 1 = 0 := by linarith [hr0]
+  have hr1' : u 1 ^ 2 + v 1 ^ 2 + (u 2 * v 0 - u 0 * v 2) ^ 2 - 1 = 0 := by linarith [hr1]
+  have hr2' : u 2 ^ 2 + v 2 ^ 2 + (u 0 * v 1 - u 1 * v 0) ^ 2 - 1 = 0 := by linarith [hr2]
+  have hfinal : (dotProduct u p) ^ 2 + (dotProduct v p) ^ 2 + (dotProduct (cross u v) p) ^ 2 - dotProduct p p
+      = (u 0 ^ 2 + v 0 ^ 2 + (u 1 * v 2 - u 2 * v 1) ^ 2 - 1) * p 0 ^ 2
+        + (u 1 ^ 2 + v 1 ^ 2 + (u 2 * v 0 - u 0 * v 2) ^ 2 - 1) * p 1 ^ 2
+        + (u 2 ^ 2 + v 2 ^ 2 + (u 0 * v 1 - u 1 * v 0) ^ 2 - 1) * p 2 ^ 2
+        + 2 * (u 0 * u 1 + v 0 * v 1 + (u 1 * v 2 - u 2 * v 1) * (u 2 * v 0 - u 0 * v 2)) * p 0 * p 1
+        + 2 * (u 0 * u 2 + v 0 * v 2 + (u 1 * v 2 - u 2 * v 1) * (u 0 * v 1 - u 1 * v 0)) * p 0 * p 2
+        + 2 * (u 1 * u 2 + v 1 * v 2 + (u 2 * v 0 - u 0 * v 2) * (u 0 * v 1 - u 1 * v 0)) * p 1 * p 2 := by
+    simp [cross, dotProduct, Fin.sum_univ_three]
+    ring
+  rw [hr0', hr1', hr2', hc01, hc02, hc12] at hfinal
+  linarith [hfinal]
+
 /-- A frame function in `ℝ³`: weights sum to `1` over every orthonormal triple. -/
 def FrameFunction3 (f : (Fin 3 → ℝ) → ℝ) : Prop :=
   ∀ e1 e2 e3, unitVec3 e1 → unitVec3 e2 → unitVec3 e3 →
