@@ -1047,6 +1047,278 @@ theorem l5_f3 (r : ℝ) (hr : 0 < r) (hr1 : r < 1)
   have h' : |r / 3| < |Real.sqrt (1 - c ^ 2)| := sq_lt_sq.mp h
   rwa [abs_of_nonneg hr3_nonneg, abs_of_nonneg hsqrt_nonneg] at h'
 
+-- The nlinarith bounds in l5_f4/f5/f6 exceed the default heartbeat budget.
+set_option maxHeartbeats 4000000 in
+/-- **L5 F4**: `‖a·w + ε·u‖ < (11/10)δ` with `a = 1−r²/8`, `w = u−e`, `ε = (u−e)·v`.
+Needs `0 < δ` (the `δ = 0` case makes the conclusion `0 < 0`, which is false). -/
+theorem l5_f4 (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (r : ℝ) (hr : 0 < r) (hr1 : r < 1) (u : Fin 3 → ℝ) (hu : unitVec3 u)
+    (δ : ℝ) (hδpos : 0 < δ) (hδlt : δ < r ^ 2 / 12)
+    (hδsq : δ ^ 2 = dotProduct (u - e) (u - e))
+    (hF1 : |dotProduct (u - e) (l5_v e p r)| ≤ (1 - r ^ 2 / 8) * δ ^ 2 / 2 + (r / 2) * Real.sqrt (1 - r ^ 2 / 16) * δ) :
+    dotProduct ((1 - r ^ 2 / 8) • (u - e) + (dotProduct (u - e) (l5_v e p r)) • u)
+      ((1 - r ^ 2 / 8) • (u - e) + (dotProduct (u - e) (l5_v e p r)) • u) < ((11 / 10) * δ) ^ 2 := by
+  let γ : ℝ := Real.sqrt (1 - r ^ 2 / 16)
+  let a : ℝ := 1 - r ^ 2 / 8
+  let s₀ : ℝ := (r / 2) * γ
+  let w : Fin 3 → ℝ := u - e
+  let ε : ℝ := dotProduct w (l5_v e p r)
+  change dotProduct (a • w + ε • u) (a • w + ε • u) < ((11 / 10) * δ) ^ 2
+  have hsc := l5_scalars r hr hr1
+  dsimp [γ, a, s₀] at hsc
+  have ha_gt : 7 / 8 < a := hsc.2.1.1
+  have ha_lt : a < 1 := hsc.2.1.2
+  have hs₀_gt : r / 4 < s₀ := hsc.2.2.1.1
+  have hs₀_lt : s₀ < r / 2 := hsc.2.2.1.2
+  have hab : a ^ 2 + s₀ ^ 2 = 1 := hsc.2.2.2
+  have ha_pos : 0 < a := by nlinarith [ha_gt]
+  have ha_nonneg : 0 ≤ a := le_of_lt ha_pos
+  have hs₀_pos : 0 < s₀ := by nlinarith [hs₀_gt, hr]
+  have hF1ε : |ε| ≤ a * δ ^ 2 / 2 + s₀ * δ := by
+    dsimp [ε, w, a, s₀, γ]
+    exact hF1
+  have hww : dotProduct w w = δ ^ 2 := by
+    dsimp [w]
+    rw [hδsq]
+  have huu : dotProduct u u = 1 := by simpa [unitVec3] using hu
+  have hwu : dotProduct w u = δ ^ 2 / 2 := by
+    dsimp [w]
+    rw [dotProduct_sub_left u e u]
+    rw [huu]
+    have heu : dotProduct e u = 1 - δ ^ 2 / 2 := by
+      rw [dotProduct_symm e u]
+      have hue : dotProduct u e = 1 - δ ^ 2 / 2 := by
+        have hdecomp : dotProduct (u - e) e = dotProduct u e - 1 := by
+          rw [dotProduct_sub_left u e e]
+          have hee : dotProduct e e = 1 := by simpa [unitVec3] using he
+          rw [hee]
+        have hwe' : dotProduct (u - e) e = - δ ^ 2 / 2 := by
+          rw [l5_f0 u e hu he]
+          rw [hδsq]
+        nlinarith
+      exact hue
+    rw [heu]
+    ring
+  have hnorm : dotProduct (a • w + ε • u) (a • w + ε • u) = a ^ 2 * δ ^ 2 + a * ε * δ ^ 2 + ε ^ 2 := by
+    rw [dotProduct_expand w u a ε]
+    rw [hww, hwu, huu]
+    ring
+  have hε_le_abs : ε ≤ |ε| := le_abs_self ε
+  have habs_nonneg : 0 ≤ |ε| := abs_nonneg ε
+  have hεsq : ε ^ 2 = |ε| ^ 2 := (sq_abs ε).symm
+  have hδ2_nonneg : 0 ≤ δ ^ 2 := sq_nonneg δ
+  let B : ℝ := a * δ ^ 2 / 2 + s₀ * δ
+  have hε_le_B : |ε| ≤ B := by
+    dsimp [B]
+    exact hF1ε
+  have hb1 : a * ε * δ ^ 2 + ε ^ 2 ≤ a * |ε| * δ ^ 2 + |ε| ^ 2 := by
+    have haε : a * ε ≤ a * |ε| := mul_le_mul_of_nonneg_left hε_le_abs ha_nonneg
+    have haεδ2 : a * ε * δ ^ 2 ≤ a * |ε| * δ ^ 2 := mul_le_mul_of_nonneg_right haε hδ2_nonneg
+    linarith [haεδ2, hεsq]
+  have hb2 : a * |ε| * δ ^ 2 + |ε| ^ 2 ≤ a * B * δ ^ 2 + B ^ 2 := by
+    have hB_nonneg : 0 ≤ B := by
+      dsimp [B]
+      linarith [hF1ε, habs_nonneg]
+    have hdiff1 : 0 ≤ B - |ε| := sub_nonneg.mpr hε_le_B
+    have haδ2 : 0 ≤ a * δ ^ 2 := mul_nonneg ha_nonneg hδ2_nonneg
+    have hsecond : 0 ≤ a * δ ^ 2 + B + |ε| := by
+      linarith [haδ2, hB_nonneg, habs_nonneg]
+    have hprod : 0 ≤ (B - |ε|) * (a * δ ^ 2 + B + |ε|) := mul_nonneg hdiff1 hsecond
+    have hdiff_eq : (B - |ε|) * (a * δ ^ 2 + B + |ε|)
+        = a * B * δ ^ 2 + B ^ 2 - (a * |ε| * δ ^ 2 + |ε| ^ 2) := by
+      ring
+    have hprod' : 0 ≤ a * B * δ ^ 2 + B ^ 2 - (a * |ε| * δ ^ 2 + |ε| ^ 2) := by
+      rw [← hdiff_eq]
+      exact hprod
+    linarith [hprod']
+  have hb : a ^ 2 * δ ^ 2 + a * ε * δ ^ 2 + ε ^ 2 ≤ a ^ 2 * δ ^ 2 + a * B * δ ^ 2 + B ^ 2 := by
+    linarith [hb1, hb2]
+  have hRHS' : a ^ 2 * δ ^ 2 + a * B * δ ^ 2 + B ^ 2
+      = δ ^ 2 * (1 + (3 / 4) * a ^ 2 * δ ^ 2 + 2 * a * s₀ * δ) + (a ^ 2 + s₀ ^ 2 - 1) * δ ^ 2 := by
+    dsimp [B]
+    ring
+  have hRHS : a ^ 2 * δ ^ 2 + a * B * δ ^ 2 + B ^ 2 = δ ^ 2 * (1 + (3 / 4) * a ^ 2 * δ ^ 2 + 2 * a * s₀ * δ) := by
+    rw [hRHS']
+    have hab0 : a ^ 2 + s₀ ^ 2 - 1 = 0 := by linarith [hab]
+    rw [hab0]
+    ring
+  have hle : a ^ 2 * δ ^ 2 + a * ε * δ ^ 2 + ε ^ 2 ≤ δ ^ 2 * (1 + (3 / 4) * a ^ 2 * δ ^ 2 + 2 * a * s₀ * δ) := by
+    rw [hRHS] at hb
+    exact hb
+  have hr2 : r ^ 2 < 1 := by nlinarith [hr, hr1]
+  have hδ12 : δ < 1 / 12 := by nlinarith [hδlt, hr2]
+  have hs₀_half : s₀ < 1 / 2 := by nlinarith [hs₀_lt, hr1]
+  have hlt : δ ^ 2 * (1 + (3 / 4) * a ^ 2 * δ ^ 2 + 2 * a * s₀ * δ) < ((11 / 10) * δ) ^ 2 := by
+    have hδ2_pos : 0 < δ ^ 2 := sq_pos_of_pos hδpos
+    have ha2_lt1 : a ^ 2 < 1 := by nlinarith [ha_lt, ha_pos]
+    have hδ2_lt : δ ^ 2 < (1 / 12) ^ 2 := by nlinarith [hδpos, hδ12]
+    have ha2δ2_lt : a ^ 2 * δ ^ 2 < (1 / 12) ^ 2 := by
+      have hstep : a ^ 2 * δ ^ 2 < 1 * δ ^ 2 := mul_lt_mul_of_pos_right ha2_lt1 hδ2_pos
+      have hstep2 : 1 * δ ^ 2 < 1 * ((1 / 12) ^ 2) :=
+        mul_lt_mul_of_pos_left hδ2_lt (by norm_num : (0 : ℝ) < 1)
+      linarith [hstep, hstep2]
+    have has₀ : a * s₀ < 1 / 2 := by
+      have h1 : a * s₀ < 1 * s₀ := mul_lt_mul_of_pos_right ha_lt hs₀_pos
+      have h2 : 1 * s₀ < 1 * (1 / 2) := mul_lt_mul_of_pos_left hs₀_half (by norm_num : (0 : ℝ) < 1)
+      linarith [h1, h2]
+    have has₀δ : a * s₀ * δ < (1 / 2) * (1 / 12) := by
+      have h1 : a * s₀ * δ < (1 / 2) * δ := mul_lt_mul_of_pos_right has₀ hδpos
+      have h2 : (1 / 2) * δ < (1 / 2) * (1 / 12) :=
+        mul_lt_mul_of_pos_left hδ12 (by norm_num : (0 : ℝ) < 1 / 2)
+      linarith [h1, h2]
+    have hbracket : 1 + (3 / 4) * a ^ 2 * δ ^ 2 + 2 * a * s₀ * δ < (11 / 10) ^ 2 := by
+      have h1' : (3 / 4) * (a ^ 2 * δ ^ 2) < (3 / 4) * (1 / 12) ^ 2 :=
+        mul_lt_mul_of_pos_left ha2δ2_lt (by norm_num : (0 : ℝ) < 3 / 4)
+      have h2' : 2 * (a * s₀ * δ) < 2 * ((1 / 2) * (1 / 12)) :=
+        mul_lt_mul_of_pos_left has₀δ (by norm_num : (0 : ℝ) < 2)
+      have hsum : 1 + (3 / 4) * (a ^ 2 * δ ^ 2) + 2 * (a * s₀ * δ)
+          < 1 + (3 / 4) * (1 / 12) ^ 2 + 2 * ((1 / 2) * (1 / 12)) := by
+        linarith [h1', h2']
+      have hconst : (1 + (3 / 4 : ℝ) * (1 / 12 : ℝ) ^ 2 + 2 * ((1 / 2 : ℝ) * (1 / 12 : ℝ)) < (11 / 10 : ℝ) ^ 2) := by norm_num
+      have hsum' : 1 + (3 / 4) * (a ^ 2 * δ ^ 2) + 2 * (a * s₀ * δ) < (11 / 10) ^ 2 := by
+        linarith [hsum, hconst]
+      ring_nf at hsum' ⊢
+      exact hsum'
+    have hstep : δ ^ 2 * (1 + (3 / 4) * a ^ 2 * δ ^ 2 + 2 * a * s₀ * δ) < δ ^ 2 * (11 / 10) ^ 2 :=
+      mul_lt_mul_of_pos_left hbracket hδ2_pos
+    ring_nf at hstep ⊢
+    exact hstep
+  have hfinal : a ^ 2 * δ ^ 2 + a * ε * δ ^ 2 + ε ^ 2 < ((11 / 10) * δ) ^ 2 :=
+    lt_of_le_of_lt hle hlt
+  rw [hnorm]
+  exact hfinal
+-- The nlinarith bounds in l5_f4/f5/f6 exceed the default heartbeat budget.
+set_option maxHeartbeats 4000000 in
+/-- **L5 F5**: `s₀ + s > r/2` from `s₀ > r/4` (i.e. `γ > 1/2`) and `s > r/3`. -/
+theorem l5_f5 (r : ℝ) (hr : 0 < r) (hr1 : r < 1) (s : ℝ) (hs : r / 3 < s) :
+    (r / 2) * Real.sqrt (1 - r ^ 2 / 16) + s > r / 2 := by
+  let γ : ℝ := Real.sqrt (1 - r ^ 2 / 16)
+  let a : ℝ := 1 - r ^ 2 / 8
+  let s₀ : ℝ := (r / 2) * γ
+  have hsc := l5_scalars r hr hr1
+  dsimp [γ, a, s₀] at hsc
+  have hs₀_gt : r / 4 < s₀ := hsc.2.2.1.1
+  change s₀ + s > r / 2
+  nlinarith [hs₀_gt, hs, hr]
+-- The nlinarith bounds in l5_f4/f5/f6 exceed the default heartbeat budget.
+set_option maxHeartbeats 4000000 in
+/-- **L5 F6**: `|s₀ − s| < (7/3)δ` for `s` the sine of `u` (i.e. `s² = 1 − (u·v)²`)
+and `s > r/3` (so `s₀ + s > r/2` via F5). This is the Richman–Bridges oscillation
+estimate: `s₀ − s = (2aε + ε²)/(s₀ + s)` with `ε = (u−e)·v` bounded by F1. -/
+theorem l5_f6 (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (r : ℝ) (hr : 0 < r) (hr1 : r < 1) (u : Fin 3 → ℝ) (hu : unitVec3 u)
+    (δ : ℝ) (hδpos : 0 < δ) (hδlt : δ < r ^ 2 / 12)
+    (s : ℝ) (hs : s ^ 2 = 1 - (dotProduct u (l5_v e p r)) ^ 2) (hs_gt : r / 3 < s)
+    (hF1 : |dotProduct (u - e) (l5_v e p r)| ≤ (1 - r ^ 2 / 8) * δ ^ 2 / 2 + (r / 2) * Real.sqrt (1 - r ^ 2 / 16) * δ) :
+    |(r / 2) * Real.sqrt (1 - r ^ 2 / 16) - s| < (7 / 3) * δ := by
+  let γ : ℝ := Real.sqrt (1 - r ^ 2 / 16)
+  let a : ℝ := 1 - r ^ 2 / 8
+  let s₀ : ℝ := (r / 2) * γ
+  let c : ℝ := dotProduct u (l5_v e p r)
+  let ε : ℝ := dotProduct (u - e) (l5_v e p r)
+  have hsc := l5_scalars r hr hr1
+  dsimp [γ, a, s₀] at hsc
+  have ha_lt : a < 1 := hsc.2.1.2
+  have ha_gt : 7 / 8 < a := hsc.2.1.1
+  have hs₀_lt : s₀ < r / 2 := hsc.2.2.1.2
+  have hs₀_gt : r / 4 < s₀ := hsc.2.2.1.1
+  have hab : a ^ 2 + s₀ ^ 2 = 1 := hsc.2.2.2
+  have ha_pos : 0 ≤ a := by nlinarith [ha_gt]
+  have hs₀_pos : 0 ≤ s₀ := by nlinarith [hs₀_gt, hr]
+  have hs₀sq : s₀ ^ 2 = 1 - a ^ 2 := by nlinarith [hab]
+  have hF5 : s₀ + s > r / 2 := by
+    have h := l5_f5 r hr hr1 s hs_gt
+    simpa [s₀, γ] using h
+  have hvd := l5_v_dots e p he hp hep r
+  have hε : ε = c - a := by
+    dsimp [ε, c]
+    rw [dotProduct_sub_left u e (l5_v e p r)]
+    have h2 : dotProduct e (l5_v e p r) = a := by
+      rw [dotProduct_symm e (l5_v e p r)]
+      exact hvd.1
+    rw [h2]
+  have hc : c = a + ε := by nlinarith [hε]
+  have hs' : s ^ 2 = 1 - c ^ 2 := by
+    dsimp [c]
+    exact hs
+  have hdiff : s₀ ^ 2 - s ^ 2 = 2 * a * ε + ε ^ 2 := by
+    rw [hs₀sq, hs', hc]
+    ring
+  have hF1' : |ε| ≤ a * δ ^ 2 / 2 + s₀ * δ := by
+    dsimp [ε, a, s₀, γ]
+    exact hF1
+  have habs_nonneg : 0 ≤ |ε| := abs_nonneg ε
+  have h_abs_mul : |2 * a * ε| = 2 * a * |ε| := by
+    rw [abs_mul, abs_mul, abs_of_nonneg ha_pos]
+    norm_num
+  have h_abs_sq : |ε ^ 2| = |ε| ^ 2 := by
+    rw [abs_sq, sq_abs]
+  have hnum : |2 * a * ε + ε ^ 2| ≤ 2 * a * |ε| + |ε| ^ 2 := by
+    calc
+      |2 * a * ε + ε ^ 2| ≤ |2 * a * ε| + |ε ^ 2| := abs_add_le _ _
+      _ = 2 * a * |ε| + |ε| ^ 2 := by rw [h_abs_mul, h_abs_sq]
+  -- 2a|ε| + |ε|² ≤ 2aE + E²  (E := a·δ²/2 + s₀·δ)
+  have hsum_le : 2 * a * |ε| + |ε| ^ 2 ≤ 2 * a * (a * δ ^ 2 / 2 + s₀ * δ) + (a * δ ^ 2 / 2 + s₀ * δ) ^ 2 := by
+    have hε_le_E : |ε| ≤ a * δ ^ 2 / 2 + s₀ * δ := hF1'
+    have hE_nonneg : 0 ≤ a * δ ^ 2 / 2 + s₀ * δ := by nlinarith [hF1', habs_nonneg]
+    have hdiff1 : 0 ≤ (a * δ ^ 2 / 2 + s₀ * δ) - |ε| := sub_nonneg.mpr hε_le_E
+    have ha2 : 0 ≤ 2 * a := by nlinarith [ha_pos]
+    have hsecond : 0 ≤ 2 * a + (a * δ ^ 2 / 2 + s₀ * δ) + |ε| := by
+      nlinarith [ha2, hE_nonneg, habs_nonneg]
+    have hprod : 0 ≤ ((a * δ ^ 2 / 2 + s₀ * δ) - |ε|) * (2 * a + (a * δ ^ 2 / 2 + s₀ * δ) + |ε|) :=
+      mul_nonneg hdiff1 hsecond
+    nlinarith [hprod]
+  -- 2aE + E² < (7r/6)·δ
+  have hE_lt_M : a * δ ^ 2 / 2 + s₀ * δ < δ ^ 2 / 2 + (r / 2) * δ := by
+    nlinarith [ha_lt, hs₀_lt, hδpos]
+  have hE_nonneg : 0 ≤ a * δ ^ 2 / 2 + s₀ * δ := by nlinarith [ha_pos, hs₀_pos, hδpos]
+  have hM_nonneg : 0 ≤ δ ^ 2 / 2 + (r / 2) * δ := by nlinarith [hδpos, hr]
+  have hEsq_lt_Msq : (a * δ ^ 2 / 2 + s₀ * δ) ^ 2 < (δ ^ 2 / 2 + (r / 2) * δ) ^ 2 := by
+    rw [sq_lt_sq, abs_of_nonneg hE_nonneg, abs_of_nonneg hM_nonneg]
+    exact hE_lt_M
+  have h2E_lt : 2 * (a * δ ^ 2 / 2 + s₀ * δ) + (a * δ ^ 2 / 2 + s₀ * δ) ^ 2
+      < 2 * (δ ^ 2 / 2 + (r / 2) * δ) + (δ ^ 2 / 2 + (r / 2) * δ) ^ 2 := by
+    nlinarith [hE_lt_M, hEsq_lt_Msq, hE_nonneg, hM_nonneg]
+  have hM_lt : 2 * (δ ^ 2 / 2 + (r / 2) * δ) + (δ ^ 2 / 2 + (r / 2) * δ) ^ 2 < (7 * r / 6) * δ := by
+    have hT1 : δ ^ 2 < (r / 12) * δ := by
+      nlinarith [hδlt, hδpos, hr, hr1]
+    have hT2 : δ ^ 4 / 4 < (r / 576) * δ := by
+      nlinarith [hδlt, hδpos, hr, hr1]
+    have hT3 : r * δ ^ 3 / 2 < (r / 24) * δ := by
+      nlinarith [hδlt, hδpos, hr, hr1]
+    have hT4 : r ^ 2 * δ ^ 2 / 4 < (r / 48) * δ := by
+      nlinarith [hδlt, hδpos, hr, hr1]
+    have h_expand : 2 * (δ ^ 2 / 2 + (r / 2) * δ) + (δ ^ 2 / 2 + (r / 2) * δ) ^ 2
+        = δ ^ 2 + r * δ + δ ^ 4 / 4 + r * δ ^ 3 / 2 + r ^ 2 * δ ^ 2 / 4 := by
+      ring
+    rw [h_expand]
+    nlinarith [hT1, hT2, hT3, hT4]
+  have hpoly_lt : 2 * a * (a * δ ^ 2 / 2 + s₀ * δ) + (a * δ ^ 2 / 2 + s₀ * δ) ^ 2 < (7 * r / 6) * δ := by
+    have h2aE_le : 2 * a * (a * δ ^ 2 / 2 + s₀ * δ) ≤ 2 * (a * δ ^ 2 / 2 + s₀ * δ) := by
+      nlinarith [ha_lt, hE_nonneg]
+    have hstep1 : 2 * a * (a * δ ^ 2 / 2 + s₀ * δ) + (a * δ ^ 2 / 2 + s₀ * δ) ^ 2
+        ≤ 2 * (a * δ ^ 2 / 2 + s₀ * δ) + (a * δ ^ 2 / 2 + s₀ * δ) ^ 2 :=
+      add_le_add h2aE_le le_rfl
+    exact lt_of_le_of_lt hstep1 (lt_trans h2E_lt hM_lt)
+  have hcleared : 2 * a * |ε| + |ε| ^ 2 < (7 * r / 6) * δ := by
+    nlinarith [hsum_le, hpoly_lt]
+  -- (s₀ + s)·|s₀ − s| = |2aε + ε²|
+  have hpos : 0 < s₀ + s := by nlinarith [hF5, hr]
+  have hprod : (s₀ - s) * (s₀ + s) = s₀ ^ 2 - s ^ 2 := by ring
+  have heq : (s₀ + s) * |s₀ - s| = |2 * a * ε + ε ^ 2| := by
+    calc
+      (s₀ + s) * |s₀ - s| = |(s₀ - s) * (s₀ + s)| := by
+        rw [abs_mul, abs_of_pos hpos, mul_comm]
+      _ = |s₀ ^ 2 - s ^ 2| := by rw [hprod]
+      _ = |2 * a * ε + ε ^ 2| := by rw [hdiff]
+  have hmid : (s₀ + s) * |s₀ - s| < (7 * r / 6) * δ := by
+    nlinarith [heq, hnum, hcleared]
+  have hscale : (7 * r / 6) * δ < (s₀ + s) * ((7 / 3) * δ) := by
+    nlinarith [hF5, hδpos, hr]
+  have hprod_lt : (s₀ + s) * |s₀ - s| < (s₀ + s) * ((7 / 3) * δ) := by
+    nlinarith [hmid, hscale]
+  change |s₀ - s| < (7 / 3) * δ
+  exact lt_of_mul_lt_mul_left hprod_lt (le_of_lt hpos)
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
   f x + f (rot90p p x)
