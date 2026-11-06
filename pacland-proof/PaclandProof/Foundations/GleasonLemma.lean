@@ -561,6 +561,52 @@ theorem rot90p_unit (p x : Fin 3 → ℝ) (hp : unitVec3 p) (hx : unitVec3 x) :
     unitVec3 (rot90p p x) := by
   simpa [unitVec3, rot90p_orthogonal p x x hp] using hx
 
+/-- **The φ-map** (Richman–Bridges' oscillation transfer): `u` rotated 90° in the plane
+`span(v,u)` in the `v → u` direction — a rational function of dot products:
+`λ(u) = ((u·v)·u − v)/√(1 − (u·v)²)`. -/
+def phi_map (u v : Fin 3 → ℝ) : Fin 3 → ℝ :=
+  (1 / Real.sqrt (1 - (dotProduct u v) ^ 2)) • ((dotProduct u v) • u - v)
+
+/-- **`λ(e) = p`** when `v = a·e + b·p` lies "south" of the equator point `e` (`b < 0`,
+`v` unit, `e ⊥ p`). -/
+theorem phi_map_eq_pole (e p v : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (a b : ℝ) (hv : v = a • e + b • p) (hb : b < 0) (hunit : unitVec3 v) :
+    phi_map e v = p := by
+  dsimp [phi_map]
+  have hev : dotProduct e v = a := by
+    rw [hv]
+    rw [dotProduct_symm e (a • e + b • p)]
+    rw [dotProduct_add_smul e p e a b]
+    have hee : dotProduct e e = 1 := by simpa [unitVec3] using he
+    have hep0 : dotProduct p e = 0 := by simpa [orthVec3, dotProduct_symm] using hep
+    rw [hee, hep0]
+    ring
+  have hdiff : (dotProduct e v) • e - v = (-b) • p := by
+    rw [hev, hv]
+    ext i; fin_cases i <;> simp [Pi.smul_apply, sub_eq_add_neg] <;> ring
+  have hab : a ^ 2 + b ^ 2 = 1 := by
+    have hvu : dotProduct v v = 1 := by simpa [unitVec3] using hunit
+    rw [hv] at hvu
+    rw [dotProduct_expand e p a b] at hvu
+    rw [he, hp, hep] at hvu
+    nlinarith
+  have hsq : 1 - (dotProduct e v) ^ 2 = b ^ 2 := by
+    rw [hev]
+    nlinarith [hab]
+  have hsqrt : Real.sqrt (1 - (dotProduct e v) ^ 2) = -b := by
+    rw [hsq]
+    have hbabs : |b| = -b := abs_of_neg hb
+    rw [← hbabs]
+    exact Real.sqrt_sq_eq_abs b
+  rw [hsqrt, hdiff]
+  have hb_ne : -b ≠ 0 := by linarith [hb]
+  rw [smul_smul]
+  have hmul : (1 / (-b)) * (-b) = 1 := by
+    rw [one_div]
+    exact inv_mul_cancel₀ hb_ne
+  rw [hmul]
+  rw [one_smul]
+
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
   f x + f (rot90p p x)
