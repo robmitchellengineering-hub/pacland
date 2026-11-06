@@ -447,6 +447,21 @@ theorem rot90p_orthogonal (p x y : Fin 3 → ℝ) (hp : unitVec3 p) :
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
   f x + f (rot90p p x)
 
+/-- `ρ` fixes the pole: `ρ p = p`. -/
+theorem rot90p_pole (p : Fin 3 → ℝ) (hp : unitVec3 p) : rot90p p p = p := by
+  dsimp [rot90p]
+  have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+  have hself : cross p p = 0 := by ext i; fin_cases i <;> simp [cross, Fin.sum_univ_three] <;> ring
+  rw [hpp, hself]
+  simp
+
+/-- The symmetrization at the pole: `g p = 2·f p`. -/
+theorem symm_eq_pole (p : Fin 3 → ℝ) (hp : unitVec3 p) (f : (Fin 3 → ℝ) → ℝ) :
+    symm p f p = 2 * f p := by
+  dsimp [symm]
+  rw [rot90p_pole p hp]
+  ring
+
 /-- **The symmetrization difference** `g x − g(ρx) = f x − f(ρ²x)` — the relation
 the recover-`f` step uses (a 180° rotation as `ρ²`). -/
 theorem symm_sub_rot90 (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) :
