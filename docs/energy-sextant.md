@@ -191,14 +191,14 @@ verdict: the field's impasse is a property of the evidence record, not of the re
 $ PYTHONPATH=src python3 -m pacland.energy.profile
 | framework | conditions it cannot be evaluated on | class | evaluable | unresearched |
 |---|---|---|---|---|
-| `strings-adscft` | **C6** | `CONTESTED` | 1 | 11 |
-| `lqg-spinfoam` | **C1** (+2) | `CONTESTED` | 0 | 10 |
-| `asymptotic-safety` | **C3** (+1) | `CONTESTED` | 0 | 11 |
-| `cdt` | **C6** | `NO-PREDICTION` | 0 | 12 |
-| `causal-sets` | **C2** (+1) | `CONTESTED` | 0 | 11 |
-| `gft` | **C6** | `NO-PREDICTION` | 0 | 12 |
+| `strings-adscft` | **C6** | `CONTESTED` | 2 | 10 |
+| `lqg-spinfoam` | **C1** (+3) | `CONTESTED` | 0 | 9 |
+| `asymptotic-safety` | **C3** (+2) | `CONTESTED` | 0 | 10 |
+| `cdt` | **C5** (+1) | `NOT-ESTABLISHED` | 0 | 11 |
+| `causal-sets` | **C2** (+2) | `CONTESTED` | 0 | 10 |
+| `gft` | **C5** (+1) | `CONTESTED` | 0 | 11 |
 
-**6/6 frameworks are blocked** — 10 blocking cells in total.
+**6/6 frameworks are blocked** — 15 blocking cells in total.
 ```
 
 The rule that keeps this honest, and that a test enforces: **a blocker is `CONTESTED`,
@@ -239,10 +239,29 @@ multiplier). On the one honestly-scoreable slice — C3 (unitarity/ghost, with i
 C5 (entropy coefficient 1) — EIG runs and, under the uniform base-rate prior, collapses to "cheapest
 first", which is the cross-check that the triage is the informative order for the rest.
 
-The result today: **C5 is the first row** — the cleanest binary with known answers — then C3 and C4.
-Cells whose measured bound is unread (`C1`, Cassini) are flagged `bound unread` and cannot be scored
-until `PENDING_BOUNDS` is closed. The ordering is meant to move as cells are researched, exactly like
-the reason-class counts above.
+The result of the first pass: **C5 was researched first** (the cleanest binary with known answers), and
+the row is now scored — see below — so the head has moved to **C3** (unitarity/ghost, the constraint
+whose positive control, Stelle, can actually kill). Cells whose measured bound is unread (`C1`,
+Cassini) are flagged `bound unread` and cannot be scored until `PENDING_BOUNDS` is closed. The ordering
+moves as cells are researched, exactly like the reason-class counts above.
+
+### Move 1's first pass — the C5 row, scored
+
+Six probes, one per framework, primary sources only, returned:
+
+| framework | class | the result |
+|---|---|---|
+| `strings-adscft` | `COMPUTED-ELSEWHERE` | Strominger–Vafa derive S = A/4 with coefficient exactly 1, for 5D extremal BPS black holes — a specific class, not generic |
+| `lqg-spinfoam` | `CONTESTED` | the Immirzi parameter was a tuned free normalisation; the later "Immirzi-independent" SU(2) counting is disputed |
+| `asymptotic-safety` | `CONTESTED` | S = A/4G only as the IR limit of the RG-improved entropy — a leading-order area law |
+| `causal-sets` | `CONTESTED` | S ∝ A in 1+1 dimensions only, no exact 1/4; the links proposal fails beyond 2D |
+| `gft` | `CONTESTED` | 1/4 recovered only by imposing semiclassical consistency, omitting the microscopic dynamics |
+| `cdt` | `NOT-ESTABLISHED` | no black-hole entropy coefficient computed; an open direction |
+
+The finding is the SEXTANT diagnosis again, on the cleanest constraint: **even the one condition with a
+clean binary oracle and known answers is demonstrated in full by exactly one framework, and only for a
+special class — five of six are contested or unestablished.** The triage did its job: it sent us to the
+most decisive cell, and the answer is "even here the field is partial."
 
 ## 5. The target equation — named, not gestured at
 

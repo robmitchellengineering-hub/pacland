@@ -36,13 +36,14 @@ class TestTheTaskList(unittest.TestCase):
         # 78 cells minus the 5 string-only C11 cells asked of no non-string candidate.
         self.assertEqual(len(researchable()), 73)
 
-    def test_sixty_two_researchable_cells_are_unresearched(self):
-        # 73 researchable minus the 11 already carrying a citation (1 + 7 + 3).
-        self.assertEqual(len(unresearched()), 62)
+    def test_fifty_six_researchable_cells_are_unresearched(self):
+        # 73 researchable minus the 17 carrying a citation (1 computed-here + 1 computed-elsewhere
+        # + 11 contested + 3 no-prediction + 1 not-established).
+        self.assertEqual(len(unresearched()), 56)
 
     def test_the_triage_covers_every_unresearched_cell_exactly_once(self):
         rows = triage()
-        self.assertEqual(len(rows), 62)
+        self.assertEqual(len(rows), 56)
         self.assertEqual({(r.candidate, r.constraint) for r in rows},
                          set(unresearched()))
 
@@ -61,11 +62,10 @@ class TestTheHonestyContract(unittest.TestCase):
         likelihood is honestly stateable. ``rank_by_eig`` raises outside Mode C, so returning
         12 results is itself the proof the slice is convergent."""
         names = [n for n, _ in mode_c_slice()]
-        # 6 C5 + 5 C3: asymptotic-safety/C3 is already CONTESTED (researched), so it is not in
-        # the slice of still-unresearched cells.
-        self.assertEqual(len(names), 11)
-        self.assertEqual(sum(1 for n in names if n.endswith("C3")), 5)
-        self.assertEqual(sum(1 for n in names if n.endswith("C5")), 6)
+        # C5 is now fully researched (Move 1's first pass), so only the 5 unresearched C3 cells
+        # remain in the slice (asymptotic-safety/C3 is already CONTESTED).
+        self.assertEqual(len(names), 5)
+        self.assertTrue(all(n.endswith("C3") for n in names))
 
     def test_the_rubric_covers_every_constraint(self):
         ids = {c.id for c in CONSTRAINTS}
@@ -91,11 +91,11 @@ class TestTheHonestyContract(unittest.TestCase):
 
 class TestTheHeadOfTheList(unittest.TestCase):
     def test_the_head_is_the_cheapest_decisive_row_today(self):
-        """Current truth: C5 (Bekenstein-Hawking coefficient 1) is the cleanest binary with a known
-        answer, so all six C5 cells head the list. Update this the moment C5 is researched — the
-        triage is meant to move, exactly like the reason-class counts."""
-        head = {(r.candidate, r.constraint) for r in triage()[:6]}
-        self.assertEqual(head, {(c.id, "C5") for c in CANDIDATES})
+        """Current truth: C5 was researched first (Move 1's first pass), so the head has moved to C3
+        (unitarity/ghost — the constraint whose positive control, Stelle, can actually kill). The
+        triage is meant to move exactly like this; update the pin each time the head is researched."""
+        head = {(r.candidate, r.constraint) for r in triage()[:3]}
+        self.assertEqual(head, {(c, "C3") for c in ("causal-sets", "cdt", "gft")})
 
     def test_the_head_is_the_self_consistent_argmax(self):
         """The ordering is by score, so the first row must be the maximum score. A regression in

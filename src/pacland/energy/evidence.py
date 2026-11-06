@@ -142,6 +142,49 @@ EVIDENCE: dict[tuple[str, str], Note] = {
         "predicate is about the framework, and the KKLT question is outside that scope",
         "scripts/validate_t6.py (21/21), scripts/validate_t6_sympy.py (8/8), scripts/no_ds_t6.py",
     ),
+    ("strings-adscft", "C5"): Note(
+        COMPUTED_ELSEWHERE,
+        "Strominger-Vafa count the degeneracy of BPS soliton bound states and derive S = A/4 with "
+        "coefficient exactly 1, for five-dimensional extremal BPS black holes - a specific class, not "
+        "generic black holes",
+        "arXiv:hep-th/9601029",
+    ),
+    ("lqg-spinfoam", "C5"): Note(
+        CONTESTED,
+        "the original isolated-horizon counting recovered S = A/4 only by tuning the free Immirzi "
+        "parameter; the later SU(2) Chern-Simons counting claims coefficient 1 independent of the Immirzi "
+        "parameter, but that claim coexists with competing countings and a disputed log-correction",
+        "arXiv:gr-qc/9710007, arXiv:0905.3168, arXiv:1011.2961, arXiv:1107.1320",
+    ),
+    ("asymptotic-safety", "C5"): Note(
+        CONTESTED,
+        "Falls-Litim recover S = A/4G only as the infrared limit of the RG-improved entropy S_k = A/4G(k) "
+        "- the 1/4 is inherited from the semiclassical law as G(k) runs to G_N, with running-coupling and "
+        "logarithmic corrections; a leading-order area law, not an exact coefficient-1 derivation",
+        "arXiv:1212.1821, arXiv:1212.4274, arXiv:1002.0260",
+    ),
+    ("cdt", "C5"): Note(
+        NOT_ESTABLISHED,
+        "no CDT computation recovers a black-hole entropy-area coefficient; the closest work "
+        "(Dittrich-Loll) builds a quantum horizon finder / counting formula and frames the black-hole "
+        "path integral as a step still to be taken",
+        "arXiv:gr-qc/0506035, arXiv:1007.2560, arXiv:1301.1109",
+    ),
+    ("causal-sets", "C5"): Note(
+        CONTESTED,
+        "the horizon-entropy counting (Dou-Sorkin) gives S proportional to area in 1+1 dimensions only, "
+        "with an undetermined order-one constant and no derivation of the exact 1/4; the causal-links "
+        "proposal fails beyond 2D",
+        "arXiv:gr-qc/0302009, arXiv:gr-qc/0106024, arXiv:hep-th/0504037, arXiv:2307.04150",
+    ),
+    ("gft", "C5"): Note(
+        CONTESTED,
+        "Oriti-Pranzetti-Sindoni obtain an area-law entanglement entropy S proportional to A for GFT "
+        "condensate horizons, but recover the exact 1/4 only by imposing consistency with semiclassical "
+        "horizon boundary conditions while omitting the microscopic GFT dynamics - a matched "
+        "normalisation, not an independent derivation of coefficient 1",
+        "arXiv:1510.06991",
+    ),
 }
 
 
