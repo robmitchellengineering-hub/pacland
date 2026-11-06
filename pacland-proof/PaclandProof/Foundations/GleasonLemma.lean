@@ -429,6 +429,34 @@ theorem symm_is_frame (p : Fin 3 → ℝ) (hp : unitVec3 p)
   dsimp [symm]
   linarith
 
+/-- **The great-circle identity (★)** — for a weight-2 frame function `g`, if
+`{r,q,n}` and `{s,t,n}` are orthonormal triples sharing the normal `n`, then
+`g r + g q = g s + g t`. This is the identity behind Richman–Bridges' monotonicity
+lemma (their Lemma 16). -/
+theorem weight2_frame_relation (g : (Fin 3 → ℝ) → ℝ)
+    (hg : ∀ e1 e2 e3, unitVec3 e1 → unitVec3 e2 → unitVec3 e3 →
+      orthVec3 e1 e2 → orthVec3 e1 e3 → orthVec3 e2 e3 → g e1 + g e2 + g e3 = 2)
+    (r q n s t : Fin 3 → ℝ)
+    (hr : unitVec3 r) (hq : unitVec3 q) (hn : unitVec3 n)
+    (hs : unitVec3 s) (ht : unitVec3 t)
+    (h12 : orthVec3 r q) (h13 : orthVec3 r n) (h23 : orthVec3 q n)
+    (h12' : orthVec3 s t) (h13' : orthVec3 s n) (h23' : orthVec3 t n) :
+    g r + g q = g s + g t := by
+  have h1 : g r + g q + g n = 2 := hg r q n hr hq hn h12 h13 h23
+  have h2 : g s + g t + g n = 2 := hg s t n hs ht hn h12' h13' h23'
+  linarith
+
+/-- **The monotonicity bound** (abstract form of Richman–Bridges' Lemma 16). From
+the identity `g r + g q = g s + g t`, the equator value `g q = 1 − f p`, and the
+upper bound `g t ≤ 1 + f p` (from `g ≥ 0` and `g t + g q + g n = 2`), we get
+`g r ≤ g s + 2·f p`. -/
+theorem monotonicity_bound (g : (Fin 3 → ℝ) → ℝ) (f : (Fin 3 → ℝ) → ℝ)
+    (r q s t : Fin 3 → ℝ) (p : Fin 3 → ℝ)
+    (h_identity : g r + g q = g s + g t)
+    (h_eq : g q = 1 - f p) (h_bound : g t ≤ 1 + f p) :
+    g r ≤ g s + 2 * f p := by
+  linarith [h_identity, h_eq, h_bound]
+
 /-- **The transport** — an increment is invariant under the 90° rotation of its
 straddle axis: for unit `u ⊥ v`, `a² + b² = 1`,
 `f(a·u + b·v) − f(a·u − b·v) = f(b·u + a·v) − f(−b·u + a·v)`. The continuity
