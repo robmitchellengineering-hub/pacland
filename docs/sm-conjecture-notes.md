@@ -139,3 +139,13 @@ closed form — including the Jarlskog syzygy, which the earlier free-ring appro
   matching the Lie-algebra rank test.
 * This is the "Molien/Hilbert–Serre" step the Lean plan named as an empty gap — now *computed*
   (sympy), though not yet *kernel-checked* in Lean.
+
+## Update 2026-11-07 (3) — neutrino/flavor sector: no new constraint, free column grows
+
+`scripts/validate_sm_neutrino_flavor.py`: the lepton flavor sector `(Y_e, Y_nu)` is *structurally
+identical* to the quark sector (two 3×3 matrices under one shared GL(3)), so the **PMNS invariant
+ring = the CKM ring** — same exact Hilbert series, dimension 10 (3 charged + 3 ν masses + 4 PMNS).
+Combined quark×lepton flavor: dimension 20 (Dirac) / 22 (Majorana, +2 phases). Totals: **26
+(Dirac) / 28 (Majorana)**. Neutrinos are gauge singlets, so anomaly cancellation is unchanged —
+**no new constraint; the free column grows by +7/+9**. The constraint-first statement is stable
+under the neutrino extension.
