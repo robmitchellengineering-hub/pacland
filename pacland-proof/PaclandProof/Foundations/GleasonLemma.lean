@@ -1,4 +1,5 @@
 import Mathlib
+import PaclandProof.Foundations.Cauchy
 
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
@@ -600,6 +601,87 @@ theorem realize (p : Fin 3 → ℝ) (hp : unitVec3 p) (a b c : ℝ)
       rw [ht1.2, ht2_p] at hparseval
       nlinarith [hparseval, habc]
     refine ⟨t1, t2, t3, ht1.1, ht2_unit, ht3_unit, ht2_orth', ht3_orth1, ht3_orth2, ht1.2, ht2_p, ht3_p⟩
+
+/-- Cauchy–Schwarz for unit vectors: `(u·v)² ≤ 1`. -/
+theorem sq_dot_le_one_of_unit (u v : Fin 3 → ℝ) (hu : unitVec3 u) (hv : unitVec3 v) :
+    (dotProduct u v) ^ 2 ≤ 1 := by
+  have hcs : (dotProduct u u) * (dotProduct v v) - (dotProduct u v) ^ 2
+      = (u 0 * v 1 - u 1 * v 0) ^ 2 + (u 0 * v 2 - u 2 * v 0) ^ 2 + (u 1 * v 2 - u 2 * v 1) ^ 2 := by
+    simp [dotProduct, Fin.sum_univ_three]
+    ring
+  have hnonneg : 0 ≤ (dotProduct u u) * (dotProduct v v) - (dotProduct u v) ^ 2 := by
+    rw [hcs]
+    nlinarith [sq_nonneg (u 0 * v 1 - u 1 * v 0), sq_nonneg (u 0 * v 2 - u 2 * v 0), sq_nonneg (u 1 * v 2 - u 2 * v 1)]
+  have hu' : dotProduct u u = 1 := by simpa [unitVec3] using hu
+  have hv' : dotProduct v v = 1 := by simpa [unitVec3] using hv
+  nlinarith [hnonneg, hu', hv']
+
+/-- **The assembly** (Gleason's theorem, dim 3, conditional on latitude
+invariance). A nonnegative frame function `f` that depends only on the squared
+projection `(t·p)²` is affine in it: `f t = (f p − f q)·(t·p)² + f q`, i.e.
+`f t = Tr(ρ·ttᵀ)` for the mixed state `ρ = (f p − f q)·ppᵀ + f q·I`. -/
+theorem gleason_assembly (p q : Fin 3 → ℝ) (hp : unitVec3 p) (hq : unitVec3 q) (hpq : orthVec3 p q)
+    (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (hpos : ∀ x, unitVec3 x → 0 ≤ f x)
+    (hlat : ∀ t t', unitVec3 t → unitVec3 t' → (dotProduct t p) ^ 2 = (dotProduct t' p) ^ 2 → f t = f t') :
+    ∀ t, unitVec3 t → f t = (f p - f q) * (dotProduct t p) ^ 2 + f q := by
+  let F : ℝ → ℝ := fun a => f (Real.sqrt a • p + Real.sqrt (1 - a) • q)
+  have hF_bounded : ∃ M : ℝ, ∀ a, 0 ≤ a → a ≤ 1 → |F a| ≤ M := by
+    refine ⟨1, ?_⟩
+    intro a ha ha1
+    have hta : unitVec3 (Real.sqrt a • p + Real.sqrt (1 - a) • q) :=
+      (unit_smul_of_latitude p q hp hq hpq a ha ha1).1
+    have hnonneg : 0 ≤ F a := by dsimp [F]; exact hpos _ hta
+    have hle : F a ≤ 1 := by dsimp [F]; exact frameFunction3_bounded f hf hpos _ hta
+    dsimp [F]
+    rw [abs_of_nonneg hnonneg]
+    exact hle
+  have hF : ∀ a b c, 0 ≤ a → 0 ≤ b → 0 ≤ c → a + b + c = 1 → F a + F b + F c = F 1 + 2 * F 0 := by
+    intro a b c ha hb hc habc
+    rcases realize p hp a b c ha hb hc habc with ⟨t1, t2, t3, ht1, ht2, ht3, h12, h13, h23, hp1, hp2, hp3⟩
+    have hFa : F a = f t1 := by
+      dsimp [F]
+      exact hlat _ t1 (unit_smul_of_latitude p q hp hq hpq a ha (by linarith)).1 ht1
+        (by rw [(unit_smul_of_latitude p q hp hq hpq a ha (by linarith)).2, hp1])
+    have hFb : F b = f t2 := by
+      dsimp [F]
+      exact hlat _ t2 (unit_smul_of_latitude p q hp hq hpq b hb (by linarith)).1 ht2
+        (by rw [(unit_smul_of_latitude p q hp hq hpq b hb (by linarith)).2, hp2])
+    have hFc : F c = f t3 := by
+      dsimp [F]
+      exact hlat _ t3 (unit_smul_of_latitude p q hp hq hpq c hc (by linarith)).1 ht3
+        (by rw [(unit_smul_of_latitude p q hp hq hpq c hc (by linarith)).2, hp3])
+    have hframe : f t1 + f t2 + f t3 = 1 := hf t1 t2 t3 ht1 ht2 ht3 h12 h13 h23
+    have hF1 : F 1 = f p := by dsimp [F]; simp [Real.sqrt_one, Real.sqrt_zero]
+    have hF0 : F 0 = f q := by dsimp [F]; simp [Real.sqrt_one, Real.sqrt_zero]
+    have hpq_cross : f (cross p q) = f q := by
+      apply hlat
+      · exact cross_unit p q hp hq hpq
+      · exact hq
+      · have h1 : dotProduct (cross p q) p = 0 := by
+          rw [dotProduct_symm]
+          simpa [orthVec3] using cross_orth_left p q
+        have h2 : dotProduct q p = 0 := by rw [dotProduct_symm]; simpa [orthVec3] using hpq
+        simp [h1, h2]
+    have hsum1 : f p + f q + f (cross p q) = 1 :=
+      hf p q (cross p q) hp hq (cross_unit p q hp hq hpq) hpq (cross_orth_left p q) (cross_orth_right p q)
+    rw [hFa, hFb, hFc, hF1, hF0]
+    rw [hpq_cross] at hsum1
+    linarith [hframe, hsum1]
+  have hFlin := Cauchy.affine_of_triple_sum F hF hF_bounded
+  have hF1 : F 1 = f p := by dsimp [F]; simp [Real.sqrt_one, Real.sqrt_zero]
+  have hF0 : F 0 = f q := by dsimp [F]; simp [Real.sqrt_one, Real.sqrt_zero]
+  intro t ht
+  have hproj_nonneg : 0 ≤ (dotProduct t p) ^ 2 := sq_nonneg _
+  have hproj_le : (dotProduct t p) ^ 2 ≤ 1 := sq_dot_le_one_of_unit t p ht hp
+  have hFt := hFlin ((dotProduct t p) ^ 2) hproj_nonneg hproj_le
+  have hF_eq_ft : F ((dotProduct t p) ^ 2) = f t := by
+    dsimp [F]
+    apply hlat
+    · exact (unit_smul_of_latitude p q hp hq hpq ((dotProduct t p) ^ 2) hproj_nonneg hproj_le).1
+    · exact ht
+    · rw [(unit_smul_of_latitude p q hp hq hpq ((dotProduct t p) ^ 2) hproj_nonneg hproj_le).2]
+  rw [← hF_eq_ft, hFt, hF1, hF0]
 
 end GleasonLemma
 
