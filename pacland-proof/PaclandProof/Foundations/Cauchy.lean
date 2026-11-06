@@ -191,6 +191,27 @@ theorem additive_linear_of_bounded (a : ℝ → ℝ)
   dsimp [g] at hx
   linarith
 
+/-- **CKM's triple-sum functional equation** (the core of Gleason's theorem).
+If `h 0 = 0` and `h a + h b + h c = 0` whenever `a + b + c = 1` (all nonnegative),
+then `h` is additive on `[0,1]`: `h(a+b) = h a + h b` for `a + b ≤ 1`. This
+turns the frame property (via Parseval) into Cauchy's equation. -/
+theorem triple_sum_additive (h : ℝ → ℝ)
+    (h0 : h 0 = 0)
+    (hsum : ∀ a b c, 0 ≤ a → 0 ≤ b → 0 ≤ c → a + b + c = 1 → h a + h b + h c = 0) :
+    ∀ a b, 0 ≤ a → 0 ≤ b → a + b ≤ 1 → h (a + b) = h a + h b := by
+  have h1 : h 1 = 0 := by
+    have h' := hsum 1 0 0 (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    simpa [h0] using h'
+  have hneg : ∀ x, 0 ≤ x → x ≤ 1 → h (1 - x) = -h x := by
+    intro x hx hx1
+    have h' := hsum x (1 - x) 0 hx (by linarith) (by norm_num) (by ring)
+    have h'' : h x + h (1 - x) = 0 := by simpa [h0] using h'
+    linarith
+  intro a b ha hb hab
+  have h' := hsum a b (1 - (a + b)) ha hb (by linarith) (by ring)
+  have hneg' : h (1 - (a + b)) = -h (a + b) := hneg (a + b) (by linarith) hab
+  linarith [h', hneg']
+
 end Cauchy
 
 end
