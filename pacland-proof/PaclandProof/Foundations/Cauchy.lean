@@ -286,6 +286,61 @@ theorem zero_of_triple_sum (h : ℝ → ℝ)
     have hfract : fract t = t := fract_eq_self.2 ⟨ht, htlt1⟩
     simpa [hfract] using hHt'
 
+/-- **Affine CKM**: a bounded `F` with `F a + F b + F c = F 1 + 2·F 0` whenever
+`a + b + c = 1` (nonnegative) is affine-linear on `[0,1]`:
+`F t = (F 1 − F 0)·t + F 0`. (Reduces to the linear case by subtracting the
+affine part.) -/
+theorem affine_of_triple_sum (F : ℝ → ℝ)
+    (hF : ∀ a b c, 0 ≤ a → 0 ≤ b → 0 ≤ c → a + b + c = 1 → F a + F b + F c = F 1 + 2 * F 0)
+    (hbounded : ∃ M : ℝ, ∀ a, 0 ≤ a → a ≤ 1 → |F a| ≤ M) :
+    ∀ t, 0 ≤ t → t ≤ 1 → F t = (F 1 - F 0) * t + F 0 := by
+  let h : ℝ → ℝ := fun t => F t - (F 1 - F 0) * t - F 0
+  have h0 : h 0 = 0 := by simp [h]
+  have hsum : ∀ a b c, 0 ≤ a → 0 ≤ b → 0 ≤ c → a + b + c = 1 → h a + h b + h c = 0 := by
+    intro a b c ha hb hc habc
+    have hF' := hF a b c ha hb hc habc
+    dsimp [h]
+    calc
+      (F a - (F 1 - F 0) * a - F 0) + (F b - (F 1 - F 0) * b - F 0) + (F c - (F 1 - F 0) * c - F 0)
+          = (F a + F b + F c) - (F 1 - F 0) * (a + b + c) - 3 * F 0 := by ring
+      _ = (F 1 + 2 * F 0) - (F 1 - F 0) * 1 - 3 * F 0 := by rw [hF', habc]
+      _ = 0 := by ring
+  have hbounded' : ∃ M : ℝ, ∀ a, 0 ≤ a → a ≤ 1 → |h a| ≤ M := by
+    rcases hbounded with ⟨M, hM⟩
+    refine ⟨4 * M, ?_⟩
+    intro a ha ha1
+    have hFa : |F a| ≤ M := hM a ha ha1
+    have hF0 : |F 0| ≤ M := hM 0 (by norm_num) (by norm_num)
+    have hF1 : |F 1| ≤ M := hM 1 (by norm_num) (by norm_num)
+    dsimp [h]
+    have htri1 : |F a - (F 1 - F 0) * a - F 0| ≤ |F a - (F 1 - F 0) * a| + |F 0| := by
+      calc
+        |F a - (F 1 - F 0) * a - F 0| = |(F a - (F 1 - F 0) * a) + (-F 0)| := rfl
+        _ ≤ |F a - (F 1 - F 0) * a| + |-F 0| := abs_add_le (F a - (F 1 - F 0) * a) (-F 0)
+        _ = |F a - (F 1 - F 0) * a| + |F 0| := by rw [abs_neg]
+    have htri2 : |F a - (F 1 - F 0) * a| ≤ |F a| + |(F 1 - F 0) * a| := by
+      calc
+        |F a - (F 1 - F 0) * a| = |F a + (-((F 1 - F 0) * a))| := rfl
+        _ ≤ |F a| + |-((F 1 - F 0) * a)| := abs_add_le (F a) (-((F 1 - F 0) * a))
+        _ = |F a| + |(F 1 - F 0) * a| := by rw [abs_neg]
+    have htri3 : |F 1 - F 0| ≤ |F 1| + |F 0| := by
+      calc
+        |F 1 - F 0| = |F 1 + (-F 0)| := rfl
+        _ ≤ |F 1| + |-F 0| := abs_add_le (F 1) (-F 0)
+        _ = |F 1| + |F 0| := by rw [abs_neg]
+    have hmul : |(F 1 - F 0) * a| ≤ |F 1 - F 0| := by
+      calc
+        |(F 1 - F 0) * a| = |F 1 - F 0| * |a| := by rw [abs_mul]
+        _ ≤ |F 1 - F 0| * 1 := by
+          exact mul_le_mul_of_nonneg_left (by rw [abs_of_nonneg ha]; exact ha1) (abs_nonneg (F 1 - F 0))
+        _ = |F 1 - F 0| := by ring
+    nlinarith [htri1, htri2, htri3, hmul, hFa, hF0, hF1]
+  have hzero := zero_of_triple_sum h h0 hsum hbounded'
+  intro t ht ht1
+  have hz := hzero t ht ht1
+  dsimp [h] at hz
+  linarith
+
 end Cauchy
 
 end
