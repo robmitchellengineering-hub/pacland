@@ -125,7 +125,11 @@ if __name__ == "__main__":
         # k=2: C[N11,N22,S,D] -> pairing dims 3,7,13,22
         d2 = invariant_dims(2, 4)
         assert d2 == [3, 7, 13, 22], f"k=2 fail: {d2}"
-        print(f"k2-joint self-test: k=1 {d1} (C[N]); k=2 {d2} (C[N11,N22,S,D]) — OK")
+        # k=3 (fast, low degree): 6 quadratics + 6 quartics -> [6, 27]
+        d3 = invariant_dims(3, 2)
+        assert d3 == [6, 27], f"k=3 fail: {d3}"
+        print(f"k-joint self-test: k=1 {d1} (C[N]); k=2 {d2} (C[N11,N22,S,D]); "
+              f"k=3 {d3} (6 quadratics + 6 quartics) — OK")
         sys.exit(0)
     k = int(sys.argv[1]) if len(sys.argv) > 1 else 2
     maxd = int(sys.argv[2]) if len(sys.argv) > 2 else 4
