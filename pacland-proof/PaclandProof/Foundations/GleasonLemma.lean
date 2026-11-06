@@ -730,6 +730,61 @@ theorem l5_scalars (r : ℝ) (hr : 0 < r) (hr1 : r < 1) :
     ring
   exact ⟨⟨hγ_gt, hγ_lt⟩, ⟨ha_gt, ha_lt⟩, ⟨hs₀_gt, hs₀_lt⟩, hsum⟩
 
+/-- **L5 F0**: for unit `u,e`, `(u−e)·e = −‖u−e‖²/2`. -/
+theorem l5_f0 (u e : Fin 3 → ℝ) (hu : unitVec3 u) (he : unitVec3 e) :
+    dotProduct (u - e) e = - dotProduct (u - e) (u - e) / 2 := by
+  have hwe : dotProduct (u - e) e = dotProduct u e - 1 := by
+    rw [dotProduct_sub_left u e e]
+    have hee : dotProduct e e = 1 := by simpa [unitVec3] using he
+    rw [hee]
+  have hww : dotProduct (u - e) (u - e) = 2 - 2 * dotProduct u e := by
+    rw [dotProduct_sub_left u e (u - e)]
+    rw [dotProduct_sub_right u u e, dotProduct_sub_right e u e]
+    have huu : dotProduct u u = 1 := by simpa [unitVec3] using hu
+    have hee : dotProduct e e = 1 := by simpa [unitVec3] using he
+    rw [huu, hee]
+    rw [dotProduct_symm e u]
+    ring
+  rw [hwe]
+  nlinarith [hww]
+
+/-- The `v`-vector of L5: `v = a·e + b·p` (unit, due south of `e` at distance `r/2`). -/
+def l5_v (e p : Fin 3 → ℝ) (r : ℝ) : Fin 3 → ℝ :=
+  (1 - r ^ 2 / 8) • e + (-(r / 2) * Real.sqrt (1 - r ^ 2 / 16)) • p
+
+/-- `v·e = a` and `v·p = b` for the L5 `v` (unit `e ⊥ p`). -/
+theorem l5_v_dots (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (r : ℝ) :
+    dotProduct (l5_v e p r) e = 1 - r ^ 2 / 8 ∧ dotProduct (l5_v e p r) p = -(r / 2) * Real.sqrt (1 - r ^ 2 / 16) := by
+  constructor
+  · dsimp [l5_v]
+    rw [dotProduct_add_smul e p e (1 - r ^ 2 / 8) (-(r / 2) * Real.sqrt (1 - r ^ 2 / 16))]
+    have hee : dotProduct e e = 1 := by simpa [unitVec3] using he
+    have hep0 : dotProduct p e = 0 := by simpa [orthVec3, dotProduct_symm] using hep
+    rw [hee, hep0]
+    ring
+  · dsimp [l5_v]
+    rw [dotProduct_add_smul e p p (1 - r ^ 2 / 8) (-(r / 2) * Real.sqrt (1 - r ^ 2 / 16))]
+    have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+    have hep0 : dotProduct e p = 0 := by simpa [orthVec3] using hep
+    rw [hpp, hep0]
+    ring
+
+/-- The L5 `v` is a unit vector (for `0 < r < 1`, unit `e ⊥ p`). -/
+theorem l5_v_unit (e p : Fin 3 → ℝ) (he : unitVec3 e) (hp : unitVec3 p) (hep : orthVec3 e p)
+    (r : ℝ) (hr : 0 < r) (hr1 : r < 1) :
+    unitVec3 (l5_v e p r) := by
+  have hγsq : (Real.sqrt (1 - r ^ 2 / 16)) ^ 2 = 1 - r ^ 2 / 16 :=
+    Real.sq_sqrt (by nlinarith [sq_nonneg r] : 0 ≤ 1 - r ^ 2 / 16)
+  change dotProduct ((1 - r ^ 2 / 8) • e + (-(r / 2) * Real.sqrt (1 - r ^ 2 / 16)) • p) ((1 - r ^ 2 / 8) • e + (-(r / 2) * Real.sqrt (1 - r ^ 2 / 16)) • p) = 1
+  rw [dotProduct_expand e p (1 - r ^ 2 / 8) (-(r / 2) * Real.sqrt (1 - r ^ 2 / 16))]
+  have hee : dotProduct e e = 1 := by simpa [unitVec3] using he
+  have hpp : dotProduct p p = 1 := by simpa [unitVec3] using hp
+  have hep0 : dotProduct e p = 0 := by simpa [orthVec3] using hep
+  rw [hee, hpp, hep0]
+  rw [mul_pow, hγsq]
+  ring
+
 /-- The symmetrization `g(x) = f x + f(ρ x)` about `p` (`ρ = rot90p p`). -/
 def symm (p : Fin 3 → ℝ) (f : (Fin 3 → ℝ) → ℝ) (x : Fin 3 → ℝ) : ℝ :=
   f x + f (rot90p p x)
