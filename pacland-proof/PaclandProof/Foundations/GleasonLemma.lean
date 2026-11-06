@@ -220,6 +220,19 @@ theorem two_dim_sum_eq_one_minus_z (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunc
   have h := hf x y (cross x y) hx hy hz hxy (cross_orth_left x y) (cross_orth_right x y)
   linarith
 
+/-- **The transport** — an increment is invariant under the 90° rotation of its
+straddle axis: for unit `u ⊥ v`, `a² + b² = 1`,
+`f(a·u + b·v) − f(a·u − b·v) = f(b·u + a·v) − f(−b·u + a·v)`. The continuity
+estimate iterates this. -/
+theorem transport (f : (Fin 3 → ℝ) → ℝ) (hf : FrameFunction3 f)
+    (u v : Fin 3 → ℝ) (hu : unitVec3 u) (hv : unitVec3 v) (horth : orthVec3 u v)
+    (a b : ℝ) (hαβ : a ^ 2 + b ^ 2 = 1) :
+    f (a • u + b • v) - f (a • u + (-b) • v) = f (b • u + a • v) - f ((-b) • u + a • v) := by
+  have h1 := two_dim_additivity f hf u v hu hv horth a b hαβ
+  have h2 := two_dim_additivity f hf u v hu hv horth a (-b) (by simpa [sq] using hαβ)
+  rw [show -(-b) = b by ring] at h2
+  nlinarith [h1, h2]
+
 /-- The squared norm. -/
 def normSq (v : Fin 3 → ℝ) : ℝ := dotProduct v v
 
