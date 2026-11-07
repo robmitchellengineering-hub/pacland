@@ -43,6 +43,19 @@ theorem einstein_divergence_free (gInv g : Fin n → Fin n → ℝ) (DR : CovDer
   have h := lovelock_divergence gInv g DR h_symm h_asym34 h_asym12 h_second h_inv 1 (-1 / 2 : ℝ) d
   nlinarith [h]
 
+/-- **The gravitational coupling is a free label.** The Einstein tensor's divergence-freeness
+(`∇·G = 0`) involves no coupling constant, so the consistency condition `∇·T = 0` that follows from
+`G = κ T` holds for every `κ ≠ 0`: the value `κ = 8πG` is not fixed by consistency — it is the QG
+analog of the SM's `N_gen` (a label, not a prediction). -/
+theorem coupling_free (gInv g : Fin n → Fin n → ℝ) (DR : CovDerivCurvature n)
+    (h_symm : ∀ a b, gInv a b = gInv b a)
+    (h_asym34 : ∀ e a b c d, DR e a b c d = - DR e a b d c)
+    (h_asym12 : ∀ e a b c d, DR e a b c d = - DR e b a c d)
+    (h_second : SecondBianchi DR)
+    (h_inv : ∀ e d, (∑ b : Fin n, gInv b e * g b d) = if e = d then (1 : ℝ) else 0) :
+    ∀ d, divEinstein gInv g DR d = 0 :=
+  einstein_divergence_free gInv g DR h_symm h_asym34 h_asym12 h_second h_inv
+
 end
 
 end Gravity
