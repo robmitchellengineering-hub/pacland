@@ -155,62 +155,6 @@ h2{scroll-margin-top:6rem}
   <div><strong>3</strong><span>gates, all three have refused something</span></div>
 </section>
 
-<h2 id="calculators">Calculators — for a quick reference, and for confidence</h2>
-<p class="lead">Two things you can check in a browser, no install. Both are the same arithmetic the repo runs.</p>
-<div class="grid grid--2">
-  <div class="card calc">
-    <h3>What does your m buy you?</h3>
-    <p class="muted">The certificate radius from the count of validated observables and your confidence budget.</p>
-    <label>validated observables (m) <input id="c-m" type="number" value="4" min="1" step="1"></label>
-    <label>confidence budget (δ) <input id="c-d" type="number" value="0.025" min="0.0001" max="0.5" step="0.005"></label>
-    <p class="out"><strong id="c-radius">—</strong></p>
-    <p class="muted small" id="c-note"></p>
-  </div>
-  <div class="card calc">
-    <h3>Does it beat the null?</h3>
-    <p class="muted">Enter your forecast error and the no-change benchmark's. The gate is the ratio.</p>
-    <label>your RMSE <input id="c-mine" type="number" value="1.26" step="0.01"></label>
-    <label>null RMSE <input id="c-null" type="number" value="5.06" step="0.01"></label>
-    <p class="out"><strong id="c-ratio">—</strong></p>
-    <p class="muted small" id="c-verdict"></p>
-  </div>
-</div>
-
-<h2 id="search">Find anything</h2>
-<input id="q" type="search" class="searchbox" placeholder="search 190 docs, scripts and explainers — try “null”, “roster”, “ECS”…">
-<ul id="q-results" class="results"></ul>
-<p class="muted">Or open the full searchable index: <a href="./all.html">find anything →</a></p>
-
-<details class="fold">
-<summary>The unification, stated correctly</summary>
-<h2 id="deterministic">Deterministic in use — 43,046,720 vacua, counted exactly</h2>
-<p class="lead">A part of quantum gravity is now <strong>deterministic in use</strong>. Not deterministic in the sense of hidden variables or the measurement problem — in the sense that <strong>every question this sector can answer is answered by an exact count</strong>: no sampler, no probability, and no run-to-run variance.</p>
-<table>
-  <thead><tr><th>b₃</th><th>flux pairs in the window</th><th>orbits verified</th><th>matches the closed form</th></tr></thead>
-  <tbody>
-    <tr><td>2</td><td>81</td><td>80</td><td>yes</td></tr>
-    <tr><td>4</td><td>6,561</td><td>6,560</td><td>yes</td></tr>
-    <tr><td>6</td><td>531,441</td><td>531,440</td><td>yes</td></tr>
-    <tr><td><strong>8</strong></td><td><strong>43,046,721</strong></td><td><strong>43,046,720</strong></td><td><strong>yes</strong></td></tr>
-  </tbody>
-</table>
-<p>The tadpole count is a closed form — <code>count(N) = [xᴺ] P(x)^(b₃/2)</code> with <code>P = 4x² + 20x + 33 + 20x⁻¹ + 4x⁻²</code> — and at <code>b₃ = 8</code> it was checked against <strong>full enumeration of every one of those 43 million pairs</strong>. Every tadpole class matches. Then it was checked again by a second implementation that shares no code path with the first (nested loops over the definition, no numpy, no polynomial): same 43,046,720 orbits, same 17 classes, in 69 seconds.</p>
-
-<div class="callout">
-  <p><strong>Why this is a gap and not a slogan.</strong> The alternative method for these same questions is sampling with a budget, and it cannot reach this. Sampling needs a per-point search and returns <strong>0.00137 points per try</strong> at <code>b₃ = 12</code>; 43 million exact pairs is a computation no sampling budget arrives at. So the sector has a region where the answer is a <em>number</em>, not a distribution — and that is a thing the statistical treatment of the landscape cannot say about itself.</p>
-</div>
-
-<p><strong>What it is, precisely — the two qualifiers are the claim.</strong> Drop either and it stops being true.</p>
-<table>
-  <thead><tr><th>qualifier</th><th>what it excludes</th></tr></thead>
-  <tbody>
-    <tr><td><strong>the flux sector</strong></td><td>not quantum mechanics: no amplitudes are computed, the Born rule never appears, and Bell is untouched — nothing here could address it.</td></tr>
-    <tr><td><strong>the enumerable window</strong></td><td>not the physical flux range: today <code>b₃ ≤ 8</code>, while the quintic is <code>b₃ = 204</code>. The exact tier reaches about 4% of the way there.</td></tr>
-  </tbody>
-</table>
-<p class="muted">The falsifiers, stated so they can be used: a third implementation disagreeing at any rung, or a re-run on different hardware producing a different total. Both would mean the count is not deterministic after all. The <code>b₃ ≤ 6</code> agreement is guarded by a test; the <code>b₃ = 8</code> result is registered in the claims ledger with two independent lines of evidence.</p>
-<p class="links"><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/deterministic-in-use.md">the claim, in full →</a><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tadpole_independent_count.py">the independent count</a><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/claims.json">the claims ledger</a></p>
-
 <h2 id="physics">Physics — the whole argument, in one place</h2>
 <p class="lead">The founding discipline. Everything below the fold is a part of it; this is how the parts fit together. Read this, then open any part that matters to you.</p>
 
@@ -255,6 +199,68 @@ h2{scroll-margin-top:6rem}
 the longer version: <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf">the full explainer (PDF)</a> ·
 the formal record: <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/docs">the docs</a>.</p>
 
+
+
+<h2 id="calculators">Calculators — for a quick reference, and for confidence</h2>
+<p class="lead">Two things you can check in a browser, no install. Both are the same arithmetic the repo runs.</p>
+<div class="grid grid--2">
+  <div class="card calc">
+    <h3>What does your m buy you?</h3>
+    <p class="muted">The certificate radius from the count of validated observables and your confidence budget.</p>
+    <label>validated observables (m) <input id="c-m" type="number" value="4" min="1" step="1"></label>
+    <label>confidence budget (δ) <input id="c-d" type="number" value="0.025" min="0.0001" max="0.5" step="0.005"></label>
+    <p class="out"><strong id="c-radius">—</strong></p>
+    <p class="muted small" id="c-note"></p>
+  </div>
+  <div class="card calc">
+    <h3>Does it beat the null?</h3>
+    <p class="muted">Enter your forecast error and the no-change benchmark's. The gate is the ratio.</p>
+    <label>your RMSE <input id="c-mine" type="number" value="1.26" step="0.01"></label>
+    <label>null RMSE <input id="c-null" type="number" value="5.06" step="0.01"></label>
+    <p class="out"><strong id="c-ratio">—</strong></p>
+    <p class="muted small" id="c-verdict"></p>
+  </div>
+</div>
+
+<h2 id="search">Find anything</h2>
+<input id="q" type="search" class="searchbox" placeholder="search 190 docs, scripts and explainers — try “null”, “roster”, “ECS”…">
+<ul id="q-results" class="results"></ul>
+<p class="muted">Or open the full searchable index: <a href="./all.html">find anything →</a></p>
+
+<details class="fold">
+<summary>The deterministic result — 43,046,720 vacua counted exactly</summary>
+<h2 id="deterministic">Deterministic in use — 43,046,720 vacua, counted exactly</h2>
+<p class="lead">A part of quantum gravity is now <strong>deterministic in use</strong>. Not deterministic in the sense of hidden variables or the measurement problem — in the sense that <strong>every question this sector can answer is answered by an exact count</strong>: no sampler, no probability, and no run-to-run variance.</p>
+<table>
+  <thead><tr><th>b₃</th><th>flux pairs in the window</th><th>orbits verified</th><th>matches the closed form</th></tr></thead>
+  <tbody>
+    <tr><td>2</td><td>81</td><td>80</td><td>yes</td></tr>
+    <tr><td>4</td><td>6,561</td><td>6,560</td><td>yes</td></tr>
+    <tr><td>6</td><td>531,441</td><td>531,440</td><td>yes</td></tr>
+    <tr><td><strong>8</strong></td><td><strong>43,046,721</strong></td><td><strong>43,046,720</strong></td><td><strong>yes</strong></td></tr>
+  </tbody>
+</table>
+<p>The tadpole count is a closed form — <code>count(N) = [xᴺ] P(x)^(b₃/2)</code> with <code>P = 4x² + 20x + 33 + 20x⁻¹ + 4x⁻²</code> — and at <code>b₃ = 8</code> it was checked against <strong>full enumeration of every one of those 43 million pairs</strong>. Every tadpole class matches. Then it was checked again by a second implementation that shares no code path with the first (nested loops over the definition, no numpy, no polynomial): same 43,046,720 orbits, same 17 classes, in 69 seconds.</p>
+
+<div class="callout">
+  <p><strong>Why this is a gap and not a slogan.</strong> The alternative method for these same questions is sampling with a budget, and it cannot reach this. Sampling needs a per-point search and returns <strong>0.00137 points per try</strong> at <code>b₃ = 12</code>; 43 million exact pairs is a computation no sampling budget arrives at. So the sector has a region where the answer is a <em>number</em>, not a distribution — and that is a thing the statistical treatment of the landscape cannot say about itself.</p>
+</div>
+
+<p><strong>What it is, precisely — the two qualifiers are the claim.</strong> Drop either and it stops being true.</p>
+<table>
+  <thead><tr><th>qualifier</th><th>what it excludes</th></tr></thead>
+  <tbody>
+    <tr><td><strong>the flux sector</strong></td><td>not quantum mechanics: no amplitudes are computed, the Born rule never appears, and Bell is untouched — nothing here could address it.</td></tr>
+    <tr><td><strong>the enumerable window</strong></td><td>not the physical flux range: today <code>b₃ ≤ 8</code>, while the quintic is <code>b₃ = 204</code>. The exact tier reaches about 4% of the way there.</td></tr>
+  </tbody>
+</table>
+<p class="muted">The falsifiers, stated so they can be used: a third implementation disagreeing at any rung, or a re-run on different hardware producing a different total. Both would mean the count is not deterministic after all. The <code>b₃ ≤ 6</code> agreement is guarded by a test; the <code>b₃ = 8</code> result is registered in the claims ledger with two independent lines of evidence.</p>
+<p class="links"><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/deterministic-in-use.md">the claim, in full →</a><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tadpole_independent_count.py">the independent count</a><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/claims.json">the claims ledger</a></p>
+
+</details>
+
+<details class="fold">
+<summary>The unification, stated correctly</summary>
 <h2 id="unification">The unification, stated correctly</h2>
     <p>Three things are true at once — and they are not the same claim. The difference between them is the whole result.</p>
     <div class="grid">
@@ -272,98 +278,9 @@ the formal record: <a href="https://github.com/robmitchellengineering-hub/paclan
       </div>
     </div>
 </details>
-<details class="fold">
-<summary>Everything — linked</summary>
-<h2 id="index">Everything — linked</h2>
-    <div class="grid grid--2">
-      <div class="card">
-        <h3>String landscape</h3>
-        <p><a href="#arc">the arc</a> · <a href="#theorems">theorems</a> · <a href="#sm">SM frontier</a> · <a href="#results">results</a> · <a href="#boundary">boundary map</a> · <a href="#lean">Lean proofs</a></p>
-        <p><a href="#published">the papers (6)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf">explainer (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-startalk.pdf">startalk (PDF)</a> · <a href="https://doi.org/10.5281/zenodo.23497239">published theorem</a></p>
-      </div>
-      <div class="card">
-        <h3>Climate</h3>
-        <p><a href="#climate">section</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-gap-analysis.md">gap analysis</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-observables.md">observables</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">deficit report</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">CMIP6 drift</a></p>
-        <p><a href="./climate.html">the graphs</a> · <a href="./climate-3d.html">the 3D view</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-plain-speak.pdf">plain-speak one-pager (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">full explainer (PDF)</a></p>
-        <p><code>pacland climate</code></p>
-      </div>
-      <div class="card">
-        <h3>Drug discovery</h3>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-gap-analysis.md">gap analysis</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-drugs-explainer.pdf">full explainer (PDF)</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-verification-deficit.md">deficit report</a></p>
-        <p><a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-drugs-explainer.pdf">explainer (PDF)</a></p>
-        <p><code>pacland drugs</code></p>
-      </div>
-      <div class="card">
-        <h3>Energy</h3>
-        <p>Stored-energy ceilings, and the vacuum. A <strong>referee</strong> for candidate quantum-gravity frameworks: 13 conditions × 6 frameworks, scored <code>KILLED</code> / <code>SURVIVES</code> / <code>UNKNOWN</code> — and <strong>UNKNOWN wherever no verifier has run against a read bound</strong>, never a pass.</p>
-        <p><a href="./energy.html"><strong>the quantum gravity page</strong></a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md">the programme</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-conjectures.md">energy claims</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md#c6-is-closed--and-it-closes-the-terminal-clause">why no framework can survive all thirteen</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/src/pacland/energy">the code</a></p>
-        <p><code>python3 -m pacland.energy.referee</code> · <code>python3 -m pacland.energy.profile</code> · <code>python3 -m pacland.energy.frg</code></p>
-      </div>
-      <div class="card">
-        <h3>AI · verified badge</h3>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ai-verified-badge.md">the badge (open spec, licensed SDK)</a></p>
-      </div>
-      <div class="card">
-        <h3>The whole system</h3>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/expansion-map.md">the discipline playbook</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/grounding.md">the grounding</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verification-config.md">the verification config (how)</a> · <a href="#trust">trust board</a></p>
-        <p><code>pacland trust</code></p>
-        <p><code>pacland disciplines</code></p>
-        <p><a href="https://github.com/robmitchellengineering-hub/pacland">GitHub repo</a> — every doc, the code, the tests</p>
-      </div>
-    </div>
-</details>
-<details class="fold">
-<summary>Published</summary>
-<h2 id="published">Published</h2>
-    <div class="card">
-      <h3>Mitchell's Completeness Theorem: no exact invariant selector in the flux landscape</h3>
-      <p>Rob Mitchell · Zenodo · 20 Oct 2026 · open access, CC BY 4.0</p>
-      <p>Record: <a href="https://zenodo.org/records/23497239">zenodo.org/records/23497239</a></p>
-      <p>DOI: <a href="https://doi.org/10.5281/zenodo.23497239">10.5281/zenodo.23497239</a></p>
-      <p class="muted">The flagship theorem paper — verified symbolically (sympy, zero tolerance) and machine-checked in Lean 4 (no axioms). This is the first published item; more will be added here as they publish.</p>
-    </div>
 
-    <h3>The papers — six, led by the flagship synthesis</h3>
-    <table>
-      <thead><tr><th>paper</th><th>what it proves / holds</th></tr></thead>
-      <tbody>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/mitchells-principle.pdf">mitchells-principle.pdf</a></td><td><strong>Mitchell's Principle of Constraint-First Unification</strong> — the flagship synthesis: relations, never values</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/constraint-first-theorem.pdf">constraint-first-theorem.pdf</a></td><td>Mitchell's Uniqueness → Complete Exact Structure (the five-theorem tower)</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/mitchells-laws.pdf">mitchells-laws.pdf</a></td><td>Mitchell's Laws of Duality Covariance — how W and g_s transform under S/T-duality</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/structure-map.pdf">structure-map.pdf</a></td><td>the measurement that motivated the theorem</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/fingerprint.pdf">fingerprint.pdf</a></td><td>the mass spectrum carries no geometric fingerprint</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/PACLAND-preprint.pdf">PACLAND-preprint.pdf</a></td><td>the verification discipline (umbrella)</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/constraint-first-explainer.pdf">constraint-first-explainer.pdf</a></td><td>the plain-English explainer</td></tr>
-      </tbody>
-    </table>
-</details>
-<details class="fold">
-<summary>The arc — measure, then prove, then redeploy</summary>
-<h2 id="arc">The arc — measure, then prove, then redeploy</h2>
-    <p>The project ran in three acts, and this page is ordered so you can follow the whole arc while every original piece stays put.</p>
-    <div class="grid">
-      <div class="card">
-        <h3>Act I — Measure</h3>
-        <p class="muted">We built the <strong>verification discipline</strong> — the two-level certificate, the Mitchell Verification Deficit, the Rule of Three — and measured real flux vacua. The <strong>structure map</strong> came back: only the tadpole is exact (r = 1.0), everything else uniform.</p>
-        <p><a href="#results">What we measured</a> · <a href="#structure">structure map</a> · <a href="#method">Rule of Three</a> · <a href="#deficit">deficit</a> · <a href="#boundary">boundary map</a></p>
-      </div>
-      <div class="card">
-        <h3>Act II — Prove</h3>
-        <p class="muted">The measurement motivated the <strong>theorem tower</strong>: Weyl's FFT proves the tadpole is <em>unique</em>; the no-fingerprint no-go proves no <em>exact invariant</em> selector exists; the Complete Exact Structure theorem proves the ToE = constraints + labels. Machine-checked in Lean. The measurement became redundant for the flux claim — that is the win.</p>
-        <p><a href="#theorems">the theorem tower</a> · <a href="#lean">Lean proofs</a> · the <a href="#theorems">Five Pillars</a></p>
-      </div>
-      <div class="card">
-        <h3>Act III — the laws</h3>
-        <p class="muted">The theorem says what's <em>invariant</em>; the laws say what's <em>covariant</em>. Measured on real vacua at h12 = 2 and 5: <strong>Mitchell's Laws of Duality Covariance</strong> — |W| invariant, arg(W_S/W) = −arg τ, g_s → |τ|²g_s. Duality is a true symmetry, and the laws are h12-independent.</p>
-        <p><a href="#theorems">the covariance table</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/mitchells-laws.pdf">the laws paper</a></p>
-      </div>
-      <div class="card">
-        <h3>Act IV — Redeploy</h3>
-        <p class="muted">The same discipline — Rule of Three, deficit, fan-out — is applied <strong>one sector up</strong>, to the Standard Model (anomaly cancellation 5/5, hypercharge uniqueness 4/4, the invariant ring 19 = orbit-space), and across fields (climate, drugs, economics). The frontier: the SUSY collapse is a <strong>landscape fact</strong>, not a proposal curve.</p>
-        <p><a href="#sm">the Standard-Model frontier</a> · <a href="#disciplines">the disciplines</a></p>
-      </div>
-    </div>
-</details>
+
+
 <details class="fold">
 <summary>The theorem tower — "the only exact structure is the constraint" is now proved</summary>
 <h2 id="theorems">The theorem tower — "the only exact structure is the constraint" is now proved</h2>
@@ -536,7 +453,8 @@ the formal record: <a href="https://github.com/robmitchellengineering-hub/paclan
         <tr><td><strong>FFT slice, degree 4</strong> — only N² at quartic (Weyl + shear reduce the 9 weight-0 monomials to 1)</td><td><code>PaclandProof/DegreeFour.lean</code></td><td><span class="tag">✅ machine-checked</span></td></tr>
       </tbody>
     </table>
-    <p class="muted">The "bigger machine" was a false wall: the 16 GB Mac runs <code>lake build</code> via the mathlib cache. Reproduce: <code>cd pacland-proof &amp;&amp; lake build</code>. A green build means Lean's kernel accepted every theorem — <strong>no <code>sorry</code>, no <code>axiom</code>, no <code>native_decide</code></strong>; every theorem is kernel-checked. The FFT slices are now machine-checked at <strong>degrees 1, 2, 3, and 4</strong> (no linear, only the tadpole, no cubic, only N²); the <em>general-degree</em> statement remains Weyl's 1939 FFT, cited + sympy-verified at degrees 1–5.</p>
+    <p><strong>The quantum and gravity proofs are in the same tower now.</strong> Beyond the flux FFT slices, the machine-checked arm also holds the quantum-foundations ladder — <code>QM.Stabilizer</code> (Clifford normalizes Pauli), <code>QM.Entanglement</code> (LOCC cannot create entanglement), <code>QM.CHSH</code>/<code>QM.Tsirelson</code> (the 2√2 bound), <code>QM.NoCloning</code>, <code>QM.Mermin</code>, <code>QM.MERA</code> (the area law + exponential volume + log depth), and <code>QM.Hyperbolic</code> (the MERA causal cone is a discrete hyperbolic space — Gromov 0-hyperbolicity) — plus the gravity ladder <code>Gravity.Bianchi</code>, <code>Gravity.Lovelock</code>, <code>Gravity.WheelerDeWitt</code>, <code>Gravity.ADMConstraints</code>, <code>Gravity.Dirac</code>. These are the proofs behind <a href="#sextant">SEXTANT</a>, the verified quantum referee. <code>lake build</code> is green (9102 jobs).</p>
+<p class="muted">The "bigger machine" was a false wall: the 16 GB Mac runs <code>lake build</code> via the mathlib cache. Reproduce: <code>cd pacland-proof &amp;&amp; lake build</code>. A green build means Lean's kernel accepted every theorem — <strong>no <code>sorry</code>, no <code>axiom</code>, no <code>native_decide</code></strong>; every theorem is kernel-checked. The FFT slices are now machine-checked at <strong>degrees 1, 2, 3, and 4</strong> (no linear, only the tadpole, no cubic, only N²); the <em>general-degree</em> statement remains Weyl's 1939 FFT, cited + sympy-verified at degrees 1–5.</p>
 </details>
 <details class="fold">
 <summary>The three verification machines</summary>
@@ -732,10 +650,102 @@ python3 scripts/validate_all_theorems.py</code></pre>
     </table>
     <p class="muted"><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">the CMIP6 write-up</a></p>
         <p><code>pacland trust</code> · every entry carries its source.</p>
-
+</details>
   </div>
     </main>
+<details class="fold">
+<summary>Everything — linked</summary>
+<h2 id="index">Everything — linked</h2>
+    <div class="grid grid--2">
+      <div class="card">
+        <h3>String landscape</h3>
+        <p><a href="#arc">the arc</a> · <a href="#theorems">theorems</a> · <a href="#sm">SM frontier</a> · <a href="#results">results</a> · <a href="#boundary">boundary map</a> · <a href="#lean">Lean proofs</a></p>
+        <p><a href="#published">the papers (6)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf">explainer (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-startalk.pdf">startalk (PDF)</a> · <a href="https://doi.org/10.5281/zenodo.23497239">published theorem</a></p>
+      </div>
+      <div class="card">
+        <h3>Climate</h3>
+        <p><a href="#climate">section</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-gap-analysis.md">gap analysis</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-observables.md">observables</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">deficit report</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">CMIP6 drift</a></p>
+        <p><a href="./climate.html">the graphs</a> · <a href="./climate-3d.html">the 3D view</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-plain-speak.pdf">plain-speak one-pager (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">full explainer (PDF)</a></p>
+        <p><code>pacland climate</code></p>
+      </div>
+      <div class="card">
+        <h3>Drug discovery</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-gap-analysis.md">gap analysis</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-drugs-explainer.pdf">full explainer (PDF)</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-verification-deficit.md">deficit report</a></p>
+        <p><a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-drugs-explainer.pdf">explainer (PDF)</a></p>
+        <p><code>pacland drugs</code></p>
+      </div>
+      <div class="card">
+        <h3>Energy</h3>
+        <p>Stored-energy ceilings, and the vacuum. A <strong>referee</strong> for candidate quantum-gravity frameworks: 13 conditions × 6 frameworks, scored <code>KILLED</code> / <code>SURVIVES</code> / <code>UNKNOWN</code> — and <strong>UNKNOWN wherever no verifier has run against a read bound</strong>, never a pass.</p>
+        <p><a href="./energy.html"><strong>the quantum gravity page</strong></a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md">the programme</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-conjectures.md">energy claims</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md#c6-is-closed--and-it-closes-the-terminal-clause">why no framework can survive all thirteen</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/src/pacland/energy">the code</a></p>
+        <p><code>python3 -m pacland.energy.referee</code> · <code>python3 -m pacland.energy.profile</code> · <code>python3 -m pacland.energy.frg</code></p>
+      </div>
+      <div class="card">
+        <h3>AI · verified badge</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ai-verified-badge.md">the badge (open spec, licensed SDK)</a></p>
+      </div>
+      <div class="card">
+        <h3>The whole system</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/expansion-map.md">the discipline playbook</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/grounding.md">the grounding</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verification-config.md">the verification config (how)</a> · <a href="#trust">trust board</a></p>
+        <p><code>pacland trust</code></p>
+        <p><code>pacland disciplines</code></p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland">GitHub repo</a> — every doc, the code, the tests</p>
+      </div>
+    </div>
 </details>
+<details class="fold">
+<summary>Published</summary>
+<h2 id="published">Published</h2>
+    <div class="card">
+      <h3>Mitchell's Completeness Theorem: no exact invariant selector in the flux landscape</h3>
+      <p>Rob Mitchell · Zenodo · 20 Oct 2026 · open access, CC BY 4.0</p>
+      <p>Record: <a href="https://zenodo.org/records/23497239">zenodo.org/records/23497239</a></p>
+      <p>DOI: <a href="https://doi.org/10.5281/zenodo.23497239">10.5281/zenodo.23497239</a></p>
+      <p class="muted">The flagship theorem paper — verified symbolically (sympy, zero tolerance) and machine-checked in Lean 4 (no axioms). This is the first published item; more will be added here as they publish.</p>
+    </div>
+
+    <h3>The papers — six, led by the flagship synthesis</h3>
+    <table>
+      <thead><tr><th>paper</th><th>what it proves / holds</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/mitchells-principle.pdf">mitchells-principle.pdf</a></td><td><strong>Mitchell's Principle of Constraint-First Unification</strong> — the flagship synthesis: relations, never values</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/constraint-first-theorem.pdf">constraint-first-theorem.pdf</a></td><td>Mitchell's Uniqueness → Complete Exact Structure (the five-theorem tower)</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/mitchells-laws.pdf">mitchells-laws.pdf</a></td><td>Mitchell's Laws of Duality Covariance — how W and g_s transform under S/T-duality</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/structure-map.pdf">structure-map.pdf</a></td><td>the measurement that motivated the theorem</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/fingerprint.pdf">fingerprint.pdf</a></td><td>the mass spectrum carries no geometric fingerprint</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/PACLAND-preprint.pdf">PACLAND-preprint.pdf</a></td><td>the verification discipline (umbrella)</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/constraint-first-explainer.pdf">constraint-first-explainer.pdf</a></td><td>the plain-English explainer</td></tr>
+      </tbody>
+    </table>
+</details>
+<details class="fold">
+<summary>The arc — measure, then prove, then redeploy</summary>
+<h2 id="arc">The arc — measure, then prove, then redeploy</h2>
+    <p>The project ran in three acts, and this page is ordered so you can follow the whole arc while every original piece stays put.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Act I — Measure</h3>
+        <p class="muted">We built the <strong>verification discipline</strong> — the two-level certificate, the Mitchell Verification Deficit, the Rule of Three — and measured real flux vacua. The <strong>structure map</strong> came back: only the tadpole is exact (r = 1.0), everything else uniform.</p>
+        <p><a href="#results">What we measured</a> · <a href="#structure">structure map</a> · <a href="#method">Rule of Three</a> · <a href="#deficit">deficit</a> · <a href="#boundary">boundary map</a></p>
+      </div>
+      <div class="card">
+        <h3>Act II — Prove</h3>
+        <p class="muted">The measurement motivated the <strong>theorem tower</strong>: Weyl's FFT proves the tadpole is <em>unique</em>; the no-fingerprint no-go proves no <em>exact invariant</em> selector exists; the Complete Exact Structure theorem proves the ToE = constraints + labels. Machine-checked in Lean. The measurement became redundant for the flux claim — that is the win.</p>
+        <p><a href="#theorems">the theorem tower</a> · <a href="#lean">Lean proofs</a> · the <a href="#theorems">Five Pillars</a></p>
+      </div>
+      <div class="card">
+        <h3>Act III — the laws</h3>
+        <p class="muted">The theorem says what's <em>invariant</em>; the laws say what's <em>covariant</em>. Measured on real vacua at h12 = 2 and 5: <strong>Mitchell's Laws of Duality Covariance</strong> — |W| invariant, arg(W_S/W) = −arg τ, g_s → |τ|²g_s. Duality is a true symmetry, and the laws are h12-independent.</p>
+        <p><a href="#theorems">the covariance table</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/mitchells-laws.pdf">the laws paper</a></p>
+      </div>
+      <div class="card">
+        <h3>Act IV — Redeploy</h3>
+        <p class="muted">The same discipline — Rule of Three, deficit, fan-out — is applied <strong>one sector up</strong>, to the Standard Model (anomaly cancellation 5/5, hypercharge uniqueness 4/4, the invariant ring 19 = orbit-space), and across fields (climate, drugs, economics). The frontier: the SUSY collapse is a <strong>landscape fact</strong>, not a proposal curve.</p>
+        <p><a href="#sm">the Standard-Model frontier</a> · <a href="#disciplines">the disciplines</a></p>
+      </div>
+    </div>
+</details>
+
 <footer>
   PACLAND · github.com/robmitchellengineering-hub/pacland · a verification discipline, not a physics solver
   <p class="muted">Stated honestly: pre-revenue, seeking design partners. The verification layer is what we
