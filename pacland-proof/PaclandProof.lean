@@ -25,3 +25,4 @@ import PaclandProof.QM.PBR
 import PaclandProof.QM.Mermin
 import PaclandProof.Gravity.Bianchi
 import PaclandProof.Gravity.Lovelock
+import PaclandProof.Gravity.QG

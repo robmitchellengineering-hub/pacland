@@ -50,3 +50,11 @@ half and a delimited free half, so the ToE's exact content is a *complete classi
 The value is not that we solved the issues — it is that we've **delimited exactly where the free
 column is**, in three sectors, with machine-checked certificates on the forced side, so a whole
 class of wrong answers (deterministic QM, a hidden symmetry fixing the 19) is now *closed off*.
+
+## Update 2026-11-07 (4) — quantum gravity's forced half
+
+`Gravity/QG.lean`: the QG forced content is the *union* of the Born rule (Gleason) and the
+Einstein equation (Lovelock). The new forced condition joining them — the **semiclassical
+consistency** — is kernel-checked: the Einstein tensor is divergence-free (`einstein_divergence_free`),
+so its source (classical matter or a quantum expectation value `⟨T_ab⟩`) must be conserved,
+`∇^a T_ab = 0`. The free column is `{which outcome, G, Λ, the QM-gravity coupling}`.
