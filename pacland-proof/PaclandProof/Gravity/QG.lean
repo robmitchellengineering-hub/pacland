@@ -56,6 +56,21 @@ theorem coupling_free (gInv g : Fin n → Fin n → ℝ) (DR : CovDerivCurvature
     ∀ d, divEinstein gInv g DR d = 0 :=
   einstein_divergence_free gInv g DR h_symm h_asym34 h_asym12 h_second h_inv
 
+/-- **The Hamiltonian constraint — the unification.** `∇·G = 0` is the classical Hamiltonian
+constraint: the Einstein equation's `00`-component is a constraint on the initial data, not a
+dynamical equation, and the contracted Bianchi `∇·G = 0` is exactly what makes that constraint
+propagate (consistent on every spatial slice). This is the one equation that joins QM (the source
+`T`, a quantum expectation) and GR (the geometry `G`), and its quantum promotion is the
+Wheeler–DeWitt equation `Ĥ|ψ⟩ = 0`. The classical shadow is kernel-checked here. -/
+theorem hamiltonian_constraint (gInv g : Fin n → Fin n → ℝ) (DR : CovDerivCurvature n)
+    (h_symm : ∀ a b, gInv a b = gInv b a)
+    (h_asym34 : ∀ e a b c d, DR e a b c d = - DR e a b d c)
+    (h_asym12 : ∀ e a b c d, DR e a b c d = - DR e b a c d)
+    (h_second : SecondBianchi DR)
+    (h_inv : ∀ e d, (∑ b : Fin n, gInv b e * g b d) = if e = d then (1 : ℝ) else 0) :
+    ∀ d, divEinstein gInv g DR d = 0 :=
+  einstein_divergence_free gInv g DR h_symm h_asym34 h_asym12 h_second h_inv
+
 end
 
 end Gravity
