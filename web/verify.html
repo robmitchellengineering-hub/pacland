@@ -170,6 +170,11 @@ The referee is the Lean kernel; it does not care about credentials.</p>
       <td class='st'><span class='pill ok'>QM.Tsirelson.tsirelson_bound</span></td></tr>
       <tr><td>No-cloning</td><td>v &mapsto; v&otimes;v is not linear</td>
       <td class='st'><span class='pill ok'>QM.NoCloning.no_cloning</span></td></tr>
+      <tr><td colspan="3"><strong>Constraint-First Unification</strong> &mdash; the forced/free split across all four sectors, machine-checked &mdash; <a href="https://doi.org/10.5281/zenodo.24030942">10.5281/zenodo.24030942</a></td></tr>
+      <tr><td>Gravity (Lovelock)</td><td>the Einstein equation is the unique divergence-free theory</td>
+      <td class='st'><span class='pill ok'>Gravity.Lovelock.lovelock_divergence</span></td></tr>
+      <tr><td>SM generation</td><td>N_gen is a free label (anomaly homogeneity)</td>
+      <td class='st'><span class='pill ok'>SM.Generation.anomaly_homogeneous</span></td></tr>
       </tbody></table>
       <p class="prov">evidence: pacland-proof/ (lake build green, #print axioms = propext + Classical.choice + Quot.sound); scripts/validate_sm_*.py (dispose-verified on the harness mesh)</p>
 
