@@ -23,7 +23,19 @@ got = phantom.chsh_value()
 if abs(got - expected) > 1e-6:
     problems.append(f"chsh: Phantom computed {got}, drifted from 2√2 ({expected})")
 
+# known-truth control: the classical CHSH wall must be exactly 2
+if abs(phantom.bell_classical() - 2.0) > 1e-9:
+    problems.append(f"bell-classical: Phantom computed {phantom.bell_classical()}, drifted from 2")
+
+# every live oracle must run without error (a live oracle that throws is a silent break)
+for name, e in sextant.CATALOG.items():
+    if "simulate" in e:
+        try:
+            e["simulate"]()
+        except Exception as exc:
+            problems.append(f"{name}: simulate raised {type(exc).__name__}: {exc}")
+
 if problems:
     print("\n".join(problems))
     sys.exit(1)
-print(f"sextant catalog OK: {len(sextant.CATALOG)} claims, CHSH control exact (2√2 = {expected:.6f})")
+print(f"sextant catalog OK: {len(sextant.CATALOG)} claims, CHSH control exact (2√2), classical wall exact (2), all live oracles run")

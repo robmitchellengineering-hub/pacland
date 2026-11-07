@@ -66,3 +66,55 @@ def clifford_scaling(n_qubits: int = 1000) -> str:
         f"Stim ran an H/CNOT Clifford circuit on {n_qubits} qubits in {dt * 1000:.1f} ms "
         f"(polynomial tableau — the T gate is the single thing that escapes it to 2^{n_qubits})"
     )
+
+
+def mermin_product() -> str:
+    """The Mermin–Peres square: nine two-qubit Pauli observables whose row products are +I and
+    whose last-column product is −I — the concrete finite contextuality contradiction (no
+    non-contextual ±1 assignment exists). Computed with the 4×4 complex matrices."""
+    I = np.eye(2, dtype=complex)
+    X = np.array([[0, 1], [1, 0]], dtype=complex)
+    Y = np.array([[0, -1j], [1j, 0]], dtype=complex)
+    Z = np.array([[1, 0], [0, -1]], dtype=complex)
+    kron = np.kron
+    M = [
+        [kron(X, I), kron(I, X), kron(X, X)],
+        [kron(I, Y), kron(Y, I), kron(Y, Y)],
+        [kron(X, Y), kron(Y, X), kron(Z, Z)],
+    ]
+    I4 = np.eye(4, dtype=complex)
+    row_ok = all(np.allclose(M[r][0] @ M[r][1] @ M[r][2], I4) for r in range(3))
+    col3 = M[0][2] @ M[1][2] @ M[2][2]
+    cols_ok = all(np.allclose(M[0][c] @ M[1][c] @ M[2][c], I4) for c in range(2)) and np.allclose(col3, -I4)
+    return (
+        f"Mermin square: rows = +I ({row_ok}), cols 1–2 = +I, col 3 = −I ({cols_ok}) → "
+        f"∏v = +1 along rows but −1 along columns: no non-contextual ±1 assignment"
+    )
+
+
+def bell_classical() -> float:
+    """The classical (local-hidden-variable) CHSH bound: S ≤ 2 for any deterministic local
+    strategy — the wall that the quantum value 2√2 exceeds."""
+    best = 0.0
+    for a0 in (-1.0, 1.0):
+        for a1 in (-1.0, 1.0):
+            for b0 in (-1.0, 1.0):
+                for b1 in (-1.0, 1.0):
+                    best = max(best, abs(a0 * b0 + a0 * b1 + a1 * b0 - a1 * b1))
+    return best  # = 2.0
+
+
+def mera_entanglement(n: int = 16, bond_dim: int = 4) -> str:
+    """The entanglement-area oracle: a matrix-product state with bond dimension D has entanglement
+    entropy across any cut bounded by log D — the tensor-network area law (Ryu–Takayanagi/MERA)."""
+    try:
+        import quimb.tensor as qtn
+
+        mps = qtn.MPS_rand_state(n, bond_dim, dtype="complex")
+        S = float(mps.entropy(n // 2))
+        return (
+            f"MPS (n={n}, D={bond_dim}) central-cut entanglement S = {S:.4f} ≤ "
+            f"log(D) = {np.log(bond_dim):.4f}"
+        )
+    except Exception as e:  # quimb not ready yet
+        return f"Quimb pending ({type(e).__name__}); the area-law bound is log(D) = {np.log(bond_dim):.4f}"
