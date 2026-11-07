@@ -25,6 +25,7 @@ import PaclandProof.QM.NoBroadcasting
 import PaclandProof.QM.PBR
 import PaclandProof.QM.Entanglement
 import PaclandProof.QM.Stabilizer
+import PaclandProof.QM.MERA
 import PaclandProof.QM.Mermin
 import PaclandProof.Gravity.Bianchi
 import PaclandProof.Gravity.Lovelock
