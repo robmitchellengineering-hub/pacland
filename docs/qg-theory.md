@@ -50,7 +50,8 @@ The forced column is complete and machine-checked. The rest is the free column a
 | piece | status |
 |---|---|
 | Born rule + Einstein form + constraint `∇·T=0` + quantum/free coupling | ✅ kernel-checked |
-| the Wheeler–DeWitt `Ĥ|ψ⟩ = 0` on a quantum geometry | ⏳ gated (no curvature/Hilbert stack in Mathlib) |
+| the Wheeler–DeWitt `Ĥ|ψ⟩ = 0` — algebraic core (physical states = ker Ĥ) | ✅ `Gravity.WheelerDeWitt.wdw_equation` |
+| the full `Ĥ` operator on a quantum geometry | ⏳ gated (no curvature/Hilbert stack in Mathlib) |
 | `G`, `Λ`, the outcome, the specific `T_ab` | free column (delimited) |
 
 So the *unification* — the fact that QM and GR are one constrained system, joined by a single

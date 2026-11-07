@@ -28,3 +28,4 @@ import PaclandProof.QM.Mermin
 import PaclandProof.Gravity.Bianchi
 import PaclandProof.Gravity.Lovelock
 import PaclandProof.Gravity.QG
+import PaclandProof.Gravity.WheelerDeWitt
