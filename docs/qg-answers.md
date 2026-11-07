@@ -54,3 +54,20 @@ failure of the theory.
 
 Falsifiable: a consistent *classical* (semiclassical) coupling would kill Answer 2; a derivation of
 `G` from the forced halves would kill Answer 1.
+
+## Update — the BMV test is now kernel-checked
+
+`QM/Entanglement.lean` machine-checks the algebraic core of the Bose–Marletto–Vedral / GIE test:
+
+- `local_channel_preserves_product`: a classical (LOCC) channel `Φ ⊗ Ψ` maps a product state
+  `u ⊗ v` to the product state `Φ(u) ⊗ Ψ(v)`.
+- `local_channel_preserves_separable`: a convex combination of product states (a separable state)
+  maps to a convex combination of product states — so a classical channel **cannot create
+  entanglement**.
+
+This turns Answer 2 from a statement into a **falsifiable tabletop prediction**: classical gravity
+(LOCC) ⇒ two masses interacting only through gravity never entangle; so *observing* gravitational
+entanglement (micrometre/milligram, ~10⁻³ eV) forces the coupling to be quantum. It is the QM-side
+complement of `QM.NoCloning` (cloning and entangling are the two things a classical channel is
+forbidden to do), and the bridge from "gravity must be quantum" (Answer 2) to the experiment that
+would find it.
