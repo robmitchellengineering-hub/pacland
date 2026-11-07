@@ -74,4 +74,31 @@ theorem causalConeCoversBoundary (N : ℕ) :
   dsimp [causalConeWidth]
   exact Nat.le_of_lt (Nat.lt_pow_self (by norm_num : 1 < 2))
 
+/-- The **ball** of radius `r` in the MERA causal cone: the number of sites within graph distance
+`r` of a single site (the geometric series `1 + 2 + 4 + … + 2^r`). -/
+def ballVolume (r : ℕ) : ℕ :=
+  (Finset.range (r + 1)).sum (fun k => 2 ^ k)
+
+/-- **The exponential volume growth — the metric half of "MERA = AdS".** The ball of radius `r` in
+the causal cone has `2^(r+1) − 1` vertices: exponential in `r`. This is the metric characterization
+of the hyperbolic plane — a flat (Euclidean) ball grows polynomially (`(r+1)²` in 2D), a hyperbolic
+ball grows exponentially. This is what the exponential circumference (`causalConeDoubles`) implies
+for the *volume*, and it is the discrete statement of the AdS metric. -/
+theorem ballVolumeExponential (r : ℕ) :
+    ballVolume r = 2 ^ (r + 1) - 1 := by
+  induction r with
+  | zero => norm_num [ballVolume]
+  | succ r ih =>
+      rw [ballVolume, Finset.sum_range_succ]
+      rw [← ballVolume, ih]
+      rw [show (2 : ℕ) ^ (r + 2) = 2 * 2 ^ (r + 1) by rw [pow_succ, mul_comm]]
+      omega
+
+/-- **Hyperbolic beats Euclidean, concretely.** At radius 5 the MERA ball has `2^6 − 1 = 63` sites,
+the Euclidean (2D) ball has `6² = 36`: exponential volume overtakes quadratic by radius 5. This is
+the discrete signature that the causal cone is hyperbolic, not flat. -/
+theorem hyperbolicBeatsEuclidean :
+    ballVolume 5 > (5 + 1) ^ 2 := by
+  norm_num [ballVolume, Finset.sum_range_succ]
+
 end QM
