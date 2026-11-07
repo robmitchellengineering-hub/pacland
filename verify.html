@@ -175,6 +175,18 @@ The referee is the Lean kernel; it does not care about credentials.</p>
       <td class='st'><span class='pill ok'>Gravity.Lovelock.lovelock_divergence</span></td></tr>
       <tr><td>SM generation</td><td>N_gen is a free label (anomaly homogeneity)</td>
       <td class='st'><span class='pill ok'>SM.Generation.anomaly_homogeneous</span></td></tr>
+      <tr><td colspan="3"><strong>Constraint-First Quantum Gravity</strong> &mdash; the unification is the constraint algebra &mdash; <a href="https://doi.org/10.5281/zenodo.24042472">10.5281/zenodo.24042472</a></td></tr>
+      <tr><td>Gravity (Lovelock)</td><td>the Einstein equation is the unique divergence-free theory</td>
+      <td class='st'><span class='pill ok'>Gravity.Lovelock.lovelock_divergence</span></td></tr>
+      <tr><td>Hamiltonian constraint</td><td>&nabla;&middot;T = 0 joins QM and GR (the classical WdW shadow)</td>
+      <td class='st'><span class='pill ok'>Gravity.QG.hamiltonian_constraint</span></td></tr>
+      <tr><td>Wheeler&ndash;DeWitt</td><td>&#294;|&psi;&rangle; = 0 &mdash; physical states = ker &#294;</td>
+      <td class='st'><span class='pill ok'>Gravity.WheelerDeWitt.wdw_equation</span></td></tr>
+      <tr><td>ADM constraints</td><td>{&#294; = G&middot;&pi;&pi; &minus; R, &#294;&#8347; = &nabla;&middot;&pi;} = the forced system</td>
+      <td class='st'><span class='pill ok'>Gravity.ADMConstraints.admConstraints</span></td></tr>
+      <tr><td>Dirac algebra</td><td>the constraint algebra closes &mdash; structure function q^ab (Lie algebroid)</td>
+      <td class='st'><span class='pill ok'>Gravity.Dirac.dirac_antisymmetric</span></td></tr>
+      <tr><td colspan="3"><strong>Headlines.</strong> (1) SM minimality selects &pi;&#8321; &ne; 0: the three-generation (1,4) manifold is a Z&#8321;&#8322; quotient, not toric &mdash; toric &chi;=&plusmn;6 starts at h&sup1;&sup1;+h&sup2;&sup1;=29 (&gt;200k each sign). (2) The coupling G is <em>free</em> (not derivable). (3) The BMV entangling phase oscillates with period T = 496 s &mdash; a tabletop test below 0.1 K.</td></tr>
       </tbody></table>
       <p class="prov">evidence: pacland-proof/ (lake build green, #print axioms = propext + Classical.choice + Quot.sound); scripts/validate_sm_*.py (dispose-verified on the harness mesh)</p>
 
