@@ -103,6 +103,78 @@ lemma twice_contracted_second_bianchi {n : ℕ} (gInv : Fin n → Fin n → ℝ)
     _ = covRicci gInv DR c b d - covRicci gInv DR d b c := by
           simp [covRicci, mul_sub, Finset.sum_sub_distrib]
 
+/-- Flatten a 4-fold sum `Σ_b Σ_d Σ_a Σ_e F b d a e` to a sum over the pair-of-pairs. -/
+lemma four_sum_to_pair_sum {n : ℕ} (F : Fin n → Fin n → Fin n → Fin n → ℝ) :
+    (∑ b : Fin n, ∑ d : Fin n, ∑ a : Fin n, ∑ e : Fin n, F b d a e)
+      = (∑ x : (Fin n × Fin n) × (Fin n × Fin n), F x.1.1 x.1.2 x.2.1 x.2.2) := by
+  calc
+    (∑ b : Fin n, ∑ d : Fin n, ∑ a : Fin n, ∑ e : Fin n, F b d a e)
+        = (∑ bd : Fin n × Fin n, ∑ a : Fin n, ∑ e : Fin n, F bd.1 bd.2 a e) := by
+          rw [← Finset.sum_product (Finset.univ : Finset (Fin n)) (Finset.univ : Finset (Fin n))
+            (fun bd : Fin n × Fin n => ∑ a : Fin n, ∑ e : Fin n, F bd.1 bd.2 a e)]
+          rw [Finset.univ_product_univ]
+    _ = (∑ bd : Fin n × Fin n, ∑ ae : Fin n × Fin n, F bd.1 bd.2 ae.1 ae.2) := by
+          apply Finset.sum_congr rfl; intro bd hbd
+          rw [← Finset.sum_product (Finset.univ : Finset (Fin n)) (Finset.univ : Finset (Fin n))
+            (fun ae : Fin n × Fin n => F bd.1 bd.2 ae.1 ae.2)]
+          rw [Finset.univ_product_univ]
+    _ = (∑ x : (Fin n × Fin n) × (Fin n × Fin n), F x.1.1 x.1.2 x.2.1 x.2.2) := by
+          rw [← Finset.sum_product (Finset.univ : Finset (Fin n × Fin n)) (Finset.univ : Finset (Fin n × Fin n))
+            (fun x : (Fin n × Fin n) × (Fin n × Fin n) => F x.1.1 x.1.2 x.2.1 x.2.2)]
+          rw [Finset.univ_product_univ]
+
+/-- Contracting the once-contracted divergence `∇^a R_{abcd}` with `gInv^{bd}` gives the
+divergence of the Ricci tensor. Needs antisymmetry in both the first two and last two indices. -/
+lemma covFirst_contract_eq_divRicci {n : ℕ} (gInv : Fin n → Fin n → ℝ) (DR : CovDerivCurvature n)
+    (h_asym34 : ∀ e a b c d, DR e a b c d = - DR e a b d c)
+    (h_asym12 : ∀ e a b c d, DR e a b c d = - DR e b a c d) :
+    ∀ c, (∑ b : Fin n, ∑ d : Fin n, gInv b d * covFirst gInv DR b c d) = divRicci gInv DR c := by
+  intro c
+  dsimp [covFirst, divRicci, covRicci]
+  have h_antisym : ∀ e a b c d, DR e a b c d = DR e b a d c := by
+    intro e a b c d; rw [h_asym34, h_asym12, neg_neg]
+  calc
+    (∑ b : Fin n, ∑ d : Fin n, gInv b d * (∑ a : Fin n, ∑ e : Fin n, gInv a e * DR e a b c d))
+        = (∑ b : Fin n, ∑ d : Fin n, gInv b d * (∑ a : Fin n, ∑ e : Fin n, gInv a e * DR e b a d c)) := by
+          simp [h_antisym]
+    _ = (∑ b : Fin n, ∑ e : Fin n, gInv b e * (∑ a : Fin n, ∑ c' : Fin n, gInv a c' * DR e a b c' c)) := by
+          -- pull the inner sums out of the product, then flatten and reindex by the pair swap.
+          simp only [Finset.mul_sum]
+          rw [four_sum_to_pair_sum]
+          rw [four_sum_to_pair_sum]
+          refine Fintype.sum_equiv (Equiv.prodComm (Fin n × Fin n) (Fin n × Fin n)) _ _ ?_
+          intro x
+          dsimp [Equiv.prodComm]
+          ring
+
+/-- **Contracted Bianchi (algebraic core).** `∇·G = 0`: the divergence of the Einstein tensor
+vanishes, i.e. `divRicci = (1/2) covScalar`. This follows from the twice-contracted second
+Bianchi and the curvature symmetries. -/
+theorem contracted_bianchi {n : ℕ} (gInv : Fin n → Fin n → ℝ) (DR : CovDerivCurvature n)
+    (h_symm : ∀ a b, gInv a b = gInv b a)
+    (h_asym34 : ∀ e a b c d, DR e a b c d = - DR e a b d c)
+    (h_asym12 : ∀ e a b c d, DR e a b c d = - DR e b a c d)
+    (h_second : SecondBianchi DR) :
+    ContractedBianchi gInv DR := by
+  intro c
+  -- Σ_{b,d} gInv^{bd} ∇^a R_{abcd} = divRicci c  (the reindexing)
+  have hLHS : (∑ b : Fin n, ∑ d : Fin n, gInv b d * covFirst gInv DR b c d) = divRicci gInv DR c :=
+    covFirst_contract_eq_divRicci gInv DR h_asym34 h_asym12 c
+  -- the twice-contracted second Bianchi, contracted with gInv^{bd}
+  have htwice := twice_contracted_second_bianchi gInv DR h_asym34 h_second
+  have hsum : (∑ b : Fin n, ∑ d : Fin n, gInv b d * covFirst gInv DR b c d)
+      = (∑ b : Fin n, ∑ d : Fin n, gInv b d * (covRicci gInv DR c b d - covRicci gInv DR d b c)) := by
+    apply Finset.sum_congr rfl; intro b hb
+    apply Finset.sum_congr rfl; intro d hd
+    rw [htwice b c d]
+  -- distribute: RHS = covScalar c - divRicci c
+  have hdist : (∑ b : Fin n, ∑ d : Fin n, gInv b d * (covRicci gInv DR c b d - covRicci gInv DR d b c))
+      = covScalar gInv DR c - divRicci gInv DR c := by
+    simp [covScalar, divRicci, covRicci, mul_sub, Finset.sum_sub_distrib]
+  -- combine: divRicci c = covScalar c - divRicci c, hence divRicci c = (1/2) covScalar c
+  rw [hLHS, hdist] at hsum
+  nlinarith [hsum]
+
 end
 
 end Gravity
