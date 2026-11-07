@@ -20,4 +20,5 @@ import PaclandProof.QM.CHSH
 import PaclandProof.QM.NoCloning
 import PaclandProof.QM.Tsirelson
 import PaclandProof.QM.NoBroadcasting
+import PaclandProof.QM.PBR
 import PaclandProof.Gravity.Bianchi
