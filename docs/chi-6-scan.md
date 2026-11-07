@@ -5,10 +5,11 @@ number χ = ±6, i.e. `N_gen = |χ|/2 = 3`.**
 
 ## Result
 
-1. **The (1,4)/(4,1) manifold is NOT a toric hypersurface.** `h11=1&h12=4` → 0 and `h11=4&h12=1`
+1. **The (1,4)/(4,1) manifold is NOT a toric hypersurface — it is a free quotient with
+   fundamental group Z₁₂** (Braun–Candelas–Davies 2010). `h11=1&h12=4` → 0 and `h11=4&h12=1`
    → 0. The toric manifolds with `h¹¹ = 1` have `h²¹ ∈ {21, 101, 103, 145, 149}` — so the smallest
-   `h¹¹ = 1` toric CY has `χ = 2(1−21) = −40`, not −6. The (1,4) manifold is a *free quotient*
-   (non-toric), which is how it reaches `h¹¹ + h²¹ = 5`.
+   `h¹¹ = 1` toric CY has `χ = 2(1−21) = −40`, not −6. A free quotient (π₁ = Z₁₂) is how the
+   (1,4) manifold reaches `h¹¹ + h²¹ = 5`; toric (simply-connected) CYs cannot.
 
 2. **The minimal |χ| in the toric list is 0, not 6.** Smallest Hodge pairs:
    `χ = 0` → `(14,14)` · `χ = ±2` → `(15,16)` · `χ = ±4` → `(14,16)` · `χ = ±6` → `(13,16)`.
@@ -30,8 +31,10 @@ manifold" picture was wrong in one instructive way:
 
 So the unification sharpens to: **three generations is a topological label (`|χ|/2`) that is
 abundant; the SM's *minimality* (few moduli, `h¹¹ = 4` for the gauge group) is what selects the
-quotient construction over the bare toric hypersurface.** The label is forced; the moduli economy
-is the harder constraint.
+non-simply-connected (free-quotient) construction over the bare toric hypersurface.** The label is
+forced; the moduli economy is the harder constraint, and it is met only by `π₁ ≠ 0` manifolds
+(the (1,4) manifold has `π₁ = Z₁₂`). Falsifiable: a *simply-connected* CY threefold with
+`h¹¹ = 4`, `|χ| = 6` would kill this.
 
 ## Method
 
