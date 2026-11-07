@@ -8,9 +8,9 @@ what it delimits).
 |---|---|---|---|
 | **Bell / CHSH** | *local* hidden variables | `S ≤ 2` for deterministic ±1 assignments (`QM.CHSH.chsh_local_bound`) | ✅ kernel-checked |
 | **Kochen–Specker** | non-contextual 0/1 value assignments (dim ≥ 3) | `Gleason.no_dispersion_free` (no dispersion-free measure) | ✅ kernel-checked (in the vendored Gleason proof) |
-| **No-cloning** | copying an unknown quantum state | the map `v ↦ v⊗v` is not linear | ⏳ next (needs the tensor product) |
-| **Tsirelson bound** | (the "yes" side) | QM saturates `S = 2√2` | ⏳ next (tensor-level computation) |
+| **No-cloning** | copying an unknown quantum state | the map `v ↦ v⊗v` is not linear | ✅ kernel-checked |
+| **Tsirelson bound** | (the "yes" side) | QM saturates `S = 2√2` | ✅ kernel-checked |
 
 The Bell/CHSH bound is the pure locality no-go; Kochen–Specker is Gleason's finite corollary
-(already in the vendored CKM proof). No-cloning and the Tsirelson bound both need the tensor
-product of qubits, which is the next lift.
+(already in the vendored CKM proof). No-cloning and the Tsirelson bound use the tensor product
+of qubits. **The suite is complete.**
