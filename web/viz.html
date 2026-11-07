@@ -26,7 +26,7 @@
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13px; line-height:1.7; }
   #readout .k { color:var(--muted); }
   #readout .v { color:var(--accent); font-weight:600; }
-  #legend { position:absolute; right:22px; bottom:20px; background:var(--panel); border:1px solid rgba(255,255,255,.08);
+  #legend { position:absolute; right:22px; bottom:20px; max-width:360px; background:var(--panel); border:1px solid rgba(255,255,255,.08);
     border-radius:12px; padding:12px 16px; font-size:12px; color:var(--muted); line-height:1.6; backdrop-filter:blur(8px); }
   #legend b { color:var(--text); }
   .hint { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); font-size:11px; color:var(--muted); opacity:.7; }
@@ -355,7 +355,7 @@ const s6Pos = [], s6Col = [];
 for (const [h11,h12,c] of HODGE){
   if (Math.abs(2*(h11-h12)) !== 6) continue;
   s6Pos.push(HX(h11), HY(h12), Math.log10(1+c)*1.15 + 0.04);
-  s6Col.push(1, 0.75, 0.14);
+  s6Col.push(0.96, 0.62, 0.04);
 }
 const s6Geom = new THREE.BufferGeometry();
 s6Geom.setAttribute('position', new THREE.Float32BufferAttribute(s6Pos,3));
@@ -388,7 +388,7 @@ const legendKPV = `<b>Machine ① — the uplift-control solver.</b> The anti-D3
 const legendOrbit = `<b>Mitchell's Completeness.</b> Each value of the tadpole <b>N = FᵀJH</b> is a single Sp-orbit — shown here as a hyperboloid sheet (a slice of the level set). The invariant <b>labels</b> the orbit: nothing else distinguishes vacua on the same sheet.`;
 const legendCone = `<b>The LCS cone.</b> The complex-structure moduli's convergence region, as a hedgehog of extreme rays (actual double-description count on the KS model). The facet count explodes <b>3 → 26 → 35,610</b> as h12 goes 5 → 10 → 15 — the geometric reason "sample then test the cone" becomes a lottery.`;
 const legendConst = `<b>Complete Exact Structure.</b> The red hyperboloid is the constraint <b>N = L</b>. Teal points satisfy <b>N ≤ L</b> (allowed); red points violate it (forbidden). The constraint is a boundary — it can only <b>eliminate</b>, never select. That is the whole exact content the theory gets to enforce.`;
-const legendHodge = `<b>Three generations from topology.</b> Each point is a Kreuzer–Skarke manifold (h¹¹, h²¹); height = log count. Teal = χ<0, purple = χ>0, grey = χ=0 (self-mirror). <b>Amber = χ = ±6</b> — the three-generation manifolds, <b>N_gen = |χ|/2 = 3</b>. The pink rings are the <b>(1,4)/(4,1) manifold</b> (π₁ = Z₁₂, Braun–Candelas–Davies), a <em>free quotient</em> that sits below the white toric wall h¹¹+h²¹ = 28 — toric CYs cannot reach its five moduli.`;
+const legendHodge = `<b>Three generations.</b> Each point is a Kreuzer–Skarke manifold (h¹¹, h²¹). Teal = χ<0, purple = χ>0, grey = χ=0. <b>Amber = χ ±6</b> — N_gen = |χ|/2 = 3. <b>Pink rings = (1,4)/(4,1)</b>, π₁ = Z₁₂ (Braun–Candelas–Davies), a free quotient below the toric wall h¹¹+h²¹ = 28.`;
 const legendSM = `<b>The orbit-space dimension.</b> Left: the flux sector has <b>1</b> invariant (the tadpole — one axis). Right: the Standard Model has <b>19</b> free parameters (teal = 3 gauge, purple = 9 masses, pink = 4 CKM, blue = 2 Higgs, amber = θ). A theory of everything predicts <em>relations, never values</em> — and no completion derives more than 2 of the 19 correctly.`;
 legend.innerHTML = legendSymp;
 
@@ -406,7 +406,7 @@ function showScene(name){
   if (name === 'symplectic') camera.position.set(4.2, 3.2, 6.5);
   else if (name === 'kpv') camera.position.set(5, 4, 6);
   else if (name === 'sm') camera.position.set(5.5, 2.8, 6.5);
-  else if (name === 'hodge') camera.position.set(6.5, 4.0, 6.5);
+  else if (name === 'hodge') { camera.position.set(8.5, 5.5, 8.5); controls.target.set(0, -0.5, 0); }
   else camera.position.set(3.5, 2.6, 5.2);
 }
 tabs.forEach(t => t.addEventListener('click', () => {
