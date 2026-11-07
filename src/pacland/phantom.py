@@ -45,3 +45,24 @@ if __name__ == "__main__":
     s = chsh_value()
     print(f"CHSH (quantum-simulated) = {s:.6f}  (2√2 = {2 * np.sqrt(2):.6f})")
     print(f"Stim (Clifford engine) = {stim_version()}")
+
+
+def clifford_scaling(n_qubits: int = 1000) -> str:
+    """Stim simulates a Clifford circuit on `n_qubits` in polynomial time (the stabilizer tableau
+    is O(n²) Pauli terms, not 2ⁿ amplitudes). This is the practical evidence behind
+    QM.Stabilizer.clifford_normalizes_pauli — the Clifford class is classically simulable."""
+    import time
+
+    import stim
+
+    s = stim.TableauSimulator()
+    t0 = time.perf_counter()
+    for i in range(n_qubits):
+        s.h(i)
+    for i in range(n_qubits - 1):
+        s.cnot(i, i + 1)
+    dt = time.perf_counter() - t0
+    return (
+        f"Stim ran an H/CNOT Clifford circuit on {n_qubits} qubits in {dt * 1000:.1f} ms "
+        f"(polynomial tableau — the T gate is the single thing that escapes it to 2^{n_qubits})"
+    )

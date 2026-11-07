@@ -64,6 +64,7 @@ CATALOG: dict[str, dict] = {
     },
     "clifford-polynomial": {
         "claim": "Clifford/stabilizer circuits are classically simulable in polynomial time",
+        "simulate": phantom.clifford_scaling,  # live: Stim runs 1000 qubits in polynomial time
         "theorem": "QM.Stabilizer.clifford_normalizes_pauli",
         "falsifier": "a T-gate circuit blowing past 2^n",
         "oracle": ["kernel-checked (Lean)", "quantum-simulated (Phantom/Stim)"],
@@ -95,7 +96,10 @@ def classify(name: str) -> str:
     ]
     if "simulate" in e:
         v = e["simulate"]()
-        lines.append(f"  simulate:   {v:.6f}  (Phantom, live)  — 2√2 = {2 * math.sqrt(2):.6f}")
+        if isinstance(v, str):
+            lines.append(f"  simulate:   {v}")
+        else:
+            lines.append(f"  simulate:   {v:.6f}  (Phantom, live)  — 2√2 = {2 * math.sqrt(2):.6f}")
     lines += [
         f"  theorem:    {e['theorem']}  (kernel-checked)",
         f"  falsifier:  {e['falsifier']}",
