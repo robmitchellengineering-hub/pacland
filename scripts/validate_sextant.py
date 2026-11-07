@@ -16,11 +16,12 @@ for name, e in sextant.CATALOG.items():
     if e["verdict"] not in {"FORCED", "FREE", "IMPOSSIBLE"}:
         problems.append(f"{name}: bad verdict {e['verdict']!r}")
 
-# known-truth control: the CHSH simulated value must be exactly 2√2
+# known-truth control: the Phantom-computed CHSH value must be exactly 2√2
+from pacland import phantom
 expected = 2 * math.sqrt(2)
-got = float(sextant.CATALOG["chsh"]["value"].split("= ")[1])
+got = phantom.chsh_value()
 if abs(got - expected) > 1e-6:
-    problems.append(f"chsh: value {got} drifted from 2√2 ({expected})")
+    problems.append(f"chsh: Phantom computed {got}, drifted from 2√2 ({expected})")
 
 if problems:
     print("\n".join(problems))

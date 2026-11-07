@@ -14,11 +14,13 @@ from __future__ import annotations
 
 import math
 
+from pacland import phantom
+
 # The theorem registry: every kernel-checked claim, its falsifier, its oracle class, and its verdict.
 CATALOG: dict[str, dict] = {
     "chsh": {
         "claim": "no quantum state violates the CHSH inequality beyond 2√2",
-        "value": f"2√2 = {2 * math.sqrt(2):.6f}",
+        "simulate": phantom.chsh_value,  # live: Phantom computes S = 2√2
         "theorem": "QM.Tsirelson",
         "falsifier": "a state exceeding 2√2",
         "oracle": ["quantum-simulated (Phantom/Stim)", "kernel-checked (Lean)"],
@@ -91,8 +93,9 @@ def classify(name: str) -> str:
         f"{g} {name}  →  {e['verdict']}",
         f"  claim:      {e['claim']}",
     ]
-    if "value" in e:
-        lines.append(f"  simulate:   {e['value']}")
+    if "simulate" in e:
+        v = e["simulate"]()
+        lines.append(f"  simulate:   {v:.6f}  (Phantom, live)  — 2√2 = {2 * math.sqrt(2):.6f}")
     lines += [
         f"  theorem:    {e['theorem']}  (kernel-checked)",
         f"  falsifier:  {e['falsifier']}",
