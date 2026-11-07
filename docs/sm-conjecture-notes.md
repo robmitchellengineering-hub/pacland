@@ -101,3 +101,51 @@ overstatement before it shipped.
 
 *Sources: the five structured verdicts are in `research/sm-conjecture-fanout.js`; the
 run itself returned the aggregated results this note synthesizes.*
+
+## Update 2026-11-07 — the invariant-ring dimension drop is now computed (item 2 closed)
+
+`scripts/validate_sm_invariant_dimension.py` computes the Krull dimension of the SM
+coupling orbit space at three group levels (exact cross-section, cross-checked against the
+rank test's Lie-algebra orbit ranks):
+
+| group | Yukawa invariants | total | drop |
+|---|---|---|---|
+| SM (flavor only) | 13 | **19** | 0 |
+| SU(5) (`Y_d = Y_e`) | 10 | **14** | 5 (3 mass ties + 2 gauge) |
+| SO(10) (`Y_u = Y_d = Y_e`) | 3 | **7** | 12 (6 mass unifications + 4 CKM + 2 gauge) |
+
+**This closes the "no clean duality group" question: that phrase is FALSE as stated.** The
+GUT embeddings DO act on the couplings and DO shrink the orbit space (19 → 14 → 7). The
+precise truth replaces the stale `sm-frontier.md` line: the SM's *own* flavor symmetry leaves
+19; the only *known* larger groups are the GUTs, which reduce it — but of their relations only
+gauge unification (drop 2) survives data, the Yukawa unifications are numerically wrong.
+
+The remaining "empty gap" is the **full Hilbert/Molien series** (degree-by-degree, not just
+the Krull dimension), which needs Molien/Hilbert–Serre — still absent from mathlib, the named
+Lean target.
+
+## Update 2026-11-07 (2) — the syzygy-refined Hilbert series is now EXACT (gap closed)
+
+`scripts/validate_sm_molien_weyl.py` computes the Molien–Weyl series (torus constant-term +
+Weyl averaging, validated against the single-matrix classical result) and finds the exact
+closed form — including the Jarlskog syzygy, which the earlier free-ring approximation missed:
+
+    H_Yukawa(t) = (1 − t²⁴) / ((1−t²)³ (1−t⁴)⁴ (1−t⁶)⁵ (1−t⁸) (1−t¹²))
+
+* The **14 generators** (degrees 2×3, 4×4, 6×5, 8, 12) correct the earlier 13-generator count:
+  the missing ones are `tr(Hᵤ²H_d²)` (degree 8) and the CP-odd **Jarlskog** `J` (degree 12).
+* The **numerator (1 − t²⁴)** is the Jarlskog identity `J² = (CP-even polynomial)` — one
+  syzygy at degree 24, cutting the Krull dimension from 14 to **13** (9 masses + 4 CKM),
+  matching the Lie-algebra rank test.
+* This is the "Molien/Hilbert–Serre" step the Lean plan named as an empty gap — now *computed*
+  (sympy), though not yet *kernel-checked* in Lean.
+
+## Update 2026-11-07 (3) — neutrino/flavor sector: no new constraint, free column grows
+
+`scripts/validate_sm_neutrino_flavor.py`: the lepton flavor sector `(Y_e, Y_nu)` is *structurally
+identical* to the quark sector (two 3×3 matrices under one shared GL(3)), so the **PMNS invariant
+ring = the CKM ring** — same exact Hilbert series, dimension 10 (3 charged + 3 ν masses + 4 PMNS).
+Combined quark×lepton flavor: dimension 20 (Dirac) / 22 (Majorana, +2 phases). Totals: **26
+(Dirac) / 28 (Majorana)**. Neutrinos are gauge singlets, so anomaly cancellation is unchanged —
+**no new constraint; the free column grows by +7/+9**. The constraint-first statement is stable
+under the neutrino extension.
