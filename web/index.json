@@ -116,6 +116,20 @@
    "title": "The autonomous deficit climber \u2014 \"run it and it hones in\""
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/bmv-experiment-spec.md",
+   "kind": "doc",
+   "path": "docs/bmv-experiment-spec.md",
+   "summary": "is impossible (Gleason's linearity + no-cloning's no-signaling + LOCC's no-entanglement). The experiment is the confirmation, and it tests the kind of the coupling (quantum vs classical)\u2026",
+   "title": "The BMV experiment \u2014 a spec for \"finding it\""
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/bmv-number.md",
+   "kind": "doc",
+   "path": "docs/bmv-number.md",
+   "summary": "Numerical emulation of the gravity-mediated entanglement experiment (scripts/bmvsim.py).",
+   "title": "The BMV number \u2014 found, with a new prediction"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/boundary-map.md",
    "kind": "doc",
    "path": "docs/boundary-map.md",
@@ -177,6 +191,13 @@
    "path": "docs/channel-plan.md",
    "summary": "The phone heard every BSS in range with its frequency and level. That is an interference census, and it answers a question every installer guesses at.",
    "title": "Which channel should the access point be on? \u2014 from the scans"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/chi-6-scan.md",
+   "kind": "doc",
+   "path": "docs/chi-6-scan.md",
+   "summary": "number \u03c7 = \u00b16, i.e. Ngen = |\u03c7|/2 = 3.",
+   "title": "The \u03c7 = \u00b16 scan \u2014 where the three-generation manifolds actually are"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/claims-registry.md",
@@ -506,6 +527,20 @@
    "path": "docs/five-pillars.md",
    "summary": "The fan-out asked: what other theorems (like Darboux) independently strengthen the constraint-first result? Six domains answered. Together they turn \"constraint-first\" from one theorem +\u2026",
    "title": "The Five Pillars \u2014 the complete scaffolding of constraint-first"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/geometric-unification.md",
+   "kind": "doc",
+   "path": "docs/geometric-unification.md",
+   "summary": "The proof arm has certified two disconnected halves:",
+   "title": "Geometric unification \u2014 the Atiyah\u2013Singer bridge"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/gravity-forced-free.md",
+   "kind": "doc",
+   "path": "docs/gravity-forced-free.md",
+   "summary": "The same recipe, applied to the gravitational sector. This is the SEXTANT lane's target, stated in the forced/free language now standard across the other two sectors.",
+   "title": "Gravity / QG sector \u2014 the forced/free characterization"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/grounding.md",
@@ -851,11 +886,53 @@
    "title": "Publication plan \u2014 the independent-researcher path to being checked"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/qg-answers.md",
+   "kind": "doc",
+   "path": "docs/qg-answers.md",
+   "summary": "Composed from three kernel-checked pieces:",
+   "title": "Quantum gravity \u2014 the three answers"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/qg-bmv-numbers.md",
+   "kind": "doc",
+   "path": "docs/qg-bmv-numbers.md",
+   "summary": "gravitational entanglement. It is an active frontier; the theory is being sharpened (the entanglement-vs-decoherence \"race\" is exactly solvable, and entanglement survives with a nonzero\u2026",
+   "title": "The BMV \"find it\" numbers \u2014 where the experiment stands"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/qg-frontier.md",
+   "kind": "doc",
+   "path": "docs/qg-frontier.md",
+   "summary": "halves; the quantum-gravity \"problem\" is the free column's coupling term.",
+   "title": "Quantum gravity \u2014 the constraint-first split"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/qg-library-build.md",
+   "kind": "doc",
+   "path": "docs/qg-library-build.md",
+   "summary": "The constraint-first QG theory is complete at the algebraic level (Born rule, Einstein form, constraint \u2207\u00b7T = 0, WdW \u0124|\u03c8\u27e9 = 0 as ker \u0124, quantum/free coupling, time emergent). The one\u2026",
+   "title": "The QG library build \u2014 crossing the last gate"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/qg-theory.md",
+   "kind": "doc",
+   "path": "docs/qg-theory.md",
+   "summary": "possible, honest where gated. The unification is a constraint, not a theory of everything.",
+   "title": "The constraint-first quantum gravity theory"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-arm-agenda.md",
    "kind": "doc",
    "path": "docs/quantum-arm-agenda.md",
    "summary": "Rob, 2026-10-28: \"what we are looking for are answers to the biggest questions in the universe.\"",
    "title": "The quantum arm: the biggest questions we can actually reach"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-computer-on-classical.md",
+   "kind": "doc",
+   "path": "docs/quantum-computer-on-classical.md",
+   "summary": "Quantum computing's power is entanglement (the free column); its forced structure \u2014 the Born rule, unitarity, the probability rule \u2014 is classically cheap. Our kernel-checked theorems give\u2026",
+   "title": "A quantum computer on regular hardware \u2014 the machine-checked boundary"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/research-fanout.md",
@@ -919,6 +996,13 @@
    "path": "docs/selection.md",
    "summary": "The measure problem is the half of \"unified string theory\" that verification does not touch: why this vacuum, and not one of the other 10^500? This doc separates what we can build from what\u2026",
    "title": "Selection (L6) \u2014 what is buildable, and what is not"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md",
+   "kind": "doc",
+   "path": "docs/sextant.md",
+   "summary": "(a label), or IMPOSSIBLE (a no-go) \u2014 and hands you the machine-checked proof, not just the floating-point number.",
+   "title": "SEXTANT \u2014 the verified quantum referee (proof engine on a simulated quantum computer)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sm-boundary-map.md",
@@ -996,6 +1080,13 @@
    "path": "docs/swampland-connection.md",
    "summary": "This doc records the bridge between the measured structure map and the swampland program, and the runnable system that tests it: pacland.swampland + scripts/swamplandchecks.py (pure stdlib\u2026",
    "title": "The swampland connection \u2014 the constraint-first conjecture as a swampland test"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/synthesis-all-sectors.md",
+   "kind": "doc",
+   "path": "docs/synthesis-all-sectors.md",
+   "summary": "This is the cross-sector statement the constraint-first program has been building toward: the same forced/free decomposition, now machine-checked or measured in three sectors.",
+   "title": "The Complete Exact Structure Theorem \u2014 across all three sectors"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/synthesis.md",
@@ -1262,6 +1353,13 @@
    "path": "scripts/band_sweep.py",
    "summary": "How much does bandwidth buy? The information-versus-frequency curve, on a room whose answer is known.",
    "title": "band_sweep.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/bmv_sim.py",
+   "kind": "script",
+   "path": "scripts/bmv_sim.py",
+   "summary": "Numerical emulation of the BMV/GIE gravity-mediated entanglement experiment.",
+   "title": "bmv_sim.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
@@ -2307,6 +2405,13 @@
    "title": "preconditions.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/qg-proof-beliefs.py",
+   "kind": "script",
+   "path": "scripts/qg-proof-beliefs.py",
+   "summary": "The QG proof-belief graph \u2014 apply the belief layer to the three deferred proofs.",
+   "title": "qg-proof-beliefs.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/quintic_periods.py",
    "kind": "script",
    "path": "scripts/quintic_periods.py",
@@ -2727,11 +2832,25 @@
    "title": "validate_s_duality_vacua.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sextant.py",
+   "kind": "script",
+   "path": "scripts/validate_sextant.py",
+   "summary": "SEXTANT guard \u2014 the theorem registry is well-formed and the CHSH control is exact.",
+   "title": "validate_sextant.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_anomaly.py",
    "kind": "script",
    "path": "scripts/validate_sm_anomaly.py",
    "summary": "Standard-Model anomaly cancellation \u2014 the gauge-sector constraint (exact).",
    "title": "validate_sm_anomaly.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_hilbert_series.py",
+   "kind": "script",
+   "path": "scripts/validate_sm_hilbert_series.py",
+   "summary": "SM Yukawa Hilbert series \u2014 full (mass + CKM) generator degree structure, exactly.",
+   "title": "validate_sm_hilbert_series.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_hypercharge_uniqueness.py",
@@ -2741,11 +2860,39 @@
    "title": "validate_sm_hypercharge_uniqueness.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_invariant_dimension.py",
+   "kind": "script",
+   "path": "scripts/validate_sm_invariant_dimension.py",
+   "summary": "SM invariant-ring dimension \u2014 the exact orbit-space count for the floor question.",
+   "title": "validate_sm_invariant_dimension.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_invariant_ring.py",
    "kind": "script",
    "path": "scripts/validate_sm_invariant_ring.py",
    "summary": "Standard-Model invariant ring \u2014 why the 19 parameters are *exactly* the independent",
    "title": "validate_sm_invariant_ring.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_molien.py",
+   "kind": "script",
+   "path": "scripts/validate_sm_molien.py",
+   "summary": "Molien/Hilbert series \u2014 the degree-by-degree refinement of the SM invariant-ring count.",
+   "title": "validate_sm_molien.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_molien_weyl.py",
+   "kind": "script",
+   "path": "scripts/validate_sm_molien_weyl.py",
+   "summary": "SM quark/Yukawa Hilbert series \u2014 EXACT, via Molien-Weyl (torus constant term + Weyl).",
+   "title": "validate_sm_molien_weyl.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_neutrino_flavor.py",
+   "kind": "script",
+   "path": "scripts/validate_sm_neutrino_flavor.py",
+   "summary": "Neutrino/flavor sector \u2014 the same forced/free recipe, one more level up.",
+   "title": "validate_sm_neutrino_flavor.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_sm_parameter_count.py",
@@ -2818,6 +2965,13 @@
    "title": "validate_uv_completions.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify-hinges.py",
+   "kind": "script",
+   "path": "scripts/verify-hinges.py",
+   "summary": "QF-0 gate \u2014 the hinge ledger must name >=1 hypothesis and a source per hinge.",
+   "title": "verify-hinges.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify_certificates.py",
    "kind": "script",
    "path": "scripts/verify_certificates.py",
@@ -2886,6 +3040,34 @@
    "path": "scripts/window_dependence.py",
    "summary": "H-A's artefact: the content \"law\" is the window's size growth, not a property of the landscape.",
    "title": "window_dependence.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_flagship.py",
+   "kind": "script",
+   "path": "scripts/zenodo_upload_flagship.py",
+   "summary": "",
+   "title": "zenodo_upload_flagship.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_qg.py",
+   "kind": "script",
+   "path": "scripts/zenodo_upload_qg.py",
+   "summary": "",
+   "title": "zenodo_upload_qg.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_qm.py",
+   "kind": "script",
+   "path": "scripts/zenodo_upload_qm.py",
+   "summary": "Upload the QM falsification paper to Zenodo. Run: ZENODO_TOKEN=... python3 scripts/zenodo_upload_qm.py",
+   "title": "zenodo_upload_qm.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_sm.py",
+   "kind": "script",
+   "path": "scripts/zenodo_upload_sm.py",
+   "summary": "Zenodo upload for the two SM proof-arm papers. Run: ZENODO_TOKEN=... python3 scripts/zenodo_upload_sm.py",
+   "title": "zenodo_upload_sm.py"
   },
   {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf",
