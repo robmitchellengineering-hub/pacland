@@ -45,7 +45,7 @@ def _stim_bell_agreement() -> float:
 
 COMPUTE = {
     "chsh": _chsh,
-    "bell": _bell,
+    "bell-classical": _bell,
     "bell-agreement": _stim_bell_agreement,
 }
 

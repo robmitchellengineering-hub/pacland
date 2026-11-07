@@ -23,6 +23,20 @@ class TestSextant(unittest.TestCase):
     def test_generation_is_free(self):
         self.assertEqual(run("is N_gen fixed?")["verdict"], FREE)
 
+    def test_born_rule_is_forced(self):
+        self.assertEqual(run("is the Born rule forced?")["verdict"], FORCED)
+
+    def test_mermin_is_impossible(self):
+        self.assertEqual(run("mermin")["verdict"], IMPOSSIBLE)
+
+    def test_anomaly_cancellation_is_forced(self):
+        self.assertEqual(run("do the SM anomaly coefficients vanish?")["verdict"], FORCED)
+
+    def test_catalog_is_the_full_21(self):
+        from pacland.sextant import CLAIMS
+
+        self.assertEqual(len(CLAIMS), 21)
+
     def test_unknown_question_is_unknown_not_pass(self):
         r = run("what colour is the Higgs?")
         self.assertEqual(r["verdict"], "UNKNOWN")
