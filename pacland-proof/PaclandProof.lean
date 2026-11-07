@@ -21,4 +21,5 @@ import PaclandProof.QM.NoCloning
 import PaclandProof.QM.Tsirelson
 import PaclandProof.QM.NoBroadcasting
 import PaclandProof.QM.PBR
+import PaclandProof.QM.Mermin
 import PaclandProof.Gravity.Bianchi
