@@ -164,6 +164,12 @@ The referee is the Lean kernel; it does not care about credentials.</p>
       <td class='st'><span class='pill ok'>SM.Anomaly.anomaly_cancellation</span></td></tr>
       <tr><td>SM flavor invariant ring</td><td>exact Hilbert series (1&minus;t&#178;&#8308;)/&hellip;, dimension 13, Jarlskog syzygy</td>
       <td class='st'><span class='pill ok'>validate_sm_molien_weyl.py</span> &mdash; <a href="https://doi.org/10.5281/zenodo.24024631">10.5281/zenodo.24024631</a></td></tr>
+      <tr><td>Bell / CHSH (both forms)</td><td>local hidden variables give S &le; 2 (&plusmn;1 and |a|,|b| &le; 1)</td>
+      <td class='st'><span class='pill ok'>QM.CHSH.chsh_local_bound</span> &mdash; <a href="https://doi.org/10.5281/zenodo.24027302">10.5281/zenodo.24027302</a></td></tr>
+      <tr><td>Tsirelson bound</td><td>QM saturates S = 2&radic;2 &gt; 2 (locality violated)</td>
+      <td class='st'><span class='pill ok'>QM.Tsirelson.tsirelson_bound</span></td></tr>
+      <tr><td>No-cloning</td><td>v &mapsto; v&otimes;v is not linear</td>
+      <td class='st'><span class='pill ok'>QM.NoCloning.no_cloning</span></td></tr>
       </tbody></table>
       <p class="prov">evidence: pacland-proof/ (lake build green, #print axioms = propext + Classical.choice + Quot.sound); scripts/validate_sm_*.py (dispose-verified on the harness mesh)</p>
 
