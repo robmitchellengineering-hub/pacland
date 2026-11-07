@@ -82,6 +82,16 @@ CATALOG: dict[str, dict] = {
         "why": "a sum of r = D^m simple tensors has simple rank ≤ r (the area law, the algebraic "
                "core of Ryu–Takayanagi / MERA 'entanglement = geometry').",
     },
+    "mera-hyperbolic": {
+        "claim": "the MERA causal cone is a discrete hyperbolic space (Gromov 0-hyperbolic)",
+        "theorem": "QM.Hyperbolic.treeDist_four_point + QM.MERA.causalConeDoubles + QM.MERA.ballVolumeExponential",
+        "falsifier": "a four-point violation of the 0-hyperbolicity condition, or sub-exponential volume growth",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the tree metric satisfies the four-point condition (0-hyperbolicity), with exponential "
+               "volume 2^(r+1)−1, log depth, and the D^m area law — the discrete signature of the "
+               "hyperbolic (AdS) plane (Swingle's 'MERA = AdS', kernel-checked).",
+    },
 
     "bell-classical": {
         "claim": "no local-hidden-variable theory violates CHSH beyond 2",
