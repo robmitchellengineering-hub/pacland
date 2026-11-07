@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PACLAND — verification, then belief, one field at a time</title>
-<meta name="description" content="A probably-approximately-correct verification discipline applied one field at a time — the string landscape first, then climate, economics, and more. It measures how much of a claim can be checked, refuses the rest, and now says, for what's still open: what to believe, what to test next, and how honest that belief has been.">
+<title>PACLAND — a verification discipline, one field at a time</title>
+<meta name="description" content="A probably-approximately-correct verification discipline applied one field at a time — the string landscape first, then climate, drug discovery, and more. Certified deficit, measured priors, a boundary map of the computable, and machine-checked theorems.">
 <style>
   :root { --ink: #1a1f2e; --muted: #5a6072; --accent: #142a5e; --line: #e3e6ee; --bg: #fbfbfd; }
   * { box-sizing: border-box; }
@@ -117,9 +117,9 @@ h2{scroll-margin-top:6rem}
     <a class="find" href="./all.html">find anything →</a>
   </nav>
 <section class="hero">
-  <p class="kicker">verification, then belief</p>
+  <p class="kicker">a verification discipline</p>
   <h1>PACLAND</h1>
-  <p class="lede">Most claims — in physics, economics, climate, or the software an AI just wrote for you — cannot be checked. PACLAND measures <strong>how much of a claim can be checked</strong> and refuses the rest. And for what's still open, it now also answers <strong>what to believe, what to test next, and how honest that belief has been</strong>.</p>
+  <p class="lede">Most claims — in physics, economics, climate, or the software an AI just wrote for you — cannot be checked. PACLAND measures <strong>how much of a claim can be checked</strong>, and refuses the rest.</p>
   <p class="muted">Mitchell’s Principle of Constraint-First Unification: a theory of everything predicts <em>relations</em>, never <em>values</em> — applied one field at a time, starting with the string landscape.</p>
   <p class="hero-actions">
     <a class="btn" href="#deterministic">The deterministic result</a>
@@ -138,8 +138,8 @@ h2{scroll-margin-top:6rem}
   </div>
   <div class="card">
     <h3>What it does</h3>
-    <p class="muted">Three gates stop an unverified number reaching a decision — and a <strong>belief layer</strong> scores what the gates leave open. The gates: <strong>null</strong> (beat “tomorrow equals today” or say you didn't), <strong>identification</strong> (an estimate must be recoverable before it is published), <strong>admissibility</strong> (a fitted model that breaks a constraint does not get a table). The belief layer: <strong>believe · allocate · calibrate · guarantee</strong>.</p>
-    <p><a href="#solutions">the three gates</a> · <a href="#belief">the belief layer</a></p>
+    <p class="muted">Three gates that stop an unverified number reaching a decision: the <strong>null gate</strong> (beat “tomorrow equals today” or say you didn't), the <strong>identification gate</strong> (an estimate must be recoverable before it is published), and the <strong>admissibility gate</strong> (a fitted model that breaks a constraint does not get a table).</p>
+    <p><a href="#solutions">the three gates</a></p>
   </div>
   <div class="card">
     <h3>Why it matters</h3>
@@ -151,39 +151,9 @@ h2{scroll-margin-top:6rem}
 <section class="strip">
   <div><strong>190</strong><span>artifacts indexed</span></div>
   <div><strong>6</strong><span>models scored</span></div>
+  <div><strong>2</strong><span>disciplines running the same bar</span></div>
   <div><strong>3</strong><span>gates, all three have refused something</span></div>
-  <div><strong>8</strong><span>belief-layer builds</span></div>
-  <div><strong>1</strong><span>calibration ledger — honest about being overconfident</span></div>
 </section>
-
-<h2 id="belief">The belief layer — what to believe, and what to test next</h2>
-<p class="lead">Verification says <em>what is proven and what is refuted</em>. The belief layer answers the two questions verification cannot: <em>how much should I believe each unproven hypothesis, and which one do I test next</em>. It does this the way PACLAND does everything — as a number, checked against reality, never an adjective.</p>
-<div class="grid grid--3">
-  <div class="card">
-    <h3>Believe</h3>
-    <p class="muted">Every unproven hypothesis carries a numeric degree of belief — a <strong>prior → Bayes factor → posterior</strong>, computed from its test, instead of a bare “supported / refuted”.</p>
-  </div>
-  <div class="card">
-    <h3>Allocate</h3>
-    <p class="muted">Rank hypotheses by <strong>expected information gain per unit cost</strong>, and the next test is the one that learns the most per dollar — “drive real answers faster” as arithmetic, not a slogan.</p>
-  </div>
-  <div class="card">
-    <h3>Calibrate</h3>
-    <p class="muted">Every confidence claim is scored against what actually happened (Brier / log). First result: our own confidence was <strong>overconfident</strong> — Brier 0.41 against a 0.25 base-rate, the Tetlock finding, now on our own ledger.</p>
-  </div>
-  <div class="card">
-    <h3>Guarantee</h3>
-    <p class="muted">A posterior carries a <strong>PAC-Bayes bound</strong> — “probably approximately correct” for a degree of belief, with a stated confidence. That is what makes the belief layer <em>PACLAND</em>, not just “we added Bayes”.</p>
-  </div>
-  <div class="card">
-    <h3>Know when not to converge</h3>
-    <p class="muted">A <strong>C/P detector</strong> separates hypotheses that converge (shared evidence) from those that are genuinely plural — like a set-identified economics model, where the honest output is the <em>weighted set</em>, never a fake point.</p>
-  </div>
-  <div class="card">
-    <h3>Why it matters</h3>
-    <p class="muted">A verification badge tells you what is proven. A belief layer tells you <strong>what is worth believing and worth testing next</strong> — the difference between a lie detector and a decision engine.</p>
-  </div>
-</div>
 
 <h2 id="calculators">Calculators — for a quick reference, and for confidence</h2>
 <p class="lead">Two things you can check in a browser, no install. Both are the same arithmetic the repo runs.</p>
@@ -309,7 +279,7 @@ the formal record: <a href="https://github.com/robmitchellengineering-hub/paclan
       <div class="card">
         <h3>String landscape</h3>
         <p><a href="#arc">the arc</a> · <a href="#theorems">theorems</a> · <a href="#sm">SM frontier</a> · <a href="#results">results</a> · <a href="#boundary">boundary map</a> · <a href="#lean">Lean proofs</a></p>
-        <p><a href="#published">the papers (6)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf">explainer (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf">what &amp; why (PDF)</a> · <a href="https://doi.org/10.5281/zenodo.24002944">published theorem</a></p>
+        <p><a href="#published">the papers (6)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf">explainer (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-startalk.pdf">startalk (PDF)</a> · <a href="https://doi.org/10.5281/zenodo.23497239">published theorem</a></p>
       </div>
       <div class="card">
         <h3>Climate</h3>
@@ -346,22 +316,23 @@ the formal record: <a href="https://github.com/robmitchellengineering-hub/paclan
 <summary>Published</summary>
 <h2 id="published">Published</h2>
     <div class="card">
-      <h3>Mitchell's Completeness Theorem: no exact polynomial invariant selector in the flux landscape</h3>
-      <p>Rob Mitchell · Zenodo · 20 Oct 2026 (v2 · 06 Nov 2026) · open access, CC BY 4.0</p>
-      <p>DOI: <a href="https://doi.org/10.5281/zenodo.24002944">10.5281/zenodo.24002944</a> (latest version)</p>
-      <p class="muted">The flagship theorem paper — verified symbolically (sympy, zero tolerance) and machine-checked in Lean 4 (no axioms). All six papers are now on Zenodo; each DOI is listed beside its paper below.</p>
+      <h3>Mitchell's Completeness Theorem: no exact invariant selector in the flux landscape</h3>
+      <p>Rob Mitchell · Zenodo · 20 Oct 2026 · open access, CC BY 4.0</p>
+      <p>Record: <a href="https://zenodo.org/records/23497239">zenodo.org/records/23497239</a></p>
+      <p>DOI: <a href="https://doi.org/10.5281/zenodo.23497239">10.5281/zenodo.23497239</a></p>
+      <p class="muted">The flagship theorem paper — verified symbolically (sympy, zero tolerance) and machine-checked in Lean 4 (no axioms). This is the first published item; more will be added here as they publish.</p>
     </div>
 
     <h3>The papers — six, led by the flagship synthesis</h3>
     <table>
       <thead><tr><th>paper</th><th>what it proves / holds</th></tr></thead>
       <tbody>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/mitchells-principle.pdf">mitchells-principle.pdf</a> · <a href="https://doi.org/10.5281/zenodo.24002967">DOI</a></td><td><strong>Mitchell's Principle of Constraint-First Unification</strong> — the flagship synthesis: relations, never values</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/constraint-first-theorem.pdf">constraint-first-theorem.pdf</a> · <a href="https://doi.org/10.5281/zenodo.24002944">DOI</a></td><td>Mitchell's Uniqueness → Complete Exact Structure (the five-theorem tower)</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/mitchells-laws.pdf">mitchells-laws.pdf</a> · <a href="https://doi.org/10.5281/zenodo.24002952">DOI</a></td><td>Mitchell's Laws of Duality Covariance — how W and g_s transform under S/T-duality</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/structure-map.pdf">structure-map.pdf</a> · <a href="https://doi.org/10.5281/zenodo.24002954">DOI</a></td><td>the measurement that motivated the theorem</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/fingerprint.pdf">fingerprint.pdf</a> · <a href="https://doi.org/10.5281/zenodo.24002960">DOI</a></td><td>the mass spectrum carries no geometric fingerprint</td></tr>
-        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/PACLAND-preprint.pdf">PACLAND-preprint.pdf</a> · <a href="https://doi.org/10.5281/zenodo.24002964">DOI</a></td><td>the verification discipline (umbrella)</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/mitchells-principle.pdf">mitchells-principle.pdf</a></td><td><strong>Mitchell's Principle of Constraint-First Unification</strong> — the flagship synthesis: relations, never values</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/constraint-first-theorem.pdf">constraint-first-theorem.pdf</a></td><td>Mitchell's Uniqueness → Complete Exact Structure (the five-theorem tower)</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/mitchells-laws.pdf">mitchells-laws.pdf</a></td><td>Mitchell's Laws of Duality Covariance — how W and g_s transform under S/T-duality</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/structure-map.pdf">structure-map.pdf</a></td><td>the measurement that motivated the theorem</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/fingerprint.pdf">fingerprint.pdf</a></td><td>the mass spectrum carries no geometric fingerprint</td></tr>
+        <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/PACLAND-preprint.pdf">PACLAND-preprint.pdf</a></td><td>the verification discipline (umbrella)</td></tr>
         <tr><td><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/paper/constraint-first-explainer.pdf">constraint-first-explainer.pdf</a></td><td>the plain-English explainer</td></tr>
       </tbody>
     </table>

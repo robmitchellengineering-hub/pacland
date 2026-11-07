@@ -150,6 +150,23 @@ and the independent reference it is checked against — then what it is worth to
         <tbody><tr><td>Exact structure</td><td>Does Mitchell's Uniqueness hold when the checker is re-run?</td><td class='ev'>the D3 tadpole F^T J H is the unique bilinear symplectic invariant of the flux</td><td class='st'><span class='pill ok'>satisfied</span></td></tr><tr><td>Exact structure</td><td>Does Constraint-First (Weyl FFT) hold when the checker is re-run?</td><td class='ev'>the constraint-first construction reproduces the Weyl FFT degrees of freedom</td><td class='st'><span class='pill ok'>satisfied</span></td></tr><tr><td>Exact structure</td><td>Does Mitchell's Completeness hold when the checker is re-run?</td><td class='ev'>the structure is complete: 6 exact and 2 numeric checks</td><td class='st'><span class='pill ok'>satisfied</span></td></tr><tr><td>Exact structure</td><td>Does Full-duality completion hold when the checker is re-run?</td><td class='ev'>the COMPLETE duality group, not just the monodromy subgroup</td><td class='st'><span class='pill ok'>satisfied</span></td></tr><tr><td>Exact structure</td><td>Does Complete Exact Structure hold when the checker is re-run?</td><td class='ev'>the assembly of the four theorems above</td><td class='st'><span class='pill ok'>satisfied</span></td></tr></tbody>
       </table>
       <p class="prov">evidence: Scripts: scripts/validate_*.py (re-run at issue time); Module: src/pacland/certify/dossiers.py::physics_theorems; Doctrine: docs/oracles-without-oracles.md</p>
+
+      <h3>The proof arm (machine-checked, Lean 4)</h3>
+      <p class="headline">The Born rule and the Standard Model's exact structure are kernel-checked:
+Gleason's theorem (Cooke-Keane-Moran route, no continuity) and the SM gauge-sector uniqueness.
+The referee is the Lean kernel; it does not care about credentials.</p>
+      <table class='battery'><thead><tr><th>proof</th><th>claim</th><th>certificate</th></tr></thead><tbody>
+      <tr><td>Gleason (Born rule)</td><td>non-contextual probability on projectors is Tr(&rho;P)</td>
+      <td class='st'><span class='pill ok'>Gleason.frameFunction_regular</span> &mdash; <a href="https://doi.org/10.5281/zenodo.24024627">10.5281/zenodo.24024627</a></td></tr>
+      <tr><td>SM hypercharge uniqueness</td><td>anomaly cancellation forces the hypercharges (up to scale + u&harr;d)</td>
+      <td class='st'><span class='pill ok'>SM.Hypercharge.hypercharge_uniqueness</span></td></tr>
+      <tr><td>SM anomaly cancellation</td><td>the five anomaly coefficients vanish for (1/6,2/3,&minus;1/3,&minus;1/2,&minus;1)</td>
+      <td class='st'><span class='pill ok'>SM.Anomaly.anomaly_cancellation</span></td></tr>
+      <tr><td>SM flavor invariant ring</td><td>exact Hilbert series (1&minus;t&#178;&#8308;)/&hellip;, dimension 13, Jarlskog syzygy</td>
+      <td class='st'><span class='pill ok'>validate_sm_molien_weyl.py</span> &mdash; <a href="https://doi.org/10.5281/zenodo.24024631">10.5281/zenodo.24024631</a></td></tr>
+      </tbody></table>
+      <p class="prov">evidence: pacland-proof/ (lake build green, #print axioms = propext + Classical.choice + Quot.sound); scripts/validate_sm_*.py (dispose-verified on the harness mesh)</p>
+
       <p class="vvs"><a href="./vvs/physics.md">Valiant Verification certificate &rarr;</a>
       <span class="muted">named-gate format · </span></p>
     </article>

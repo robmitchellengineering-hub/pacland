@@ -333,13 +333,6 @@
    "title": "Deterministic in use \u2014 the scoped claim"
   },
   {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/deterministic-ledger.md",
-   "kind": "doc",
-   "path": "docs/deterministic-ledger.md",
-   "summary": "machine-checked proof \u2014 with no sampler, no probability, no run-to-run variance. This is the inventory of those results, so \"deterministic in use\" is a category we can point at, not one\u2026",
-   "title": "The deterministic ledger \u2014 every result that is exact in its use"
-  },
-  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drift-is-not-calibratable.md",
    "kind": "doc",
    "path": "docs/drift-is-not-calibratable.md",
@@ -2034,18 +2027,18 @@
    "title": "make_explainers.py"
   },
   {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_headline_pdf.py",
-   "kind": "script",
-   "path": "scripts/make_headline_pdf.py",
-   "summary": "Generate the PACLAND headline PDF (repo root) \u2014 \"what it is, and why it matters\".",
-   "title": "make_headline_pdf.py"
-  },
-  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_plain_speak.py",
    "kind": "script",
    "path": "scripts/make_plain_speak.py",
    "summary": "Render the plain-speak one-pagers.",
    "title": "make_plain_speak.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_startalk_pdf.py",
+   "kind": "script",
+   "path": "scripts/make_startalk_pdf.py",
+   "summary": "Generate the PACLAND StarTalk-style explainer PDF (repo root).",
+   "title": "make_startalk_pdf.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_audit.py",
@@ -2895,13 +2888,6 @@
    "title": "window_dependence.py"
   },
   {
-   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-belief-plain-speak.pdf",
-   "kind": "pdf",
-   "path": "PACLAND-belief-plain-speak.pdf",
-   "summary": "explainer PDF",
-   "title": "belief plain speak"
-  },
-  {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf",
    "kind": "pdf",
    "path": "PACLAND-climate-explainer.pdf",
@@ -2958,11 +2944,11 @@
    "title": "oracles plain speak"
   },
   {
-   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf",
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-startalk.pdf",
    "kind": "pdf",
-   "path": "PACLAND-what-and-why.pdf",
+   "path": "PACLAND-startalk.pdf",
    "summary": "explainer PDF",
-   "title": "what and why"
+   "title": "startalk"
   },
   {
    "href": "./all.html",
