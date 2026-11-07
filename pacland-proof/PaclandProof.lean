@@ -19,4 +19,5 @@ import PaclandProof.SM.ParameterCount
 import PaclandProof.QM.CHSH
 import PaclandProof.QM.NoCloning
 import PaclandProof.QM.Tsirelson
+import PaclandProof.QM.NoBroadcasting
 import PaclandProof.Gravity.Bianchi
