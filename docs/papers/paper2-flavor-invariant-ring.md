@@ -4,6 +4,8 @@
 
 *Authors: the pacland proof arm · Date: 2026-11-07 · Repository: `scripts/`*
 
+**DOI:** https://doi.org/10.5281/zenodo.24024631
+
 **Abstract.** We recompute the Hilbert series of the Standard Model quark-sector flavor
 invariant ring by a method independent of the literature — the **Molien–Weyl formula** (torus
 constant-term + Weyl averaging), validated against the classical single-matrix series — and

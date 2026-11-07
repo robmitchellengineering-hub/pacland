@@ -16,7 +16,8 @@ PAPERS = [
     {
         "filename": "docs/papers/paper1-machine-checked-foundations.md",
         "metadata": {
-            "upload_type": "preprint",
+            "upload_type": "publication",
+            "publication_type": "preprint",
             "title": "Machine-checked foundations of quantum theory and the Standard Model: Gleason's theorem and the gauge-sector uniqueness, kernel-checked in Lean 4",
             "creators": [{"name": "Mitchell, Rob"}],
             "description": (
@@ -37,7 +38,8 @@ PAPERS = [
     {
         "filename": "docs/papers/paper2-flavor-invariant-ring.md",
         "metadata": {
-            "upload_type": "preprint",
+            "upload_type": "publication",
+            "publication_type": "preprint",
             "title": "The Standard Model flavor invariant ring: an independent Molien-Weyl computation confirming Bento-Silva-Trautner",
             "creators": [{"name": "Mitchell, Rob"}],
             "description": (

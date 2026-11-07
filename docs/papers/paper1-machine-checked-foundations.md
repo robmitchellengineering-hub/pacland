@@ -4,6 +4,8 @@
 
 *Authors: the pacland proof arm · Date: 2026-11-07 · Repository: `pacland-proof/`*
 
+**DOI:** https://doi.org/10.5281/zenodo.24024627
+
 **Abstract.** We present machine-checked (Lean 4 / Mathlib v4.35) certificates for two
 foundational results that together bound the *forced* half of quantum theory and of the
 Standard Model. (1) **Gleason's theorem** (finite, dimension ≥ 3): every non-contextual
