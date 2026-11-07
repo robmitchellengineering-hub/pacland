@@ -75,6 +75,34 @@ def covScalar {n : ℕ} (gInv : Fin n → Fin n → ℝ) (DR : CovDerivCurvature
 def ContractedBianchi {n : ℕ} (gInv : Fin n → Fin n → ℝ) (DR : CovDerivCurvature n) : Prop :=
   ∀ d, divRicci gInv DR d = (1 / 2) * covScalar gInv DR d
 
+/-- The once-contracted divergence `∇^a R_{abcd} = Σ_{a,e} gInv^{ae} ∇_e R_{abcd}`. -/
+def covFirst {n : ℕ} (gInv : Fin n → Fin n → ℝ) (DR : CovDerivCurvature n) :
+    Fin n → Fin n → Fin n → ℝ :=
+  fun b c d => ∑ a : Fin n, ∑ e : Fin n, gInv a e * DR e a b c d
+
+/-- **Twice-contracted second Bianchi.** `∇^a R_{abcd} = ∇_c R_{bd} − ∇_d R_{bc}`:
+the once-contracted divergence of the curvature equals the difference of the two covariant
+derivatives of the Ricci tensor. Follows from the second Bianchi + antisymmetry. -/
+lemma twice_contracted_second_bianchi {n : ℕ} (gInv : Fin n → Fin n → ℝ) (DR : CovDerivCurvature n)
+    (h_antisym : ∀ e a b c d, DR e a b c d = - DR e a b d c)
+    (h_second : SecondBianchi DR) :
+    ∀ b c d, covFirst gInv DR b c d = covRicci gInv DR c b d - covRicci gInv DR d b c := by
+  intro b c d
+  dsimp [covFirst]
+  calc
+    (∑ a : Fin n, ∑ e : Fin n, gInv a e * DR e a b c d)
+        = (∑ a : Fin n, ∑ e : Fin n, gInv a e * (DR c a b e d - DR d a b e c)) := by
+          apply Finset.sum_congr rfl; intro a ha
+          apply Finset.sum_congr rfl; intro e he
+          have h := h_second a b c d e
+          -- h : DR e a b c d + DR c a b d e + DR d a b e c = 0
+          have h' : DR e a b c d = DR c a b e d - DR d a b e c := by
+            rw [h_antisym c a b d e] at h
+            linarith
+          rw [h']
+    _ = covRicci gInv DR c b d - covRicci gInv DR d b c := by
+          simp [covRicci, mul_sub, Finset.sum_sub_distrib]
+
 end
 
 end Gravity
