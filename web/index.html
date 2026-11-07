@@ -418,6 +418,21 @@ the formal record: <a href="https://github.com/robmitchellengineering-hub/paclan
     <p><strong>The refined claim (from two research fan-outs).</strong> The first fan-out split "unpredicable" and found the honest form: <strong>a ToE predicts <em>relations</em> (invariants), never <em>values</em></strong> — GUTs and string geometry <em>relate</em> the parameters but never derive their absolute values. The second fan-out split "free parameter" and found the floor is a structure, not a number: <strong>0 continuous, 1 discrete (the tadpole), 19 relations</strong>. See <code>docs/sm-conjecture-notes.md</code> and <code>docs/sm-floor-notes.md</code>.</p>
     <p>The falsifiable test: <em>derive any one of the SM's ~19 free parameters from first principles</em> and the constraint-first generalization is falsified. Reproduce: <code>python3 scripts/validate_sm_anomaly.py</code> (5/5), <code>validate_sm_hypercharge_uniqueness.py</code> (4/4), <code>validate_sm_invariant_ring.py</code>, <code>validate_gut_parameter_count.py</code>. Full doc: <code>docs/sm-frontier.md</code>.</p>
 </details>
+<details class="fold" open>
+<summary>SEXTANT — the verified quantum referee (a simulated quantum computer you can download)</summary>
+<h2 id="sextant">SEXTANT — the verified quantum referee</h2>
+    <p><strong>The new arm.</strong> SEXTANT reads where every quantum claim sits — <strong>FORCED</strong> (a theorem), <strong>FREE</strong> (a label), or <strong>IMPOSSIBLE</strong> (a no-go) — and hands you the machine-checked proof, not just the floating-point number. It rides the same engines everyone uses (Stim, Quimb, QuEST) but certifies <em>why they are correct</em>.</p>
+    <table>
+      <thead><tr><th>simulator method</th><th>the engine</th><th>the kernel-checked theorem</th></tr></thead>
+      <tbody>
+        <tr><td>Clifford / stabilizer</td><td>Stim</td><td><code>QM.Stabilizer</code> — Clifford normalizes Pauli ⟹ polynomial (Gottesman–Knill)</td></tr>
+        <tr><td>tensor-network / geometric</td><td>Quimb</td><td><code>QM.MERA</code> — entanglement ≤ cut area <code>D^m</code> (Ryu–Takayanagi)</td></tr>
+        <tr><td>full state vector</td><td>QuEST</td><td>the <em>free column</em> <code>2ⁿ</code></td></tr>
+      </tbody>
+    </table>
+    <p><strong>Headline — "entanglement = geometry" is now a theorem.</strong> The MERA causal cone is a proven <strong>discrete hyperbolic space</strong>: exponential volume, log depth, area law, and <strong>Gromov 0-hyperbolicity</strong> (the four-point condition), machine-checked in <code>QM.MERA</code> + <code>QM.Hyperbolic</code>. This is Swingle's "MERA = AdS" in kernel-checked form — the piece no simulator and no published paper ships as a verified theorem.</p>
+    <p><strong>Download &amp; use.</strong> <code>pip install -e .</code> then <code>pip install stim quimb numpy</code>, then <code>sextant chsh</code>. Full guide and the 21-claim registry: <code>docs/sextant.md</code>.</p>
+</details>
 <details class="fold">
 <summary>What we measured</summary>
 <h2 id="results">What we measured</h2>
@@ -703,7 +718,7 @@ python3 scripts/validate_all_theorems.py</code></pre>
 <details class="fold">
 <summary>Trust board — every discipline, one ranked output</summary>
 <h2 id="trust">Trust board — every discipline, one ranked output</h2>
-    <p>The monetisation surface: each discipline drops its artifacts into one ranked board, machine-checked and cited. <!-- trust-summary:start --><code>pacland trust</code> ranks <strong>42 artifacts</strong> today — 14 broken, 9 weak, 19 clean — across 6 disciplines (ai 2, climate 23, drugs 1, economics 10, landscape 5, system 1).<!-- trust-summary:end --></p>
+    <p>The monetisation surface: each discipline drops its artifacts into one ranked board, machine-checked and cited. <!-- trust-summary:start --><code>pacland trust</code> ranks <strong>42 artifacts</strong> today — 14 broken, 10 weak, 18 clean — across 6 disciplines (ai 2, climate 23, drugs 1, economics 10, landscape 5, system 1).<!-- trust-summary:end --></p>
     <div class="callout">
       <p><strong>The flagship finding.</strong> 12 of 19 CMIP6 models fail an energy-conservation guard; two leak heat at ~1.9× the Earth's energy imbalance, and the leak lives in the atmosphere, not the ocean. Crossed with ECS and forcing, only the GISS family survives all three axes.</p>
     </div>

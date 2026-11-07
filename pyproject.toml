@@ -13,6 +13,7 @@ authors = [{ name = "Rob Mitchell" }]
 
 [project.scripts]
 pacland = "pacland.cli:main"
+sextant = "pacland.sextant:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
