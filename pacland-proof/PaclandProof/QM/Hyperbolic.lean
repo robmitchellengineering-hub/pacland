@@ -137,4 +137,57 @@ theorem treeDist_triangle (s u t : List Bool) :
   have h6 : commonPrefixLength u t ≤ t.length := (commonPrefix_length_le (s := u) (t := t)).2
   omega
 
+/-- The four-point condition at the common-prefix level: the sum of the two "opposite" common
+prefixes is at least the smaller of the two "cross" sums. This is the algebraic core of Gromov
+0-hyperbolicity for the tree. -/
+lemma lcp_four_point {s t u v : List Bool} :
+    min (commonPrefixLength s u + commonPrefixLength t v) (commonPrefixLength s v + commonPrefixLength t u)
+      ≤ commonPrefixLength s t + commonPrefixLength u v := by
+  have h1 : min (commonPrefixLength s u) (commonPrefixLength u t) ≤ commonPrefixLength s t := commonPrefix_min_le (s := s) (u := u) (t := t)
+  have h2 : min (commonPrefixLength s v) (commonPrefixLength v t) ≤ commonPrefixLength s t := commonPrefix_min_le (s := s) (u := v) (t := t)
+  have h3 : min (commonPrefixLength u s) (commonPrefixLength s v) ≤ commonPrefixLength u v := commonPrefix_min_le (s := u) (u := s) (t := v)
+  have h4 : min (commonPrefixLength u t) (commonPrefixLength t v) ≤ commonPrefixLength u v := commonPrefix_min_le (s := u) (u := t) (t := v)
+  rw [commonPrefixLength_symm u t] at h1 h4
+  rw [commonPrefixLength_symm v t] at h2
+  rw [commonPrefixLength_symm u s] at h3
+  have hp : max (min (commonPrefixLength s u) (commonPrefixLength t u)) (min (commonPrefixLength s v) (commonPrefixLength t v)) ≤ commonPrefixLength s t := max_le h1 h2
+  have hq : max (min (commonPrefixLength s u) (commonPrefixLength s v)) (min (commonPrefixLength t u) (commonPrefixLength t v)) ≤ commonPrefixLength u v := max_le h3 h4
+  have harith : max (min (commonPrefixLength s u) (commonPrefixLength t u)) (min (commonPrefixLength s v) (commonPrefixLength t v))
+      + max (min (commonPrefixLength s u) (commonPrefixLength s v)) (min (commonPrefixLength t u) (commonPrefixLength t v))
+      ≥ min (commonPrefixLength s u + commonPrefixLength t v) (commonPrefixLength s v + commonPrefixLength t u) := by
+    omega
+  omega
+
+/-- **Gromov 0-hyperbolicity** (the four-point condition): the MERA causal cone is a hyperbolic
+space. `d(s,t) + d(u,v) ≤ max(d(s,u) + d(t,v), d(s,v) + d(t,u))`. -/
+theorem treeDist_four_point (s t u v : List Bool) :
+    treeDist s t + treeDist u v ≤ max (treeDist s u + treeDist t v) (treeDist s v + treeDist t u) := by
+  have hlcp := lcp_four_point (s := s) (t := t) (u := u) (v := v)
+  have b_st : 2 * commonPrefixLength s t ≤ s.length + t.length := by
+    have a1 := (commonPrefix_length_le (s := s) (t := t)).1
+    have a2 := (commonPrefix_length_le (s := s) (t := t)).2
+    omega
+  have b_uv : 2 * commonPrefixLength u v ≤ u.length + v.length := by
+    have a1 := (commonPrefix_length_le (s := u) (t := v)).1
+    have a2 := (commonPrefix_length_le (s := u) (t := v)).2
+    omega
+  have b_su : 2 * commonPrefixLength s u ≤ s.length + u.length := by
+    have a1 := (commonPrefix_length_le (s := s) (t := u)).1
+    have a2 := (commonPrefix_length_le (s := s) (t := u)).2
+    omega
+  have b_tv : 2 * commonPrefixLength t v ≤ t.length + v.length := by
+    have a1 := (commonPrefix_length_le (s := t) (t := v)).1
+    have a2 := (commonPrefix_length_le (s := t) (t := v)).2
+    omega
+  have b_sv : 2 * commonPrefixLength s v ≤ s.length + v.length := by
+    have a1 := (commonPrefix_length_le (s := s) (t := v)).1
+    have a2 := (commonPrefix_length_le (s := s) (t := v)).2
+    omega
+  have b_tu : 2 * commonPrefixLength t u ≤ t.length + u.length := by
+    have a1 := (commonPrefix_length_le (s := t) (t := u)).1
+    have a2 := (commonPrefix_length_le (s := t) (t := u)).2
+    omega
+  dsimp [treeDist]
+  omega
+
 end QM
