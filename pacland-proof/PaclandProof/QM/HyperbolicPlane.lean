@@ -72,4 +72,58 @@ theorem treeToH2_depth_inj (s t : List Bool) (h : s.length ≠ t.length) :
   rw [treeToH2_depth, treeToH2_depth] at hd
   exact h (by exact_mod_cast hd)
 
+
+
+/-- The angle of any tree path is nonnegative. -/
+theorem pathAngle_nonneg (s : List Bool) : 0 ≤ pathAngle s := by
+  induction s with
+  | nil => simp [pathAngle]
+  | cons b t ih =>
+    simp [pathAngle]
+    have hb : 0 ≤ (if b then (1 : ℝ) else 0) := by cases b <;> norm_num
+    nlinarith [ih, hb]
+
+/-- The angle of any tree path is strictly less than 1 — the binary expansion never wraps. -/
+theorem pathAngle_lt_one (s : List Bool) : pathAngle s < 1 := by
+  induction s with
+  | nil => simp [pathAngle]
+  | cons b t ih =>
+    simp [pathAngle]
+    have hb : (if b then (1 : ℝ) else 0) ≤ 1 := by cases b <;> norm_num
+    nlinarith [ih, hb]
+
+/-- **Coarse injectivity, angular.** Two tree paths of the same depth have the same angle only if
+they are the same path — distinct branches map to distinct angles. -/
+theorem pathAngle_inj {s t : List Bool} (h : pathAngle s = pathAngle t) (hl : s.length = t.length) :
+    s = t := by
+  induction s generalizing t with
+  | nil =>
+    cases t with
+    | nil => rfl
+    | cons c t' => simp at hl
+  | cons b s' ih =>
+    cases t with
+    | nil => simp at hl
+    | cons c t' =>
+      simp only [List.length_cons] at hl
+      have h3 : (if b then (1 : ℝ) else 0) + pathAngle s' = (if c then (1 : ℝ) else 0) + pathAngle t' := by
+        simp [pathAngle] at h
+        nlinarith [h]
+      have hbc : b = c := by
+        by_cases hb : b <;> by_cases hc : c <;> simp [hb, hc] at h3 ⊢
+        · exfalso
+          have hlt := pathAngle_lt_one t'
+          have hn : 1 ≤ 1 + pathAngle s' := by nlinarith [pathAngle_nonneg s']
+          nlinarith [h3, hlt, hn]
+        · exfalso
+          have hlt := pathAngle_lt_one s'
+          have hn : 1 ≤ 1 + pathAngle t' := by nlinarith [pathAngle_nonneg t']
+          nlinarith [h3, hlt, hn]
+      have ht' : pathAngle s' = pathAngle t' := by
+        rw [hbc] at h3
+        nlinarith [h3]
+      have hs' : s' = t' := ih ht' (by omega)
+      rw [hbc, hs']
+
+
 end QM
