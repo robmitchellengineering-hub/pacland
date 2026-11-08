@@ -60,4 +60,16 @@ theorem treeToH2_depth (s : List Bool) :
   simp [pathAngle, Real.sinh_zero, Real.cosh_zero]
   exact Real.arcosh_cosh (by exact_mod_cast (Nat.zero_le s.length))
 
+
+/-- **The map is injective in depth.** Vertices at different depths map to different hyperboloid
+points — the radial coordinate (proven isometric by `treeToH2_depth`) separates them. This is the
+"coarse injectivity in the radial direction" the quasi-isometry needs. -/
+theorem treeToH2_depth_inj (s t : List Bool) (h : s.length ≠ t.length) :
+    treeToH2 s ≠ treeToH2 t := by
+  intro heq
+  have hd : hyperbolicDist (treeToH2 []) (treeToH2 s) = hyperbolicDist (treeToH2 []) (treeToH2 t) := by
+    rw [heq]
+  rw [treeToH2_depth, treeToH2_depth] at hd
+  exact h (by exact_mod_cast hd)
+
 end QM
