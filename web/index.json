@@ -1005,6 +1005,13 @@
    "title": "Selection (L6) \u2014 what is buildable, and what is not"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant-fields.md",
+   "kind": "doc",
+   "path": "docs/sextant-fields.md",
+   "summary": "These 27 proofs are not isolated results; they are the load-bearing foundations that entire fields build on top of. This is the dependency map: for each field, the proofs it leans on, and\u2026",
+   "title": "SEXTANT \u2014 the fields that rely on these fundamentals"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md",
    "kind": "doc",
    "path": "docs/sextant.md",
