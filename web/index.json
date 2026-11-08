@@ -88,6 +88,41 @@
    "title": "Room correction from the mode spectrum: diagnose, fix, and check the fix away from the seat"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-c1-learnability.md",
+   "kind": "doc",
+   "path": "docs/animal-c1-learnability.md",
+   "summary": "the clean uniform column. All four candidate constraints are LEARNABLE; the context-free acoustic \u2192 referent map is graded (balanced accuracy 0.60), far below the r\u22650.9 Rosetta threshold\u2026",
+   "title": "C1 \u2014 animal communication, constraint-first: first run (learnability split)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-c1b-referent.md",
+   "kind": "doc",
+   "path": "docs/animal-c1b-referent.md",
+   "summary": "A context-free acoustic map to the referent is near-deterministic: joint ridge-CV balanced accuracy 1.000 and best single feature 0.955, both \u2265 0.90 with permutation z \u2265 3. Where C1's\u2026",
+   "title": "C1b \u2014 animal communication, constraint-first: the REFERENTIAL test (real predator referent)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-c1c-sequences.md",
+   "kind": "doc",
+   "path": "docs/animal-c1c-sequences.md",
+   "summary": "sperm-whale coda sequences the unit-type frequency distribution is a strong power law, the temporal order of codas is predictable beyond chance, and a 2-symbol bigram grammar compresses the\u2026",
+   "title": "C1c \u2014 animal communication, sequence constraints (frequency / temporal / combinatorial)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-constraint-first.md",
+   "kind": "doc",
+   "path": "docs/animal-constraint-first.md",
+   "summary": "\"meanings\" fit any signal, and there is no ground-truth translation key (no Rosetta Stone). The pacland move for the underdetermined wall is compute the set's invariants \u2014 the constraints\u2026",
+   "title": "Animal communication \u2014 constraint-first"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-raskin-brief.md",
+   "kind": "doc",
+   "path": "docs/animal-raskin-brief.md",
+   "summary": "\"Decode animal language\" is usually posed as a search for a Rosetta Stone \u2014 a translation key into a known language. Framed that way it is an underdetermined inverse problem: infinitely\u2026",
+   "title": "The decodability deficit"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/architecture.md",
    "kind": "doc",
    "path": "docs/architecture.md",
@@ -2046,6 +2081,13 @@
    "path": "scripts/make_plain_speak.py",
    "summary": "Render the plain-speak one-pagers.",
    "title": "make_plain_speak.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_animal_constraints.py",
+   "kind": "script",
+   "path": "scripts/measure_animal_constraints.py",
+   "summary": "C1 \u2014 animal communication learnability split (macaque corpus), via the reusable instrument.",
+   "title": "measure_animal_constraints.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_audit.py",
