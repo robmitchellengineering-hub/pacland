@@ -78,6 +78,16 @@ theorem pfaffian6_sq_eq_det (a b c d e f g h i j k l m n o : ℂ) :
   norm_num
   ring
 
+/-- **The recursive Pfaffian** (Laplace expansion along the first row), defined on even
+dimension `2 * m` by structural recursion on `m` — the general even-n object behind `pfaffian2`/
+`pfaffian4`/`pfaffian6`. The `(m+1)`-step expands along row 0, removing rows/columns 0 and `j+1`. -/
+def pfaffian : (m : ℕ) → Matrix (Fin (2 * m)) (Fin (2 * m)) ℂ → ℂ
+  | 0, _ => 1
+  | m + 1, A =>
+      ∑ j : Fin (2 * m + 1), (-1 : ℂ) ^ (j : ℕ) * A 0 (Fin.succ j) *
+        pfaffian m (A.submatrix (fun i => Fin.succAbove (Fin.succ j) (Fin.succ i))
+                                (fun i => Fin.succAbove (Fin.succ j) (Fin.succ i)))
+
 /-- The 4×4 Pfaffian — the signed sum over the three perfect matchings (the exact four-qubit
 matchgate amplitude). -/
 def pfaffian4 (a b c d e f : ℂ) : ℂ :=
@@ -142,5 +152,6 @@ theorem det_three_antisymm_eq_zero (a b c : ℂ) :
   rw [Matrix.det_fin_three]
   simp
   ring
+
 
 end QM
