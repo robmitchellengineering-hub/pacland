@@ -79,5 +79,31 @@ class TestPhantomSelfTest(unittest.TestCase):
         self.assertEqual(sr.referee(dev)["verdict"], sr.UNKNOWN)
 
 
+class TestCountsIngest(unittest.TestCase):
+    def _counts(self, e):
+        """±1 counts whose expectation is exactly `e`, over 10^6 shots."""
+        n = 10**6
+        plus = round(n * (1 + e) / 2)
+        return {"+1": plus, "-1": n - plus}
+
+    def test_counts_yielding_the_quantum_max_are_certified(self):
+        """A real device emits counts, not expectations; the referee converts and certifies."""
+        e = 1 / math.sqrt(2)
+        dev = {"circuits": {"chsh": {"counts": {
+            "00": self._counts(e), "01": self._counts(e),
+            "10": self._counts(e), "11": self._counts(-e)}}}}
+        self.assertEqual(sr.referee(dev)["verdict"], sr.CERTIFIED)
+
+    def test_counts_yielding_s_3_are_refused(self):
+        dev = {"circuits": {"chsh": {"counts": {
+            "00": self._counts(0.75), "01": self._counts(0.75),
+            "10": self._counts(0.75), "11": self._counts(-0.75)}}}}
+        self.assertEqual(sr.referee(dev)["verdict"], sr.REFUSED)
+
+    def test_a_record_with_neither_expectations_nor_counts_is_unknown(self):
+        dev = {"circuits": {"chsh": {"shots": 10**6}}}
+        self.assertEqual(sr.referee(dev)["verdict"], sr.UNKNOWN)
+
+
 if __name__ == "__main__":
     unittest.main()

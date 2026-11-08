@@ -58,10 +58,28 @@ def classify_chsh(s: float, sigma: float, k: float = 5.0) -> tuple[str, str]:
         "a classical device could have produced this (rule 67)")
 
 
+def counts_to_expectations(counts: dict[str, dict[str, int]]) -> tuple[dict[str, float], int]:
+    """Convert per-setting +-1 shot counts to expectation values E = (n₊ − n₋) / (n₊ + n₋).
+
+    A real QPU emits counts, not expectation values; this is the ready-for-hardware conversion.
+    Returns (expectations, shots) where shots is the smallest total across settings, so the
+    significance model never overstates the sample size."""
+    exp: dict[str, float] = {}
+    shots: int | None = None
+    for setting, c in counts.items():
+        plus = c.get("+1", 0)
+        minus = c.get("-1", 0)
+        total = plus + minus
+        exp[setting] = (plus - minus) / total if total else 0.0
+        shots = total if shots is None else min(shots, total)
+    return exp, shots or 1
+
+
 def referee(device: dict, k: float = 5.0) -> dict:
     """Referee one device's shot record.
 
-    `device` is ``{"circuits": {"chsh": {"expectations": {"00","01","10","11"}, "shots": N}}}``.
+    `device` is ``{"circuits": {"chsh": {"expectations": {"00","01","10","11"}, "shots": N}}}``
+    or, for a real device, ``{"circuits": {"chsh": {"counts": {"00": {"+1": n, "-1": m}, …}}}}``.
     Summary is CERTIFIED / REFUSED / UNKNOWN; each ran circuit gets a certificate with its
     verdict, measured value, significance, theorem and falsifier.
     """
@@ -73,16 +91,22 @@ def referee(device: dict, k: float = 5.0) -> dict:
     certificates: list[dict] = []
     rec = circuits.get("chsh")
     if rec:
-        exp, shots = rec["expectations"], rec["shots"]
-        s, sigma = chsh_s(exp), chsh_sigma(exp, shots)
-        verdict, why = classify_chsh(s, sigma, k)
-        certificates.append({
-            "circuit": "chsh",
-            "S": round(s, 4), "sigma": round(sigma, 4), "shots": shots,
-            "theorem": "QM.Tsirelson (S <= 2√2) / QM.CHSH (Bell wall 2)",
-            "falsifier": f"S > 2√2 + {k}σ",
-            "verdict": verdict, "why": why,
-        })
+        if "expectations" in rec:
+            exp, shots = rec["expectations"], rec["shots"]
+        elif "counts" in rec:
+            exp, shots = counts_to_expectations(rec["counts"])
+        else:
+            exp, shots = None, None
+        if exp is not None:
+            s, sigma = chsh_s(exp), chsh_sigma(exp, shots)
+            verdict, why = classify_chsh(s, sigma, k)
+            certificates.append({
+                "circuit": "chsh",
+                "S": round(s, 4), "sigma": round(sigma, 4), "shots": shots,
+                "theorem": "QM.Tsirelson (S <= 2√2) / QM.CHSH (Bell wall 2)",
+                "falsifier": f"S > 2√2 + {k}σ",
+                "verdict": verdict, "why": why,
+            })
 
     verdicts = {c["verdict"] for c in certificates}
     if IMPOSSIBLE in verdicts:
