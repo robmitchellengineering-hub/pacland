@@ -50,4 +50,14 @@ noncomputable def treeToH2 (s : List Bool) : Hyperboloid :=
                nlinarith
      · exact Real.cosh_pos (s.length : ℝ)⟩
 
+
+/-- **The map is radially isometric** (the first QI inequality's core). The hyperbolic distance from
+the root to a vertex is exactly its depth `|s|` — the map encodes the tree's radial coordinate as the
+hyperbolic distance from the base point. -/
+theorem treeToH2_depth (s : List Bool) :
+    hyperbolicDist (treeToH2 []) (treeToH2 s) = (s.length : ℝ) := by
+  dsimp [hyperbolicDist, treeToH2, minkowski]
+  simp [pathAngle, Real.sinh_zero, Real.cosh_zero]
+  exact Real.arcosh_cosh (by exact_mod_cast (Nat.zero_le s.length))
+
 end QM
