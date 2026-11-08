@@ -210,4 +210,17 @@ theorem quasiIsometric_refl {X : Type*} (d : X → X → ℕ) (hrefl : ∀ x, d 
   · intro y
     exact ⟨y, by simpa [hrefl y]⟩
 
+
+/-- **A quasi-isometry maps balls into balls** — the core of the growth-class invariance. If
+`dX x x' ≤ r` then `dY (f x) (f x') ≤ K·r + C`, so exponential growth maps to exponential growth
+(and polynomial to polynomial): the volume-growth class is a quasi-isometry invariant. This is the
+lemma that turns our two invariants (0-hyperbolicity + exponential volume) into the statement that
+the MERA cone is quasi-isometric to the hyperbolic plane, not to Euclidean space. -/
+theorem quasiIsometric_ball_image {X Y : Type*} (dX : X → X → ℕ) (dY : Y → Y → ℕ)
+    (f : X → Y) (h : quasiIsometric dX dY f) :
+    ∃ K C : ℕ, ∀ x x' : X, ∀ r : ℕ, dX x x' ≤ r → dY (f x) (f x') ≤ K * r + C := by
+  rcases h with ⟨K, C, R, hK, hdist, hsurj⟩
+  refine ⟨K, C, fun x x' r hxr => ?_⟩
+  exact ((hdist x x').2).trans (Nat.add_le_add_right (Nat.mul_le_mul_left K hxr) C)
+
 end QM
