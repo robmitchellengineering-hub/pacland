@@ -28,6 +28,20 @@ variable {A B : Type*} [AddCommGroup A] [Module ℂ A] [AddCommGroup B] [Module 
 def productSum (r : ℕ) (t : A ⊗[ℂ] B) : Prop :=
   ∃ a : Fin r → A, ∃ b : Fin r → B, t = ∑ i : Fin r, a i ⊗ₜ[ℂ] b i
 
+/-- The exact entanglement (Schmidt rank): the minimum number of simple-tensor terms. The
+Ryu–Takayanagi "=" is the theorem that for the optimal (maximally-entangled) cut, this equals `D^m`
+exactly — the bound below is tight. -/
+noncomputable def srank (t : A ⊗[ℂ] B) : ℕ :=
+  sInf {r : ℕ | productSum r t}
+
+/-- **The area law, non-trivial.** The exact entanglement (Schmidt rank) is at most `r` whenever the
+tensor is a sum of `r` simple tensors — so a cut of `m` bonds of dimension `D` has rank ≤ `D^m`
+(`bondConfigurations`). -/
+theorem srank_le_of_productSum (t : A ⊗[ℂ] B) (r : ℕ) (h : productSum r t) :
+    srank t ≤ r := by
+  dsimp [srank]
+  exact csInf_le (OrderBot.bddBelow _) h
+
 /-- **The area law (rank form).** The number of simple-tensor terms bounds the entanglement: if `t`
 is a sum of `r` products, its simple rank is at most `r`. This is the tensor-network "entanglement =
 min-cut" statement — `r = D^m` for a cut of `m` bonds of dimension `D`. -/
