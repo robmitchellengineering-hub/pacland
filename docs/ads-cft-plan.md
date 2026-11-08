@@ -25,3 +25,20 @@ Four kernel-checkable rungs, in dependency order. Do them in this order. One fro
 
 ## Frontier — the partition-function equality (name it, don't fake it)
 - `Z_bulk = Z_boundary`. Needs non-perturbative string theory on AdS (does not exist). State it precisely; our four rungs are the kernel-checked evidence.
+
+## Rung 2 (general "=") — the precise path (infrastructure confirmed)
+
+The general `srank (Σᵢ eᵢ⊗eᵢ) = D` is provable, and the Mathlib infrastructure EXISTS (verified):
+
+- `Basis.tensorProduct` (Mathlib/LinearAlgebra/TensorProduct/Basis.lean:37) — the tensor product of bases.
+- `Matrix.rank` (Mathlib/LinearAlgebra/Matrix/Rank.lean:134) — the matrix rank.
+- `Matrix.rank_one` (Rank.lean:154) — the identity matrix has rank `n`.
+
+The proof, in three lemmas:
+1. **flatten** — a tensor `t = Σⱼ aⱼ⊗bⱼ` maps (via the basis `Basis.tensorProduct e e`) to a matrix
+   `M = Σⱼ (aⱼ)ᵀ(bⱼ)`, a sum of `r` outer products, so `Matrix.rank M ≤ r`.
+2. **diagonal** — `t = Σᵢ eᵢ⊗eᵢ` maps to the identity matrix, so `Matrix.rank M = D` (by `rank_one`).
+3. **connect** — `srank t = Matrix.rank M` (the Schmidt rank is the matrix rank), giving
+   `D = rank M ≤ srank t` and the "=".
+
+That's the one formalization that lifts the rank-1 case (`srank_simple_eq_one`) to the general `D^m`.
