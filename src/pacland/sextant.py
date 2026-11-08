@@ -207,6 +207,46 @@ CATALOG: dict[str, dict] = {
         "verdict": "FREE",
         "why": "the SM's own flavor symmetry leaves orbit-space rank 19; no completion derives more than 2 correctly.",
     },
+    "mitchell-uniqueness": {
+        "claim": "the D3 tadpole FᵀJH is the unique bilinear symplectic invariant of the flux",
+        "theorem": "Mitchell.mitchell_uniqueness_n1 + General.mitchell_uniqueness",
+        "falsifier": "a second bilinear symplectic invariant of the flux",
+        "oracle": ["kernel-checked (Lean)", "exact symbolic (sympy)"],
+        "verdict": "FORCED",
+        "why": "the only matrix M with SᵀMS = M for every symplectic S is a scalar multiple of J — the tadpole is forced, not chosen.",
+    },
+    "constraint-first": {
+        "claim": "every duality-invariant exact polynomial in the flux is a function of the tadpole",
+        "theorem": "DegreeOne.no_linear_invariant_n1 + DegreeThree.no_cubic_invariant + DegreeFour.quartic_is_N_sq",
+        "falsifier": "an invariant polynomial that is not a function of FᵀJH",
+        "oracle": ["kernel-checked (Lean)", "exact symbolic (sympy)"],
+        "verdict": "FORCED",
+        "why": "no linear invariant, no cubic invariant, only N² at quartic — the invariant ring has a single generator (Weyl's FFT, degrees 1–4 machine-checked).",
+    },
+    "completeness": {
+        "claim": "no exact invariant selector can single out a vacuum (the tadpole is complete)",
+        "theorem": "Transitivity.transitivity_n1 + Transitivity.symp_iff_det_eq_one",
+        "falsifier": "a second exact, duality-invariant selector",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "SᵀJS = det S · J, so symplectic ⟺ det 1, and {xᵀJy = 1} is one SL(2) orbit — the no-go on exact invariant selectors.",
+    },
+    "pr-box": {
+        "claim": "the PR box saturates the non-signaling CHSH bound at 4",
+        "theorem": "Foundations.PRBox.prbox_chsh",
+        "falsifier": "a non-signaling box exceeding CHSH = 4",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the PR box is the maximally non-local box allowed by no-signaling — CHSH = 4, the ceiling above the quantum 2√2.",
+    },
+    "sm-index": {
+        "claim": "N_gen is a protected topological index (|χ|/2 in the heterotic class)",
+        "theorem": "SM.Index.index_free + SM.Index.index_protected",
+        "falsifier": "an anomaly that un-protects the index",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the generation count is an index — free (not fixed) but protected (robust) — the Atiyah–Singer N_gen = |χ|/2 statement.",
+    },
 }
 
 VERDICT_GLYPH = {"FORCED": "●", "FREE": "○", "IMPOSSIBLE": "✕"}
