@@ -34,28 +34,49 @@ theorem pfaffian2_sq_eq_det (a : ℂ) :
   rw [Matrix.det_fin_two_of]
   ring
 
-/-- **The general 4×4 determinant** (the missing Mathlib lemma). The determinant of a general 4×4
-matrix, by cofactor expansion along row 0. This is the reusable rung for the 6×6 (and the general
-even-n Pfaffian): with `Fin.succAbove` unfolded, the cofactor minors reduce to 3×3 determinants. -/
-theorem det_fin_four (a b c d e f g h i j k l m n o p : ℂ) :
-    Matrix.det !![a, b, c, d; e, f, g, h; i, j, k, l; m, n, o, p] =
-      a * (f * (k * p - l * o) - g * (j * p - l * n) + h * (j * o - k * n))
-      - b * (e * (k * p - l * o) - g * (i * p - l * m) + h * (i * o - k * m))
-      + c * (e * (j * p - l * n) - f * (i * p - l * m) + h * (i * n - j * m))
-      - d * (e * (j * o - k * n) - f * (i * o - k * m) + g * (i * n - j * m)) := by
+/-- The `Fin.succ` numeral lemmas missing from Mathlib (only 0→1 and 1→2 exist). -/
+@[simp] lemma fin_succ_two_eq_three : Fin.succ (2 : Fin 3) = 3 := rfl
+@[simp] lemma fin_succ_three_eq_four : Fin.succ (3 : Fin 4) = 4 := rfl
+
+/-- **The general 4×4 determinant** (in the general `Matrix (Fin 4)` form, so it applies to submatrix
+minors — the form Mathlib's `det_fin_three` has but `det_fin_four` was missing). -/
+theorem det_fin_four (A : Matrix (Fin 4) (Fin 4) ℂ) :
+    A.det = A 0 0 * A 1 1 * A 2 2 * A 3 3 - A 0 0 * A 1 1 * A 2 3 * A 3 2 - A 0 0 * A 1 2 * A 2 1 * A 3 3  +  A 0 0 * A 1 2 * A 2 3 * A 3 1  +  A 0 0 * A 1 3 * A 2 1 * A 3 2 - A 0 0 * A 1 3 * A 2 2 * A 3 1 - A 0 1 * A 1 0 * A 2 2 * A 3 3  +  A 0 1 * A 1 0 * A 2 3 * A 3 2  +  A 0 1 * A 1 2 * A 2 0 * A 3 3 - A 0 1 * A 1 2 * A 2 3 * A 3 0 - A 0 1 * A 1 3 * A 2 0 * A 3 2  +  A 0 1 * A 1 3 * A 2 2 * A 3 0  +  A 0 2 * A 1 0 * A 2 1 * A 3 3 - A 0 2 * A 1 0 * A 2 3 * A 3 1 - A 0 2 * A 1 1 * A 2 0 * A 3 3  +  A 0 2 * A 1 1 * A 2 3 * A 3 0  +  A 0 2 * A 1 3 * A 2 0 * A 3 1 - A 0 2 * A 1 3 * A 2 1 * A 3 0 - A 0 3 * A 1 0 * A 2 1 * A 3 2  +  A 0 3 * A 1 0 * A 2 2 * A 3 1  +  A 0 3 * A 1 1 * A 2 0 * A 3 2 - A 0 3 * A 1 1 * A 2 2 * A 3 0 - A 0 3 * A 1 2 * A 2 0 * A 3 1  +  A 0 3 * A 1 2 * A 2 1 * A 3 0 := by
   rw [Matrix.det_succ_row_zero]
-  simp [Fin.sum_univ_four, Matrix.det_fin_three, Fin.succAbove]
+  simp [Fin.sum_univ_four, Matrix.det_fin_three, Fin.succAbove,
+    fin_succ_two_eq_three, fin_succ_three_eq_four]
+  norm_num
+  ring
+
+/-- The `Fin.succ` numeral lemmas missing from Mathlib, for the 5×5/6×6 rung. -/
+@[simp] lemma fin_succ_four_eq_five : Fin.succ (4 : Fin 5) = 5 := rfl
+
+/-- **The general 5×5 determinant** (in the general `Matrix (Fin 5)` form, so it applies to the 6×6
+cofactor's 5×5 minors). -/
+theorem det_fin_five (A : Matrix (Fin 5) (Fin 5) ℂ) :
+    A.det = A 0 0 * A 1 1 * A 2 2 * A 3 3 * A 4 4 - A 0 0 * A 1 1 * A 2 2 * A 3 4 * A 4 3 - A 0 0 * A 1 1 * A 2 3 * A 3 2 * A 4 4  +  A 0 0 * A 1 1 * A 2 3 * A 3 4 * A 4 2  +  A 0 0 * A 1 1 * A 2 4 * A 3 2 * A 4 3 - A 0 0 * A 1 1 * A 2 4 * A 3 3 * A 4 2 - A 0 0 * A 1 2 * A 2 1 * A 3 3 * A 4 4  +  A 0 0 * A 1 2 * A 2 1 * A 3 4 * A 4 3  +  A 0 0 * A 1 2 * A 2 3 * A 3 1 * A 4 4 - A 0 0 * A 1 2 * A 2 3 * A 3 4 * A 4 1 - A 0 0 * A 1 2 * A 2 4 * A 3 1 * A 4 3  +  A 0 0 * A 1 2 * A 2 4 * A 3 3 * A 4 1  +  A 0 0 * A 1 3 * A 2 1 * A 3 2 * A 4 4 - A 0 0 * A 1 3 * A 2 1 * A 3 4 * A 4 2 - A 0 0 * A 1 3 * A 2 2 * A 3 1 * A 4 4  +  A 0 0 * A 1 3 * A 2 2 * A 3 4 * A 4 1  +  A 0 0 * A 1 3 * A 2 4 * A 3 1 * A 4 2 - A 0 0 * A 1 3 * A 2 4 * A 3 2 * A 4 1 - A 0 0 * A 1 4 * A 2 1 * A 3 2 * A 4 3  +  A 0 0 * A 1 4 * A 2 1 * A 3 3 * A 4 2  +  A 0 0 * A 1 4 * A 2 2 * A 3 1 * A 4 3 - A 0 0 * A 1 4 * A 2 2 * A 3 3 * A 4 1 - A 0 0 * A 1 4 * A 2 3 * A 3 1 * A 4 2  +  A 0 0 * A 1 4 * A 2 3 * A 3 2 * A 4 1 - A 0 1 * A 1 0 * A 2 2 * A 3 3 * A 4 4  +  A 0 1 * A 1 0 * A 2 2 * A 3 4 * A 4 3  +  A 0 1 * A 1 0 * A 2 3 * A 3 2 * A 4 4 - A 0 1 * A 1 0 * A 2 3 * A 3 4 * A 4 2 - A 0 1 * A 1 0 * A 2 4 * A 3 2 * A 4 3  +  A 0 1 * A 1 0 * A 2 4 * A 3 3 * A 4 2  +  A 0 1 * A 1 2 * A 2 0 * A 3 3 * A 4 4 - A 0 1 * A 1 2 * A 2 0 * A 3 4 * A 4 3 - A 0 1 * A 1 2 * A 2 3 * A 3 0 * A 4 4  +  A 0 1 * A 1 2 * A 2 3 * A 3 4 * A 4 0  +  A 0 1 * A 1 2 * A 2 4 * A 3 0 * A 4 3 - A 0 1 * A 1 2 * A 2 4 * A 3 3 * A 4 0 - A 0 1 * A 1 3 * A 2 0 * A 3 2 * A 4 4  +  A 0 1 * A 1 3 * A 2 0 * A 3 4 * A 4 2  +  A 0 1 * A 1 3 * A 2 2 * A 3 0 * A 4 4 - A 0 1 * A 1 3 * A 2 2 * A 3 4 * A 4 0 - A 0 1 * A 1 3 * A 2 4 * A 3 0 * A 4 2  +  A 0 1 * A 1 3 * A 2 4 * A 3 2 * A 4 0  +  A 0 1 * A 1 4 * A 2 0 * A 3 2 * A 4 3 - A 0 1 * A 1 4 * A 2 0 * A 3 3 * A 4 2 - A 0 1 * A 1 4 * A 2 2 * A 3 0 * A 4 3  +  A 0 1 * A 1 4 * A 2 2 * A 3 3 * A 4 0  +  A 0 1 * A 1 4 * A 2 3 * A 3 0 * A 4 2 - A 0 1 * A 1 4 * A 2 3 * A 3 2 * A 4 0  +  A 0 2 * A 1 0 * A 2 1 * A 3 3 * A 4 4 - A 0 2 * A 1 0 * A 2 1 * A 3 4 * A 4 3 - A 0 2 * A 1 0 * A 2 3 * A 3 1 * A 4 4  +  A 0 2 * A 1 0 * A 2 3 * A 3 4 * A 4 1  +  A 0 2 * A 1 0 * A 2 4 * A 3 1 * A 4 3 - A 0 2 * A 1 0 * A 2 4 * A 3 3 * A 4 1 - A 0 2 * A 1 1 * A 2 0 * A 3 3 * A 4 4  +  A 0 2 * A 1 1 * A 2 0 * A 3 4 * A 4 3  +  A 0 2 * A 1 1 * A 2 3 * A 3 0 * A 4 4 - A 0 2 * A 1 1 * A 2 3 * A 3 4 * A 4 0 - A 0 2 * A 1 1 * A 2 4 * A 3 0 * A 4 3  +  A 0 2 * A 1 1 * A 2 4 * A 3 3 * A 4 0  +  A 0 2 * A 1 3 * A 2 0 * A 3 1 * A 4 4 - A 0 2 * A 1 3 * A 2 0 * A 3 4 * A 4 1 - A 0 2 * A 1 3 * A 2 1 * A 3 0 * A 4 4  +  A 0 2 * A 1 3 * A 2 1 * A 3 4 * A 4 0  +  A 0 2 * A 1 3 * A 2 4 * A 3 0 * A 4 1 - A 0 2 * A 1 3 * A 2 4 * A 3 1 * A 4 0 - A 0 2 * A 1 4 * A 2 0 * A 3 1 * A 4 3  +  A 0 2 * A 1 4 * A 2 0 * A 3 3 * A 4 1  +  A 0 2 * A 1 4 * A 2 1 * A 3 0 * A 4 3 - A 0 2 * A 1 4 * A 2 1 * A 3 3 * A 4 0 - A 0 2 * A 1 4 * A 2 3 * A 3 0 * A 4 1  +  A 0 2 * A 1 4 * A 2 3 * A 3 1 * A 4 0 - A 0 3 * A 1 0 * A 2 1 * A 3 2 * A 4 4  +  A 0 3 * A 1 0 * A 2 1 * A 3 4 * A 4 2  +  A 0 3 * A 1 0 * A 2 2 * A 3 1 * A 4 4 - A 0 3 * A 1 0 * A 2 2 * A 3 4 * A 4 1 - A 0 3 * A 1 0 * A 2 4 * A 3 1 * A 4 2  +  A 0 3 * A 1 0 * A 2 4 * A 3 2 * A 4 1  +  A 0 3 * A 1 1 * A 2 0 * A 3 2 * A 4 4 - A 0 3 * A 1 1 * A 2 0 * A 3 4 * A 4 2 - A 0 3 * A 1 1 * A 2 2 * A 3 0 * A 4 4  +  A 0 3 * A 1 1 * A 2 2 * A 3 4 * A 4 0  +  A 0 3 * A 1 1 * A 2 4 * A 3 0 * A 4 2 - A 0 3 * A 1 1 * A 2 4 * A 3 2 * A 4 0 - A 0 3 * A 1 2 * A 2 0 * A 3 1 * A 4 4  +  A 0 3 * A 1 2 * A 2 0 * A 3 4 * A 4 1  +  A 0 3 * A 1 2 * A 2 1 * A 3 0 * A 4 4 - A 0 3 * A 1 2 * A 2 1 * A 3 4 * A 4 0 - A 0 3 * A 1 2 * A 2 4 * A 3 0 * A 4 1  +  A 0 3 * A 1 2 * A 2 4 * A 3 1 * A 4 0  +  A 0 3 * A 1 4 * A 2 0 * A 3 1 * A 4 2 - A 0 3 * A 1 4 * A 2 0 * A 3 2 * A 4 1 - A 0 3 * A 1 4 * A 2 1 * A 3 0 * A 4 2  +  A 0 3 * A 1 4 * A 2 1 * A 3 2 * A 4 0  +  A 0 3 * A 1 4 * A 2 2 * A 3 0 * A 4 1 - A 0 3 * A 1 4 * A 2 2 * A 3 1 * A 4 0  +  A 0 4 * A 1 0 * A 2 1 * A 3 2 * A 4 3 - A 0 4 * A 1 0 * A 2 1 * A 3 3 * A 4 2 - A 0 4 * A 1 0 * A 2 2 * A 3 1 * A 4 3  +  A 0 4 * A 1 0 * A 2 2 * A 3 3 * A 4 1  +  A 0 4 * A 1 0 * A 2 3 * A 3 1 * A 4 2 - A 0 4 * A 1 0 * A 2 3 * A 3 2 * A 4 1 - A 0 4 * A 1 1 * A 2 0 * A 3 2 * A 4 3  +  A 0 4 * A 1 1 * A 2 0 * A 3 3 * A 4 2  +  A 0 4 * A 1 1 * A 2 2 * A 3 0 * A 4 3 - A 0 4 * A 1 1 * A 2 2 * A 3 3 * A 4 0 - A 0 4 * A 1 1 * A 2 3 * A 3 0 * A 4 2  +  A 0 4 * A 1 1 * A 2 3 * A 3 2 * A 4 0  +  A 0 4 * A 1 2 * A 2 0 * A 3 1 * A 4 3 - A 0 4 * A 1 2 * A 2 0 * A 3 3 * A 4 1 - A 0 4 * A 1 2 * A 2 1 * A 3 0 * A 4 3  +  A 0 4 * A 1 2 * A 2 1 * A 3 3 * A 4 0  +  A 0 4 * A 1 2 * A 2 3 * A 3 0 * A 4 1 - A 0 4 * A 1 2 * A 2 3 * A 3 1 * A 4 0 - A 0 4 * A 1 3 * A 2 0 * A 3 1 * A 4 2  +  A 0 4 * A 1 3 * A 2 0 * A 3 2 * A 4 1  +  A 0 4 * A 1 3 * A 2 1 * A 3 0 * A 4 2 - A 0 4 * A 1 3 * A 2 1 * A 3 2 * A 4 0 - A 0 4 * A 1 3 * A 2 2 * A 3 0 * A 4 1  +  A 0 4 * A 1 3 * A 2 2 * A 3 1 * A 4 0 := by
+  rw [Matrix.det_succ_row_zero]
+  simp [Fin.sum_univ_five, det_fin_four, Fin.succAbove, fin_succ_three_eq_four, fin_succ_four_eq_five]
+  norm_num
   ring
 
 /-- The 6×6 Pfaffian — the signed sum over the fifteen perfect matchings (the exact six-qubit
-matchgate amplitude; sympy-verified that its square equals the 6×6 antisymmetric determinant). The
-kernel-check of `pfaffian6² = det` is the next rung: it needs `det_fin_four`/`det_fin_five` in the
-general `Matrix (Fin n)` form (like Mathlib's `det_fin_three`), and the `Fin.succ` numeral reduction
-for n ≥ 4 lacks the convenience lemmas `det_fin_three` enjoys. -/
+matchgate amplitude). -/
 def pfaffian6 (a b c d e f g h i j k l m n o : ℂ) : ℂ :=
   a * j * o - a * k * n + a * l * m - b * g * o + b * h * n - b * i * m
   + c * f * o - c * h * l + c * i * k - d * f * n + d * g * l - d * i * j
   + e * f * m - e * g * k + e * h * j
+
+/-- **Matchgate core (6×6).** The square of the 6×6 Pfaffian equals the determinant of the 6×6
+antisymmetric matrix — the exact six-qubit matchgate amplitude, the next even rung after the 4×4. -/
+theorem pfaffian6_sq_eq_det (a b c d e f g h i j k l m n o : ℂ) :
+    pfaffian6 a b c d e f g h i j k l m n o ^ 2 =
+      Matrix.det !![0, a, b, c, d, e; -a, 0, f, g, h, i; -b, -f, 0, j, k, l; -c, -g, -j, 0, m, n; -d, -h, -k, -m, 0, o; -e, -i, -l, -n, -o, 0] := by
+  rw [pfaffian6]
+  rw [Matrix.det_succ_row_zero]
+  simp [Fin.sum_univ_six, det_fin_five, Fin.succAbove, fin_succ_four_eq_five]
+  norm_num
+  ring
 
 /-- The 4×4 Pfaffian — the signed sum over the three perfect matchings (the exact four-qubit
 matchgate amplitude). -/
