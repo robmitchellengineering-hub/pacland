@@ -34,3 +34,22 @@ report `catalog OK`. A node that reports OK has a working yes/no engine.
 - First dispatch: bootstrap → `studio-linux2` (job `2026-11-08T1052Z-studio-linux2-sextant-bootstrap-…`).
 - `mac` already runs SEXTANT (the proof arm lives here).
 - Next: the `npu-contraction` benchmark → `win-2`, and the PowerShell bootstrap → `win`.
+
+## Hardware procurement — node #1 (the mini-PC lane)
+
+Target, per node (one parallel lane):
+- **Form factor:** mini-PC — Lenovo ThinkCentre M-series Tiny / Dell OptiPlex Micro / HP EliteDesk
+  Mini (used), or Beelink/Minisforum (new) if used stock is thin.
+- **CPU:** i5/i7 or Ryzen 5/7, 6+ cores (Lean wants single-core; Stim wants the extra cores).
+- **RAM:** 32 GB (2×16, so upgradable) — the JAXVacua `scipy` path runs h12=25 in 4 GB, so 32 GB
+  covers one lane with headroom.
+- **Storage:** 1 TB NVMe (the Lean mathlib cache is 7.2 GB; leave room).
+- **No GPU, no display, no keyboard** — headless; the workload is CPU/RAM-bound.
+- **Network:** wired Ethernet (mesh prefers `net:ethernet`) or Wi-Fi + Tailscale.
+- **Budget:** $200–350 used, or $300–450 new.
+
+Verify before buying: 2× RAM slots; an M.2 **NVMe** slot (not SATA-only); DDR4 is fine; a wired port.
+
+Onboarding when it arrives (one command each):
+1. `curl -fsSL https://raw.githubusercontent.com/robmitchellengineering-hub/harness-mesh/main/scripts/oneclick-node.sh | bash` — registers the node.
+2. `bash scripts/sextant_bootstrap.sh` — puts a SEXTANT instance on it.
