@@ -1,0 +1,2 @@
+TITLE: The matchgate even/odd split, kernel-checked: amplitudes are even-dimensional Pfaffians
+DOI: 10.5281/zenodo.24047503
