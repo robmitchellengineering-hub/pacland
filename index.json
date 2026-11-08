@@ -1008,8 +1008,8 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant-fields.md",
    "kind": "doc",
    "path": "docs/sextant-fields.md",
-   "summary": "These 27 proofs are not isolated results; they are the load-bearing foundations that entire fields build on top of. This is the dependency map: for each field, the proofs it leans on, and\u2026",
-   "title": "SEXTANT \u2014 the fields that rely on these fundamentals"
+   "summary": "A 6-way fan-out enumerated the downstream fields that are load-bearing on SEXTANT's 27 machine-checked proofs. Only genuine connections are listed (tangential ones were dropped and are\u2026",
+   "title": "SEXTANT \u2014 the fields that rely on these fundamentals (full map)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md",
