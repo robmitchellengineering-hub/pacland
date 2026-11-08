@@ -34,6 +34,19 @@ theorem pfaffian2_sq_eq_det (a : ℂ) :
   rw [Matrix.det_fin_two_of]
   ring
 
+/-- **The general 4×4 determinant** (the missing Mathlib lemma). The determinant of a general 4×4
+matrix, by cofactor expansion along row 0. This is the reusable rung for the 6×6 (and the general
+even-n Pfaffian): with `Fin.succAbove` unfolded, the cofactor minors reduce to 3×3 determinants. -/
+theorem det_fin_four (a b c d e f g h i j k l m n o p : ℂ) :
+    Matrix.det !![a, b, c, d; e, f, g, h; i, j, k, l; m, n, o, p] =
+      a * (f * (k * p - l * o) - g * (j * p - l * n) + h * (j * o - k * n))
+      - b * (e * (k * p - l * o) - g * (i * p - l * m) + h * (i * o - k * m))
+      + c * (e * (j * p - l * n) - f * (i * p - l * m) + h * (i * n - j * m))
+      - d * (e * (j * o - k * n) - f * (i * o - k * m) + g * (i * n - j * m)) := by
+  rw [Matrix.det_succ_row_zero]
+  simp [Fin.sum_univ_four, Matrix.det_fin_three, Fin.succAbove]
+  ring
+
 /-- The 4×4 Pfaffian — the signed sum over the three perfect matchings (the exact four-qubit
 matchgate amplitude). -/
 def pfaffian4 (a b c d e f : ℂ) : ℂ :=
