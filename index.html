@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PACLAND — a verification discipline, one field at a time</title>
-<meta name="description" content="A probably-approximately-correct verification discipline applied one field at a time — the string landscape first, then climate, drug discovery, and more. Certified deficit, measured priors, a boundary map of the computable, and machine-checked theorems.">
+<title>PACLAND — verification, then belief, one field at a time</title>
+<meta name="description" content="A probably-approximately-correct verification discipline applied one field at a time — the string landscape first, then climate, economics, and more. It measures how much of a claim can be checked, refuses the rest, and now says, for what's still open: what to believe, what to test next, and how honest that belief has been.">
 <style>
   :root { --ink: #1a1f2e; --muted: #5a6072; --accent: #142a5e; --line: #e3e6ee; --bg: #fbfbfd; }
   * { box-sizing: border-box; }
@@ -118,9 +118,9 @@ h2{scroll-margin-top:6rem}
     <a class="find" href="./all.html">find anything →</a>
   </nav>
 <section class="hero">
-  <p class="kicker">a verification discipline</p>
+  <p class="kicker">verification, then belief</p>
   <h1>PACLAND</h1>
-  <p class="lede">Most claims — in physics, economics, or climate — cannot be checked to the end. PACLAND measures <strong>how much of a claim can be checked</strong>, and refuses the rest.</p>
+  <p class="lede">Most claims — in physics, economics, climate, or the software an AI just wrote for you — cannot be checked. PACLAND measures <strong>how much of a claim can be checked</strong> and refuses the rest. And for what's still open, it now also answers <strong>what to believe, what to test next, and how honest that belief has been</strong>.</p>
   <p class="tagline">Pacland and VVS shine light in the shadows of the universe — and say, honestly, where the light cannot reach.</p>
   <p class="muted">Mitchell’s Principle of Constraint-First Unification: a theory of everything predicts <em>relations</em>, never <em>values</em> — applied one field at a time, starting with the string landscape.</p>
   <p class="hero-actions">
@@ -140,8 +140,8 @@ h2{scroll-margin-top:6rem}
   </div>
   <div class="card">
     <h3>What it does</h3>
-    <p class="muted">Three gates that stop an unverified number reaching a decision: the <strong>null gate</strong> (beat “tomorrow equals today” or say you didn't), the <strong>identification gate</strong> (an estimate must be recoverable before it is published), and the <strong>admissibility gate</strong> (a fitted model that breaks a constraint does not get a table).</p>
-    <p><a href="#solutions">the three gates</a></p>
+    <p class="muted">Three gates stop an unverified number reaching a decision — and a <strong>belief layer</strong> scores what the gates leave open. The gates: <strong>null</strong> (beat “tomorrow equals today” or say you didn't), <strong>identification</strong> (an estimate must be recoverable before it is published), <strong>admissibility</strong> (a fitted model that breaks a constraint does not get a table). The belief layer: <strong>believe · allocate · calibrate · guarantee</strong>.</p>
+    <p><a href="#solutions">the three gates</a> · <a href="#belief">the belief layer</a></p>
   </div>
   <div class="card">
     <h3>Why it matters</h3>
@@ -153,9 +153,95 @@ h2{scroll-margin-top:6rem}
 <section class="strip">
   <div><strong>190</strong><span>artifacts indexed</span></div>
   <div><strong>6</strong><span>models scored</span></div>
-  <div><strong>2</strong><span>disciplines running the same bar</span></div>
   <div><strong>3</strong><span>gates, all three have refused something</span></div>
+  <div><strong>8</strong><span>belief-layer builds</span></div>
+  <div><strong>1</strong><span>calibration ledger — honest about being overconfident</span></div>
 </section>
+
+<h2 id="belief">The belief layer — what to believe, and what to test next</h2>
+<p class="lead">Verification says <em>what is proven and what is refuted</em>. The belief layer answers the two questions verification cannot: <em>how much should I believe each unproven hypothesis, and which one do I test next</em>. It does this the way PACLAND does everything — as a number, checked against reality, never an adjective.</p>
+<div class="grid grid--3">
+  <div class="card">
+    <h3>Believe</h3>
+    <p class="muted">Every unproven hypothesis carries a numeric degree of belief — a <strong>prior → Bayes factor → posterior</strong>, computed from its test, instead of a bare “supported / refuted”.</p>
+  </div>
+  <div class="card">
+    <h3>Allocate</h3>
+    <p class="muted">Rank hypotheses by <strong>expected information gain per unit cost</strong>, and the next test is the one that learns the most per dollar — “drive real answers faster” as arithmetic, not a slogan.</p>
+  </div>
+  <div class="card">
+    <h3>Calibrate</h3>
+    <p class="muted">Every confidence claim is scored against what actually happened (Brier / log). First result: our own confidence was <strong>overconfident</strong> — Brier 0.41 against a 0.25 base-rate, the Tetlock finding, now on our own ledger.</p>
+  </div>
+  <div class="card">
+    <h3>Guarantee</h3>
+    <p class="muted">A posterior carries a <strong>PAC-Bayes bound</strong> — “probably approximately correct” for a degree of belief, with a stated confidence. That is what makes the belief layer <em>PACLAND</em>, not just “we added Bayes”.</p>
+  </div>
+  <div class="card">
+    <h3>Know when not to converge</h3>
+    <p class="muted">A <strong>C/P detector</strong> separates hypotheses that converge (shared evidence) from those that are genuinely plural — like a set-identified economics model, where the honest output is the <em>weighted set</em>, never a fake point.</p>
+  </div>
+  <div class="card">
+    <h3>Why it matters</h3>
+    <p class="muted">A verification badge tells you what is proven. A belief layer tells you <strong>what is worth believing and worth testing next</strong> — the difference between a lie detector and a decision engine.</p>
+  </div>
+</div>
+
+<h2 id="calculators">Calculators — for a quick reference, and for confidence</h2>
+<p class="lead">Two things you can check in a browser, no install. Both are the same arithmetic the repo runs.</p>
+<div class="grid grid--2">
+  <div class="card calc">
+    <h3>What does your m buy you?</h3>
+    <p class="muted">The certificate radius from the count of validated observables and your confidence budget.</p>
+    <label>validated observables (m) <input id="c-m" type="number" value="4" min="1" step="1"></label>
+    <label>confidence budget (δ) <input id="c-d" type="number" value="0.025" min="0.0001" max="0.5" step="0.005"></label>
+    <p class="out"><strong id="c-radius">—</strong></p>
+    <p class="muted small" id="c-note"></p>
+  </div>
+  <div class="card calc">
+    <h3>Does it beat the null?</h3>
+    <p class="muted">Enter your forecast error and the no-change benchmark's. The gate is the ratio.</p>
+    <label>your RMSE <input id="c-mine" type="number" value="1.26" step="0.01"></label>
+    <label>null RMSE <input id="c-null" type="number" value="5.06" step="0.01"></label>
+    <p class="out"><strong id="c-ratio">—</strong></p>
+    <p class="muted small" id="c-verdict"></p>
+  </div>
+</div>
+
+<h2 id="search">Find anything</h2>
+<input id="q" type="search" class="searchbox" placeholder="search 190 docs, scripts and explainers — try “null”, “roster”, “ECS”…">
+<ul id="q-results" class="results"></ul>
+<p class="muted">Or open the full searchable index: <a href="./all.html">find anything →</a></p>
+
+<details class="fold">
+<summary>The unification, stated correctly</summary>
+<h2 id="deterministic">Deterministic in use — 43,046,720 vacua, counted exactly</h2>
+<p class="lead">A part of quantum gravity is now <strong>deterministic in use</strong>. Not deterministic in the sense of hidden variables or the measurement problem — in the sense that <strong>every question this sector can answer is answered by an exact count</strong>: no sampler, no probability, and no run-to-run variance.</p>
+<table>
+  <thead><tr><th>b₃</th><th>flux pairs in the window</th><th>orbits verified</th><th>matches the closed form</th></tr></thead>
+  <tbody>
+    <tr><td>2</td><td>81</td><td>80</td><td>yes</td></tr>
+    <tr><td>4</td><td>6,561</td><td>6,560</td><td>yes</td></tr>
+    <tr><td>6</td><td>531,441</td><td>531,440</td><td>yes</td></tr>
+    <tr><td><strong>8</strong></td><td><strong>43,046,721</strong></td><td><strong>43,046,720</strong></td><td><strong>yes</strong></td></tr>
+  </tbody>
+</table>
+<p>The tadpole count is a closed form — <code>count(N) = [xᴺ] P(x)^(b₃/2)</code> with <code>P = 4x² + 20x + 33 + 20x⁻¹ + 4x⁻²</code> — and at <code>b₃ = 8</code> it was checked against <strong>full enumeration of every one of those 43 million pairs</strong>. Every tadpole class matches. Then it was checked again by a second implementation that shares no code path with the first (nested loops over the definition, no numpy, no polynomial): same 43,046,720 orbits, same 17 classes, in 69 seconds.</p>
+
+<div class="callout">
+  <p><strong>Why this is a gap and not a slogan.</strong> The alternative method for these same questions is sampling with a budget, and it cannot reach this. Sampling needs a per-point search and returns <strong>0.00137 points per try</strong> at <code>b₃ = 12</code>; 43 million exact pairs is a computation no sampling budget arrives at. So the sector has a region where the answer is a <em>number</em>, not a distribution — and that is a thing the statistical treatment of the landscape cannot say about itself.</p>
+</div>
+
+<p><strong>What it is, precisely — the two qualifiers are the claim.</strong> Drop either and it stops being true.</p>
+<table>
+  <thead><tr><th>qualifier</th><th>what it excludes</th></tr></thead>
+  <tbody>
+    <tr><td><strong>the flux sector</strong></td><td>not quantum mechanics: no amplitudes are computed, the Born rule never appears, and Bell is untouched — nothing here could address it.</td></tr>
+    <tr><td><strong>the enumerable window</strong></td><td>not the physical flux range: today <code>b₃ ≤ 8</code>, while the quintic is <code>b₃ = 204</code>. The exact tier reaches about 4% of the way there.</td></tr>
+  </tbody>
+</table>
+<p class="muted">The falsifiers, stated so they can be used: a third implementation disagreeing at any rung, or a re-run on different hardware producing a different total. Both would mean the count is not deterministic after all. The <code>b₃ ≤ 6</code> agreement is guarded by a test; the <code>b₃ = 8</code> result is registered in the claims ledger with two independent lines of evidence.</p>
+<p class="links"><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/deterministic-in-use.md">the claim, in full →</a><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/tadpole_independent_count.py">the independent count</a><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/claims.json">the claims ledger</a></p>
 
 <h2 id="physics">Physics — the whole argument, in one place</h2>
 <p class="lead">The founding discipline. Everything below the fold is a part of it; this is how the parts fit together. Read this, then open any part that matters to you.</p>
@@ -280,6 +366,56 @@ the formal record: <a href="https://github.com/robmitchellengineering-hub/paclan
       </div>
     </div>
 </details>
+<details class="fold">
+<summary>Everything — linked</summary>
+<h2 id="index">Everything — linked</h2>
+    <div class="grid grid--2">
+      <div class="card">
+        <h3>String landscape</h3>
+        <p><a href="#arc">the arc</a> · <a href="#theorems">theorems</a> · <a href="#sm">SM frontier</a> · <a href="#results">results</a> · <a href="#boundary">boundary map</a> · <a href="#lean">Lean proofs</a></p>
+        <p><a href="#published">the papers (6)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf">explainer (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf">what &amp; why (PDF)</a> · <a href="https://doi.org/10.5281/zenodo.23497239">published theorem</a></p>
+      </div>
+      <div class="card">
+        <h3>Climate</h3>
+        <p><a href="#climate">section</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-gap-analysis.md">gap analysis</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-observables.md">observables</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-verification-deficit.md">deficit report</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-cmip6-drift.md">CMIP6 drift</a></p>
+        <p><a href="./climate.html">the graphs</a> · <a href="./climate-3d.html">the 3D view</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-plain-speak.pdf">plain-speak one-pager (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf">full explainer (PDF)</a></p>
+        <p><code>pacland climate</code></p>
+      </div>
+      <div class="card">
+        <h3>Drug discovery</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-gap-analysis.md">gap analysis</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-drugs-explainer.pdf">full explainer (PDF)</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drugs-verification-deficit.md">deficit report</a></p>
+        <p><a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-drugs-explainer.pdf">explainer (PDF)</a></p>
+        <p><code>pacland drugs</code></p>
+      </div>
+      <div class="card">
+        <h3>Energy</h3>
+        <p>Stored-energy ceilings, and the vacuum. A <strong>referee</strong> for candidate quantum-gravity frameworks: 13 conditions × 6 frameworks, scored <code>KILLED</code> / <code>SURVIVES</code> / <code>UNKNOWN</code> — and <strong>UNKNOWN wherever no verifier has run against a read bound</strong>, never a pass.</p>
+        <p><a href="./energy.html"><strong>the quantum gravity page</strong></a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md">the programme</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-conjectures.md">energy claims</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md#c6-is-closed--and-it-closes-the-terminal-clause">why no framework can survive all thirteen</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/src/pacland/energy">the code</a></p>
+        <p><code>python3 -m pacland.energy.referee</code> · <code>python3 -m pacland.energy.profile</code> · <code>python3 -m pacland.energy.frg</code></p>
+      </div>
+      <div class="card">
+        <h3>AI · verified badge</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ai-verified-badge.md">the badge (open spec, licensed SDK)</a></p>
+      </div>
+      <div class="card">
+        <h3>The whole system</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/expansion-map.md">the discipline playbook</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/grounding.md">the grounding</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/verification-config.md">the verification config (how)</a> · <a href="#trust">trust board</a></p>
+        <p><code>pacland trust</code></p>
+        <p><code>pacland disciplines</code></p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland">GitHub repo</a> — every doc, the code, the tests</p>
+      </div>
+    </div>
+</details>
+<details class="fold">
+<summary>Published</summary>
+<h2 id="published">Published</h2>
+    <div class="card">
+      <h3>Mitchell's Completeness Theorem: no exact invariant selector in the flux landscape</h3>
+      <p>Rob Mitchell · Zenodo · 20 Oct 2026 · open access, CC BY 4.0</p>
+      <p>Record: <a href="https://zenodo.org/records/23497239">zenodo.org/records/23497239</a></p>
+      <p>DOI: <a href="https://doi.org/10.5281/zenodo.23497239">10.5281/zenodo.23497239</a></p>
+      <p class="muted">The flagship theorem paper — verified symbolically (sympy, zero tolerance) and machine-checked in Lean 4 (no axioms). This is the first published item; more will be added here as they publish.</p>
+    </div>
 
 
 
