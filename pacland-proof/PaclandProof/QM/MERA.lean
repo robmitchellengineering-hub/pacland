@@ -42,6 +42,34 @@ theorem srank_le_of_productSum (t : A ⊗[ℂ] B) (r : ℕ) (h : productSum r t)
   dsimp [srank]
   exact csInf_le (OrderBot.bddBelow _) h
 
+/-- The standard basis vector of the free module `Fin D → ℂ`. -/
+def stdBasis (D : ℕ) (i : Fin D) : Fin D → ℂ := fun j => if i = j then 1 else 0
+
+/-- The maximally-entangled state of dimension D: `Σᵢ eᵢ ⊗ eᵢ` (the diagonal). -/
+def maximallyEntangled (D : ℕ) : (Fin D → ℂ) ⊗[ℂ] (Fin D → ℂ) :=
+  ∑ i : Fin D, (stdBasis D i) ⊗ₜ[ℂ] (stdBasis D i)
+
+/-- **Ryu–Takayanagi "=", general (upper bound).** The maximally-entangled state of dimension D is a
+sum of exactly D simple tensors, so its rank is at most D. The lower bound (rank ≥ D, the tightness)
+is the linear-independence/contraction argument pinned in docs/ads-cft-plan.md. -/
+theorem srank_maximally_entangled_le (D : ℕ) :
+    srank (maximallyEntangled D) ≤ D := by
+  apply srank_le_of_productSum _ D
+  refine ⟨fun i => stdBasis D i, fun i => stdBasis D i, ?_⟩
+  rfl
+
+/-- The `k`-th **row** contraction: `a ⊗ b ↦ (a k) • b` — the "partial trace" that reads the
+`k`-th row of the flattening. This is the tool for the "=" lower bound (Rung 2). -/
+noncomputable def row (D : ℕ) (k : Fin D) :
+    (Fin D → ℂ) ⊗[ℂ] (Fin D → ℂ) →ₗ[ℂ] (Fin D → ℂ) :=
+  TensorProduct.lift (LinearMap.lsmul ℂ (Fin D → ℂ) ∘ₗ LinearMap.proj k)
+
+/-- The `k`-th row of the maximally-entangled state is the `k`-th standard basis vector. -/
+theorem row_maximallyEntangled (D : ℕ) (k : Fin D) :
+    row D k (maximallyEntangled D) = stdBasis D k := by
+  dsimp [row, maximallyEntangled]
+  simp [TensorProduct.lift.tmul, stdBasis]
+
 /-- **Ryu–Takayanagi "=", cleanest case.** A nonzero tensor that is a single simple tensor has
 Schmidt rank exactly 1 — the bound is tight for the one-bond cut (the general case is the same
 linear-independence argument at rank `D^m`). -/
