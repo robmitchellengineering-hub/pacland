@@ -7,16 +7,16 @@
 **Abstract.** Matchgates are classically simulable because their amplitudes are **Pfaffians** — signed
 sums over perfect matchings, equivalently square roots of determinants — and a determinant is a polynomial
 in its entries, computable in polynomial time. We kernel-check in Lean 4 + Mathlib the seed of that
-correspondence, two theorems over the complex numbers. (1) `pfaffian2_sq_eq_det`: the 2×2 Pfaffian (the
-single perfect-matching weight) squares to the determinant — `Pf² = det`, so a matchgate amplitude is a
-Pfaffian, hence a polynomial, hence classically simulable. (2) `det_three_antisymm_eq_zero`: a 3×3
-antisymmetric matrix has determinant 0 — odd dimension kills the determinant, so the Pfaffian (and hence
-matchgates) lives only on an *even* number of qubits. Together the two statements are the even/odd split
-behind matchgate simulability: the amplitude is a polynomial (2×2 seed) **and** it is an even-dimensional
-object (3×3 vanishing). Both are checked by the Lean kernel with no `sorry`, no `axiom`, no `admit`, no
-`native_decide`. We state honestly what is **not** proved: the 4×4 case (the exact four-qubit amplitude)
-is named as the next rung and is *not* claimed, and the full matchgate ↔ free-fermion correspondence is the
-known Valiant / Jozsa–Miyake theorem, here formalized only in its seed.
+correspondence, three theorems over the complex numbers. (1) `pfaffian2_sq_eq_det`: the 2×2 Pfaffian (the
+single perfect-matching weight) squares to the determinant. (2) `pfaffian4_sq_eq_det`: the 4×4 Pfaffian
+(the signed sum over the three perfect matchings — the exact four-qubit amplitude) squares to the
+determinant. (3) `det_antisymm_odd_eq_zero`: ANY odd-dimensional antisymmetric matrix has determinant 0,
+proved structurally (det A = det Aᵀ = det(−A) = (−1)ⁿ det A). Together the two statements are the even/odd split
+behind matchgate simulability: the Pfaffian is an even-dimensional object whose square is the
+determinant, and odd dimension kills it. All three are checked by the Lean kernel with no `sorry`, no `axiom`, no `admit`, no
+`native_decide`. What is **not** proved: the general even-n identity `Pf(A)² = det(A)` (Cayley) and the full matchgate ↔
+free-fermion correspondence (the known Valiant / Jozsa–Miyake theorem) — here the seed and the two smallest
+even cases are kernel-checked, not the general theorem.
 
 ## 1. What this is
 
@@ -85,13 +85,9 @@ determinant, an odd-dimensional determinant being zero is the reason the Pfaffia
 is an **even-dimensional** object.
 
 The 4×4 Pfaffian (the signed sum over the three perfect matchings — the exact four-qubit matchgate
-amplitude) is *defined* but its square-equals-determinant is **not** proved here:
-
-```
-def pfaffian4 (a b c d e f : ℂ) : ℂ := a * f - b * e + c * d
-```
-
-It is recorded as the next rung, not as a theorem.
+amplitude) squares to the determinant (`pfaffian4_sq_eq_det`), and any odd-dimensional antisymmetric matrix
+has determinant 0 (`det_antisymm_odd_eq_zero`, proved structurally). The 4×4 closes the even companion to
+the odd-dimensional theorem.
 
 ## 3. Why this matters — the one-line simulability argument
 
@@ -105,19 +101,18 @@ conclusion.
 
 ## 4. What is NOT proved (honest)
 
-- **The 4×4 case.** `pfaffian4` is defined but its square-equals-determinant is not proved. The exact
-  four-qubit matchgate amplitude — the first case where a genuine sum over three perfect matchings appears,
-  rather than a single weight — is the next rung and is **not** claimed.
+- **The general even-n identity `Pf(A)² = det(A)`.** Cayley's identity for arbitrary even antisymmetric
+  matrices is not formalized; the 2×2 and 4×4 instances are kernel-checked, the general dimension is not.
 - **The full correspondence.** The complete matchgate ↔ free-fermion equivalence, and the resulting
   polynomial-time classical simulation of matchgate circuits, are the **known** theorems of Valiant (2002)
-  and Jozsa–Miyake (2008). They are *cited* here, not re-proved; only their seed is kernel-checked.
+  and Jozsa–Miyake (2008). They are *cited* here, not re-proved; only the seed and the two smallest even cases are kernel-checked.
 - **General `Pf(A)² = det(A)`.** Cayley's identity for arbitrary even antisymmetric matrices is not
-  formalized; only the 2×2 instance is. The 2×2 case is the seed, not the theorem in general dimension.
+  formalized; the 2×2 and 4×4 instances are.
 
 ## 5. Reproducibility
 
 ```
-cd pacland-proof && lake env lean PaclandProof/QM/Matchgate.lean   # type-checks, exit 0
+cd pacland-proof && lake build   # Matchgate.lean is imported; green
 ```
 
 Sources: `PaclandProof/QM/Matchgate.lean` — `pfaffian2`, `pfaffian2_is_perfect_matching`,
