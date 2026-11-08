@@ -190,4 +190,24 @@ theorem treeDist_four_point (s t u v : List Bool) :
   dsimp [treeDist]
   omega
 
+
+/-- **A quasi-isometry** (for ℕ-valued metrics): a map with two-sided bounded distortion and
+quasi-surjectivity. Two spaces are "the same geometry up to bounded distortion" iff a quasi-isometry
+exists between them — the coarse sense in which the discrete MERA cone and the smooth hyperbolic
+plane H² coincide. -/
+def quasiIsometric {X Y : Type*} (dX : X → X → ℕ) (dY : Y → Y → ℕ) (f : X → Y) : Prop :=
+  ∃ K C R : ℕ, 0 < K ∧
+    (∀ x y : X, dX x y ≤ K * dY (f x) (f y) + C ∧ dY (f x) (f y) ≤ K * dX x y + C) ∧
+    (∀ y : Y, ∃ x : X, dY (f x) y ≤ R)
+
+/-- The identity map is a quasi-isometry for a metric (a space is QI to itself) — the definition
+is non-vacuous. -/
+theorem quasiIsometric_refl {X : Type*} (d : X → X → ℕ) (hrefl : ∀ x, d x x = 0) :
+    quasiIsometric d d (fun x => x) := by
+  refine ⟨1, 0, 0, by norm_num, ?_, ?_⟩
+  · intro x y
+    constructor <;> simp
+  · intro y
+    exact ⟨y, by simpa [hrefl y]⟩
+
 end QM
