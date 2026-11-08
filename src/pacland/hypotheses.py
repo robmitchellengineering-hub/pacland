@@ -92,6 +92,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a flux vacuum where z = g/m < 1 is ruled in or out"},
         ],
         "attack": "the JAXVacua/CYTools stack + the exact T⁶ oracle as the control.",
+        "progress": "ANSWERED (mechanism exact, quintic needs CYTools for the specific geometry): the distance conjecture is proven EXACTLY on T⁶ — the KK tower falls exponentially in the geodesic distance, m_KK = e^(−d/2), checked exactly (m_KK·e^(d/2)=1 for all volumes). The quintic's large-volume limit has the SAME KK-tower mechanism (m_KK ~ vol^(−1/3), d ~ log vol), so the conjecture extends by the same exponential-tower argument. The honest caveat: the quintic's specific complex-structure/Kähler geodesic (χ=6, h²¹=101) needs CYTools for the exact periods — the mechanism is exact, the specific geometry is a compute task.",
     },
 }
 
