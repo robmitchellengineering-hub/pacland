@@ -94,6 +94,66 @@ HYPOTHESES: dict[str, dict] = {
         "attack": "the JAXVacua/CYTools stack + the exact T⁶ oracle as the control.",
         "progress": "ANSWERED (mechanism exact, quintic needs CYTools for the specific geometry): the distance conjecture is proven EXACTLY on T⁶ — the KK tower falls exponentially in the geodesic distance, m_KK = e^(−d/2), checked exactly (m_KK·e^(d/2)=1 for all volumes). The quintic's large-volume limit has the SAME KK-tower mechanism (m_KK ~ vol^(−1/3), d ~ log vol), so the conjecture extends by the same exponential-tower argument. The honest caveat: the quintic's specific complex-structure/Kähler geodesic (χ=6, h²¹=101) needs CYTools for the exact periods — the mechanism is exact, the specific geometry is a compute task.",
     },
+    "cayley-even-n": {
+        "question": "does det A = Pf(A)² hold for every even-dimensional antisymmetric A (Cayley's identity)?",
+        "forced": "the 2×2 and 4×4 cases (pfaffian2_sq_eq_det, pfaffian4_sq_eq_det) and the general sign theorem (det A = (−1)ⁿ det A).",
+        "open": "the general even-n identity — needs a recursive Pfaffian definition + an induction, or the spectral block-diagonalisation.",
+        "candidates": [
+            {"hypothesis": "a recursive Pfaffian (Laplace expansion) + induction proves det = Pf² for all even n",
+             "falsifier": "an even-dimensional antisymmetric A with det A ≠ Pf(A)²"},
+            {"hypothesis": "the spectral block-diagonalisation (antisymmetric → [[0,λ],[−λ,0]] blocks) proves det = ∏λ²",
+             "falsifier": "an antisymmetric A not orthogonally block-diagonalisable"},
+        ],
+        "attack": "Lean — define the recursive Pfaffian, prove det = Pf² by induction (the Fin.succAbove tooling is now fixed).",
+    },
+    "t-count-boundary": {
+        "question": "how many T gates make a Clifford circuit non-classically-simulable?",
+        "forced": "Clifford is polynomial (Gottesman–Knill, clifford_normalizes_pauli); the T gate is the single escape.",
+        "open": "the exact T-count threshold where the stabilizer-rank simulation becomes exponential.",
+        "candidates": [
+            {"hypothesis": "the stabilizer rank of |T⟩^⊗t is 2^t, so t T gates cost 2^t classically",
+             "falsifier": "a polynomial-time simulation of Clifford+tT for large t"},
+            {"hypothesis": "there is a sub-exponential algorithm for small T-count (the honest quantum-advantage boundary)",
+             "falsifier": "a counterexample where sub-exponential fails"},
+        ],
+        "attack": "Lean (the stabilizer rank of the T-magic state) + Stim (simulate Clifford+tT at increasing t).",
+    },
+    "morpheos-rust-service": {
+        "question": "can SEXTANT's 28 claims + falsifiers run as a native Rust service (morph-verify) with no Python?",
+        "forced": "the morph-verify crate already holds the 28 kernel-checked claims; SEXTANT's falsifiers run in Python (numpy/Stim/Quimb).",
+        "open": "the falsifiers running natively in Rust — so MorpheOS can invoke the yes/no engine as a first-class subsystem.",
+        "candidates": [
+            {"hypothesis": "the Clifford falsifier ports cleanly to Rust (the stim crate is Rust-native)",
+             "falsifier": "a claim that verifies in Python but fails in the Rust port"},
+            {"hypothesis": "the tensor-network falsifier needs a Rust tensor library (or a service boundary)",
+             "falsifier": "a Quimb result the Rust port cannot reproduce"},
+        ],
+        "attack": "Rust — the stim crate (Clifford), a minimal tensor-network port, morph-verify as the host.",
+    },
+    "npu-contraction": {
+        "question": "does the ROG's NPU (XDNA) accelerate the tensor-network contraction for the entanglement-area oracle?",
+        "forced": "Quimb contracts on CPU/GPU today; the D^m area-law bound is kernel-checked.",
+        "open": "the NPU path for the MPS/MERA contraction — is the XDNA NPU faster than CPU for small bond dimension?",
+        "candidates": [
+            {"hypothesis": "the NPU does the MPS contraction faster than CPU for D ≥ 8",
+             "falsifier": "an NPU contraction slower than CPU (refutes the speedup)"},
+            {"hypothesis": "the NPU is not worth it for small D (the honest null)",
+             "falsifier": "an NPU contraction significantly faster than CPU"},
+        ],
+        "attack": "benchmark Quimb on CPU vs the XDNA NPU on the ROG (the mesh's win-2).",
+    },
+    "quantum-ready-crypto": {
+        "question": "which MorpheOS cryptographic primitives are post-quantum-safe, and which need migration?",
+        "forced": "lattice-based (ML-KEM/ML-DSA) are post-quantum; RSA/ECC/ed25519 are broken by Shor's algorithm.",
+        "open": "the audit of MorpheOS's actual crypto — TLS, the update-signing key, the attestation signature.",
+        "candidates": [
+            {"hypothesis": "the update payload is signed with ed25519 (not post-quantum) — the first migration target",
+             "falsifier": "a post-quantum-safe update signature already in place"},
+            {"hypothesis": "TLS uses ECC (not post-quantum) — needs a hybrid lattice+ECC handshake",
+             "falsifier": "a post-quantum TLS stack already deployed"},
+        ],
+        "attack": "audit MorpheOS's crypto (the AGENTS.md already notes ed25519 for the update payload) — read the code, name each primitive.",
+    },
 }
 
 
