@@ -63,6 +63,22 @@ def deficit(bal_acc: float, chance: float) -> float:
     return 1.0 - (bal_acc - chance) / (1.0 - chance)
 
 
+def _adaptive_n_perm(n: int, n_classes: int, d_feat: int) -> int:
+    """Scale the permutation-null size down for large corpora to bound runtime.
+
+    The true metric (balanced accuracy, and therefore the deficit D) is always computed
+    exactly; only the label-permutation null (used for the z / verdict) is thinned.
+    Cost proxy per permutation ~ n * n_classes * d^2.  Anchors and small corpora keep
+    the full N_PERM; a 59-species / 309-type / 119-referent corpus gets a smaller null.
+    """
+    budget = 1.11e8  # calibrated so the macaque anchor (2520*3*49) still gets full N_PERM
+    work = max(n, 1) * max(n_classes, 1) * max(d_feat, 1) * max(d_feat, 1)
+    if work <= 0:
+        return N_PERM
+    p = int(budget / work)
+    return max(20, min(N_PERM, p))
+
+
 def _load_table(spec: dict) -> pd.DataFrame:
     fmt = spec.get("format", "csv").lower()
     path = os.path.join(HERE, spec["file"])
@@ -141,7 +157,10 @@ def run_tabular(corpus: dict, lab: dict) -> dict:
     except Exception as e:  # noqa: BLE001
         return _error_row(corpus, lab, f"feature-error: {e}")
 
-    X, y = _clean_and_winsorize(Xraw, y)
+    try:
+        X, y = _clean_and_winsorize(Xraw, y)
+    except Exception as e:  # noqa: BLE001
+        return _error_row(corpus, lab, f"clean-error: {e}")
     classes = np.unique(y)
     if len(classes) < 2:
         return _error_row(corpus, lab, "insufficient-classes (<2)", n=len(y))
@@ -150,9 +169,11 @@ def run_tabular(corpus: dict, lab: dict) -> dict:
     n = len(y)
     n_classes = len(classes)
     chance = 1.0 / n_classes
+    d_feat = X.shape[1]
+    n_perm = _adaptive_n_perm(n, n_classes, d_feat)
     try:
         result = inst.learnability_split(X, y_codes, features, continuous=False,
-                                         n_perm=N_PERM, seed=SEED)
+                                         n_perm=n_perm, seed=SEED)
     except Exception as e:  # noqa: BLE001
         return _error_row(corpus, lab, f"instrument-error: {e}", n=n)
 

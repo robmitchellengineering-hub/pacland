@@ -539,6 +539,854 @@
           "note": "expiration vs inspiration"
         }
       ]
+    },
+    {
+      "id": "regent-honeyeater-song",
+      "species": "Anthochaera phrygia (regent honeyeater)",
+      "title": "Loss of vocal culture and fitness costs in a critically endangered songbird",
+      "url": "https://zenodo.org/records/7601629",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/regent_honeyeater.csv",
+      "md5": "a17d097612de00af39c402b9d310332e",
+      "feature_columns": [
+        "duration",
+        "meanfreq",
+        "sd",
+        "freq.median",
+        "freq.Q25",
+        "freq.Q75",
+        "freq.IQR",
+        "time.median",
+        "time.Q25",
+        "time.Q75",
+        "time.IQR",
+        "skew",
+        "kurt",
+        "sp.ent",
+        "time.ent",
+        "entropy",
+        "sfm",
+        "meandom",
+        "mindom",
+        "maxdom",
+        "dfrange",
+        "modindx",
+        "startdom",
+        "enddom",
+        "dfslope"
+      ],
+      "labels": [
+        {
+          "name": "songtype",
+          "column": "songtype",
+          "role": "call-type",
+          "note": "warbleR specan spectral features; label=songtype codes each male's song type."
+        }
+      ]
+    },
+    {
+      "id": "chaverri-carter-bat-contact-call-degradation",
+      "species": "4 vampire/fruit bat species",
+      "title": "Acoustic degradation of bat contact calls",
+      "url": "https://doi.org/10.6084/m9.figshare.3817146.v1",
+      "doi": "",
+      "license": "CC-BY-4.0",
+      "format": "csv",
+      "file": "data/chaverri_bat.csv",
+      "md5": "c8c7cffd8b93f4c33299c6dbd72b512e",
+      "feature_columns": [
+        "duration (s)",
+        "Start Frequency (kHz)",
+        "End Frequency (kHz)",
+        " Peak Frequency (kHz)"
+      ],
+      "labels": [
+        {
+          "name": "species",
+          "column": "species",
+          "role": "species",
+          "note": "duration + start/end/peak frequency; label=species (4 spp); also Habitat/Distance playback conditions."
+        }
+      ]
+    },
+    {
+      "id": "himalayan-leaf-nosed-bat-social-call-dialects",
+      "species": "Hipposideros armiger (great Himalayan leaf-nosed bat)",
+      "title": "Geographical variation and discrimination of social calls",
+      "url": "https://zenodo.org/records/8098377",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "xlsx",
+      "file": "data/himalayan_bat.xlsx",
+      "md5": "b8d85190fc23955b2d8e5b007740eafd",
+      "feature_columns": [
+        "min freq",
+        "max freq",
+        "bandwidth",
+        "syllable rate",
+        "amplitude difference",
+        "duration",
+        "disttomax",
+        "peak freq(start)",
+        "min freq(start)",
+        "max freq(start)",
+        "bandw(start)",
+        "peak freq(end)",
+        "min freq(end)",
+        "max freq(end)",
+        "bandw(end)",
+        "peak freq(centre)",
+        "min freq(centre)",
+        "max freq(centre)",
+        "bandw(centre)",
+        "peak freq(max)",
+        "min freq(max)",
+        "max freq(max)",
+        "bandw(max)"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "Call type",
+          "role": "call-type",
+          "note": "frequency/time/amplitude params; label=Call type (3 types); Colony/Region = dialect. (3 types: H-bUFM/L-bUFM/sUFM; Region/Colony = dialect, not used)"
+        }
+      ]
+    },
+    {
+      "id": "mexican-bats-echolocation-features",
+      "species": "60 Mexican/Central American bat species",
+      "title": "Acoustic identification of Mexican bats",
+      "url": "https://zenodo.org/records/4979853",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/mexican_bats.csv",
+      "md5": "c87106ee1258e88a9200450bb0d69dde",
+      "feature_columns": [
+        "CallDuration",
+        "Fc",
+        "HiFreq",
+        "LowFreq",
+        "Bndwdth",
+        "FreqMaxPwr",
+        "PrcntMaxAmpDur",
+        "TimeFromMaxToFc",
+        "FreqKnee",
+        "PrcntKneeDur",
+        "StartF",
+        "EndF",
+        "DominantSlope",
+        "SlopeAtFc",
+        "StartSlope",
+        "EndSlope",
+        "SteepestSlope",
+        "TotalSlope",
+        "CummNmlzdSlp",
+        "FreqLedge",
+        "LedgeDuration",
+        "FreqCtr",
+        "DurOf32dB",
+        "DurOf20dB",
+        "Amp1stQrtl",
+        "Amp2ndQrtl",
+        "Amp3rdQrtl",
+        "Amp4thQrtl",
+        "AmpKurtosis",
+        "AmpSkew",
+        "FcMinusEndF"
+      ],
+      "labels": [
+        {
+          "name": "species",
+          "column": "Spp",
+          "role": "species",
+          "note": "~72 spectral features; label=Spp species code (60 species); 4 sheets (Classifier1-4). (4 sheets concatenated; 59 species codes, not 60)"
+        }
+      ]
+    },
+    {
+      "id": "atlantid-dolphin-whistles",
+      "species": "7 SW Atlantic dolphin species",
+      "title": "ATLANTID dolphin whistle classifier",
+      "url": "https://zenodo.org/records/19497551",
+      "doi": "",
+      "license": "CC-BY-4.0",
+      "format": "csv",
+      "file": "data/atlantid_dolphin.csv",
+      "md5": "f4ec0149222a2da191477017ff9933a6",
+      "feature_columns": [
+        "FREQMAX",
+        "FREQMIN",
+        "DURATION",
+        "FREQBEG",
+        "FREQEND",
+        "FREQRANGE",
+        "FREQMEAN",
+        "FREQSTDDEV",
+        "FREQMEDIAN",
+        "FREQCENTER",
+        "FREQRELBW",
+        "FREQMAXMINRATIO",
+        "FREQBEGENDRATIO",
+        "FREQQUARTER1",
+        "FREQQUARTER2",
+        "FREQQUARTER3",
+        "FREQSPREAD",
+        "FREQCOFM",
+        "FREQSLOPEMEAN",
+        "FREQABSSLOPEMEAN",
+        "FREQSWEEPUPPERCENT",
+        "FREQSWEEPDWNPERCENT",
+        "FREQSWEEPFLATPERCENT",
+        "NUMINFLECTIONS"
+      ],
+      "labels": [
+        {
+          "name": "species",
+          "column": "KnownSpecies",
+          "role": "species",
+          "note": "ROCCA/PAMGuard whistle features; label=KnownSpecies (7 species). (7 species)"
+        }
+      ]
+    },
+    {
+      "id": "humpback-song-unit-measurements",
+      "species": "Megaptera novaeangliae (humpback whale)",
+      "title": "Unit measurements - humpback whale song cultural transmission",
+      "url": "https://rs.figshare.com/articles/dataset/Unit_measurements_from_Migratory_convergence_facilitates_cultural_transmission_of_humpback_whale_song/9577364",
+      "doi": "",
+      "license": "CC-BY-4.0",
+      "format": "txt",
+      "file": "data/humpback_units.txt",
+      "md5": "937cbca26805299921858f2d8c713d34",
+      "feature_columns": [
+        "PeakF",
+        "HighF",
+        "LowF",
+        "Range",
+        "StartF",
+        "EndF",
+        "Trend",
+        "Inflec",
+        "PRR",
+        "Dur",
+        "BW"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "Sound",
+          "role": "call-type",
+          "note": "tab-separated; label=Sound = song unit type (~250 labels); PeakF/HighF/LowF/Dur etc. (309 song-unit types, not ~250)"
+        }
+      ]
+    },
+    {
+      "id": "bottlenose-signature-whistles-region",
+      "species": "Tursiops truncatus (bottlenose dolphin)",
+      "title": "Vocal signatures affected by population identity and environmental sound levels",
+      "url": "https://zenodo.org/records/10967318",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/bottlenose_region.csv",
+      "md5": "7ff89811d04f63db31a51c1c496ac461",
+      "feature_columns": [
+        "Start.freq",
+        "End.freq",
+        "Min.freq",
+        "Max.freq",
+        "Delta.freq",
+        "Duration",
+        "Extrema"
+      ],
+      "labels": [
+        {
+          "name": "dialect",
+          "column": "Region",
+          "role": "dialect",
+          "note": "whistle frequency/duration features; label=Region (Coastal/Bay/Offshore) = dialect. (3 regions: Coastal/Bay/Offshore)"
+        }
+      ]
+    },
+    {
+      "id": "common-marmoset-dialects",
+      "species": "Callithrix jacchus (common marmoset)",
+      "title": "Translocation experiments show dialects are socially learned in marmoset monkeys",
+      "url": "https://datadryad.org/stash/dataset/doi:10.5061/dryad.16f5v10",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/marmoset_colony.csv",
+      "md5": "770da31ab910ae58b33bc8429e0abe1f",
+      "feature_columns": [
+        "sound_duration",
+        "Mean_F0",
+        "F0_start",
+        "F0_end",
+        "Max_F0",
+        "Min_F0",
+        "F0_abs_slope",
+        "Q25perc",
+        "Q50perc",
+        "Q75perc",
+        "Fpeak"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "call_type",
+          "role": "call-type",
+          "note": "9 CSVs in zip; Praat features; label=call type (Food/Phee/Trill) encoded by per-call-type CSV filenames. (3 Colony CSVs combined; call type from filename: Foodcall/Phee/Trill)"
+        }
+      ]
+    },
+    {
+      "id": "gray-mouse-lemur-babbling",
+      "species": "Microcebus murinus (gray mouse lemur)",
+      "title": "Features of animal babbling in the vocal ontogeny of the gray mouse lemur",
+      "url": "https://zenodo.org/records/10194218",
+      "doi": "",
+      "license": "CC-BY-SA-4.0",
+      "format": "csv",
+      "file": "data/mouse_lemur.csv",
+      "md5": "4e0a152e4e1188a2d03210af60171c7f",
+      "feature_columns": [
+        "duration [ms]",
+        "minF0 [kHz]",
+        "maxF0 [kHz]",
+        "meanF0 [kHz]",
+        "sDF0 [kHz]",
+        "bandwidth [kHz]",
+        "meanslope [kHz/s]",
+        "Intersyllable interval",
+        "Number of syllables per calling bout "
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "K-means cluster classification",
+          "role": "call-type",
+          "note": "syllable features; label=K-means cluster (6 types) in 'Syllables_cluster analysis' sheet. (6 K-means syllable clusters)"
+        }
+      ]
+    },
+    {
+      "id": "rat-50khz-usv-subtypes-burke",
+      "species": "Rattus norvegicus (rat, Long-Evans)",
+      "title": "Stable long-term individual differences in 50-kHz vocalization rate and call subtype",
+      "url": "https://doi.org/10.6084/m9.figshare.20341206.v1",
+      "doi": "",
+      "license": "CC-BY-4.0",
+      "format": "csv",
+      "file": "data/rat_burke.csv",
+      "md5": "7fa5bb44b642db3b2e9dc6612f78ea7f",
+      "feature_columns": [
+        "DURATION"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "SUBTYPE NAME",
+          "role": "call-type",
+          "note": "DURATION is the only measured feature (START/END timestamps, SESSION/DAY/RAT metadata); label=SUBTYPE NAME (14-subtype USV taxonomy). (single feature=DURATION; 17 subtype names, not 14)"
+        }
+      ]
+    },
+    {
+      "id": "rat-usv-nicotine-withdrawal-affect",
+      "species": "Rattus norvegicus (rat)",
+      "title": "Adult rat ultrasonic vocalizations as affect-related markers during nicotine withdrawal",
+      "url": "https://doi.org/10.6084/m9.figshare.34059357.v1",
+      "doi": "",
+      "license": "CC-BY-4.0",
+      "format": "csv",
+      "file": "data/rat_nicotine.csv",
+      "md5": "c445950abc447e15d3de8a4081bde3b4",
+      "feature_columns": [
+        "duration",
+        "interval",
+        "peak freq (max)",
+        "peak ampl (max)",
+        "entropy (max)",
+        "peak freq (mean)",
+        "peak ampl (mean)",
+        "entropy (mean)",
+        "peak freq (minentire)",
+        "entropy (minentire)",
+        "peak freq (maxentire)",
+        "peak ampl (maxentire)",
+        "entropy (maxentire)"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "label",
+          "role": "call-type",
+          "note": "5 test-day sheets; duration + peak-freq/ampl/entropy stats; label=numeric DeepSqueak call-type code (1-22). (TD1-TD5 concatenated; numeric DeepSqueak call-type code)"
+        }
+      ]
+    },
+    {
+      "id": "emerald-glass-frog-context-calls",
+      "species": "Espadarana prosoblepon (emerald glass frog)",
+      "title": "Context-dependent vocal behavior in a glass frog",
+      "url": "https://zenodo.org/records/20560584",
+      "doi": "",
+      "license": "CC-BY-4.0",
+      "format": "csv",
+      "file": "data/emerald_glass_frog.csv",
+      "md5": "7be7a219cb21c469e32cc126a8ff1ca7",
+      "feature_columns": [
+        "Note_duration",
+        "Pulses_per_note",
+        "Peak_freq"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "Call_type",
+          "role": "call-type",
+          "note": "Raven note-level; Call_type: Ad_1/Ad_2/Co/Ag (advertisement/courtship/aggressive). (4 types: Ad_1/Ad_2/Co/Ag; note-level features only — call-level columns are NaN-complementary across first/non-first notes and would drop all rows)"
+        }
+      ]
+    },
+    {
+      "id": "hyla-versicolor-calls",
+      "species": "Hyla versicolor (gray treefrog)",
+      "title": "Phenotypic integration and signal repertoires - treefrog",
+      "url": "https://datadryad.org/stash/dataset/doi:10.5061/dryad.d1k50",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "txt",
+      "file": "data/hyla_versicolor.txt",
+      "md5": "1b543b7de4fee63393ffa3108cacf12d",
+      "feature_columns": [
+        "CD",
+        "CP",
+        "RT",
+        "LF",
+        "DF",
+        "BW",
+        "DC"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "CallType",
+          "role": "call-type",
+          "note": "tab-delimited Hylaversicolor.txt; CallType: ADV/AGG (advertisement/aggressive). (ADV vs AGG; pulse features PN/PR excluded — undefined for AGG calls, which would leave a single class; bout features CPB/BDC excluded as ~9-16% complete)"
+        }
+      ]
+    },
+    {
+      "id": "hyla-cinerea-calls",
+      "species": "Hyla cinerea (green treefrog)",
+      "title": "Phenotypic integration and signal repertoires - treefrog",
+      "url": "https://datadryad.org/stash/dataset/doi:10.5061/dryad.d1k50",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "txt",
+      "file": "data/hyla_cinerea.txt",
+      "md5": "1fc55aeab52e6c06fa6e7ae40aa80b51",
+      "feature_columns": [
+        "CD",
+        "CP",
+        "RT",
+        "PN",
+        "PR",
+        "MD",
+        "SPR",
+        "LF",
+        "DF",
+        "RA",
+        "DC"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "CallType",
+          "role": "call-type",
+          "note": "tab-delimited Hylacinerea.txt; CallType: ADV/AGG. (ADV vs AGG)"
+        }
+      ]
+    },
+    {
+      "id": "dendropsophus-ebraccatus-calls",
+      "species": "Dendropsophus ebraccatus (hourglass treefrog)",
+      "title": "Phenotypic integration and signal repertoires - treefrog",
+      "url": "https://datadryad.org/stash/dataset/doi:10.5061/dryad.d1k50",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/dendropsophus_ebraccatus.csv",
+      "md5": "f984cadb6bc39b3ff0836c8f9b0e218f",
+      "feature_columns": [
+        "CD",
+        "CP",
+        "RT",
+        "PN",
+        "PR",
+        "BW",
+        "DF",
+        "CN",
+        "DC",
+        "ID"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "CallType",
+          "role": "call-type",
+          "note": "tab-delimited Dendropsophusebraccatus.txt; CallType: ADV/AGG. (ADV vs AGG; 4 stray '3' rows dropped)"
+        }
+      ]
+    },
+    {
+      "id": "dendropsophus-minutus-calls",
+      "species": "Dendropsophus minutus (lesser treefrog)",
+      "title": "Treefrogs adjust their acoustic signals in response to harmonics structure of intruder calls",
+      "url": "https://zenodo.org/records/4283060",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/dendropsophus_minutus.csv",
+      "md5": "c71244c6cb10dde894419ca5ae0fa928",
+      "feature_columns": [
+        "Dur",
+        "Dfreq"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "Treatm",
+          "role": "context",
+          "note": "full_data.xlsx; Dur + Dfreq + harmonic; label=Treatm = playback treatment (Norm/Red/Inv). (3 playback treatments: Norm/Red/Inv)"
+        }
+      ]
+    },
+    {
+      "id": "teleogryllus-calling-song-species",
+      "species": "Teleogryllus commodus + T. oceanicus (field crickets)",
+      "title": "Calling song - sexual selection and population divergence",
+      "url": "https://zenodo.org/records/4953275",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/teleogryllus_calling.csv",
+      "md5": "9e632e82c132d9ea0313e6b8065a6eaa",
+      "feature_columns": [
+        "PL",
+        "Chirp.Duration",
+        "Chirp.Number",
+        "Total.Duration",
+        "X..short.chirps",
+        "Frequency",
+        "Trill.Total.Duration",
+        "Chirp.Trill.Interval",
+        "Chirp.Pulse.Length",
+        "Chirp.Interpulse.Interval",
+        "Trill.Pulse.Duration",
+        "Trill.Interpulse.Interval",
+        "Intersong.Interval",
+        "Average.Pulses.per.Trill"
+      ],
+      "labels": [
+        {
+          "name": "species",
+          "column": "Species",
+          "role": "species",
+          "note": "calling-song temporal/spectral features; label=Species (2 species). (2 species)"
+        }
+      ]
+    },
+    {
+      "id": "meimuna-opalifera-call-types",
+      "species": "Meimuna opalifera (cicada)",
+      "title": "Temporal structure of two call types produced by competing male cicadas",
+      "url": "https://zenodo.org/records/7258470",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/meimuna.csv",
+      "md5": "13fe4d07d822cef3cb211a30e5825057",
+      "feature_columns": [
+        "duration"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "call type",
+          "role": "call-type",
+          "note": "onset/end of call; label=call type (Type I vs Type II); duration = end-onset. (duration = end - onset; Type I vs Type II)"
+        }
+      ]
+    },
+    {
+      "id": "gryllus-bimaculatus-noise-chirps",
+      "species": "Gryllus bimaculatus (two-spotted field cricket)",
+      "title": "Experience modulates an insect's response to anthropogenic noise",
+      "url": "https://zenodo.org/records/5023791",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/gryllus_bimaculatus.csv",
+      "md5": "b0a7a1537261cee107ab6700425445f1",
+      "feature_columns": [
+        "num_pulses",
+        "EnergydB",
+        "Inband_powerdB",
+        "Peak_PowerdB",
+        "Max_PowerdB",
+        "MaxPower_increment",
+        "times_loud",
+        "Delta_time",
+        "Noise_increment"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "Treatment",
+          "role": "context",
+          "note": "chirp features; label=Treatment = noise-exposure condition (treatment1-5). (5 noise-exposure treatments; Experimental-2018 sheet)"
+        }
+      ]
+    },
+    {
+      "id": "teleogryllus-hybrid-calling-song",
+      "species": "Teleogryllus field-cricket hybrids",
+      "title": "Behavioural mechanisms of sexual isolation - calling song",
+      "url": "https://zenodo.org/records/4994323",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/teleogryllus_hybrid.csv",
+      "md5": "049b8681bad2265d87bf432fbc4aa65f",
+      "feature_columns": [
+        "Chirp.Duration",
+        "Chirp.Number",
+        "Total.Duration",
+        "Frequency",
+        "Trill.Total.Duration",
+        "Chirp.Trill.Interval",
+        "Chirp.Pulse.Length",
+        "Chirp.Interpulse.Interval",
+        "Trill.Pulse.Duration",
+        "Trill.Interpulse.Interval",
+        "Trill.1.2.interval",
+        "Intersong.Interval",
+        "Trill.Number",
+        "Average.Pulses.per.Trill"
+      ],
+      "labels": [
+        {
+          "name": "species",
+          "column": "Crosstype_F_first",
+          "role": "species",
+          "note": "calling-song features; label=Crosstype_F_first = parental vs hybrid lineage. (4 parental/hybrid lineages)"
+        }
+      ]
+    },
+    {
+      "id": "pardo-2023-african-elephant-rumble-group-signatures",
+      "species": "Loxodonta africana (African savannah elephant)",
+      "title": "African elephant rumbles differ between populations and social groups",
+      "url": "https://zenodo.org/records/8368774",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/pardo_rumble.csv",
+      "md5": "2d01d504decf8d36c4fe9f31c9a468c3",
+      "feature_columns": [
+        "sprsMed",
+        "sprsMbw",
+        "sprsEqbw",
+        "sprsMc",
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V5",
+        "V6",
+        "V7",
+        "V8",
+        "V9",
+        "V10",
+        "V11",
+        "V12",
+        "V13",
+        "V14",
+        "V15",
+        "V16",
+        "V17",
+        "V18",
+        "V19",
+        "V20",
+        "V21",
+        "V22",
+        "V23",
+        "V24",
+        "V25",
+        "V26",
+        "V27",
+        "V28",
+        "V29",
+        "V30",
+        "V31",
+        "V32",
+        "V33",
+        "V34",
+        "V35",
+        "V36",
+        "V37",
+        "V38",
+        "V39",
+        "V40",
+        "V41",
+        "V42",
+        "V43",
+        "V44",
+        "V45",
+        "V46",
+        "V47",
+        "V48",
+        "V49",
+        "V50",
+        "V51",
+        "V52",
+        "V53",
+        "V54",
+        "V55",
+        "V56",
+        "V57",
+        "V58",
+        "V59",
+        "V60",
+        "V61",
+        "V62",
+        "V63",
+        "V64",
+        "V65",
+        "V66",
+        "V67",
+        "V68",
+        "V69",
+        "V70",
+        "V71",
+        "V72",
+        "V73",
+        "V74"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "Context3",
+          "role": "context",
+          "note": "rumble acoustic + spectral features; label=Context3 = behavioural context (contact/greeting/care/...). (13 behavioural contexts)"
+        }
+      ]
+    },
+    {
+      "id": "pardo-2023-elephant-name-like-calls",
+      "species": "Loxodonta africana (African savannah elephant)",
+      "title": "African elephants address one another with individually specific name-like calls",
+      "url": "https://zenodo.org/records/7912706",
+      "doi": "",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/pardo_name.csv",
+      "md5": "d2b4e5c28cfd3079ba1382f8b75ab49e",
+      "feature_columns": [
+        "sprsMed",
+        "sprsMbw",
+        "sprsEqbw",
+        "sprsMc",
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V5",
+        "V6",
+        "V7",
+        "V8",
+        "V9",
+        "V10",
+        "V11",
+        "V12",
+        "V13",
+        "V14",
+        "V15",
+        "V16",
+        "V17",
+        "V18",
+        "V19",
+        "V20",
+        "V21",
+        "V22",
+        "V23",
+        "V24",
+        "V25",
+        "V26",
+        "V27",
+        "V28",
+        "V29",
+        "V30",
+        "V31",
+        "V32",
+        "V33",
+        "V34",
+        "V35",
+        "V36",
+        "V37",
+        "V38",
+        "V39",
+        "V40",
+        "V41",
+        "V42",
+        "V43",
+        "V44",
+        "V45",
+        "V46",
+        "V47",
+        "V48",
+        "V49",
+        "V50",
+        "V51",
+        "V52",
+        "V53",
+        "V54",
+        "V55",
+        "V56",
+        "V57",
+        "V58",
+        "V59",
+        "V60",
+        "V61",
+        "V62",
+        "V63",
+        "V64",
+        "V65",
+        "V66",
+        "V67",
+        "V68",
+        "V69",
+        "V70",
+        "V71",
+        "V72",
+        "V73",
+        "V74"
+      ],
+      "labels": [
+        {
+          "name": "referent",
+          "column": "Elicitor1_ID",
+          "role": "referent",
+          "note": "rumble features; label=Elicitor1_ID = the individual addressed (name-like referent). (119 addressed-individual referents)"
+        }
+      ]
     }
   ]
 }
