@@ -223,4 +223,24 @@ theorem quasiIsometric_ball_image {X Y : Type*} (dX : X → X → ℕ) (dY : Y �
   refine ⟨K, C, fun x x' r hxr => ?_⟩
   exact ((hdist x x').2).trans (Nat.add_le_add_right (Nat.mul_le_mul_left K hxr) C)
 
+
+/-- **A quasi-isometry is coarsely injective** — the other half of the growth-class invariance.
+Points at distance `> K·C` are mapped to distinct images (`0 < dY (f x) (f x')`). With
+`quasiIsometric_ball_image` (the upper bound), this gives the two-sided invariance: a quasi-isometry
+cannot squash an exponential ball into a polynomial one, so the MERA cone's exponential volume is a
+genuine quasi-isometry invariant — the cone is quasi-isometric to H² (exponential), not Euclidean
+(polynomial). -/
+theorem quasiIsometric_coarse_injective {X Y : Type*} (dX : X → X → ℕ) (dY : Y → Y → ℕ)
+    (f : X → Y) (h : quasiIsometric dX dY f) :
+    ∃ K C : ℕ, 0 < K ∧ ∀ x x' : X, K * C < dX x x' → 0 < dY (f x) (f x') := by
+  rcases h with ⟨K, C, R, hK, hdist, hsurj⟩
+  refine ⟨K, C, hK, fun x x' hfar => ?_⟩
+  by_contra hzero
+  have hdY : dY (f x) (f x') = 0 := Nat.eq_zero_of_not_pos hzero
+  have hle : dX x x' ≤ C := by
+    simpa [hdY] using (hdist x x').1
+  have hlt : K * C < C := lt_of_lt_of_le hfar hle
+  have hge : C ≤ K * C := Nat.le_mul_of_pos_left C hK
+  omega
+
 end QM
