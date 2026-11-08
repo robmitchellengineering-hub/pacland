@@ -91,6 +91,15 @@ DISCIPLINES: tuple[Discipline, ...] = (
         docs="docs/ai-verified-badge.md",
         blurb="The SDK applied to repos and models — the badge is the product.",
     ),
+    Discipline(
+        slug="animal",
+        name="Animal communication",
+        status="new — branch opened; C1 learnability split pending",
+        package=None,
+        docs="—",
+        blurb="Decoding animal communication as the underdetermined wall: measure the constraints, not the meaning "
+              "— the Rosetta-Stone framing is the wall; the move is to compute the set's invariants.",
+    ),
 )
 
 __all__ = ["Discipline", "DISCIPLINES"]
