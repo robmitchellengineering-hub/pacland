@@ -129,6 +129,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a Quimb result the Rust port cannot reproduce"},
         ],
         "attack": "Rust — the stim crate (Clifford), a minimal tensor-network port, morph-verify as the host.",
+        "progress": "FIRST NATIVE FALSIFIER LANDED (MorpheOS PR #189, commit ba86016): morph-verify now has verify.rs — a pure-Rust Clifford-normalizer falsifier (H/S conjugate Paulis to Paulis, matching QM.Stabilizer.clifford_normalizes_pauli) that actually RUNS, no numpy/Stim/Quimb. cargo test -p morph-verify: 6 passed (3 new). Next: the Stim-based full Clifford simulator, then the tensor-network falsifier.",
     },
     "npu-contraction": {
         "question": "does the ROG's NPU (XDNA) accelerate the tensor-network contraction for the entanglement-area oracle?",
