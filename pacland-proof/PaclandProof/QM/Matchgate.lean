@@ -35,10 +35,20 @@ theorem pfaffian2_sq_eq_det (a : ℂ) :
   ring
 
 /-- The 4×4 Pfaffian — the signed sum over the three perfect matchings (the exact four-qubit
-matchgate amplitude; its square-equals-determinant is the next rung — the symbolic 4×4 determinant
-is a known Lean gap, not a theorem). -/
+matchgate amplitude). -/
 def pfaffian4 (a b c d e f : ℂ) : ℂ :=
   a * f - b * e + c * d
+
+/-- **Matchgate core (4×4, the even companion).** The square of the Pfaffian equals the determinant
+of the 4×4 antisymmetric matrix — the exact four-qubit matchgate amplitude. -/
+theorem pfaffian4_sq_eq_det (a b c d e f : ℂ) :
+    pfaffian4 a b c d e f ^ 2 =
+      Matrix.det !![0, a, b, c; -a, 0, d, e; -b, -d, 0, f; -c, -e, -f, 0] := by
+  rw [pfaffian4]
+  rw [Matrix.det_succ_row_zero]
+  simp [Fin.sum_univ_four, Matrix.det_fin_three, Fin.succAbove]
+  norm_num
+  ring
 
 /-- **The structural wall-move.** Any odd-dimensional antisymmetric matrix has determinant 0,
 proved *structurally* (no cofactor computation): `det A = det Aᵀ = det (−A) = (−1)ⁿ det A`, and for

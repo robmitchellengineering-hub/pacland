@@ -39,7 +39,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a Fermionic-linear-optics circuit that is universal"},
         ],
         "attack": "Lean (the class's algebraic structure) + Stim/Quimb (simulate the candidate).",
-        "progress": "kernel-checked the even/odd split (QM.Matchgate): the 2×2 Pfaffian²=det (the polynomial seed) and the GENERAL theorem that ANY odd-dimensional antisymmetric matrix has det=0 (det = detᵀ = det(−A) = −det). This is the structural wall-move: instead of brute-forcing the 4×4 cofactor, we proved the general antisymmetry result. The 4×4 exact amplitude is the next rung.",
+        "progress": "kernel-checked the COMPLETE even/odd split (QM.Matchgate): the 2×2 and 4×4 Pfaffians square to the determinant (pfaffian2_sq_eq_det, pfaffian4_sq_eq_det — the exact two- and four-qubit amplitudes), plus the general theorem that ANY odd-dimensional antisymmetric matrix has det=0. The 4×4 was closed by unfolding Fin.succAbove in the cofactor simp set.",
     },
     "which-2": {
         "question": "gauge unification collapses exactly 2 of the 19 — which two, and is that a real prediction, not a shuffle?",

@@ -232,12 +232,12 @@ CATALOG: dict[str, dict] = {
         "why": "SᵀJS = det S · J, so symplectic ⟺ det 1, and {xᵀJy = 1} is one SL(2) orbit — the no-go on exact invariant selectors.",
     },
     "matchgate-seed": {
-        "claim": "matchgate amplitudes are Pfaffians — the even/odd split kernel-checked (2×2 Pf² = det, 3×3 det = 0)",
-        "theorem": "QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero",
+        "claim": "matchgate amplitudes are Pfaffians — the full even/odd split kernel-checked (2×2 and 4×4 Pf² = det, odd-dim det = 0)",
+        "theorem": "QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.pfaffian4_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero",
         "falsifier": "a 2×2 matchgate whose amplitude is not its Pfaffian, or a nonzero odd-dimensional antisymmetric determinant",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
-        "why": "the 2×2 Pfaffian squares to the determinant (the polynomial seed), and ANY odd-dimensional antisymmetric matrix has determinant 0 — a general structural theorem, so the Pfaffian (and matchgates) is an even-dimensional object.",
+        "why": "the 2×2 and 4×4 Pfaffians square to the determinant (the exact two- and four-qubit amplitudes), and ANY odd-dimensional antisymmetric matrix has determinant 0 — the complete even/odd split: matchgates are even-dimensional Pfaffians, hence classically simulable.",
     },
     "pr-box": {
         "claim": "the PR box saturates the non-signaling CHSH bound at 4",
