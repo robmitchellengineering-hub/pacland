@@ -88,6 +88,27 @@
    "title": "Room correction from the mode spectrum: diagnose, fix, and check the fix away from the seat"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-alarm-contact-report.md",
+   "kind": "doc",
+   "path": "docs/animal-alarm-contact-report.md",
+   "summary": "(bandwidth) than affiliative/contact calls\" consistent across species?",
+   "title": "Cross-species alarm-vs-contact acoustic direction test"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-archetype-report.md",
+   "kind": "doc",
+   "path": "docs/animal-archetype-report.md",
+   "summary": "call acoustics) predict behavioural constraint (agonistic / affiliative / neutral context, and referent)? This is a null-modelled test of Morton's motivation-structural rules.",
+   "title": "Cross-species \"core sound\" archetypes and the Morton test"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-axis-direction-report.md",
+   "kind": "doc",
+   "path": "docs/animal-axis-direction-report.md",
+   "summary": "\"agonistic/distress\" is split into aggression vs distress/alarm?",
+   "title": "Cross-species acoustic direction, re-cut into three motivational categories"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-c1-learnability.md",
    "kind": "doc",
    "path": "docs/animal-c1-learnability.md",
@@ -109,11 +130,32 @@
    "title": "C1c \u2014 animal communication, sequence constraints (frequency / temporal / combinatorial)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-communication-code.md",
+   "kind": "doc",
+   "path": "docs/animal-communication-code.md",
+   "summary": "For Aza Raskin / Earth Species Project \u00b7 2026-11-08",
+   "title": "There is no universal acoustic code of animal meaning \u2014 measured"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-constraint-first.md",
    "kind": "doc",
    "path": "docs/animal-constraint-first.md",
    "summary": "\"meanings\" fit any signal, and there is no ground-truth translation key (no Rosetta Stone). The pacland move for the underdetermined wall is compute the set's invariants \u2014 the constraints\u2026",
    "title": "Animal communication \u2014 constraint-first"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-decodability-benchmark.md",
+   "kind": "doc",
+   "path": "docs/animal-decodability-benchmark.md",
+   "summary": "One null-modeled number \u2014 the decodability deficit \u2014 per species/corpus, plus the constraint learnability. 38 corpora, 42 label rows, 15 deficit rows, 1 sequence corpus. Reproduces on a\u2026",
+   "title": "Cross-species decodability benchmark"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-human-corpus-notes.md",
+   "kind": "doc",
+   "path": "docs/animal-human-corpus-notes.md",
+   "summary": "Prepared as the human fold-in for the cross-species \"core sound / constraint\" decodability benchmark. This corpus gives the benchmark a human analogue of the animal acoustic-shape \u2192\u2026",
+   "title": "Human vocal corpus \u2014 notes"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-raskin-brief.md",
