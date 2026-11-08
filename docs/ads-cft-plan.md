@@ -42,3 +42,17 @@ The proof, in three lemmas:
    `D = rank M ≤ srank t` and the "=".
 
 That's the one formalization that lifts the rank-1 case (`srank_simple_eq_one`) to the general `D^m`.
+
+## Rung 1 correction (found round 13) — the map must be fixed, not the inequality
+
+The current `treeToH2` (uniform binary-expansion angle `pathAngle s = Σ sᵢ·2⁻ⁱ⁻¹`) is **not** a
+quasi-isometry. Two siblings at depth `d` have `Δθ = 2⁻ᵈ` but sit on a horosphere of scale
+`sinh d ≈ eᵈ`, so `hyperbolicDist ≈ (e/2)ᵈ` — unbounded distortion, violating `≤ K·treeDist + C`.
+
+The tree **is** quasi-isometric to H², but via the Švarc–Milnor orbit map (F₂ acting cocompactly on
+H²) or the Farey-tree subdivision — a map with **constant** sibling separation, not the uniform-angle
+one. Correct fixes: (a) base-`e` angular spacing `θ = Σ sᵢ·e⁻ⁱ⁻¹` (siblings at constant distance, but
+the image then lives in a horoball so surjectivity must be handled coarsely), or (b) the Schottky/Farey
+construction. The honest next step is to **redefine `treeToH2`**, then re-prove the two QI inequalities
+for the corrected map. Everything already proven (`treeToH2_depth`, injectivity, the diameter bound)
+stays true but transfers to the corrected map.
