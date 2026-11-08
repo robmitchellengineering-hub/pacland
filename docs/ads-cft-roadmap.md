@@ -57,3 +57,30 @@ it, we do not claim to prove it. But its *constraint-first* core is provable:
 
 That is a *true* ToE claim — the discrete fully proven, the continuous limit proven in the coarse
 (QI) sense, the physics duality honestly named as the frontier.
+
+## Job 2 — the precise statement (what "AdS/CFT" means, exactly)
+
+**Maldacena's conjecture (1997), stated for the record:**
+
+> Type IIB string theory on `AdS₅ × S⁵` with `N` units of five-form flux and string coupling `g_s`
+> is *dual* to `N = 4` super-Yang–Mills theory on the 4D boundary, gauge group `SU(N)`, coupling
+> `g_YM`. The dictionary is `g_YM² = g_s` and `λ = g_YM² N = (R/ℓ_s)⁴`. "Dual" means: the partition
+> functions, the operator spectra, and the correlation functions **match** under the map
+> (gauge-invariant operator ↔ bulk field).
+
+This is **open** — 25 years of checks agree, no proof. We do not claim to prove it.
+
+**The constraint-first core we *can* state and kernel-check** — the "relations, never values" version:
+the *exact structure* matches on both sides, and it is the same constraint + label + no-go pattern:
+
+| | boundary (CFT / quantum) | bulk (AdS / gravity) |
+|---|---|---|
+| **constraint (FORCED)** | entanglement ≤ cut rank (`areaLaw_rank`) | cut area `D^m` (`bondConfigurations`) |
+| **label (FREE)** | which state, the central charge | `h¹¹, h²¹, χ` |
+| **no-go (IMPOSSIBLE)** | LOCC cannot create entanglement (`QM.Entanglement`) | no exact invariant selector (flux FFT) |
+| **the bridge** | entanglement = area | area = the minimal surface (Ryu–Takayanagi) |
+
+The kernel-checked pieces: `areaLaw_rank` (entanglement ≤ rank), `bondConfigurations` (area = `D^m`),
+`QM.Entanglement` (LOCC no-go), `treeDist_four_point` + `ballVolume_growth_class` (the bulk is
+hyperbolic). The **"="** in Ryu–Takayanagi (entanglement *equals* the minimal area) is the frontier,
+exactly like the full duality.
