@@ -7,6 +7,7 @@ genuinely quantum one, and stay silent (UNKNOWN) on absence — never pass by ab
 import math
 import unittest
 
+from pacland import phantom
 from pacland import sextant_referee as sr
 
 
@@ -61,6 +62,21 @@ class TestSignificanceModel(unittest.TestCase):
         self.assertEqual(sr.classify_chsh(3.0, 0.001, k=5.0)[0], sr.IMPOSSIBLE)
         self.assertEqual(sr.classify_chsh(2.83, 0.001, k=5.0)[0], sr.FORCED)
         self.assertEqual(sr.classify_chsh(2.0, 0.001, k=5.0)[0], sr.UNKNOWN)
+
+
+class TestPhantomSelfTest(unittest.TestCase):
+    def test_the_referee_certifies_phantoms_own_quantum_device(self):
+        """Phantom computes S=2√2 from the Bell state; the referee must certify that device —
+        the referee and the simulator agree, end to end, without a hand-coded constant."""
+        dev = {"circuits": {"chsh": {"expectations": phantom.chsh_expectations(), "shots": 10**6}}}
+        self.assertEqual(sr.referee(dev)["verdict"], sr.CERTIFIED)
+
+    def test_the_referee_does_not_certify_phantoms_classical_wall(self):
+        """Phantom's classical wall is S=2; a device there shows no entanglement and is UNKNOWN."""
+        e = phantom.bell_classical() / 4.0  # E00=E01=E10=e, E11=-e  =>  S = 4e = 2
+        dev = {"circuits": {"chsh": {
+            "expectations": {"00": e, "01": e, "10": e, "11": -e}, "shots": 10**6}}}
+        self.assertEqual(sr.referee(dev)["verdict"], sr.UNKNOWN)
 
 
 if __name__ == "__main__":

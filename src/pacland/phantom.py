@@ -15,11 +15,12 @@ Z = np.array([[1, 0], [0, -1]], dtype=complex)
 X = np.array([[0, 1], [1, 0]], dtype=complex)
 
 
-def chsh_value() -> float:
-    """S = E(0,0) + E(0,1) + E(1,0) − E(1,1) for the optimal quantum strategy (Bell state).
+def chsh_expectations() -> dict[str, float]:
+    """The four CHSH correlators E(x,y) for the optimal quantum strategy (Bell state).
 
     Alice measures Z (x=0) or X (x=1); Bob measures (Z+X)/√2 (y=0) or (Z−X)/√2 (y=1).
-    The result is 2√2 — the Tsirelson bound, the FORCED maximum."""
+    This is the device-shaped output the hardware referee (`sextant_referee`) consumes, so the
+    referee is tested against the simulator's own numbers rather than hand-coded constants."""
     bell = np.array([1, 0, 0, 1], dtype=complex) / np.sqrt(2)  # |Φ⁺⟩ = (|00⟩+|11⟩)/√2
     A = [Z, X]
     B = [(Z + X) / np.sqrt(2), (Z - X) / np.sqrt(2)]
@@ -28,7 +29,13 @@ def chsh_value() -> float:
         obs = np.kron(A[x], B[y])
         return float(np.real(bell.conj() @ obs @ bell))
 
-    return expectation(0, 0) + expectation(0, 1) + expectation(1, 0) - expectation(1, 1)
+    return {f"{x}{y}": expectation(x, y) for x in (0, 1) for y in (0, 1)}
+
+
+def chsh_value() -> float:
+    """S = E(0,0) + E(0,1) + E(1,0) − E(1,1) for the optimal quantum strategy = 2√2 (Tsirelson)."""
+    e = chsh_expectations()
+    return e["00"] + e["01"] + e["10"] - e["11"]
 
 
 def stim_version() -> str | None:

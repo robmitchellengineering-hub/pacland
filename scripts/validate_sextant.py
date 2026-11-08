@@ -58,6 +58,11 @@ for _name, _expected in _expected_referee.items():
     if _got != _expected:
         problems.append(f"referee/{_name}: expected {_expected}, got {_got}")
 
+# Phantom self-test: the referee certifies the simulator's own optimal-strategy device
+if sextant_referee.referee({"circuits": {"chsh": {
+        "expectations": phantom.chsh_expectations(), "shots": 10**6}}})["verdict"] != sextant_referee.CERTIFIED:
+    problems.append("referee/phantom: the referee did not certify Phantom's own quantum device")
+
 if problems:
     print("\n".join(problems))
     sys.exit(1)
