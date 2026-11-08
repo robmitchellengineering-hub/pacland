@@ -5,17 +5,33 @@
       "species": "Macaque (4 species: Tonkean, crested, rhesus, Japanese)",
       "title": "Acoustic data in four species of macaques (Rebout et al.)",
       "url": "https://zenodo.org/records/3877581",
+      "doi": "10.5281/zenodo.3877581",
       "license": "CC0-1.0",
       "format": "xlsx",
       "file": "data/macaque_Rebout_et_al_data_excel.xlsx",
       "md5": "cbfcefc715a38ad797cc09df960f6fcd",
-      "feature_columns": ["duration", "Q2_ratio", "q2_frequency", "q1_frequency",
-                          "q3_frequency", "aggregate_entropy", "average_entropy"],
+      "feature_columns": [
+        "duration",
+        "Q2_ratio",
+        "q2_frequency",
+        "q1_frequency",
+        "q3_frequency",
+        "aggregate_entropy",
+        "average_entropy"
+      ],
       "labels": [
-        {"name": "context", "column": "context", "role": "context",
-         "note": "negative / neutral / positive social context"},
-        {"name": "species", "column": "species", "role": "species",
-         "note": "4 species (dialect/constraint)"}
+        {
+          "name": "context",
+          "column": "context",
+          "role": "context",
+          "note": "negative / neutral / positive social context"
+        },
+        {
+          "name": "species",
+          "column": "species",
+          "role": "species",
+          "note": "4 species (dialect/constraint)"
+        }
       ]
     },
     {
@@ -23,23 +39,45 @@
       "species": "Dwarf mongoose (Helogale parvula)",
       "title": "Wild dwarf mongooses produce general alert and predator-specific alarm calls (Collier et al. 2017)",
       "url": "https://zenodo.org/records/5005321",
+      "doi": "10.5061/dryad.49d81",
       "license": "CC0-1.0",
       "format": "txt",
       "delimiter": "\t",
       "file": "data/mongoose_Alarm-call-acoustic-parameters.txt",
       "md5": "859cde2075c0ee14eed4ec0154e0191d",
-      "feature_columns": ["Length", "Overall.peak.frequency", "Peak.frequency.Mean",
-                          "Peak.frequency.Maximum", "Peak.frequency.Minimum",
-                          "Fundamental.frequency.Mean", "Fundamental.frequency.Maximum",
-                          "Fundamental.frequency.Minimum", "Peak.frequency.change.Mean",
-                          "Fundamental.frequency.change.Mean", "Wiener.entropy.Mean",
-                          "Frequency.bandwidth.Mean", "Within.syllable.gap", "No.Elements"],
+      "feature_columns": [
+        "Length",
+        "Overall.peak.frequency",
+        "Peak.frequency.Mean",
+        "Peak.frequency.Maximum",
+        "Peak.frequency.Minimum",
+        "Fundamental.frequency.Mean",
+        "Fundamental.frequency.Maximum",
+        "Fundamental.frequency.Minimum",
+        "Peak.frequency.change.Mean",
+        "Fundamental.frequency.change.Mean",
+        "Wiener.entropy.Mean",
+        "Frequency.bandwidth.Mean",
+        "Within.syllable.gap",
+        "No.Elements"
+      ],
       "labels": [
-        {"name": "referent", "column": "Type", "role": "referent",
-         "mapping": {"type-1": "aerial", "type-4": "terrestrial"},
-         "note": "type-1 = aerial, type-4 = terrestrial (controlled experiment); type-2/3/5 excluded"},
-        {"name": "call-type", "column": "Type", "role": "call-type",
-         "note": "5 acoustic call types (constraint)"}
+        {
+          "name": "referent",
+          "column": "Type",
+          "role": "referent",
+          "mapping": {
+            "type-1": "aerial",
+            "type-4": "terrestrial"
+          },
+          "note": "type-1 = aerial, type-4 = terrestrial (controlled experiment); type-2/3/5 excluded"
+        },
+        {
+          "name": "call-type",
+          "column": "Type",
+          "role": "call-type",
+          "note": "5 acoustic call types (constraint)"
+        }
       ]
     },
     {
@@ -47,6 +85,7 @@
       "species": "Sperm whale (Physeter macrocephalus)",
       "title": "Contextual and Combinatorial Structure in Sperm Whale Vocalisations (Sharma et al. 2024)",
       "url": "https://zenodo.org/records/10817697",
+      "doi": "10.5281/zenodo.10817697",
       "license": "CC-BY-4.0",
       "kind": "sequence",
       "format": "csv",
@@ -54,6 +93,452 @@
       "file2": "data/whale_DominicaCodas.csv",
       "md5": "eeeeb20cda64d88320b6ccee1185379a",
       "note": "SEQUENCE constraints (Zipf / temporal MI / combinatorial MDL), reported separately"
+    },
+    {
+      "id": "meerkat-closecall",
+      "species": "Meerkat (Suricata suricatta)",
+      "title": "The role of neighbour proximity and context on meerkat close call acoustic structure (Driscoll et al. 2023)",
+      "url": "https://zenodo.org/records/8162612",
+      "doi": "10.5061/dryad.rn8pk0pgs",
+      "license": "CC0-1.0",
+      "format": "txt",
+      "delimiter": "\t",
+      "file": "data/meerkat_closecall.txt",
+      "md5": "7b1426fd05a858c274b608be1a64f849",
+      "feature_columns": [
+        "Mean_F0",
+        "StDev_F0",
+        "F0_start",
+        "F0_end",
+        "f0_tips",
+        "Max_F0",
+        "Min_F0",
+        "f0_Diff",
+        "F0_abs_slope",
+        "inflex",
+        "sumvar",
+        "variationtot",
+        "Fpeak_all",
+        "Q25_all",
+        "Q50_all"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "CallContext",
+          "role": "context",
+          "note": "6 close-call behavioural contexts (SC/FO/EA/PV/DI/MO)"
+        },
+        {
+          "name": "call-type",
+          "column": "Call",
+          "role": "call-type",
+          "note": "6 close-call types"
+        }
+      ]
+    },
+    {
+      "id": "shrew",
+      "species": "Long-clawed shrew (Sorex unguiculatus)",
+      "title": "Acoustic emissions of Sorex unguiculatus: assessing the echo-based orientation hypothesis (Sanchez et al. 2019)",
+      "url": "https://zenodo.org/records/4973622",
+      "doi": "10.5061/dryad.pt70k51",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/shrew_acoustic_calls.csv",
+      "md5": "986850eee7fc0db8065e92fba03a8a87",
+      "feature_columns": [
+        "Call_duration",
+        "Call_meanfrequency",
+        "Q25",
+        "Q75",
+        "IQR",
+        "mean_fun",
+        "meandom",
+        "mindom",
+        "maxdom",
+        "dfrange"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "behavioral_categories",
+          "role": "context",
+          "note": "8 behavioural categories (locomotion/obstacle/shelter context)"
+        },
+        {
+          "name": "call-type",
+          "column": "calltype",
+          "role": "call-type",
+          "note": "tonal / noisy / click"
+        }
+      ]
+    },
+    {
+      "id": "spotted-seal",
+      "species": "Spotted seal (Phoca largha)",
+      "title": "Vocal behavior in spotted seals (Phoca largha) and implications for passive acoustic monitoring (Sills & Reichmuth 2022)",
+      "url": "https://zenodo.org/records/6235215",
+      "doi": "10.7291/D1QM3G",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/spotted_seal.csv",
+      "md5": "0d29452621422e6506ded5989dfc7b73",
+      "feature_columns": [
+        "Total Duration",
+        "90% Duration",
+        "90% Bandwidth Lower Bound",
+        "1st Quartile Frequency",
+        "Center Frequency",
+        "3rd Quartile Frequency",
+        "90% Bandwidth Upper Bound",
+        "Interquartile Range Bandwidth",
+        "90% Bandwidth",
+        "Peak Frequency",
+        "3 dB Bandwidth Upper Bound",
+        "3 dB Bandwidth Lower Bound",
+        "3 dB Bandwidth",
+        "10 dB Bandwidth Upper Bound",
+        "10 dB Bandwidth Lower Bound",
+        "10 dB Bandwidth",
+        "Aggregate Entropy"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "Vocal Type",
+          "role": "call-type",
+          "note": "8 vocal types (Burp/Drum/Growl/Grunt/Knock/Moan/Pulse/Rumble)"
+        }
+      ]
+    },
+    {
+      "id": "capuchin",
+      "species": "Bearded capuchin (Sapajus libidinosus)",
+      "title": "The vocal repertoire of the bearded capuchin (Lisboa et al. 2021)",
+      "url": "https://zenodo.org/records/5791103",
+      "doi": "10.5061/dryad.nvx0k6dsn",
+      "license": "CC0-1.0",
+      "format": "xlsx",
+      "file": "data/capuchin.xlsx",
+      "md5": "203259aa3fb3d1871f3c51daf2795d8b",
+      "feature_columns": [
+        "number of elements",
+        "duration (sec)",
+        "initial peak freq (Hz)",
+        "peak freq at the end (Hz)",
+        "maximum peak freq (HZ)",
+        "minimum peak freq (min)",
+        "range of spectral energy (Hz)",
+        "peak frequency on the mean spectrum (Hz)",
+        "change in freq (Hz)",
+        "duration of longest element (sec)"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "call",
+          "role": "call-type",
+          "note": "10 call types"
+        }
+      ]
+    },
+    {
+      "id": "houbara",
+      "species": "Houbara bustard (Chlamydotis undulata)",
+      "title": "Male vocalizations convey information on kinship and inbreeding in a lekking bird (Cornec et al. 2019)",
+      "url": "https://zenodo.org/records/4936883",
+      "doi": "10.5061/dryad.r8576v7",
+      "license": "CC0-1.0",
+      "format": "xlsx",
+      "file": "data/houbara.xlsx",
+      "md5": "f51b62409b4bd02531cb14f26bcf8ce0",
+      "feature_columns": [
+        "BD",
+        "Q25",
+        "Q50",
+        "Q75",
+        "E100HZ",
+        "F0",
+        "H1",
+        "H2",
+        "H1s",
+        "H1e",
+        "FM"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "Kin statut",
+          "role": "context",
+          "note": "kinship status (Son / Father / No Kin) \u2014 social context"
+        }
+      ]
+    },
+    {
+      "id": "oriole-call",
+      "species": "Orchard oriole complex (Icterus spurius / I. fuertesi)",
+      "title": "Divergence in calls but not songs in the orchard oriole complex (Sturge et al. 2015) \u2014 calls",
+      "url": "https://zenodo.org/records/5013286",
+      "doi": "10.5061/dryad.469vn",
+      "license": "CC0-1.0",
+      "format": "xlsx",
+      "file": "data/oriole_call.xlsx",
+      "md5": "a1607152c2e74e89e1ea7b20f4ae60fa",
+      "feature_columns": [
+        "Duration",
+        "MaxFreq",
+        "MinFreq",
+        "AvgFrq",
+        "BegFreq",
+        "MiddleFreq",
+        "EndFreq",
+        "Freq Range",
+        "SDofFM",
+        "Freqslope",
+        "BM_ratio",
+        "ME_ratio",
+        "BE_ratio",
+        "BM_RMS",
+        "ME_RMS",
+        "BE_RMS",
+        "Sdofenv"
+      ],
+      "labels": [
+        {
+          "name": "species",
+          "column": "Species",
+          "role": "species",
+          "note": "Orchard vs Fuertes (dialect/constraint)"
+        }
+      ]
+    },
+    {
+      "id": "oriole-song",
+      "species": "Orchard oriole complex (Icterus spurius / I. fuertesi)",
+      "title": "Divergence in calls but not songs in the orchard oriole complex (Sturge et al. 2015) \u2014 songs",
+      "url": "https://zenodo.org/records/5013286",
+      "doi": "10.5061/dryad.469vn",
+      "license": "CC0-1.0",
+      "format": "xlsx",
+      "file": "data/oriole_song.xlsx",
+      "md5": "14560b2724d18ed1caebe141feebe344",
+      "feature_columns": [
+        "song duration (s)",
+        "note %",
+        "note overlap (%)",
+        "longest note (s)",
+        "longest pause (s)",
+        "aver. note duration (s)",
+        "aver. pause duration (s)",
+        "pause rate (pause/s)",
+        "peak frequency (Hz)",
+        "highest frequency (Hz)",
+        "lowest frequency (Hz)",
+        "frequency range (Hz)",
+        "max shift (Hz)",
+        "aver note freq range",
+        "note diversity",
+        "note count"
+      ],
+      "labels": [
+        {
+          "name": "species",
+          "column": "Species",
+          "role": "species",
+          "note": "Orchard vs Fuertes (dialect/constraint)"
+        }
+      ]
+    },
+    {
+      "id": "phyllodytes",
+      "species": "Phyllodytes luteolus (tree frog)",
+      "title": "Acoustic parameters of Phyllodytes luteolus in conditions of low and high noise from vehicle traffic (Marques de Abreu et al. 2024)",
+      "url": "https://zenodo.org/records/10851502",
+      "doi": "10.5061/dryad.3bk3j9krb",
+      "license": "CC0-1.0",
+      "format": "xlsx",
+      "file": "data/phyllodytes.xlsx",
+      "md5": "332ba7213b5b3cb12ddc8da27f0c41e0",
+      "feature_columns": [
+        "freq.dom",
+        "Call duration",
+        "rise.time",
+        "Interval.between.call",
+        "N.pulse.call",
+        "Pulse.duration",
+        "Intensity",
+        "nnotes",
+        "Emission.rate",
+        "N.advertisement"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "Environment",
+          "role": "context",
+          "note": "natural vs road-traffic-noise (rodovia)"
+        }
+      ]
+    },
+    {
+      "id": "prairie-dog",
+      "species": "Prairie dog (Cynomys)",
+      "title": "Vocal characteristics of prairie dog alarm calls across an urban noise gradient (Shannon et al. 2019)",
+      "url": "https://zenodo.org/records/4991888",
+      "doi": "10.5061/dryad.vmcvdncp9",
+      "license": "CC0-1.0",
+      "format": "xlsx",
+      "file": "data/prairiedog.xlsx",
+      "md5": "cfffca32336506389b6ab1fd37b57623",
+      "feature_columns": [
+        "MinFreq",
+        "Freq5",
+        "PeakFreq",
+        "BarkDuration",
+        "Laeq",
+        "Dist_Rec"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "Colony",
+          "role": "context",
+          "note": "3 colonies along an urban noise gradient"
+        }
+      ]
+    },
+    {
+      "id": "crocodile",
+      "species": "American crocodile (Crocodylus acutus)",
+      "title": "Differences in distress: variance and production of American crocodile distress calls in Belize (Anderson et al. 2021)",
+      "url": "https://zenodo.org/records/5190555",
+      "doi": "10.5061/dryad.q2bvq83gp",
+      "license": "CC0-1.0",
+      "format": "xlsx",
+      "file": "data/crocodile.xlsx",
+      "md5": "3996bd87c2944131d07ceb59e4b8071e",
+      "feature_columns": [
+        "Dtot",
+        "D1/4",
+        "Fmax",
+        "F1/4",
+        "Fend",
+        "Slope 1",
+        "Slope 2",
+        "Time1/4"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "Size_Class",
+          "role": "context",
+          "note": "size/age class (J=juvenile, H=hatchling, A=adult)"
+        }
+      ]
+    },
+    {
+      "id": "tungara",
+      "species": "Tungara frog (Engystomops pustulosus)",
+      "title": "Condition dependence in the sexual communication system of the Tungara frog (Wilhite & Ryan 2023)",
+      "url": "https://zenodo.org/records/10275513",
+      "doi": "10.5061/dryad.2ngf1vhw8",
+      "license": "CC0-1.0",
+      "format": "xlsx",
+      "file": "data/tungara.xlsx",
+      "md5": "62453c19f27758aaa8a2e65b345b2305",
+      "feature_columns": [
+        "DurW",
+        "AmpW",
+        "DomFreqStartW",
+        "DomFreqEndW",
+        "DomFreqW",
+        "RiseTime",
+        "FallTime",
+        "MinAmpW",
+        "MaxAmpW",
+        "BeginTime",
+        "Peak.Time"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "Treatment",
+          "role": "context",
+          "note": "fed vs unfed (condition, whine-component features)"
+        }
+      ]
+    },
+    {
+      "id": "frog-noise",
+      "species": "Little torrent frog (Amolops torrentis)",
+      "title": "Males increase call frequency, not intensity, in response to noise (Zhao et al. 2018)",
+      "url": "https://zenodo.org/records/5008106",
+      "doi": "10.5061/dryad.54fp3j1",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/frog_noise.csv",
+      "md5": "f5e6188ce8cf3373f1015e7c55efc81b",
+      "feature_columns": [
+        "Minimum frequency (Hz)",
+        "Maximum frequency (Hz)",
+        "Bandwidth (Hz)",
+        "Call duration (sec)",
+        "Call rate (calls/min)",
+        "Call effort (sec/min)",
+        "Call amplitude (dB)",
+        "Noise amplitude (dB)"
+      ],
+      "labels": [
+        {
+          "name": "context",
+          "column": "Group",
+          "role": "context",
+          "note": "5 noise conditions (no-noise/stream/white at +10/+20 dB)"
+        }
+      ]
+    },
+    {
+      "id": "shearwater",
+      "species": "Manx shearwater (Puffinus puffinus)",
+      "title": "Acoustic data of calls of Manx shearwater on Lundy Island (Sun et al. 2023)",
+      "url": "https://zenodo.org/records/7055704",
+      "doi": "10.5061/dryad.hdr7sqvm6",
+      "license": "CC0-1.0",
+      "format": "csv",
+      "file": "data/shearwater.csv",
+      "md5": "988b826fc152c8a09dc8f2049a575d37",
+      "feature_columns": [
+        "duration",
+        "peak freq(max)",
+        "fundamental(max)",
+        "quart 25(max)",
+        "quart 50(max)",
+        "quart 75(max)",
+        "entropy(max)",
+        "hnr(max)",
+        "peak freq(mean)",
+        "fundamental(mean)",
+        "quart 25(mean)",
+        "quart 50(mean)",
+        "quart 75(mean)",
+        "entropy(mean)",
+        "hnr(mean)"
+      ],
+      "labels": [
+        {
+          "name": "call-type",
+          "column": "Motif",
+          "role": "call-type",
+          "note": "20 call motifs"
+        },
+        {
+          "name": "context",
+          "column": "Respiration",
+          "role": "context",
+          "note": "expiration vs inspiration"
+        }
+      ]
     }
   ]
 }
