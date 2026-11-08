@@ -35,7 +35,8 @@ theorem pfaffian2_sq_eq_det (a : ℂ) :
   ring
 
 /-- The 4×4 Pfaffian — the signed sum over the three perfect matchings (the exact four-qubit
-matchgate amplitude; its square-equals-determinant is the next rung). -/
+matchgate amplitude; its square-equals-determinant is the next rung — the symbolic 4×4 determinant
+is a known Lean gap, not a theorem). -/
 def pfaffian4 (a b c d e f : ℂ) : ℂ :=
   a * f - b * e + c * d
 
