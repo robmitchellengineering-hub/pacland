@@ -16,7 +16,7 @@ from __future__ import annotations
 HYPOTHESES: dict[str, dict] = {
     "ads-limit": {
         "question": "does the MERA causal cone's graph metric converge to the smooth AdS metric ds² = dr² + sinh²(r) dθ² as N → ∞?",
-        "forced": "the discrete hyperbolicity — Gromov 0-hyperbolicity (treeDist_four_point), exponential volume 2^(r+1)−1, log depth, the D^m area law.",
+        "forced": "the discrete hyperbolicity — Gromov 0-hyperbolicity (treeDist_four_point), exponential volume 2^(r+1)−1, log depth FORCED (logDepthForced: ≥⌈log₂N⌉ layers), the emergence direction (meraEmergence: the hyperbolic tree is the unique optimum), the exact area law (srank_maximally_entangled: entanglement = area = D^m, not ≤), and the QI map treeToH2 (radially isometric + depth-injective).",
         "open": "the continuous (Gromov–Hausdorff) limit to the smooth hyperbolic metric — gated on a differential-geometry stack.",
         "candidates": [
             {"hypothesis": "the rescaled tree graph metric converges, in the Gromov–Hausdorff sense, to the hyperbolic plane",
@@ -25,7 +25,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a non-constant curvature in the limit"},
         ],
         "attack": "Lean + metric-geometry lemmas (the tree is quasi-isometric to H²).",
-        "progress": "DISCRETE HALF COMPLETE: the causal cone is 0-hyperbolic (treeDist_four_point), has exponential volume (ballVolumeExponential = 2^(r+1)−1), and now exponential_beats_square (2^r > r² for all r ≥ 5) — the growth-class invariant separating hyperbolic (exponential) from Euclidean (polynomial). These are the discrete signatures of the hyperbolic plane; only the continuous GH-convergence to the smooth metric remains gated on the DG stack.",
+        "progress": "THREE OF FOUR RUNGS DONE. Rung 3 (emergence): logDepthForced + meraEmergence — logarithmic depth and exponential circumference are FORCED, the hyperbolic tree is the unique optimum. Rung 2 (Ryu-Takayanagi '='): srank_maximally_entangled — the maximally-entangled state of dimension D has Schmidt rank EXACTLY D (entanglement = area = D^m, via the row contraction + finrank-of-the-span lower bound). Rung 1 (QI map): treeToH2 defined (lands in H², radially isometric treeToH2_depth, depth-injective treeToH2_depth_inj). REMAINING: Rung 1's angular distortion + quasi-surjectivity (the arcosh/trig estimate) and Rung 4's GH convergence (the metric-geometry stack).",
     },
     "separation-classes": {
         "question": "which classes of quantum circuits beyond Clifford are classically simulable?",
