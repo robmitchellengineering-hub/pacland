@@ -249,11 +249,11 @@ CATALOG: dict[str, dict] = {
     },
     "sm-index": {
         "claim": "N_gen is a protected topological index (|χ|/2 in the heterotic class)",
-        "theorem": "SM.Index.index_free + SM.Index.index_protected",
+        "theorem": "SM.Index.index_free + SM.Index.index_protected + SM.Index.chi_even",
         "falsifier": "an anomaly that un-protects the index",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
-        "why": "the generation count is an index — free (not fixed) but protected (robust) — the Atiyah–Singer N_gen = |χ|/2 statement.",
+        "why": "the generation count is an index — free (not fixed) and protected (robust) — and χ = 2(h¹¹−h²¹) is even, so N_gen = |χ|/2 is always a whole number. But the value 3 (χ = 6) is a free label, not a forced value.",
     },
 }
 

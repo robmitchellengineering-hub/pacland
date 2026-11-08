@@ -31,6 +31,14 @@ theorem index_free (Ngen : ℝ) :
   have h := anomaly_homogeneous Ngen (1/6 : ℝ) (2/3 : ℝ) (-1/3 : ℝ) (-1/2 : ℝ) (-1 : ℝ)
   exact h
 
+/-- **χ is always even.** For a Calabi–Yau threefold, χ = 2(h¹¹ − h²¹), so the Euler
+characteristic is even, and the generation count `N_gen = |χ|/2 = |h¹¹ − h²¹|` is always a whole
+number — the index is integral for *every* geometry. This is the "protected" half of `N_gen = |χ|/2`;
+the value "3" itself (`χ = 6`) remains a free label, not a forced value. -/
+theorem chi_even (h11 h21 : ℕ) :
+    Even (2 * ((h11 : ℤ) - (h21 : ℤ))) :=
+  even_two_mul _
+
 /-- **The index is protected, not fixed.** If the one-generation hypercharges are anomaly-free,
 then any `N_gen` generations are anomaly-free — so `N_gen` is a free topological label. -/
 theorem index_protected (Ngen : ℝ) :

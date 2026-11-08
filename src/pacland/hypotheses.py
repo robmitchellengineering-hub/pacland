@@ -65,6 +65,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a 3-generation model with no such symmetry"},
         ],
         "attack": "the SM index theorem (SM.Index) + a specific compactification geometry.",
+        "progress": "ANSWERED: N_gen = |χ|/2 is a protected, integral index — index_free (not fixed by anomalies), index_protected (robust), chi_even (χ = 2(h¹¹−h²¹) is even, so |χ|/2 is always whole). The value 3 = 6/2 is the index for a compactification with Euler characteristic χ = 6, which is a free label (a choice of geometry), NOT a forced value. Nothing forces χ = 6.",
     },
     "mera-lung": {
         "question": "is the MERA causal cone and the mammalian lung the same exponential-branching object under the area law — and is it testable?",
