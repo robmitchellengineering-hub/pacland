@@ -72,6 +72,23 @@ Re-cut into two axes and re-test:
 - **Inside marmoset, "distress" itself splits**: cry (distress) = −1294 Hz (low), alarm (tsik/ekk) =
   +876 Hz (high). Alarm calls go high, distress cries go low — opposite directions, one species.
 
+## 5 · The one candidate universal signal — "roughness = aversive" — is human-specific, not universal
+
+The last candidate was Morton's "harshness", measured properly. Arnal et al. (2015) found human screams are
+*rough* (amplitude-modulated ~30–150 Hz) and roughness is aversive — a property of the temporal envelope,
+so in principle species-independent. We tested it with a corrected multi-band modulation-spectrum measure
+(the naive single-envelope measure is F0-confounded):
+
+| corpus | result |
+|---|---|
+| synthetic human (LAION TTS) | no signal (Mann–Whitney p = 0.59) |
+| **real human voices (RAVDESS)** | **significant, correct sign — d = +0.83, AUC = 0.724** |
+| ungulate animals (7 species) | no generalisation — raw sign reversed, and it was a duration artifact; after control d ≈ 0 |
+
+**"Roughness = aversive" is a real human-voice fact** (Arnal confirmed, with the confound removed) **but not
+a mammalian law** — it does not reproduce in ungulates. That is the carve-out on the negative: the
+universal-code hypothesis fails, and even its strongest candidate is human-specific.
+
 ## The conclusion
 
 **There is no single universal acoustic code of "negative" meaning across mammals.** The code is:
@@ -82,9 +99,10 @@ Re-cut into two axes and re-test:
 - **Not Morton's rule** — "low = aggressive" survives 2/6; "high = alarm" is real but narrow.
 
 Morton's motivation-structural rules — the 50-year hypothesis of a cross-species acoustic code — mostly
-**does not survive** null-modeled contact with the data. That is a measured negative, and it is the useful
-answer: **do not build a universal Rosetta Stone from acoustic shape. Build per-species, per-dimension
-maps** (species × valence × urgency), and the two instruments here are how you do it.
+**does not survive** null-modeled contact with the data, and its strongest surviving candidate
+("roughness = aversive") is human-specific, not cross-mammal. That is a measured negative, and it is the
+useful answer: **do not build a universal Rosetta Stone from acoustic shape. Build per-species,
+per-dimension maps** (species × valence × urgency), and the two instruments here are how you do it.
 
 ## What this offers ESP
 
