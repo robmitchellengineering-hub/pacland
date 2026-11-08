@@ -105,7 +105,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "an antisymmetric A not orthogonally block-diagonalisable"},
         ],
         "attack": "Lean — define the recursive Pfaffian, prove det = Pf² by induction (the Fin.succAbove tooling is now fixed).",
-        "progress": "det_fin_four LANDED (the general 4×4 determinant, the missing Mathlib lemma — cofactor-expanded, kernel-checked). pfaffian6 (15-term) is defined and sympy-verified (Pf² = det) but NOT yet kernel-checked: the 6×6 cofactor leaves 5×5 minors that Fin.succAbove does not unwind — it needs det_fin_five first. Next rung: det_fin_five (5×5), then pfaffian6_sq_eq_det, then the recursive Pfaffian + induction for the general even-n.",
+        "progress": "6×6 CLOSED: pfaffian6_sq_eq_det is kernel-checked. The wall was broken by writing det_fin_four/det_fin_five in the general Matrix (Fin n) form (like Mathlib's det_fin_three) + the missing Fin.succ numeral lemmas, then using the working simp pattern (Fin.sum_univ_N + det_fin_(N-1) + Fin.succAbove). The even/odd split is now complete at 2×2 + 4×4 + 6×6 + general odd. Remaining: the recursive Pfaffian + induction for the general even-n.",
     },
     "t-count-boundary": {
         "question": "how many T gates make a Clifford circuit non-classically-simulable?",

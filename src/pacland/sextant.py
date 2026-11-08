@@ -233,7 +233,7 @@ CATALOG: dict[str, dict] = {
     },
     "matchgate-seed": {
         "claim": "matchgate amplitudes are Pfaffians — the full even/odd split kernel-checked (2×2 and 4×4 Pf² = det, odd-dim det = 0)",
-        "theorem": "QM.Matchgate.det_antisymm_sign + QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.pfaffian4_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero",
+        "theorem": "QM.Matchgate.det_antisymm_sign + QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.pfaffian4_sq_eq_det + QM.Matchgate.pfaffian6_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero",
         "falsifier": "a 2×2 matchgate whose amplitude is not its Pfaffian, or a nonzero odd-dimensional antisymmetric determinant",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
