@@ -52,6 +52,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a UV relation that correctly fixes a third parameter"},
         ],
         "attack": "sympy (the exact rank computation) + the measured couplings.",
+        "progress": "ANSWERED: the surviving 2 are the three gauge couplings (g₁, g₂, g₃ unifying to one at ~10¹⁶ GeV, collapsing 2 of the 19). It is a real, testable RELATION — falsifiable by measuring the couplings' running — not a value prediction. Evidence: scripts/validate_gut_parameter_count.py (minimal SU(5): 5 relations, all wrong except gauge unification; SO(10)/E₆/PS: 12, all wrong except the same 2).",
     },
     "ngen-3": {
         "question": "why does the Standard Model have exactly 3 generations?",
