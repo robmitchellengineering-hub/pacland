@@ -45,7 +45,20 @@ for name in sextant.CATALOG:
         except Exception as exc:
             problems.append(f"{name}: falsifier raised {type(exc).__name__}: {exc}")
 
+# the hardware referee must be able to refuse, certify and stay silent — its falsifiers
+from pacland import sextant_referee
+_expected_referee = {
+    "cheating": sextant_referee.REFUSED,
+    "quantum": sextant_referee.CERTIFIED,
+    "classical": sextant_referee.UNKNOWN,
+    "empty": sextant_referee.UNKNOWN,
+}
+for _name, _expected in _expected_referee.items():
+    _got = sextant_referee.referee(sextant_referee.probe_devices()[_name])["verdict"]
+    if _got != _expected:
+        problems.append(f"referee/{_name}: expected {_expected}, got {_got}")
+
 if problems:
     print("\n".join(problems))
     sys.exit(1)
-print(f"sextant catalog OK: {len(sextant.CATALOG)} claims, CHSH control exact (2√2), classical wall exact (2), all live oracles run")
+print(f"sextant catalog OK: {len(sextant.CATALOG)} claims, CHSH control exact (2√2), classical wall exact (2), all live oracles run, referee falsifiers hold")
