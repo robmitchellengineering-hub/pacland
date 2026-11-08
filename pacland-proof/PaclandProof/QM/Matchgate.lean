@@ -50,6 +50,17 @@ theorem pfaffian4_sq_eq_det (a b c d e f : ℂ) :
   norm_num
   ring
 
+/-- **The general sign theorem.** For any antisymmetric matrix over ℂ, `det A = (−1)ⁿ det A` —
+the single structural fact that unifies the whole even/odd split. Odd `n` forces `det = 0` (the
+corollary below); even `n` leaves `det` unchanged (and it is in fact a perfect square, Cayley). -/
+theorem det_antisymm_sign {n : Type*} [Fintype n] [DecidableEq n]
+    (A : Matrix n n ℂ) (hA : Aᵀ = -A) :
+    A.det = (-1 : ℂ) ^ Fintype.card n * A.det := by
+  calc
+    A.det = Aᵀ.det := (Matrix.det_transpose A).symm
+    _ = (-A).det := by rw [hA]
+    _ = (-1 : ℂ) ^ Fintype.card n * A.det := by simpa using (Matrix.det_smul A (-1 : ℂ))
+
 /-- **The structural wall-move.** Any odd-dimensional antisymmetric matrix has determinant 0,
 proved *structurally* (no cofactor computation): `det A = det Aᵀ = det (−A) = (−1)ⁿ det A`, and for
 odd `n` this forces `det A = −det A`, hence `det A = 0`. This is the general theorem the 3×3 case
