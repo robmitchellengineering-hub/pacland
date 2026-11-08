@@ -142,6 +142,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "an NPU contraction significantly faster than CPU"},
         ],
         "attack": "benchmark Quimb on CPU vs the XDNA NPU on the ROG (the mesh's win-2).",
+        "progress": "CLOSED (dead end, measured): the NPU probe on win-2 found NO XDNA/IPU/AI-Engine device and NO onnxruntime — the Ryzen AI toolchain is not installed, and Quimb has no XDNA backend anyway. Setting it up is a driver + custom-kernel project against a CPU/RAM-bound workload. Recommendation: drop the NPU lane; spend on the 128 GB DDR4 RAM node instead.",
     },
     "quantum-ready-crypto": {
         "question": "which MorpheOS cryptographic primitives are post-quantum-safe, and which need migration?",
