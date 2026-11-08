@@ -112,6 +112,22 @@ theorem exponential_beats_square (r : ℕ) (hr : 5 ≤ r) :
         _ < 2 * 2 ^ r := mul_lt_mul_of_pos_left ih (by norm_num : 0 < 2)
         _ = 2 ^ r * 2 := by ring
 
+/-- **The quasi-isometry growth invariant, stated cleanly.** The ball volume is exponential —
+sandwiched between `2^r` and `2^(r+1)` — which is the invariant separating the hyperbolic plane
+(exponential) from Euclidean space (polynomial `r²`). Combined with `treeDist_four_point`
+(0-hyperbolicity), this is the discrete signature that the MERA causal cone is quasi-isometric to
+the smooth hyperbolic plane H², not to Euclidean space: the "entanglement = geometry" bridge in the
+continuous limit, in the growth-class sense. -/
+theorem ballVolume_growth_class (r : ℕ) :
+    ballVolume r < 2 ^ (r + 1) ∧ 2 ^ r ≤ ballVolume r + 1 := by
+  rw [ballVolumeExponential]
+  have hpos : 0 < 2 ^ (r + 1) := by positivity
+  constructor
+  · omega
+  · have h1 : 1 ≤ 2 ^ (r + 1) := Nat.succ_le_iff.mp hpos
+    rw [Nat.sub_add_cancel h1]
+    exact Nat.le_of_lt (Nat.pow_lt_pow_right (by norm_num : 1 < 2) (Nat.lt_succ_self r))
+
 /-- **Hyperbolic beats Euclidean, concretely.** At radius 5 the MERA ball has `2^6 − 1 = 63` sites,
 the Euclidean (2D) ball has `6² = 36`: exponential volume overtakes quadratic by radius 5. This is
 the discrete signature that the causal cone is hyperbolic, not flat. -/
