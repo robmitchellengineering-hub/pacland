@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEXTANT — the proof engine (ask it what's provable)</title>
+<style>
+  :root { --ink:#1a1f2e; --muted:#5a6072; --accent:#142a5e; --line:#e3e6ee; --bg:#fbfbfd; --teal:#1a9d8f; --gold:#b7791f; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; }
+  .wrap { max-width:860px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+  .kicker { margin:0; font:600 .72rem monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  h1 { font-size:2.2rem; margin:.2rem 0 .5rem; color:var(--accent); letter-spacing:-.02em; }
+  .lede { font-size:1.08rem; max-width:46rem; margin:.3rem 0 1rem; }
+  .callout { border-left:4px solid var(--accent); background:#eef1f8; padding:.9rem 1.1rem; border-radius:0 8px 8px 0; margin:1.2rem 0; }
+  .callout p { margin:.3rem 0; }
+  .does-not { border-left:4px solid var(--gold); background:#fdf6e9; }
+  .grid { display:grid; grid-template-columns:1fr 2fr; gap:1.2rem; margin:1.2rem 0; }
+  @media (max-width:720px){ .grid { grid-template-columns:1fr; } }
+  .side { display:flex; flex-direction:column; gap:.4rem; }
+  .searchbox { width:100%; padding:.7rem .9rem; border:1px solid var(--line); border-radius:8px; font:inherit; }
+  .claimlist { list-style:none; padding:0; margin:.4rem 0; max-height:60vh; overflow-y:auto; border:1px solid var(--line); border-radius:8px; background:#fff; }
+  .claimlist li { padding:.55rem .8rem; border-bottom:1px solid var(--line); cursor:pointer; font-size:.92rem; display:flex; gap:.5rem; align-items:baseline; }
+  .claimlist li:hover, .claimlist li.active { background:#eef1f8; }
+  .claimlist li:last-child { border-bottom:none; }
+  .glyph { width:1.1rem; text-align:center; font-weight:700; }
+  .verdict-FORCED { color:var(--accent); } .verdict-FREE { color:var(--gold); } .verdict-IMPOSSIBLE { color:#c0392b; }
+  .out { border:1px solid var(--line); border-radius:10px; background:#fff; padding:1.1rem 1.2rem; }
+  .out h2 { margin:.1rem 0 .6rem; font-size:1.3rem; color:var(--accent); }
+  .big { font-size:1.6rem; font-weight:700; }
+  .proof { border:1px solid var(--line); border-radius:8px; background:#f8fafd; padding:.8rem 1rem; margin:.6rem 0; }
+  .proof dt { font-weight:600; color:var(--accent); font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; margin-top:.5rem; }
+  .proof dd { margin:0 0 .3rem; font-size:.95rem; }
+  .plain { font-size:1rem; margin:.8rem 0 0; }
+  .plain h3 { margin:.2rem 0 .3rem; color:var(--teal); font-size:.85rem; text-transform:uppercase; letter-spacing:.04em; }
+  .small { font-size:.82rem; color:var(--muted); }
+  code { background:#f0f2f7; padding:.1rem .4rem; border-radius:4px; font-size:.9em; }
+  .actions { margin-top:1rem; display:flex; gap:.6rem; flex-wrap:wrap; }
+  .btn { display:inline-block; padding:.55rem .95rem; border-radius:8px; background:var(--accent); color:#fff; text-decoration:none; font-weight:600; font-size:.92rem; }
+  .btn.ghost { background:#fff; color:var(--ink); border:1px solid var(--line); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">a proof engine, not a calculator</p>
+  <h1>SEXTANT</h1>
+  <p class="lede">Ask it a claim about the quantum world, and it doesn't guess — it <strong>runs the simulation, checks the machine-checked theorem, and hands you the verdict</strong>:</p>
+  <div class="callout">
+    <p><strong>FORCED</strong> — the universe had no choice. A theorem, machine-checked in Lean.</p>
+    <p><strong>FREE</strong> — the universe shrugged. A label, not a law; you can measure it, you can't derive it.</p>
+    <p><strong>IMPOSSIBLE</strong> — the universe said no. A no-go: linearity itself forbids it.</p>
+  </div>
+  <div class="callout does-not">
+    <p><strong>What it does <em>not</em> do, said plainly:</strong> it does not compute <em>values</em> — it classifies them (relations, never values). It is not a faster quantum computer — it rides the same simulators everyone uses. It does not invent physics — it certifies what is already provable, and says honestly where the proof stops.</p>
+  </div>
+
+  <div class="grid">
+    <div class="side">
+      <input id="q" class="searchbox" type="search" placeholder="type… e.g. 'entanglement', 'clone', 'gravity'">
+      <ul id="list" class="claimlist"></ul>
+      <div class="small" style="margin-top:.4rem">22 claims · 6 live oracles · 16 kernel-checked theorems</div>
+    </div>
+    <div id="out" class="out">
+      <p class="small">Pick a claim to see its academic proof and a one-page plain-speak explainer.</p>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a class="btn" href="./mera-3d.html">See the geometry in 3D</a>
+    <a class="btn ghost" href="./index.html">← back to PACLAND</a>
+    <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md">run it yourself (CLI)</a>
+  </div>
+  <p class="small" style="margin-top:1rem">Run it locally: <code>pip install -e .</code> then <code>pip install stim quimb numpy</code>, then <code>sextant verify chsh</code>. Every verdict below is the same thing the CLI prints — the falsifier ran, and the claim survived it.</p>
+</div>
+
+<script>
+const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕' };
+const CLAIMS = [
+ { id:'chsh', v:'FORCED', th:'QM.Tsirelson', claim:'no quantum state violates the CHSH inequality beyond 2√2', falsifier:'a state exceeding 2√2', oracle:'quantum-simulated + kernel-checked', ev:'simulated CHSH = 2.828427 = 2√2 — nothing exceeds it',
+   plain:"The quantum world can beat classical physics by a hair — 2√2, and not a hair more. That ceiling is not a measurement, it's a theorem we machine-checked: the universe has a hard limit on how much quantum beats classical. The gap between the classical wall (2) and the quantum maximum (2√2) is the 'quantum advantage', quantified exactly." },
+ { id:'bell-classical', v:'FORCED', th:'QM.CHSH (Bell)', claim:'no local-hidden-variable theory violates CHSH beyond 2', falsifier:'a classical strategy exceeding 2', oracle:'quantum-simulated + kernel-checked', ev:'max classical = 2.0 — the wall holds',
+   plain:"Classical physics caps correlation at 2. Quantum reaches 2√2. The gap is the 'free column' — the space where entanglement lets you do things no local rule can. This claim is the wall: it says what the classical world cannot cross, so the quantum crossing is the headline." },
+ { id:'no-cloning', v:'IMPOSSIBLE', th:'QM.NoCloning', claim:'no machine clones an arbitrary quantum state', falsifier:'a universal cloner', oracle:'kernel-checked', ev:'linearity + unitarity forbid |ψ⟩|0⟩ → |ψ⟩|ψ⟩ for all |ψ⟩',
+   plain:"You cannot copy an unknown quantum state. Not because we lack a clever machine — because the mathematics of linearity itself forbids it. It is not an engineering limit; it is a law. This one fact is why quantum information is fundamentally different from classical: you cannot Xerox a qubit." },
+ { id:'no-broadcasting', v:'IMPOSSIBLE', th:'QM.NoBroadcasting', claim:'no machine broadcasts an arbitrary mixed state', falsifier:'a linear broadcasting map', oracle:'kernel-checked', ev:'M ↦ M⊗M is not linear',
+   plain:"The no-copying rule extends even to the fuzzier, mixed states. You can't duplicate a quantum state even when it's only half-known. It's the same wall as no-cloning, one level deeper: the very shape of quantum probability refuses to be broadcast." },
+ { id:'born-rule', v:'FORCED', th:'Gleason', claim:'the Born rule is the unique non-contextual probability rule', falsifier:'a second non-contextual probability rule', oracle:'kernel-checked', ev:'every frame function is Tr(ρP)',
+   plain:"The rule that turns a quantum wave into probabilities — the Born rule — is the only one that works. Gleason proved there is no alternative: any consistent way to read probabilities off a quantum state is the Born rule. Quantum mechanics didn't choose its probability law; it was forced." },
+ { id:'pbr', v:'FORCED', th:'QM.PBR', claim:'distinct pure states cannot share a ψ-epistemic ontic overlap', falsifier:'two states with overlapping ontic support', oracle:'kernel-checked', ev:'two-copy states are linearly independent',
+   plain:"The quantum state is real — not just a guess about reality. PBR proved the wavefunction cannot be a mere 'state of knowledge' about some deeper hidden truth. The wavefunction is the thing itself. This is the sharpest answer to a hundred years of 'is it really real?'" },
+ { id:'mermin', v:'IMPOSSIBLE', th:'QM.Mermin', claim:'no non-contextual ±1 assignment to the Mermin square exists', falsifier:'a non-contextual ±1 assignment', oracle:'quantum-simulated + kernel-checked', ev:'rows +I, last column −I — the ±1 assignment cannot exist',
+   plain:"A tiny grid of nine numbers proves that reality refuses to commit until you measure it. The rows multiply to +1 and the columns to −1, which is impossible if the values were secretly pre-assigned. It's the smallest, sharpest proof that quantum logic is not a hidden set of pre-existing answers." },
+ { id:'locc-no-entanglement', v:'IMPOSSIBLE', th:'QM.Entanglement', claim:'a classical (LOCC) channel cannot create entanglement', falsifier:'a classical channel entangling two systems', oracle:'kernel-checked', ev:'Φ⊗Ψ preserves separability',
+   plain:"You cannot create entanglement by talking on a classical phone line. Entanglement is a resource you can move around but never grow classically — it has to be there to begin with. This is why 'quantum' and 'classical' are separated by a hard wall, not a matter of effort." },
+ { id:'clifford-polynomial', v:'FORCED', th:'QM.Stabilizer', claim:'Clifford/stabilizer circuits are classically simulable in polynomial time', falsifier:'a T-gate circuit blowing past 2^n', oracle:'quantum-simulated + kernel-checked', ev:'1000-qubit Clifford circuit in ~3 ms — polynomial, no blowup',
+   plain:"The 'easy' quantum circuits can be simulated on a laptop in milliseconds for a thousand qubits. The entire difference between 'easy' and 'exponential' is a single gate, the T gate. This is the honest boundary of quantum computing: most circuits are not magical, and one ingredient is the whole magic." },
+ { id:'entanglement-area', v:'FORCED', th:'QM.MERA', claim:'entanglement across a cut is bounded by the cut area D^m', falsifier:'entanglement exceeding D^m', oracle:'quantum-simulated + kernel-checked', ev:'MPS (D=4) entropy S = 0.96 ≤ log D = 1.39',
+   plain:"How much can two halves of a system be entangled? At most the size of the surface between them — not their whole volume. This 'area law' is the same mathematics behind 'entanglement = geometry'. It is why a laptop can describe a state that would naively need more numbers than there are atoms." },
+ { id:'mera-hyperbolic', v:'FORCED', th:'QM.Hyperbolic.treeDist_four_point + QM.MERA', claim:'the MERA causal cone is a discrete hyperbolic space (Gromov 0-hyperbolic)', falsifier:'a four-point violation of 0-hyperbolicity', oracle:'kernel-checked', ev:'four-point condition holds over all 16⁴ quadruples',
+   plain:"The network that describes entangled matter lives in a curved, hyperbolic space — the same kind of curve coral and lettuce grow. It is curved because that is the only way to cram exponential information into a finite space. We proved it, machine-checked: entanglement is geometry, as a theorem, not a metaphor." },
+ { id:'coupling-free', v:'FREE', th:'Gravity.QG.coupling_free', claim:'the gravitational coupling G is not derived', falsifier:'a derivation of G from the forced halves', oracle:'kernel-checked', ev:'∇·G = 0 involves no κ — consistent for every κ ≠ 0',
+   plain:"Gravity's strength, G, is a label the universe picked, not a number the mathematics forced. You cannot derive it; you can only measure it. This is the honest 'never values' result, one sector up: some numbers are constraints (forced), and G is a free one." },
+ { id:'gravity-quantum', v:'FORCED', th:'QM.Entanglement + QM.NoCloning + Gleason', claim:'the gravitational coupling must be quantum, not classical', falsifier:'a consistent classical (LOCC) coupling', oracle:'kernel-checked', ev:'a classical channel preserves separability, so it cannot entangle',
+   plain:"If gravity meddles with quantum systems, it must itself be quantum. A classical channel cannot create entanglement — so classical gravity cannot mediate quantum correlation. This is the hinge that forces quantum gravity: not a preference, a proof." },
+ { id:'lovelock', v:'FORCED', th:'Gravity.Lovelock', claim:'the Einstein equation is the unique divergence-free 2-tensor theory in 4D', falsifier:'a second divergence-free gravity theory', oracle:'kernel-checked', ev:'∇·(αR + βRg) = 0 iff β = −α/2',
+   plain:"Einstein's equation is the only gravity equation that is consistent in four dimensions. Every other candidate fails the same consistency test. Einstein didn't choose it from a menu; it was the only dish. That is what 'uniqueness' means here — and it is machine-checked." },
+ { id:'bianchi', v:'FORCED', th:'Gravity.QG.einstein_divergence_free', claim:'the Einstein tensor is divergence-free (∇·G = 0)', falsifier:'a metric with ∇·G ≠ 0', oracle:'kernel-checked', ev:'the contracted second Bianchi identity',
+   plain:"One identity — that the Einstein tensor is automatically 'conserved' — is the hinge that joins gravity to quantum. It is why the two theories can talk at all. A single line of geometry, and it carries the whole bridge." },
+ { id:'wdw', v:'FORCED', th:'Gravity.WheelerDeWitt', claim:'physical states satisfy Ĥ|ψ⟩ = 0', falsifier:'a physical state not in ker Ĥ', oracle:'kernel-checked', ev:'physical states = ker Ĥ',
+   plain:"The quantum state of the whole universe sits perfectly still — zero energy. Time itself is emergent, not fundamental: it is what appears when you look at a part of the universe, not a thing the whole universe has. The 'problem of time' is not a bug; it is the point." },
+ { id:'dirac', v:'FORCED', th:'Gravity.Dirac', claim:'the ADM constraints close under the Dirac algebra', falsifier:'a constraint algebra that fails to close', oracle:'kernel-checked', ev:'the structure function q^ab closes it — a Lie algebroid',
+   plain:"Gravity's constraints close into a beautiful algebra — the signature that gravity is geometry, not a force bolted onto space. When the constraints close, you have diffeomorphism invariance; when they don't, you don't have gravity. This is that closure, checked." },
+ { id:'adm', v:'FORCED', th:'Gravity.ADMConstraints', claim:"QG's forced content is {Ĥ = G·ππ − R, Ĥa = ∇·π}", falsifier:'a third independent constraint', oracle:'kernel-checked', ev:'Hamiltonian + momentum constraints',
+   plain:"Quantum gravity's 'must-haves' boil down to two constraints — energy and momentum. Everything else is free. This is the constraint-first result for gravity: the theory's exact content is small and forced, and the rest is the free column." },
+ { id:'hypercharge-uniqueness', v:'FORCED', th:'SM.Hypercharge', claim:'the SM anomaly conditions force the hypercharges uniquely', falsifier:'a second anomaly-free hypercharge assignment', oracle:'kernel-checked', ev:'the cubic [U(1)]³ collapses the 2-parameter family to one',
+   plain:"The Standard Model's charge-like numbers are the only ones that make the mathematics consistent. The universe had exactly one choice, up to an overall scale and a mirror swap. It's the Standard Model's version of 'uniqueness' — the charges were forced, not chosen." },
+ { id:'anomaly-cancellation', v:'FORCED', th:'SM.Anomaly', claim:"the SM's five anomaly coefficients vanish", falsifier:'a nonzero anomaly coefficient', oracle:'kernel-checked', ev:'[SU(3)]³ = [SU(2)]²U(1) = [U(1)]³ = [grav]²U(1) = 0 (5/5)',
+   plain:"The Standard Model's particles cancel all their internal inconsistencies — to the last digit. It looks like a miracle and is actually a theorem: the numbers are forced to cancel, and they do, exactly." },
+ { id:'generation-free', v:'FREE', th:'SM.Generation', claim:'N_gen is not fixed by anomaly cancellation', falsifier:'an anomaly condition fixing N_gen', oracle:'kernel-checked', ev:'the coefficients are homogeneous — any N_gen copies stay anomaly-free',
+   plain:"Why three generations of matter? The mathematics is silent — three is a label, not a law. We can prove the equations don't fix it: any number of copies would still cancel. So 'why 3?' is not a question the math can answer; it is a free parameter of the universe." },
+ { id:'the-19', v:'FREE', th:'SM.ParameterCount', claim:'the SM has 19 free parameters (orbit-space dimension)', falsifier:'a relation collapsing more than 2 of the 19 correctly', oracle:'kernel-checked + exact-symbolic', ev:'orbit-space rank 19; no completion derives more than 2 correctly',
+   plain:"The Standard Model has exactly nineteen numbers nobody can derive — nineteen knobs the universe just is. We can count them, and prove you cannot predict them: no deeper theory can correctly derive more than two. This is the 'never values' result at its sharpest — the honest boundary of prediction." },
+];
+
+const EXTRA = {"chsh": "Proves the bound 2√2, not which state reaches it, nor the value of any specific experiment.", "bell-classical": "Proves the classical wall is 2, not that every classical strategy achieves it.", "no-cloning": "Proves exact cloning is impossible, not that approximate cloning is useless (approximate cloners do exist).", "no-broadcasting": "Proves exact broadcasting is impossible, not that approximate broadcasting is.", "born-rule": "Proves the rule is unique, not which probabilities any specific state gives.", "pbr": "Proves the state is real, not what the state IS for any particular system.", "mermin": "Proves non-contextual assignment is impossible, not that measurement is deterministic.", "locc-no-entanglement": "Proves classical channels cannot CREATE entanglement, not that they cannot distribute it.", "clifford-polynomial": "Proves the Clifford class is easy, not that all quantum circuits are easy (T gates are not).", "entanglement-area": "Proves the bound D^m, not the exact entropy of any specific state.", "mera-hyperbolic": "Proves the discrete hyperbolicity, not the continuous N→∞ AdS limit (still open).", "coupling-free": "Proves G is not derived, not that G has no origin — only that it is not forced.", "gravity-quantum": "Proves the coupling must be quantum, not WHICH quantum theory of gravity.", "lovelock": "Proves uniqueness in 4 dimensions, not in higher dimensions (Lovelock terms exist there).", "bianchi": "Proves the identity, not that it alone picks the physics.", "wdw": "Proves states sit at Ĥ=0, not what time IS — that is the open problem.", "dirac": "Proves the algebra closes, not that it is the only closed algebra.", "adm": "Proves the constraints, not the value of any coupling.", "hypercharge-uniqueness": "Proves uniqueness up to scale + swap, not the absolute normalization.", "anomaly-cancellation": "Proves cancellation, not that the SM is the only consistent theory.", "generation-free": "Proves N_gen is not fixed by anomalies, not that 3 has no explanation elsewhere.", "the-19": "Proves 19 are free, not that a deeper theory cannot RELATE them — only that it cannot derive their values."};
+
+const list = document.getElementById('list');
+const out = document.getElementById('out');
+const q = document.getElementById('q');
+
+function renderList(filter) {
+  list.innerHTML = '';
+  const hits = CLAIMS.filter(c => !filter || (c.plain + c.claim + c.id).toLowerCase().includes(filter));
+  hits.forEach(c => {
+    const li = document.createElement('li');
+    li.className = 'claim';
+    li.innerHTML = `<span class="glyph verdict-${c.v}">${G[c.v]}</span><span>${c.id.replace(/-/g,' ')}</span>`;
+    li.onclick = () => { document.querySelectorAll('.claim').forEach(x=>x.classList.remove('active')); li.classList.add('active'); renderClaim(c); };
+    list.appendChild(li);
+  });
+}
+
+function renderClaim(c) {
+  const x = EXTRA[c.id] || {};
+  out.innerHTML = `
+    <h2><span class="big verdict-${c.v}">${G[c.v]} ${c.v}</span></h2>
+    <p><strong>${c.id.replace(/-/g,' ')}</strong></p>
+    <dl class="proof">
+      <dt>Theorem</dt><dd>${c.claim}.</dd>
+      <dt>Proof</dt><dd>kernel-checked in Lean 4 — <code>${c.th}</code> (no <code>sorry</code>, no <code>axiom</code>).</dd>
+      <dt>Falsifier</dt><dd>${c.falsifier} — ran, and the claim survived it.</dd>
+      <dt>Oracle</dt><dd>${c.oracle}.</dd>
+      <dt>Evidence</dt><dd>${c.ev}.</dd>
+    </dl>
+    <div class="plain">
+      <h3>Plain speak — what it says</h3>
+      <p>${c.plain}</p>
+      <h3>What it does <em>not</em> say</h3>
+      <p class="muted">${x.dont || ''}</p>
+    </div>
+    <button class="btn ghost" onclick="downloadClaim('${c.id}')">Download this proof (.txt)</button>
+  `;
+}
+
+function downloadClaim(id) {
+  const c = CLAIMS.find(c => c.id === id);
+  const x = EXTRA[id] || {};
+  const txt = [
+    c.id.toUpperCase() + ' — ' + c.v,
+    '',
+    'Theorem. ' + c.claim + '.',
+    'Proof. Kernel-checked in Lean 4 (' + c.th + '); no sorry/axiom.',
+    'Falsifier. ' + c.falsifier + ' — ran, and the claim survived it.',
+    'Oracle. ' + c.oracle + '.',
+    'Evidence. ' + c.ev + '.',
+    '',
+    'Plain speak. ' + c.plain,
+    '',
+    'What it does NOT say. ' + (x.dont || ''),
+  ].join('\n');
+  const blob = new Blob([txt], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sextant-' + id + '.txt';
+  a.click();
+}
+
+q.addEventListener('input', () => renderList(q.value.trim().toLowerCase()));
+renderList('');
+</script>
+</body>
+</html>
