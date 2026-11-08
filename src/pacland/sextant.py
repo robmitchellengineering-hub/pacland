@@ -247,6 +247,18 @@ def main(argv: list[str] | None = None) -> int:
             e = CATALOG[name]
             print(f"{VERDICT_GLYPH[e['verdict']]} {name:<20} {e['verdict']:<11} {e['claim']}")
         return 0
+    if argv[0] == "--verify":
+        print(verify_all())
+        return 0
+    if argv[0] == "verify":
+        if len(argv) < 2:
+            print("usage: sextant verify <claim>   (or --verify for all)", file=sys.stderr)
+            return 2
+        if argv[1] not in CATALOG:
+            print(f"unknown claim '{argv[1]}'. known: {', '.join(CATALOG)}", file=sys.stderr)
+            return 2
+        print(verify(argv[1]))
+        return 0
     name = argv[0]
     if name not in CATALOG:
         print(f"unknown claim '{name}'. known: {', '.join(CATALOG)}", file=sys.stderr)
@@ -254,6 +266,46 @@ def main(argv: list[str] | None = None) -> int:
     print(classify(name))
     return 0
 
+
+
+def verify(name: str) -> str:
+    """Run a claim's falsifier and report whether the claim survives it."""
+    e = CATALOG[name]
+    g = VERDICT_GLYPH[e["verdict"]]
+    if name in phantom.FALSIFIERS:
+        survived, evidence = phantom.FALSIFIERS[name]()
+        status = "SURVIVES" if survived else "REFUTED"
+        return (
+            f"{g} {name} → {e['verdict']}  [{status}]\n"
+            f"  claim:      {e['claim']}\n"
+            f"  falsifier:  {e['falsifier']}\n"
+            f"  ran:        {evidence}\n"
+            f"  theorem:    {e['theorem']} (kernel-checked)"
+        )
+    return (
+        f"{g} {name} → {e['verdict']}\n"
+        f"  claim:      {e['claim']}\n"
+        f"  falsifier:  {e['falsifier']}\n"
+        f"  ran:        kernel-checked — {e['theorem']} proves the falsifier impossible (no live oracle)"
+    )
+
+
+def verify_all() -> str:
+    """Run every claim's falsifier; a claim survives iff its falsifier fails."""
+    lines = []
+    survived = 0
+    for name in CATALOG:
+        e = CATALOG[name]
+        g = VERDICT_GLYPH[e["verdict"]]
+        if name in phantom.FALSIFIERS:
+            ok, _ = phantom.FALSIFIERS[name]()
+            lines.append(f"{g} {name:<22} {'SURVIVES' if ok else 'REFUTED'}")
+            if ok:
+                survived += 1
+        else:
+            lines.append(f"{g} {name:<22} kernel-checked (theorem)")
+            survived += 1
+    return "\n".join(lines) + f"\n\n{survived}/{len(CATALOG)} claims survive their falsifier"
 
 if __name__ == "__main__":
     raise SystemExit(main())

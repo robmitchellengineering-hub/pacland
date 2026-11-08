@@ -35,6 +35,16 @@ for name, e in sextant.CATALOG.items():
         except Exception as exc:
             problems.append(f"{name}: simulate raised {type(exc).__name__}: {exc}")
 
+# every falsifier must run, and every claim must SURVIVE it (a fired falsifier refutes the claim)
+for name in sextant.CATALOG:
+    if name in phantom.FALSIFIERS:
+        try:
+            ok, _ = phantom.FALSIFIERS[name]()
+            if not ok:
+                problems.append(f"{name}: falsifier FIRED — claim refuted")
+        except Exception as exc:
+            problems.append(f"{name}: falsifier raised {type(exc).__name__}: {exc}")
+
 if problems:
     print("\n".join(problems))
     sys.exit(1)

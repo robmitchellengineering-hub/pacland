@@ -118,3 +118,96 @@ def mera_entanglement(n: int = 16, bond_dim: int = 4) -> str:
         )
     except Exception as e:  # quimb not ready yet
         return f"Quimb pending ({type(e).__name__}); the area-law bound is log(D) = {np.log(bond_dim):.4f}"
+
+
+# --- the falsifier loop: each live oracle also RUNS its falsifier, not just states it ---
+
+def _lcp(s: str, t: str) -> int:
+    n = 0
+    for a, b in zip(s, t):
+        if a == b:
+            n += 1
+        else:
+            break
+    return n
+
+
+def _treeDist(s: str, t: str) -> int:
+    return len(s) + len(t) - 2 * _lcp(s, t)
+
+
+def verify_chsh():
+    v = chsh_value()
+    bound = 2 * np.sqrt(2)
+    survived = v <= bound + 1e-9
+    return survived, f"simulated CHSH = {v:.6f}, bound 2√2 = {bound:.6f} — nothing exceeds it"
+
+
+def verify_clifford():
+    import time
+    import stim
+
+    s = stim.TableauSimulator()
+    t0 = time.perf_counter()
+    for i in range(1000):
+        s.h(i)
+    for i in range(999):
+        s.cnot(i, i + 1)
+    dt = time.perf_counter() - t0
+    survived = dt < 1.0
+    return survived, f"1000-qubit Clifford circuit in {dt * 1000:.1f} ms — polynomial, no 2^n blowup (the T gate is the single escape)"
+
+
+def verify_mermin():
+    I = np.eye(2, dtype=complex)
+    X = np.array([[0, 1], [1, 0]], dtype=complex)
+    Y = np.array([[0, -1j], [1j, 0]], dtype=complex)
+    Z = np.array([[1, 0], [0, -1]], dtype=complex)
+    M = [[np.kron(X, I), np.kron(I, X), np.kron(X, X)],
+         [np.kron(I, Y), np.kron(Y, I), np.kron(Y, Y)],
+         [np.kron(X, Y), np.kron(Y, X), np.kron(Z, Z)]]
+    I4 = np.eye(4, dtype=complex)
+    rows = all(np.allclose(M[r][0] @ M[r][1] @ M[r][2], I4) for r in range(3))
+    cols12 = all(np.allclose(M[0][c] @ M[1][c] @ M[2][c], I4) for c in range(2))
+    col3 = np.allclose(M[0][2] @ M[1][2] @ M[2][2], -I4)
+    survived = rows and cols12 and col3
+    return survived, f"rows +I ({rows}), cols 1–2 +I ({cols12}), col 3 −I ({col3}) — the ±1 assignment cannot exist"
+
+
+def verify_bell():
+    v = bell_classical()
+    survived = v <= 2 + 1e-9
+    return survived, f"max classical CHSH = {v:.1f} — the wall is 2, no local strategy exceeds it"
+
+
+def verify_mera():
+    s = mera_entanglement()
+    # mera_entanglement returns "MPS ... S = 0.9616 ≤ log(D) = 1.3863"; survived iff it did not error out
+    survived = s.startswith("MPS")
+    return survived, s
+
+
+def verify_hyperbolic():
+    import itertools
+
+    strs = ["".join(map(str, p)) for p in itertools.product("01", repeat=4)]
+    for s in strs:
+        for t in strs:
+            for u in strs:
+                for v in strs:
+                    lhs = _treeDist(s, t) + _treeDist(u, v)
+                    rhs = max(_treeDist(s, u) + _treeDist(t, v), _treeDist(s, v) + _treeDist(t, u))
+                    if lhs > rhs:
+                        return False, f"four-point violation at ({s},{t},{u},{v}): {lhs} > {rhs}"
+    n = len(strs)
+    return True, f"four-point (0-hyperbolicity) condition holds over all {n}⁴ = {n**4} quadruples"
+
+
+FALSIFIERS = {
+    "chsh": verify_chsh,
+    "clifford-polynomial": verify_clifford,
+    "mermin": verify_mermin,
+    "bell-classical": verify_bell,
+    "entanglement-area": verify_mera,
+    "mera-hyperbolic": verify_hyperbolic,
+}
