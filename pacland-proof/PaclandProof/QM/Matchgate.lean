@@ -47,6 +47,15 @@ theorem det_fin_four (a b c d e f g h i j k l m n o p : ℂ) :
   simp [Fin.sum_univ_four, Matrix.det_fin_three, Fin.succAbove]
   ring
 
+/-- The 6×6 Pfaffian — the signed sum over the fifteen perfect matchings (the exact six-qubit
+matchgate amplitude; sympy-verified that its square equals the 6×6 antisymmetric determinant). The
+kernel-check of `pfaffian6² = det` is the next rung — it needs a clean 5×5 determinant reduction
+(`det_fin_five`), since the 6×6 cofactor leaves 5×5 minors that `Fin.succAbove` does not yet unwind. -/
+def pfaffian6 (a b c d e f g h i j k l m n o : ℂ) : ℂ :=
+  a * j * o - a * k * n + a * l * m - b * g * o + b * h * n - b * i * m
+  + c * f * o - c * h * l + c * i * k - d * f * n + d * g * l - d * i * j
+  + e * f * m - e * g * k + e * h * j
+
 /-- The 4×4 Pfaffian — the signed sum over the three perfect matchings (the exact four-qubit
 matchgate amplitude). -/
 def pfaffian4 (a b c d e f : ℂ) : ℂ :=
