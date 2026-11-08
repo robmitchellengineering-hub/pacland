@@ -32,6 +32,7 @@ import json
 import math
 import os
 import sys
+import time
 
 import numpy as np
 import pandas as pd
@@ -77,6 +78,20 @@ def _adaptive_n_perm(n: int, n_classes: int, d_feat: int) -> int:
         return N_PERM
     p = int(budget / work)
     return max(20, min(N_PERM, p))
+
+
+def _adaptive_mi_n_perm(n: int, d_feat: int) -> int:
+    """Thin the pure-Python single-coordinate MI null for large corpora.
+
+    The MI arm is a diagnostic (best single feature); it does not feed the deficit D or the
+    joint z.  Cost proxy per feature ~ n * mi_n_perm.  Anchors keep the full 200.
+    """
+    budget = 2.0e7
+    work = max(n, 1) * max(d_feat, 1)
+    if work <= 0:
+        return 200
+    p = int(budget / work)
+    return max(20, min(200, p))
 
 
 def _load_table(spec: dict) -> pd.DataFrame:
@@ -171,24 +186,34 @@ def run_tabular(corpus: dict, lab: dict) -> dict:
     chance = 1.0 / n_classes
     d_feat = X.shape[1]
     n_perm = _adaptive_n_perm(n, n_classes, d_feat)
+    mi_n_perm = _adaptive_mi_n_perm(n, d_feat)
     try:
         result = inst.learnability_split(X, y_codes, features, continuous=False,
-                                         n_perm=n_perm, seed=SEED)
+                                         n_perm=n_perm, mi_n_perm=mi_n_perm, seed=SEED)
     except Exception as e:  # noqa: BLE001
         return _error_row(corpus, lab, f"instrument-error: {e}", n=n)
 
     joint = result["joint"]
     bal_acc = float(joint["value"])
     z = float(joint["z"])
+    null_std = float(joint.get("null_std", 0.0))
     role = lab["role"]
     is_deficit = role in ("context", "referent")
 
+    # A 2-class permutation null of BALANCED accuracy is degenerate (exactly chance every
+    # shuffle -> std=0), so permutation_z returns z=0.0 for a deterministic split.  In that
+    # case fall back to the absolute gap above chance instead of mis-reporting "uniform".
     d = deficit(bal_acc, chance) if is_deficit else None
     if is_deficit:
         verdict = inst.referent_verdict(bal_acc, z)
+        if null_std == 0.0 and bal_acc >= 0.90:
+            verdict = "REFUTED (Rosetta unit)"
         deficit_or_z = d
     else:
-        verdict = "LEARNABLE" if z >= 3 else "uniform"
+        if z >= 3 or (null_std == 0.0 and bal_acc > chance + 0.05):
+            verdict = "LEARNABLE"
+        else:
+            verdict = "uniform"
         deficit_or_z = z
 
     row = {
@@ -203,6 +228,7 @@ def run_tabular(corpus: dict, lab: dict) -> dict:
         "chance": round(chance, 6),
         "deficit": round(d, 6) if d is not None else None,
         "z": round(z, 3),
+        "null_std": round(null_std, 8),
         "deficit_or_z": round(deficit_or_z, 6) if is_deficit else round(deficit_or_z, 3),
         "best_mi_feature": result["best_mi"]["feature"],
         "best_mi": round(result["best_mi"]["mi"], 4),
@@ -430,6 +456,7 @@ def main():
 
     rows = []
     sequences = []
+    t0 = time.time()
     for corpus in corpora:
         if corpus.get("kind") == "sequence":
             try:
@@ -437,9 +464,13 @@ def main():
             except Exception as e:  # noqa: BLE001
                 sequences.append({"corpus": corpus["id"], "species": corpus["species"],
                                   "role": "sequence", "verdict": f"sequence-error: {e}"})
+            print(f"[{time.time()-t0:6.1f}s] sequence {corpus['id']}", flush=True)
             continue
         for lab in corpus["labels"]:
             rows.append(run_tabular(corpus, lab))
+        r = rows[-1]
+        print(f"[{time.time()-t0:6.1f}s] {corpus['id']}:{lab['role']} "
+              f"bal_acc={r['bal_acc']} n={r['n']} {r['verdict']}", flush=True)
 
     # machine-readable
     out = {"rows": rows, "sequences": sequences,
