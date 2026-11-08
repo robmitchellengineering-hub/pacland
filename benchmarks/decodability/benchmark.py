@@ -77,7 +77,11 @@ def _load_table(spec: dict) -> pd.DataFrame:
 
 
 def _extract_label(df: pd.DataFrame, lab: dict):
-    """Return (df_subset, y_values). Supports a derived label via value mapping."""
+    """Return (df_subset, y_values). Supports a derived label via value mapping.
+
+    String labels are whitespace-stripped; original nulls are preserved (not turned
+    into the literal "nan" class) so the NaN-drop step can remove them.
+    """
     col = lab["column"]
     mapping = lab.get("mapping")
     if mapping:
@@ -87,23 +91,28 @@ def _extract_label(df: pd.DataFrame, lab: dict):
         y = sub[col].astype(str).str.strip().map(mapping).to_numpy()
         return sub, y
     sub = df.copy()
-    y = sub[col].to_numpy()
-    return sub, y
+    y = sub[col].copy()
+    if y.dtype == object:
+        notna = y.notna().to_numpy()
+        y = y.astype(str).str.strip()
+        y = y.where(notna)  # restore nulls (-> NaN) for downstream drop
+    return sub, y.to_numpy()
 
 
 def _to_numeric_feature_matrix(df: pd.DataFrame, features: list[str]):
-    """Winsorize (1/99) each feature column into a float matrix; drop NaN rows."""
+    """Coerce each feature column to float (non-numeric -> NaN). No winsorize here:
+    NaN rows must be dropped FIRST, otherwise winsorize's percentile poisons the
+    whole column."""
     cols = []
     for f in features:
         if f not in df.columns:
             raise KeyError(f"missing feature column {f!r}")
-        cols.append(inst.winsorize(pd.to_numeric(df[f], errors="coerce").to_numpy()))
-    X = np.column_stack(cols)
-    return X
+        cols.append(pd.to_numeric(df[f], errors="coerce").to_numpy(dtype=float))
+    return np.column_stack(cols)
 
 
-def _drop_nan_rows(X, y):
-    """Drop rows where a feature or the label is NaN / non-finite."""
+def _clean_and_winsorize(X, y):
+    """Drop rows with a NaN feature/label, then winsorize (1/99) each clean column."""
     X = np.asarray(X, dtype=float)
     y = np.asarray(y)
     finite = np.isfinite(X).all(axis=1)
@@ -111,7 +120,9 @@ def _drop_nan_rows(X, y):
         finite &= np.isfinite(y)
     else:
         finite &= ~pd.isna(y)
-    return X[finite], y[finite]
+    X, y = X[finite], y[finite]
+    Xw = np.column_stack([inst.winsorize(X[:, j]) for j in range(X.shape[1])])
+    return Xw, y
 
 
 def run_tabular(corpus: dict, lab: dict) -> dict:
@@ -126,11 +137,11 @@ def run_tabular(corpus: dict, lab: dict) -> dict:
     except Exception as e:  # noqa: BLE001
         return _error_row(corpus, lab, f"label-error: {e}")
     try:
-        X = _to_numeric_feature_matrix(df, features)
+        Xraw = _to_numeric_feature_matrix(df, features)
     except Exception as e:  # noqa: BLE001
         return _error_row(corpus, lab, f"feature-error: {e}")
 
-    X, y = _drop_nan_rows(X, y)
+    X, y = _clean_and_winsorize(Xraw, y)
     classes = np.unique(y)
     if len(classes) < 2:
         return _error_row(corpus, lab, "insufficient-classes (<2)", n=len(y))
