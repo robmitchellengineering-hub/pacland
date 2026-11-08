@@ -27,10 +27,11 @@ pip install -q --disable-pip-version-check numpy stim 2>&1 | tail -1 || { echo "
 pip install -q --disable-pip-version-check quimb 2>/dev/null || echo "note: quimb skipped (optional)"
 
 # 3. run the SEXTANT guard — the falsifier suite + the exact CHSH control
-python3 scripts/validate_sextant.py 2>&1 | tee /tmp/sextant-guard.txt
+GUARD_LOG="$WORK/sextant-guard.txt"
+python3 scripts/validate_sextant.py 2>&1 | tee "$GUARD_LOG"
 
 # 4. verdict: pass requires the guard to report the catalog-OK line
-if grep -q "catalog OK" /tmp/sextant-guard.txt; then
+if grep -q "catalog OK" "$GUARD_LOG"; then
   echo "RESULT: SEXTANT instance is LIVE on $(hostname)"
   exit 0
 else
