@@ -39,7 +39,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a Fermionic-linear-optics circuit that is universal"},
         ],
         "attack": "Lean (the class's algebraic structure) + Stim/Quimb (simulate the candidate).",
-        "progress": "kernel-checked the 2×2 Pfaffian²=det seed (QM.Matchgate); the 4×4 case (the real four-qubit matchgate amplitude) is the next rung.",
+        "progress": "kernel-checked the even/odd split (QM.Matchgate): the 2×2 Pfaffian²=det (the polynomial seed) and the 3×3 antisymmetric det=0 (odd dimension kills it). The 4×4 case (the real four-qubit amplitude) is the next rung.",
     },
     "which-2": {
         "question": "gauge unification collapses exactly 2 of the 19 — which two, and is that a real prediction, not a shuffle?",

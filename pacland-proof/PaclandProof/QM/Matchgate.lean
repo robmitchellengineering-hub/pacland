@@ -6,8 +6,13 @@ import Mathlib
 Matchgates are classically simulable because their amplitudes are **Pfaffians** (sums over perfect
 matchings) — equivalently, square roots of determinants — and a determinant is a polynomial in the
 entries, computable in polynomial time. This file kernel-checks the seed of that correspondence:
-for the 2×2 antisymmetric matrix, the Pfaffian (the single perfect-matching weight) squares to the
-determinant. The 4×4 case (the exact four-qubit matchgate amplitude) is the next rung.
+
+1. the 2×2 Pfaffian (the single perfect-matching weight) squares to the determinant;
+2. a 3×3 antisymmetric matrix has determinant **0** — odd dimension kills it, so the Pfaffian
+   (and hence matchgates) is an even-dimensional object.
+
+Together these are the even/odd split behind matchgate simulability. The 4×4 case (the exact
+four-qubit amplitude) is the next rung.
 -/
 
 namespace QM
@@ -33,5 +38,14 @@ theorem pfaffian2_sq_eq_det (a : ℂ) :
 matchgate amplitude; its square-equals-determinant is the next rung). -/
 def pfaffian4 (a b c d e f : ℂ) : ℂ :=
   a * f - b * e + c * d
+
+/-- **Odd dimension kills the determinant.** A 3×3 antisymmetric matrix has determinant 0 — the
+reason matchgates (Pfaffians) exist only on an *even* number of qubits. Combined with the 2×2 case
+(Pf² = det ≠ 0), this is the even/odd split: the Pfaffian is an even-dimensional object. -/
+theorem det_three_antisymm_eq_zero (a b c : ℂ) :
+    Matrix.det !![0, a, b; -a, 0, c; -b, -c, 0] = 0 := by
+  rw [Matrix.det_fin_three]
+  simp
+  ring
 
 end QM
