@@ -977,6 +977,13 @@
    "title": "Survey first \u2014 measure the room, then plan it"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sacred-geometry.md",
+   "kind": "doc",
+   "path": "docs/sacred-geometry.md",
+   "summary": "application of the discipline to a body of folk claims. Every claim below carries a falsifier; a claim whose falsifier cannot be named is marked as such, not argued around.",
+   "title": "Sacred geometry, run through the constraint-first discipline"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sampling-frontier.md",
    "kind": "doc",
    "path": "docs/sampling-frontier.md",
