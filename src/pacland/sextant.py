@@ -233,11 +233,11 @@ CATALOG: dict[str, dict] = {
     },
     "matchgate-seed": {
         "claim": "matchgate amplitudes are Pfaffians — the even/odd split kernel-checked (2×2 Pf² = det, 3×3 det = 0)",
-        "theorem": "QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.det_three_antisymm_eq_zero",
+        "theorem": "QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero",
         "falsifier": "a 2×2 matchgate whose amplitude is not its Pfaffian, or a nonzero odd-dimensional antisymmetric determinant",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
-        "why": "the 2×2 Pfaffian squares to the determinant (the polynomial seed), and the 3×3 antisymmetric determinant vanishes — matchgates (Pfaffians) are an even-dimensional object.",
+        "why": "the 2×2 Pfaffian squares to the determinant (the polynomial seed), and ANY odd-dimensional antisymmetric matrix has determinant 0 — a general structural theorem, so the Pfaffian (and matchgates) is an even-dimensional object.",
     },
     "pr-box": {
         "claim": "the PR box saturates the non-signaling CHSH bound at 4",
