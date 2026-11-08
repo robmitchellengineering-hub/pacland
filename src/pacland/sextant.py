@@ -231,6 +231,14 @@ CATALOG: dict[str, dict] = {
         "verdict": "FORCED",
         "why": "SᵀJS = det S · J, so symplectic ⟺ det 1, and {xᵀJy = 1} is one SL(2) orbit — the no-go on exact invariant selectors.",
     },
+    "matchgate-seed": {
+        "claim": "matchgate amplitudes are Pfaffians — the 2×2 case kernel-checked (Pf² = det)",
+        "theorem": "QM.Matchgate.pfaffian2_sq_eq_det",
+        "falsifier": "a 2×2 matchgate whose amplitude is not its Pfaffian",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the 2×2 Pfaffian (the perfect-matching weight) squares to the determinant — the seed that matchgate amplitudes are polynomials, hence classically simulable.",
+    },
     "pr-box": {
         "claim": "the PR box saturates the non-signaling CHSH bound at 4",
         "theorem": "Foundations.PRBox.prbox_chsh",
