@@ -31,152 +31,131 @@
   <span><span class="dot" style="background:#334155"></span>the tree (causal cone)</span>
 </div>
 <a class="back" href="./mera.html">2D disk →</a>
-<div class="hint">drag to orbit · scroll to zoom</div>
+<div class="hint">drag to orbit · scroll / pinch to zoom</div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script>
-(function () {
-  const canvas = document.getElementById('scene');
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x05070f);
-  scene.fog = new THREE.FogExp2(0x05070f, 0.06);
-
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  let distance = 3.4;
-  const camDir = new THREE.Vector3(0, 1.2, 3.4).normalize();
-  camera.position.copy(camDir).multiplyScalar(distance);
-  camera.lookAt(0, 0, 0);
-
-  const root = new THREE.Group();
-  scene.add(root);
-
-  // lights
-  scene.add(new THREE.AmbientLight(0x8899bb, 1.2));
-  const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(3, 6, 4); scene.add(key);
-  const rim = new THREE.DirectionalLight(0x5eead4, 0.9); rim.position.set(-4, -2, -3); scene.add(rim);
-
-  const maxDepth = 8;
-  const step = 0.52;            // hyperbolic radius per level
-  const boundaryR = Math.tanh(maxDepth * step / 2);
-
-  // the boundary sphere (the UV layer)
-  const boundary = new THREE.Mesh(
-    new THREE.SphereGeometry(boundaryR, 48, 48),
-    new THREE.MeshBasicMaterial({ color:0x5eead4, wireframe:true, transparent:true, opacity:0.14 })
-  );
-  root.add(boundary);
-
-  // golden-angle (Fibonacci) points on a sphere — the same angle our paper names
-  function fibonacciSphere(n, radius) {
-    if (n === 1) return [new THREE.Vector3(0, 0, 0)];
-    const pts = [];
-    const ga = Math.PI * (3 - Math.sqrt(5));
-    for (let i = 0; i < n; i++) {
-      const y = 1 - (2 * i) / (n - 1);
-      const r = Math.sqrt(Math.max(0, 1 - y * y));
-      const th = ga * i;
-      pts.push(new THREE.Vector3(radius * r * Math.cos(th), radius * y, radius * r * Math.sin(th)));
-    }
-    return pts;
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
   }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-  // collect positions per (depth, index)
-  const pos = [];
-  const colors = [];
-  const irColor = new THREE.Color(0xfbbf24);   // gold = IR
-  const uvColor = new THREE.Color(0x5eead4);   // teal = UV
-  for (let k = 0; k <= maxDepth; k++) {
-    const r = Math.tanh(k * step / 2);
-    const level = fibonacciSphere(Math.pow(2, k), r);
-    pos.push(level);
-    const c = irColor.clone().lerp(uvColor, k / maxDepth);
-    for (let i = 0; i < level.length; i++) colors.push(c);
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x05070f);
+scene.fog = new THREE.FogExp2(0x05070f, 0.05);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(0, 1.1, 3.6);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 1.0;
+controls.maxDistance = 12;       // zoom far enough out to see the whole ball
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.5;
+controls.target.set(0, 0, 0);
+controls.update();
+
+const root = new THREE.Group();
+scene.add(root);
+
+// lights
+scene.add(new THREE.AmbientLight(0x8899bb, 1.2));
+const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(3, 6, 4); scene.add(key);
+const rim = new THREE.DirectionalLight(0x5eead4, 0.9); rim.position.set(-4, -2, -3); scene.add(rim);
+
+const maxDepth = 8;
+const step = 0.52;
+const boundaryR = Math.tanh(maxDepth * step / 2);
+
+// the boundary sphere (the UV layer)
+const boundary = new THREE.Mesh(
+  new THREE.SphereGeometry(boundaryR, 48, 48),
+  new THREE.MeshBasicMaterial({ color:0x5eead4, wireframe:true, transparent:true, opacity:0.14 })
+);
+root.add(boundary);
+
+// golden-angle (Fibonacci) points on a sphere
+function fibonacciSphere(n, radius) {
+  if (n === 1) return [new THREE.Vector3(0, 0, 0)];
+  const pts = [];
+  const ga = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < n; i++) {
+    const y = 1 - (2 * i) / (n - 1);
+    const r = Math.sqrt(Math.max(0, 1 - y * y));
+    const th = ga * i;
+    pts.push(new THREE.Vector3(radius * r * Math.cos(th), radius * y, radius * r * Math.sin(th)));
   }
+  return pts;
+}
 
-  // nodes as points, vertex-coloured by depth
-  const nodePositions = new Float32Array(pos.reduce((a, l) => a + l.length, 0) * 3);
-  let o = 0;
-  for (const level of pos) for (const p of level) { nodePositions[o++] = p.x; nodePositions[o++] = p.y; nodePositions[o++] = p.z; }
-  const nodeGeom = new THREE.BufferGeometry();
-  nodeGeom.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
-  const nodeColorArr = new Float32Array(colors.length * 3);
-  colors.forEach((c, i) => { nodeColorArr[i*3] = c.r; nodeColorArr[i*3+1] = c.g; nodeColorArr[i*3+2] = c.b; });
-  nodeGeom.setAttribute('color', new THREE.BufferAttribute(nodeColorArr, 3));
-  const nodes = new THREE.Points(nodeGeom, new THREE.PointsMaterial({ size: 0.022, vertexColors: true, sizeAttenuation: true }));
-  root.add(nodes);
+const pos = [];
+const colors = [];
+const irColor = new THREE.Color(0xfbbf24);
+const uvColor = new THREE.Color(0x5eead4);
+for (let k = 0; k <= maxDepth; k++) {
+  const r = Math.tanh(k * step / 2);
+  const level = fibonacciSphere(Math.pow(2, k), r);
+  pos.push(level);
+  const c = irColor.clone().lerp(uvColor, k / maxDepth);
+  for (let i = 0; i < level.length; i++) colors.push(c);
+}
 
-  // edges: node (k, i) -> parent (k-1, floor(i/2))
-  const edgePairs = [];
-  for (let k = 1; k <= maxDepth; k++) {
-    for (let i = 0; i < pos[k].length; i++) {
-      edgePairs.push([pos[k - 1][Math.floor(i / 2)], pos[k][i]]);
-    }
+// nodes as points
+const nodePositions = new Float32Array(pos.reduce((a, l) => a + l.length, 0) * 3);
+let o = 0;
+for (const level of pos) for (const p of level) { nodePositions[o++] = p.x; nodePositions[o++] = p.y; nodePositions[o++] = p.z; }
+const nodeGeom = new THREE.BufferGeometry();
+nodeGeom.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
+const nodeColorArr = new Float32Array(colors.length * 3);
+colors.forEach((c, i) => { nodeColorArr[i*3] = c.r; nodeColorArr[i*3+1] = c.g; nodeColorArr[i*3+2] = c.b; });
+nodeGeom.setAttribute('color', new THREE.BufferAttribute(nodeColorArr, 3));
+const nodes = new THREE.Points(nodeGeom, new THREE.PointsMaterial({ size: 0.025, vertexColors: true, sizeAttenuation: true }));
+root.add(nodes);
+
+// edges
+const edgePairs = [];
+for (let k = 1; k <= maxDepth; k++) {
+  for (let i = 0; i < pos[k].length; i++) {
+    edgePairs.push([pos[k - 1][Math.floor(i / 2)], pos[k][i]]);
   }
-  const edgeArr = new Float32Array(edgePairs.length * 6);
-  let e = 0;
-  for (const [a, b] of edgePairs) {
-    edgeArr[e++] = a.x; edgeArr[e++] = a.y; edgeArr[e++] = a.z;
-    edgeArr[e++] = b.x; edgeArr[e++] = b.y; edgeArr[e++] = b.z;
-  }
-  const edgeGeom = new THREE.BufferGeometry();
-  edgeGeom.setAttribute('position', new THREE.BufferAttribute(edgeArr, 3));
-  const edges = new THREE.LineSegments(edgeGeom, new THREE.LineBasicMaterial({ color: 0x334155, transparent: true, opacity: 0.6 }));
-  root.add(edges);
+}
+const edgeArr = new Float32Array(edgePairs.length * 6);
+let e = 0;
+for (const [a, b] of edgePairs) {
+  edgeArr[e++] = a.x; edgeArr[e++] = a.y; edgeArr[e++] = a.z;
+  edgeArr[e++] = b.x; edgeArr[e++] = b.y; edgeArr[e++] = b.z;
+}
+const edgeGeom = new THREE.BufferGeometry();
+edgeGeom.setAttribute('position', new THREE.BufferAttribute(edgeArr, 3));
+const edges = new THREE.LineSegments(edgeGeom, new THREE.LineBasicMaterial({ color: 0x334155, transparent: true, opacity: 0.6 }));
+root.add(edges);
 
-  // interaction: drag to orbit, scroll to zoom
-  let dragging = false, px = 0, py = 0, auto = true;
-  let rotY = 0, rotX = 0;
-  canvas.addEventListener('pointerdown', e => { dragging = true; auto = false; px = e.clientX; py = e.clientY; });
-  window.addEventListener('pointerup', () => { dragging = false; });
-  window.addEventListener('pointermove', e => {
-    if (!dragging) return;
-    rotY += (e.clientX - px) * 0.005;
-    rotX += (e.clientY - py) * 0.005;
-    rotX = Math.max(-1.4, Math.min(1.4, rotX));
-    px = e.clientX; py = e.clientY;
-  });
-  canvas.addEventListener('wheel', e => {
-    e.preventDefault();
-    distance *= (1 + Math.sign(e.deltaY) * 0.1);
-    distance = Math.max(1.2, Math.min(9, distance));
-  }, { passive:false });
+function resize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
 
-  // pinch-to-zoom (touch)
-  let pinch = 0;
-  canvas.addEventListener('touchstart', e => {
-    if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-  }, { passive:true });
-  canvas.addEventListener('touchmove', e => {
-    if (e.touches.length === 2) {
-      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-      if (pinch > 0) { distance *= pinch / d; distance = Math.max(1.2, Math.min(9, distance)); }
-      pinch = d;
-    }
-  }, { passive:true });
-
-  function resize() {
-    const w = window.innerWidth, h = window.innerHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  function animate() {
-    requestAnimationFrame(animate);
-    if (auto && !dragging) rotY += 0.0022;
-    root.rotation.y = rotY;
-    root.rotation.x = rotX;
-    camera.position.copy(camDir).multiplyScalar(distance);
-    camera.lookAt(0, 0, 0);
-    renderer.render(scene, camera);
-  }
-  animate();
-})();
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
 </script>
 </body>
 </html>
