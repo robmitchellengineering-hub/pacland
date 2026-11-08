@@ -165,6 +165,27 @@
    "title": "The decodability deficit"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-ravdess-roughness-report.md",
+   "kind": "doc",
+   "path": "docs/animal-ravdess-roughness-report.md",
+   "summary": "constant-60 Hz Butterworth channels, Hilbert envelope, 30\u2013150 Hz AM band \u2014 extractroughness.py, reused unchanged) predict the aversive category in real human voices? The prior test (LAION\u2026",
+   "title": "Roughness \u2192 aversive: the REAL-voice check (RAVDESS emotional speech)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-roughness-report.md",
+   "kind": "doc",
+   "path": "docs/animal-roughness-report.md",
+   "summary": "soundscape\", Curr. Biol. 25:2051) defines roughness as temporal modulation power in the 30\u2013150 Hz amplitude-modulation band, computed from a multi-band modulation power spectrum (MPS). The\u2026",
+   "title": "Roughness (multi-band MPS) \u2014 recomputation and the \"roughness = aversive\" test"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-ungulate-roughness-report.md",
+   "kind": "doc",
+   "path": "docs/animal-ungulate-roughness-report.md",
+   "summary": "The valence field is imbalanced (2,508 Negative vs 673 Positive), so a balanced subset is drawn.",
+   "title": "Roughness \u2192 aversive: the cross-mammal (ungulate) check"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/architecture.md",
    "kind": "doc",
    "path": "docs/architecture.md",
