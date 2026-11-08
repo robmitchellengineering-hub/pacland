@@ -354,6 +354,13 @@
    "title": "Deterministic in use \u2014 the scoped claim"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/deterministic-ledger.md",
+   "kind": "doc",
+   "path": "docs/deterministic-ledger.md",
+   "summary": "machine-checked proof \u2014 with no sampler, no probability, no run-to-run variance. This is the inventory of those results, so \"deterministic in use\" is a category we can point at, not one\u2026",
+   "title": "The deterministic ledger \u2014 every result that is exact in its use"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/drift-is-not-calibratable.md",
    "kind": "doc",
    "path": "docs/drift-is-not-calibratable.md",
@@ -1010,6 +1017,13 @@
    "path": "docs/sextant-fields.md",
    "summary": "A 6-way fan-out enumerated the downstream fields that are load-bearing on SEXTANT's 27 machine-checked proofs. Only genuine connections are listed (tangential ones were dropped and are\u2026",
    "title": "SEXTANT \u2014 the fields that rely on these fundamentals (full map)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant-mesh.md",
+   "kind": "doc",
+   "path": "docs/sextant-mesh.md",
+   "summary": "The constraint-first ToE is found faster by running SEXTANT on every mesh node at once: one yes/no engine per machine, each attacking a different open hypothesis. This is the \"parallel\u2026",
+   "title": "SEXTANT on the robmesh \u2014 parallel formalization"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md",
@@ -2139,18 +2153,18 @@
    "title": "make_explainers.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_headline_pdf.py",
+   "kind": "script",
+   "path": "scripts/make_headline_pdf.py",
+   "summary": "Generate the PACLAND headline PDF (repo root) \u2014 \"what it is, and why it matters\".",
+   "title": "make_headline_pdf.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_plain_speak.py",
    "kind": "script",
    "path": "scripts/make_plain_speak.py",
    "summary": "Render the plain-speak one-pagers.",
    "title": "make_plain_speak.py"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_startalk_pdf.py",
-   "kind": "script",
-   "path": "scripts/make_startalk_pdf.py",
-   "summary": "Generate the PACLAND StarTalk-style explainer PDF (repo root).",
-   "title": "make_startalk_pdf.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_audit.py",
@@ -2559,6 +2573,13 @@
    "title": "scan_kpv.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sextant_bootstrap.sh",
+   "kind": "script",
+   "path": "scripts/sextant_bootstrap.sh",
+   "summary": "SEXTANT mesh bootstrap \u2014 put a SEXTANT instance on a node and prove it runs.",
+   "title": "sextant_bootstrap.sh"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/shard_vacua.sh",
    "kind": "script",
    "path": "scripts/shard_vacua.sh",
@@ -2676,6 +2697,13 @@
    "path": "scripts/test_orbit_injectivity.py",
    "summary": "Test 2 of the unification claim (C3, injectivity) \u2014 do distinct orbits share physics?",
    "title": "test_orbit_injectivity.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/test_sextant_node.py",
+   "kind": "script",
+   "path": "scripts/test_sextant_node.py",
+   "summary": "SEXTANT node guard \u2014 the downloadable node actually serves and the falsifier runs.",
+   "title": "test_sextant_node.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/thermal_ceiling_check.py",
@@ -2804,6 +2832,13 @@
    "title": "validate_gut_parameter_count.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_hypotheses.py",
+   "kind": "script",
+   "path": "scripts/validate_hypotheses.py",
+   "summary": "SEXTANT hypothesis guard \u2014 every open question is well-formed (has a forced, open, candidates",
+   "title": "validate_hypotheses.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_jaxvacua.py",
    "kind": "script",
    "path": "scripts/validate_jaxvacua.py",
@@ -2837,6 +2872,13 @@
    "path": "scripts/validate_molien_weyl.py",
    "summary": "Law V \u2014 the counting law, certified by Molien\u2013Weyl / Hilbert\u2013Serre.",
    "title": "validate_molien_weyl.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_proofs.py",
+   "kind": "script",
+   "path": "scripts/validate_proofs.py",
+   "summary": "Proofs guard \u2014 every contributed claim in proofs/ is well-formed.",
+   "title": "validate_proofs.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_s_duality_vacua.py",
@@ -3084,6 +3126,13 @@
    "title": "zenodo_upload_sm.py"
   },
   {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-belief-plain-speak.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-belief-plain-speak.pdf",
+   "summary": "explainer PDF",
+   "title": "belief plain speak"
+  },
+  {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-climate-explainer.pdf",
    "kind": "pdf",
    "path": "PACLAND-climate-explainer.pdf",
@@ -3140,11 +3189,11 @@
    "title": "oracles plain speak"
   },
   {
-   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-startalk.pdf",
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf",
    "kind": "pdf",
-   "path": "PACLAND-startalk.pdf",
+   "path": "PACLAND-what-and-why.pdf",
    "summary": "explainer PDF",
-   "title": "startalk"
+   "title": "what and why"
   },
   {
    "href": "./all.html",
@@ -3201,6 +3250,13 @@
    "path": "web/mera.html",
    "summary": "page on this site",
    "title": "mera"
+  },
+  {
+   "href": "./node.html",
+   "kind": "page",
+   "path": "web/node.html",
+   "summary": "page on this site",
+   "title": "node"
   },
   {
    "href": "./sextant.html",

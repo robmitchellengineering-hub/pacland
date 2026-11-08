@@ -269,6 +269,13 @@ source, not a textbook formula:**
   argument), `DegreeFour.lean` (only `N²` at quartic, the Weyl + shear 9→1 reduction), alongside
   the degree-2 Uniqueness. The general-degree FFT remains *cited* (Weyl 1939) + sympy-verified
   (5 degrees), not Lean-formalized.
+- **Lean formalization track (2026-11-06) — import-first, prove only what's missing.** Prior-art survey:
+  `StatsMLlib` (PAC-Bayes + concentration, mathlib **v4.35.0** ✓) and `physlib` (QIT/QM) and `TauCeti`
+  (symplectic) are importable; de Finetti *coherence* (Dutch book) is greenfield — the exchangeability repo
+  proves a *different* theorem on v4.30 and is dropped. The general-degree FFT gap above is **formalizing
+  Weyl 1939**, not new math. **COORDINATION:** PR #401 (Gleason/Born, `foundations/qf0-hinge-ledger`) is a
+  parallel session's work with uncommitted edits in the shared checkout — never touch
+  `pacland-proof/PaclandProof/Foundations/` or the shared checkout; work in a clean worktree off `origin/main`.
 - **The three verification machines (2026-10-23, built, PRs #77–82).** (3) the
   completion-enumerator `src/pacland/uv_completions.py` — 12 UV completions, collapse checker,
   verified deficit = 2 (only gauge unification survives data); (1) the KPV uplift-control solver
