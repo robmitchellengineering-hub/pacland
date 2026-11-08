@@ -42,6 +42,22 @@ theorem srank_le_of_productSum (t : A ⊗[ℂ] B) (r : ℕ) (h : productSum r t)
   dsimp [srank]
   exact csInf_le (OrderBot.bddBelow _) h
 
+/-- **Ryu–Takayanagi "=", cleanest case.** A nonzero tensor that is a single simple tensor has
+Schmidt rank exactly 1 — the bound is tight for the one-bond cut (the general case is the same
+linear-independence argument at rank `D^m`). -/
+theorem srank_simple_eq_one (t : A ⊗[ℂ] B) (ht : productSum 1 t) (hne : t ≠ 0) :
+    srank t = 1 := by
+  apply le_antisymm
+  · exact srank_le_of_productSum t 1 ht
+  · by_contra h
+    have hzero : srank t = 0 := Nat.eq_zero_of_not_pos h
+    have hmem : 0 ∈ {r : ℕ | productSum r t} := by
+      rw [← hzero]
+      exact csInf_mem ⟨1, ht⟩
+    rcases hmem with ⟨a, b, hsum⟩
+    have ht0 : t = 0 := by simpa using hsum
+    exact hne ht0
+
 /-- **The area law (rank form).** The number of simple-tensor terms bounds the entanglement: if `t`
 is a sum of `r` products, its simple rank is at most `r`. This is the tensor-network "entanglement =
 min-cut" statement — `r = D^m` for a cut of `m` bonds of dimension `D`. -/
