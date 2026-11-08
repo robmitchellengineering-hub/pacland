@@ -84,6 +84,13 @@ Known fix (the 4×4 matchgate det): a symbolic `Matrix.det` won't reduce alone; 
 then `norm_num` + `ring`. The missing ingredient was `Fin.succAbove` in the simp set. Classify the
 gap (usually "missing simp lemma / unfold"), find it, close it.
 
+**SOP — the path to progress (the ratchet), 2026-11-08.** Progress is not linear; it is a loop
+that compounds: **open question → hit a wall → classify the wall → fix/use it → kernel-check the
+answer → persist the lesson (a gotcha in this file) → repeat.** Each fix is a wall closed for the
+next session, so the tooling itself improves every round and the next answer comes faster. The
+rules of the loop: never report a wall without classifying it (the four walls above, or a Lean
+tooling gap); never leave a `sorry`/`axiom`; always write the fix down so it is not re-derived.
+
 ## Hard physics rule: mirror symmetry is a free validation target
 
 For a Calabi-Yau threefold and its mirror (the polar dual polytope):
