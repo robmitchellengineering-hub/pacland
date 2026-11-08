@@ -84,3 +84,28 @@ The kernel-checked pieces: `areaLaw_rank` (entanglement ≤ rank), `bondConfigur
 `QM.Entanglement` (LOCC no-go), `treeDist_four_point` + `ballVolume_growth_class` (the bulk is
 hyperbolic). The **"="** in Ryu–Takayanagi (entanglement *equals* the minimal area) is the frontier,
 exactly like the full duality.
+
+## Job 3 — formalize the full AdS/CFT duality (work each piece, don't defer it)
+
+The full duality is not "prove Maldacena" in one step — it decomposes into four pieces, three of
+which are **formalizable and kernel-checkable**, one of which is the honest open frontier. The plan is
+to formalize all four *as precise statements* and prove the three.
+
+1. **The symmetry dictionary** (kernel-checkable). The global conformal group of the boundary =
+   the isometry group of the bulk. For AdS₃: boundary conformal group `SO(2,2) ≅ PSL(2,ℝ) × PSL(2,ℝ)`
+   = isometry group of `H³`. First rung: the isometry group of `H²` is `PSL(2,ℝ)`, which is also the
+   Möbius/conformal group of the boundary circle — prove the *same group* acts on both sides.
+2. **The area-law dictionary** (kernel-checkable, discrete). Ryu–Takayanagi: entanglement entropy =
+   minimal area. We have the bound (`areaLaw_rank` ≤ `D^m`); the "=" is the next rung — prove the
+   entanglement across a cut *equals* the number of cut bonds for a MERA-optimal state.
+3. **The operator dictionary** (kernel-checkable at the correlation-function level). The map
+   (boundary operator ↔ bulk field) is fixed by the matching of correlation functions. First rung:
+   the 2-point function of the boundary CFT decays with the geodesic distance in the bulk (the
+   conformal two-point function ↔ the bulk propagator).
+4. **The partition-function equality** (the open frontier). `Z_bulk = Z_boundary` needs a
+   non-perturbative definition of string theory on AdS — this does not exist. We *state* it as the
+   precise conjecture, and our three proven pieces are the strongest kernel-checked evidence for it.
+
+This is the honest way to "work on the full duality": formalize it into components, prove the
+provable, and leave the one genuinely-open piece as a precise, well-scoped statement rather than a
+hand-wave.
