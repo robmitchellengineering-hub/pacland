@@ -1,0 +1,59 @@
+{
+  "corpora": [
+    {
+      "id": "macaque",
+      "species": "Macaque (4 species: Tonkean, crested, rhesus, Japanese)",
+      "title": "Acoustic data in four species of macaques (Rebout et al.)",
+      "url": "https://zenodo.org/records/3877581",
+      "license": "CC0-1.0",
+      "format": "xlsx",
+      "file": "data/macaque_Rebout_et_al_data_excel.xlsx",
+      "md5": "cbfcefc715a38ad797cc09df960f6fcd",
+      "feature_columns": ["duration", "Q2_ratio", "q2_frequency", "q1_frequency",
+                          "q3_frequency", "aggregate_entropy", "average_entropy"],
+      "labels": [
+        {"name": "context", "column": "context", "role": "context",
+         "note": "negative / neutral / positive social context"},
+        {"name": "species", "column": "species", "role": "species",
+         "note": "4 species (dialect/constraint)"}
+      ]
+    },
+    {
+      "id": "mongoose",
+      "species": "Dwarf mongoose (Helogale parvula)",
+      "title": "Wild dwarf mongooses produce general alert and predator-specific alarm calls (Collier et al. 2017)",
+      "url": "https://zenodo.org/records/5005321",
+      "license": "CC0-1.0",
+      "format": "txt",
+      "delimiter": "\t",
+      "file": "data/mongoose_Alarm-call-acoustic-parameters.txt",
+      "md5": "859cde2075c0ee14eed4ec0154e0191d",
+      "feature_columns": ["Length", "Overall.peak.frequency", "Peak.frequency.Mean",
+                          "Peak.frequency.Maximum", "Peak.frequency.Minimum",
+                          "Fundamental.frequency.Mean", "Fundamental.frequency.Maximum",
+                          "Fundamental.frequency.Minimum", "Peak.frequency.change.Mean",
+                          "Fundamental.frequency.change.Mean", "Wiener.entropy.Mean",
+                          "Frequency.bandwidth.Mean", "Within.syllable.gap", "No.Elements"],
+      "labels": [
+        {"name": "referent", "column": "Type", "role": "referent",
+         "mapping": {"type-1": "aerial", "type-4": "terrestrial"},
+         "note": "type-1 = aerial, type-4 = terrestrial (controlled experiment); type-2/3/5 excluded"},
+        {"name": "call-type", "column": "Type", "role": "call-type",
+         "note": "5 acoustic call types (constraint)"}
+      ]
+    },
+    {
+      "id": "sperm-whale",
+      "species": "Sperm whale (Physeter macrocephalus)",
+      "title": "Contextual and Combinatorial Structure in Sperm Whale Vocalisations (Sharma et al. 2024)",
+      "url": "https://zenodo.org/records/10817697",
+      "license": "CC-BY-4.0",
+      "kind": "sequence",
+      "format": "csv",
+      "file": "data/whale_sperm-whale-dialogues.csv",
+      "file2": "data/whale_DominicaCodas.csv",
+      "md5": "eeeeb20cda64d88320b6ccee1185379a",
+      "note": "SEQUENCE constraints (Zipf / temporal MI / combinatorial MDL), reported separately"
+    }
+  ]
+}
