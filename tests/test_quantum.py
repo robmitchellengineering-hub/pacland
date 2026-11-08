@@ -51,5 +51,29 @@ class TestCircuitModel(unittest.TestCase):
         self.assertAlmostEqual(p[1], 1.0, places=6)
 
 
+class TestGHZ(unittest.TestCase):
+    def test_ghz_is_all_equal(self):
+        p = q.ghz(3).probabilities()
+        self.assertAlmostEqual(p[0], 0.5, places=6)   # |000>
+        self.assertAlmostEqual(p[7], 0.5, places=6)   # |111>
+        self.assertAlmostEqual(p[1] + p[2] + p[3] + p[4] + p[5] + p[6], 0.0, places=6)
+
+
+class TestQFT(unittest.TestCase):
+    def test_qft2_of_zero_is_uniform(self):
+        p = q.qft2().probabilities()
+        for i in range(4):
+            self.assertAlmostEqual(p[i], 0.25, places=6)
+
+
+class TestTeleportation(unittest.TestCase):
+    def test_teleport_moves_the_state(self):
+        """After teleporting |1⟩, qubit 2 is |1⟩ regardless of Alice's random outcomes."""
+        for _ in range(50):
+            p = q.teleport().probabilities()
+            p2 = sum(p[i] for i in range(8) if (i >> 2) & 1)
+            self.assertAlmostEqual(p2, 1.0, places=9)
+
+
 if __name__ == "__main__":
     unittest.main()

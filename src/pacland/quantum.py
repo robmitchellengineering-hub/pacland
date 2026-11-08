@@ -72,6 +72,31 @@ class QuantumCircuit:
         self.apply_gate("H", b)
         return self
 
+    def apply_cphase(self, control: int, target: int, angle: float):
+        """Controlled phase: multiply the amplitude of |11> on (control,target) by e^{i·angle}."""
+        idx = np.arange(2 ** self.n)
+        both_one = ((idx >> control) & 1) & ((idx >> target) & 1)
+        self.state = self.state * np.where(both_one == 1, np.exp(1j * angle), 1.0)
+        return self
+
+    def measure_qubit(self, target: int) -> int:
+        """Measure one qubit, collapse the state, and return the outcome (0 or 1)."""
+        axis = self.n - 1 - target
+        sv = self.state.reshape((2,) * self.n)
+        keep = tuple(i for i in range(self.n) if i != axis)
+        p = np.real(np.sum(np.abs(sv) ** 2, axis=keep))
+        p = p / p.sum()
+        outcome = int(np.random.choice([0, 1], p=p))
+        idx = [slice(None)] * self.n
+        idx[axis] = outcome
+        collapsed = np.zeros_like(sv)
+        collapsed[tuple(idx)] = sv[tuple(idx)]
+        norm = np.sqrt(np.sum(np.abs(collapsed) ** 2))
+        if norm > 0:
+            collapsed = collapsed / norm
+        self.state = collapsed.reshape(2 ** self.n)
+        return outcome
+
     def probabilities(self) -> np.ndarray:
         p = np.real(self.state * np.conj(self.state))
         return p / p.sum()
@@ -113,7 +138,44 @@ def grover(iterations: int = 1):
     return c
 
 
-PROGRAMS = {"bell": bell, "superposition": superposition, "grover": grover}
+def ghz(n: int = 3):
+    """The GHZ state (|0…0⟩ + |1…1⟩)/√2 — n-qubit entanglement, measured all-equal."""
+    c = QuantumCircuit(n)
+    c.apply_gate("H", 0)
+    for q in range(1, n):
+        c.apply_cnot(0, q)
+    return c
+
+
+def qft2():
+    """The 2-qubit quantum Fourier transform. On |00⟩ it yields the uniform superposition."""
+    c = QuantumCircuit(2)
+    c.apply_gate("H", 0)
+    c.apply_cphase(0, 1, math.pi / 2)  # controlled-S
+    c.apply_gate("H", 1)
+    return c
+
+
+def teleport():
+    """Teleport |1⟩ from qubit 0 to qubit 2 through a Bell pair (the full protocol with
+    Alice's measurement and Bob's conditional corrections)."""
+    c = QuantumCircuit(3)
+    c.apply_gate("X", 0)            # the state to teleport: |ψ⟩ = |1⟩
+    c.apply_gate("H", 1)            # Bell pair (|00⟩+|11⟩)/√2 on qubits 1,2
+    c.apply_cnot(1, 2)
+    c.apply_cnot(0, 1)              # Alice entangles and measures
+    c.apply_gate("H", 0)
+    a = c.measure_qubit(0)
+    b = c.measure_qubit(1)
+    if b == 1:                      # Bob's corrections
+        c.apply_gate("X", 2)
+    if a == 1:
+        c.apply_gate("Z", 2)
+    return c
+
+
+PROGRAMS = {"bell": bell, "superposition": superposition, "grover": grover,
+            "ghz": ghz, "qft2": qft2, "teleport": teleport}
 
 
 def _run(program: str, shots: int) -> int:
