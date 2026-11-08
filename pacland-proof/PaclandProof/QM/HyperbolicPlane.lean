@@ -126,4 +126,39 @@ theorem pathAngle_inj {s t : List Bool} (h : pathAngle s = pathAngle t) (hl : s.
       rw [hbc, hs']
 
 
+/-- The Minkowski product of two tree images: `-cosh r₁ cosh r₂ + sinh r₁ sinh r₂ cos(θs - θt)`. -/
+theorem minkowski_treeToH2 (s t : List Bool) :
+    minkowski (treeToH2 s).1 (treeToH2 t).1 =
+      -(Real.cosh (s.length : ℝ)) * Real.cosh (t.length : ℝ)
+        + (Real.sinh (s.length : ℝ)) * Real.sinh (t.length : ℝ)
+          * Real.cos (pathAngle s - pathAngle t) := by
+  dsimp [treeToH2, minkowski]
+  rw [Real.cos_sub]
+  ring
+
+/-- **The diameter bound** (the upper half of the QI distortion): the hyperbolic distance between
+two tree images is at most the sum of their depths — the coarse `hyperbolicDist ≤ |s| + |t|` bound. -/
+theorem hyperbolicDist_le_add (s t : List Bool) :
+    hyperbolicDist (treeToH2 s) (treeToH2 t) ≤ (s.length : ℝ) + (t.length : ℝ) := by
+  dsimp [hyperbolicDist]
+  rw [minkowski_treeToH2]
+  rw [← Real.arcosh_cosh (show 0 ≤ (s.length : ℝ) + (t.length : ℝ) by positivity)]
+  rw [Real.arcosh_le_arcosh]
+  rotate_left
+  · -- 0 < cosh r₁ cosh r₂ - sinh r₁ sinh r₂ cos Δθ
+    have hc : Real.cos (pathAngle s - pathAngle t) ≤ 1 := Real.cos_le_one _
+    have hsinh : 0 ≤ Real.sinh (s.length : ℝ) * Real.sinh (t.length : ℝ) := by positivity
+    have hcs : Real.cosh ((s.length : ℝ) - (t.length : ℝ)) =
+        Real.cosh (s.length : ℝ) * Real.cosh (t.length : ℝ)
+          - Real.sinh (s.length : ℝ) * Real.sinh (t.length : ℝ) := Real.cosh_sub _ _
+    have hone : 1 ≤ Real.cosh ((s.length : ℝ) - (t.length : ℝ)) := Real.one_le_cosh _
+    nlinarith [hc, hsinh, hcs, hone]
+  · positivity
+  · rw [Real.cosh_add]
+    have hc : -1 ≤ Real.cos (pathAngle s - pathAngle t) :=
+      neg_le_of_abs_le (Real.abs_cos_le_one (pathAngle s - pathAngle t))
+    have hs : 0 ≤ Real.sinh (s.length : ℝ) * Real.sinh (t.length : ℝ) := by positivity
+    nlinarith [hc, hs]
+
+
 end QM
