@@ -1,3 +1,2 @@
-TITLE: Entanglement = Geometry, kernel-checked: the MERA causal cone is a discrete hyperbolic space
-DOI: 10.5281/zenodo.24045807
-DESC: Kernel-checked in Lean 4 + Mathlib that the MERA causal cone is a discrete hyperbolic space (Gromov 0-hyperbolicity, exponential volume, area law, log depth) — the machine-checked form of Swingle's "MERA = AdS".
+TITLE: Entanglement = geometry, kernel-checked: the MERA cone is quasi-isometric to the hyperbolic plane
+DOI: 10.5281/zenodo.24062187
