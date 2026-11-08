@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEXTANT node — the global quest</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin:0; font: 15px/1.5 system-ui, -apple-system, Segoe UI, sans-serif; background:#0b0e14; color:#e6e9f0; }
+  header { padding: 28px 24px 16px; border-bottom: 1px solid #1d2430; }
+  h1 { margin:0 0 6px; font-size: 24px; }
+  h1 .glyph { color:#8ab4ff; }
+  p.tag { margin:0; color:#8a93a6; }
+  main { display:grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px 24px 60px; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+  section { background:#10151d; border:1px solid #1d2430; border-radius: 10px; padding: 16px; }
+  section h2 { margin:0 0 12px; font-size: 16px; color:#8ab4ff; }
+  .pill { display:inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight:600; margin-left:6px; }
+  .FORCED   { background:#12331f; color:#5bd08b; }
+  .FREE     { background:#332a10; color:#e0b64f; }
+  .IMPOSSIBLE { background:#331219; color:#e07676; }
+  .item { padding: 10px 8px; border-top: 1px solid #1a212c; cursor: pointer; }
+  .item:first-of-type { border-top: none; }
+  .item:hover { background:#161d28; }
+  .item .name { font-weight:600; }
+  .detail { display:none; margin-top:8px; padding:10px; background:#0c1016; border-radius:8px; font-size:14px; }
+  .detail.open { display:block; }
+  .detail .lbl { color:#8a93a6; }
+  button { background:#1f6feb; color:#fff; border:none; border-radius:6px; padding: 7px 14px; font-size:13px; cursor:pointer; }
+  button:hover { background:#2b7bff; }
+  button.ghost { background:#1d2430; }
+  input, textarea, select { width:100%; background:#0c1016; border:1px solid #2a3342; color:#e6e9f0; border-radius:6px; padding:8px; font:inherit; margin:6px 0; }
+  textarea { min-height: 90px; resize: vertical; }
+  .row { display:flex; gap:8px; align-items:center; }
+  .mono { font-family: ui-monospace, Menlo, monospace; white-space: pre-wrap; word-break: break-word; font-size: 12.5px; }
+  .muted { color:#8a93a6; }
+  #aiReply, #shareOut { margin-top:8px; }
+  a { color:#8ab4ff; }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="glyph">⌖</span> SEXTANT <em>node</em> — the global quest</h1>
+  <p class="tag">Ask the universe what is FORCED, FREE, or IMPOSSIBLE — kernel-checked, never a value. Contribute your discovery to the constraint-first theory of everything.</p>
+</header>
+<main>
+  <section>
+    <h2>Kernel-checked claims <span class="muted">(click to run the falsifier)</span></h2>
+    <div id="claims">loading…</div>
+  </section>
+  <section>
+    <h2>The global quest — open hypotheses</h2>
+    <div id="quests">loading…</div>
+  </section>
+  <section>
+    <h2>Contribute a discovery</h2>
+    <input id="cId" placeholder="id (e.g. your-name-claim)">
+    <input id="cClaim" placeholder="the claim — one sentence">
+    <input id="cFalsifier" placeholder="falsifier — what experiment would refute it">
+    <select id="cVerdict">
+      <option>FORCED</option><option>FREE</option><option>IMPOSSIBLE</option>
+    </select>
+    <textarea id="cWhy" placeholder="why — the constraint / label / no-go, in plain words"></textarea>
+    <button onclick="contribute()">Add to the quest</button>
+    <div id="shareOut" class="mono muted"></div>
+  </section>
+  <section>
+    <h2>Point at your own AI <span class="muted">(optional)</span></h2>
+    <input id="aiEndpoint" placeholder="endpoint (e.g. https://api.openai.com/v1 or http://localhost:11434/v1)">
+    <input id="aiKey" placeholder="API key (leave blank for local Ollama)" type="password">
+    <input id="aiModel" placeholder="model (e.g. gpt-4o-mini / llama3)">
+    <div class="muted" style="font-size:12px">Pick a quest below, then ask your AI to help attack it.</div>
+    <button class="ghost" onclick="askAI()">Ask your AI to attack the selected quest</button>
+    <div id="aiReply" class="mono"></div>
+  </section>
+</main>
+<script>
+let state = { claims: [], hypotheses: [] };
+let selectedQuest = null;
+
+async function load() {
+  const r = await fetch('/api/state');
+  state = await r.json();
+  renderClaims();
+  renderQuests();
+}
+function glyph(v) { return v === 'FORCED' ? '◼' : v === 'FREE' ? '◻' : '⊘'; }
+
+function renderClaims() {
+  const el = document.getElementById('claims');
+  el.innerHTML = state.claims.map(c => `
+    <div class="item" onclick="toggleClaim(this)">
+      <span class="name">${glyph(c.verdict)} ${c.id}</span>
+      <span class="pill ${c.verdict}">${c.verdict}</span>
+      <div class="detail">
+        <div><span class="lbl">claim:</span> ${c.claim}</div>
+        <div><span class="lbl">falsifier:</span> ${c.falsifier}</div>
+        <div><span class="lbl">theorem:</span> ${c.theorem} <span class="muted">(kernel-checked)</span></div>
+        <div><span class="lbl">why:</span> ${c.why}</div>
+        <div style="margin-top:6px"><button onclick="event.stopPropagation(); runVerify('${c.id}', this)">run falsifier</button>
+        <span class="mono muted" style="margin-left:8px"></span></div>
+      </div>
+    </div>`).join('');
+}
+function renderQuests() {
+  const el = document.getElementById('quests');
+  el.innerHTML = state.hypotheses.map(h => `
+    <div class="item" onclick="toggleQuest(this, '${h.id}')">
+      <span class="name">◇ ${h.id}</span>
+      <div class="detail">
+        <div><span class="lbl">question:</span> ${h.question}</div>
+        <div><span class="lbl">forced:</span> ${h.forced}</div>
+        <div><span class="lbl">open:</span> ${h.open}</div>
+        <div><span class="lbl">candidates:</span> ${(h.candidates||[]).map(c => `• ${c.hypothesis} — <em>falsifier:</em> ${c.falsifier}`).join('<br>')}</div>
+        <div><span class="lbl">attack:</span> ${h.attack}</div>
+        ${h.progress ? `<div><span class="lbl">progress:</span> ${h.progress}</div>` : ''}
+        <div style="margin-top:6px"><button onclick="event.stopPropagation(); selectQuest('${h.id}')">select for your AI</button></div>
+      </div>
+    </div>`).join('');
+}
+function toggleClaim(el) { el.querySelector('.detail').classList.toggle('open'); }
+function toggleQuest(el, id) { el.querySelector('.detail').classList.toggle('open'); }
+function selectQuest(id) { selectedQuest = id; alert('Quest "' + id + '" selected — now use "Ask your AI".'); }
+
+async function runVerify(id, btn) {
+  const out = btn.nextElementSibling;
+  out.textContent = 'running…';
+  const r = await fetch('/api/verify?name=' + id);
+  const j = await r.json();
+  out.textContent = (j.survived === null ? 'kernel-checked' : j.survived ? 'SURVIVES — ' + j.evidence : 'REFUTED — ' + j.evidence);
+}
+
+async function contribute() {
+  const payload = {
+    id: document.getElementById('cId').value.trim(),
+    claim: document.getElementById('cClaim').value.trim(),
+    falsifier: document.getElementById('cFalsifier').value.trim(),
+    verdict: document.getElementById('cVerdict').value,
+    why: document.getElementById('cWhy').value.trim(),
+  };
+  if (!payload.id || !payload.claim || !payload.falsifier) { alert('id, claim and falsifier are required'); return; }
+  const r = await fetch('/api/contribute', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+  const j = await r.json();
+  const out = document.getElementById('shareOut');
+  out.textContent = j.share;
+  if (j.pr_url) { out.insertAdjacentHTML('beforeend', '<br><br><a href="' + j.pr_url + '" target="_blank">Open the pull request →</a>'); }
+}
+
+async function askAI() {
+  if (!selectedQuest) { alert('First select a quest above.'); return; }
+  const h = state.hypotheses.find(x => x.id === selectedQuest);
+  const prompt = `Attack this open hypothesis and suggest a concrete next step or a sharper falsifier:\n` +
+    `Question: ${h.question}\nForced: ${h.forced}\nOpen: ${h.open}\n` +
+    `Candidates: ${(h.candidates||[]).map(c=>c.hypothesis).join('; ')}\nAttack: ${h.attack}`;
+  const out = document.getElementById('aiReply');
+  out.textContent = 'asking your AI…';
+  const body = {
+    endpoint: document.getElementById('aiEndpoint').value.trim(),
+    key: document.getElementById('aiKey').value.trim(),
+    model: document.getElementById('aiModel').value.trim(),
+    prompt,
+  };
+  if (!body.endpoint || !body.model) { out.textContent = 'enter your endpoint and model first.'; return; }
+  const r = await fetch('/api/ai', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const j = await r.json();
+  out.textContent = j.reply || ('error: ' + (j.error || 'unknown'));
+}
+
+load();
+</script>
+</body>
+</html>
