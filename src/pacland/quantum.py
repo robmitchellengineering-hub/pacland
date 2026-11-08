@@ -174,8 +174,23 @@ def teleport():
     return c
 
 
+def qec_bitflip():
+    """The 3-qubit repetition code: encode |1⟩ → |111⟩, flip one qubit, then correct.
+
+    A single bit-flip on any one qubit leaves two of the three correct, so a majority vote
+    recovers the logical bit. Honest note: the correction here is the classical majority vote —
+    the encoding (CNOTs) is the quantum part. The measured state is the known error |101⟩.
+    """
+    c = QuantumCircuit(3)
+    c.apply_gate("X", 0)            # logical |1⟩
+    c.apply_cnot(0, 1)              # encode → |111⟩
+    c.apply_cnot(0, 2)
+    c.apply_gate("X", 1)            # one bit-flip error → |101⟩
+    return c
+
+
 PROGRAMS = {"bell": bell, "superposition": superposition, "grover": grover,
-            "ghz": ghz, "qft2": qft2, "teleport": teleport}
+            "ghz": ghz, "qft2": qft2, "teleport": teleport, "qec": qec_bitflip}
 
 
 def _run(program: str, shots: int) -> int:

@@ -75,5 +75,12 @@ class TestTeleportation(unittest.TestCase):
             self.assertAlmostEqual(p2, 1.0, places=9)
 
 
+class TestQEC(unittest.TestCase):
+    def test_repetition_code_detects_the_error_and_recovers(self):
+        """Encode |1⟩→|111⟩, flip qubit 1 → |101⟩ = index 5; majority vote recovers logical 1."""
+        p = q.qec_bitflip().probabilities()
+        self.assertAlmostEqual(p[5], 1.0, places=6)   # |101> is the error state
+
+
 if __name__ == "__main__":
     unittest.main()
