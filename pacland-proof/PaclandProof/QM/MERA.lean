@@ -21,6 +21,7 @@ Together with `QM.Entanglement` (LOCC cannot create entanglement) this says: ent
 namespace QM
 
 open scoped TensorProduct BigOperators
+open Module
 
 variable {A B : Type*} [AddCommGroup A] [Module ℂ A] [AddCommGroup B] [Module ℂ B]
 
@@ -69,6 +70,58 @@ theorem row_maximallyEntangled (D : ℕ) (k : Fin D) :
     row D k (maximallyEntangled D) = stdBasis D k := by
   dsimp [row, maximallyEntangled]
   simp [TensorProduct.lift.tmul, stdBasis]
+
+/-- **Ryu–Takayanagi "=", general (lower bound).** The maximally-entangled state of dimension D
+needs at least D simple tensors: each standard basis vector is a row of the state, so it lies in the
+span of the r right-vectors of any r-term decomposition, forcing finrank D ≤ r. -/
+theorem maximallyEntangled_rank_ge (D r : ℕ) (h : productSum r (maximallyEntangled D)) :
+    D ≤ r := by
+  rcases h with ⟨a, b, hsum⟩
+  let e : Basis (Fin D) ℂ (Fin D → ℂ) := Pi.basisFun ℂ (Fin D)
+  have hsub : ∀ k : Fin D, e k ∈ Submodule.span ℂ (Set.range b) := by
+    intro k
+    have hrow : row D k (∑ i : Fin r, a i ⊗ₜ[ℂ] b i) = stdBasis D k := by
+      rw [← hsum]
+      exact row_maximallyEntangled D k
+    rw [show e k = stdBasis D k by
+      ext j
+      simp [e, stdBasis, Pi.basisFun_apply, Pi.single_apply, eq_comm]]
+    rw [← hrow]
+    rw [map_sum]
+    refine Submodule.sum_mem _ (fun i _ => ?_)
+    change (LinearMap.lsmul ℂ (Fin D → ℂ) (LinearMap.proj k (a i))) (b i) ∈
+      Submodule.span ℂ (Set.range b)
+    rw [LinearMap.lsmul_apply]
+    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  have htop : (⊤ : Submodule ℂ (Fin D → ℂ)) ≤ Submodule.span ℂ (Set.range b) := by
+    rw [← e.span_eq]
+    rw [Submodule.span_le]
+    rintro x ⟨k, rfl⟩
+    exact hsub k
+  have hfin : finrank ℂ (Fin D → ℂ) ≤ r := by
+    calc
+      finrank ℂ (Fin D → ℂ) = finrank ℂ (⊤ : Submodule ℂ (Fin D → ℂ)) := by rw [finrank_top]
+      _ ≤ finrank ℂ (Submodule.span ℂ (Set.range b)) := Submodule.finrank_mono htop
+      _ ≤ r := by
+        have hcard : (Set.range b).toFinset.card ≤ r := by
+          rw [Set.toFinset_range]
+          simpa using (Finset.card_image_le (f := b) (s := Finset.univ))
+        exact (finrank_span_le_card (Set.range b)).trans hcard
+  have hD : finrank ℂ (Fin D → ℂ) = D := by
+    rw [finrank_eq_card_basis e]
+    simp
+  omega
+
+/-- **Ryu–Takayanagi "=", general.** The maximally-entangled state of dimension D has Schmidt rank
+exactly D: the upper bound is `srank_maximally_entangled_le` and the lower bound is
+`maximallyEntangled_rank_ge`. This is the exact area law — entanglement = area = D^m, not just ≤. -/
+theorem srank_maximally_entangled (D : ℕ) :
+    srank (maximallyEntangled D) = D := by
+  apply le_antisymm
+  · exact srank_maximally_entangled_le D
+  · dsimp [srank]
+    exact le_csInf ⟨D, ⟨fun i => stdBasis D i, fun i => stdBasis D i, rfl⟩⟩
+      (fun r hr => maximallyEntangled_rank_ge D r hr)
 
 /-- **Ryu–Takayanagi "=", cleanest case.** A nonzero tensor that is a single simple tensor has
 Schmidt rank exactly 1 — the bound is tight for the one-bond cut (the general case is the same
