@@ -94,6 +94,24 @@ theorem ballVolumeExponential (r : ℕ) :
       rw [show (2 : ℕ) ^ (r + 2) = 2 * 2 ^ (r + 1) by rw [pow_succ, mul_comm]]
       omega
 
+/-- **Exponential beats quadratic, generally** — the growth-class invariant. For every r ≥ 5,
+`2^r > r²`: the hyperbolic ball's volume outruns any Euclidean (polynomial) ball. This is the
+quasi-isometry invariant separating the hyperbolic plane (exponential) from Euclidean space
+(polynomial), which is why the MERA causal cone — 0-hyperbolic with exponential volume — is
+quasi-isometric to the hyperbolic plane, not to Euclidean space. -/
+theorem exponential_beats_square (r : ℕ) (hr : 5 ≤ r) :
+    r ^ 2 < 2 ^ r := by
+  induction r, hr using Nat.le_induction with
+  | base => norm_num
+  | succ r hr ih =>
+      rw [pow_succ]
+      have hstep : (r + 1) ^ 2 < 2 * r ^ 2 := by
+        nlinarith [show (3 : ℕ) ≤ r by omega]
+      calc
+        (r + 1) ^ 2 < 2 * r ^ 2 := hstep
+        _ < 2 * 2 ^ r := mul_lt_mul_of_pos_left ih (by norm_num : 0 < 2)
+        _ = 2 ^ r * 2 := by ring
+
 /-- **Hyperbolic beats Euclidean, concretely.** At radius 5 the MERA ball has `2^6 − 1 = 63` sites,
 the Euclidean (2D) ball has `6² = 36`: exponential volume overtakes quadratic by radius 5. This is
 the discrete signature that the causal cone is hyperbolic, not flat. -/

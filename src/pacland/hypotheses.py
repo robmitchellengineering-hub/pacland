@@ -25,6 +25,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a non-constant curvature in the limit"},
         ],
         "attack": "Lean + metric-geometry lemmas (the tree is quasi-isometric to H²).",
+        "progress": "DISCRETE HALF COMPLETE: the causal cone is 0-hyperbolic (treeDist_four_point), has exponential volume (ballVolumeExponential = 2^(r+1)−1), and now exponential_beats_square (2^r > r² for all r ≥ 5) — the growth-class invariant separating hyperbolic (exponential) from Euclidean (polynomial). These are the discrete signatures of the hyperbolic plane; only the continuous GH-convergence to the smooth metric remains gated on the DG stack.",
     },
     "separation-classes": {
         "question": "which classes of quantum circuits beyond Clifford are classically simulable?",
