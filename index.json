@@ -3182,6 +3182,13 @@
    "title": "The front page \u2014 what PACLAND is"
   },
   {
+   "href": "./mera-3d.html",
+   "kind": "page",
+   "path": "web/mera-3d.html",
+   "summary": "page on this site",
+   "title": "mera-3d"
+  },
+  {
    "href": "./mera.html",
    "kind": "page",
    "path": "web/mera.html",
