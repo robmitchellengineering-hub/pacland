@@ -76,6 +76,14 @@ apply the move. Example that already happened: the mass spectrum is killed even 
 n=10 → that is the **unmeasurable** wall → the deliverable is the *deficit* (m), not
 the spectrum. Documenting the wall is not the result; using it is.
 
+**A Lean tooling gap is a wall to FIX, not report (Rob 2026-11-08).** When a Lean tactic
+(`simp`/`norm_num`/`ring`/`ring_nf`) won't reduce something — a symbolic determinant, a `Fin`
+cofactor — the move is to find the missing lemma/unfold, not to leave a `sorry` or call it a wall.
+Known fix (the 4×4 matchgate det): a symbolic `Matrix.det` won't reduce alone; it needs
+`rw [Matrix.det_succ_row_zero]` then `simp [Fin.sum_univ_four, Matrix.det_fin_three, Fin.succAbove]`
+then `norm_num` + `ring`. The missing ingredient was `Fin.succAbove` in the simp set. Classify the
+gap (usually "missing simp lemma / unfold"), find it, close it.
+
 ## Hard physics rule: mirror symmetry is a free validation target
 
 For a Calabi-Yau threefold and its mirror (the polar dual polytope):
