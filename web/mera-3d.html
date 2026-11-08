@@ -17,7 +17,7 @@
   .dot { width:.6rem; height:.6rem; border-radius:50%; display:inline-block; margin-right:.35rem; }
   .back { position:fixed; top:1rem; right:1rem; z-index:6; color:#7dd3fc; text-decoration:none; font-size:.85rem; background:rgba(20,42,94,.6); padding:.4rem .8rem; border-radius:999px; }
   .hint { position:fixed; bottom:1rem; right:1rem; z-index:5; font-size:.78rem; color:#64748b; pointer-events:none; }
-  .zoom { position:fixed; bottom:1.2rem; left:50%; transform:translateX(-50%); z-index:7; display:flex; gap:.5rem; }
+  .zoom { position:fixed; right:.9rem; top:50%; transform:translateY(-50%); z-index:7; display:flex; flex-direction:column; gap:.5rem; }
   .zoom button { width:2.6rem; height:2.6rem; border-radius:50%; border:1px solid #334155; background:rgba(20,42,94,.7); color:#fff; font-size:1.4rem; line-height:1; cursor:pointer; -webkit-tap-highlight-color:transparent; }
 </style>
 </head>
@@ -33,7 +33,7 @@
   <span><span class="dot" style="background:#334155"></span>the tree (causal cone)</span>
 </div>
 <a class="back" href="./mera.html">2D disk →</a>
-<div class="hint">drag to orbit · scroll / pinch / buttons to zoom</div>
+<div class="hint">drag · pinch · +/−</div>
 <div class="zoom"><button id="zout" aria-label="zoom out">−</button><button id="zin" aria-label="zoom in">+</button></div>
 
 <script type="importmap">
