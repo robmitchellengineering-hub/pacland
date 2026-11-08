@@ -3196,6 +3196,13 @@
    "title": "mera"
   },
   {
+   "href": "./sextant.html",
+   "kind": "page",
+   "path": "web/sextant.html",
+   "summary": "page on this site",
+   "title": "sextant"
+  },
+  {
    "href": "./verify.html",
    "kind": "page",
    "path": "web/verify.html",
