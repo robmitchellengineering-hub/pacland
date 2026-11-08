@@ -57,6 +57,7 @@
     <h2>Contribute a discovery</h2>
     <input id="cId" placeholder="id (e.g. your-name-claim)">
     <input id="cClaim" placeholder="the claim — one sentence">
+    <input id="cFalsifier" placeholder="falsifier — what experiment would refute it">
     <select id="cVerdict">
       <option>FORCED</option><option>FREE</option><option>IMPOSSIBLE</option>
     </select>
@@ -134,13 +135,16 @@ async function contribute() {
   const payload = {
     id: document.getElementById('cId').value.trim(),
     claim: document.getElementById('cClaim').value.trim(),
+    falsifier: document.getElementById('cFalsifier').value.trim(),
     verdict: document.getElementById('cVerdict').value,
     why: document.getElementById('cWhy').value.trim(),
   };
-  if (!payload.id || !payload.claim) { alert('id and claim are required'); return; }
+  if (!payload.id || !payload.claim || !payload.falsifier) { alert('id, claim and falsifier are required'); return; }
   const r = await fetch('/api/contribute', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
   const j = await r.json();
-  document.getElementById('shareOut').textContent = j.share;
+  const out = document.getElementById('shareOut');
+  out.textContent = j.share;
+  if (j.pr_url) { out.insertAdjacentHTML('beforeend', '<br><br><a href="' + j.pr_url + '" target="_blank">Open the pull request →</a>'); }
 }
 
 async function askAI() {

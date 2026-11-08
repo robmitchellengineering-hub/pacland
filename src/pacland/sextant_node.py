@@ -30,8 +30,22 @@ from pacland import hypotheses  # noqa: E402
 
 REPO_ROOT = _SRC.parent  # .../pacland
 NODE_HTML = REPO_ROOT / "web" / "node.html"
-DISCOVERIES = REPO_ROOT / "data" / "discoveries"
+PROOFS = REPO_ROOT / "proofs"  # PR-able, committed — the global proofs DB directory
 PORT = 8090
+GH_OWNER = "robmitchellengineering-hub"
+GH_REPO = "pacland"
+
+
+def _proof_markdown(payload: dict) -> str:
+    """A contributed claim as a PR-ready Markdown file."""
+    return (
+        f"# {payload['id']}\n\n"
+        f"- **claim:** {payload['claim']}\n"
+        f"- **verdict:** {payload['verdict']}\n"
+        f"- **falsifier:** {payload['falsifier']}\n"
+        f"- **why:** {payload['why']}\n\n"
+        "Contributed via the SEXTANT node. Re-check the falsifier or the Lean kernel before trusting.\n"
+    )
 
 
 def _claim_json(name: str) -> dict:
@@ -152,16 +166,27 @@ class Handler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", 0))
         payload = json.loads(self.rfile.read(length) or b"{}")
         if path == "/api/contribute":
-            DISCOVERIES.mkdir(parents=True, exist_ok=True)
-            stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-            fname = DISCOVERIES / f"{stamp}-{payload.get('id', 'discovery')}.json"
-            fname.write_text(json.dumps(payload, indent=2))
+            cid = payload.get("id", "").strip()
+            if not cid or not payload.get("claim") or not payload.get("falsifier"):
+                return self._json({"error": "id, claim and falsifier are required"}, 400)
+            md = _proof_markdown(payload)
+            PROOFS.mkdir(parents=True, exist_ok=True)
+            (PROOFS / f"{cid}.md").write_text(md)
+            # one-tap: a pre-filled GitHub "new file" URL that opens a PR — no git needed.
+            from urllib.parse import quote
+
+            url = (
+                f"https://github.com/{GH_OWNER}/{GH_REPO}/new/main"
+                f"?filename=proofs/{quote(cid)}.md&value={quote(md)}"
+            )
             return self._json(
                 {
-                    "saved": str(fname),
+                    "saved": str(PROOFS / f"{cid}.md"),
+                    "pr_url": url,
                     "share": (
-                        f"Add this to the global quest (a PR to the pacland proofs DB):\n"
-                        f"{json.dumps(payload, indent=2)}"
+                        "Your discovery is saved locally and ready to join the global quest.\n"
+                        "Tap this link to open a pull request (GitHub pre-fills the file):\n"
+                        f"{url}"
                     ),
                 }
             )
