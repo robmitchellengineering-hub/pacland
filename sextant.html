@@ -27,6 +27,11 @@
   .cats button { border:1px solid var(--line); background:#fff; color:var(--ink); padding:.4rem .75rem; border-radius:999px; cursor:pointer; font-size:.85rem; }
   .cats button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
   .catdesc { font-size:.82rem; color:var(--muted); margin:.2rem 0 .6rem; }
+  .fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; margin:.8rem 0; }
+  .field { border:1px solid var(--line); border-radius:10px; background:#fff; padding:.9rem 1rem; }
+  .field h3 { margin:0 0 .3rem; font-size:1rem; color:var(--accent); }
+  .field p { margin:.2rem 0 .5rem; font-size:.86rem; color:var(--muted); }
+  .field .tag { display:inline-block; font-size:.75rem; padding:.15rem .5rem; border-radius:999px; background:#eef1f8; color:var(--accent); margin:.15rem .25rem 0 0; cursor:pointer; }
   .glyph { width:1.1rem; text-align:center; font-weight:700; }
   .verdict-FORCED { color:var(--accent); } .verdict-FREE { color:var(--gold); } .verdict-IMPOSSIBLE { color:#c0392b; }
   .out { border:1px solid var(--line); border-radius:10px; background:#fff; padding:1.1rem 1.2rem; }
@@ -70,6 +75,10 @@
       <p class="small">Pick a claim to see its academic proof and a one-page plain-speak explainer.</p>
     </div>
   </div>
+
+  <h2 style="margin-top:2rem">Who relies on these fundamentals</h2>
+  <p class="small">Each proof is a load-bearing constraint. Pick a field to see which proofs it stands on — tap a proof to open it.</p>
+  <div id="fields" class="fields"></div>
 
   <div class="actions">
     <a class="btn" href="./mera-3d.html">See the geometry in 3D</a>
@@ -154,6 +163,20 @@ const CATS = {
   'landscape': { label:'String landscape', desc:"The founding spine — the theorem tower: the tadpole is the unique invariant (Mitchell's Uniqueness), the invariant ring has one generator (Constraint-First), and no exact selector can single out a vacuum (Completeness). The machine-checked core behind 'relations, never values'." }
 };
 
+const FIELDS = [
+ { f:'Quantum cryptography', p:['no-cloning','bell-classical','chsh','locc-no-entanglement'], w:"QKD's security IS the no-cloning theorem; device-independent security rests on Bell/CHSH." },
+ { f:'Quantum error correction', p:['clifford-polynomial','entanglement-area'], w:"Stabilizer codes are the Clifford class; the area law is why correction is tractable." },
+ { f:'Quantum computing & benchmarking', p:['clifford-polynomial','chsh','bell-classical','no-cloning'], w:"The Clifford/T split is the honest boundary of quantum advantage." },
+ { f:'Quantum information & foundations', p:['born-rule','pbr','no-cloning','no-broadcasting','mermin','pr-box','locc-no-entanglement'], w:"The provable walls of what information is: the Born rule is forced, the state is real, copying is impossible." },
+ { f:'Condensed matter / tensor networks', p:['mera-hyperbolic','entanglement-area'], w:"Critical systems are MERA; the area law is why tensor networks work." },
+ { f:'Holography / AdS–CFT', p:['mera-hyperbolic','entanglement-area','locc-no-entanglement'], w:"Entanglement = geometry is the kernel-checked core of AdS/CFT." },
+ { f:'Gravity & cosmology', p:['lovelock','bianchi','wdw','dirac','adm','coupling-free','gravity-quantum'], w:"The forced constraints any quantum-gravity theory must satisfy." },
+ { f:'Particle physics / beyond-SM', p:['anomaly-cancellation','hypercharge-uniqueness','generation-free','sm-index','the-19'], w:"What the SM forces vs leaves free is the honest boundary of prediction." },
+ { f:'String landscape / ToE', p:['mitchell-uniqueness','constraint-first','completeness'], w:"The theorem tower: unique invariant, one generator, no exact selector." },
+ { f:'Computational complexity', p:['clifford-polynomial'], w:"The Clifford class is the canonical classically-simulable quantum class." },
+ { f:'Machine learning (tensor networks)', p:['entanglement-area','mera-hyperbolic'], w:"Tensor networks in ML work because low-entanglement states are compressible." },
+];
+
 const EXTRA = {"chsh": "Proves the bound 2√2, not which state reaches it, nor the value of any specific experiment.", "bell-classical": "Proves the classical wall is 2, not that every classical strategy achieves it.", "no-cloning": "Proves exact cloning is impossible, not that approximate cloning is useless (approximate cloners do exist).", "no-broadcasting": "Proves exact broadcasting is impossible, not that approximate broadcasting is.", "born-rule": "Proves the rule is unique, not which probabilities any specific state gives.", "pbr": "Proves the state is real, not what the state IS for any particular system.", "mermin": "Proves non-contextual assignment is impossible, not that measurement is deterministic.", "locc-no-entanglement": "Proves classical channels cannot CREATE entanglement, not that they cannot distribute it.", "clifford-polynomial": "Proves the Clifford class is easy, not that all quantum circuits are easy (T gates are not).", "entanglement-area": "Proves the bound D^m, not the exact entropy of any specific state.", "mera-hyperbolic": "Proves the discrete hyperbolicity, not the continuous N→∞ AdS limit (still open).", "coupling-free": "Proves G is not derived, not that G has no origin — only that it is not forced.", "gravity-quantum": "Proves the coupling must be quantum, not WHICH quantum theory of gravity.", "lovelock": "Proves uniqueness in 4 dimensions, not in higher dimensions (Lovelock terms exist there).", "bianchi": "Proves the identity, not that it alone picks the physics.", "wdw": "Proves states sit at Ĥ=0, not what time IS — that is the open problem.", "dirac": "Proves the algebra closes, not that it is the only closed algebra.", "adm": "Proves the constraints, not the value of any coupling.", "hypercharge-uniqueness": "Proves uniqueness up to scale + swap, not the absolute normalization.", "anomaly-cancellation": "Proves cancellation, not that the SM is the only consistent theory.", "generation-free": "Proves N_gen is not fixed by anomalies, not that 3 has no explanation elsewhere.", "the-19": "Proves 19 are free, not that a deeper theory cannot RELATE them — only that it cannot derive their values.", "mitchell-uniqueness": "Proves the tadpole is the unique bilinear invariant, not that it fixes the vacuum (many vacua share a tadpole).", "constraint-first": "Proves the invariant ring has one generator, not that no statistical or moduli-dependent selector exists (those are not ruled out).", "completeness": "Proves no EXACT invariant selector exists, not that statistical selection is impossible (it is not).", "pr-box": "Proves the PR box saturates no-signaling at 4, not that the PR box is physically realizable (it is not in quantum theory).", "sm-index": "Proves N_gen is a protected index, not that 3 is derived from the index (it is still a free label)."};
 
 const list = document.getElementById('list');
@@ -231,10 +254,29 @@ function downloadClaim(id) {
   a.click();
 }
 
+const fieldsEl = document.getElementById('fields');
+function renderFields() {
+  fieldsEl.innerHTML = '';
+  FIELDS.forEach(f => {
+    const d = document.createElement('div');
+    d.className = 'field';
+    d.innerHTML = `<h3>${f.f}</h3><p>${f.w}</p>`;
+    f.p.forEach(id => {
+      const t = document.createElement('span');
+      t.className = 'tag';
+      t.textContent = id.replace(/-/g,' ');
+      t.onclick = () => { const c = CLAIMS.find(x => x.id === id); if (c) { activeCat='all'; renderCats(); renderList(''); renderClaim(c); window.scrollTo({top:0,behavior:'smooth'}); } };
+      d.appendChild(t);
+    });
+    fieldsEl.appendChild(d);
+  });
+}
+
 q.addEventListener('input', () => renderList(q.value.trim().toLowerCase()));
 renderCats();
 catdesc.textContent = 'Every claim, across all four fields. Pick a field, or search.';
 renderList('');
+renderFields();
 </script>
 </body>
 </html>
