@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MERA — the causal cone is a discrete hyperbolic space</title>
+<style>
+  :root { --ink:#1a1f2e; --muted:#5a6072; --accent:#142a5e; --line:#e3e6ee; --bg:#fbfbfd; }
+  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; }
+  .wrap { max-width:900px; margin:0 auto; padding:2rem 1.5rem 3rem; }
+  h1 { font-size:1.9rem; letter-spacing:-.02em; color:var(--accent); margin:.2rem 0 .4rem; }
+  .kicker { margin:0; font:600 .72rem monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  p { margin:.6rem 0; }
+  .muted { color:var(--muted); }
+  .fig { border:1px solid var(--line); border-radius:10px; background:#fff; padding:.6rem; margin:1.2rem 0; }
+  svg { display:block; width:100%; height:auto; }
+  .legend { display:flex; flex-wrap:wrap; gap:.5rem 1.2rem; font-size:.82rem; margin:.6rem 0; }
+  .sw { display:inline-block; width:.8rem; height:.8rem; border-radius:50%; vertical-align:middle; margin-right:.3rem; }
+  table { border-collapse:collapse; width:100%; margin:1rem 0; background:#fff; }
+  th,td { text-align:left; padding:.5rem .7rem; border-bottom:1px solid var(--line); font-size:.9rem; }
+  th { background:#f4f6fa; color:var(--accent); }
+  .callout { border-left:4px solid var(--accent); background:#eef1f8; padding:.9rem 1.1rem; border-radius:0 8px 8px 0; margin:1.2rem 0; }
+  .links a { color:var(--accent); font-weight:600; text-decoration:none; margin-right:1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">entanglement = geometry, kernel-checked</p>
+  <h1>The MERA causal cone is a discrete hyperbolic space</h1>
+  <p class="muted">The MERA tensor network embeds a binary tree in the <strong>Poincaré disk</strong> — the hyperbolic plane. Level <code>k</code> carries <code>2^k</code> sites on a circle of hyperbolic radius <code>k</code>: exponential volume, logarithmic depth. This is the picture behind <em>"entanglement = geometry"</em> (Swingle's MERA = AdS), now a machine-checked theorem (DOI 10.5281/zenodo.24045807).</p>
+
+  <div class="fig">
+    <svg id="disk" viewBox="-1.12 -1.12 2.24 2.24" role="img" aria-label="Binary tree in the Poincaré disk"></svg>
+  </div>
+
+  <div class="legend">
+    <span><span class="sw" style="background:#142a5e"></span>a tensor (a site)</span>
+    <span><span class="sw" style="background:#d0d7e4"></span>the geodesic (the causal cone)</span>
+    <span><span class="sw" style="background:#eef1f8"></span>a level — the circle of hyperbolic radius k</span>
+    <span><span class="sw" style="background:#1a9d8f"></span>the boundary = the UV (physical) layer</span>
+  </div>
+
+  <table>
+    <thead><tr><th>what you are seeing</th><th>the theorem</th></tr></thead>
+    <tbody>
+      <tr><td>level k has <code>2^k</code> sites, doubling each step</td><td><code>causalConeDoubles</code> — <code>2^(k+1) = 2·2^k</code></td></tr>
+      <tr><td>the ball of radius r has <code>2^(r+1)−1</code> sites (exponential, not Euclidean)</td><td><code>ballVolumeExponential</code></td></tr>
+      <tr><td>the whole tree reaches N sites in <code>⌈log₂ N⌉</code> layers</td><td><code>meraDepth</code></td></tr>
+      <tr><td>entanglement across a cut is bounded by the cut area <code>D^m</code></td><td><code>bondConfigurations</code> (the area law)</td></tr>
+      <tr><td>the tree metric satisfies the four-point condition</td><td><code>treeDist_four_point</code> (Gromov 0-hyperbolicity)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p><strong>What the disk shows.</strong> The centre is the IR (one coarse-grained state); the rim is the UV (the physical boundary). A local operator near the rim touches only <code>O(log N)</code> tensors — the logarithmic causal cone — which is why the geometry is <em>hyperbolic</em>, not flat. Exponential volume, logarithmic depth, and the area law are the three finite facts that make it a discretization of the hyperbolic plane.</p>
+  </div>
+
+  <p class="links"><a href="./index.html">← back to PACLAND</a><a href="https://doi.org/10.5281/zenodo.24045807">the paper (DOI)</a><a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/pacland-proof/PaclandProof/QM">the Lean proofs</a></p>
+  <p class="muted">Not shown (and not claimed): the continuous N → ∞ limit to the smooth AdS metric ds² = dr² + sinh²(r) dθ² — gated on a differential-geometry stack.</p>
+</div>
+
+<script>
+(function () {
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('disk');
+  const maxDepth = 7;         // 2^7 = 128 boundary sites
+  const step = 0.55;          // hyperbolic radius per level
+  const R = 1.0;              // the boundary
+
+  // the boundary circle
+  const circle = document.createElementNS(NS, 'circle');
+  circle.setAttribute('cx', 0); circle.setAttribute('cy', 0); circle.setAttribute('r', R);
+  circle.setAttribute('fill', 'none'); circle.setAttribute('stroke', '#1a9d8f');
+  circle.setAttribute('stroke-width', 0.02); circle.setAttribute('stroke-dasharray', '0.03 0.02');
+  svg.appendChild(circle);
+
+  // level circles (horocycles)
+  for (let k = 0; k <= maxDepth; k++) {
+    const r = Math.tanh(k * step / 2);
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', 0); c.setAttribute('cy', 0); c.setAttribute('r', r);
+    c.setAttribute('fill', 'none'); c.setAttribute('stroke', '#eef1f8');
+    c.setAttribute('stroke-width', 0.01);
+    svg.appendChild(c);
+  }
+
+  function pos(depth, idx) {
+    const r = Math.tanh(depth * step / 2);
+    const th = 2 * Math.PI * (idx + 0.5) / Math.pow(2, depth);
+    return [r * Math.cos(th), r * Math.sin(th)];
+  }
+
+  // edges
+  for (let d = 0; d < maxDepth; d++) {
+    const n = Math.pow(2, d);
+    for (let i = 0; i < n; i++) {
+      const [px, py] = pos(d, i);
+      for (let b = 0; b < 2; b++) {
+        const [cx, cy] = pos(d + 1, 2 * i + b);
+        const line = document.createElementNS(NS, 'line');
+        line.setAttribute('x1', px); line.setAttribute('y1', py);
+        line.setAttribute('x2', cx); line.setAttribute('y2', cy);
+        line.setAttribute('stroke', '#d0d7e4'); line.setAttribute('stroke-width', 0.006);
+        svg.appendChild(line);
+      }
+    }
+  }
+
+  // nodes, sized and coloured by depth
+  for (let d = 0; d <= maxDepth; d++) {
+    const n = Math.pow(2, d);
+    for (let i = 0; i < n; i++) {
+      const [x, y] = pos(d, i);
+      const node = document.createElementNS(NS, 'circle');
+      node.setAttribute('cx', x); node.setAttribute('cy', y);
+      node.setAttribute('r', 0.016 + 0.004 * (maxDepth - d));  // bigger near the IR
+      node.setAttribute('fill', '#142a5e');
+      node.setAttribute('fill-opacity', 0.85);
+      const title = document.createElementNS(NS, 'title');
+      title.textContent = `level ${d} — one of ${Math.pow(2, d)} sites`;
+      node.appendChild(title);
+      svg.appendChild(node);
+    }
+  }
+})();
+</script>
+</body>
+</html>
