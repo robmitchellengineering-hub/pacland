@@ -121,4 +121,33 @@ theorem prod_mul_disjoint_support_full (σ τ : Equiv.Perm (Fin n)) (h : σ.Disj
         rw [h.commute]
       _ = ∏ i ∈ τ.support, A (τ i) i := prod_mul_disjoint_support τ σ h.symm A
 
+/-- Step 2 final (the pairing): reversing one odd cycle `c` inside a disjoint product `c * τ`
+keeps the sign but negates the Leibniz product over the support, so the two terms cancel in the
+determinant sum. This is the odd-cycle cancellation. -/
+theorem twin_sign_eq_product_neg (c τ : Equiv.Perm (Fin n)) (hdisj : c.Disjoint τ)
+    (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.transpose = -A) (hodd : Odd c.support.card) :
+    ((Equiv.Perm.sign (c⁻¹ * τ) : ℤ) : ℂ) * (∏ i ∈ (c⁻¹ * τ).support, A ((c⁻¹ * τ) i) i)
+      = - (((Equiv.Perm.sign (c * τ) : ℤ) : ℂ) * (∏ i ∈ (c * τ).support, A ((c * τ) i) i)) := by
+  have hsign : (Equiv.Perm.sign (c⁻¹ * τ) : ℤ) = Equiv.Perm.sign (c * τ) := by
+    rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_mul, Equiv.Perm.sign_inv c]
+  have hdisj_inv : c⁻¹.Disjoint τ := by
+    intro x
+    rcases hdisj x with hc | hτ
+    · left
+      exact ((Equiv.apply_eq_iff_eq_symm_apply (f := c)).mp hc).symm
+    · right
+      exact hτ
+  have hprod : (∏ i ∈ (c⁻¹ * τ).support, A ((c⁻¹ * τ) i) i)
+      = - (∏ i ∈ (c * τ).support, A ((c * τ) i) i) := by
+    rw [prod_mul_disjoint_support_full c⁻¹ τ hdisj_inv A, prod_mul_disjoint_support_full c τ hdisj A]
+    rw [Equiv.Perm.support_inv c]
+    have hneg : (∏ i ∈ c.support, A (c⁻¹ i) i) = - (∏ i ∈ c.support, A (c i) i) := by
+      rw [← neg_neg (∏ i ∈ c.support, A (c⁻¹ i) i)]
+      congr 1
+      exact (prod_support_apply_eq_neg_inv_of_odd c A hA hodd).symm
+    rw [hneg]
+    ring
+  rw [hsign, hprod]
+  ring
+
 end QM
