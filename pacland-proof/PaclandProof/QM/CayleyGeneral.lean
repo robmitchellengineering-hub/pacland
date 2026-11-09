@@ -150,4 +150,14 @@ theorem twin_sign_eq_product_neg (c τ : Equiv.Perm (Fin n)) (hdisj : c.Disjoint
   rw [hsign, hprod]
   ring
 
+/-- Step 2 final (ingredient): an odd-length cycle has sign +1 — `IsCycle.sign` gives
+`-(-1)^#support`, and for odd support that is `-(-1) = 1`. Combined with `sign_inv_eq_sign`, this is
+why the reverse-twin keeps the same sign. -/
+theorem sign_odd_cycle_eq_one {m : ℕ} (c : Equiv.Perm (Fin m)) (hc : c.IsCycle)
+    (hodd : Odd c.support.card) :
+    (Equiv.Perm.sign c : ℤ) = 1 := by
+  rw [hc.sign]
+  rw [hodd.neg_one_pow]
+  norm_num
+
 end QM
