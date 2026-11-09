@@ -34,31 +34,36 @@ noncomputable def pathAngle : List Bool → ℝ
 distance `|s|` from the base `(1,0,0)` and angle `pathAngle s` — the exponential/horocyclic embedding
 of the tree into H². This is the map the QI inequalities (Rung 1's "done when") are about. -/
 noncomputable def treeToH2 (s : List Bool) : Hyperboloid :=
-  ⟨(Real.cosh (s.length : ℝ), Real.sinh (s.length : ℝ) * Real.cos (pathAngle s),
-     Real.sinh (s.length : ℝ) * Real.sin (pathAngle s)), by
+  ⟨(Real.cosh ((Real.log 2) * (s.length : ℝ)),
+     Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.cos (2 * Real.pi * pathAngle s),
+     Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.sin (2 * Real.pi * pathAngle s)), by
      constructor
      · calc
-         -(Real.cosh (s.length : ℝ)) ^ 2 + (Real.sinh (s.length : ℝ) * Real.cos (pathAngle s)) ^ 2
-           + (Real.sinh (s.length : ℝ) * Real.sin (pathAngle s)) ^ 2
-           = -(Real.cosh (s.length : ℝ)) ^ 2 + (Real.sinh (s.length : ℝ)) ^ 2
-               * ((Real.cos (pathAngle s)) ^ 2 + (Real.sin (pathAngle s)) ^ 2) := by ring
-         _ = -(Real.cosh (s.length : ℝ)) ^ 2 + (Real.sinh (s.length : ℝ)) ^ 2 := by
+         -(Real.cosh ((Real.log 2) * (s.length : ℝ))) ^ 2
+           + (Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.cos (2 * Real.pi * pathAngle s)) ^ 2
+           + (Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.sin (2 * Real.pi * pathAngle s)) ^ 2
+           = -(Real.cosh ((Real.log 2) * (s.length : ℝ))) ^ 2
+             + (Real.sinh ((Real.log 2) * (s.length : ℝ))) ^ 2
+               * ((Real.cos (2 * Real.pi * pathAngle s)) ^ 2
+                 + (Real.sin (2 * Real.pi * pathAngle s)) ^ 2) := by ring
+         _ = -(Real.cosh ((Real.log 2) * (s.length : ℝ))) ^ 2
+             + (Real.sinh ((Real.log 2) * (s.length : ℝ))) ^ 2 := by
                rw [Real.cos_sq_add_sin_sq]
                ring
          _ = -1 := by
-               have h := Real.cosh_sq_sub_sinh_sq (s.length : ℝ)
+               have h := Real.cosh_sq_sub_sinh_sq ((Real.log 2) * (s.length : ℝ))
                nlinarith
-     · exact Real.cosh_pos (s.length : ℝ)⟩
+     · exact Real.cosh_pos ((Real.log 2) * (s.length : ℝ))⟩
 
 
 /-- **The map is radially isometric** (the first QI inequality's core). The hyperbolic distance from
 the root to a vertex is exactly its depth `|s|` — the map encodes the tree's radial coordinate as the
 hyperbolic distance from the base point. -/
 theorem treeToH2_depth (s : List Bool) :
-    hyperbolicDist (treeToH2 []) (treeToH2 s) = (s.length : ℝ) := by
+    hyperbolicDist (treeToH2 []) (treeToH2 s) = (Real.log 2) * (s.length : ℝ) := by
   dsimp [hyperbolicDist, treeToH2, minkowski]
   simp [pathAngle, Real.sinh_zero, Real.cosh_zero]
-  exact Real.arcosh_cosh (by exact_mod_cast (Nat.zero_le s.length))
+  exact Real.arcosh_cosh (by positivity)
 
 
 /-- **The map is injective in depth.** Vertices at different depths map to different hyperboloid
@@ -70,7 +75,8 @@ theorem treeToH2_depth_inj (s t : List Bool) (h : s.length ≠ t.length) :
   have hd : hyperbolicDist (treeToH2 []) (treeToH2 s) = hyperbolicDist (treeToH2 []) (treeToH2 t) := by
     rw [heq]
   rw [treeToH2_depth, treeToH2_depth] at hd
-  exact h (by exact_mod_cast hd)
+  have hlog : (Real.log 2 : ℝ) ≠ 0 := ne_of_gt (Real.log_pos (by norm_num : (1 : ℝ) < 2))
+  exact h (by exact_mod_cast (mul_left_cancel₀ hlog hd))
 
 
 
@@ -129,35 +135,40 @@ theorem pathAngle_inj {s t : List Bool} (h : pathAngle s = pathAngle t) (hl : s.
 /-- The Minkowski product of two tree images: `-cosh r₁ cosh r₂ + sinh r₁ sinh r₂ cos(θs - θt)`. -/
 theorem minkowski_treeToH2 (s t : List Bool) :
     minkowski (treeToH2 s).1 (treeToH2 t).1 =
-      -(Real.cosh (s.length : ℝ)) * Real.cosh (t.length : ℝ)
-        + (Real.sinh (s.length : ℝ)) * Real.sinh (t.length : ℝ)
-          * Real.cos (pathAngle s - pathAngle t) := by
+      -(Real.cosh ((Real.log 2) * (s.length : ℝ))) * Real.cosh ((Real.log 2) * (t.length : ℝ))
+        + (Real.sinh ((Real.log 2) * (s.length : ℝ))) * Real.sinh ((Real.log 2) * (t.length : ℝ))
+          * Real.cos (2 * Real.pi * (pathAngle s - pathAngle t)) := by
   dsimp [treeToH2, minkowski]
+  rw [← show 2 * Real.pi * pathAngle s - 2 * Real.pi * pathAngle t =
+      2 * Real.pi * (pathAngle s - pathAngle t) by ring]
   rw [Real.cos_sub]
   ring
 
 /-- **The diameter bound** (the upper half of the QI distortion): the hyperbolic distance between
 two tree images is at most the sum of their depths — the coarse `hyperbolicDist ≤ |s| + |t|` bound. -/
 theorem hyperbolicDist_le_add (s t : List Bool) :
-    hyperbolicDist (treeToH2 s) (treeToH2 t) ≤ (s.length : ℝ) + (t.length : ℝ) := by
+    hyperbolicDist (treeToH2 s) (treeToH2 t) ≤
+      (Real.log 2) * ((s.length : ℝ) + (t.length : ℝ)) := by
   dsimp [hyperbolicDist]
   rw [minkowski_treeToH2]
-  rw [← Real.arcosh_cosh (show 0 ≤ (s.length : ℝ) + (t.length : ℝ) by positivity)]
+  rw [← Real.arcosh_cosh (show 0 ≤ (Real.log 2) * ((s.length : ℝ) + (t.length : ℝ)) by positivity)]
   rw [Real.arcosh_le_arcosh]
   rotate_left
-  · -- 0 < cosh r₁ cosh r₂ - sinh r₁ sinh r₂ cos Δθ
-    have hc : Real.cos (pathAngle s - pathAngle t) ≤ 1 := Real.cos_le_one _
-    have hsinh : 0 ≤ Real.sinh (s.length : ℝ) * Real.sinh (t.length : ℝ) := by positivity
-    have hcs : Real.cosh ((s.length : ℝ) - (t.length : ℝ)) =
-        Real.cosh (s.length : ℝ) * Real.cosh (t.length : ℝ)
-          - Real.sinh (s.length : ℝ) * Real.sinh (t.length : ℝ) := Real.cosh_sub _ _
-    have hone : 1 ≤ Real.cosh ((s.length : ℝ) - (t.length : ℝ)) := Real.one_le_cosh _
+  · -- 0 < cosh r₁ cosh r₂ - sinh r₁ sinh r₂ cos(2π·Δθ)
+    have hc : Real.cos (2 * Real.pi * (pathAngle s - pathAngle t)) ≤ 1 := Real.cos_le_one _
+    have hsinh : 0 ≤ Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.sinh ((Real.log 2) * (t.length : ℝ)) := by positivity
+    have hcs : Real.cosh ((Real.log 2) * (s.length : ℝ) - (Real.log 2) * (t.length : ℝ)) =
+        Real.cosh ((Real.log 2) * (s.length : ℝ)) * Real.cosh ((Real.log 2) * (t.length : ℝ))
+          - Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.sinh ((Real.log 2) * (t.length : ℝ)) := Real.cosh_sub _ _
+    have hone : 1 ≤ Real.cosh ((Real.log 2) * (s.length : ℝ) - (Real.log 2) * (t.length : ℝ)) := Real.one_le_cosh _
     nlinarith [hc, hsinh, hcs, hone]
   · positivity
-  · rw [Real.cosh_add]
-    have hc : -1 ≤ Real.cos (pathAngle s - pathAngle t) :=
-      neg_le_of_abs_le (Real.abs_cos_le_one (pathAngle s - pathAngle t))
-    have hs : 0 ≤ Real.sinh (s.length : ℝ) * Real.sinh (t.length : ℝ) := by positivity
+  · rw [show (Real.log 2) * ((s.length : ℝ) + (t.length : ℝ)) =
+        (Real.log 2) * (s.length : ℝ) + (Real.log 2) * (t.length : ℝ) by ring]
+    rw [Real.cosh_add]
+    have hc : -1 ≤ Real.cos (2 * Real.pi * (pathAngle s - pathAngle t)) :=
+      neg_le_of_abs_le (Real.abs_cos_le_one (2 * Real.pi * (pathAngle s - pathAngle t)))
+    have hs : 0 ≤ Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.sinh ((Real.log 2) * (t.length : ℝ)) := by positivity
     nlinarith [hc, hs]
 
 
