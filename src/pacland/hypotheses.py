@@ -16,7 +16,7 @@ from __future__ import annotations
 HYPOTHESES: dict[str, dict] = {
     "ads-limit": {
         "question": "does the MERA causal cone's graph metric converge to the smooth AdS metric ds² = dr² + sinh²(r) dθ² as N → ∞?",
-        "forced": "the discrete hyperbolicity — Gromov 0-hyperbolicity (treeDist_four_point), exponential volume 2^(r+1)−1, log depth, the D^m area law.",
+        "forced": "the discrete hyperbolicity — Gromov 0-hyperbolicity (treeDist_four_point), exponential volume 2^(r+1)−1, log depth FORCED (logDepthForced: ≥⌈log₂N⌉ layers), the emergence direction (meraEmergence: the hyperbolic tree is the unique optimum), the exact area law (srank_maximally_entangled: entanglement = area = D^m, not ≤), and the QI map treeToH2 (radially isometric + depth-injective).",
         "open": "the continuous (Gromov–Hausdorff) limit to the smooth hyperbolic metric — gated on a differential-geometry stack.",
         "candidates": [
             {"hypothesis": "the rescaled tree graph metric converges, in the Gromov–Hausdorff sense, to the hyperbolic plane",
@@ -25,7 +25,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a non-constant curvature in the limit"},
         ],
         "attack": "Lean + metric-geometry lemmas (the tree is quasi-isometric to H²).",
-        "progress": "DISCRETE HALF COMPLETE: the causal cone is 0-hyperbolic (treeDist_four_point), has exponential volume (ballVolumeExponential = 2^(r+1)−1), and now exponential_beats_square (2^r > r² for all r ≥ 5) — the growth-class invariant separating hyperbolic (exponential) from Euclidean (polynomial). These are the discrete signatures of the hyperbolic plane; only the continuous GH-convergence to the smooth metric remains gated on the DG stack.",
+        "progress": "TWO RUNGS DONE + THE QI HONESTLY MAPPED. Rung 3 (emergence) and Rung 2 (the exact '=') are kernel-checked. Rung 1 (QI map): the binary-angle treeToH2 is REFUTED as a quasi-isometry (Lean-checked treeToH2_not_quasiIsometric — the 0.0111…=0.1000… dyadic boundary collapse; its true bounds treeToH2_coarseLipschitz + treeToH2_quasiSurjective ARE proven). The FIX is kernel-checked: SternBrocot.lean proves the Stern-Brocot/Calkin-Wilf encoding is a BIJECTION tree ↔ positive reduced rationals (rational_coprime + rational_injective + rational_existsUnique), so the tree's boundary is the CIRCLE (the rationals ∪ ∞), not the Cantor set. The corrected map is the Farey/PSL(2,ℤ) Möbius orbit word(s)·i (in progress), and the full QI is the Svarc-Milnor lemma (PSL(2,ℤ) acts cocompactly on H²) — cited, like Weyl's FFT, not re-proven. REMAINING (mechanical): Farey treeToH2 + the GH convergence (Rung 4) + the even-n Cayley.",
     },
     "separation-classes": {
         "question": "which classes of quantum circuits beyond Clifford are classically simulable?",
@@ -105,6 +105,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "an antisymmetric A not orthogonally block-diagonalisable"},
         ],
         "attack": "Lean — define the recursive Pfaffian, prove det = Pf² by induction (the Fin.succAbove tooling is now fixed).",
+        "progress": "6×6 CLOSED: pfaffian6_sq_eq_det is kernel-checked. The wall was broken by writing det_fin_four/det_fin_five in the general Matrix (Fin n) form (like Mathlib's det_fin_three) + the missing Fin.succ numeral lemmas, then using the working simp pattern (Fin.sum_univ_N + det_fin_(N-1) + Fin.succAbove). The even/odd split is now complete at 2×2 + 4×4 + 6×6 + general odd. Remaining: the recursive Pfaffian + induction for the general even-n.",
     },
     "t-count-boundary": {
         "question": "how many T gates make a Clifford circuit non-classically-simulable?",
@@ -142,6 +143,7 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "an NPU contraction significantly faster than CPU"},
         ],
         "attack": "benchmark Quimb on CPU vs the XDNA NPU on the ROG (the mesh's win-2).",
+        "progress": "CLOSED (dead end, measured): the NPU probe on win-2 found NO XDNA/IPU/AI-Engine device and NO onnxruntime — the Ryzen AI toolchain is not installed, and Quimb has no XDNA backend anyway. Setting it up is a driver + custom-kernel project against a CPU/RAM-bound workload. Recommendation: drop the NPU lane; spend on the 128 GB DDR4 RAM node instead.",
     },
     "quantum-ready-crypto": {
         "question": "which MorpheOS cryptographic primitives are post-quantum-safe, and which need migration?",

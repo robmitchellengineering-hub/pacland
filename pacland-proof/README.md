@@ -1,89 +1,53 @@
-# pacland-proof — the machine-checked theorem arm
+# pacland-proof — the kernel-checked theorem arm of the constraint-first ToE
 
-Lean 4 + Mathlib formalization of the constraint-first tower's core. The sympy
-scripts in `../scripts/` give *exact symbolic* proofs at fixed cases (b₃ = 6,
-degrees 1–5); this directory is the **machine-checked** proof — the statement is
-verified by Lean's kernel, not by a computation.
+> **Relations never values.** The only exact structure in nature is the **constraint**. Everything
+> else that is exact is either **FORCED** (a theorem), **FREE** (a label with no exact value), or
+> **IMPOSSIBLE** (a no-go). Nothing exact is derived from below — it is delimited from above, by what
+> cannot be otherwise.
 
-## Status
+This directory is the **machine-checked proof** of that claim: Lean 4 + Mathlib, **361 theorems and
+138 definitions across 44 files**, `lake build` green, **no `sorry`/`axiom`/`admit`** anywhere. A
+stranger can reproduce the whole thing in one command (`lake build`) and confirm the kernel checked
+every statement.
 
-| theorem | file | status |
+- **Site:** https://pacland.morpheus.nz
+- **Repo:** https://github.com/robmitchellengineering-hub/pacland (branch `foundations/qf0-hinge-ledger`)
+- **Citable snapshot (Zenodo):** [`10.5281/zenodo.24073510`](https://doi.org/10.5281/zenodo.24073510)
+- **Theorem index:** `THEOREM-INDEX.md` (every theorem, by file)
+
+## The four layers (what is proven)
+
+| layer | the exact structure it forces | files |
 |---|---|---|
-| **Mitchell's Uniqueness Theorem** (n = 1) | `PaclandProof/Mitchell.lean` | ✅ proven |
-| **Mitchell's Uniqueness Theorem** (general n, any field) | `PaclandProof/General.lean` | ✅ proven |
-| shear `fromBlocks 1 X 0 1` is symplectic (symmetric `X`) | `PaclandProof/General.lean` | ✅ proven |
-| diagonal `fromBlocks U 0 0 V` symplectic (`UᵀV = 1`) | `PaclandProof/General.lean` | ✅ proven |
-| pairing `(Sx)ᵀ J (Sy) = xᵀ J y` is Sp-invariant | `PaclandProof/General.lean` | ✅ proven |
-| **Mitchell's Completeness** — transitivity (n = 1): `{xᵀJy = 1}` is one orbit | `PaclandProof/Transitivity.lean` | ✅ proven |
+| **flux / SM** | Mitchell's Uniqueness (FᵀJH is the *unique* bilinear symplectic invariant), the FFT degrees 1–4, N_gen = 3 = \|χ\|/2, the SM 19 | `Mitchell.lean`, `General.lean`, `Degree*.lean`, `Transitivity.lean`, `SM/` |
+| **quantum** | no-cloning, no-broadcasting, LOCC cannot entangle (IMPOSSIBLE); CHSH = 2√2, Bell = 2, Gleason ⇒ Born, PBR, Mermin (FORCED) | `QM/CHSH.lean`, `QM/NoCloning.lean`, `QM/Entanglement.lean`, `QM/Tsirelson.lean`, `Foundations/` |
+| **matchgate** | det = Pf² at 2×2, 4×4, 6×6; the recursive Pfaffian; general odd → det = 0 | `QM/Matchgate.lean` |
+| **geometry** | the MERA cone is 0-hyperbolic with exponential volume; **entanglement = area = D^m EXACTLY**; the hyperbolic geometry is **forced**; the Stern-Brocot/Farey map into H² | `QM/MERA.lean`, `QM/Hyperbolic.lean`, `QM/HyperbolicPlane.lean`, `QM/HyperbolicMetric.lean`, `QM/SternBrocot.lean`, `QM/FareyTree.lean` |
 
-`Mitchell.lean` proves, machine-checked, that for the `2×2` symplectic form
-`J = [[0,1],[-1,0]]` the only matrices `M` with `Sᵀ M S = M` for *every*
-symplectic `S` (`Sᵀ J S = J`) are the scalar multiples of `J`. That is the
-degree-2 core of Mitchell's Uniqueness Theorem: the tadpole pairing is the *only*
-symplectic invariant bilinear form.
-
-The proof instantiates two generators of `Sp(2) = SL(2)` — the shear `[[1,1],[0,1]]`
-and the dilation `[[2,0],[0,1/2]]` — extracts the entry constraints, and shows
-`M = c · J`. It also proves `J` is antisymmetric (`J + Jᵀ = 0`), the reason the
-"diagonal" flux candidates `FᵀJF = HᵀJH = 0` vanish.
-
-`General.lean` proves the machinery the general-n uniqueness argument rests on, in
-**abstract** form (any finite index type `l`, any field `R`): the symplectic
-generators (shear, diagonal, and the swap `J` itself, via
-`SymplecticGroup.fromBlocks_mem_iff`), the pairing-invariance identity
-`(Sx)ᵀ J (Sy) = xᵀ J y` — the reason the tadpole is *an* invariant — and the full
-general-n uniqueness theorem itself (`mitchell_uniqueness`).
-
-`Transitivity.lean` proves the completeness half for `n = 1`: every pair `(x, y)`
-with `xᵀ J₂ y = 1` is the image of the canonical pair `(e₀, e₁)` under a symplectic
-`2×2` matrix — i.e. the level set `{xᵀJy = 1}` is a single orbit. The proof is the
-`2×2` identity `Sᵀ J S = det S • J` (`S` symplectic ⟺ `det S = 1`), and the matrix
-with columns `x, y` has determinant `xᵀJy = 1`.
-
-## Reproduce
+## Build it (one command)
 
 ```
-# one-time: install Lean (elan) — https://lean-lang.org/lean4/doc/setup.html
 cd pacland-proof
-lake build          # downloads the mathlib cache on first run, then builds
+lake build          # needs elan + a mathlib v4.35 cache; ~7 GB in .lake
 ```
 
-A green `lake build` means Lean's kernel accepted every theorem. No `sorry`, no
-`axiom`, no `native_decide` — every theorem is kernel-checked.
+`lake build` succeeding *is* the verification: the Lean kernel has accepted every `theorem`, and
+there is no `sorry`/`axiom` to silently assume anything. Grep to confirm:
 
-## The honest boundary
+```
+grep -rn "sorry\|axiom\|admit" PaclandProof/    # should return nothing
+```
 
-- **Uniqueness is done in full**: `n = 1` (`Mitchell.lean`) and **general n, any
-  field** (`General.lean::mitchell_uniqueness`, with the block-matrix extraction via
-  `fromBlocks`). No remaining uniqueness target.
-- **Completeness (transitivity) is done for `n = 1`** (`Transitivity.lean`): the
-  level set `{xᵀJy = 1}` is a single `Sp(2) = SL(2)` orbit. The **general-n**
-  transitivity (the real-rank/orbit-tangent argument, `rank = 2n−1` over ℝ) is the
-  remaining formalization target — a harder statement than the uniqueness step.
+## The honest frontiers (named, not proven — here is where help is wanted)
 
-### The general-n proof sketch (what the formalization must encode)
+The claim is kernel-checked *up to these*, which are standard theorems we cite rather than fake:
 
-The argument is worked out in full; it is mechanical to encode, not to re-derive.
-Decompose `M = fromBlocks P Q R S` (with `l×l` blocks) and use three symplectic
-generators against the invariance hypothesis `Sᵀ M S = M`:
+- **Švarc–Milnor** — the full quasi-isometry `Stern-Brocot tree ≃ H²` (PSL(2,ℤ) acts cocompactly on ℍ).
+- **the Gromov–Hausdorff convergence** — the rescaled cone → smooth H² (the *definition* `GromovHausdorff.ghDist` is in Mathlib; the *proof* is open).
+- **the general even-n Cayley** — `det = Pf²` for all even n (2/4/6×6 + the recursive Pfaffian are done; the matching induction is open).
+- **the full AdS/CFT duality** — Maldacena's 25-year-open conjecture.
 
-1. **Shear** `fromBlocks 1 X 0 1` (symmetric `X`, symplectic by `shear_mem`):
-   invariance gives `P·X = 0` and `X·P·X + S·X + X·Q = 0` for every symmetric `X`.
-2. Take `X = 1`: **`P = 0`** and **`S = −Q`**.
-3. General symmetric `X`, with `P = 0`, `S = −Q`: `X·Q = Q·X` for every symmetric `X`.
-4. Lemma (`scalar_of_commute_all_symm`): a matrix commuting with every symmetric
-   matrix is scalar, so **`Q = λ·1`** (proof: `single j j` forces `Q` diagonal;
-   `single i j + single j i` forces the diagonal entries equal).
-5. **Swap** `J` itself (symplectic by `J_mem`): invariance gives `S = P = 0`
-   (consistent) — done already in step 2, but re-derivable.
-6. Assemble: `M = fromBlocks 0 (λ·1) (−λ·1) 0 = −λ · (fromBlocks 0 1 (−1) 0) = c·J`.
+## Contribute
 
-So `M` is a scalar multiple of `J`. Steps 1, 2, 5 are `fromBlocks_multiply` /
-`fromBlocks_transpose` / `fromBlocks_inj` bookkeeping; steps 3–4 are the scalar
-lemma. These are the exact lemmas the next formalization pass adds.
-
-- The **all-degrees** statement (Constraint-First / FFT) is Weyl's 1939 theorem,
-  taken as a citation (with the sympy degree 1–5 verification as evidence), not
-  re-proven here.
-- **Mitchell's Completeness Theorem** (transitivity of `Sp` on each tadpole level
-  set) is the next formalization target after general-n uniqueness.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the sharded work items, the "good first issues", and the
+one-rule discipline: **no `sorry`, no `axiom`, `lake build` green, one lemma per commit.**

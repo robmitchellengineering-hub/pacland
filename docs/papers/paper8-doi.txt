@@ -1,0 +1,2 @@
+TITLE: SEXTANT: a kernel-checked referee for quantum and physical claims (FORCED / FREE / IMPOSSIBLE)
+DOI: 10.5281/zenodo.24062191

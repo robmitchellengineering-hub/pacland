@@ -115,6 +115,7 @@ h2{scroll-margin-top:6rem}
     <a href="./energy.html">energy</a>
     <a href="#trust">trust board</a>
     <a href="./verify.html">verification index</a>
+    <a href="#contribute">contribute</a>
     <a class="find" href="./all.html">find anything →</a>
   </nav>
 <section class="hero">
@@ -128,9 +129,21 @@ h2{scroll-margin-top:6rem}
     <a class="btn" href="#what">What it is</a>
     <a class="btn" href="#calculators">Try the calculators</a>
     <a class="btn" href="./viz.html">See the 3D geometry</a>
+    <a class="btn" href="#contribute">Contribute — prove the ToE</a>
     <a class="btn ghost" href="./all.html">Find anything →</a>
   </p>
 </section>
+
+<div class="callout" id="contribute">
+  <p><strong>Contribute — the ToE is kernel-checked and open.</strong> 361 theorems, 28 claims, no <code>sorry</code>. Pick a good-first issue, or take on one of the three open frontiers: Švarc–Milnor, the even-n Cayley, the Gromov–Hausdorff convergence.</p>
+  <p class="hero-actions">
+    <a class="btn" href="https://github.com/robmitchellengineering-hub/pacland/blob/foundations/qf0-hinge-ledger/pacland-proof/README.md">the proof arm — 361 theorems</a>
+    <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/blob/foundations/qf0-hinge-ledger/pacland-proof/CONTRIBUTING.md">how to contribute</a>
+    <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/issues">pick an issue</a>
+    <a class="btn ghost" href="./node.html">run the SEXTANT node</a>
+    <a class="btn ghost" href="https://doi.org/10.5281/zenodo.24073510">cite it — Zenodo</a>
+  </p>
+</div>
 
 <div class="grid grid--3" id="what">
   <div class="card">
@@ -373,7 +386,7 @@ the formal record: <a href="https://github.com/robmitchellengineering-hub/paclan
       <div class="card">
         <h3>String landscape</h3>
         <p><a href="#arc">the arc</a> · <a href="#theorems">theorems</a> · <a href="#sm">SM frontier</a> · <a href="#results">results</a> · <a href="#boundary">boundary map</a> · <a href="#lean">Lean proofs</a></p>
-        <p><a href="#published">the papers (6)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf">explainer (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf">what &amp; why (PDF)</a> · <a href="https://doi.org/10.5281/zenodo.23497239">published theorem</a></p>
+        <p><a href="#published">the papers (9)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf">explainer (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf">what &amp; why (PDF)</a> · <a href="https://doi.org/10.5281/zenodo.23497239">published theorem</a></p>
       </div>
       <div class="card">
         <h3>Climate</h3>
@@ -613,7 +626,7 @@ sextant-node   # → open http://127.0.0.1:8090</code></pre>
         <tr><td><strong>FFT slice, degree 4</strong> — only N² at quartic (Weyl + shear reduce the 9 weight-0 monomials to 1)</td><td><code>PaclandProof/DegreeFour.lean</code></td><td><span class="tag">✅ machine-checked</span></td></tr>
       </tbody>
     </table>
-    <p><strong>The quantum and gravity proofs are in the same tower now.</strong> Beyond the flux FFT slices, the machine-checked arm also holds the quantum-foundations ladder — <code>QM.Stabilizer</code> (Clifford normalizes Pauli), <code>QM.Entanglement</code> (LOCC cannot create entanglement), <code>QM.CHSH</code>/<code>QM.Tsirelson</code> (the 2√2 bound), <code>QM.NoCloning</code>, <code>QM.Mermin</code>, <code>QM.MERA</code> (the area law + exponential volume + log depth), and <code>QM.Hyperbolic</code> (the MERA causal cone is a discrete hyperbolic space — Gromov 0-hyperbolicity) — plus the gravity ladder <code>Gravity.Bianchi</code>, <code>Gravity.Lovelock</code>, <code>Gravity.WheelerDeWitt</code>, <code>Gravity.ADMConstraints</code>, <code>Gravity.Dirac</code>. These are the proofs behind <a href="#sextant">SEXTANT</a>, the verified quantum referee. <code>lake build</code> is green (9102 jobs).</p>
+    <p><strong>The quantum and gravity proofs are in the same tower now.</strong> Beyond the flux FFT slices, the machine-checked arm also holds the quantum-foundations ladder — <code>QM.Stabilizer</code> (Clifford normalizes Pauli), <code>QM.Entanglement</code> (LOCC cannot create entanglement), <code>QM.CHSH</code>/<code>QM.Tsirelson</code> (the 2√2 bound), <code>QM.NoCloning</code>, <code>QM.Mermin</code>, <code>QM.MERA</code> (the area law + exponential volume + log depth), and <code>QM.Hyperbolic</code> (the MERA causal cone is a discrete hyperbolic space — Gromov 0-hyperbolicity) — plus the gravity ladder <code>Gravity.Bianchi</code>, <code>Gravity.Lovelock</code>, <code>Gravity.WheelerDeWitt</code>, <code>Gravity.ADMConstraints</code>, <code>Gravity.Dirac</code>. These are the proofs behind <a href="./sextant.html">SEXTANT</a>, the verified quantum referee. <code>lake build</code> is green (9102 jobs).</p>
 <p class="muted">The "bigger machine" was a false wall: the 16 GB Mac runs <code>lake build</code> via the mathlib cache. Reproduce: <code>cd pacland-proof &amp;&amp; lake build</code>. A green build means Lean's kernel accepted every theorem — <strong>no <code>sorry</code>, no <code>axiom</code>, no <code>native_decide</code></strong>; every theorem is kernel-checked. The FFT slices are now machine-checked at <strong>degrees 1, 2, 3, and 4</strong> (no linear, only the tadpole, no cubic, only N²); the <em>general-degree</em> statement remains Weyl's 1939 FFT, cited + sympy-verified at degrees 1–5.</p>
 </details>
 <details class="fold">
@@ -831,7 +844,7 @@ python3 scripts/validate_all_theorems.py</code></pre>
       <div class="card">
         <h3>String landscape</h3>
         <p><a href="#arc">the arc</a> · <a href="#theorems">theorems</a> · <a href="#sm">SM frontier</a> · <a href="#results">results</a> · <a href="#boundary">boundary map</a> · <a href="#lean">Lean proofs</a></p>
-        <p><a href="#published">the papers (6)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf">explainer (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-startalk.pdf">startalk (PDF)</a> · <a href="https://doi.org/10.5281/zenodo.23497239">published theorem</a></p>
+        <p><a href="#published">the papers (9)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-explainer.pdf">explainer (PDF)</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-startalk.pdf">startalk (PDF)</a> · <a href="https://doi.org/10.5281/zenodo.23497239">published theorem</a></p>
       </div>
       <div class="card">
         <h3>Climate</h3>
@@ -906,6 +919,29 @@ python3 scripts/validate_all_theorems.py</code></pre>
       <p>Rob Mitchell · Zenodo · 8 Nov 2026 · open access, CC BY 4.0</p>
       <p>Record: <a href="https://zenodo.org/records/24047503">zenodo.org/records/24047503</a></p>
       <p>DOI: <a href="https://doi.org/10.5281/zenodo.24047503">10.5281/zenodo.24047503</a></p>
+    <div class="card">
+      <h3>SEXTANT: a kernel-checked referee for quantum and physical claims (FORCED / FREE / IMPOSSIBLE)</h3>
+      <p>Rob Mitchell · Zenodo · open access, CC BY 4.0</p>
+      <p>Record: <a href="https://zenodo.org/records/24062191">zenodo.org/records/24062191</a></p>
+      <p>DOI: <a href="https://doi.org/10.5281/zenodo.24062191">10.5281/zenodo.24062191</a></p>
+      <p class="muted">The constraint-first ToE made executable: 28 claims, each classified FORCED / FREE / IMPOSSIBLE with a falsifier that runs — never a value prediction.</p>
+    </div>
+
+    <div class="card">
+      <h3>Entanglement = geometry, kernel-checked: the MERA cone is quasi-isometric to the hyperbolic plane</h3>
+      <p>Rob Mitchell · Zenodo · open access, CC BY 4.0</p>
+      <p>Record: <a href="https://zenodo.org/records/24062187">zenodo.org/records/24062187</a></p>
+      <p>DOI: <a href="https://doi.org/10.5281/zenodo.24062187">10.5281/zenodo.24062187</a></p>
+      <p class="muted">The discrete → continuous bridge: 0-hyperbolicity + exponential volume, with the growth class proven a quasi-isometry invariant — the MERA cone is quasi-isometric to H².</p>
+    </div>
+
+    <div class="card">
+      <h3>The matchgate even/odd split, kernel-checked (2×2, 4×4, 6×6, and the recursive general object)</h3>
+      <p>Rob Mitchell · Zenodo · open access, CC BY 4.0</p>
+      <p>Record: <a href="https://zenodo.org/records/24062179">zenodo.org/records/24062179</a></p>
+      <p>DOI: <a href="https://doi.org/10.5281/zenodo.24062179">10.5281/zenodo.24062179</a></p>
+      <p class="muted">The complete even/odd split: Pfaffian² = det at 2×2, 4×4, 6×6, plus the recursive Pfaffian and the general odd-dim vanishing.</p>
+    </div>
       <p class="muted">The algebraic seed of matchgate simulability, machine-checked: the 2×2 Pfaffian² = det, and the 3×3 antisymmetric determinant = 0 — the even/odd split behind why matchgates are classically simulable.</p>
     </div>
 

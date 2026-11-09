@@ -34,6 +34,60 @@ theorem pfaffian2_sq_eq_det (a : ℂ) :
   rw [Matrix.det_fin_two_of]
   ring
 
+/-- The `Fin.succ` numeral lemmas missing from Mathlib (only 0→1 and 1→2 exist). -/
+@[simp] lemma fin_succ_two_eq_three : Fin.succ (2 : Fin 3) = 3 := rfl
+@[simp] lemma fin_succ_three_eq_four : Fin.succ (3 : Fin 4) = 4 := rfl
+
+/-- **The general 4×4 determinant** (in the general `Matrix (Fin 4)` form, so it applies to submatrix
+minors — the form Mathlib's `det_fin_three` has but `det_fin_four` was missing). -/
+theorem det_fin_four (A : Matrix (Fin 4) (Fin 4) ℂ) :
+    A.det = A 0 0 * A 1 1 * A 2 2 * A 3 3 - A 0 0 * A 1 1 * A 2 3 * A 3 2 - A 0 0 * A 1 2 * A 2 1 * A 3 3  +  A 0 0 * A 1 2 * A 2 3 * A 3 1  +  A 0 0 * A 1 3 * A 2 1 * A 3 2 - A 0 0 * A 1 3 * A 2 2 * A 3 1 - A 0 1 * A 1 0 * A 2 2 * A 3 3  +  A 0 1 * A 1 0 * A 2 3 * A 3 2  +  A 0 1 * A 1 2 * A 2 0 * A 3 3 - A 0 1 * A 1 2 * A 2 3 * A 3 0 - A 0 1 * A 1 3 * A 2 0 * A 3 2  +  A 0 1 * A 1 3 * A 2 2 * A 3 0  +  A 0 2 * A 1 0 * A 2 1 * A 3 3 - A 0 2 * A 1 0 * A 2 3 * A 3 1 - A 0 2 * A 1 1 * A 2 0 * A 3 3  +  A 0 2 * A 1 1 * A 2 3 * A 3 0  +  A 0 2 * A 1 3 * A 2 0 * A 3 1 - A 0 2 * A 1 3 * A 2 1 * A 3 0 - A 0 3 * A 1 0 * A 2 1 * A 3 2  +  A 0 3 * A 1 0 * A 2 2 * A 3 1  +  A 0 3 * A 1 1 * A 2 0 * A 3 2 - A 0 3 * A 1 1 * A 2 2 * A 3 0 - A 0 3 * A 1 2 * A 2 0 * A 3 1  +  A 0 3 * A 1 2 * A 2 1 * A 3 0 := by
+  rw [Matrix.det_succ_row_zero]
+  simp [Fin.sum_univ_four, Matrix.det_fin_three, Fin.succAbove,
+    fin_succ_two_eq_three, fin_succ_three_eq_four]
+  norm_num
+  ring
+
+/-- The `Fin.succ` numeral lemmas missing from Mathlib, for the 5×5/6×6 rung. -/
+@[simp] lemma fin_succ_four_eq_five : Fin.succ (4 : Fin 5) = 5 := rfl
+
+/-- **The general 5×5 determinant** (in the general `Matrix (Fin 5)` form, so it applies to the 6×6
+cofactor's 5×5 minors). -/
+theorem det_fin_five (A : Matrix (Fin 5) (Fin 5) ℂ) :
+    A.det = A 0 0 * A 1 1 * A 2 2 * A 3 3 * A 4 4 - A 0 0 * A 1 1 * A 2 2 * A 3 4 * A 4 3 - A 0 0 * A 1 1 * A 2 3 * A 3 2 * A 4 4  +  A 0 0 * A 1 1 * A 2 3 * A 3 4 * A 4 2  +  A 0 0 * A 1 1 * A 2 4 * A 3 2 * A 4 3 - A 0 0 * A 1 1 * A 2 4 * A 3 3 * A 4 2 - A 0 0 * A 1 2 * A 2 1 * A 3 3 * A 4 4  +  A 0 0 * A 1 2 * A 2 1 * A 3 4 * A 4 3  +  A 0 0 * A 1 2 * A 2 3 * A 3 1 * A 4 4 - A 0 0 * A 1 2 * A 2 3 * A 3 4 * A 4 1 - A 0 0 * A 1 2 * A 2 4 * A 3 1 * A 4 3  +  A 0 0 * A 1 2 * A 2 4 * A 3 3 * A 4 1  +  A 0 0 * A 1 3 * A 2 1 * A 3 2 * A 4 4 - A 0 0 * A 1 3 * A 2 1 * A 3 4 * A 4 2 - A 0 0 * A 1 3 * A 2 2 * A 3 1 * A 4 4  +  A 0 0 * A 1 3 * A 2 2 * A 3 4 * A 4 1  +  A 0 0 * A 1 3 * A 2 4 * A 3 1 * A 4 2 - A 0 0 * A 1 3 * A 2 4 * A 3 2 * A 4 1 - A 0 0 * A 1 4 * A 2 1 * A 3 2 * A 4 3  +  A 0 0 * A 1 4 * A 2 1 * A 3 3 * A 4 2  +  A 0 0 * A 1 4 * A 2 2 * A 3 1 * A 4 3 - A 0 0 * A 1 4 * A 2 2 * A 3 3 * A 4 1 - A 0 0 * A 1 4 * A 2 3 * A 3 1 * A 4 2  +  A 0 0 * A 1 4 * A 2 3 * A 3 2 * A 4 1 - A 0 1 * A 1 0 * A 2 2 * A 3 3 * A 4 4  +  A 0 1 * A 1 0 * A 2 2 * A 3 4 * A 4 3  +  A 0 1 * A 1 0 * A 2 3 * A 3 2 * A 4 4 - A 0 1 * A 1 0 * A 2 3 * A 3 4 * A 4 2 - A 0 1 * A 1 0 * A 2 4 * A 3 2 * A 4 3  +  A 0 1 * A 1 0 * A 2 4 * A 3 3 * A 4 2  +  A 0 1 * A 1 2 * A 2 0 * A 3 3 * A 4 4 - A 0 1 * A 1 2 * A 2 0 * A 3 4 * A 4 3 - A 0 1 * A 1 2 * A 2 3 * A 3 0 * A 4 4  +  A 0 1 * A 1 2 * A 2 3 * A 3 4 * A 4 0  +  A 0 1 * A 1 2 * A 2 4 * A 3 0 * A 4 3 - A 0 1 * A 1 2 * A 2 4 * A 3 3 * A 4 0 - A 0 1 * A 1 3 * A 2 0 * A 3 2 * A 4 4  +  A 0 1 * A 1 3 * A 2 0 * A 3 4 * A 4 2  +  A 0 1 * A 1 3 * A 2 2 * A 3 0 * A 4 4 - A 0 1 * A 1 3 * A 2 2 * A 3 4 * A 4 0 - A 0 1 * A 1 3 * A 2 4 * A 3 0 * A 4 2  +  A 0 1 * A 1 3 * A 2 4 * A 3 2 * A 4 0  +  A 0 1 * A 1 4 * A 2 0 * A 3 2 * A 4 3 - A 0 1 * A 1 4 * A 2 0 * A 3 3 * A 4 2 - A 0 1 * A 1 4 * A 2 2 * A 3 0 * A 4 3  +  A 0 1 * A 1 4 * A 2 2 * A 3 3 * A 4 0  +  A 0 1 * A 1 4 * A 2 3 * A 3 0 * A 4 2 - A 0 1 * A 1 4 * A 2 3 * A 3 2 * A 4 0  +  A 0 2 * A 1 0 * A 2 1 * A 3 3 * A 4 4 - A 0 2 * A 1 0 * A 2 1 * A 3 4 * A 4 3 - A 0 2 * A 1 0 * A 2 3 * A 3 1 * A 4 4  +  A 0 2 * A 1 0 * A 2 3 * A 3 4 * A 4 1  +  A 0 2 * A 1 0 * A 2 4 * A 3 1 * A 4 3 - A 0 2 * A 1 0 * A 2 4 * A 3 3 * A 4 1 - A 0 2 * A 1 1 * A 2 0 * A 3 3 * A 4 4  +  A 0 2 * A 1 1 * A 2 0 * A 3 4 * A 4 3  +  A 0 2 * A 1 1 * A 2 3 * A 3 0 * A 4 4 - A 0 2 * A 1 1 * A 2 3 * A 3 4 * A 4 0 - A 0 2 * A 1 1 * A 2 4 * A 3 0 * A 4 3  +  A 0 2 * A 1 1 * A 2 4 * A 3 3 * A 4 0  +  A 0 2 * A 1 3 * A 2 0 * A 3 1 * A 4 4 - A 0 2 * A 1 3 * A 2 0 * A 3 4 * A 4 1 - A 0 2 * A 1 3 * A 2 1 * A 3 0 * A 4 4  +  A 0 2 * A 1 3 * A 2 1 * A 3 4 * A 4 0  +  A 0 2 * A 1 3 * A 2 4 * A 3 0 * A 4 1 - A 0 2 * A 1 3 * A 2 4 * A 3 1 * A 4 0 - A 0 2 * A 1 4 * A 2 0 * A 3 1 * A 4 3  +  A 0 2 * A 1 4 * A 2 0 * A 3 3 * A 4 1  +  A 0 2 * A 1 4 * A 2 1 * A 3 0 * A 4 3 - A 0 2 * A 1 4 * A 2 1 * A 3 3 * A 4 0 - A 0 2 * A 1 4 * A 2 3 * A 3 0 * A 4 1  +  A 0 2 * A 1 4 * A 2 3 * A 3 1 * A 4 0 - A 0 3 * A 1 0 * A 2 1 * A 3 2 * A 4 4  +  A 0 3 * A 1 0 * A 2 1 * A 3 4 * A 4 2  +  A 0 3 * A 1 0 * A 2 2 * A 3 1 * A 4 4 - A 0 3 * A 1 0 * A 2 2 * A 3 4 * A 4 1 - A 0 3 * A 1 0 * A 2 4 * A 3 1 * A 4 2  +  A 0 3 * A 1 0 * A 2 4 * A 3 2 * A 4 1  +  A 0 3 * A 1 1 * A 2 0 * A 3 2 * A 4 4 - A 0 3 * A 1 1 * A 2 0 * A 3 4 * A 4 2 - A 0 3 * A 1 1 * A 2 2 * A 3 0 * A 4 4  +  A 0 3 * A 1 1 * A 2 2 * A 3 4 * A 4 0  +  A 0 3 * A 1 1 * A 2 4 * A 3 0 * A 4 2 - A 0 3 * A 1 1 * A 2 4 * A 3 2 * A 4 0 - A 0 3 * A 1 2 * A 2 0 * A 3 1 * A 4 4  +  A 0 3 * A 1 2 * A 2 0 * A 3 4 * A 4 1  +  A 0 3 * A 1 2 * A 2 1 * A 3 0 * A 4 4 - A 0 3 * A 1 2 * A 2 1 * A 3 4 * A 4 0 - A 0 3 * A 1 2 * A 2 4 * A 3 0 * A 4 1  +  A 0 3 * A 1 2 * A 2 4 * A 3 1 * A 4 0  +  A 0 3 * A 1 4 * A 2 0 * A 3 1 * A 4 2 - A 0 3 * A 1 4 * A 2 0 * A 3 2 * A 4 1 - A 0 3 * A 1 4 * A 2 1 * A 3 0 * A 4 2  +  A 0 3 * A 1 4 * A 2 1 * A 3 2 * A 4 0  +  A 0 3 * A 1 4 * A 2 2 * A 3 0 * A 4 1 - A 0 3 * A 1 4 * A 2 2 * A 3 1 * A 4 0  +  A 0 4 * A 1 0 * A 2 1 * A 3 2 * A 4 3 - A 0 4 * A 1 0 * A 2 1 * A 3 3 * A 4 2 - A 0 4 * A 1 0 * A 2 2 * A 3 1 * A 4 3  +  A 0 4 * A 1 0 * A 2 2 * A 3 3 * A 4 1  +  A 0 4 * A 1 0 * A 2 3 * A 3 1 * A 4 2 - A 0 4 * A 1 0 * A 2 3 * A 3 2 * A 4 1 - A 0 4 * A 1 1 * A 2 0 * A 3 2 * A 4 3  +  A 0 4 * A 1 1 * A 2 0 * A 3 3 * A 4 2  +  A 0 4 * A 1 1 * A 2 2 * A 3 0 * A 4 3 - A 0 4 * A 1 1 * A 2 2 * A 3 3 * A 4 0 - A 0 4 * A 1 1 * A 2 3 * A 3 0 * A 4 2  +  A 0 4 * A 1 1 * A 2 3 * A 3 2 * A 4 0  +  A 0 4 * A 1 2 * A 2 0 * A 3 1 * A 4 3 - A 0 4 * A 1 2 * A 2 0 * A 3 3 * A 4 1 - A 0 4 * A 1 2 * A 2 1 * A 3 0 * A 4 3  +  A 0 4 * A 1 2 * A 2 1 * A 3 3 * A 4 0  +  A 0 4 * A 1 2 * A 2 3 * A 3 0 * A 4 1 - A 0 4 * A 1 2 * A 2 3 * A 3 1 * A 4 0 - A 0 4 * A 1 3 * A 2 0 * A 3 1 * A 4 2  +  A 0 4 * A 1 3 * A 2 0 * A 3 2 * A 4 1  +  A 0 4 * A 1 3 * A 2 1 * A 3 0 * A 4 2 - A 0 4 * A 1 3 * A 2 1 * A 3 2 * A 4 0 - A 0 4 * A 1 3 * A 2 2 * A 3 0 * A 4 1  +  A 0 4 * A 1 3 * A 2 2 * A 3 1 * A 4 0 := by
+  rw [Matrix.det_succ_row_zero]
+  simp [Fin.sum_univ_five, det_fin_four, Fin.succAbove, fin_succ_three_eq_four, fin_succ_four_eq_five]
+  norm_num
+  ring
+
+/-- The 6×6 Pfaffian — the signed sum over the fifteen perfect matchings (the exact six-qubit
+matchgate amplitude). -/
+def pfaffian6 (a b c d e f g h i j k l m n o : ℂ) : ℂ :=
+  a * j * o - a * k * n + a * l * m - b * g * o + b * h * n - b * i * m
+  + c * f * o - c * h * l + c * i * k - d * f * n + d * g * l - d * i * j
+  + e * f * m - e * g * k + e * h * j
+
+/-- **Matchgate core (6×6).** The square of the 6×6 Pfaffian equals the determinant of the 6×6
+antisymmetric matrix — the exact six-qubit matchgate amplitude, the next even rung after the 4×4. -/
+theorem pfaffian6_sq_eq_det (a b c d e f g h i j k l m n o : ℂ) :
+    pfaffian6 a b c d e f g h i j k l m n o ^ 2 =
+      Matrix.det !![0, a, b, c, d, e; -a, 0, f, g, h, i; -b, -f, 0, j, k, l; -c, -g, -j, 0, m, n; -d, -h, -k, -m, 0, o; -e, -i, -l, -n, -o, 0] := by
+  rw [pfaffian6]
+  rw [Matrix.det_succ_row_zero]
+  simp [Fin.sum_univ_six, det_fin_five, Fin.succAbove, fin_succ_four_eq_five]
+  norm_num
+  ring
+
+/-- **The recursive Pfaffian** (Laplace expansion along the first row), defined on even
+dimension `2 * m` by structural recursion on `m` — the general even-n object behind `pfaffian2`/
+`pfaffian4`/`pfaffian6`. The `(m+1)`-step expands along row 0, removing rows/columns 0 and `j+1`. -/
+def pfaffian : (m : ℕ) → Matrix (Fin (2 * m)) (Fin (2 * m)) ℂ → ℂ
+  | 0, _ => 1
+  | m + 1, A =>
+      ∑ j : Fin (2 * m + 1), (-1 : ℂ) ^ (j : ℕ) * A 0 (Fin.succ j) *
+        pfaffian m (A.submatrix (fun i => Fin.succAbove (Fin.succ j) (Fin.succ i))
+                                (fun i => Fin.succAbove (Fin.succ j) (Fin.succ i)))
+
 /-- The 4×4 Pfaffian — the signed sum over the three perfect matchings (the exact four-qubit
 matchgate amplitude). -/
 def pfaffian4 (a b c d e f : ℂ) : ℂ :=
@@ -98,5 +152,6 @@ theorem det_three_antisymm_eq_zero (a b c : ℂ) :
   rw [Matrix.det_fin_three]
   simp
   ring
+
 
 end QM

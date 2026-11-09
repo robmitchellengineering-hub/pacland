@@ -75,7 +75,7 @@ CATALOG: dict[str, dict] = {
     "entanglement-area": {
         "claim": "entanglement across a cut is bounded by the cut area D^m",
         "simulate": phantom.mera_entanglement,  # live: Quimb MPS entanglement ≤ log D
-        "theorem": "QM.MERA",
+        "theorem": "QM.MERA.srank_maximally_entangled (entanglement = D^m EXACTLY) + QM.MERA.areaLaw_rank + QM.MERA.bondConfigurations",
         "falsifier": "entanglement exceeding D^m",
         "oracle": ["kernel-checked (Lean)", "quantum-simulated (Phantom/Quimb)"],
         "verdict": "FORCED",
@@ -84,7 +84,7 @@ CATALOG: dict[str, dict] = {
     },
     "mera-hyperbolic": {
         "claim": "the MERA causal cone is a discrete hyperbolic space (Gromov 0-hyperbolic)",
-        "theorem": "QM.Hyperbolic.treeDist_four_point + QM.MERA.causalConeDoubles + QM.MERA.ballVolumeExponential",
+        "theorem": "QM.Hyperbolic.treeDist_four_point + QM.MERA.causalConeDoubles + QM.MERA.ballVolumeExponential + QM.MERA.logDepthForced + QM.MERA.meraEmergence + QM.Hyperbolic.treeToH2",
         "falsifier": "a four-point violation of the 0-hyperbolicity condition, or sub-exponential volume growth",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
@@ -233,7 +233,7 @@ CATALOG: dict[str, dict] = {
     },
     "matchgate-seed": {
         "claim": "matchgate amplitudes are Pfaffians — the full even/odd split kernel-checked (2×2 and 4×4 Pf² = det, odd-dim det = 0)",
-        "theorem": "QM.Matchgate.det_antisymm_sign + QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.pfaffian4_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero",
+        "theorem": "QM.Matchgate.det_antisymm_sign + QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.pfaffian4_sq_eq_det + QM.Matchgate.pfaffian6_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero",
         "falsifier": "a 2×2 matchgate whose amplitude is not its Pfaffian, or a nonzero odd-dimensional antisymmetric determinant",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",

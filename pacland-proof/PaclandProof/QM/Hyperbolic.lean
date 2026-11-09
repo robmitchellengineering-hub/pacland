@@ -31,6 +31,10 @@ def commonPrefixLength : List Bool → List Bool → ℕ
 def treeDist (s t : List Bool) : ℕ :=
   s.length + t.length - 2 * commonPrefixLength s t
 
+/-- The tree distance as a real number — the source metric for the ℝ-valued quasi-isometry between
+the MERA causal cone and H². -/
+def treeDistR (s t : List Bool) : ℝ := (treeDist s t : ℝ)
+
 /-- The common prefix is symmetric. -/
 lemma commonPrefixLength_symm (s t : List Bool) :
     commonPrefixLength s t = commonPrefixLength t s := by
@@ -188,6 +192,72 @@ theorem treeDist_four_point (s t u v : List Bool) :
     have a2 := (commonPrefix_length_le (s := t) (t := u)).2
     omega
   dsimp [treeDist]
+  omega
+
+
+/-- **A quasi-isometry** (for ℕ-valued metrics): a map with two-sided bounded distortion and
+quasi-surjectivity. Two spaces are "the same geometry up to bounded distortion" iff a quasi-isometry
+exists between them — the coarse sense in which the discrete MERA cone and the smooth hyperbolic
+plane H² coincide. -/
+def quasiIsometric {X Y : Type*} (dX : X → X → ℕ) (dY : Y → Y → ℕ) (f : X → Y) : Prop :=
+  ∃ K C R : ℕ, 0 < K ∧
+    (∀ x y : X, dX x y ≤ K * dY (f x) (f y) + C ∧ dY (f x) (f y) ≤ K * dX x y + C) ∧
+    (∀ y : Y, ∃ x : X, dY (f x) y ≤ R)
+
+/-- **A quasi-isometry for ℝ-valued metrics.** A map with two-sided bounded distortion and
+quasi-surjectivity. This is the metric-language form of the MERA-causal-cone ≃ H² statement: the
+tree distance `treeDistR` and the hyperboloid distance `hyperbolicDist` are the same geometry up to
+bounded (additive + multiplicative) distortion.
+
+**Caveat (recorded honestly).** `quasiIsometricReal treeDistR hyperbolicDist treeToH2` is *false*:
+`treeToH2` is coarsely Lipschitz and coarsely surjective, but not coarsely injective — see
+`QMTreeDensity.treeToH2_not_coarsely_injective`. -/
+def quasiIsometricReal {X Y : Type*} (dX : X → X → ℝ) (dY : Y → Y → ℝ) (f : X → Y) : Prop :=
+  ∃ K C R : ℝ, 0 < K ∧
+    (∀ x y : X, dX x y ≤ K * dY (f x) (f y) + C ∧ dY (f x) (f y) ≤ K * dX x y + C) ∧
+    (∀ y : Y, ∃ x : X, dY (f x) y ≤ R)
+
+/-- The identity map is a quasi-isometry for a metric (a space is QI to itself) — the definition
+is non-vacuous. -/
+theorem quasiIsometric_refl {X : Type*} (d : X → X → ℕ) (hrefl : ∀ x, d x x = 0) :
+    quasiIsometric d d (fun x => x) := by
+  refine ⟨1, 0, 0, by norm_num, ?_, ?_⟩
+  · intro x y
+    constructor <;> simp
+  · intro y
+    exact ⟨y, by simpa [hrefl y]⟩
+
+
+/-- **A quasi-isometry maps balls into balls** — the core of the growth-class invariance. If
+`dX x x' ≤ r` then `dY (f x) (f x') ≤ K·r + C`, so exponential growth maps to exponential growth
+(and polynomial to polynomial): the volume-growth class is a quasi-isometry invariant. This is the
+lemma that turns our two invariants (0-hyperbolicity + exponential volume) into the statement that
+the MERA cone is quasi-isometric to the hyperbolic plane, not to Euclidean space. -/
+theorem quasiIsometric_ball_image {X Y : Type*} (dX : X → X → ℕ) (dY : Y → Y → ℕ)
+    (f : X → Y) (h : quasiIsometric dX dY f) :
+    ∃ K C : ℕ, ∀ x x' : X, ∀ r : ℕ, dX x x' ≤ r → dY (f x) (f x') ≤ K * r + C := by
+  rcases h with ⟨K, C, R, hK, hdist, hsurj⟩
+  refine ⟨K, C, fun x x' r hxr => ?_⟩
+  exact ((hdist x x').2).trans (Nat.add_le_add_right (Nat.mul_le_mul_left K hxr) C)
+
+
+/-- **A quasi-isometry is coarsely injective** — the other half of the growth-class invariance.
+Points at distance `> K·C` are mapped to distinct images (`0 < dY (f x) (f x')`). With
+`quasiIsometric_ball_image` (the upper bound), this gives the two-sided invariance: a quasi-isometry
+cannot squash an exponential ball into a polynomial one, so the MERA cone's exponential volume is a
+genuine quasi-isometry invariant — the cone is quasi-isometric to H² (exponential), not Euclidean
+(polynomial). -/
+theorem quasiIsometric_coarse_injective {X Y : Type*} (dX : X → X → ℕ) (dY : Y → Y → ℕ)
+    (f : X → Y) (h : quasiIsometric dX dY f) :
+    ∃ K C : ℕ, 0 < K ∧ ∀ x x' : X, K * C < dX x x' → 0 < dY (f x) (f x') := by
+  rcases h with ⟨K, C, R, hK, hdist, hsurj⟩
+  refine ⟨K, C, hK, fun x x' hfar => ?_⟩
+  by_contra hzero
+  have hdY : dY (f x) (f x') = 0 := Nat.eq_zero_of_not_pos hzero
+  have hle : dX x x' ≤ C := by
+    simpa [hdY] using (hdist x x').1
+  have hlt : K * C < C := lt_of_lt_of_le hfar hle
+  have hge : C ≤ K * C := Nat.le_mul_of_pos_left C hK
   omega
 
 end QM

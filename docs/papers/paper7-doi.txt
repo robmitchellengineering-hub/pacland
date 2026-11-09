@@ -1,2 +1,2 @@
-TITLE: The matchgate even/odd split, kernel-checked: amplitudes are even-dimensional Pfaffians
-DOI: 10.5281/zenodo.24047503
+TITLE: The matchgate even/odd split, kernel-checked: amplitudes are even-dimensional Pfaffians (2×2, 4×4, 6×6, and the recursive general object)
+DOI: 10.5281/zenodo.24062179
