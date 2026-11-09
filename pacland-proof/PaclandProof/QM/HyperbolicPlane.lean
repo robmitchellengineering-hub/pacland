@@ -172,4 +172,30 @@ theorem hyperbolicDist_le_add (s t : List Bool) :
     nlinarith [hc, hs]
 
 
+/-- Appending a `false` bit does not change the angle — the trailing zero has weight 0. -/
+theorem pathAngle_append_false (p : List Bool) :
+    pathAngle (p ++ [false]) = pathAngle p := by
+  induction p with
+  | nil => simp [pathAngle]
+  | cons b t ih =>
+    simp [pathAngle, ih]
+
+/-- **The false-child edge is purely radial** — a parent and its `false`-child (same angle) are at
+exactly `ln 2` hyperbolic distance. This is the *edge lower bound* of the quasi-isometry: each tree
+edge maps to a segment of length at least `ln 2`, so the map cannot collapse the tree. -/
+theorem hyperbolicDist_falseChild (p : List Bool) :
+    hyperbolicDist (treeToH2 (p ++ [false])) (treeToH2 p) = Real.log 2 := by
+  dsimp [hyperbolicDist]
+  rw [minkowski_treeToH2]
+  rw [pathAngle_append_false]
+  simp
+  rw [show -(Real.sinh (Real.log 2 * (↑p.length + 1)) * Real.sinh (Real.log 2 * ↑p.length))
+      + Real.cosh (Real.log 2 * (↑p.length + 1)) * Real.cosh (Real.log 2 * ↑p.length)
+      = Real.cosh (Real.log 2 * (↑p.length + 1)) * Real.cosh (Real.log 2 * ↑p.length)
+        - Real.sinh (Real.log 2 * (↑p.length + 1)) * Real.sinh (Real.log 2 * ↑p.length) by ring]
+  rw [← Real.cosh_sub]
+  rw [show Real.log 2 * (↑p.length + 1) - Real.log 2 * ↑p.length = Real.log 2 by ring]
+  exact Real.arcosh_cosh (by positivity)
+
+
 end QM
