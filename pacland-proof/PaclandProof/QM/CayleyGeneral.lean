@@ -89,4 +89,18 @@ theorem sign_fixedPointFree_involution {m : ℕ} (σ : Equiv.Perm (Fin (2 * m)))
     simp [Function.mem_fixedPoints, Function.IsFixedPt, hfree i]
   simp [hfixed, Fintype.card_fin]
 
+/-- Step 2 final (ingredient): for a disjoint product `σ * τ`, the permutation `τ` fixes
+`σ.support`, so the product over `σ.support` is unaffected by `τ`. This is the factorization that
+lets the odd-cycle reversal (which only touches one cycle) act independently on one factor. -/
+theorem prod_mul_disjoint_support (σ τ : Equiv.Perm (Fin n)) (h : σ.Disjoint τ)
+    (A : Matrix (Fin n) (Fin n) ℂ) :
+    (∏ i ∈ σ.support, A ((σ * τ) i) i) = ∏ i ∈ σ.support, A (σ i) i := by
+  refine Finset.prod_congr rfl ?_
+  intro i hi
+  have hτ : τ i = i := by
+    rcases h i with hσ | hτ
+    · exact False.elim ((Equiv.Perm.mem_support.mp hi) hσ)
+    · exact hτ
+  simp [mul_apply, hτ]
+
 end QM
