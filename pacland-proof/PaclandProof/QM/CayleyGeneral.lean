@@ -77,4 +77,16 @@ theorem sign_inv_eq_sign {m : ℕ} (σ : Equiv.Perm (Fin m)) :
     (Equiv.Perm.sign σ⁻¹ : ℤ) = Equiv.Perm.sign σ := by
   rw [Equiv.Perm.sign_inv]
 
+/-- Step 3 (ingredient): the sign of a fixed-point-free involution on `Fin (2m)` — a perfect
+matching, i.e. a product of `m` disjoint transpositions — is `(-1)^m`. This is the sign carried by
+each matching in the signed matching sum that defines the Pfaffian. -/
+theorem sign_fixedPointFree_involution {m : ℕ} (σ : Equiv.Perm (Fin (2 * m)))
+    (hinv : σ ^ 2 = 1) (hfree : ∀ i, σ i ≠ i) :
+    (Equiv.Perm.sign σ : ℤ) = (-1 : ℤ) ^ m := by
+  rw [Equiv.Perm.sign_of_pow_two_eq_one hinv]
+  have hfixed : Function.fixedPoints σ = ∅ := by
+    ext i
+    simp [Function.mem_fixedPoints, Function.IsFixedPt, hfree i]
+  simp [hfixed, Fintype.card_fin]
+
 end QM
