@@ -43,3 +43,13 @@ theorem pfaffian_sq_eq_det_4 (A : Matrix (Fin 4) (Fin 4) ℂ)
   congr 1
   ext i j
   fin_cases i <;> fin_cases j <;> simp [h00, h11, h22, h33, h10, h20, h30, h21, h31, h32]
+
+/-- The Pfaffian's transformation law at 2×2: `Pf(P A Pᵀ) = det(P) · Pf(A)`. This is the key lemma
+for the normal-form proof of the general Cayley identity (every antisymmetric matrix is congruent to
+the standard symplectic form, and this is how the Pfaffian transforms under that congruence). -/
+theorem pfaffian_transform_2 (P A : Matrix (Fin 2) (Fin 2) ℂ)
+    (h00 : A 0 0 = 0) (h11 : A 1 1 = 0) (h10 : A 1 0 = -A 0 1) :
+    pfaffian 1 (P * A * Pᵀ) = P.det * pfaffian 1 A := by
+  rw [pfaffian_rec_2, pfaffian_rec_2, Matrix.det_fin_two]
+  simp [pfaffian2, Matrix.mul_apply, Matrix.transpose_apply, Fin.sum_univ_two, h00, h11, h10]
+  ring
