@@ -24,4 +24,15 @@ theorem antisymm_diagonal_eq_zero {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA
     simpa [two_mul] using h2
   exact (mul_eq_zero.mp h3).resolve_left (by norm_num : (2 : ℂ) ≠ 0)
 
+/-- Step 1 (continued): when a permutation `σ` has a fixed point `i`, the Leibniz product
+`∏ j, A (σ j) j` vanishes, because its factor `A (σ i) i = A i i = 0`. This is what lets us
+restrict the determinant sum to fixed-point-free permutations. -/
+theorem prod_eq_zero_of_fixedPoint (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.transpose = -A)
+    (σ : Equiv.Perm (Fin n)) {i : Fin n} (hi : σ i = i) :
+    (∏ j, A (σ j) j) = 0 := by
+  have hzero : A (σ i) i = 0 := by
+    rw [hi]
+    exact antisymm_diagonal_eq_zero A hA i
+  exact (Finset.prod_eq_zero_iff.mpr ⟨i, Finset.mem_univ i, hzero⟩)
+
 end QM
