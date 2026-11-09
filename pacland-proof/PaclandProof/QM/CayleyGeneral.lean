@@ -103,4 +103,22 @@ theorem prod_mul_disjoint_support (σ τ : Equiv.Perm (Fin n)) (h : σ.Disjoint 
     · exact hτ
   simp [mul_apply, hτ]
 
+/-- Step 2 final: the Leibniz product over the support of a disjoint product factors as the
+product over the two cycle supports. This is the factorization behind "reversing one odd cycle
+negates only that cycle's factor". -/
+theorem prod_mul_disjoint_support_full (σ τ : Equiv.Perm (Fin n)) (h : σ.Disjoint τ)
+    (A : Matrix (Fin n) (Fin n) ℂ) :
+    (∏ i ∈ (σ * τ).support, A ((σ * τ) i) i)
+      = (∏ i ∈ σ.support, A (σ i) i) * (∏ i ∈ τ.support, A (τ i) i) := by
+  rw [h.support_mul]
+  rw [Finset.prod_union h.disjoint_support]
+  congr 1
+  · exact prod_mul_disjoint_support σ τ h A
+  · calc
+      (∏ i ∈ τ.support, A ((σ * τ) i) i) = ∏ i ∈ τ.support, A ((τ * σ) i) i := by
+        refine Finset.prod_congr rfl ?_
+        intro i _
+        rw [h.commute]
+      _ = ∏ i ∈ τ.support, A (τ i) i := prod_mul_disjoint_support τ σ h.symm A
+
 end QM
