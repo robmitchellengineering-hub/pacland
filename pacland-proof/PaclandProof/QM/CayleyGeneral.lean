@@ -1,7 +1,7 @@
 import Mathlib
 import PaclandProof.QM.Matchgate
 
-open BigOperators
+open scoped BigOperators
 
 noncomputable section
 
@@ -23,5 +23,58 @@ theorem antisymm_diagonal_eq_zero {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA
   have h3 : (2 : ℂ) * A i i = 0 := by
     simpa [two_mul] using h2
   exact (mul_eq_zero.mp h3).resolve_left (by norm_num : (2 : ℂ) ≠ 0)
+
+/-- Step 2 (ingredient 1): reversing all cycles of a permutation negates the antisymmetric product
+over its support by `(-1)^(#σ.support)`.
+
+Reindex `∏ i, A (σ⁻¹ i) i` by the bijection `σ⁻¹` (which permutes `σ.support`), turning the
+`A (σ⁻¹ i) i` factor into `A j (σ j)`; then antisymmetry `A j i = -A i j` negates each factor.
+This is the algebra behind "reversing an odd cycle negates the product": when `σ` is a single cycle
+its support *is* the cycle, so the exponent `#σ.support` is exactly the cycle length. -/
+theorem prod_support_apply_inv_eq_neg_pow {m : ℕ} (σ : Equiv.Perm (Fin m))
+    (A : Matrix (Fin m) (Fin m) ℂ) (hA : A.transpose = -A) :
+    (∏ i ∈ σ.support, A (σ⁻¹ i) i) = ((-1 : ℂ) ^ σ.support.card) * ∏ i ∈ σ.support, A (σ i) i := by
+  have hantisymm : ∀ i j, A i j = - A j i := by
+    intro i j
+    have h := congr_fun (congr_fun hA j) i
+    simpa [Matrix.transpose_apply] using h
+  calc
+    (∏ i ∈ σ.support, A (σ⁻¹ i) i)
+        = ∏ j ∈ σ.support, A j (σ j) := by
+          refine Finset.prod_equiv σ.symm ?_ ?_
+          · intro i
+            simpa using (Equiv.Perm.apply_mem_support (f := σ⁻¹) (x := i)).symm
+          · intro i _
+            rw [Equiv.apply_symm_apply]
+            rfl
+    _ = ∏ j ∈ σ.support, - A (σ j) j := by
+          refine Finset.prod_congr rfl ?_
+          intro j _
+          exact hantisymm j (σ j)
+    _ = ((-1 : ℂ) ^ σ.support.card) * ∏ j ∈ σ.support, A (σ j) j := by
+          simpa using (Finset.prod_neg (s := σ.support) (f := fun j => A (σ j) j))
+
+/-- Step 2 (ingredient 1, odd case): when the support (equivalently, for a cycle, the cycle length)
+has odd cardinality, `(-1)^(#σ.support) = -1`, so reversing the cycles negates the product. -/
+theorem prod_support_apply_eq_neg_inv_of_odd {m : ℕ} (σ : Equiv.Perm (Fin m))
+    (A : Matrix (Fin m) (Fin m) ℂ) (hA : A.transpose = -A) (hodd : Odd σ.support.card) :
+    (∏ i ∈ σ.support, A (σ i) i) = - (∏ i ∈ σ.support, A (σ⁻¹ i) i) := by
+  simpa [hodd.neg_one_pow] using (prod_support_apply_inv_eq_neg_pow σ⁻¹ A hA)
+
+/-- Step 2 (single-cycle form): for a single odd-length cycle `c`, reversing the cycle negates the
+antisymmetric product over its support. The `IsCycle` hypothesis is carried to match the intended
+pairing (its twin is `c⁻¹`); the identity itself holds for any permutation. -/
+theorem prod_support_apply_eq_neg_inv_of_odd_cycle {m : ℕ} (c : Equiv.Perm (Fin m)) (hc : c.IsCycle)
+    (A : Matrix (Fin m) (Fin m) ℂ) (hA : A.transpose = -A) (hodd : Odd c.support.card) :
+    (∏ i ∈ c.support, A (c i) i) = - (∏ i ∈ c.support, A (c⁻¹ i) i) :=
+  prod_support_apply_eq_neg_inv_of_odd c A hA hodd
+
+/-- Step 2 (ingredient 2): reversing a permutation does not change its sign, so the
+"reverse-one-odd-cycle" twin keeps the same sign while negating the product — the two Leibniz terms
+cancel. For a single cycle the twin is `σ⁻¹`; in general the twin reverses exactly one odd cycle and
+has the same cycle type, hence the same sign via `Equiv.Perm.sign_of_cycleType`. -/
+theorem sign_inv_eq_sign {m : ℕ} (σ : Equiv.Perm (Fin m)) :
+    (Equiv.Perm.sign σ⁻¹ : ℤ) = Equiv.Perm.sign σ := by
+  rw [Equiv.Perm.sign_inv]
 
 end QM
