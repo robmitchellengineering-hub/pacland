@@ -53,6 +53,13 @@
    "title": "SOP \u2014 figuring a complex system out"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/TOE.md",
+   "kind": "doc",
+   "path": "docs/TOE.md",
+   "summary": "That is the whole of it. It is not a conjecture \u2014 it is kernel-checked: 308 theorems and 123 definitions across 44 Lean files, lake build green, no sorry/axiom/admit anywhere.",
+   "title": "THE TOE \u2014 Mitchell's Constraint-First Theory of Everything"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/UNIFICATION-METHOD-v2.md",
    "kind": "doc",
    "path": "docs/UNIFICATION-METHOD-v2.md",
@@ -65,6 +72,20 @@
    "path": "docs/UNIFICATION-STATUS.md",
    "summary": "One document: everything proven, everything measured, and the sharper picture they form. Status is tiered \u2014 proven (symbolic, machine-checked) vs measured (node, with a control) vs asserted\u2026",
    "title": "UNIFICATION \u2014 where we are, and the path (2026-10-23)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ads-cft-plan.md",
+   "kind": "doc",
+   "path": "docs/ads-cft-plan.md",
+   "summary": "Four kernel-checkable rungs, in dependency order. Do them in this order. One frontier, named not deferred.",
+   "title": "THE PLAN \u2014 finish \"entanglement = geometry\""
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ads-cft-roadmap.md",
+   "kind": "doc",
+   "path": "docs/ads-cft-roadmap.md",
+   "summary": "The honest goal: a kernel-checked \"entanglement = geometry\" claim, from the discrete MERA cone up to the smooth hyperbolic plane. This is the geometric heart of AdS/CFT \u2014 not the full\u2026",
+   "title": "AdS/CFT roadmap \u2014 from the discrete ToE to the smooth limit"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/adversarial-review.md",
@@ -408,6 +429,13 @@
    "path": "docs/constraint-first-theorem.md",
    "summary": "Mitchell's Uniqueness Theorem only begins. It verifies, symbolically and exactly (5/5 degrees), that the D3 tadpole generates the entire ring of symplectic invariants of the flux pair.",
    "title": "Constraint-First Theorem \u2014 the tadpole is the ONLY exact structure"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/constraint-first-toe-status.md",
+   "kind": "doc",
+   "path": "docs/constraint-first-toe-status.md",
+   "summary": "constraint. Everything exact is either FORCED (a theorem), FREE (a label with no exact value), or IMPOSSIBLE (a no-go). No exact free parameter is ever \"derived\" \u2014 it is delimited.",
+   "title": "The constraint-first ToE \u2014 status, the honest claim, and the road to \"foundation for everything\""
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/constraint-learnability.md",
