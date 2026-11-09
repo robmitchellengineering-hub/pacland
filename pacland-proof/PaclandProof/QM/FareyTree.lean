@@ -37,3 +37,16 @@ theorem fareyPoint_nil : fareyPoint [] = Complex.I := by
   rfl
 
 end Farey
+
+open Farey
+
+/-- The generator `R` (z ↦ z+1) preserves the imaginary part, hence maps the upper half-plane to
+itself — the first ingredient for the Švarc–Milnor orbit map (the group must act on ℍ). Mathlib's
+`UpperHalfPlane.isometry_real_vadd` then gives that it is an isometry. -/
+theorem R_im (z : ℂ) : (Farey.R z).im = z.im := by
+  rw [Farey.R]
+  simp
+
+/-- `R` is the real translation by 1 — the map that Mathlib's `isometry_real_vadd 1` knows is an
+isometry of the hyperbolic metric on the upper half-plane. -/
+theorem R_eq_add_one (z : ℂ) : Farey.R z = z + 1 := rfl
