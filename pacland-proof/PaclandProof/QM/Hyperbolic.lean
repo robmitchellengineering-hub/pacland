@@ -31,6 +31,10 @@ def commonPrefixLength : List Bool → List Bool → ℕ
 def treeDist (s t : List Bool) : ℕ :=
   s.length + t.length - 2 * commonPrefixLength s t
 
+/-- The tree distance as a real number — the source metric for the ℝ-valued quasi-isometry between
+the MERA causal cone and H². -/
+def treeDistR (s t : List Bool) : ℝ := (treeDist s t : ℝ)
+
 /-- The common prefix is symmetric. -/
 lemma commonPrefixLength_symm (s t : List Bool) :
     commonPrefixLength s t = commonPrefixLength t s := by
@@ -197,6 +201,19 @@ exists between them — the coarse sense in which the discrete MERA cone and the
 plane H² coincide. -/
 def quasiIsometric {X Y : Type*} (dX : X → X → ℕ) (dY : Y → Y → ℕ) (f : X → Y) : Prop :=
   ∃ K C R : ℕ, 0 < K ∧
+    (∀ x y : X, dX x y ≤ K * dY (f x) (f y) + C ∧ dY (f x) (f y) ≤ K * dX x y + C) ∧
+    (∀ y : Y, ∃ x : X, dY (f x) y ≤ R)
+
+/-- **A quasi-isometry for ℝ-valued metrics.** A map with two-sided bounded distortion and
+quasi-surjectivity. This is the metric-language form of the MERA-causal-cone ≃ H² statement: the
+tree distance `treeDistR` and the hyperboloid distance `hyperbolicDist` are the same geometry up to
+bounded (additive + multiplicative) distortion.
+
+**Caveat (recorded honestly).** `quasiIsometricReal treeDistR hyperbolicDist treeToH2` is *false*:
+`treeToH2` is coarsely Lipschitz and coarsely surjective, but not coarsely injective — see
+`QMTreeDensity.treeToH2_not_coarsely_injective`. -/
+def quasiIsometricReal {X Y : Type*} (dX : X → X → ℝ) (dY : Y → Y → ℝ) (f : X → Y) : Prop :=
+  ∃ K C R : ℝ, 0 < K ∧
     (∀ x y : X, dX x y ≤ K * dY (f x) (f y) + C ∧ dY (f x) (f y) ≤ K * dX x y + C) ∧
     (∀ y : Y, ∃ x : X, dY (f x) y ≤ R)
 

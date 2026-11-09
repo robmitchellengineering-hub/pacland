@@ -1,10 +1,10 @@
 import Mathlib
+import PaclandProof.QM.HyperbolicPlane
 
 /-!
 # The hyperbolic metric on the hyperboloid model of H² — the triangle inequality
 
-This file carries a **self-contained** copy of the hyperboloid model (`Hyperboloid`,
-`minkowski`, `hyperbolicDist`) and proves the **triangle inequality**
+Proves the **triangle inequality**
 
 ```
 hyperbolicDist p r ≤ hyperbolicDist p q + hyperbolicDist q r
@@ -12,10 +12,10 @@ hyperbolicDist p r ≤ hyperbolicDist p q + hyperbolicDist q r
 
 for the hyperbolic distance `d(p,q) = arcosh(−⟨p,q⟩_M)`.
 
-The definitions mirror `PaclandProof.QM.HyperbolicPlane` exactly (same names, same bodies) but live
-in the `HyperbolicMetric` namespace so this file builds independently of that file. When the
-parallel edge-upper-bound work in `HyperbolicPlane.lean` lands, the two copies are definitionally
-equal and can be reconciled (or this file can be re-pointed at the shared definitions).
+The hyperboloid model (`Hyperboloid`, `minkowski`, `hyperbolicDist`) is imported from
+`PaclandProof.QM.HyperbolicPlane` (namespace `QM`, `open QM` below) — this file no longer carries a
+private copy. The triangle inequality is proven on the *shared* `QM.hyperbolicDist`, so it composes
+directly with the edge bounds in `HyperbolicPlane.lean`.
 
 ## The proof (reversed Cauchy–Schwarz + Gram determinant)
 
@@ -34,19 +34,9 @@ No `sorry`/`axiom`/`admit`; everything is kernel-checked.
 -/
 
 open scoped Real
+open QM
 
 namespace HyperbolicMetric
-
-/-- The hyperboloid model of H²: points `(t, x, y)` on the upper sheet of `-t² + x² + y² = -1`. -/
-def Hyperboloid : Type := { p : ℝ × ℝ × ℝ // -p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2 = -1 ∧ 0 < p.1 }
-
-/-- The Minkowski inner product `⟨p, q⟩_M = -t_p t_q + x_p x_q + y_p y_q`. -/
-def minkowski (p q : ℝ × ℝ × ℝ) : ℝ :=
-  -p.1 * q.1 + p.2.1 * q.2.1 + p.2.2 * q.2.2
-
-/-- The hyperbolic distance on the hyperboloid model: `d(p, q) = arcosh(−⟨p, q⟩_M)`. -/
-noncomputable def hyperbolicDist (p q : Hyperboloid) : ℝ :=
-  Real.arcosh (-minkowski p.1 q.1)
 
 /-- The Minkowski self-product of a hyperboloid point is `-1`. -/
 lemma minkowski_self (p : Hyperboloid) : minkowski p.1 p.1 = -1 := by

@@ -1,62 +1,28 @@
 import Mathlib
+import PaclandProof.QM.HyperbolicPlane
+import PaclandProof.QM.HyperbolicMetric
+import PaclandProof.QM.Hyperbolic
 
 /-!
 # Quasi-surjectivity of the tree-to-H² map (the density half of the quasi-isometry)
 
-Self-contained companion to `HyperbolicPlane.lean` (which a concurrent session owns). It
-redeclares the hyperboloid model pieces it needs under the distinct namespace `QMTreeDensity` so it
-builds independently, and proves the *quasi-surjectivity* rung: every hyperboloid point is within a
-bounded hyperbolic distance of the tree's image.
+Proves the *quasi-surjectivity* rung: every hyperboloid point is within a bounded hyperbolic distance
+of the tree's image.
 
-The argument is dyadic density. A point `(cosh r, sinh r · cos θ, sinh r · sin θ)` is approximated by
-a vertex at depth `d` with `ln 2 · d ≈ r` (radial error ≤ `ln 2`) and angle `2π · k/2^d ≈ θ`
-(angular error ≤ `2π/2^d`, since dyadic rationals are dense in `[0, 1)`). The hyperbolic distance
-then satisfies `d ≤ arcosh(cosh(ln 2) + 4π²)`, a constant. The proof uses the parametrisation of the
-hyperboloid via `Complex.arg`, the `ℕ`-floor density lemmas, and the identity
+The hyperboloid model (`Hyperboloid`, `minkowski`, `hyperbolicDist`, `pathAngle`, `treeToH2`) is
+imported from `PaclandProof.QM.HyperbolicPlane` (namespace `QM`, `open QM` below) — this file no
+longer carries a private copy. The argument is dyadic density. A point
+`(cosh r, sinh r · cos θ, sinh r · sin θ)` is approximated by a vertex at depth `d` with
+`ln 2 · d ≈ r` (radial error ≤ `ln 2`) and angle `2π · k/2^d ≈ θ` (angular error ≤ `2π/2^d`, since
+dyadic rationals are dense in `[0, 1)`). The hyperbolic distance then satisfies
+`d ≤ arcosh(cosh(ln 2) + 4π²)`, a constant. The proof uses the parametrisation of the hyperboloid via
+`Complex.arg`, the `ℕ`-floor density lemmas, and the identity
 `cosh r cosh r' − sinh r sinh r' cos Δ = cosh(r − r') + sinh r sinh r' (1 − cos Δ)`.
 -/
 
+open QM
+
 namespace QMTreeDensity
-
-/-- The hyperboloid model of H²: points `(t, x, y)` on the upper sheet of `-t² + x² + y² = -1`. -/
-def Hyperboloid : Type := { p : ℝ × ℝ × ℝ // -p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2 = -1 ∧ 0 < p.1 }
-
-/-- The Minkowski inner product `⟨p, q⟩_M = -t_p t_q + x_p x_q + y_p y_q`. -/
-def minkowski (p q : ℝ × ℝ × ℝ) : ℝ :=
-  -p.1 * q.1 + p.2.1 * q.2.1 + p.2.2 * q.2.2
-
-/-- The hyperbolic distance on the hyperboloid model: `d(p, q) = arcosh(−⟨p, q⟩_M)`. -/
-noncomputable def hyperbolicDist (p q : Hyperboloid) : ℝ :=
-  Real.arcosh (-minkowski p.1 q.1)
-
-/-- The angle of a tree path — its binary expansion in `[0,1)`, computed recursively. -/
-noncomputable def pathAngle : List Bool → ℝ
-  | [] => 0
-  | b :: t => (if b then (1 : ℝ) else 0) / 2 + pathAngle t / 2
-
-/-- **The quasi-isometry map.** A tree vertex `s` maps to a hyperboloid point at hyperbolic distance
-`ln 2 · |s|` from the base and angle `pathAngle s`. -/
-noncomputable def treeToH2 (s : List Bool) : Hyperboloid :=
-  ⟨(Real.cosh ((Real.log 2) * (s.length : ℝ)),
-     Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.cos (2 * Real.pi * pathAngle s),
-     Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.sin (2 * Real.pi * pathAngle s)), by
-     constructor
-     · calc
-          -(Real.cosh ((Real.log 2) * (s.length : ℝ))) ^ 2
-            + (Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.cos (2 * Real.pi * pathAngle s)) ^ 2
-            + (Real.sinh ((Real.log 2) * (s.length : ℝ)) * Real.sin (2 * Real.pi * pathAngle s)) ^ 2
-            = -(Real.cosh ((Real.log 2) * (s.length : ℝ))) ^ 2
-              + (Real.sinh ((Real.log 2) * (s.length : ℝ))) ^ 2
-                * ((Real.cos (2 * Real.pi * pathAngle s)) ^ 2
-                  + (Real.sin (2 * Real.pi * pathAngle s)) ^ 2) := by ring
-          _ = -(Real.cosh ((Real.log 2) * (s.length : ℝ))) ^ 2
-              + (Real.sinh ((Real.log 2) * (s.length : ℝ))) ^ 2 := by
-                rw [Real.cos_sq_add_sin_sq]
-                ring
-          _ = -1 := by
-                have h := Real.cosh_sq_sub_sinh_sq ((Real.log 2) * (s.length : ℝ))
-                nlinarith
-     · exact Real.cosh_pos ((Real.log 2) * (s.length : ℝ))⟩
 
 /-- A hyperboloid point in `(r, θ)` coordinates — `(cosh r, sinh r · cos θ, sinh r · sin θ)`. -/
 noncomputable def h2point (r θ : ℝ) : Hyperboloid :=
@@ -186,19 +152,6 @@ lemma hyperboloid_param (p : Hyperboloid) :
 /-- `exp (ln 2 · d) = 2^d`. -/
 lemma exp_ln2_mul_eq_two_pow (d : ℕ) : Real.exp ((Real.log 2) * (d : ℝ)) = (2 : ℝ) ^ d := by
   rw [Real.exp_mul, Real.exp_log (by norm_num : 0 < (2 : ℝ)), Real.rpow_natCast]
-
-/-- `sinh r ≤ exp r` for `r ≥ 0`. -/
-lemma sinh_le_exp {r : ℝ} (hr : 0 ≤ r) : Real.sinh r ≤ Real.exp r := by
-  rw [Real.sinh_eq]
-  have h1 : 0 ≤ Real.exp r := Real.exp_nonneg r
-  have h2 : 0 ≤ Real.exp (-r) := Real.exp_nonneg (-r)
-  nlinarith
-
-/-- `sinh(ln 2 · d) ≤ 2^d`. -/
-lemma sinh_ln2_mul_le_two_pow (d : ℕ) :
-    Real.sinh (Real.log 2 * (d : ℝ)) ≤ (2 : ℝ) ^ d := by
-  have h := sinh_le_exp (by positivity : 0 ≤ Real.log 2 * (d : ℝ))
-  rwa [exp_ln2_mul_eq_two_pow d] at h
 
 /-- `1 - cos x ≤ x²/2` for all real `x`. -/
 lemma one_sub_cos_le_sq_div_two_general (x : ℝ) : 1 - Real.cos x ≤ x ^ 2 / 2 := by
@@ -433,5 +386,219 @@ theorem treeToH2_quasiSurjective :
   exact hyperbolicDist_bound_of_approx r θ (2 * Real.pi * pathAngle s) s.length hr0
     (by simpa [← hslen] using hrdiff)
     (by simpa [← hslen] using hthdiff)
+
+/-! ## Distortion (the *true* direction) and the honest boundary of the quasi-isometry
+
+`treeToH2` is **coarsely Lipschitz** (below) and **coarsely surjective**
+(`treeToH2_quasiSurjective` above), but it is **not** coarsely injective — the binary-expansion
+angle collapses the two boundary branches `0.0111…₂` and `0.1000…₂` to the same ideal point. The
+lower bound of a quasi-isometry therefore fails; see `treeToH2_not_coarsely_injective` below. -/
+
+/-- The edge upper-bound constant of the tree→H² embedding: `arcosh(cosh(ln 2) + 2π²)` — the
+largest hyperbolic length of a single parent–child edge (`hyperbolicDist_edge_le`). -/
+noncomputable def edgeBound : ℝ := Real.arcosh (Real.cosh (Real.log 2) + 2 * Real.pi ^ 2)
+
+/-- The hyperbolic distance from a point to itself is zero. -/
+lemma hyperbolicDist_self (p : Hyperboloid) : hyperbolicDist p p = 0 := by
+  dsimp [hyperbolicDist]
+  rw [HyperbolicMetric.minkowski_self p]
+  simpa using (Real.arcosh_zero : Real.arcosh 1 = 0)
+
+/-- **Edge-chain upper bound.** Appending a suffix `r` to a tree path moves its image by at most
+`edgeBound` per appended bit: the hyperbolic distance from `treeToH2 s` to `treeToH2 (s ++ r)` is at
+most `edgeBound · r.length`. This is the chaining lemma behind the coarse-Lipschitz (upper) half of
+the quasi-isometry. -/
+lemma treeToH2_append_dist_le (s r : List Bool) :
+    hyperbolicDist (treeToH2 (s ++ r)) (treeToH2 s) ≤ edgeBound * (r.length : ℝ) := by
+  induction r generalizing s with
+  | nil => simp [hyperbolicDist_self]
+  | cons b r' ih =>
+      have hstep : hyperbolicDist (treeToH2 (s ++ [b])) (treeToH2 s) ≤ edgeBound :=
+        hyperbolicDist_edge_le s b
+      have hrec : hyperbolicDist (treeToH2 ((s ++ [b]) ++ r')) (treeToH2 (s ++ [b])) ≤
+          edgeBound * (r'.length : ℝ) := ih (s ++ [b])
+      have htri := HyperbolicMetric.hyperbolicDist_triangle
+        (treeToH2 ((s ++ [b]) ++ r')) (treeToH2 (s ++ [b])) (treeToH2 s)
+      have hmain : hyperbolicDist (treeToH2 (s ++ (b :: r'))) (treeToH2 s) ≤
+            hyperbolicDist (treeToH2 ((s ++ [b]) ++ r')) (treeToH2 (s ++ [b]))
+              + hyperbolicDist (treeToH2 (s ++ [b])) (treeToH2 s) := by
+        simpa [List.append_assoc] using htri
+      rw [List.length_cons]
+      push_cast
+      rw [show edgeBound * ((r'.length : ℝ) + 1) = edgeBound * (r'.length : ℝ) + edgeBound by ring]
+      nlinarith
+
+/-- **Coarse Lipschitz (the true upper half of the quasi-isometry).** The hyperbolic distance of two
+tree images is at most `edgeBound` times the tree distance: the tree path from `s` to `t` passes
+through the lowest common ancestor (depth `commonPrefixLength s t`), and each of its
+`treeDist s t` edges contributes at most `edgeBound`. -/
+lemma hyperbolicDist_le_edge_mul_treeDistR (s t : List Bool) :
+    hyperbolicDist (treeToH2 s) (treeToH2 t) ≤ edgeBound * treeDistR s t := by
+  let l := commonPrefixLength s t
+  let p := s.take l
+  have hup : hyperbolicDist (treeToH2 s) (treeToH2 p) ≤ edgeBound * ((s.drop l).length : ℝ) := by
+    have hsp : p ++ s.drop l = s := by
+      simpa [p] using (List.take_append_drop l s)
+    have hrec := treeToH2_append_dist_le p (s.drop l)
+    simpa [hsp] using hrec
+  have hdown : hyperbolicDist (treeToH2 p) (treeToH2 t) ≤ edgeBound * ((t.drop l).length : ℝ) := by
+    have hst : s.take l = t.take l := take_eq_of_le_lcp (s := s) (t := t) (le_refl l)
+    have ht : t.take l = p := by
+      simpa [p] using hst.symm
+    have hpt : p ++ t.drop l = t := by
+      rw [← ht]
+      exact (List.take_append_drop l t)
+    have hrec := treeToH2_append_dist_le p (t.drop l)
+    rw [hyperbolicDist_comm]
+    simpa [hpt] using hrec
+  have htri := HyperbolicMetric.hyperbolicDist_triangle (treeToH2 s) (treeToH2 p) (treeToH2 t)
+  have hdrop_nat : (s.drop l).length + (t.drop l).length = treeDist s t := by
+    rw [List.length_drop, List.length_drop]
+    have hs : l ≤ s.length := by dsimp [l]; exact (commonPrefix_length_le (s := s) (t := t)).1
+    have ht : l ≤ t.length := by dsimp [l]; exact (commonPrefix_length_le (s := s) (t := t)).2
+    dsimp [l, treeDist]
+    omega
+  have hcast : ((s.drop l).length : ℝ) + ((t.drop l).length : ℝ) = treeDistR s t := by
+    dsimp [treeDistR]
+    exact_mod_cast hdrop_nat
+  have hsum : hyperbolicDist (treeToH2 s) (treeToH2 t) ≤
+      edgeBound * ((s.drop l).length : ℝ) + edgeBound * ((t.drop l).length : ℝ) := by
+    nlinarith [htri, hup, hdown]
+  have hdist : edgeBound * ((s.drop l).length : ℝ) + edgeBound * ((t.drop l).length : ℝ)
+      = edgeBound * treeDistR s t := by
+    rw [← mul_add, hcast]
+  rw [← hdist]
+  exact hsum
+
+/-- **The map is coarsely Lipschitz.** The (true) upper bound packaged as an existential: there is a
+constant `E = edgeBound` with `hyperbolicDist (treeToH2 s) (treeToH2 t) ≤ E · treeDistR s t`. -/
+theorem treeToH2_coarseLipschitz :
+    ∃ E : ℝ, ∀ s t : List Bool, hyperbolicDist (treeToH2 s) (treeToH2 t) ≤ E * treeDistR s t :=
+  ⟨edgeBound, fun s t => hyperbolicDist_le_edge_mul_treeDistR s t⟩
+
+/-! ## The honest boundary: `treeToH2` is *not* coarsely injective
+
+The binary-expansion angle `2π · pathAngle` identifies `0.0111…₂` with `0.1000…₂`: the two branch
+vertices `[true, false, …, false]` and `[false, true, …, true]` have `pathAngle` `1/2` and
+`1/2 − 2^−(k+1)`, so their images sit at the same radius `ln 2 · (k+1)` with angle difference
+`2π · 2^−(k+1) → 0`. Their hyperbolic distance therefore converges to a **constant**
+(`arcosh(cosh(ln 2) + 4π²)`), while their tree distance `2(k+1)` grows without bound. Hence no `K, C`
+can satisfy `treeDistR ≤ K · hyperbolicDist + C`: the lower half of a quasi-isometry fails, and the
+map `treeToH2` is **not** a quasi-isometry (it is only coarsely Lipschitz + coarsely surjective). -/
+
+/-- The "true, then all-false" branch vertex `[true, false, …, false]` (length `k + 1`); its
+`pathAngle` is exactly `1/2` (`0.1000…₂`). -/
+def antipodalS (k : ℕ) : List Bool := true :: List.replicate k false
+
+/-- The "false, then all-true" branch vertex `[false, true, …, true]` (length `k + 1`); its
+`pathAngle` is `1/2 − 2^−(k+1)` (`0.0111…₂`), approaching `1/2` from below. -/
+def antipodalT (k : ℕ) : List Bool := false :: List.replicate k true
+
+lemma pathAngle_replicate_false (k : ℕ) : pathAngle (List.replicate k false) = 0 := by
+  induction k with
+  | zero => simp [pathAngle]
+  | succ k ih => simp [pathAngle, List.replicate_succ, ih]
+
+lemma pathAngle_antipodalS (k : ℕ) : pathAngle (antipodalS k) = 1 / 2 := by
+  simp [antipodalS, pathAngle, pathAngle_replicate_false]
+
+lemma pathAngle_replicate_true (k : ℕ) :
+    pathAngle (List.replicate k true) = 1 - 1 / (2 : ℝ) ^ k := by
+  induction k with
+  | zero => simp [pathAngle]
+  | succ k ih =>
+      simp [pathAngle, List.replicate_succ, ih]
+      rw [pow_succ]
+      field_simp
+      ring
+
+lemma pathAngle_antipodalT (k : ℕ) :
+    pathAngle (antipodalT k) = 1 / 2 - 1 / (2 : ℝ) ^ (k + 1) := by
+  simp [antipodalT, pathAngle, pathAngle_replicate_true]
+  rw [pow_succ]
+  field_simp
+
+/-- The two antipodal branch vertices of the same depth have tree distance `2(k+1)`. -/
+lemma treeDist_antipodal (k : ℕ) :
+    treeDist (antipodalS k) (antipodalT k) = 2 * (k + 1) := by
+  simp [antipodalS, antipodalT, treeDist, commonPrefixLength, List.length_replicate]
+  omega
+
+lemma treeDistR_antipodal (k : ℕ) :
+    treeDistR (antipodalS k) (antipodalT k) = ((2 * (k + 1) : ℕ) : ℝ) := by
+  rw [treeDistR, treeDist_antipodal]
+
+/-- **The collapse.** The images of the two antipodal branch vertices are within the constant
+`arcosh(cosh(ln 2) + 4π²)` of each other, uniformly in `k` — they are the *same* radius and an angle
+`2π · 2^−(k+1)` apart, so `hyperbolicDist_bound_of_approx` (radial error `0`, angular error
+`2π/2^(k+1)`) applies. -/
+lemma hyperbolicDist_antipodal_bounded (k : ℕ) :
+    hyperbolicDist (treeToH2 (antipodalS k)) (treeToH2 (antipodalT k)) ≤
+      Real.arcosh (Real.cosh (Real.log 2) + 4 * Real.pi ^ 2) := by
+  rw [treeToH2_eq_h2point, treeToH2_eq_h2point]
+  have hlenS : (antipodalS k).length = k + 1 := by simp [antipodalS]
+  have hlenT : (antipodalT k).length = k + 1 := by simp [antipodalT]
+  rw [hlenS, hlenT]
+  have hthdiff : |2 * Real.pi * pathAngle (antipodalS k) - 2 * Real.pi * pathAngle (antipodalT k)|
+      ≤ 2 * Real.pi / (2 ^ (k + 1) : ℝ) := by
+    rw [← mul_sub]
+    have hdiff : pathAngle (antipodalS k) - pathAngle (antipodalT k) = 1 / (2 : ℝ) ^ (k + 1) := by
+      rw [pathAngle_antipodalS, pathAngle_antipodalT]
+      ring
+    rw [hdiff]
+    rw [abs_of_nonneg (by positivity : 0 ≤ 2 * Real.pi * (1 / (2 : ℝ) ^ (k + 1)))]
+    rw [show 2 * Real.pi * (1 / (2 : ℝ) ^ (k + 1)) = 2 * Real.pi / (2 : ℝ) ^ (k + 1) by ring]
+  exact hyperbolicDist_bound_of_approx
+    (Real.log 2 * ((k + 1 : ℕ) : ℝ))
+    (2 * Real.pi * pathAngle (antipodalS k))
+    (2 * Real.pi * pathAngle (antipodalT k))
+    (k + 1)
+    (by positivity)
+    (by
+      rw [show Real.log 2 * ((k + 1 : ℕ) : ℝ) - Real.log 2 * ((k + 1 : ℕ) : ℝ) = 0 by ring]
+      rw [abs_zero]
+      exact le_of_lt (Real.log_pos (by norm_num : (1 : ℝ) < 2)))
+    hthdiff
+
+/-- The tree distance of the antipodal pair is unbounded as a function of the additive constant. -/
+lemma treeDistR_antipodal_unbounded (B : ℝ) :
+    ∃ k : ℕ, B < treeDistR (antipodalS k) (antipodalT k) := by
+  rcases exists_nat_gt B with ⟨n, hn⟩
+  refine ⟨n, ?_⟩
+  rw [treeDistR_antipodal]
+  push_cast
+  have hn0 : 0 ≤ (n : ℝ) := by positivity
+  nlinarith [hn, hn0]
+
+/-- **`treeToH2` is not coarsely injective.** No constants `K, C` make
+`treeDistR s t ≤ K · hyperbolicDist (treeToH2 s) (treeToH2 t) + C` hold for all `s, t`: along the
+antipodal family the left side is `2(k+1) → ∞` while the right side stays bounded (the hyperbolic
+distance is `≤ arcosh(cosh(ln 2) + 4π²)`). -/
+theorem treeToH2_not_coarsely_injective :
+    ¬ ∃ K C : ℝ, 0 < K ∧ ∀ s t : List Bool,
+      treeDistR s t ≤ K * hyperbolicDist (treeToH2 s) (treeToH2 t) + C := by
+  rintro ⟨K, C, hK, h⟩
+  let B : ℝ := Real.arcosh (Real.cosh (Real.log 2) + 4 * Real.pi ^ 2)
+  have hbounded : ∀ k : ℕ, hyperbolicDist (treeToH2 (antipodalS k)) (treeToH2 (antipodalT k)) ≤ B := by
+    intro k
+    exact hyperbolicDist_antipodal_bounded k
+  have hle : ∀ k : ℕ, treeDistR (antipodalS k) (antipodalT k) ≤ K * B + C := by
+    intro k
+    have hk := h (antipodalS k) (antipodalT k)
+    have hmul : K * hyperbolicDist (treeToH2 (antipodalS k)) (treeToH2 (antipodalT k)) ≤ K * B :=
+      mul_le_mul_of_nonneg_left (hbounded k) (le_of_lt hK)
+    nlinarith
+  rcases treeDistR_antipodal_unbounded (K * B + C) with ⟨k, hbig⟩
+  have hle' := hle k
+  nlinarith
+
+/-- **`treeToH2` is not a quasi-isometry.** It is coarsely Lipschitz (`treeToH2_coarseLipschitz`)
+and coarsely surjective (`treeToH2_quasiSurjective`), but not coarsely injective
+(`treeToH2_not_coarsely_injective`), so `quasiIsometricReal treeDistR hyperbolicDist treeToH2` is
+false. -/
+theorem treeToH2_not_quasiIsometric :
+    ¬ quasiIsometricReal treeDistR hyperbolicDist treeToH2 := by
+  rintro ⟨K, C, R, hK, hdist, hsurj⟩
+  exact treeToH2_not_coarsely_injective ⟨K, C, hK, fun s t => (hdist s t).1⟩
 
 end QMTreeDensity
