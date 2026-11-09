@@ -88,104 +88,6 @@
    "title": "Room correction from the mode spectrum: diagnose, fix, and check the fix away from the seat"
   },
   {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-alarm-contact-report.md",
-   "kind": "doc",
-   "path": "docs/animal-alarm-contact-report.md",
-   "summary": "(bandwidth) than affiliative/contact calls\" consistent across species?",
-   "title": "Cross-species alarm-vs-contact acoustic direction test"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-archetype-report.md",
-   "kind": "doc",
-   "path": "docs/animal-archetype-report.md",
-   "summary": "call acoustics) predict behavioural constraint (agonistic / affiliative / neutral context, and referent)? This is a null-modelled test of Morton's motivation-structural rules.",
-   "title": "Cross-species \"core sound\" archetypes and the Morton test"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-axis-direction-report.md",
-   "kind": "doc",
-   "path": "docs/animal-axis-direction-report.md",
-   "summary": "\"agonistic/distress\" is split into aggression vs distress/alarm?",
-   "title": "Cross-species acoustic direction, re-cut into three motivational categories"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-c1-learnability.md",
-   "kind": "doc",
-   "path": "docs/animal-c1-learnability.md",
-   "summary": "the clean uniform column. All four candidate constraints are LEARNABLE; the context-free acoustic \u2192 referent map is graded (balanced accuracy 0.60), far below the r\u22650.9 Rosetta threshold\u2026",
-   "title": "C1 \u2014 animal communication, constraint-first: first run (learnability split)"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-c1b-referent.md",
-   "kind": "doc",
-   "path": "docs/animal-c1b-referent.md",
-   "summary": "A context-free acoustic map to the referent is near-deterministic: joint ridge-CV balanced accuracy 1.000 and best single feature 0.955, both \u2265 0.90 with permutation z \u2265 3. Where C1's\u2026",
-   "title": "C1b \u2014 animal communication, constraint-first: the REFERENTIAL test (real predator referent)"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-c1c-sequences.md",
-   "kind": "doc",
-   "path": "docs/animal-c1c-sequences.md",
-   "summary": "sperm-whale coda sequences the unit-type frequency distribution is a strong power law, the temporal order of codas is predictable beyond chance, and a 2-symbol bigram grammar compresses the\u2026",
-   "title": "C1c \u2014 animal communication, sequence constraints (frequency / temporal / combinatorial)"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-communication-code.md",
-   "kind": "doc",
-   "path": "docs/animal-communication-code.md",
-   "summary": "For Aza Raskin / Earth Species Project \u00b7 2026-11-08",
-   "title": "There is no universal acoustic code of animal meaning \u2014 measured"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-constraint-first.md",
-   "kind": "doc",
-   "path": "docs/animal-constraint-first.md",
-   "summary": "\"meanings\" fit any signal, and there is no ground-truth translation key (no Rosetta Stone). The pacland move for the underdetermined wall is compute the set's invariants \u2014 the constraints\u2026",
-   "title": "Animal communication \u2014 constraint-first"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-decodability-benchmark.md",
-   "kind": "doc",
-   "path": "docs/animal-decodability-benchmark.md",
-   "summary": "One null-modeled number \u2014 the decodability deficit \u2014 per species/corpus, plus the constraint learnability. 38 corpora, 42 label rows, 15 deficit rows, 1 sequence corpus. Reproduces on a\u2026",
-   "title": "Cross-species decodability benchmark"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-human-corpus-notes.md",
-   "kind": "doc",
-   "path": "docs/animal-human-corpus-notes.md",
-   "summary": "Prepared as the human fold-in for the cross-species \"core sound / constraint\" decodability benchmark. This corpus gives the benchmark a human analogue of the animal acoustic-shape \u2192\u2026",
-   "title": "Human vocal corpus \u2014 notes"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-raskin-brief.md",
-   "kind": "doc",
-   "path": "docs/animal-raskin-brief.md",
-   "summary": "\"Decode animal language\" is usually posed as a search for a Rosetta Stone \u2014 a translation key into a known language. Framed that way it is an underdetermined inverse problem: infinitely\u2026",
-   "title": "The decodability deficit"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-ravdess-roughness-report.md",
-   "kind": "doc",
-   "path": "docs/animal-ravdess-roughness-report.md",
-   "summary": "constant-60 Hz Butterworth channels, Hilbert envelope, 30\u2013150 Hz AM band \u2014 extractroughness.py, reused unchanged) predict the aversive category in real human voices? The prior test (LAION\u2026",
-   "title": "Roughness \u2192 aversive: the REAL-voice check (RAVDESS emotional speech)"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-roughness-report.md",
-   "kind": "doc",
-   "path": "docs/animal-roughness-report.md",
-   "summary": "soundscape\", Curr. Biol. 25:2051) defines roughness as temporal modulation power in the 30\u2013150 Hz amplitude-modulation band, computed from a multi-band modulation power spectrum (MPS). The\u2026",
-   "title": "Roughness (multi-band MPS) \u2014 recomputation and the \"roughness = aversive\" test"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/animal-ungulate-roughness-report.md",
-   "kind": "doc",
-   "path": "docs/animal-ungulate-roughness-report.md",
-   "summary": "The valence field is imbalanced (2,508 Negative vs 673 Positive), so a balanced subset is drawn.",
-   "title": "Roughness \u2192 aversive: the cross-mammal (ungulate) check"
-  },
-  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/architecture.md",
    "kind": "doc",
    "path": "docs/architecture.md",
@@ -2263,13 +2165,6 @@
    "path": "scripts/make_plain_speak.py",
    "summary": "Render the plain-speak one-pagers.",
    "title": "make_plain_speak.py"
-  },
-  {
-   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_animal_constraints.py",
-   "kind": "script",
-   "path": "scripts/measure_animal_constraints.py",
-   "summary": "C1 \u2014 animal communication learnability split (macaque corpus), via the reusable instrument.",
-   "title": "measure_animal_constraints.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_audit.py",
