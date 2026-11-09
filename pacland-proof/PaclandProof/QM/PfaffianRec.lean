@@ -30,3 +30,26 @@ theorem pfaffian_sq_eq_det_2 (A : Matrix (Fin 2) (Fin 2) ℂ)
   congr 1
   ext i j
   fin_cases i <;> fin_cases j <;> simp [h00, h11, h10]
+
+/-- The m=2 base of the general induction: for an antisymmetric 4×4 matrix, the square of the
+recursive Pfaffian equals the determinant — `pfaffian 2 A ^ 2 = A.det`, using the recursion (not the
+explicit `pfaffian4` form). -/
+theorem pfaffian_sq_eq_det_4 (A : Matrix (Fin 4) (Fin 4) ℂ)
+    (h00 : A 0 0 = 0) (h11 : A 1 1 = 0) (h22 : A 2 2 = 0) (h33 : A 3 3 = 0)
+    (h10 : A 1 0 = -A 0 1) (h20 : A 2 0 = -A 0 2) (h30 : A 3 0 = -A 0 3)
+    (h21 : A 2 1 = -A 1 2) (h31 : A 3 1 = -A 1 3) (h32 : A 3 2 = -A 2 3) :
+    pfaffian 2 A ^ 2 = A.det := by
+  rw [pfaffian_rec_4, pfaffian4_sq_eq_det]
+  congr 1
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [h00, h11, h22, h33, h10, h20, h30, h21, h31, h32]
+
+/-- The Pfaffian's transformation law at 2×2: `Pf(P A Pᵀ) = det(P) · Pf(A)`. This is the key lemma
+for the normal-form proof of the general Cayley identity (every antisymmetric matrix is congruent to
+the standard symplectic form, and this is how the Pfaffian transforms under that congruence). -/
+theorem pfaffian_transform_2 (P A : Matrix (Fin 2) (Fin 2) ℂ)
+    (h00 : A 0 0 = 0) (h11 : A 1 1 = 0) (h10 : A 1 0 = -A 0 1) :
+    pfaffian 1 (P * A * Pᵀ) = P.det * pfaffian 1 A := by
+  rw [pfaffian_rec_2, pfaffian_rec_2, Matrix.det_fin_two]
+  simp [pfaffian2, Matrix.mul_apply, Matrix.transpose_apply, Fin.sum_univ_two, h00, h11, h10]
+  ring
