@@ -28,6 +28,7 @@ import PaclandProof.QM.Stabilizer
 import PaclandProof.QM.MERA
 import PaclandProof.QM.Mermin
 import PaclandProof.QM.Matchgate
+import PaclandProof.QM.PfaffianRec
 import PaclandProof.QM.Hyperbolic
 import PaclandProof.QM.HyperbolicPlane
 import PaclandProof.QM.SternBrocot
