@@ -382,6 +382,13 @@
    "title": "The verified reference model \u2014 GISS-E2-1-G"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-scream-report.md",
+   "kind": "doc",
+   "path": "docs/climate-scream-report.md",
+   "summary": "term the STRATA report left open: STRATA is verified against SCREAM (reference-fidelity, p\u0302g); this asks the next level, is the oracle itself right against the Earth (p\u0302e).",
+   "title": "SCREAM \u2014 the oracle behind STRATA: does *it* leak?"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-strata-report.md",
    "kind": "doc",
    "path": "docs/climate-strata-report.md",
