@@ -382,6 +382,13 @@
    "title": "The verified reference model \u2014 GISS-E2-1-G"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-strata-report.md",
+   "kind": "doc",
+   "path": "docs/climate-strata-report.md",
+   "summary": "worked example (docs/climate-ace-report.md) applied one resolution tier up: to the first storm-resolving AI climate emulator.",
+   "title": "STRATA (NVIDIA) \u2014 the km-scale emulator, reference-fidelity is not reality-fidelity"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-trust-board.md",
    "kind": "doc",
    "path": "docs/climate-trust-board.md",
