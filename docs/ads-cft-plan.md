@@ -56,3 +56,13 @@ the image then lives in a horoball so surjectivity must be handled coarsely), or
 construction. The honest next step is to **redefine `treeToH2`**, then re-prove the two QI inequalities
 for the corrected map. Everything already proven (`treeToH2_depth`, injectivity, the diameter bound)
 stays true but transfers to the corrected map.
+
+## Rung 4 finding (round 16) — the GH distance is ALREADY in Mathlib
+
+The shard that stalled on Rung 4 was re-deriving something Mathlib already has:
+`Mathlib/Topology/MetricSpace/GromovHausdorff.lean` defines `GromovHausdorff.ghDist` (the Gromov-
+Hausdorff distance between nonempty compact metric spaces), the `GHSpace` quotient, and the key
+lemmas `ghDist_le_hausdorffDist` / `ghDist_eq_hausdorffDist` / `hausdorffDist_optimal`. So "define
+the GH distance" is already done — just `import Mathlib` and use `GromovHausdorff.ghDist`. The
+REMAINING Rung 4 work is the *convergence proof* (rescaled cone → H²), which is the genuinely hard
+part, not the definition.
