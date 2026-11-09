@@ -245,4 +245,30 @@ theorem one_sub_cos_le_sq_div_two {x : ℝ} (hx : 0 ≤ x) : 1 - Real.cos x ≤ 
   nlinarith [hcos, hsin]
 
 
+
+/-- Appending a `true` bit adds `1/2^(|p|+1)` to the angle — the true-child's angular swing. -/
+theorem pathAngle_append_true (p : List Bool) :
+    pathAngle (p ++ [true]) = pathAngle p + (1 : ℝ) / 2 ^ (p.length + 1) := by
+  induction p with
+  | nil => simp [pathAngle]
+  | cons b t ih =>
+    simp [pathAngle, ih]
+    ring
+
+/-- `sinh(ln2 · d) ≤ 2^d` — the radial coordinate is bounded by the tree's exponential growth. -/
+theorem sinh_ln2_mul_le_two_pow (d : ℕ) :
+    Real.sinh (Real.log 2 * (d : ℝ)) ≤ (2 : ℝ) ^ d := by
+  have h := sinh_le_exp (by positivity : 0 ≤ Real.log 2 * (d : ℝ))
+  have hexp : Real.exp (Real.log 2 * (d : ℝ)) = (2 : ℝ) ^ d := by
+    rw [Real.exp_mul, Real.exp_log (by norm_num : 0 < (2 : ℝ)), Real.rpow_natCast]
+  rwa [hexp] at h
+
+
+/-- The angle difference of a parent–child step: `b · 1/2^(|p|+1)`. -/
+theorem pathAngle_append_sub (p : List Bool) (b : Bool) :
+    pathAngle (p ++ [b]) - pathAngle p = (if b then (1 : ℝ) else 0) / 2 ^ (p ++ [b]).length := by
+  cases b <;> simp [pathAngle_append_false, pathAngle_append_true, List.length_append, List.length_singleton]
+
+
+
 end QM
