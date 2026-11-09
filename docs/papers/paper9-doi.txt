@@ -1,0 +1,2 @@
+TITLE: Entanglement = geometry, exactly — the kernel-checked Ryu-Takayanagi equality and the forced emergence direction
+DOI: 10.5281/zenodo.24077012
