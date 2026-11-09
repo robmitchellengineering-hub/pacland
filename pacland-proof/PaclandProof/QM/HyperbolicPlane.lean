@@ -227,4 +227,22 @@ theorem hyperbolicDist_ge_radial (s t : List Bool) (h : t.length ≤ s.length) :
     nlinarith [hc, hs]
 
 
+/-- `sinh r ≤ exp r` for `r ≥ 0`. -/
+theorem sinh_le_exp {r : ℝ} (hr : 0 ≤ r) : Real.sinh r ≤ Real.exp r := by
+  rw [Real.sinh_eq]
+  have h1 : 0 ≤ Real.exp r := Real.exp_nonneg r
+  have h2 : 0 ≤ Real.exp (-r) := Real.exp_nonneg (-r)
+  nlinarith
+
+/-- `1 - cos x ≤ x²/2` for `x ≥ 0`. -/
+theorem one_sub_cos_le_sq_div_two {x : ℝ} (hx : 0 ≤ x) : 1 - Real.cos x ≤ x ^ 2 / 2 := by
+  have hcos : 1 - Real.cos x = 2 * Real.sin (x / 2) ^ 2 := by
+    have h := Real.cos_two_mul (x / 2)
+    rw [show 2 * (x / 2) = x by ring] at h
+    have hsq := Real.cos_sq_add_sin_sq (x / 2)
+    nlinarith [h, hsq]
+  have hsin : Real.sin (x / 2) ^ 2 ≤ (x / 2) ^ 2 := Real.sin_sq_le_sq
+  nlinarith [hcos, hsin]
+
+
 end QM
