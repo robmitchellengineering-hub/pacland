@@ -403,6 +403,13 @@
    "title": "Colibri evaluation \u2014 run frontier LLMs locally on RAM + NVMe (no GPU)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/community-post.md",
+   "kind": "doc",
+   "path": "docs/community-post.md",
+   "summary": "361 theorems + 138 defs across 44 Lean 4 + Mathlib files, lake build green, no sorry/axiom. Citable snapshot: 10.5281/zenodo.24073510. Site: https://pacland.morpheus.nz.",
+   "title": "Come help machine-check a Theory of Everything (three pick-up-able Lean theorems)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/complete-exact-structure.md",
    "kind": "doc",
    "path": "docs/complete-exact-structure.md",
