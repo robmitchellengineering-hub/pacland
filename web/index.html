@@ -401,10 +401,28 @@ the formal record: <a href="https://github.com/robmitchellengineering-hub/paclan
         <p><code>pacland drugs</code></p>
       </div>
       <div class="card">
+        <h3>Economics</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-model-roster.md">model roster</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-verification-deficit.md">deficit report</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-economics-plain-speak.pdf">plain-speak (PDF)</a></p>
+        <p><code>pacland economics --realtime</code></p>
+      </div>
+      <div class="card">
+        <h3>Epidemiology</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/src/pacland/epidemiology/recovery.py">the identifiability check</a></p>
+      </div>
+      <div class="card">
         <h3>Energy</h3>
         <p>Stored-energy ceilings, and the vacuum. A <strong>referee</strong> for candidate quantum-gravity frameworks: 13 conditions × 6 frameworks, scored <code>KILLED</code> / <code>SURVIVES</code> / <code>UNKNOWN</code> — and <strong>UNKNOWN wherever no verifier has run against a read bound</strong>, never a pass.</p>
         <p><a href="./energy.html"><strong>the quantum gravity page</strong></a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md">the programme</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-conjectures.md">energy claims</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md#c6-is-closed--and-it-closes-the-terminal-clause">why no framework can survive all thirteen</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/src/pacland/energy">the code</a></p>
         <p><code>python3 -m pacland.energy.referee</code> · <code>python3 -m pacland.energy.profile</code> · <code>python3 -m pacland.energy.frg</code></p>
+      </div>
+      <div class="card">
+        <h3>eDNA detection theory</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/edna-detection-limit.md">the limit curve</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/src/pacland/edna">the code</a></p>
+        <p><code>python3 scripts/edna_limit.py</code></p>
+      </div>
+      <div class="card">
+        <h3>Animal communication</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/src/pacland/disciplines.py">registered — learnability split pending</a></p>
       </div>
       <div class="card">
         <h3>AI · verified badge</h3>
@@ -487,9 +505,9 @@ the formal record: <a href="https://github.com/robmitchellengineering-hub/paclan
     <p>The falsifiable test: <em>derive any one of the SM's ~19 free parameters from first principles</em> and the constraint-first generalization is falsified. Reproduce: <code>python3 scripts/validate_sm_anomaly.py</code> (5/5), <code>validate_sm_hypercharge_uniqueness.py</code> (4/4), <code>validate_sm_invariant_ring.py</code>, <code>validate_gut_parameter_count.py</code>. Full doc: <code>docs/sm-frontier.md</code>.</p>
 </details>
 <details class="fold" open>
-<summary>SEXTANT — the verified quantum referee (a simulated quantum computer you can download)</summary>
-<h2 id="sextant">SEXTANT — the verified quantum referee</h2>
-    <p><strong>The new arm.</strong> SEXTANT reads where every quantum claim sits — <strong>FORCED</strong> (a theorem), <strong>FREE</strong> (a label), or <strong>IMPOSSIBLE</strong> (a no-go) — and hands you the machine-checked proof, not just the floating-point number. It rides the same engines everyone uses (Stim, Quimb, QuEST) but certifies <em>why they are correct</em>.</p>
+<summary>SEXTANT — the quantum-enabled yes/no hypothesis engine (a simulated quantum computer you can download)</summary>
+<h2 id="sextant">SEXTANT — the quantum-enabled yes/no hypothesis engine</h2>
+    <p><strong>The new arm.</strong> SEXTANT is a <strong>quantum-enabled yes/no hypothesis engine</strong> — bare-metal algebraic proofs for <strong>discovery and synthesis from first principles</strong>. It reads where every quantum claim sits — <strong>FORCED</strong> (the universe had no choice), <strong>FREE</strong> (the dial it never explained), or <strong>IMPOSSIBLE</strong> (the door that was never there) — and hands you the machine-checked proof, not just the floating-point number. It makes quantum physics <strong>deterministic in use</strong>: the methodical, step-by-step unravelling of the universe's mysteries. It rides the same engines everyone uses (Stim, Quimb, QuEST) but certifies <em>why they are correct</em>.</p>
     <table>
       <thead><tr><th>simulator method</th><th>the engine</th><th>the kernel-checked theorem</th></tr></thead>
       <tbody>
@@ -729,6 +747,17 @@ python3 scripts/validate_all_theorems.py</code></pre>
         <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/src/pacland/epidemiology/recovery.py">the check</a></p>
       </div>
       <div class="card">
+        <h3>eDNA detection theory <span class="tag">new</span></h3>
+        <p class="muted">The limit, not a survey: how many species N samples and a read budget distinguish, at a stated error rate. Four laws — detectability, the floor, the limit (falls as 1/√N), resolution — all methods-only: no species, no ecosystem, no biological claim. The field already has mock communities, so this arm is narrowed to the limit curve, and the falsifier fired to keep it there.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/edna-detection-limit.md">the limit curve</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/src/pacland/edna">the code</a></p>
+        <p><code>python3 scripts/edna_limit.py</code></p>
+      </div>
+      <div class="card">
+        <h3>Animal communication <span class="tag">new</span></h3>
+        <p class="muted">Decoding animal communication as the underdetermined wall: measure the constraints, not the meaning — the Rosetta-Stone framing is the wall; the move is to compute the set's invariants. Branch opened; the learnability split is pending.</p>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/src/pacland/disciplines.py">registered in the discipline registry</a></p>
+      </div>
+      <div class="card">
         <h3>Valiant Verification <span class="tag">verified badge</span></h3>
         <p class="muted">The SDK applied to repos and models — the badge is the product. Adoptions: pacland, harness-mesh.</p>
         <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ai-verified-badge.md">the badge</a></p>
@@ -830,10 +859,28 @@ python3 scripts/validate_all_theorems.py</code></pre>
         <p><code>pacland drugs</code></p>
       </div>
       <div class="card">
+        <h3>Economics</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-model-roster.md">model roster</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/economics-verification-deficit.md">deficit report</a> · <a href="https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-economics-plain-speak.pdf">plain-speak (PDF)</a></p>
+        <p><code>pacland economics --realtime</code></p>
+      </div>
+      <div class="card">
+        <h3>Epidemiology</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/src/pacland/epidemiology/recovery.py">the identifiability check</a></p>
+      </div>
+      <div class="card">
         <h3>Energy</h3>
         <p>Stored-energy ceilings, and the vacuum. A <strong>referee</strong> for candidate quantum-gravity frameworks: 13 conditions × 6 frameworks, scored <code>KILLED</code> / <code>SURVIVES</code> / <code>UNKNOWN</code> — and <strong>UNKNOWN wherever no verifier has run against a read bound</strong>, never a pass.</p>
         <p><a href="./energy.html"><strong>the quantum gravity page</strong></a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md">the programme</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-conjectures.md">energy claims</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/energy-sextant.md#c6-is-closed--and-it-closes-the-terminal-clause">why no framework can survive all thirteen</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/src/pacland/energy">the code</a></p>
         <p><code>python3 -m pacland.energy.referee</code> · <code>python3 -m pacland.energy.profile</code> · <code>python3 -m pacland.energy.frg</code></p>
+      </div>
+      <div class="card">
+        <h3>eDNA detection theory</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/edna-detection-limit.md">the limit curve</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/src/pacland/edna">the code</a></p>
+        <p><code>python3 scripts/edna_limit.py</code></p>
+      </div>
+      <div class="card">
+        <h3>Animal communication</h3>
+        <p><a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/src/pacland/disciplines.py">registered — learnability split pending</a></p>
       </div>
       <div class="card">
         <h3>AI · verified badge</h3>
