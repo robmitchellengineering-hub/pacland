@@ -198,4 +198,33 @@ theorem hyperbolicDist_falseChild (p : List Bool) :
   exact Real.arcosh_cosh (by positivity)
 
 
+
+/-- **The radial lower bound.** The hyperbolic distance between two tree images is at least the
+radial difference `ln2 · (|s| − |t|)` (when `|s| ≥ |t|`) — the angular part can only *add* distance.
+For a parent–child edge this gives `≥ ln 2`, the coarse-injectivity core of the quasi-isometry. -/
+theorem hyperbolicDist_ge_radial (s t : List Bool) (h : t.length ≤ s.length) :
+    (Real.log 2) * ((s.length : ℝ) - (t.length : ℝ)) ≤ hyperbolicDist (treeToH2 s) (treeToH2 t) := by
+  dsimp [hyperbolicDist]
+  rw [minkowski_treeToH2]
+  rw [← Real.arcosh_cosh (show 0 ≤ (Real.log 2) * ((s.length : ℝ) - (t.length : ℝ)) by
+    have hreal : (t.length : ℝ) ≤ (s.length : ℝ) := by exact_mod_cast h
+    nlinarith [Real.log_pos (by norm_num : (1 : ℝ) < 2), hreal])]
+  rw [Real.arcosh_le_arcosh]
+  rotate_left
+  · positivity
+  · have hc : Real.cos (2 * Real.pi * (pathAngle s - pathAngle t)) ≤ 1 := Real.cos_le_one _
+    have hsinh : 0 ≤ Real.sinh (Real.log 2 * (s.length : ℝ)) * Real.sinh (Real.log 2 * (t.length : ℝ)) := by positivity
+    have hcs : Real.cosh (Real.log 2 * (s.length : ℝ) - Real.log 2 * (t.length : ℝ)) =
+        Real.cosh (Real.log 2 * (s.length : ℝ)) * Real.cosh (Real.log 2 * (t.length : ℝ))
+          - Real.sinh (Real.log 2 * (s.length : ℝ)) * Real.sinh (Real.log 2 * (t.length : ℝ)) := Real.cosh_sub _ _
+    have hone : 1 ≤ Real.cosh (Real.log 2 * (s.length : ℝ) - Real.log 2 * (t.length : ℝ)) := Real.one_le_cosh _
+    nlinarith [hc, hsinh, hcs, hone]
+  · rw [show (Real.log 2) * ((s.length : ℝ) - (t.length : ℝ)) =
+        (Real.log 2) * (s.length : ℝ) - (Real.log 2) * (t.length : ℝ) by ring]
+    rw [Real.cosh_sub]
+    have hc : Real.cos (2 * Real.pi * (pathAngle s - pathAngle t)) ≤ 1 := Real.cos_le_one _
+    have hs : 0 ≤ Real.sinh (Real.log 2 * (s.length : ℝ)) * Real.sinh (Real.log 2 * (t.length : ℝ)) := by positivity
+    nlinarith [hc, hs]
+
+
 end QM
