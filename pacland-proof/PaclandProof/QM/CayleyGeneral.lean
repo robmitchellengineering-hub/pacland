@@ -160,4 +160,11 @@ theorem sign_odd_cycle_eq_one {m : ℕ} (c : Equiv.Perm (Fin m)) (hc : c.IsCycle
   rw [hodd.neg_one_pow]
   norm_num
 
+/-- Step 2 final: reverse the cycle of `σ` containing `0` — the odd-cycle-cancellation involution.
+`φ σ = c⁻¹ * σ * c⁻¹`? No: if `σ = c * τ` with `c = σ.cycleOf 0` and `τ` disjoint, the twin that
+reverses `c` is `c⁻¹ * τ = c⁻² * σ` (since `τ = c⁻¹ * σ`). This is the pairing used to cancel the
+odd-cycle terms. -/
+def reverseZeroCycle {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) : Equiv.Perm (Fin (n + 1)) :=
+  (Equiv.Perm.cycleOf σ 0)⁻¹ * (Equiv.Perm.cycleOf σ 0)⁻¹ * σ
+
 end QM
