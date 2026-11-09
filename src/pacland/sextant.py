@@ -233,11 +233,11 @@ CATALOG: dict[str, dict] = {
     },
     "matchgate-seed": {
         "claim": "matchgate amplitudes are Pfaffians — the full even/odd split kernel-checked (2×2 and 4×4 Pf² = det, odd-dim det = 0)",
-        "theorem": "QM.Matchgate.det_antisymm_sign + QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.pfaffian4_sq_eq_det + QM.Matchgate.pfaffian6_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero + QM.PfaffianRec.pfaffian_rec_2 + QM.PfaffianRec.pfaffian_rec_4 + QM.PfaffianRec.pfaffian_sq_eq_det_2",
+        "theorem": "QM.Matchgate.det_antisymm_sign + QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.pfaffian4_sq_eq_det + QM.Matchgate.pfaffian6_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero + QM.PfaffianRec.pfaffian_rec_2 + QM.PfaffianRec.pfaffian_rec_4 + QM.PfaffianRec.pfaffian_sq_eq_det_2 + QM.PfaffianRec.pfaffian_sq_eq_det_4 + QM.PfaffianRec.pfaffian_transform_2",
         "falsifier": "a 2×2 matchgate whose amplitude is not its Pfaffian, or a nonzero odd-dimensional antisymmetric determinant",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
-        "why": "the 2×2 and 4×4 Pfaffians square to the determinant (the exact two- and four-qubit amplitudes), the recursive Pfaffian is proven to reproduce the explicit cases (pfaffian_rec_2/4) with the m=1 induction base pfaffian_sq_eq_det_2 (recursive Pf² = det), and ANY odd-dimensional antisymmetric matrix has determinant 0 — the complete even/odd split: matchgates are even-dimensional Pfaffians, hence classically simulable.",
+        "why": "the 2×2 and 4×4 Pfaffians square to the determinant (the exact two- and four-qubit amplitudes), the recursive Pfaffian reproduces the explicit cases (pfaffian_rec_2/4) with the m=1 and m=2 induction bases (pfaffian_sq_eq_det_2/4: recursive Pf² = det), the transformation law Pf(PAPᵀ) = det(P)·Pf(A) holds at 2×2 (pfaffian_transform_2 — the normal-form route to the general Cayley), and ANY odd-dimensional antisymmetric matrix has determinant 0 — the complete even/odd split: matchgates are even-dimensional Pfaffians, hence classically simulable.",
     },
     "pr-box": {
         "claim": "the PR box saturates the non-signaling CHSH bound at 4",
