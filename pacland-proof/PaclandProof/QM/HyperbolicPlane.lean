@@ -271,4 +271,92 @@ theorem pathAngle_append_sub (p : List Bool) (b : Bool) :
 
 
 
+
+
+/-- **The edge upper bound** of the quasi-isometry: a parent–child edge maps to a segment of
+hyperbolic length at most `arcosh(cosh(ln 2) + 2π²)`. The radial piece is exactly `ln 2` (the `cosh`
+difference of the two radii), and the angular swing of a single bit contributes at most `2π²`.
+Together with `hyperbolicDist_falseChild` this bounds the distortion of one tree edge. -/
+theorem hyperbolicDist_edge_le (p : List Bool) (b : Bool) :
+    hyperbolicDist (treeToH2 (p ++ [b])) (treeToH2 p) ≤
+      Real.arcosh (Real.cosh (Real.log 2) + 2 * Real.pi ^ 2) := by
+  dsimp [hyperbolicDist]
+  rw [minkowski_treeToH2]
+  rw [Real.arcosh_le_arcosh]
+  rotate_left
+  · -- 0 < cosh r₂ cosh r₁ - sinh r₂ sinh r₁ cos(2π·Δθ)
+    have hc : Real.cos (2 * Real.pi * (pathAngle (p ++ [b]) - pathAngle p)) ≤ 1 :=
+      Real.cos_le_one _
+    have hsinh : 0 ≤ Real.sinh (Real.log 2 * ((p ++ [b]).length : ℝ)) *
+        Real.sinh (Real.log 2 * (p.length : ℝ)) := by positivity
+    have hcs : Real.cosh (Real.log 2 * ((p ++ [b]).length : ℝ) - Real.log 2 * (p.length : ℝ)) =
+        Real.cosh (Real.log 2 * ((p ++ [b]).length : ℝ)) * Real.cosh (Real.log 2 * (p.length : ℝ))
+          - Real.sinh (Real.log 2 * ((p ++ [b]).length : ℝ)) *
+            Real.sinh (Real.log 2 * (p.length : ℝ)) := Real.cosh_sub _ _
+    have hone : 1 ≤
+        Real.cosh (Real.log 2 * ((p ++ [b]).length : ℝ) - Real.log 2 * (p.length : ℝ)) :=
+      Real.one_le_cosh _
+    nlinarith [hc, hsinh, hcs, hone]
+  · positivity
+  · -- argument ≤ cosh(ln 2) + 2π²
+    set r1 : ℝ := Real.log 2 * (p.length : ℝ) with hr1
+    set r2 : ℝ := Real.log 2 * ((p ++ [b]).length : ℝ) with hr2
+    set dθ : ℝ := 2 * Real.pi * (pathAngle (p ++ [b]) - pathAngle p) with hdθ
+    have hcs : Real.cosh r2 * Real.cosh r1 - Real.sinh r2 * Real.sinh r1 = Real.cosh (Real.log 2) := by
+      rw [← Real.cosh_sub]
+      congr 1
+      rw [hr2, hr1]
+      rw [List.length_append, List.length_singleton]
+      push_cast
+      ring
+    have hest : Real.sinh r2 * Real.sinh r1 * (1 - Real.cos dθ) ≤ 2 * Real.pi ^ 2 := by
+      have hsinh1 : 0 ≤ Real.sinh r1 := by rw [hr1]; positivity
+      have hsinh2 : 0 ≤ Real.sinh r2 := by rw [hr2]; positivity
+      have hcos_nonneg : 0 ≤ 1 - Real.cos dθ := sub_nonneg.mpr (Real.cos_le_one dθ)
+      have hmono : Real.sinh r1 ≤ Real.sinh r2 := by
+        rw [Real.sinh_le_sinh]
+        rw [hr1, hr2]
+        rw [List.length_append, List.length_singleton]
+        push_cast
+        nlinarith [Real.log_pos (by norm_num : (1 : ℝ) < 2)]
+      have hdθ_nonneg : 0 ≤ dθ := by
+        rw [hdθ, pathAngle_append_sub]
+        have hfrac : 0 ≤ (if b then (1 : ℝ) else 0) / (2 : ℝ) ^ ((p ++ [b]).length) :=
+          div_nonneg (by cases b <;> norm_num) (by positivity)
+        exact mul_nonneg (by positivity) hfrac
+      have hcosle : 1 - Real.cos dθ ≤ dθ ^ 2 / 2 := one_sub_cos_le_sq_div_two hdθ_nonneg
+      have h5 : Real.sinh r1 * (1 - Real.cos dθ) ≤ Real.sinh r2 * (dθ ^ 2 / 2) :=
+        mul_le_mul hmono hcosle hcos_nonneg hsinh2
+      have h6 : Real.sinh r2 * (Real.sinh r1 * (1 - Real.cos dθ)) ≤
+          Real.sinh r2 * (Real.sinh r2 * (dθ ^ 2 / 2)) :=
+        mul_le_mul_of_nonneg_left h5 hsinh2
+      have hdtheta : dθ ≤ 2 * Real.pi / (2 : ℝ) ^ ((p ++ [b]).length) := by
+        rw [hdθ, pathAngle_append_sub]
+        have hb : (if b then (1 : ℝ) else 0) ≤ 1 := by cases b <;> norm_num
+        have hdiv : (if b then (1 : ℝ) else 0) / (2 : ℝ) ^ ((p ++ [b]).length) ≤
+            1 / (2 : ℝ) ^ ((p ++ [b]).length) :=
+          div_le_div_of_nonneg_right hb (by positivity)
+        have h2pi : 0 ≤ 2 * Real.pi := by positivity
+        have hmain := mul_le_mul_of_nonneg_left hdiv h2pi
+        rw [show 2 * Real.pi / (2 : ℝ) ^ ((p ++ [b]).length) =
+            2 * Real.pi * (1 / (2 : ℝ) ^ ((p ++ [b]).length)) by ring]
+        exact hmain
+      have hswing : Real.sinh r2 * (2 * Real.pi / (2 : ℝ) ^ ((p ++ [b]).length)) ≤ 2 * Real.pi := by
+        have hle : Real.sinh r2 ≤ (2 : ℝ) ^ ((p ++ [b]).length) := by
+          rw [hr2]
+          exact sinh_ln2_mul_le_two_pow ((p ++ [b]).length)
+        have hnonneg : 0 ≤ 2 * Real.pi / (2 : ℝ) ^ ((p ++ [b]).length) := by positivity
+        have hmul := mul_le_mul_of_nonneg_right hle hnonneg
+        have hcancel : (2 : ℝ) ^ ((p ++ [b]).length) *
+            (2 * Real.pi / (2 : ℝ) ^ ((p ++ [b]).length)) = 2 * Real.pi :=
+          mul_div_cancel₀ (2 * Real.pi) (show (2 : ℝ) ^ ((p ++ [b]).length) ≠ 0 by positivity)
+        rw [hcancel] at hmul
+        exact hmul
+      have hswing_dth : Real.sinh r2 * dθ ≤ 2 * Real.pi :=
+        le_trans (mul_le_mul_of_nonneg_left hdtheta hsinh2) hswing
+      have hsq : (Real.sinh r2 * dθ) ^ 2 ≤ (2 * Real.pi) ^ 2 :=
+        (sq_le_sq₀ (mul_nonneg hsinh2 hdθ_nonneg) (by positivity : 0 ≤ 2 * Real.pi)).mpr hswing_dth
+      nlinarith [h6, hsq]
+    nlinarith [hcs, hest]
+
 end QM
