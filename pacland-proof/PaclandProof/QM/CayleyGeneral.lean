@@ -1,7 +1,7 @@
 import Mathlib
 import PaclandProof.QM.Matchgate
 
-open BigOperators
+open scoped BigOperators
 
 noncomputable section
 
@@ -34,5 +34,27 @@ theorem prod_eq_zero_of_fixedPoint (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.tran
     rw [hi]
     exact antisymm_diagonal_eq_zero A hA i
   exact (Finset.prod_eq_zero_iff.mpr ⟨i, Finset.mem_univ i, hzero⟩)
+
+/-- Step 1 (complete): the determinant of an antisymmetric matrix equals its Leibniz sum
+restricted to fixed-point-free permutations — every fixed-point term vanishes (diagonal = 0).
+This is the first reduction in the matching-route proof of `det A = (Pf A)²` (issue #431). -/
+theorem det_eq_sum_fixedPointFree (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.transpose = -A) :
+    A.det = (Finset.univ.filter (fun σ : Equiv.Perm (Fin n) => ∀ i, σ i ≠ i)).sum
+              (fun σ => ((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ i, A (σ i) i) := by
+  rw [Matrix.det_apply']
+  rw [← Finset.sum_filter_add_sum_filter_not Finset.univ (fun σ : Equiv.Perm (Fin n) => ∀ i, σ i ≠ i)]
+  have hzero : (Finset.univ.filter (fun σ : Equiv.Perm (Fin n) => ¬ ∀ i, σ i ≠ i)).sum
+      (fun σ => ((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ i, A (σ i) i) = 0 := by
+    refine Finset.sum_eq_zero ?_
+    intro σ hσ
+    have hnot : ¬ ∀ i, σ i ≠ i := by
+      simpa using (Finset.mem_filter.mp hσ).2
+    rcases not_forall.mp hnot with ⟨i, hi⟩
+    have hi' : σ i = i := by
+      exact not_ne_iff.mp hi
+    have hprod : (∏ j, A (σ j) j) = 0 := prod_eq_zero_of_fixedPoint A hA σ hi'
+    simp [hprod]
+  rw [hzero]
+  simp
 
 end QM
