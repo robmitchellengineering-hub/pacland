@@ -31,6 +31,7 @@ import PaclandProof.QM.Matchgate
 import PaclandProof.QM.Hyperbolic
 import PaclandProof.QM.HyperbolicPlane
 import PaclandProof.QM.SternBrocot
+import PaclandProof.QM.FareyTree
 import PaclandProof.QM.HyperbolicMetric
 import PaclandProof.QM.TreeDensity
 import PaclandProof.Gravity.Bianchi
