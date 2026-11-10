@@ -43,3 +43,5 @@ import PaclandProof.Gravity.WheelerDeWitt
 import PaclandProof.Gravity.ADM
 import PaclandProof.Gravity.ADMConstraints
 import PaclandProof.Gravity.Dirac
+import PaclandProof.Tactic.Complete
+import PaclandProof.Tactic.Cayley
