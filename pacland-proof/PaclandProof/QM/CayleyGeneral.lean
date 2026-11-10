@@ -530,4 +530,133 @@ theorem reverseCycleAt_involution {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : Fin n
     _ = c * c * (c⁻¹ * c⁻¹ * σ) := rfl
     _ = σ := by group
 
+/-- `reverseCycleAt` preserves the support. -/
+theorem reverseCycleAt_support {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : Fin n) (hx : σ x ≠ x) :
+    (reverseCycleAt σ x).support = σ.support := by
+  let c := σ.cycleOf x
+  let τ := c⁻¹ * σ
+  have hcm : c ∈ σ.cycleFactorsFinset := by
+    rw [Equiv.Perm.cycleOf_mem_cycleFactorsFinset_iff]
+    exact (Equiv.Perm.mem_support.mpr hx)
+  have hcx : ∀ y, y ∈ c.support → σ y = c y := by
+    intro y hy
+    exact ((Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).2 y hy).symm
+  have hdisj : c.Disjoint τ := by
+    intro y
+    by_cases hy : y ∈ c.support
+    · right
+      dsimp [τ]
+      simp [hcx y hy]
+    · left
+      by_contra h'
+      exact hy (Equiv.Perm.mem_support.mpr h')
+  have hdisj_inv : c⁻¹.Disjoint τ := by
+    intro y
+    rcases hdisj y with hc | hτ
+    · left
+      exact (Equiv.eq_symm_apply (e := c)).mpr hc |>.symm
+    · right
+      exact hτ
+  have hσ : c * τ = σ := by
+    dsimp [τ]
+    group
+  have hr : reverseCycleAt σ x = c⁻¹ * τ := by
+    dsimp [reverseCycleAt, τ]
+    rw [mul_assoc]
+  rw [hr, ← hσ]
+  rw [hdisj_inv.support_mul, hdisj.support_mul, Equiv.Perm.support_inv c]
+
+/-- `reverseCycleAt` negates the support Leibniz term when the cycle of `x` is odd. -/
+theorem reverseCycleAt_term_neg {n : ℕ} (σ : Equiv.Perm (Fin n))
+    (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.transpose = -A)
+    (x : Fin n) (hx : σ x ≠ x) (hodd : Odd (σ.cycleOf x).support.card) :
+    ((Equiv.Perm.sign (reverseCycleAt σ x) : ℤ) : ℂ) * (∏ i ∈ (reverseCycleAt σ x).support, A ((reverseCycleAt σ x) i) i)
+      = - (((Equiv.Perm.sign σ : ℤ) : ℂ) * (∏ i ∈ σ.support, A (σ i) i)) := by
+  let c := σ.cycleOf x
+  let τ := c⁻¹ * σ
+  have hcm : c ∈ σ.cycleFactorsFinset := by
+    rw [Equiv.Perm.cycleOf_mem_cycleFactorsFinset_iff]
+    exact (Equiv.Perm.mem_support.mpr hx)
+  have hcx : ∀ y, y ∈ c.support → σ y = c y := by
+    intro y hy
+    exact ((Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).2 y hy).symm
+  have hdisj : c.Disjoint τ := by
+    intro y
+    by_cases hy : y ∈ c.support
+    · right
+      dsimp [τ]
+      simp [hcx y hy]
+    · left
+      by_contra h'
+      exact hy (Equiv.Perm.mem_support.mpr h')
+  have hσ : c * τ = σ := by
+    dsimp [τ]
+    group
+  have hr : reverseCycleAt σ x = c⁻¹ * τ := by
+    dsimp [reverseCycleAt, τ]
+    rw [mul_assoc]
+  have hneg := twin_sign_eq_product_neg c τ hdisj A hA hodd
+  simpa [hσ, ← hr] using hneg
+
+/-- `reverseCycleAt` is not the identity on an odd cycle (length ≥ 3). -/
+theorem reverseCycleAt_ne_self {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : Fin n) (hx : σ x ≠ x)
+    (hodd : Odd (σ.cycleOf x).support.card) :
+    reverseCycleAt σ x ≠ σ := by
+  intro h
+  let c := σ.cycleOf x
+  let τ := c⁻¹ * σ
+  have hcm : c ∈ σ.cycleFactorsFinset := by
+    rw [Equiv.Perm.cycleOf_mem_cycleFactorsFinset_iff]
+    exact (Equiv.Perm.mem_support.mpr hx)
+  have hcIsCycle : c.IsCycle := (Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).1
+  have hcx : ∀ y, y ∈ c.support → σ y = c y := by
+    intro y hy
+    exact ((Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).2 y hy).symm
+  have hdisj : c.Disjoint τ := by
+    intro y
+    by_cases hy : y ∈ c.support
+    · right
+      dsimp [τ]
+      simp [hcx y hy]
+    · left
+      by_contra h'
+      exact hy (Equiv.Perm.mem_support.mpr h')
+  have hσ : c * τ = σ := by
+    dsimp [τ]
+    group
+  have hr : reverseCycleAt σ x = c⁻¹ * τ := by
+    dsimp [reverseCycleAt, τ]
+    rw [mul_assoc]
+  have hcτ : c⁻¹ * τ = c * τ := by
+    rw [← hr, h, ← hσ]
+  have hcinv : c⁻¹ = c := by
+    have : (c⁻¹ * τ) * τ⁻¹ = (c * τ) * τ⁻¹ := by rw [hcτ]
+    simpa [mul_assoc] using this
+  have hc2 : c ^ 2 = 1 := by
+    have hcc : c * c = 1 := by
+      nth_rewrite 1 [← hcinv]
+      simp
+    simpa [pow_two] using hcc
+  have horder_le : orderOf c ≤ 2 := orderOf_le_of_pow_eq_one (by norm_num : 0 < 2) hc2
+  have hcard_le : c.support.card ≤ 2 := by
+    rw [← Equiv.Perm.IsCycle.orderOf hcIsCycle]
+    exact horder_le
+  have hcard_odd : Odd c.support.card := by
+    simpa [c] using hodd
+  have hcard_one : c.support.card = 1 := by
+    interval_cases hc : c.support.card
+    · exfalso
+      norm_num at hcard_odd
+    · rfl
+    · exfalso
+      norm_num at hcard_odd
+  have horder_one : orderOf c = 1 := by
+    rw [Equiv.Perm.IsCycle.orderOf hcIsCycle, hcard_one]
+  have hc_one : c = 1 := orderOf_eq_one_iff.mp horder_one
+  have hcx_eq : c x = x := by simp [hc_one]
+  have hcx_ne : c x ≠ x := by
+    rw [Equiv.Perm.cycleOf_apply_self]
+    exact hx
+  exact hcx_ne hcx_eq
+
 end QM
