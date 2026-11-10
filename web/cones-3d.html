@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Kähler cones in 3D — what the sampler needs — PACLAND</title>
 <style>
   :root { --bg:#05070f; --panel:rgba(12,16,30,.82); --accent:#5eead4; --accent2:#a78bfa; --text:#e2e8f0; --muted:#94a3b8; --warn:#fbbf24; }
@@ -51,8 +51,13 @@
   </div>
   <div class="hint">drag to rotate · scroll to zoom</div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
 const DATA = {
   2: { hp: 3,  rays: 2, note: "two extremal rays — the smallest cone in the family" },
   3: { hp: 0,  rays: 0, note: "NO CONE DATA — every ray path fails here" },
@@ -65,53 +70,91 @@ const RENDER = {
   4: [[1,0,0.2],[0.2,0.9,1],[-0.9,0.2,1],[0,0.2,0.4]],
   5: [[1,0,0.3],[0.3,1,1],[-1,0.1,0.8],[-0.2,-1,0.9],[0.1,0.2,0.5]],
 };
+
 const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x05070f, 0.055);
+scene.fog = new THREE.FogExp2(0x05070f, 0.05);
+
 const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(0, 2.6, 5.6);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 1.4;
+controls.maxDistance = 22;
+controls.target.set(0, 0, 0);
+controls.update();
+
 scene.add(new THREE.AmbientLight(0x8899bb, 1.1));
 const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(3,6,4); scene.add(key);
 const rim = new THREE.DirectionalLight(0x5eead4, 0.9); rim.position.set(-4,-2,-3); scene.add(rim);
-const root = new THREE.Group(); scene.add(root);
 
-function clear(){ while(root.children.length) root.remove(root.children[0]); }
+const root = new THREE.Group(); scene.add(root);
+const grid = new THREE.GridHelper(6, 24, 0x1e293b, 0x111827); grid.position.y = -1.1; root.add(grid);
+const cone = new THREE.Group(); root.add(cone);
+
+function clear(){ while(cone.children.length) cone.remove(cone.children[0]); cone.position.set(0,0,0); }
 
 function build(h12){
   clear();
   const rays = RENDER[h12];
-  const grid = new THREE.GridHelper(6, 24, 0x1e293b, 0x111827); grid.position.y = -0.9; root.add(grid);
-  root.add(new THREE.Mesh(new THREE.SphereGeometry(0.045, 20, 20),
-    new THREE.MeshStandardMaterial({color:0xe2e8f0, emissive:0x334155})));
+  cone.add(new THREE.Mesh(new THREE.SphereGeometry(0.045, 20, 20),
+    new THREE.MeshStandardMaterial({color:0x5eead4, emissive:0x0f766e, emissiveIntensity:0.9})));
   if (!rays.length){
     const frame = new THREE.LineSegments(
       new THREE.EdgesGeometry(new THREE.BoxGeometry(2.2, 1.6, 2.2)),
       new THREE.LineDashedMaterial({ color:0xfbbf24, dashSize:0.12, gapSize:0.16, transparent:true, opacity:0.9 }));
-    frame.computeLineDistances(); frame.position.y = 0.2; root.add(frame);
+    frame.computeLineDistances(); frame.position.y = 0.2; cone.add(frame);
     const ring = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.012, 12, 64),
       new THREE.MeshBasicMaterial({color:0xfbbf24, transparent:true, opacity:0.8}));
-    ring.rotation.x = Math.PI/2; ring.position.y = -0.88; root.add(ring);
-    return;
+    ring.rotation.x = Math.PI/2; ring.position.y = -0.88; cone.add(ring);
+  } else {
+    const pts = [], verts = [];
+    rays.forEach((v, i) => {
+      const tip = new THREE.Vector3(...v).multiplyScalar(1.25);
+      pts.push(new THREE.Vector3(0,0,0), tip);
+      const tipSphere = new THREE.Mesh(new THREE.SphereGeometry(0.07, 18, 18),
+        new THREE.MeshStandardMaterial({ color:0x5eead4, emissive:0x0f766e, emissiveIntensity:0.9 }));
+      tipSphere.position.copy(tip);
+      cone.add(tipSphere);
+      const plane = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.4),
+        new THREE.MeshBasicMaterial({ color:0xa78bfa, transparent:true, opacity:0.16, side:THREE.DoubleSide, depthWrite:false }));
+      plane.renderOrder = 1;
+      plane.position.copy(tip).multiplyScalar(0.55); plane.lookAt(0,0,0); cone.add(plane);
+      const b = new THREE.Vector3(...rays[(i+1)%rays.length]).multiplyScalar(1.25);
+      verts.push(0,0,0, tip.x,tip.y,tip.z, b.x,b.y,b.z);
+    });
+    cone.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.LineBasicMaterial({ color:0x5eead4, transparent:true, opacity:0.95 })));
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3)); g.computeVertexNormals();
+    cone.add(new THREE.Mesh(g, new THREE.MeshStandardMaterial({
+      color:0x5eead4, emissive:0x0f766e, emissiveIntensity:0.5, transparent:true, opacity:0.7, side:THREE.DoubleSide, roughness:0.6 })));
+    cone.children[cone.children.length - 1].renderOrder = 2;
   }
-  const pts = [], verts = [];
-  rays.forEach((v, i) => {
-    const tip = new THREE.Vector3(...v).multiplyScalar(1.25);
-    pts.push(new THREE.Vector3(0,0,0), tip);
-    root.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(0.07, 18, 18),
-      new THREE.MeshStandardMaterial({ color:0x5eead4, emissive:0x0f766e, emissiveIntensity:0.9 })), { position: tip }));
-    const plane = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.4),
-      new THREE.MeshBasicMaterial({ color:0xa78bfa, transparent:true, opacity:0.07, side:THREE.DoubleSide }));
-    plane.position.copy(tip).multiplyScalar(0.55); plane.lookAt(0,0,0); root.add(plane);
-    const b = new THREE.Vector3(...rays[(i+1)%rays.length]).multiplyScalar(1.25);
-    verts.push(0,0,0, tip.x,tip.y,tip.z, b.x,b.y,b.z);
-  });
-  root.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts),
-    new THREE.LineBasicMaterial({ color:0x5eead4, transparent:true, opacity:0.95 })));
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3)); g.computeVertexNormals();
-  root.add(new THREE.Mesh(g, new THREE.MeshStandardMaterial({
-    color:0x5eead4, transparent:true, opacity:0.16, side:THREE.DoubleSide, roughness:0.6 })));
+  // recenter the cone so the camera frames it in the middle of the screen
+  const box = new THREE.Box3().setFromObject(cone);
+  const center = box.getCenter(new THREE.Vector3());
+  cone.position.sub(center);
+  frame();
+}
+
+function frame(){
+  const box = new THREE.Box3().setFromObject(cone);
+  if (box.isEmpty()) return;
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const radius = Math.max(size.length() / 2, 0.6);
+  const fov = THREE.MathUtils.degToRad(camera.fov);
+  const fovH = 2 * Math.atan(Math.tan(fov / 2) * camera.aspect);
+  const fovMin = Math.min(fov, fovH);
+  const dist = (radius / Math.sin(fovMin / 2)) * 1.35;
+  const dir = new THREE.Vector3(0, 0.45, 0.9).normalize();
+  camera.position.copy(center).addScaledVector(dir, dist);
+  controls.target.copy(center);
+  controls.update();
 }
 
 function setTab(h12){
@@ -133,23 +176,21 @@ const tabs = document.getElementById('tabs');
   b.onclick = () => setTab(h); tabs.appendChild(b);
 });
 
-let drag=false, px=0, py=0, ry=0.5, rx=-0.15, dist=4.6;
-canvas.addEventListener('pointerdown', e => { drag=true; px=e.clientX; py=e.clientY; });
-addEventListener('pointerup', () => drag=false);
-addEventListener('pointermove', e => { if(!drag) return;
-  ry += (e.clientX-px)*0.0075; rx = Math.max(-1.2, Math.min(1.2, rx+(e.clientY-py)*0.0055));
-  px=e.clientX; py=e.clientY; });
-addEventListener('wheel', e => { dist = Math.max(1.8, Math.min(26, dist + e.deltaY*0.0022)); }, {passive:true});
-
-function resize(){ renderer.setSize(innerWidth, innerHeight, false);
-  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); }
-addEventListener('resize', resize); resize();
+function resize(){
+  const w = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+  const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+  frame();
+}
+window.addEventListener('resize', resize);
+if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
+resize();
 
 (function tick(){
   requestAnimationFrame(tick);
-  root.rotation.set(rx, ry, 0);
-  camera.position.set(dist*0.42, dist*0.32, dist*0.72);
-  camera.lookAt(0, 0.25, 0);
+  controls.update();
   renderer.render(scene, camera);
 })();
 setTab(2);
