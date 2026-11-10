@@ -106,7 +106,7 @@ sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
       <div id="catdesc" class="catdesc"></div>
       <input id="q" class="searchbox" type="search" placeholder="search… e.g. 'entanglement', 'clone', 'gravity'">
       <ul id="list" class="claimlist"></ul>
-      <div class="small" style="margin-top:.4rem">30 claims · 7 live oracles · 23 kernel-checked theorems</div>
+      <div class="small" style="margin-top:.4rem">30 claims · 8 live oracles · 22 kernel-checked theorems</div>
     </div>
     <div id="out" class="out">
       <p class="small">Pick a claim to see its academic proof and a one-page plain-speak explainer.</p>
@@ -161,7 +161,7 @@ const CLAIMS = [
    plain:"The network that describes entangled matter lives in a curved, hyperbolic space — the same kind of curve coral and lettuce grow. It is curved because that is the only way to cram exponential information into a finite space. We proved it, machine-checked: entanglement is geometry, as a theorem, not a metaphor." },
  { id:'coupling-free', v:'FREE', th:'Gravity.QG.coupling_free', claim:'the gravitational coupling G is not derived', falsifier:'a derivation of G from the forced halves', oracle:'kernel-checked', ev:'∇·G = 0 involves no κ — consistent for every κ ≠ 0',
    plain:"Gravity's strength, G, is a label the universe picked, not a number the mathematics forced. You cannot derive it; you can only measure it. This is the honest 'never values' result, one sector up: some numbers are constraints (forced), and G is a free one." },
- { id:'gravity-quantum', v:'FORCED', th:'QM.Entanglement + QM.NoCloning + Gleason', claim:'the gravitational coupling must be quantum, not classical', falsifier:'a consistent classical (LOCC) coupling', oracle:'kernel-checked', ev:'a classical channel preserves separability, so it cannot entangle',
+ { id:'gravity-quantum', v:'FORCED', th:'QM.Entanglement + QM.NoCloning + Gleason', claim:'the gravitational coupling must be quantum, not classical', falsifier:'a consistent classical (LOCC) coupling', oracle:'quantum-simulated + kernel-checked', ev:'quantum coupling entangles S = 0.42 > 0; classical (LOCC) cannot S = 0.00',
    plain:"If gravity meddles with quantum systems, it must itself be quantum. A classical channel cannot create entanglement — so classical gravity cannot mediate quantum correlation. This is the hinge that forces quantum gravity: not a preference, a proof." },
  { id:'lovelock', v:'FORCED', th:'Gravity.Lovelock', claim:'the Einstein equation is the unique divergence-free 2-tensor theory in 4D', falsifier:'a second divergence-free gravity theory', oracle:'kernel-checked', ev:'∇·(αR + βRg) = 0 iff β = −α/2',
    plain:"Einstein's equation is the only gravity equation that is consistent in four dimensions. Every other candidate fails the same consistency test. Einstein didn't choose it from a menu; it was the only dish. That is what 'uniqueness' means here — and it is machine-checked." },

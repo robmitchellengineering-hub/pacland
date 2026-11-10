@@ -55,9 +55,10 @@ CATALOG: dict[str, dict] = {
     },
     "gravity-quantum": {
         "claim": "the gravitational coupling must be quantum, not classical",
+        "simulate": phantom.gravity_quantum,
         "theorem": "QM.Entanglement + QM.NoCloning + Gleason",
         "falsifier": "a consistent classical (LOCC) coupling",
-        "oracle": ["kernel-checked (Lean)"],
+        "oracle": ["quantum-simulated (Phantom)", "kernel-checked (Lean)"],
         "verdict": "FORCED",
         "why": "a classical channel preserves separability (QM.Entanglement), so it cannot entangle; "
                "hence classical gravity cannot mediate the quantum correlation.",

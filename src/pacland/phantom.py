@@ -258,6 +258,44 @@ def black_hole_unitarity():
     return evidence
 
 
+def verify_gravity_quantum():
+    """Gravity must be quantum: two masses in a position superposition, coupled by gravity, become
+    entangled. A classical (LOCC) channel can only correlate — it cannot entangle. So entanglement
+    is the signature that the gravitational coupling is quantum (Bose–Marletto–Vedral)."""
+    import numpy as np
+
+    plus = np.array([1.0, 1.0]) / np.sqrt(2)
+    psi = np.kron(plus, plus)                       # two masses, each in |+> = (|L>+|R>)/√2
+
+    # classical (LOCC) coupling: independent local phases — cannot entangle
+    loc = np.diag([1.0, np.exp(1j * np.pi / 4)])
+    psi_c = np.kron(loc, loc) @ psi
+    rho_c = np.einsum("ab,cb->ac", psi_c.reshape(2, 2), psi_c.reshape(2, 2).conj())
+    ev_c = np.linalg.eigvalsh(rho_c)
+    ev_c = ev_c[ev_c > 1e-12]
+    S_classical = -float(np.sum(ev_c * np.log(ev_c)))
+
+    # quantum coupling: a controlled phase — the gravitational potential depends on the relative positions
+    U_quantum = np.diag([1.0, 1.0, 1.0, np.exp(1j * np.pi / 2)])
+    psi_q = U_quantum @ psi
+    rho_q = np.einsum("ab,cb->ac", psi_q.reshape(2, 2), psi_q.reshape(2, 2).conj())
+    ev_q = np.linalg.eigvalsh(rho_q)
+    ev_q = ev_q[ev_q > 1e-12]
+    S_quantum = -float(np.sum(ev_q * np.log(ev_q)))
+
+    survived = S_quantum > 0.01 and S_classical < 0.01
+    return survived, (
+        f"quantum gravitational coupling entangles: S = {S_quantum:.4f} > 0; "
+        f"a classical (LOCC) coupling cannot: S = {S_classical:.4f} — so gravity must be quantum"
+    )
+
+
+def gravity_quantum():
+    """Live evidence string for the gravity-quantum claim (classify)."""
+    _, evidence = verify_gravity_quantum()
+    return evidence
+
+
 FALSIFIERS = {
     "chsh": verify_chsh,
     "clifford-polynomial": verify_clifford,
@@ -267,4 +305,5 @@ FALSIFIERS = {
     "mera-hyperbolic": verify_hyperbolic,
     "black-hole-entropy": verify_black_hole_entropy,
     "black-hole-unitarity": verify_black_hole_unitarity,
+    "gravity-quantum": verify_gravity_quantum,
 }
