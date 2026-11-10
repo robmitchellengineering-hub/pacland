@@ -177,6 +177,28 @@ def list_hypotheses() -> str:
     return "\n".join(f"◇ {n:<18} {HYPOTHESES[n]['question'][:70]}…" for n in HYPOTHESES)
 
 
+def status(name: str) -> str:
+    """Derive the hunt status from the progress note: ANSWERED / IN-PROGRESS / OPEN."""
+    p = HYPOTHESES[name].get("progress", "").upper()
+    if "ANSWERED" in p:
+        return "ANSWERED"
+    if p and ("REMAINING" in p or "DONE" in p or "KERNEL-CHECKED" in p or "IN PROGRESS" in p):
+        return "IN-PROGRESS"
+    return "OPEN"
+
+
+def hunt() -> str:
+    """The hunt board: every open question, its status, and where the attack stands."""
+    glyph = {"ANSWERED": "●", "IN-PROGRESS": "◐", "OPEN": "○"}
+    lines = ["SEXTANT HUNT — the open frontier, one move at a time"]
+    for name in HYPOTHESES:
+        s = status(name)
+        lines.append(f"{glyph[s]} {name:<18} [{s:<11}] {HYPOTHESES[name]['question'][:64]}")
+    lines.append("")
+    lines.append("run: sextant hunt <id>   → the full attack plan for one question")
+    return "\n".join(lines)
+
+
 def main(argv: list[str] | None = None) -> int:
     import sys
 
@@ -186,6 +208,12 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if argv[0] == "--list":
         print(list_hypotheses())
+        return 0
+    if argv[0] == "hunt":
+        if len(argv) > 1 and argv[1] in HYPOTHESES:
+            print(hypothesize(argv[1]))
+        else:
+            print(hunt())
         return 0
     if argv[0] not in HYPOTHESES:
         print(f"unknown hypothesis '{argv[0]}'. known: {', '.join(HYPOTHESES)}", file=sys.stderr)

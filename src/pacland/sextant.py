@@ -326,6 +326,18 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         print(verify(argv[1]))
         return 0
+    if argv[0] == "hunt":
+        from pacland import hypotheses
+
+        if len(argv) > 1 and argv[1] in hypotheses.HYPOTHESES:
+            print(hypotheses.hypothesize(argv[1]))
+        else:
+            print(hypotheses.hunt())
+        return 0
+    if argv[0] == "qec":
+        from pacland import qec
+
+        return qec.main(argv[1:])
     name = argv[0]
     if name not in CATALOG:
         print(f"unknown claim '{name}'. known: {', '.join(CATALOG)}", file=sys.stderr)
