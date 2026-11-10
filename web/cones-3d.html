@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Kähler cones in 3D — what the sampler needs — PACLAND</title>
 <style>
   :root { --bg:#05070f; --panel:rgba(12,16,30,.82); --accent:#5eead4; --accent2:#a78bfa; --text:#e2e8f0; --muted:#94a3b8; --warn:#fbbf24; }
@@ -95,7 +95,7 @@ const root = new THREE.Group(); scene.add(root);
 const grid = new THREE.GridHelper(6, 24, 0x1e293b, 0x111827); grid.position.y = -1.1; root.add(grid);
 const cone = new THREE.Group(); root.add(cone);
 
-function clear(){ while(cone.children.length) cone.remove(cone.children[0]); }
+function clear(){ while(cone.children.length) cone.remove(cone.children[0]); cone.position.set(0,0,0); }
 
 function build(h12){
   clear();
@@ -131,13 +131,30 @@ function build(h12){
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3)); g.computeVertexNormals();
     cone.add(new THREE.Mesh(g, new THREE.MeshStandardMaterial({
-      color:0x5eead4, transparent:true, opacity:0.55, side:THREE.DoubleSide, roughness:0.6 })));
+      color:0x5eead4, emissive:0x0f766e, emissiveIntensity:0.5, transparent:true, opacity:0.7, side:THREE.DoubleSide, roughness:0.6 })));
     cone.children[cone.children.length - 1].renderOrder = 2;
   }
   // recenter the cone so the camera frames it in the middle of the screen
   const box = new THREE.Box3().setFromObject(cone);
   const center = box.getCenter(new THREE.Vector3());
   cone.position.sub(center);
+  frame();
+}
+
+function frame(){
+  const box = new THREE.Box3().setFromObject(cone);
+  if (box.isEmpty()) return;
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const radius = Math.max(size.length() / 2, 0.6);
+  const fov = THREE.MathUtils.degToRad(camera.fov);
+  const fovH = 2 * Math.atan(Math.tan(fov / 2) * camera.aspect);
+  const fovMin = Math.min(fov, fovH);
+  const dist = (radius / Math.sin(fovMin / 2)) * 1.35;
+  const dir = new THREE.Vector3(0, 0.45, 0.9).normalize();
+  camera.position.copy(center).addScaledVector(dir, dist);
+  controls.target.copy(center);
+  controls.update();
 }
 
 function setTab(h12){
@@ -159,9 +176,17 @@ const tabs = document.getElementById('tabs');
   b.onclick = () => setTab(h); tabs.appendChild(b);
 });
 
-function resize(){ renderer.setSize(innerWidth, innerHeight, false);
-  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); }
-addEventListener('resize', resize); resize();
+function resize(){
+  const w = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+  const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+  frame();
+}
+window.addEventListener('resize', resize);
+if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
+resize();
 
 (function tick(){
   requestAnimationFrame(tick);
