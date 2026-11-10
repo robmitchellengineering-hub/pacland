@@ -167,4 +167,77 @@ odd-cycle terms. -/
 def reverseZeroCycle {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) : Equiv.Perm (Fin (n + 1)) :=
   (Equiv.Perm.cycleOf σ 0)⁻¹ * (Equiv.Perm.cycleOf σ 0)⁻¹ * σ
 
+/-- The cycle of `0` in `reverseZeroCycle σ` is the inverse of the cycle of `0` in `σ`. -/
+theorem reverseZeroCycle_cycleOf_zero {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) (h0 : σ 0 ≠ 0) :
+    (reverseZeroCycle σ).cycleOf 0 = (σ.cycleOf 0)⁻¹ := by
+  let c := σ.cycleOf 0
+  let τ := c⁻¹ * σ
+  have hcm : c ∈ σ.cycleFactorsFinset := by
+    rw [Equiv.Perm.cycleOf_mem_cycleFactorsFinset_iff]
+    exact (Equiv.Perm.mem_support.mpr h0)
+  have hcIsCycle : c.IsCycle := (Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).1
+  have hcx : ∀ x, x ∈ c.support → σ x = c x := by
+    intro x hx
+    exact ((Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).2 x hx).symm
+  have hdisj : c.Disjoint τ := by
+    intro x
+    by_cases hx : x ∈ c.support
+    · right
+      dsimp [τ]
+      simp [hcx x hx]
+    · left
+      by_contra h
+      exact hx (Equiv.Perm.mem_support.mpr h)
+  have hdisj_inv : c⁻¹.Disjoint τ := by
+    intro x
+    rcases hdisj x with hc | hτ
+    · left
+      exact (Equiv.eq_symm_apply (e := c)).mpr hc |>.symm
+    · right
+      exact hτ
+  have hcomm : Commute c⁻¹ τ := Equiv.Perm.Disjoint.commute hdisj_inv
+  have h0c : 0 ∈ c.support := by
+    rw [Equiv.Perm.mem_support, Equiv.Perm.cycleOf_apply_self]
+    exact h0
+  have hτ0 : τ 0 = 0 := by
+    rcases hdisj 0 with hc0 | hτ0
+    · exfalso
+      exact (Equiv.Perm.mem_support.mp h0c) hc0
+    · exact hτ0
+  have hmul : (c⁻¹ * τ).cycleOf 0 = (c⁻¹).cycleOf 0 :=
+    Equiv.Perm.cycleOf_mul_of_apply_right_eq_self (f := c⁻¹) (g := τ) hcomm 0 hτ0
+  have hc0_ne : c 0 ≠ 0 := Equiv.Perm.mem_support.mp h0c
+  have hc_inv_0 : c⁻¹ 0 ≠ 0 := by
+    intro h
+    exact hc0_ne (by simpa using (congr_arg c h).symm)
+  have hc_inv_IsCycle : c⁻¹.IsCycle := hcIsCycle.inv
+  have hc_inv_cycle : (c⁻¹).cycleOf 0 = c⁻¹ := by
+    rw [Equiv.Perm.IsCycle.cycleOf hc_inv_IsCycle]
+    split_ifs with h
+    · exfalso
+      exact hc_inv_0 h
+    · rfl
+  have hre : reverseZeroCycle σ = c⁻¹ * τ := by
+    dsimp [reverseZeroCycle, τ]
+    rw [mul_assoc]
+  calc
+    (reverseZeroCycle σ).cycleOf 0 = (c⁻¹ * τ).cycleOf 0 := by rw [hre]
+    _ = (c⁻¹).cycleOf 0 := hmul
+    _ = c⁻¹ := hc_inv_cycle
+    _ = (σ.cycleOf 0)⁻¹ := by simp [c]
+
+/-- `reverseZeroCycle` is an involution (on permutations that move `0`). -/
+theorem reverseZeroCycle_involution {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) (h0 : σ 0 ≠ 0) :
+    reverseZeroCycle (reverseZeroCycle σ) = σ := by
+  let c := σ.cycleOf 0
+  have h : (reverseZeroCycle σ).cycleOf 0 = c⁻¹ := reverseZeroCycle_cycleOf_zero σ h0
+  calc
+    reverseZeroCycle (reverseZeroCycle σ)
+        = ((reverseZeroCycle σ).cycleOf 0)⁻¹ * ((reverseZeroCycle σ).cycleOf 0)⁻¹ *
+            (reverseZeroCycle σ) := rfl
+    _ = (c⁻¹)⁻¹ * (c⁻¹)⁻¹ * (reverseZeroCycle σ) := by rw [h]
+    _ = c * c * (reverseZeroCycle σ) := by simp [inv_inv]
+    _ = c * c * (c⁻¹ * c⁻¹ * σ) := rfl
+    _ = σ := by group
+
 end QM
