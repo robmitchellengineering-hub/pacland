@@ -682,4 +682,22 @@ theorem firstOddCycleIndex_spec {n : ℕ} (σ : Equiv.Perm (Fin n)) (h : hasOddC
     exact ⟨x.1, x.2, hx⟩
   exact (Nat.find_spec hP).2
 
+/-- Reversing an odd cycle keeps `hasOddCycle`: the reversed cycle is still odd. -/
+theorem hasOddCycle_reverseCycleAt {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : Fin n) (hx : σ x ≠ x)
+    (hodd : Odd (σ.cycleOf x).support.card) :
+    hasOddCycle (reverseCycleAt σ x) := by
+  refine ⟨x, ?_⟩
+  rw [reverseCycleAt_cycleOf σ x hx, Equiv.Perm.support_inv]
+  exact hodd
+
+/-- An odd cycle is non-trivial: its index is moved. -/
+theorem not_fixed_of_odd_cycle {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : Fin n)
+    (hodd : Odd (σ.cycleOf x).support.card) :
+    σ x ≠ x := by
+  intro h
+  have hc : σ.cycleOf x = 1 := (Equiv.Perm.cycleOf_eq_one_iff (f := σ) (x := x)).mpr h
+  have hcard : (σ.cycleOf x).support.card = 0 := by simp [hc]
+  rw [hcard] at hodd
+  norm_num at hodd
+
 end QM
