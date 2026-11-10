@@ -453,4 +453,81 @@ theorem sum_supportTerm_odd_cycleOf_zero_zero {n : ℕ} (A : Matrix (Fin (n+1)) 
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hσ
     exact reverseZeroCycle_term_neg σ A hA hσ.1 hσ.2
 
+/-- Reverse the cycle of `σ` containing `x` — the general form of `reverseZeroCycle` (which is
+this with `x = 0`). This is the operation that cancels an odd cycle anywhere in `σ`. -/
+def reverseCycleAt {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : Fin n) : Equiv.Perm (Fin n) :=
+  (Equiv.Perm.cycleOf σ x)⁻¹ * (Equiv.Perm.cycleOf σ x)⁻¹ * σ
+
+/-- The cycle of `x` in `reverseCycleAt σ x` is the inverse of the cycle of `x` in `σ`. -/
+theorem reverseCycleAt_cycleOf {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : Fin n) (hx : σ x ≠ x) :
+    (reverseCycleAt σ x).cycleOf x = (σ.cycleOf x)⁻¹ := by
+  let c := σ.cycleOf x
+  let τ := c⁻¹ * σ
+  have hcm : c ∈ σ.cycleFactorsFinset := by
+    rw [Equiv.Perm.cycleOf_mem_cycleFactorsFinset_iff]
+    exact (Equiv.Perm.mem_support.mpr hx)
+  have hcIsCycle : c.IsCycle := (Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).1
+  have hcx : ∀ y, y ∈ c.support → σ y = c y := by
+    intro y hy
+    exact ((Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).2 y hy).symm
+  have hdisj : c.Disjoint τ := by
+    intro y
+    by_cases hy : y ∈ c.support
+    · right
+      dsimp [τ]
+      simp [hcx y hy]
+    · left
+      by_contra h'
+      exact hy (Equiv.Perm.mem_support.mpr h')
+  have hdisj_inv : c⁻¹.Disjoint τ := by
+    intro y
+    rcases hdisj y with hc | hτ
+    · left
+      exact (Equiv.eq_symm_apply (e := c)).mpr hc |>.symm
+    · right
+      exact hτ
+  have hcomm : Commute c⁻¹ τ := Equiv.Perm.Disjoint.commute hdisj_inv
+  have hxc : x ∈ c.support := by
+    rw [Equiv.Perm.mem_support, Equiv.Perm.cycleOf_apply_self]
+    exact hx
+  have hτx : τ x = x := by
+    rcases hdisj x with hcx' | hτx
+    · exfalso
+      exact (Equiv.Perm.mem_support.mp hxc) hcx'
+    · exact hτx
+  have hmul : (c⁻¹ * τ).cycleOf x = (c⁻¹).cycleOf x :=
+    Equiv.Perm.cycleOf_mul_of_apply_right_eq_self (f := c⁻¹) (g := τ) hcomm x hτx
+  have hcx_ne : c x ≠ x := Equiv.Perm.mem_support.mp hxc
+  have hc_inv_x : c⁻¹ x ≠ x := by
+    intro h
+    exact hcx_ne (by simpa using (congr_arg c h).symm)
+  have hc_inv_IsCycle : c⁻¹.IsCycle := hcIsCycle.inv
+  have hc_inv_cycle : (c⁻¹).cycleOf x = c⁻¹ := by
+    rw [Equiv.Perm.IsCycle.cycleOf hc_inv_IsCycle]
+    split_ifs with h
+    · exfalso
+      exact hc_inv_x h
+    · rfl
+  have hre : reverseCycleAt σ x = c⁻¹ * τ := by
+    dsimp [reverseCycleAt, τ]
+    rw [mul_assoc]
+  calc
+    (reverseCycleAt σ x).cycleOf x = (c⁻¹ * τ).cycleOf x := by rw [hre]
+    _ = (c⁻¹).cycleOf x := hmul
+    _ = c⁻¹ := hc_inv_cycle
+    _ = (σ.cycleOf x)⁻¹ := by simp [c]
+
+/-- `reverseCycleAt` is an involution (on permutations that move `x`). -/
+theorem reverseCycleAt_involution {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : Fin n) (hx : σ x ≠ x) :
+    reverseCycleAt (reverseCycleAt σ x) x = σ := by
+  let c := σ.cycleOf x
+  have h : (reverseCycleAt σ x).cycleOf x = c⁻¹ := reverseCycleAt_cycleOf σ x hx
+  calc
+    reverseCycleAt (reverseCycleAt σ x) x
+        = ((reverseCycleAt σ x).cycleOf x)⁻¹ * ((reverseCycleAt σ x).cycleOf x)⁻¹ * (reverseCycleAt σ x) := rfl
+    _ = (c⁻¹)⁻¹ * (c⁻¹)⁻¹ * (reverseCycleAt σ x) := by rw [h]
+    _ = c * c * (reverseCycleAt σ x) := by simp [inv_inv]
+    _ = c * c * (c⁻¹ * c⁻¹ * σ) := rfl
+    _ = σ := by group
+
 end QM
