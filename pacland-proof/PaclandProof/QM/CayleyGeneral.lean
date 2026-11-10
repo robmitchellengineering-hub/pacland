@@ -240,4 +240,37 @@ theorem reverseZeroCycle_involution {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) (h
     _ = c * c * (c⁻¹ * c⁻¹ * σ) := rfl
     _ = σ := by group
 
+/-- Reversing the cycle of `0` negates the Leibniz term (over the support), so the two terms
+cancel in the determinant sum. This wires the involution into the odd-cycle cancellation. -/
+theorem reverseZeroCycle_term_neg {n : ℕ} (σ : Equiv.Perm (Fin (n + 1)))
+    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) (hA : A.transpose = -A)
+    (h0 : σ 0 ≠ 0) (hodd : Odd (σ.cycleOf 0).support.card) :
+    ((Equiv.Perm.sign (reverseZeroCycle σ) : ℤ) : ℂ) * (∏ i ∈ (reverseZeroCycle σ).support, A ((reverseZeroCycle σ) i) i)
+      = - (((Equiv.Perm.sign σ : ℤ) : ℂ) * (∏ i ∈ σ.support, A (σ i) i)) := by
+  let c := σ.cycleOf 0
+  let τ := c⁻¹ * σ
+  have hcm : c ∈ σ.cycleFactorsFinset := by
+    rw [Equiv.Perm.cycleOf_mem_cycleFactorsFinset_iff]
+    exact (Equiv.Perm.mem_support.mpr h0)
+  have hcx : ∀ x, x ∈ c.support → σ x = c x := by
+    intro x hx
+    exact ((Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).2 x hx).symm
+  have hdisj : c.Disjoint τ := by
+    intro x
+    by_cases hx : x ∈ c.support
+    · right
+      dsimp [τ]
+      simp [hcx x hx]
+    · left
+      by_contra h
+      exact hx (Equiv.Perm.mem_support.mpr h)
+  have hσ : c * τ = σ := by
+    dsimp [τ]
+    group
+  have hr : reverseZeroCycle σ = c⁻¹ * τ := by
+    dsimp [reverseZeroCycle, τ]
+    rw [mul_assoc]
+  have hneg := twin_sign_eq_product_neg c τ hdisj A hA hodd
+  simpa [hσ, ← hr] using hneg
+
 end QM
