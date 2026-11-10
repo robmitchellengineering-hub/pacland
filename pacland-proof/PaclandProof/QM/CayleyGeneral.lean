@@ -337,4 +337,66 @@ theorem reverseZeroCycle_term_neg_univ {n : ℕ} (σ : Equiv.Perm (Fin (n + 1)))
       prod_univ_eq_prod_support σ A hfree]
   exact reverseZeroCycle_term_neg σ A hA h0 hodd
 
+/-- `reverseZeroCycle` is not the identity: an odd cycle of `0` (length ≥ 3) is genuinely reversed,
+so the twin is a different permutation. -/
+theorem reverseZeroCycle_ne_self {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) (h0 : σ 0 ≠ 0)
+    (hodd : Odd (σ.cycleOf 0).support.card) :
+    reverseZeroCycle σ ≠ σ := by
+  intro h
+  let c := σ.cycleOf 0
+  let τ := c⁻¹ * σ
+  have hcm : c ∈ σ.cycleFactorsFinset := by
+    rw [Equiv.Perm.cycleOf_mem_cycleFactorsFinset_iff]
+    exact (Equiv.Perm.mem_support.mpr h0)
+  have hcIsCycle : c.IsCycle := (Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).1
+  have hcx : ∀ x, x ∈ c.support → σ x = c x := by
+    intro x hx
+    exact ((Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).2 x hx).symm
+  have hdisj : c.Disjoint τ := by
+    intro x
+    by_cases hx : x ∈ c.support
+    · right
+      dsimp [τ]
+      simp [hcx x hx]
+    · left
+      by_contra h'
+      exact hx (Equiv.Perm.mem_support.mpr h')
+  have hσ : c * τ = σ := by
+    dsimp [τ]
+    group
+  have hr : reverseZeroCycle σ = c⁻¹ * τ := by
+    dsimp [reverseZeroCycle, τ]
+    rw [mul_assoc]
+  have hcτ : c⁻¹ * τ = c * τ := by
+    rw [← hr, h, ← hσ]
+  have hcinv : c⁻¹ = c := by
+    have : (c⁻¹ * τ) * τ⁻¹ = (c * τ) * τ⁻¹ := by rw [hcτ]
+    simpa [mul_assoc] using this
+  have hc2 : c ^ 2 = 1 := by
+    have hcc : c * c = 1 := by
+      nth_rewrite 1 [← hcinv]
+      simp
+    simpa [pow_two] using hcc
+  have horder_le : orderOf c ≤ 2 := orderOf_le_of_pow_eq_one (by norm_num : 0 < 2) hc2
+  have hcard_le : c.support.card ≤ 2 := by
+    rw [← Equiv.Perm.IsCycle.orderOf hcIsCycle]
+    exact horder_le
+  have hcard_odd : Odd c.support.card := by
+    simpa [c] using hodd
+  have hcard_one : c.support.card = 1 := by
+    interval_cases hc : c.support.card
+    · exfalso
+      norm_num at hcard_odd
+    · rfl
+    · exfalso
+      norm_num at hcard_odd
+  have horder_one : orderOf c = 1 := by
+    rw [Equiv.Perm.IsCycle.orderOf hcIsCycle, hcard_one]
+  have hc_one : c = 1 := orderOf_eq_one_iff.mp horder_one
+  have hc0 : c 0 = 0 := by simp [hc_one]
+  have hc0_ne : c 0 ≠ 0 := by
+    rw [Equiv.Perm.cycleOf_apply_self]
+    exact h0
+  exact hc0_ne hc0
+
 end QM
