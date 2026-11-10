@@ -13,10 +13,12 @@ Known answers, all recomputed from the repo's own CMIP6 drift data
 import unittest
 
 from pacland.climate.scream_conservation import (
+    EARTH_MASS_ACCRETION_KG_PER_YR,
     ENERGY_REL_TOL,
     ENERGY_TOL_WM2,
     MASS_TOL_MM_PER_YR,
     WATER_REL_TOL,
+    mass_leak_vs_accretion_ratio,
     parent_drift,
     verdict,
 )
@@ -73,6 +75,17 @@ class TestTheVerdict(unittest.TestCase):
         self.assertIn("does not leak energy", v)
         # the km-scale drift and fixer magnitude are UNKNOWN, not claimed clean
         self.assertIn("UNKNOWN", v)
+
+
+class TestMassLeakIsNotEarthAccretion(unittest.TestCase):
+    def test_earth_accretion_constant(self):
+        self.assertEqual(EARTH_MASS_ACCRETION_KG_PER_YR, 4.0e7)  # ~40,000 t/yr
+
+    def test_mass_leak_dwarfs_accretion(self):
+        # the drift (~1.75e14 kg/yr of WATER) is ~10^6 x the Earth's real mass
+        # gain (~4e7 kg/yr of DUST) — and they live in different reservoirs, so
+        # the "Earth is gaining mass" idea cannot explain the model drift
+        self.assertGreater(mass_leak_vs_accretion_ratio(), 1e6)
 
 
 if __name__ == "__main__":
