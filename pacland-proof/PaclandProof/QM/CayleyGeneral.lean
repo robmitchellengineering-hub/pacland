@@ -850,4 +850,19 @@ theorem det_eq_sum_fixedPointFree {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA
     rw [hprod]
     simp
 
+/-- A perfect matching on `Fin n` — a fixed-point-free involution (product of disjoint transpositions). -/
+def IsMatching {n : ℕ} (τ : Equiv.Perm (Fin n)) : Prop :=
+  τ ^ 2 = 1 ∧ ∀ i, τ i ≠ i
+
+/-- The upper half of a matching: the indices `i` with `i < τ i` (one representative per edge). -/
+def matchingUpperSupport {n : ℕ} (τ : Equiv.Perm (Fin n)) : Finset (Fin n) :=
+  Finset.univ.filter (fun i => i < τ i)
+
+/-- A fixed-point-free involution has a nonempty upper support: every moved point pairs with
+a distinct partner, and exactly one of each pair is the upper representative. -/
+theorem matchingUpperSupport_card {n : ℕ} (τ : Equiv.Perm (Fin n)) (hm : IsMatching τ) :
+    matchingUpperSupport τ = τ.support.filter (fun i => i < τ i) := by
+  ext i
+  simp [matchingUpperSupport, Equiv.Perm.mem_support, hm.2 i]
+
 end QM
