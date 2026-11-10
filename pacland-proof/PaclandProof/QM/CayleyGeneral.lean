@@ -781,4 +781,38 @@ theorem firstOddCycleIndex_stable {n : ℕ} (σ : Equiv.Perm (Fin n)) (h : hasOd
       rw [← cycleOf_reverseCycleAt_eq_of_not_mem_support σ x (firstOddCycleIndex (reverseCycleAt σ x) h') hxne hyc]
       exact hspec'
 
+open Classical
+
+/-- Step 2 (general): the support-term sum over permutations with ANY odd cycle cancels — the
+reverse-first-odd-cycle map pairs each with its negative. -/
+theorem sum_supportTerm_odd_cycle_zero {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.transpose = -A) :
+    (∑ σ ∈ (Finset.univ.filter (fun σ : Equiv.Perm (Fin n) => hasOddCycle σ)), supportTerm A σ) = 0 := by
+  classical
+  refine Finset.sum_involution
+    (fun σ hσ => reverseCycleAt σ (firstOddCycleIndex σ ((Finset.mem_filter.mp hσ).2))) ?_ ?_ ?_ ?_
+  · intro σ hσ
+    let x := firstOddCycleIndex σ ((Finset.mem_filter.mp hσ).2)
+    have hx : σ x ≠ x := not_fixed_of_odd_cycle σ x (firstOddCycleIndex_spec σ ((Finset.mem_filter.mp hσ).2))
+    have hodd : Odd (σ.cycleOf x).support.card := firstOddCycleIndex_spec σ ((Finset.mem_filter.mp hσ).2)
+    dsimp [supportTerm]
+    rw [reverseCycleAt_term_neg σ A hA x hx hodd]
+    ring
+  · intro σ hσ hne
+    let x := firstOddCycleIndex σ ((Finset.mem_filter.mp hσ).2)
+    have hx : σ x ≠ x := not_fixed_of_odd_cycle σ x (firstOddCycleIndex_spec σ ((Finset.mem_filter.mp hσ).2))
+    have hodd : Odd (σ.cycleOf x).support.card := firstOddCycleIndex_spec σ ((Finset.mem_filter.mp hσ).2)
+    exact reverseCycleAt_ne_self σ x hx hodd
+  · intro σ hσ
+    let x := firstOddCycleIndex σ ((Finset.mem_filter.mp hσ).2)
+    have hx : σ x ≠ x := not_fixed_of_odd_cycle σ x (firstOddCycleIndex_spec σ ((Finset.mem_filter.mp hσ).2))
+    have hodd : Odd (σ.cycleOf x).support.card := firstOddCycleIndex_spec σ ((Finset.mem_filter.mp hσ).2)
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    exact hasOddCycle_reverseCycleAt σ x hx hodd
+  · intro σ hσ
+    let x := firstOddCycleIndex σ ((Finset.mem_filter.mp hσ).2)
+    have hx : σ x ≠ x := not_fixed_of_odd_cycle σ x (firstOddCycleIndex_spec σ ((Finset.mem_filter.mp hσ).2))
+    have hstab := firstOddCycleIndex_stable σ ((Finset.mem_filter.mp hσ).2)
+    rw [hstab]
+    exact reverseCycleAt_involution σ x hx
+
 end QM
