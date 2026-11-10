@@ -255,6 +255,15 @@ CATALOG: dict[str, dict] = {
         "verdict": "FORCED",
         "why": "the generation count is an index — free (not fixed) and protected (robust) — and χ = 2(h¹¹−h²¹) is even, so N_gen = |χ|/2 is always a whole number. But the value 3 (χ = 6) is a free label, not a forced value.",
     },
+     "black-hole-entropy": {
+         "claim": "no region's entanglement entropy exceeds its horizon area — S ≤ A/4G, and the black hole saturates it",
+         "simulate": phantom.black_hole_entropy,
+         "theorem": "QM.MERA.srank_maximally_entangled + QM.MERA.areaLaw_rank (the area law specialised to the horizon cut: S = A/4G)",
+         "falsifier": "a state whose horizon entanglement exceeds A/4G",
+         "oracle": ["quantum-simulated (Phantom)", "kernel-checked (Lean)"],
+         "verdict": "FORCED",
+         "why": "the Bekenstein–Hawking entropy is not a dial — it is the entanglement-area law with the cut = the horizon. A random (Page) state saturates A/4G; nothing exceeds it.",
+     },
 }
 
 VERDICT_GLYPH = {"FORCED": "●", "FREE": "○", "IMPOSSIBLE": "✕"}

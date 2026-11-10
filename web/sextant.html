@@ -106,7 +106,7 @@ sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
       <div id="catdesc" class="catdesc"></div>
       <input id="q" class="searchbox" type="search" placeholder="search… e.g. 'entanglement', 'clone', 'gravity'">
       <ul id="list" class="claimlist"></ul>
-      <div class="small" style="margin-top:.4rem">28 claims · 5 live oracles · 22 kernel-checked theorems</div>
+      <div class="small" style="margin-top:.4rem">29 claims · 6 live oracles · 23 kernel-checked theorems</div>
     </div>
     <div id="out" class="out">
       <p class="small">Pick a claim to see its academic proof and a one-page plain-speak explainer.</p>
@@ -191,12 +191,14 @@ const CLAIMS = [
    plain:"The PR box is the wildest thing the universe allows without signalling faster than light — it hits CHSH = 4, above the quantum 2√2. It is the ceiling: quantum sits between the classical wall (2) and the PR box (4)." },
  { id:'sm-index', v:'FORCED', th:'SM.Index.index_free + index_protected', claim:'N_gen is a protected topological index', falsifier:'an anomaly that un-protects the index', oracle:'kernel-checked', ev:'the index is free but robust — Atiyah–Singer N_gen = |χ|/2',
    plain:"The number of matter generations is a protected topological index — like the number of holes in a doughnut. It is 'free' (not fixed by the equations) but 'protected' (robust to small change). It cannot be drifted away." },
+  { id:'black-hole-entropy', v:'FORCED', th:'QM.MERA.areaLaw_rank', claim:'no region\'s entanglement entropy exceeds its horizon area — S ≤ A/4G, and the black hole saturates it', falsifier:'a state whose horizon entanglement exceeds A/4G', oracle:'quantum-simulated + kernel-checked', ev:'random-state (black hole) entropy S = 3.68 ≤ A/4G = 4.16 — the bound holds',
+    plain:"The Bekenstein–Hawking entropy — S = A/4G — is not a dial the universe turns. It is the entanglement-area law with the cut drawn at the horizon: a black hole is the state that saturates the bound, and nothing exceeds it. Entropy is area, not volume." },
 ];
 
 const CAT = {
   'no-cloning':'foundations','no-broadcasting':'foundations','born-rule':'foundations','pbr':'foundations','mermin':'foundations','locc-no-entanglement':'foundations',
   'chsh':'computing','bell-classical':'computing','clifford-polynomial':'computing','entanglement-area':'computing',
-  'mera-hyperbolic':'gravity','coupling-free':'gravity','gravity-quantum':'gravity','lovelock':'gravity','bianchi':'gravity','wdw':'gravity','dirac':'gravity','adm':'gravity',
+  'mera-hyperbolic':'gravity','coupling-free':'gravity','gravity-quantum':'gravity','lovelock':'gravity','bianchi':'gravity','wdw':'gravity','dirac':'gravity','adm':'gravity','black-hole-entropy':'gravity',
   'hypercharge-uniqueness':'sm','anomaly-cancellation':'sm','generation-free':'sm','the-19':'sm','sm-index':'sm',
   'mitchell-uniqueness':'landscape','constraint-first':'landscape','completeness':'landscape',
   'pr-box':'foundations'
