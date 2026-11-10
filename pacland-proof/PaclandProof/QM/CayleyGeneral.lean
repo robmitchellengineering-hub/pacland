@@ -399,4 +399,26 @@ theorem reverseZeroCycle_ne_self {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) (h0 :
     exact h0
   exact hc0_ne hc0
 
+/-- A sign-reversing involution: if `φ` is an involution on a finset `s` and `f (φ x) = -f x`,
+then the sum of `f` over `s` is zero. Reusable core of the odd-cycle cancellation. -/
+theorem sum_eq_zero_of_involution_neg {α : Type*} [DecidableEq α] (s : Finset α) (φ : α → α)
+    (hmem : ∀ x ∈ s, φ x ∈ s) (hinv : ∀ x ∈ s, φ (φ x) = x)
+    (f : α → ℂ) (hneg : ∀ x ∈ s, f (φ x) = -f x) :
+    (∑ x ∈ s, f x) = 0 := by
+  refine Finset.sum_involution (fun x _ => φ x) ?hg₁ ?hg₃ ?g_mem ?hg₄
+  · intro a ha
+    rw [hneg a ha]
+    simp
+  · intro a ha hne hφ
+    apply hne
+    have h : f a = -f a := by simpa [hφ] using hneg a ha
+    have h2 : (2 : ℂ) * f a = 0 := by
+      have hsum : f a + f a = 0 := by
+        nth_rewrite 2 [h]
+        ring
+      simpa [two_mul] using hsum
+    exact (mul_eq_zero.mp h2).resolve_left (by norm_num : (2 : ℂ) ≠ 0)
+  · exact hmem
+  · exact hinv
+
 end QM
