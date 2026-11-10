@@ -815,4 +815,39 @@ theorem sum_supportTerm_odd_cycle_zero {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ
     rw [hstab]
     exact reverseCycleAt_involution σ x hx
 
+/-- The univ-version Leibniz determinant term. -/
+def detTerm {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (σ : Equiv.Perm (Fin n)) : ℂ :=
+  ((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ i, A (σ i) i
+
+/-- A fixed point makes the Leibniz product vanish (antisymmetry gives `A i i = 0`). -/
+theorem prod_eq_zero_of_fixedPoint {n : ℕ} (σ : Equiv.Perm (Fin n)) (A : Matrix (Fin n) (Fin n) ℂ)
+    (hA : A.transpose = -A) (i : Fin n) (hi : σ i = i) :
+    (∏ j : Fin n, A (σ j) j) = 0 := by
+  have hAi : A (σ i) i = 0 := by
+    rw [hi]
+    exact antisymm_diagonal_eq_zero A hA i
+  exact (Finset.prod_eq_zero_iff.mpr ⟨i, Finset.mem_univ i, hAi⟩)
+
+/-- For a fixed-point-free permutation, the univ and support Leibniz terms agree. -/
+theorem detTerm_eq_supportTerm_of_fpf {n : ℕ} (σ : Equiv.Perm (Fin n)) (A : Matrix (Fin n) (Fin n) ℂ)
+    (hfree : ∀ i, σ i ≠ i) :
+    detTerm A σ = supportTerm A σ := by
+  dsimp [detTerm, supportTerm]
+  rw [prod_univ_eq_prod_support σ A hfree]
+
+/-- Step 1: the determinant equals the sum over fixed-point-free permutations. -/
+theorem det_eq_sum_fixedPointFree {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.transpose = -A) :
+    A.det = ∑ σ : Equiv.Perm (Fin n), if (∀ i, σ i ≠ i) then detTerm A σ else 0 := by
+  rw [Matrix.det_apply']
+  apply Finset.sum_congr rfl
+  intro σ _
+  dsimp [detTerm]
+  by_cases hfpf : ∀ i, σ i ≠ i
+  · simp [hfpf]
+  · rcases (not_forall.mp hfpf) with ⟨i, hi⟩
+    rw [ite_eq_right hfpf]
+    have hprod : (∏ j : Fin n, A (σ j) j) = 0 := prod_eq_zero_of_fixedPoint σ A hA i (of_not_not hi)
+    rw [hprod]
+    simp
+
 end QM
