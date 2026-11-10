@@ -421,4 +421,36 @@ theorem sum_eq_zero_of_involution_neg {α : Type*} [DecidableEq α] (s : Finset 
   · exact hmem
   · exact hinv
 
+/-- The support-version Leibniz term. -/
+def supportTerm {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (σ : Equiv.Perm (Fin n)) : ℂ :=
+  ((Equiv.Perm.sign σ : ℤ) : ℂ) * (∏ i ∈ σ.support, A (σ i) i)
+
+/-- Step 2 (cycle-of-0 case): the sum over permutations whose cycle of 0 is odd cancels —
+the reverse-twin pairs each term with its negative. -/
+theorem sum_supportTerm_odd_cycleOf_zero_zero {n : ℕ} (A : Matrix (Fin (n+1)) (Fin (n+1)) ℂ)
+    (hA : A.transpose = -A) :
+    (∑ σ ∈ (Finset.univ.filter (fun σ : Equiv.Perm (Fin (n+1)) =>
+        σ 0 ≠ 0 ∧ Odd (σ.cycleOf 0).support.card)), supportTerm A σ) = 0 := by
+  refine sum_eq_zero_of_involution_neg _ (fun σ => reverseZeroCycle σ) ?_ ?_ (fun σ => supportTerm A σ) ?_
+  · -- hmem: reverseZeroCycle σ stays in the bad set
+    intro σ hσ
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hσ ⊢
+    constructor
+    · -- (reverseZeroCycle σ) 0 ≠ 0
+      have h0s : 0 ∈ (reverseZeroCycle σ).support := by
+        rw [reverseZeroCycle_support σ hσ.1]
+        exact (Equiv.Perm.mem_support.mpr hσ.1)
+      exact (Equiv.Perm.mem_support.mp h0s)
+    · -- Odd ((reverseZeroCycle σ).cycleOf 0).support.card
+      rw [reverseZeroCycle_cycleOf_zero σ hσ.1, Equiv.Perm.support_inv]
+      exact hσ.2
+  · -- hinv: reverseZeroCycle (reverseZeroCycle σ) = σ
+    intro σ hσ
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hσ
+    exact reverseZeroCycle_involution σ hσ.1
+  · -- hneg: supportTerm (reverseZeroCycle σ) = -supportTerm σ
+    intro σ hσ
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hσ
+    exact reverseZeroCycle_term_neg σ A hA hσ.1 hσ.2
+
 end QM
