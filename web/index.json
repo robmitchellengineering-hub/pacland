@@ -816,6 +816,13 @@
    "title": "Measurement 001 \u2014 the first real link, recorded so it can be re-read"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mechanical-completion.md",
+   "kind": "doc",
+   "path": "docs/mechanical-completion.md",
+   "summary": "Measured on the Cayley identity work: the reverseZeroCyclecycleOfzero proof is ~40 lines and ~35 of them are glue. The insight \u2014 use cycleOfmulofapplyrighteqself instead of cycleOfinv to\u2026",
+   "title": "Mechanical completion \u2014 route the decision to the AI, the glue to the CPU"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/method-transfer.md",
    "kind": "doc",
    "path": "docs/method-transfer.md",
