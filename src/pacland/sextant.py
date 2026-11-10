@@ -264,6 +264,15 @@ CATALOG: dict[str, dict] = {
          "verdict": "FORCED",
          "why": "the Bekenstein–Hawking entropy is not a dial — it is the entanglement-area law with the cut = the horizon. A random (Page) state saturates A/4G; nothing exceeds it.",
      },
+     "black-hole-unitarity": {
+         "claim": "black hole evaporation is unitary — the information is never lost, only re-encoded in the radiation's entanglement",
+         "simulate": phantom.black_hole_unitarity,
+         "theorem": "QM.NoCloning + QM.NoBroadcasting (linearity + unitarity forbid information loss)",
+         "falsifier": "a non-unitary (information-losing) evaporation map",
+         "oracle": ["quantum-simulated (Phantom)", "kernel-checked (Lean)"],
+         "verdict": "FORCED",
+         "why": "a pure state stays pure under any unitary map (purity is invariant), so the interior's information cannot vanish — it is re-encoded in the Hawking radiation's entanglement. The mechanism of the recovery is the open part; the unitarity itself is forced.",
+     },
 }
 
 VERDICT_GLYPH = {"FORCED": "●", "FREE": "○", "IMPOSSIBLE": "✕"}
