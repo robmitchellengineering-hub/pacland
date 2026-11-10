@@ -1,7 +1,7 @@
 # SCREAM — the oracle behind STRATA: does *it* leak?
 
 Status: **computed and guarded** — `src/pacland/climate/scream_conservation.py` +
-`tests/test_climate_scream_conservation.py` (12 tests, green). This closes the
+`tests/test_climate_scream_conservation.py` (13 tests, green). This closes the
 term the STRATA report left open: STRATA is verified against SCREAM
 (reference-fidelity, `p̂_g`); this asks the next level, **is the oracle itself
 right against the Earth** (`p̂_e`).
@@ -63,12 +63,43 @@ not a leaky one on the energy axis. The residual risk is elsewhere: the fixer's
 hidden magnitude, the mass ledger, and the nonhydrostatic core — none of which
 STRATA's released output can expose, because STRATA drops the fluxes entirely.
 
+## Addendum — the mass leak is not the Earth gaining mass
+
+Follow-up question: if the model's `masso` drifts, is it actually *detecting* the
+Earth's real mass change rather than leaking? No — the magnitudes are decisive,
+and they point the other way.
+
+**What the leak is.** `masso` is *ocean water mass*. In a `piControl` it can only
+change through the water fluxes (precipitation − evaporation + runoff + melt),
+so a drift means the coupled water cycle is numerically creating/destroying
+water. This is a documented EAM-v1 failure mode: water conservation depends on
+the transport scheme and the physics↔dynamics remapping
+([GMD 11, 1971, 2018](https://gmd.copernicus.org/articles/11/1971/2018/)).
+
+**The magnitude check** (`mass_leak_vs_accretion_ratio()`, guarded):
+
+| | magnitude |
+|---|---|
+| Earth's real accretion (cosmic dust) | ~**40,000 t/yr** ≈ 4×10⁷ kg/yr (Love & Brownlee 1993) |
+| E3SM-1-0's ocean-mass drift | **−1.75×10¹⁴ kg/yr** of *water* |
+
+The drift is **~4×10⁶ times larger** than the accretion, and it is *water*, not
+*dust* — different reservoirs entirely. So the Earth-gaining-mass idea (real but
+tiny) cannot explain the model drift; it is an unambiguous numerical defect.
+
+**The fix already exists.** The lineage solved it: E3SM-1-0 → E3SM-1-1 cut the
+drift from −0.486 to +0.080 mm/yr (inside tolerance), and E3SM v2 fixed the root
+cause with property-preserving semi-Lagrangian transport + a conservative
+physics↔dynamics remap (the "Islet" transport, [OSTI 1902840](https://doi.org/10.2172/1902840)).
+SCREAM (eamxx) inherits the fix — the same class of solution as the energy
+fixer: enforce conservation rather than hope the discretization delivers it.
+
 ## Reproduce
 
 ```sh
 cd pacland
 PYTHONPATH=src python3 -m pacland.climate.scream_conservation        # the summary block
-PYTHONPATH=src python3 -m unittest tests.test_climate_scream_conservation -v   # 12 tests
+PYTHONPATH=src python3 -m unittest tests.test_climate_scream_conservation -v   # 13 tests
 ```
 
 References: Irving et al. 2021 (figshare doi:10.6084/m9.figshare.12143562);

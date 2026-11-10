@@ -46,6 +46,11 @@ CMIP6_DRIFT_SRC = "Irving et al. 2021, figshare doi:10.6084/m9.figshare.12143562
 NONHYDRO_SRC = ("GMD 17, 1429-1442, 2024: 'Energy-conserving physics for nonhydrostatic "
                 "dynamics in mass coordinate models', doi:10.5194/gmd-17-1429-2024")
 
+# The Earth's real mass accretion (cosmic dust + micrometeorites), for the
+# "is the model's mass drift actually physical?" check.
+EARTH_MASS_ACCRETION_KG_PER_YR = 4.0e7   # ~40,000 t/yr (Love & Brownlee 1993, Science 262:550)
+ACCRETION_SRC = "Love & Brownlee 1993, Science 262, 550-553"
+
 # The energy-budget tolerance used to call a model "clean" (matches cmip6_drift.verdict_table).
 ENERGY_TOL_WM2 = 0.1
 MASS_TOL_MM_PER_YR = 0.3
@@ -70,6 +75,18 @@ def parent_drift() -> dict:
             row["mass_mm_per_yr"] = round(mass_drift_mm_per_yr(m["masso_kg_per_yr"]), 4)
         out[m["model"]] = row
     return out
+
+
+def mass_leak_vs_accretion_ratio() -> float:
+    """E3SM-1-0's ocean-mass drift vs the Earth's real cosmic-dust accretion.
+
+    The drift is ~1.75e14 kg/yr of WATER; the Earth accretes ~4e7 kg/yr of SOLID
+    dust. A ratio ~1e6 proves the drift is a numerical water-cycle defect, not a
+    real mass signal: the two differ by ~6 orders of magnitude and live in
+    different reservoirs (ocean water vs lithosphere).
+    """
+    m = next(x for x in load()["models"] if x["model"] == "E3SM-1-0")
+    return abs(m["masso_kg_per_yr"]) / EARTH_MASS_ACCRETION_KG_PER_YR
 
 
 def _e3sm_rows() -> dict:
@@ -148,7 +165,9 @@ def summary() -> str:
 
 
 __all__ = ["ENERGY_REL_TOL", "WATER_REL_TOL", "ENERGY_TOL_WM2", "MASS_TOL_MM_PER_YR",
-           "parent_drift", "verdict", "two_level_bound", "summary"]
+           "EARTH_MASS_ACCRETION_KG_PER_YR", "ACCRETION_SRC",
+           "parent_drift", "mass_leak_vs_accretion_ratio", "verdict",
+           "two_level_bound", "summary"]
 
 
 if __name__ == "__main__":
