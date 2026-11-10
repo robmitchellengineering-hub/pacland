@@ -2230,6 +2230,13 @@
    "title": "ingest_rtdsm_releases.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/install-sextant.sh",
+   "kind": "script",
+   "path": "scripts/install-sextant.sh",
+   "summary": "SEXTANT installer \u2014 the headless simulated quantum computer, one command.",
+   "title": "install-sextant.sh"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/install_cytools.sh",
    "kind": "script",
    "path": "scripts/install_cytools.sh",
@@ -3390,13 +3397,6 @@
    "path": "web/index.html",
    "summary": "page on this site",
    "title": "The front page \u2014 what PACLAND is"
-  },
-  {
-   "href": "./mera.html",
-   "kind": "page",
-   "path": "web/mera.html",
-   "summary": "page on this site",
-   "title": "MERA — geometric entanglement"
   },
   {
    "href": "./mera.html",
