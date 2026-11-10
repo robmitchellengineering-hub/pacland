@@ -58,7 +58,7 @@
     <h2 style="margin:0 0 .5rem;font-size:1.9rem;letter-spacing:-.02em;color:#fff">A Theory of Everything, 80% complete.</h2>
     <p style="margin:0 0 1rem;font-size:1.02rem;opacity:.96">Relations, never values — kernel-checked in Lean: 361 theorems, the exact structure nailed down as <strong>FORCED / FREE / IMPOSSIBLE</strong>, and the last frontier named and open.</p>
     <p style="margin:0">
-      <a class="btn" href="https://github.com/robmitchellengineering-hub/pacland" style="background:#fff;color:#142a5e">Join the hunt — download SEXTANT</a>
+      <a class="btn" href="#download" style="background:#fff;color:#142a5e">Join the hunt — download SEXTANT</a>
       <a class="btn ghost" href="./node.html" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6)">the node — the global quest</a>
       <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/issues" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6)">let's unravel the universe together →</a>
     </p>
@@ -75,6 +75,18 @@
   <div class="callout does-not">
     <p><strong>What it does <em>not</em> do, said plainly:</strong> it does not compute <em>values</em> — it classifies them (relations, never values). It is not a faster quantum computer — it rides the same simulators everyone uses. It does not invent physics — it certifies what is already provable, and says honestly where the proof stops.</p>
   </div>
+
+  <h2 id="download">Download — run it on your machine</h2>
+  <p>SEXTANT is a headless command that runs on your own hardware — no cloud, no account, no trust required. One command installs it on Linux, macOS, or a Raspberry Pi:</p>
+  <pre style="background:#0d1b3d;color:#e8ecf7;padding:.8rem 1rem;border-radius:8px;overflow-x:auto"><code>curl -fsSL https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/scripts/install-sextant.sh | bash</code></pre>
+  <p class="small">That puts <code>sextant</code> and <code>sextant-node</code> on your PATH. Then run the whole engine:</p>
+  <pre style="background:#0d1b3d;color:#e8ecf7;padding:.8rem 1rem;border-radius:8px;overflow-x:auto"><code>sextant --verify    # all 28 claims — every falsifier runs
+sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
+  <p class="small" style="margin-top:.6rem">
+    <strong>x86_64</strong> (Linux / macOS): <code>stim</code> installs as a pre-built wheel — instant, full 28/28.<br>
+    <strong>Raspberry Pi</strong> (aarch64): the same one-liner; <code>stim</code> compiles from source on the first run (~10–30 min, native) and everything else is instant — 27/28 now, 28/28 once that one compile finishes.<br>
+    Manual install instead: <code>git clone https://github.com/robmitchellengineering-hub/pacland &amp;&amp; cd pacland &amp;&amp; pip install -e . stim quimb numpy</code>.
+  </p>
 
   <h2 id="what-it-does">What it does</h2>
   <p>Every claim below gets one of the three verdicts, and every verdict is earned twice over: a <strong>falsifier</strong> that actually runs (a simulator tries to break the claim, and the claim has to survive it), and a <strong>Lean theorem</strong> that the kernel checked (the proof, not just the number). Tap any claim to read both — the academic proof and a one-page plain-speak explainer. Then download the node and run the falsifiers yourself: <code>python -m pacland.sextant_node</code> — no cloud, no account, no trust required.</p>
@@ -110,7 +122,7 @@
     <a class="btn ghost" href="./index.html">← back to PACLAND</a>
     <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md">run it yourself (CLI)</a>
   </div>
-  <p class="small" style="margin-top:1rem">Run it locally: <code>pip install -e .</code> then <code>pip install stim quimb numpy</code>, then <code>sextant verify chsh</code>. Every verdict below is the same thing the CLI prints — the falsifier ran, and the claim survived it.</p>
+  <p class="small" style="margin-top:1rem">Every verdict below is the same thing the CLI prints — the falsifier ran, and the claim survived it. <a href="#download">Download</a> and run it yourself: <code>sextant verify chsh</code>.</p>
 <h2 style="margin-top:2rem">The geometry, in 3D</h2>
   <p class="small">Every theorem has a shape. Open the 3D views — the constraint, the MERA cone, the climate verification, the Kähler cones.</p>
   <div class="actions" style="margin-bottom:.5rem">
