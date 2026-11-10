@@ -2,129 +2,303 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MERA — the causal cone is a discrete hyperbolic space</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Geometric entanglement — the engine that drives SEXTANT</title>
 <style>
-  :root { --ink:#1a1f2e; --muted:#5a6072; --accent:#142a5e; --line:#e3e6ee; --bg:#fbfbfd; }
-  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; }
-  .wrap { max-width:900px; margin:0 auto; padding:2rem 1.5rem 3rem; }
-  h1 { font-size:1.9rem; letter-spacing:-.02em; color:var(--accent); margin:.2rem 0 .4rem; }
-  .kicker { margin:0; font:600 .72rem monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
-  p { margin:.6rem 0; }
-  .muted { color:var(--muted); }
-  .fig { border:1px solid var(--line); border-radius:10px; background:#fff; padding:.6rem; margin:1.2rem 0; }
-  svg { display:block; width:100%; height:auto; }
-  .legend { display:flex; flex-wrap:wrap; gap:.5rem 1.2rem; font-size:.82rem; margin:.6rem 0; }
-  .sw { display:inline-block; width:.8rem; height:.8rem; border-radius:50%; vertical-align:middle; margin-right:.3rem; }
-  table { border-collapse:collapse; width:100%; margin:1rem 0; background:#fff; }
-  th,td { text-align:left; padding:.5rem .7rem; border-bottom:1px solid var(--line); font-size:.9rem; }
-  th { background:#f4f6fa; color:var(--accent); }
-  .callout { border-left:4px solid var(--accent); background:#eef1f8; padding:.9rem 1.1rem; border-radius:0 8px 8px 0; margin:1.2rem 0; }
-  .links a { color:var(--accent); font-weight:600; text-decoration:none; margin-right:1rem; }
-  .go3d { position:fixed; top:1rem; right:1rem; z-index:6; color:#fff; text-decoration:none; font-size:.85rem; font-weight:600; background:var(--accent); padding:.45rem .9rem; border-radius:999px; }
+  :root { --ink:#1a1f2e; --muted:#5a6072; --accent:#142a5e; --line:#e3e6ee; --bg:#05070f; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:#e2e8f0; background:var(--bg); overflow:hidden; touch-action:none; }
+  #scene { position:fixed; top:0; left:0; width:100vw; height:100dvh; height:100vh; display:block; touch-action:none; }
+  .hud { position:fixed; top:1rem; left:1rem; z-index:5; max-width:32rem; pointer-events:none; }
+  .hud h1 { font-size:1.4rem; margin:0 0 .35rem; color:#fff; letter-spacing:-.01em; }
+  .hud p { font-size:.82rem; color:#94a3b8; margin:.25rem 0; line-height:1.55; }
+  .hud b { color:#e2e8f0; }
+  .stat { position:fixed; top:1rem; right:1rem; z-index:6; text-align:right; pointer-events:none; }
+  .stat .big { font-size:2rem; font-weight:700; color:#5eead4; letter-spacing:-.02em; line-height:1; }
+  .stat .lbl { font-size:.72rem; color:#64748b; margin-top:.3rem; }
+  .legend { position:fixed; bottom:1rem; left:1rem; z-index:5; font-size:.78rem; color:#94a3b8; pointer-events:none; }
+  .legend span { display:inline-flex; align-items:center; margin-right:1.1rem; }
+  .dot { width:.6rem; height:.6rem; border-radius:50%; display:inline-block; margin-right:.35rem; }
+  .back { position:fixed; bottom:1rem; right:1rem; z-index:6; color:#7dd3fc; text-decoration:none; font-size:.85rem; background:rgba(20,42,94,.6); padding:.4rem .8rem; border-radius:999px; }
+  .hint { position:fixed; bottom:1rem; right:13rem; z-index:5; font-size:.78rem; color:#64748b; pointer-events:none; }
+  .toggle { position:fixed; left:1rem; bottom:4.5rem; z-index:7; display:flex; flex-direction:column; gap:.45rem; }
+  .toggle button { padding:.4rem .7rem; border-radius:999px; border:1px solid #334155; background:rgba(20,42,94,.55); color:#cbd5e1; font-size:.78rem; cursor:pointer; text-align:left; -webkit-tap-highlight-color:transparent; }
+  .toggle button.on { background:rgba(94,234,212,.18); color:#5eead4; border-color:#5eead4; }
 </style>
 </head>
 <body>
-<a class="go3d" href="./mera-3d.html">the 3D ball →</a>
-<div class="wrap">
-  <p class="kicker">entanglement = geometry, kernel-checked</p>
-  <h1>The MERA causal cone is a discrete hyperbolic space</h1>
-  <p class="muted">The MERA tensor network embeds a binary tree in the <strong>Poincaré disk</strong> — the hyperbolic plane. Level <code>k</code> carries <code>2^k</code> sites on a circle of hyperbolic radius <code>k</code>: exponential volume, logarithmic depth. This is the picture behind <em>"entanglement = geometry"</em> (Swingle's MERA = AdS), now a machine-checked theorem (DOI 10.5281/zenodo.24045807).</p>
+<canvas id="scene"></canvas>
 
-  <div class="fig">
-    <svg id="disk" viewBox="-1.12 -1.12 2.24 2.24" role="img" aria-label="Binary tree in the Poincaré disk"></svg>
-  </div>
-
-  <div class="legend">
-    <span><span class="sw" style="background:#142a5e"></span>a tensor (a site)</span>
-    <span><span class="sw" style="background:#d0d7e4"></span>the geodesic (the causal cone)</span>
-    <span><span class="sw" style="background:#eef1f8"></span>a level — the circle of hyperbolic radius k</span>
-    <span><span class="sw" style="background:#1a9d8f"></span>the boundary = the UV (physical) layer</span>
-  </div>
-
-  <table>
-    <thead><tr><th>what you are seeing</th><th>the theorem</th></tr></thead>
-    <tbody>
-      <tr><td>level k has <code>2^k</code> sites, doubling each step</td><td><code>causalConeDoubles</code> — <code>2^(k+1) = 2·2^k</code></td></tr>
-      <tr><td>the ball of radius r has <code>2^(r+1)−1</code> sites (exponential, not Euclidean)</td><td><code>ballVolumeExponential</code></td></tr>
-      <tr><td>the whole tree reaches N sites in <code>⌈log₂ N⌉</code> layers</td><td><code>meraDepth</code></td></tr>
-      <tr><td>entanglement across a cut is bounded by the cut area <code>D^m</code></td><td><code>bondConfigurations</code> (the area law)</td></tr>
-      <tr><td>the tree metric satisfies the four-point condition</td><td><code>treeDist_four_point</code> (Gromov 0-hyperbolicity)</td></tr>
-    </tbody>
-  </table>
-
-  <div class="callout">
-    <p><strong>What the disk shows.</strong> The centre is the IR (one coarse-grained state); the rim is the UV (the physical boundary). A local operator near the rim touches only <code>O(log N)</code> tensors — the logarithmic causal cone — which is why the geometry is <em>hyperbolic</em>, not flat. Exponential volume, logarithmic depth, and the area law are the three finite facts that make it a discretization of the hyperbolic plane.</p>
-  </div>
-
-  <p class="links"><a href="./index.html">← back to PACLAND</a><a href="./mera-3d.html">the 3D ball →</a><a href="https://doi.org/10.5281/zenodo.24045807">the paper (DOI)</a><a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/pacland-proof/PaclandProof/QM">the Lean proofs</a></p>
-  <p class="muted">Not shown (and not claimed): the continuous N → ∞ limit to the smooth AdS metric ds² = dr² + sinh²(r) dθ² — gated on a differential-geometry stack.</p>
+<div class="hud">
+  <h1>Geometric entanglement — the engine that drives SEXTANT</h1>
+  <p>The MERA causal cone is a <b>discrete hyperbolic ball</b>: <code style="color:#7dd3fc">2<sup>k</sup></code> sites live on a sphere of hyperbolic radius <em>k</em>, from one coarse-grained state at the centre (gold IR) to <code style="color:#7dd3fc">2<sup>8</sup></code> sites at the boundary (teal UV).</p>
+  <p>Entanglement is <b>encoded in the geometry</b>: cut the ball anywhere, and the entanglement across the cut is the <b>number of bonds the cut slices</b> — the <b>area</b>. That area law is exactly what SEXTANT's <em>entanglement-area</em> falsifier runs.</p>
+  <p style="font-size:.74rem"><a href="https://doi.org/10.5281/zenodo.24045807" style="color:#7dd3fc;text-decoration:none">the paper (DOI)</a> · <a href="https://github.com/robmitchellengineering-hub/pacland/tree/main/pacland-proof/PaclandProof/QM" style="color:#7dd3fc;text-decoration:none">the Lean proofs</a></p>
 </div>
 
-<script>
-(function () {
-  const NS = 'http://www.w3.org/2000/svg';
-  const svg = document.getElementById('disk');
-  const maxDepth = 7;         // 2^7 = 128 boundary sites
-  const step = 0.55;          // hyperbolic radius per level
-  const R = 1.0;              // the boundary
+<div class="stat">
+  <div class="big" id="areaN">0</div>
+  <div class="lbl">bonds cut by the plane = entanglement (area)</div>
+</div>
 
-  // the boundary circle
-  const circle = document.createElementNS(NS, 'circle');
-  circle.setAttribute('cx', 0); circle.setAttribute('cy', 0); circle.setAttribute('r', R);
-  circle.setAttribute('fill', 'none'); circle.setAttribute('stroke', '#1a9d8f');
-  circle.setAttribute('stroke-width', 0.02); circle.setAttribute('stroke-dasharray', '0.03 0.02');
-  svg.appendChild(circle);
+<div class="legend">
+  <span><span class="dot" style="background:#fde68a"></span>IR (one state)</span>
+  <span><span class="dot" style="background:#5eead4"></span>UV boundary (2<sup>8</sup>)</span>
+  <span><span class="dot" style="background:#f472b6"></span>entanglement flow</span>
+  <span><span class="dot" style="background:#ea580c"></span>bonds the cut slices</span>
+</div>
 
-  // level circles (horocycles)
-  for (let k = 0; k <= maxDepth; k++) {
-    const r = Math.tanh(k * step / 2);
-    const c = document.createElementNS(NS, 'circle');
-    c.setAttribute('cx', 0); c.setAttribute('cy', 0); c.setAttribute('r', r);
-    c.setAttribute('fill', 'none'); c.setAttribute('stroke', '#eef1f8');
-    c.setAttribute('stroke-width', 0.01);
-    svg.appendChild(c);
+<div class="toggle">
+  <button id="bFlow" class="on">entanglement flow</button>
+  <button id="bCut" class="on">the cut (area)</button>
+</div>
+
+<a class="back" href="./index.html">← back to PACLAND</a>
+<div class="hint">drag to orbit · scroll to zoom</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x05070f);
+scene.fog = new THREE.FogExp2(0x05070f, 0.045);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(0, 1.1, 5.4);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 1.0;
+controls.maxDistance = 13;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.4;
+controls.target.set(0, 0, 0);
+controls.update();
+
+const root = new THREE.Group();
+scene.add(root);
+
+scene.add(new THREE.AmbientLight(0x8899bb, 1.2));
+const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(3, 6, 4); scene.add(key);
+const rim = new THREE.DirectionalLight(0x5eead4, 0.9); rim.position.set(-4, -2, -3); scene.add(rim);
+
+const maxDepth = 8;
+const step = 0.52;
+const boundaryR = Math.tanh(maxDepth * step / 2);
+
+// boundary sphere
+const boundary = new THREE.Mesh(
+  new THREE.SphereGeometry(boundaryR, 48, 48),
+  new THREE.MeshBasicMaterial({ color:0x5eead4, wireframe:true, transparent:true, opacity:0.13 })
+);
+root.add(boundary);
+
+// a reference X-Y plane through the centre, so the orientation is clear while orbiting
+const grid = new THREE.GridHelper(boundaryR * 3.2, 24, 0x5eead4, 0x1e293b);
+grid.rotation.x = Math.PI / 2;   // GridHelper is X-Z by default; tip it onto the X-Y plane
+grid.material.transparent = true;
+grid.material.opacity = 0.22;
+root.add(grid);
+
+function fibonacciSphere(n, radius) {
+  if (n === 1) return [new THREE.Vector3(0, 0, 0)];
+  const pts = [];
+  const ga = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < n; i++) {
+    const y = 1 - (2 * i) / (n - 1);
+    const r = Math.sqrt(Math.max(0, 1 - y * y));
+    const th = ga * i;
+    pts.push(new THREE.Vector3(radius * r * Math.cos(th), radius * y, radius * r * Math.sin(th)));
+  }
+  return pts;
+}
+
+const pos = [];
+const irColor = new THREE.Color(0xfbbf24);
+const uvColor = new THREE.Color(0x5eead4);
+for (let k = 0; k <= maxDepth; k++) {
+  const r = Math.tanh(k * step / 2);
+  pos.push(fibonacciSphere(Math.pow(2, k), r));
+}
+
+// nodes
+const nodePositions = new Float32Array(pos.reduce((a, l) => a + l.length, 0) * 3);
+let o = 0;
+const nodeColorArr = [];
+for (let k = 0; k < pos.length; k++) {
+  const c = irColor.clone().lerp(uvColor, k / maxDepth);
+  for (const p of pos[k]) {
+    nodePositions[o++] = p.x; nodePositions[o++] = p.y; nodePositions[o++] = p.z;
+    nodeColorArr.push(c.r, c.g, c.b);
+  }
+}
+const nodeGeom = new THREE.BufferGeometry();
+nodeGeom.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
+nodeGeom.setAttribute('color', new THREE.BufferAttribute(new Float32Array(nodeColorArr), 3));
+const nodes = new THREE.Points(nodeGeom, new THREE.PointsMaterial({ size: 0.028, vertexColors: true, sizeAttenuation: true }));
+root.add(nodes);
+
+// edges — stored as endpoint pairs so the cut can light them up individually
+const edgePairs = [];
+for (let k = 1; k <= maxDepth; k++) {
+  for (let i = 0; i < pos[k].length; i++) {
+    edgePairs.push([pos[k - 1][Math.floor(i / 2)], pos[k][i]]);
+  }
+}
+const edgeArr = new Float32Array(edgePairs.length * 6);
+const edgeColorArr = new Float32Array(edgePairs.length * 6);
+const dim = new THREE.Color(0x334155);
+const bright = new THREE.Color(0xf59e0b);
+for (let i = 0; i < edgePairs.length; i++) {
+  const [a, b] = edgePairs[i];
+  edgeArr[i*6+0]=a.x; edgeArr[i*6+1]=a.y; edgeArr[i*6+2]=a.z;
+  edgeArr[i*6+3]=b.x; edgeArr[i*6+4]=b.y; edgeArr[i*6+5]=b.z;
+  edgeColorArr.set([dim.r,dim.g,dim.b,dim.r,dim.g,dim.b], i*6);
+}
+const edgeGeom = new THREE.BufferGeometry();
+edgeGeom.setAttribute('position', new THREE.BufferAttribute(edgeArr, 3));
+edgeGeom.setAttribute('color', new THREE.BufferAttribute(edgeColorArr, 3));
+const edges = new THREE.LineSegments(edgeGeom, new THREE.LineBasicMaterial({ vertexColors:true, transparent:true, opacity:0.7 }));
+root.add(edges);
+
+// entanglement flow — points that travel from a UV leaf up to the IR root and loop back
+const N_PULSES = 220;
+const pulseTraj = [];   // each: array of Vector3 (leaf -> ... -> root -> ... -> leaf)
+const pulseT = new Float32Array(N_PULSES);
+for (let i = 0; i < N_PULSES; i++) pulseT[i] = Math.random();   // each pulse its own phase
+for (let i = 0; i < N_PULSES; i++) {
+  const leafIdx = Math.floor(Math.random() * pos[maxDepth].length);
+  const up = [];
+  let idx = leafIdx;
+  for (let k = maxDepth; k >= 0; k--) {
+    up.push(pos[k][idx].clone());
+    idx = Math.floor(idx / 2);
+  }
+  const down = up.slice(0, -1).reverse();   // root..leaf, walking back down
+  pulseTraj.push(up.concat(down));
+}
+const pulsePos = new Float32Array(N_PULSES * 3);
+const pulseGeom = new THREE.BufferGeometry();
+pulseGeom.setAttribute('position', new THREE.BufferAttribute(pulsePos, 3));
+// round, soft glow sprite so the flow reads as glowing orbs, not squares
+function makeGlowTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0.0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.25, 'rgba(255,190,225,0.85)');
+  g.addColorStop(0.6, 'rgba(244,114,182,0.35)');
+  g.addColorStop(1.0, 'rgba(244,114,182,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+const pulses = new THREE.Points(pulseGeom, new THREE.PointsMaterial({ color:0xf472b6, size:0.09, sizeAttenuation:true, map:makeGlowTexture(), transparent:true, depthTest:false, depthWrite:false, blending:THREE.AdditiveBlending }));
+pulses.renderOrder = 3;
+root.add(pulses);
+
+// the IR state — one bright gold point at the centre (the coarse-grained whole)
+const irCore = new THREE.Mesh(
+  new THREE.SphereGeometry(0.07, 24, 24),
+  new THREE.MeshBasicMaterial({ color:0xfde68a })
+);
+root.add(irCore);
+
+// the cut plane — a translucent disc that slowly sweeps; edges it slices light up
+const cutR = boundaryR * 1.25;
+const cutPlane = new THREE.Mesh(
+  new THREE.CircleGeometry(cutR, 64),
+  new THREE.MeshBasicMaterial({ color:0x5eead4, transparent:true, opacity:0.16, side:THREE.DoubleSide, depthWrite:false })
+);
+root.add(cutPlane);
+
+let showFlow = true, showCut = true;
+document.getElementById('bFlow').addEventListener('click', (e) => { showFlow = !showFlow; e.currentTarget.classList.toggle('on', showFlow); pulses.visible = showFlow; });
+document.getElementById('bCut').addEventListener('click', (e) => { showCut = !showCut; e.currentTarget.classList.toggle('on', showCut); cutPlane.visible = showCut; });
+
+function samplePath(traj, t) {
+  const n = traj.length - 1;
+  const f = t * n;
+  const i = Math.min(Math.floor(f), n - 1);
+  const frac = f - i;
+  const a = traj[i], b = traj[i + 1];
+  return new THREE.Vector3().lerpVectors(a, b, frac);
+}
+
+const clock = new THREE.Clock();
+const areaEl = document.getElementById('areaN');
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.elapsedTime;
+
+  // 1. entanglement flow
+  if (showFlow) {
+    for (let i = 0; i < N_PULSES; i++) {
+      pulseT[i] = (pulseT[i] + dt * 0.12) % 1.0;
+      const p = samplePath(pulseTraj[i], pulseT[i]);
+      pulsePos[i*3]=p.x; pulsePos[i*3+1]=p.y; pulsePos[i*3+2]=p.z;
+    }
+    pulseGeom.attributes.position.needsUpdate = true;
   }
 
-  function pos(depth, idx) {
-    const r = Math.tanh(depth * step / 2);
-    const th = 2 * Math.PI * (idx + 0.5) / Math.pow(2, depth);
-    return [r * Math.cos(th), r * Math.sin(th)];
-  }
+  // 2. the cut: a slowly sweeping plane normal
+  if (showCut) {
+    const sweep = t * 0.35;
+    const n = new THREE.Vector3(Math.sin(sweep), Math.sin(sweep * 0.7) * 0.5, Math.cos(sweep)).normalize();
+    cutPlane.lookAt(n);
+    cutPlane.position.set(0, 0, 0);
 
-  // edges
-  for (let d = 0; d < maxDepth; d++) {
-    const n = Math.pow(2, d);
-    for (let i = 0; i < n; i++) {
-      const [px, py] = pos(d, i);
-      for (let b = 0; b < 2; b++) {
-        const [cx, cy] = pos(d + 1, 2 * i + b);
-        const line = document.createElementNS(NS, 'line');
-        line.setAttribute('x1', px); line.setAttribute('y1', py);
-        line.setAttribute('x2', cx); line.setAttribute('y2', cy);
-        line.setAttribute('stroke', '#d0d7e4'); line.setAttribute('stroke-width', 0.006);
-        svg.appendChild(line);
+    // which edges does the cut slice? (sign change of the plane's signed distance)
+    let cutCount = 0;
+    for (let i = 0; i < edgePairs.length; i++) {
+      const [a, b] = edgePairs[i];
+      const da = a.dot(n), db = b.dot(n);
+      const crossed = (da * db < 0);
+      if (crossed) {
+        cutCount++;
+        edgeColorArr.set([bright.r,bright.g,bright.b,bright.r,bright.g,bright.b], i*6);
+      } else {
+        edgeColorArr.set([dim.r,dim.g,dim.b,dim.r,dim.g,dim.b], i*6);
       }
     }
+    edgeGeom.attributes.color.needsUpdate = true;
+    areaEl.textContent = cutCount;
+  } else {
+    areaEl.textContent = '—';
   }
 
-  // nodes, sized and coloured by depth
-  for (let d = 0; d <= maxDepth; d++) {
-    const n = Math.pow(2, d);
-    for (let i = 0; i < n; i++) {
-      const [x, y] = pos(d, i);
-      const node = document.createElementNS(NS, 'circle');
-      node.setAttribute('cx', x); node.setAttribute('cy', y);
-      node.setAttribute('r', 0.016 + 0.004 * (maxDepth - d));  // bigger near the IR
-      node.setAttribute('fill', '#142a5e');
-      node.setAttribute('fill-opacity', 0.85);
-      const title = document.createElementNS(NS, 'title');
-      title.textContent = `level ${d} — one of ${Math.pow(2, d)} sites`;
-      node.appendChild(title);
-      svg.appendChild(node);
-    }
-  }
-})();
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+function resize() {
+  const w = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+  const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener('resize', resize);
+if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
+resize();
+animate();
 </script>
 </body>
 </html>

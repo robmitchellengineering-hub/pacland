@@ -55,9 +55,10 @@ CATALOG: dict[str, dict] = {
     },
     "gravity-quantum": {
         "claim": "the gravitational coupling must be quantum, not classical",
+        "simulate": phantom.gravity_quantum,
         "theorem": "QM.Entanglement + QM.NoCloning + Gleason",
         "falsifier": "a consistent classical (LOCC) coupling",
-        "oracle": ["kernel-checked (Lean)"],
+        "oracle": ["quantum-simulated (Phantom)", "kernel-checked (Lean)"],
         "verdict": "FORCED",
         "why": "a classical channel preserves separability (QM.Entanglement), so it cannot entangle; "
                "hence classical gravity cannot mediate the quantum correlation.",
@@ -255,6 +256,24 @@ CATALOG: dict[str, dict] = {
         "verdict": "FORCED",
         "why": "the generation count is an index — free (not fixed) and protected (robust) — and χ = 2(h¹¹−h²¹) is even, so N_gen = |χ|/2 is always a whole number. But the value 3 (χ = 6) is a free label, not a forced value.",
     },
+     "black-hole-entropy": {
+         "claim": "no region's entanglement entropy exceeds its horizon area — S ≤ A/4G, and the black hole saturates it",
+         "simulate": phantom.black_hole_entropy,
+         "theorem": "QM.MERA.srank_maximally_entangled + QM.MERA.areaLaw_rank (the area law specialised to the horizon cut: S = A/4G)",
+         "falsifier": "a state whose horizon entanglement exceeds A/4G",
+         "oracle": ["quantum-simulated (Phantom)", "kernel-checked (Lean)"],
+         "verdict": "FORCED",
+         "why": "the Bekenstein–Hawking entropy is not a dial — it is the entanglement-area law with the cut = the horizon. A random (Page) state saturates A/4G; nothing exceeds it.",
+     },
+     "black-hole-unitarity": {
+         "claim": "black hole evaporation is unitary — the information is never lost, only re-encoded in the radiation's entanglement",
+         "simulate": phantom.black_hole_unitarity,
+         "theorem": "QM.NoCloning + QM.NoBroadcasting (linearity + unitarity forbid information loss)",
+         "falsifier": "a non-unitary (information-losing) evaporation map",
+         "oracle": ["quantum-simulated (Phantom)", "kernel-checked (Lean)"],
+         "verdict": "FORCED",
+         "why": "a pure state stays pure under any unitary map (purity is invariant), so the interior's information cannot vanish — it is re-encoded in the Hawking radiation's entanglement. The mechanism of the recovery is the open part; the unitarity itself is forced.",
+     },
 }
 
 VERDICT_GLYPH = {"FORCED": "●", "FREE": "○", "IMPOSSIBLE": "✕"}
