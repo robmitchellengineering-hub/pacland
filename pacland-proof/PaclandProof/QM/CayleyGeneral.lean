@@ -284,4 +284,56 @@ theorem prod_univ_eq_prod_support {n : ℕ} (σ : Equiv.Perm (Fin n))
     simp [Equiv.Perm.mem_support, hfree i]
   rw [hs]
 
+/-- `reverseZeroCycle` preserves the support (reversing a cycle keeps the same moved points). -/
+theorem reverseZeroCycle_support {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) (h0 : σ 0 ≠ 0) :
+    (reverseZeroCycle σ).support = σ.support := by
+  let c := σ.cycleOf 0
+  let τ := c⁻¹ * σ
+  have hcm : c ∈ σ.cycleFactorsFinset := by
+    rw [Equiv.Perm.cycleOf_mem_cycleFactorsFinset_iff]
+    exact (Equiv.Perm.mem_support.mpr h0)
+  have hcx : ∀ x, x ∈ c.support → σ x = c x := by
+    intro x hx
+    exact ((Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).2 x hx).symm
+  have hdisj : c.Disjoint τ := by
+    intro x
+    by_cases hx : x ∈ c.support
+    · right
+      dsimp [τ]
+      simp [hcx x hx]
+    · left
+      by_contra h
+      exact hx (Equiv.Perm.mem_support.mpr h)
+  have hdisj_inv : c⁻¹.Disjoint τ := by
+    intro x
+    rcases hdisj x with hc | hτ
+    · left
+      exact (Equiv.eq_symm_apply (e := c)).mpr hc |>.symm
+    · right
+      exact hτ
+  have hσ : c * τ = σ := by
+    dsimp [τ]
+    group
+  have hr : reverseZeroCycle σ = c⁻¹ * τ := by
+    dsimp [reverseZeroCycle, τ]
+    rw [mul_assoc]
+  rw [hr, hσ]
+  rw [hdisj_inv.support_mul, hdisj.support_mul, Equiv.Perm.support_inv c]
+
+/-- The full (univ) term-negation: the determinant term of `reverseZeroCycle σ` is the negative of
+`σ`'s, for fixed-point-free `σ` with an odd cycle of `0`. -/
+theorem reverseZeroCycle_term_neg_univ {n : ℕ} (σ : Equiv.Perm (Fin (n + 1)))
+    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) (hA : A.transpose = -A)
+    (h0 : σ 0 ≠ 0) (hfree : ∀ i, σ i ≠ i) (hodd : Odd (σ.cycleOf 0).support.card) :
+    ((Equiv.Perm.sign (reverseZeroCycle σ) : ℤ) : ℂ) * (∏ i : Fin (n + 1), A ((reverseZeroCycle σ) i) i)
+      = - (((Equiv.Perm.sign σ : ℤ) : ℂ) * (∏ i : Fin (n + 1), A (σ i) i)) := by
+  have hfree' : ∀ i, (reverseZeroCycle σ) i ≠ i := by
+    intro i
+    have hs := reverseZeroCycle_support σ h0
+    rw [hs]
+    exact hfree i
+  rw [prod_univ_eq_prod_support (reverseZeroCycle σ) A hfree',
+      prod_univ_eq_prod_support σ A hfree]
+  exact reverseZeroCycle_term_neg σ A hA h0 hodd
+
 end QM
