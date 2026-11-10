@@ -700,4 +700,56 @@ theorem not_fixed_of_odd_cycle {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : Fin n)
   rw [hcard] at hodd
   norm_num at hodd
 
+/-- If `y` is moved by the cycle of `x`, then `y`'s cycle equals `x`'s cycle. -/
+lemma cycleOf_eq_of_mem_cycleOf_support {n : ℕ} (σ : Equiv.Perm (Fin n)) (x y : Fin n)
+    (hy : y ∈ (σ.cycleOf x).support) :
+    σ.cycleOf y = σ.cycleOf x := by
+  have hsame : Equiv.Perm.SameCycle σ x y := (Equiv.Perm.mem_support_cycleOf_iff.mp hy).1
+  exact (hsame.cycleOf_eq).symm
+
+/-- Reversing the cycle of `x` leaves the cycle of `y` unchanged when `y` is not in `x`'s cycle. -/
+lemma cycleOf_reverseCycleAt_eq_of_not_mem_support {n : ℕ} (σ : Equiv.Perm (Fin n)) (x y : Fin n)
+    (hx : σ x ≠ x) (hy : y ∉ (σ.cycleOf x).support) :
+    (reverseCycleAt σ x).cycleOf y = σ.cycleOf y := by
+  let c := σ.cycleOf x
+  let τ := c⁻¹ * σ
+  have hcm : c ∈ σ.cycleFactorsFinset := by
+    rw [Equiv.Perm.cycleOf_mem_cycleFactorsFinset_iff]
+    exact (Equiv.Perm.mem_support.mpr hx)
+  have hcx : ∀ z, z ∈ c.support → σ z = c z := by
+    intro z hz
+    exact ((Equiv.Perm.mem_cycleFactorsFinset_iff.mp hcm).2 z hz).symm
+  have hdisj : c.Disjoint τ := by
+    intro z
+    by_cases hz : z ∈ c.support
+    · right
+      dsimp [τ]
+      simp [hcx z hz]
+    · left
+      by_contra h'
+      exact hz (Equiv.Perm.mem_support.mpr h')
+  have hσ : c * τ = σ := by
+    dsimp [τ]
+    group
+  have hr : reverseCycleAt σ x = c⁻¹ * τ := by
+    dsimp [reverseCycleAt, τ]
+    rw [mul_assoc]
+  have hcy : c y = y := by
+    by_contra h
+    exact hy (Equiv.Perm.mem_support.mpr h)
+  have hcy_inv : c⁻¹ y = y := by
+    exact (Equiv.eq_symm_apply (e := c)).mpr hcy |>.symm
+  have hcomm : Commute τ c := hdisj.symm.commute
+  have hcomm_inv : Commute τ c⁻¹ := hcomm.inv_right
+  have hσ_cyc : σ.cycleOf y = τ.cycleOf y := by
+    rw [← hσ]
+    rw [show c * τ = τ * c from hdisj.commute]
+    exact Equiv.Perm.cycleOf_mul_of_apply_right_eq_self (f := τ) (g := c) hcomm y hcy
+  have hφ_cyc : (reverseCycleAt σ x).cycleOf y = τ.cycleOf y := by
+    rw [hr, hcomm_inv.symm]
+    exact Equiv.Perm.cycleOf_mul_of_apply_right_eq_self (f := τ) (g := c⁻¹) hcomm_inv y hcy_inv
+  calc
+    (reverseCycleAt σ x).cycleOf y = τ.cycleOf y := hφ_cyc
+    _ = σ.cycleOf y := hσ_cyc.symm
+
 end QM
