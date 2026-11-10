@@ -752,4 +752,33 @@ lemma cycleOf_reverseCycleAt_eq_of_not_mem_support {n : ℕ} (σ : Equiv.Perm (F
     (reverseCycleAt σ x).cycleOf y = τ.cycleOf y := hφ_cyc
     _ = σ.cycleOf y := hσ_cyc.symm
 
+/-- Reversing the first odd cycle does not change which cycle is first: the index is stable. -/
+theorem firstOddCycleIndex_stable {n : ℕ} (σ : Equiv.Perm (Fin n)) (h : hasOddCycle σ) :
+    firstOddCycleIndex (reverseCycleAt σ (firstOddCycleIndex σ h))
+      (hasOddCycle_reverseCycleAt σ (firstOddCycleIndex σ h)
+        (not_fixed_of_odd_cycle σ (firstOddCycleIndex σ h) (firstOddCycleIndex_spec σ h))
+        (firstOddCycleIndex_spec σ h))
+      = firstOddCycleIndex σ h := by
+  let x := firstOddCycleIndex σ h
+  let hx := firstOddCycleIndex_spec σ h
+  let hxne := not_fixed_of_odd_cycle σ x hx
+  let h' := hasOddCycle_reverseCycleAt σ x hxne hx
+  change firstOddCycleIndex (reverseCycleAt σ x) h' = x
+  apply Fin.ext
+  apply Nat.le_antisymm
+  · apply Nat.find_min'
+    refine ⟨x.2, ?_⟩
+    rw [reverseCycleAt_cycleOf σ x hxne, Equiv.Perm.support_inv]
+    exact hx
+  · apply Nat.find_min'
+    have hspec' : Odd ((reverseCycleAt σ x).cycleOf (firstOddCycleIndex (reverseCycleAt σ x) h')).support.card :=
+      firstOddCycleIndex_spec (reverseCycleAt σ x) h'
+    by_cases hyc : (firstOddCycleIndex (reverseCycleAt σ x) h') ∈ (σ.cycleOf x).support
+    · refine ⟨(firstOddCycleIndex (reverseCycleAt σ x) h').2, ?_⟩
+      rw [cycleOf_eq_of_mem_cycleOf_support σ x (firstOddCycleIndex (reverseCycleAt σ x) h') hyc]
+      exact hx
+    · refine ⟨(firstOddCycleIndex (reverseCycleAt σ x) h').2, ?_⟩
+      rw [← cycleOf_reverseCycleAt_eq_of_not_mem_support σ x (firstOddCycleIndex (reverseCycleAt σ x) h') hxne hyc]
+      exact hspec'
+
 end QM
