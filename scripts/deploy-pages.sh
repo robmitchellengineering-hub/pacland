@@ -42,6 +42,16 @@ for f in "$ROOT"/web/*.html "$ROOT"/web/*.json; do
   fi
 done
 
+# delete .html/.json that were REMOVED from web/ — a rename or a deleted page must not linger
+for f in "$WT"/*.html "$WT"/*.json; do
+  name="$(basename "$f")"
+  if [ ! -e "$ROOT/web/$name" ]; then
+    rm -f "$f"
+    echo "delete  $name"
+    changed=1
+  fi
+done
+
 # the VVS certificates are linked from verify.html, so they must be mirrored too — a link to a file
 # that only exists in the repository is a 404 on the site
 if [ -d "$ROOT/web/vvs" ]; then
