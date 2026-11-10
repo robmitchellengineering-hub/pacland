@@ -659,4 +659,27 @@ theorem reverseCycleAt_ne_self {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : Fin n) (
     exact hx
   exact hcx_ne hcx_eq
 
+/-- `σ` has an odd cycle (a cycle of odd length). -/
+def hasOddCycle {n : ℕ} (σ : Equiv.Perm (Fin n)) : Prop :=
+  ∃ x : Fin n, Odd (σ.cycleOf x).support.card
+
+/-- The smallest index `x` whose cycle in `σ` is odd. Noncomputable (uses `Nat.find`). -/
+noncomputable def firstOddCycleIndex {n : ℕ} (σ : Equiv.Perm (Fin n)) (h : hasOddCycle σ) : Fin n := by
+  let P : ℕ → Prop := fun k => ∃ hk : k < n, Odd (σ.cycleOf ⟨k, hk⟩).support.card
+  have hP : ∃ k, P k := by
+    rcases h with ⟨x, hx⟩
+    exact ⟨x.1, x.2, hx⟩
+  let k := Nat.find hP
+  have hk : k < n := (Nat.find_spec hP).1
+  exact ⟨k, hk⟩
+
+/-- The first odd cycle index is itself an odd cycle. -/
+theorem firstOddCycleIndex_spec {n : ℕ} (σ : Equiv.Perm (Fin n)) (h : hasOddCycle σ) :
+    Odd (σ.cycleOf (firstOddCycleIndex σ h)).support.card := by
+  unfold firstOddCycleIndex
+  have hP : ∃ k : ℕ, ∃ hk : k < n, Odd (σ.cycleOf ⟨k, hk⟩).support.card := by
+    rcases h with ⟨x, hx⟩
+    exact ⟨x.1, x.2, hx⟩
+  exact (Nat.find_spec hP).2
+
 end QM
