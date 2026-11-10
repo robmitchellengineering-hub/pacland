@@ -296,6 +296,24 @@ def gravity_quantum():
     return evidence
 
 
+def verify_surface_code():
+    """A surface code suppresses logical errors below the accumulated physical error (below threshold)."""
+    from pacland import qec
+
+    r = qec.surface_code_memory(distance=5, noise=2e-3, shots=2000)
+    survived = r["suppressed"]
+    return survived, (
+        f"distance {r['distance']} at p={r['physical_noise']:.1e}: logical {r['logical_error_rate']:.2e} "
+        f"vs accumulated {r['accumulated_physical']:.2e} — suppressed ×{r['suppression_ratio']:.1f}"
+    )
+
+
+def surface_code():
+    """Live evidence string for the surface-code claim (classify)."""
+    _, evidence = verify_surface_code()
+    return evidence
+
+
 FALSIFIERS = {
     "chsh": verify_chsh,
     "clifford-polynomial": verify_clifford,
@@ -306,4 +324,5 @@ FALSIFIERS = {
     "black-hole-entropy": verify_black_hole_entropy,
     "black-hole-unitarity": verify_black_hole_unitarity,
     "gravity-quantum": verify_gravity_quantum,
+    "surface-code": verify_surface_code,
 }

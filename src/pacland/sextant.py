@@ -274,6 +274,15 @@ CATALOG: dict[str, dict] = {
          "verdict": "FORCED",
          "why": "a pure state stays pure under any unitary map (purity is invariant), so the interior's information cannot vanish — it is re-encoded in the Hawking radiation's entanglement. The mechanism of the recovery is the open part; the unitarity itself is forced.",
      },
+     "surface-code": {
+         "claim": "a surface code suppresses logical errors below the accumulated physical error (below threshold)",
+         "simulate": phantom.surface_code,
+         "theorem": "QM.Stabilizer (Gottesman–Knill) + the surface-code threshold",
+         "falsifier": "a logical error rate at or above the accumulated physical error",
+         "oracle": ["quantum-simulated (Phantom/Stim)", "kernel-checked (Lean)"],
+         "verdict": "FORCED",
+         "why": "the Clifford engine runs the code live: below the threshold the logical error rate drops as the distance grows, so the accumulated physical errors are suppressed — the fault-tolerance that a quantum computer is built on.",
+     },
 }
 
 VERDICT_GLYPH = {"FORCED": "●", "FREE": "○", "IMPOSSIBLE": "✕"}
