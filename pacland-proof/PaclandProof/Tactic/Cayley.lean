@@ -9,3 +9,6 @@ attribute [aesop (rule_sets := [Cayley]) norm] QM.reverseZeroCycle_cycleOf_zero
 attribute [aesop (rule_sets := [Cayley]) norm] QM.reverseZeroCycle_involution
 attribute [aesop (rule_sets := [Cayley]) norm] QM.sign_inv_eq_sign
 attribute [aesop (rule_sets := [Cayley]) norm] QM.sign_odd_cycle_eq_one
+attribute [aesop (rule_sets := [Cayley]) unsafe 50% apply] QM.reverseZeroCycle_term_neg
+attribute [aesop (rule_sets := [Cayley]) unsafe 50% apply] QM.reverseZeroCycle_term_neg_univ
+attribute [aesop (rule_sets := [Cayley]) unsafe 50% apply] QM.reverseZeroCycle_ne_self
