@@ -45,3 +45,5 @@ import PaclandProof.Gravity.ADMConstraints
 import PaclandProof.Gravity.Dirac
 import PaclandProof.Tactic.Complete
 import PaclandProof.Tactic.Cayley
+import PaclandProof.MassGap
+import PaclandProof.QM.CayleyMatching
