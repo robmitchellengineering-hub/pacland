@@ -56,3 +56,4 @@ import PaclandProof.QM.BlockSpin
 import PaclandProof.QM.ClusterExpansion
 import PaclandProof.QM.WilsonOscillation
 import PaclandProof.QM.Bessel
+import PaclandProof.QM.Su2Character
