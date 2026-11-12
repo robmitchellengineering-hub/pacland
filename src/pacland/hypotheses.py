@@ -14,6 +14,21 @@ Usage:
 from __future__ import annotations
 
 HYPOTHESES: dict[str, dict] = {
+    "ym-mass-gap": {
+        "question": "does the lattice Yang-Mills mass gap persist past the Dobrushin ceiling (β → ∞, the continuum 4D limit)?",
+        "forced": "the lattice mass gap at strong coupling (β < 1/(4n·maxNeighbors d)) — lgt's ym_mass_gap_rate_exists, machine-verified by Douglas+Rajasekaran (Lean FRO comparator, axioms = propext/Classical.choice/Quot.sound); the ceiling α(β*)=1 with m=(−log α)/2 → 0 at it (our YMMassGap.lean: massRate_tendsto_zero + alphaAt_ceiling_eq_one); the 2D mass gap for ALL β ≥ 0 (lgt's mass_gap_2d, sorry-free).",
+        "open": "the mass gap at β → ∞ in d ≥ 3 — the continuum limit (asymptotic freedom), the open Clay problem.",
+        "candidates": [
+            {"hypothesis": "the Dobrushin strong-coupling bound extends past the ceiling",
+             "falsifier": "a β past the ceiling where m(β) = (−log α(β))/2 is ≤ 0 — the bound is vacuous or negative"},
+            {"hypothesis": "the mass gap is positive for all β > 0 in d ≥ 3 (not just strong coupling)",
+             "falsifier": "a d ≥ 3, β past the ceiling with no exponential decay"},
+            {"hypothesis": "the weak-coupling gap is the confinement scale, set by the sole symplectic invariant (the tadpole) — a relation, not a value",
+             "falsifier": "a gap that does not track the tadpole"},
+        ],
+        "attack": "Lean (the negative direction — m(β) ≤ 0 past the ceiling — is kernel-checked) + a lattice-YM Monte-Carlo falsifier for the positive direction.",
+        "progress": "candidate 1 is REFUTED (kernel-checked): YMMassGap.lean proves m(α) = (−log α)/2 → 0 as α → 1, α(β*)=1 at the ceiling, and massRate_neg_of_one_lt (m < 0 for α > 1). So the strong-coupling bound is exactly zero at the ceiling and negative past it — it cannot be extended, and the surviving candidates (2, 3) are the new relations: the gap must come from a genuinely different argument (confinement), and its value is a free parameter, not a prediction.",
+    },
     "ads-limit": {
         "question": "does the MERA causal cone's graph metric converge to the smooth AdS metric ds² = dr² + sinh²(r) dθ² as N → ∞?",
         "forced": "the discrete hyperbolicity — Gromov 0-hyperbolicity (treeDist_four_point), exponential volume 2^(r+1)−1, log depth FORCED (logDepthForced: ≥⌈log₂N⌉ layers), the emergence direction (meraEmergence: the hyperbolic tree is the unique optimum), the exact area law (srank_maximally_entangled: entanglement = area = D^m, not ≤), and the QI map treeToH2 (radially isometric + depth-injective).",
@@ -177,28 +192,6 @@ def list_hypotheses() -> str:
     return "\n".join(f"◇ {n:<18} {HYPOTHESES[n]['question'][:70]}…" for n in HYPOTHESES)
 
 
-def status(name: str) -> str:
-    """Derive the hunt status from the progress note: ANSWERED / IN-PROGRESS / OPEN."""
-    p = HYPOTHESES[name].get("progress", "").upper()
-    if "ANSWERED" in p:
-        return "ANSWERED"
-    if p and ("REMAINING" in p or "DONE" in p or "KERNEL-CHECKED" in p or "IN PROGRESS" in p):
-        return "IN-PROGRESS"
-    return "OPEN"
-
-
-def hunt() -> str:
-    """The hunt board: every open question, its status, and where the attack stands."""
-    glyph = {"ANSWERED": "●", "IN-PROGRESS": "◐", "OPEN": "○"}
-    lines = ["SEXTANT HUNT — the open frontier, one move at a time"]
-    for name in HYPOTHESES:
-        s = status(name)
-        lines.append(f"{glyph[s]} {name:<18} [{s:<11}] {HYPOTHESES[name]['question'][:64]}")
-    lines.append("")
-    lines.append("run: sextant hunt <id>   → the full attack plan for one question")
-    return "\n".join(lines)
-
-
 def main(argv: list[str] | None = None) -> int:
     import sys
 
@@ -208,12 +201,6 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if argv[0] == "--list":
         print(list_hypotheses())
-        return 0
-    if argv[0] == "hunt":
-        if len(argv) > 1 and argv[1] in HYPOTHESES:
-            print(hypothesize(argv[1]))
-        else:
-            print(hunt())
         return 0
     if argv[0] not in HYPOTHESES:
         print(f"unknown hypothesis '{argv[0]}'. known: {', '.join(HYPOTHESES)}", file=sys.stderr)

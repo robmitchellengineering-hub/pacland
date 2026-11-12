@@ -61,4 +61,12 @@ theorem alphaAt_ceiling_eq_one {c n : ℝ} (hc : 1 < c) (hn : n ≠ 0) :
   field_simp [hc_pos.ne']
   ring
 
+/-- **Past the ceiling (α > 1) the Dobrushin mass rate is negative** — the bound is vacuous there,
+so the strong-coupling proof cannot be "extended" across the ceiling. This is the falsifier that
+refutes "the Dobrushin bound extends past the ceiling". -/
+theorem massRate_neg_of_one_lt {α : ℝ} (h : 1 < α) : massRate α < 0 := by
+  dsimp [massRate]
+  have hlog : 0 < Real.log α := Real.log_pos h
+  linarith
+
 end QM
