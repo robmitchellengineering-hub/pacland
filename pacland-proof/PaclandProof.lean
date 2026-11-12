@@ -64,3 +64,5 @@ import PaclandProof.QM.BakryEmery
 import PaclandProof.QM.Su2Curvature
 import PaclandProof.QM.LogSobolev
 import PaclandProof.QM.GaugeOrbit
+import PaclandProof.QM.WangCriterion
+import PaclandProof.QM.FullLatticeLyapunov
