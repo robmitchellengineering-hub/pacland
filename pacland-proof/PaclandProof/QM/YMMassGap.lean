@@ -98,4 +98,12 @@ theorem confinementScale_mono_of_coupling {b₀ μ g₁ g₂ : ℝ} (hb₀ : 0 <
   ring_nf at hfinal ⊢
   exact hfinal
 
+/-- The Dobrushin mass-gap rate is positive below the ceiling (0 < α < 1): the strong-coupling
+bound gives a genuine (but non-uniform) positive mass. Combined with `massRate_tendsto_zero`, this
+is the precise M3 obstruction: the rate is positive yet vanishes at the ceiling. -/
+theorem massRate_pos {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) : 0 < massRate α := by
+  dsimp [massRate]
+  have hlog : Real.log α < 0 := Real.log_neg hα0 hα1
+  linarith
+
 end QM
