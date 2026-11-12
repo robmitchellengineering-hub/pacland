@@ -1,0 +1,46 @@
+import Mathlib
+import PaclandProof.QM.ReflectionPositivity
+
+/-!
+Copyright (c) 2026 Rob Mitchell. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Rob Mitchell
+-/
+/-!
+# Positive-definite kernels and their closure
+
+The reflection positivity (OS3) of the Wilson heat kernel `exp(2β·cos θ)` is the statement that it is
+a positive-definite kernel. The closure facts here — PSD is closed under addition and non-negative
+scaling — are the machinery that lifts the cosine-kernel positive-definiteness (#500) to the
+truncated heat kernel `Σ (2β)^n/n!·cos^n`.
+-/
+
+open scoped BigOperators
+
+noncomputable section
+
+namespace QM
+
+/-- A positive-definite kernel on a finite type: `Σ c_i c_j K(i,j) ≥ 0` for all coefficients. -/
+def PosDefKernel {α : Type*} [Fintype α] (K : α → α → ℝ) : Prop :=
+  ∀ c : α → ℝ, 0 ≤ ∑ i, ∑ j, c i * c j * K i j
+
+/-- **PSD is closed under addition**: the pointwise sum of two positive-definite kernels is PSD. -/
+theorem posdef_add {α : Type*} [Fintype α] (K L : α → α → ℝ)
+    (hK : PosDefKernel K) (hL : PosDefKernel L) : PosDefKernel (fun a b => K a b + L a b) := by
+  intro c
+  have h : (∑ a, ∑ b, c a * c b * (K a b + L a b)) = (∑ a, ∑ b, c a * c b * K a b) + (∑ a, ∑ b, c a * c b * L a b) := by
+    simp_rw [mul_add, Finset.sum_add_distrib]
+  rw [h]
+  exact add_nonneg (hK c) (hL c)
+
+/-- **PSD is closed under non-negative scaling**: `w·K` is PSD for `w ≥ 0`. -/
+theorem posdef_smul {α : Type*} [Fintype α] (K : α → α → ℝ) (w : ℝ) (hw : 0 ≤ w)
+    (hK : PosDefKernel K) : PosDefKernel (fun a b => w * K a b) := by
+  intro c
+  have h : (∑ a, ∑ b, c a * c b * (w * K a b)) = w * (∑ a, ∑ b, c a * c b * K a b) := by
+    simp_rw [mul_assoc, mul_left_comm, mul_comm, Finset.mul_sum]
+  rw [h]
+  exact mul_nonneg hw (hK c)
+
+end QM
