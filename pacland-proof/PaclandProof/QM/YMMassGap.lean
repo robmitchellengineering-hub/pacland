@@ -69,4 +69,33 @@ theorem massRate_neg_of_one_lt {α : ℝ} (h : 1 < α) : massRate α < 0 := by
   have hlog : 0 < Real.log α := Real.log_pos h
   linarith
 
+/-- The confinement scale of pure Yang-Mills via dimensional transmutation:
+`Λ(g) = μ · exp(−1/(2b₀g²))`, where g is the free gauge coupling and b₀ the one-loop beta
+coefficient. This is the mass-gap *scale* — a free parameter, not a prediction. -/
+def confinementScale (b₀ μ g : ℝ) : ℝ := μ * Real.exp (-1 / (2 * b₀ * g^2))
+
+/-- **The mass gap is a value, not a relation (dimensional transmutation).** The confinement
+scale is strictly increasing in the free coupling g (for g > 0), so different couplings give
+different scales: no dimensionless constant fixes Λ, and the mass-gap scale is a free input —
+exactly the constraint-first "relations, never values" for the YM mass gap. -/
+theorem confinementScale_mono_of_coupling {b₀ μ g₁ g₂ : ℝ} (hb₀ : 0 < b₀) (hμ : 0 < μ)
+    (h₁ : 0 < g₁) (h₂ : 0 < g₂) (h : g₁ < g₂) :
+    confinementScale b₀ μ g₁ < confinementScale b₀ μ g₂ := by
+  have hsq : g₁^2 < g₂^2 := by nlinarith [sq_nonneg g₁, sq_nonneg g₂]
+  have hsq₁ : 0 < g₁^2 := sq_pos_of_ne_zero (ne_of_gt h₁)
+  have hsq₂ : 0 < g₂^2 := sq_pos_of_ne_zero (ne_of_gt h₂)
+  have hinv : 1 / (g₂^2) < 1 / (g₁^2) := by
+    exact (one_div_lt_one_div hsq₂ hsq₁).2 hsq
+  have harg : 1 / (2 * b₀ * g₂^2) < 1 / (2 * b₀ * g₁^2) := by
+    have := mul_lt_mul_of_pos_left hinv (show 0 < (2 * b₀)⁻¹ by positivity)
+    simpa [div_eq_mul_inv, mul_assoc, mul_left_comm, mul_comm] using this
+  have hneg : -(1 / (2 * b₀ * g₁^2)) < -(1 / (2 * b₀ * g₂^2)) := by linarith
+  have hexp : Real.exp (-(1 / (2 * b₀ * g₁^2))) < Real.exp (-(1 / (2 * b₀ * g₂^2))) :=
+    Real.exp_lt_exp.mpr hneg
+  have hfinal : μ * Real.exp (-(1 / (2 * b₀ * g₁^2))) < μ * Real.exp (-(1 / (2 * b₀ * g₂^2))) :=
+    mul_lt_mul_of_pos_left hexp hμ
+  dsimp [confinementScale]
+  ring_nf at hfinal ⊢
+  exact hfinal
+
 end QM
