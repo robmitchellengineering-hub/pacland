@@ -9,10 +9,11 @@ Authors: Rob Mitchell
 # The 1-plaquette SU(2) Bakry–Émery curvature and the ceiling (the Clay attack's moment of truth)
 
 The gauge-fixed (axial-gauge) 1-plaquette space is SU(2) ≅ S³. Its Bakry–Émery curvature for the
-measure `e^{−β·Re Tr}` is `Ric − β·Hess(Re Tr) = 1/4 + 2β·cos θ`. This file names the ceiling: the
-curvature turns negative at the antipode (`Re Tr = −2`) exactly when `β > 1/8`. The fix is Singer's
-observation — quotient the flat gauge orbit (the axial gauge, PR #489), leaving the positively-curved
-orbit space, so the bound becomes β-uniform.
+measure `e^{+β·Re Tr}` (concentrating at the trivial connection `Re Tr = +2`) is
+`Ric − β·Hess(Re Tr) = 1/4 + 2β·cos θ`. This file names the *pointwise* ceiling: the curvature turns
+negative at the antipode (`Re Tr = −2`) exactly when `β > 1/8`. But the antipode is measure-suppressed
+at weak coupling (`e^{−2β}`), so this pointwise negative curvature does NOT kill the spectral gap —
+that is Wang's criterion, the fix on top of Singer's orbit-space quotient.
 -/
 
 open scoped BigOperators
@@ -27,8 +28,9 @@ def su2_ricci : ℝ := 1 / 4
 /-- The Hessian of `Re Tr` on SU(2) ≅ S³ (the height function): `Hess(2cos θ) = −2cos θ · g`. -/
 def hessian_reTr (θ : ℝ) : ℝ := -2 * Real.cos θ
 
-/-- The 1-plaquette SU(2) Bakry–Émery curvature of the measure `e^{−β·Re Tr}`:
-`Ric − β·Hess(Re Tr) = 1/4 + 2β·cos θ` (per tangent direction on S³). -/
+/-- The 1-plaquette SU(2) Bakry–Émery curvature of the Wilson measure `e^{+β·Re Tr}` (the
+Boltzmann weight that concentrates at the trivial connection `Re Tr = +2`): the curvature is
+`Ric + Hess(−β·Re Tr) = Ric − β·Hess(Re Tr) = 1/4 + 2β·cos θ` (per tangent direction on S³). -/
 def su2_curvature (β θ : ℝ) : ℝ := su2_ricci - β * hessian_reTr θ
 
 /-- **The curvature ceiling (kernel-checked)**: at the antipode `θ = π` (the maximally non-trivial
