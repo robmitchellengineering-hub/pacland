@@ -91,4 +91,13 @@ theorem spower_matrix_element_le {H : Type*} [NormedAddCommGroup H] [InnerProduc
     ‖inner ℂ v ((S ^ k) v)‖ ≤ ‖v‖ * ‖(S ^ k) v‖ := norm_inner_le_norm v ((S ^ k) v)
     _ ≤ ‖v‖ * (‖S‖^k * ‖v‖) := mul_le_mul_of_nonneg_left hpow (norm_nonneg _)
     _ = ‖v‖^2 * ‖S‖^k := by ring
+theorem inner_sq_eq_norm_sq {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    [CompleteSpace H]
+    (S : H →L[ℂ] H) (hS : IsSelfAdjoint S) (v : H) :
+    RCLike.re (inner ℂ v ((S ^ 2) v)) = ‖S v‖ ^ 2 := by
+  change RCLike.re (inner ℂ v (S (S v))) = ‖S v‖ ^ 2
+  rw [← ContinuousLinearMap.adjoint_inner_left]
+  have hS' : ContinuousLinearMap.adjoint S = S := (hS : star S = S)
+  rw [hS']
+  exact inner_self_eq_norm_sq (𝕜 := ℂ) (S v)
 end QM
