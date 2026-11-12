@@ -91,4 +91,47 @@ theorem spower_matrix_element_le {H : Type*} [NormedAddCommGroup H] [InnerProduc
     ‖inner ℂ v ((S ^ k) v)‖ ≤ ‖v‖ * ‖(S ^ k) v‖ := norm_inner_le_norm v ((S ^ k) v)
     _ ≤ ‖v‖ * (‖S‖^k * ‖v‖) := mul_le_mul_of_nonneg_left hpow (norm_nonneg _)
     _ = ‖v‖^2 * ‖S‖^k := by ring
+theorem inner_sq_eq_norm_sq {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    [CompleteSpace H]
+    (S : H →L[ℂ] H) (hS : IsSelfAdjoint S) (v : H) :
+    RCLike.re (inner ℂ v ((S ^ 2) v)) = ‖S v‖ ^ 2 := by
+  change RCLike.re (inner ℂ v (S (S v))) = ‖S v‖ ^ 2
+  rw [← ContinuousLinearMap.adjoint_inner_left]
+  have hS' : ContinuousLinearMap.adjoint S = S := (hS : star S = S)
+  rw [hS']
+  exact inner_self_eq_norm_sq (𝕜 := ℂ) (S v)
+/-- **The C*-identity: for self-adjoint S, `‖S²‖ = ‖S‖²`.** This closes the clustering ⟹ gap
+direction: the even-time correlation bound turns into the operator-norm bound, so dense clustering
+forces ‖S‖ ≤ r. -/
+theorem opNorm_sq_eq_sq_of_selfAdjoint {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    [CompleteSpace H] (S : H →L[ℂ] H) (hS : IsSelfAdjoint S) :
+    ‖S ^ 2‖ = ‖S‖ ^ 2 := by
+  apply le_antisymm
+  · simpa [pow_two] using (norm_mul_le S S)
+  · have h : ∀ v, ‖S v‖ ^ 2 ≤ ‖S ^ 2‖ * ‖v‖ ^ 2 := by
+      intro v
+      have hnorm : ‖S v‖ ^ 2 = RCLike.re (inner ℂ v ((S ^ 2) v)) :=
+        (inner_sq_eq_norm_sq S hS v).symm
+      rw [hnorm]
+      have hcs : RCLike.re (inner ℂ v ((S ^ 2) v)) ≤ ‖v‖ * ‖(S ^ 2) v‖ := re_inner_le_norm v ((S ^ 2) v)
+      have hle : ‖(S ^ 2) v‖ ≤ ‖S ^ 2‖ * ‖v‖ := ContinuousLinearMap.le_opNorm (S ^ 2) v
+      calc
+        RCLike.re (inner ℂ v ((S ^ 2) v)) ≤ ‖v‖ * ‖(S ^ 2) v‖ := hcs
+        _ ≤ ‖v‖ * (‖S ^ 2‖ * ‖v‖) := mul_le_mul_of_nonneg_left hle (norm_nonneg v)
+        _ = ‖S ^ 2‖ * ‖v‖ ^ 2 := by ring
+    have hsqrt : ‖S‖ ≤ Real.sqrt ‖S ^ 2‖ := by
+      rw [ContinuousLinearMap.opNorm_le_iff (Real.sqrt_nonneg _)]
+      intro v
+      have hsq2 : (‖S v‖)^2 ≤ (Real.sqrt ‖S ^ 2‖ * ‖v‖)^2 := by
+        rw [mul_pow, Real.sq_sqrt (norm_nonneg (S ^ 2))]
+        exact h v
+      have habs : |‖S v‖| ≤ |Real.sqrt ‖S ^ 2‖ * ‖v‖| := sq_le_sq.mp hsq2
+      simpa [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (by positivity : 0 ≤ Real.sqrt ‖S ^ 2‖ * ‖v‖)] using habs
+    have hsq : ‖S‖ ^ 2 ≤ ‖S ^ 2‖ := by
+      have hsq1 : ‖S‖ ^ 2 ≤ (Real.sqrt ‖S ^ 2‖) ^ 2 := sq_le_sq.mpr (by
+        have habs : |‖S‖| ≤ |Real.sqrt ‖S ^ 2‖| := by
+          simpa [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (Real.sqrt_nonneg _)] using hsqrt
+        exact habs)
+      rwa [Real.sq_sqrt (norm_nonneg (S ^ 2))] at hsq1
+    exact hsq
 end QM
