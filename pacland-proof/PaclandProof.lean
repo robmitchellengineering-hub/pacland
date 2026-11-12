@@ -66,3 +66,4 @@ import PaclandProof.QM.LogSobolev
 import PaclandProof.QM.GaugeOrbit
 import PaclandProof.QM.WangCriterion
 import PaclandProof.QM.FullLatticeLyapunov
+import PaclandProof.QM.AsymptoticFreedom
