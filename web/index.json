@@ -1509,6 +1509,13 @@
    "title": "Working across the estate from this repo"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-plan.md",
+   "kind": "doc",
+   "path": "docs/ym-mass-gap-plan.md",
+   "summary": "The residual open sentence (from the hypothesis engine): non-Abelian YM has exponential clustering at weak coupling (\u03b2 \u2192 \u221e) in d \u2265 3. This file is the roadmap to attack it, built from a\u2026",
+   "title": "Yang-Mills mass gap \u2014 the plan (post research fan-out, 2026-11-12)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-spacing-uniform.md",
    "kind": "doc",
    "path": "docs/ym-mass-gap-spacing-uniform.md",
