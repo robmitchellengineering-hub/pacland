@@ -45,3 +45,23 @@ Lattice Monte-Carlo for the glueball mass ratio `m/σ` (and `m/Λ`), targeting `
 - Phase 2 is the Millennium problem. No promise of a solution; the commitment is to attack the exact
   point (the curvature ceiling) with the hypothesis engine, landing every step kernel-checked, so that a
   path past the ceiling — if one exists — is found and machine-verified.
+
+## Five sharper insights for Phase 2 (2026-11, added after the fan-out)
+
+1. **The curvature ceiling is the GAUGE ORBIT, and it is unphysical.** `Ric − β·Hess(action)` turns negative
+   along the flat gauge directions (the orbit G^{|V|−1}). The mass gap lives on the gauge-invariant sector —
+   the orbit space — where Singer's observation is that the curvature is positive. So run Bakry–Émery on the
+   ORBIT SPACE (or quotient the flat directions with a gauge-fixing — the axial gauge, #489, already does
+   this). The ceiling is the coordinates, not the physics.
+2. **The Tomboulis–Yaffe vortex criterion is a different route past the ceiling.** Prove the box is
+   insensitive to a center vortex (`1 − Z^(−)/Z` decays exponentially in cross-section) ⇒ positive string
+   tension. It is a boundary-condition argument, so it does not hit the curvature ceiling at all — the most
+   concrete formalizable alternative (Tomboulis–Yaffe 1985; Kanazawa arXiv:0808.3442).
+3. **The d=3 monopole mechanism is the template; d=4's analogue is instantons/vortices.** Polyakov's monopole
+   condensation gives the gap at all couplings in d=3. The d=4 picture (center vortices, instantons) says the
+   non-perturbative bound past the ceiling is a vortex/instanton expansion, not a perturbative one. That is
+   the SHAPE the missing bound will take.
+4. **The `e^{−cβ}` scaling is the falsifier.** `m ~ Λ_QCD = μ e^{−1/(2b₀g²)}` is non-perturbative. Any candidate
+   bound that does NOT produce `e^{−cβ}` is provably wrong — requiring that scaling is a sharp hunt falsifier.
+5. **Nissim's U(1)×SU(N) split.** Split the flat U(1) direction off and treat it as a random environment —
+   a concrete technique for handling the one flat direction instead of the whole orbit (arXiv:2510.22788).
