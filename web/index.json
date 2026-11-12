@@ -1509,6 +1509,13 @@
    "title": "Working across the estate from this repo"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-m3.md",
+   "kind": "doc",
+   "path": "docs/ym-mass-gap-m3.md",
+   "summary": "The open endgame of the mass-gap plan. M1 (the exact 2D mass gap) and M2 (the clustering \u27fa gap bridge) are done and kernel-checked. M3 is the machinery for the weak-coupling regime \u2014 \u03b2 \u2192 \u221e\u2026",
+   "title": "M3 \u2014 the weak-coupling multiscale RG scaffolding (the Balaban program)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-plan.md",
    "kind": "doc",
    "path": "docs/ym-mass-gap-plan.md",
