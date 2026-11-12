@@ -150,4 +150,51 @@ theorem su2_boltzmann_fundamental_max {g A : ℝ} (hA : 0 ≤ A) {n : ℕ} (hn :
     nlinarith [mul_le_mul_of_nonneg_left hcas hgA]
   norm_num
   nlinarith [harg]
+/-- The truncated genus-0 SU(2) partition function (the Peter–Weyl sum over the spin-k/2 sectors):
+`Z = Σ_{k=0}^{n} (k+1)² · exp(−t·k(k+2)/4)`, with `t = g²A/2`. The dimension is (k+1)² and the
+heat-kernel weight is exp(−t·k(k+2)/4) (the Casimir k(k+2)/4). -/
+def su2_partition (t : ℝ) (n : ℕ) : ℝ :=
+  ∑ k ∈ Finset.range (n+1), ((k : ℝ) + 1)^2 * Real.exp (-t * (k : ℝ) * ((k : ℝ) + 2) / 4)
+
+theorem su2_partition_ge_one (t : ℝ) (n : ℕ) :
+    1 ≤ su2_partition t n := by
+  dsimp [su2_partition]
+  rw [Finset.sum_range_succ']
+  norm_num [Real.exp_zero]
+  have hrest : 0 ≤ ∑ k ∈ Finset.range n, (((k : ℝ) + 1) + 1)^2 * Real.exp (-(t * ((k : ℝ) + 1) * (((k : ℝ) + 1) + 2)) / 4) := by
+    exact Finset.sum_nonneg (by intro k hk; exact mul_nonneg (sq_nonneg (((k : ℝ) + 1) + 1)) (le_of_lt (Real.exp_pos (-(t * ((k : ℝ) + 1) * (((k : ℝ) + 1) + 2)) / 4))))
+  nlinarith
+/-- **The fundamental sector's contribution**: the k=1 (fundamental) term of the partition function
+is exactly `4·exp(−3t/4)` — the fundamental dimension squared times its heat-kernel weight. -/
+theorem su2_partition_fundamental_term (t : ℝ) :
+    ((1 : ℝ) + 1)^2 * Real.exp (-t * (1 : ℝ) * ((1 : ℝ) + 2) / 4) = 4 * Real.exp (-3 * t / 4) := by
+  norm_num
+  ring_nf
+
+/-- **The mass gap extracted from the partition function**: the negative log of the fundamental's
+Boltzmann weight is the mass gap `3g²A/8` — the vacuum-to-fundamental energy difference. -/
+theorem su2_mass_gap_from_boltzmann (g A : ℝ) :
+    -Real.log (su2_boltzmann g A 1) = 3 * g^2 * A / 8 := by
+  dsimp [su2_boltzmann]
+  rw [Real.log_exp]
+  ring
+/-- **The subleading correction**: for n ≥ 1, the partition function is at least the vacuum plus
+the fundamental — `1 + 4·exp(−3t/4) ≤ Z`. The vacuum dominates and the fundamental is the first
+excited (subleading) sector. -/
+theorem su2_partition_ge_fundamental {t : ℝ} (n : ℕ) (hn : 1 ≤ n) :
+    1 + 4 * Real.exp (-3 * t / 4) ≤ su2_partition t n := by
+  dsimp [su2_partition]
+  have hsubset : Finset.range 2 ⊆ Finset.range (n+1) := by
+    intro k hk
+    rw [Finset.mem_range] at hk ⊢
+    omega
+  have hsum : (∑ k ∈ Finset.range 2, ((k : ℝ) + 1)^2 * Real.exp (-t * (k : ℝ) * ((k : ℝ) + 2) / 4))
+      ≤ ∑ k ∈ Finset.range (n+1), ((k : ℝ) + 1)^2 * Real.exp (-t * (k : ℝ) * ((k : ℝ) + 2) / 4) := by
+    exact Finset.sum_le_sum_of_subset_of_nonneg hsubset (by
+      intro k hk hk'
+      exact mul_nonneg (sq_nonneg ((k : ℝ) + 1)) (le_of_lt (Real.exp_pos (-t * (k : ℝ) * ((k : ℝ) + 2) / 4))))
+  have h2 : (∑ k ∈ Finset.range 2, ((k : ℝ) + 1)^2 * Real.exp (-t * (k : ℝ) * ((k : ℝ) + 2) / 4)) = 1 + 4 * Real.exp (-3 * t / 4) := by
+    norm_num [Real.exp_zero, Finset.sum_range_succ, Finset.sum_range_succ]
+    ring_nf
+  rwa [h2] at hsum
 end QM
