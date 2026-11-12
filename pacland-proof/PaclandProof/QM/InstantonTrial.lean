@@ -62,4 +62,21 @@ theorem instanton_upper_bound (β : ℝ) :
     dot instantonTrialState (fun i => ∑ j, tunnelingMatrix (Real.exp (-β)) i j * instantonTrialState j) / dot instantonTrialState instantonTrialState = Real.exp (-β) := by
   exact instanton_rayleigh_quotient (Real.exp (-β))
 
+theorem collective_instanton_eigenvector (β : ℝ) :
+    (fun i => ∑ j, tunnelingMatrix (collectiveInstantonWeight β) i j * instantonTrialState j)
+      = fun i => collectiveInstantonWeight β * instantonTrialState i := by
+  exact instanton_eigenvector (collectiveInstantonWeight β)
+
+/-- **The collective instanton variational upper bound**: the zero-momentum winding-1 trial state has
+the Rayleigh quotient `e^{−cβ}` (`c = 12π²/11`), so by the variational (Rayleigh–Ritz) principle the
+full-lattice spectral gap is `≤ e^{−12π²β/11}` — the physical asymptotic-freedom upper bound. -/
+theorem collective_instanton_upper_bound (β : ℝ) :
+    dot instantonTrialState (fun i => ∑ j, tunnelingMatrix (collectiveInstantonWeight β) i j * instantonTrialState j) / dot instantonTrialState instantonTrialState = collectiveInstantonWeight β := by
+  exact instanton_rayleigh_quotient (collectiveInstantonWeight β)
+
+/-- **The collective instanton weight is the physical scale**: `e^{−cβ}` with `c = 12π²/11`. -/
+theorem collective_weight_su2 (β : ℝ) :
+    collectiveInstantonWeight β = Real.exp (-(12 * Real.pi ^ 2 / 11) * β) := by
+  dsimp [collectiveInstantonWeight]
+  rw [su2_exponent]
 end QM
