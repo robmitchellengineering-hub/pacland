@@ -46,4 +46,19 @@ theorem massRate_tendsto_zero :
     Real.continuousAt_log (by norm_num : (1 : ℝ) ≠ 0)
   simpa [Real.log_one] using (hlog.neg.div_const 2)
 
+/-- **The ceiling is exactly where α = 1.** At β = ceilingBeta c n the Dobrushin parameter
+reaches 1, so the mass rate `m = (−log α)/2` is exactly 0 there. -/
+theorem alphaAt_ceiling_eq_one {c n : ℝ} (hc : 1 < c) (hn : n ≠ 0) :
+    alphaAt c n (ceilingBeta c n) = 1 := by
+  have hc_pos : 0 < c := lt_trans zero_lt_one hc
+  have h1 : 0 < 1 - 1 / c := by
+    have hinv : 1 / c < 1 := (div_lt_one hc_pos).2 hc
+    linarith
+  dsimp [alphaAt, ceilingBeta]
+  have h2 : -4 * n * (-Real.log (1 - 1 / c) / (4 * n)) = Real.log (1 - 1 / c) := by
+    field_simp [hn, hc_pos.ne']
+  rw [h2, Real.exp_log h1]
+  field_simp [hc_pos.ne']
+  ring
+
 end QM
