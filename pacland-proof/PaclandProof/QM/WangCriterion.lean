@@ -99,4 +99,21 @@ theorem drift_downhill (θ : ℝ) :
     · exact Real.differentiableAt_cos
   rw [h1, h2]
   nlinarith [sq_nonneg (Real.sin θ)]
+def su2_langevin_1d (β : ℝ) (f : ℝ → ℝ) : ℝ → ℝ :=
+  fun θ => deriv (deriv f) θ + β * (deriv (fun t => 2 * Real.cos t) θ) * deriv f θ
+
+/-- The Lyapunov function: `W θ = 2 − 2cos θ` (the distance from the trivial connection, ≥ 0). -/
+def su2_lyapunov (θ : ℝ) : ℝ := 2 - 2 * Real.cos θ
+
+/-- **The Lyapunov condition holds (1D)**: `L W ≤ −W + 2` for `β ≥ 0`. The drift
+`β·(Re Tr)'·W' = −4β·sin²θ ≤ 0` contracts W, and the diffusion `W'' = 2cos θ` is exactly absorbed by
+the `+2` correction. This is the remaining input of Wang's criterion for the SU(2) 1-plaquette: the
+drift survives the measure-small antipode, so the spectral gap is β-uniform. -/
+theorem su2_lyapunov_condition {β : ℝ} (hβ : 0 ≤ β) (θ : ℝ) :
+    su2_langevin_1d β su2_lyapunov θ ≤ -su2_lyapunov θ + 2 := by
+  dsimp [su2_langevin_1d, su2_lyapunov]
+  change deriv (deriv (fun t => 2 - 2 * Real.cos t)) θ + β * deriv (fun t => 2 * Real.cos t) θ * deriv (fun t => 2 - 2 * Real.cos t) θ ≤ -(2 - 2 * Real.cos θ) + 2
+  simp [deriv_const, deriv_const_mul, Real.deriv_cos, Real.deriv_sin,
+    mul_comm, mul_left_comm, mul_assoc]
+  nlinarith [mul_nonneg hβ (sq_nonneg (Real.sin θ))]
 end QM
