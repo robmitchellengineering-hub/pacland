@@ -55,4 +55,74 @@ theorem massGap2D_pos {g L : ℝ} (hg : 0 < g) (hL : 0 < L) {N : ℕ} (hN : 2 �
     nlinarith [sq_pos_of_ne_zero (ne_of_gt (lt_trans zero_lt_one hN1))]
   positivity
 
+def su2_dim (j : ℚ) : ℚ := 2 * j + 1
+
+/-- The quadratic Casimir of the spin-j representation of SU(2): `j(j+1)`. -/
+def su2_casimir (j : ℚ) : ℚ := j * (j + 1)
+
+/-- The 2D SU(2) Yang–Mills Hamiltonian eigenvalues on the spin-j sector:
+`E_j = (g²L/2)·j(j+1)` — the heat-kernel spectrum (the Laplacian acts as the Casimir). -/
+def su2_energy (g L j : ℝ) : ℝ := (g^2 * L / 2) * (j * (j + 1))
+
+/-- **The exact 2D SU(2) mass gap** = E_{1/2} − E_0 = `3g²L/8` — the fundamental Casimir 3/4,
+halved. This is the SU(2) case of `massGap2D g L 2`. -/
+theorem su2_mass_gap (g L : ℝ) :
+    su2_energy g L (1 / 2) - su2_energy g L 0 = 3 * g^2 * L / 8 := by
+  dsimp [su2_energy]
+  ring
+
+/-- The spin-j energy is positive for positive g, L and j > 0 (the Casimir j(j+1) > 0). -/
+theorem su2_energy_pos {g L j : ℝ} (hg : 0 < g) (hL : 0 < L) (hj : 0 < j) :
+    0 < su2_energy g L j := by
+  dsimp [su2_energy]
+  have hg2 : 0 < g^2 := sq_pos_of_ne_zero (ne_of_gt hg)
+  have hjj : 0 < j * (j + 1) := by nlinarith [hj]
+  positivity
+
+/-- The SU(2) spin-spectrum mass gap equals the general `massGap2D` formula at N = 2:
+both are `3g²L/8`. -/
+theorem su2_mass_gap_eq_general (g L : ℝ) :
+    3 * g^2 * L / 8 = massGap2D g L 2 := by
+  norm_num [massGap2D]
+  ring
+
+def wilsonLoopFund (g A : ℝ) (N : ℕ) : ℝ :=
+  (N : ℝ) * Real.exp (-(g^2 * A / 2) * casimirFund N)
+
+/-- **The area law / string tension**: the coefficient of area `A` in `−log(⟨W_F⟩/dim F)` is
+`g²C₂(F)/2` — the string tension is the fundamental Casimir (halved), the exact 2D result. -/
+theorem wilsonLoop_area_law (g A : ℝ) (N : ℕ) (hN : 1 ≤ N) :
+    -Real.log (wilsonLoopFund g A N / (N : ℝ)) = (g^2 * A / 2) * casimirFund N := by
+  dsimp [wilsonLoopFund]
+  have hN0 : (N : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt (lt_of_lt_of_le (by norm_num : (0:ℕ) < 1) hN))
+  field_simp [hN0]
+  rw [Real.log_exp]
+  ring
+
+/-- The string tension from the Wilson-loop area law equals the general `stringTension` formula:
+`g²C₂(F)/2 = g²(N²−1)/(4N)`. -/
+theorem stringTension_eq_casimir (g : ℝ) (N : ℕ) :
+    g^2 * casimirFund N / 2 = stringTension g N := by
+  dsimp [casimirFund, stringTension]
+  ring
+def su2_casimir_n (n : ℕ) : ℚ := (n : ℚ) * ((n : ℚ) + 2) / 4
+
+/-- The spin-(n/2) dimension of SU(2): `n+1`. -/
+def su2_dim_n (n : ℕ) : ℕ := n + 1
+
+/-- **The mass gap is the smallest positive Casimir**: for n ≥ 1 the Casimir `n(n+2)/4 ≥ 3/4`,
+attained at the fundamental (n=1). So the exact 2D SU(2) mass gap is the fundamental Casimir 3/4
+(in units of g²A/2). -/
+theorem su2_casimir_n_minimal {n : ℕ} (hn : 1 ≤ n) : (3 : ℚ) / 4 ≤ su2_casimir_n n := by
+  dsimp [su2_casimir_n]
+  have hn1 : (1 : ℚ) ≤ (n : ℚ) := by exact_mod_cast hn
+  have hn0 : (0 : ℚ) ≤ (n : ℚ) := le_trans (by norm_num : (0 : ℚ) ≤ 1) hn1
+  have hnp : (3 : ℚ) ≤ (n : ℚ) + 2 := by linarith [hn1]
+  have hprod : (3 : ℚ) ≤ (n : ℚ) * ((n : ℚ) + 2) := by
+    simpa using (mul_le_mul hn1 hnp (by norm_num : (0 : ℚ) ≤ 3) hn0 : (1 : ℚ) * 3 ≤ (n : ℚ) * ((n : ℚ) + 2))
+  linarith
+
+/-- The fundamental (n=1) Casimir is exactly 3/4 — the value the mass gap attains. -/
+theorem su2_casimir_n_one : su2_casimir_n 1 = (3 : ℚ) / 4 := by
+  norm_num [su2_casimir_n]
 end QM
