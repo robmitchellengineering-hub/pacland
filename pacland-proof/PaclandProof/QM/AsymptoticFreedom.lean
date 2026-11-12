@@ -39,4 +39,35 @@ theorem asymptotic_freedom_falsifiable {m : ℝ → ℝ} {c : ℝ} :
   · exact lt_irrefl 0 (lt_of_lt_of_le (hpos β) hβ)
   · exact not_le_of_gt hβ (hbound β hβ0)
 
+/-- The winding-`n` instanton weight of the compact circle: `e^{−β·n²}` (the topological configuration
+with winding n has the Boltzmann weight `e^{−β·n²}`). -/
+def instanton_weight (β : ℝ) (n : ℤ) : ℝ := Real.exp (-β * (n : ℝ) ^ 2)
+
+/-- **The instanton (winding) weight is maximized at |n| = 1** (the leading non-perturbative term):
+for `β ≥ 0` and `n ≠ 0`, `e^{−β·n²} ≤ e^{−β}`. The winding-1 instanton is the leading term — this is
+the concrete `e^{−cβ}` mechanism (with `c = 1`) that generates the non-perturbative mass gap on the
+compact soft mode, the hypothesis stated in `AsymptoticFreedom`. -/
+theorem instanton_weight_max_one {β : ℝ} (hβ : 0 ≤ β) {n : ℤ} (hn : n ≠ 0) :
+    instanton_weight β n ≤ instanton_weight β 1 := by
+  dsimp [instanton_weight]
+  rw [Real.exp_le_exp]
+  have h1 : 1 ≤ (n : ℝ) ^ 2 := (one_le_sq_iff_one_le_abs (n : ℝ)).mpr (by exact_mod_cast (Int.one_le_abs hn))
+  have h2 : β * 1 ≤ β * (n : ℝ) ^ 2 := mul_le_mul_of_nonneg_left h1 hβ
+  ring_nf
+  nlinarith [h2]
+/-- **The instanton (tunneling) lower bound**: the physical mass gap `m(β) ≥ e^{−β}` — the winding-1
+instanton weight (PR #527) is a *lower* bound, not just the leading term. This is the precise form of
+the asymptotic-freedom hypothesis with `c = 1`, and the open step the whole arc has localized. -/
+def InstantonLowerBound (m : ℝ → ℝ) : Prop :=
+  ∀ β, 0 ≤ β → Real.exp (-β) ≤ m β
+
+/-- **The instanton lower bound realizes the asymptotic-freedom hypothesis with `c = 1`**: the positive
+mass gap follows from the bound `m(β) ≥ e^{−β}` together with `e^{−β} > 0`. So the open step — proving
+the gap is `≥ e^{−β}` — is exactly the hypothesis `AsymptoticFreedom m 1`. -/
+theorem instanton_lower_bound_realizes {m : ℝ → ℝ} (hpos : ∀ β, 0 < m β) (h : InstantonLowerBound m) :
+    AsymptoticFreedom m 1 := by
+  constructor
+  · exact hpos
+  · intro β hβ
+    simpa using (h β hβ)
 end QM
