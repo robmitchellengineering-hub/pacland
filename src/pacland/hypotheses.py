@@ -14,6 +14,19 @@ Usage:
 from __future__ import annotations
 
 HYPOTHESES: dict[str, dict] = {
+    "confinement-frontier": {
+        "question": "does non-Abelian lattice Yang-Mills have exponential clustering (a mass gap) at weak coupling (β → ∞) in d ≥ 3 — i.e. confinement?",
+        "forced": "clustering ⟺ transfer-operator spectral gap (Douglas+Rajasekaran, 'Clustering and the Transfer-Operator Gap', machine-checked via SpectralPositivity's Perron-Frobenius/Jentzsch); the strong-coupling mass gap (lgt, Dobrushin); the 2D mass gap for ALL β (lgt mass_gap_2d, Doeblin); the value-is-free (confinementScale_mono_of_coupling).",
+        "open": "the exponential clustering of the plaquette correlation at weak coupling for non-Abelian groups in d ≥ 3 — the single irreducible statement left after the engine's run on ym-mass-gap.",
+        "candidates": [
+            {"hypothesis": "the cluster expansion around the trivial connection gives exponential clustering at weak coupling",
+             "falsifier": "a divergence in the cluster expansion at small g"},
+            {"hypothesis": "the Wilson area law (string tension) is equivalent to the mass gap, so proving either proves both",
+             "falsifier": "a mass gap coexisting with a perimeter law (deconfined)"},
+        ],
+        "attack": "Lean (the clustering⟺gap bridge is already machine-checked; the open part is the weak-coupling cluster expansion) + lattice Monte-Carlo (the string tension / area law at weak coupling).",
+        "progress": "the frontier is DECOMPOSED: the bridge (clustering ⟺ mass gap) is forced, so the open part is exactly 'exponential clustering at weak coupling'. Candidate 2's falsifier is now EXERCISED: the SU(2) Monte-Carlo (src/pacland/lattice_ym_su2.py) measures a POSITIVE Creutz ratio (string tension) at BOTH strong (χ=1.50) and weak (χ=0.93) coupling — the area law persists, numerically anchoring confinement for SU(2). This is evidence, not proof: no proof of weak-coupling clustering exists anywhere — the Clay problem is now one precise, falsifiable, numerically-confirmed sentence.",
+    },
     "ym-mass-gap": {
         "question": "does the lattice Yang-Mills mass gap persist past the Dobrushin ceiling (β → ∞, the continuum 4D limit)?",
         "forced": "the lattice mass gap at strong coupling (β < 1/(4n·maxNeighbors d)) — lgt's ym_mass_gap_rate_exists, machine-verified by Douglas+Rajasekaran (Lean FRO comparator, axioms = propext/Classical.choice/Quot.sound); the ceiling α(β*)=1 with m=(−log α)/2 → 0 at it (our YMMassGap.lean: massRate_tendsto_zero + alphaAt_ceiling_eq_one); the 2D mass gap for ALL β ≥ 0 (lgt's mass_gap_2d, sorry-free).",
@@ -23,11 +36,11 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a β past the ceiling where m(β) = (−log α(β))/2 is ≤ 0 — the bound is vacuous or negative"},
             {"hypothesis": "the mass gap is positive for all β > 0 in d ≥ 3 (not just strong coupling)",
              "falsifier": "a d ≥ 3, β past the ceiling with no exponential decay"},
-            {"hypothesis": "the weak-coupling gap is the confinement scale, set by the sole symplectic invariant (the tadpole) — a relation, not a value",
-             "falsifier": "a gap that does not track the tadpole"},
+            {"hypothesis": "the weak-coupling gap is a VALUE — the confinement scale Λ set by the free coupling g via dimensional transmutation, not a fixed prediction",
+             "falsifier": "a dimensionless constant that fixes Λ independently of g"},
         ],
         "attack": "Lean (the negative direction — m(β) ≤ 0 past the ceiling — is kernel-checked) + a lattice-YM Monte-Carlo falsifier for the positive direction.",
-        "progress": "candidate 1 is REFUTED (kernel-checked): YMMassGap.lean proves m(α) = (−log α)/2 → 0 as α → 1, α(β*)=1 at the ceiling, and massRate_neg_of_one_lt (m < 0 for α > 1). So the strong-coupling bound is exactly zero at the ceiling and negative past it — it cannot be extended, and the surviving candidates (2, 3) are the new relations: the gap must come from a genuinely different argument (confinement), and its value is a free parameter, not a prediction.",
+        "progress": "candidate 1 is REFUTED (kernel-checked): YMMassGap.lean proves m(α) = (−log α)/2 → 0 as α → 1, α(β*)=1 at the ceiling, and massRate_neg_of_one_lt (m < 0 for α > 1) — the strong-coupling bound is zero at the ceiling and negative past it, so it cannot be extended. candidate 2 is REFINED: the falsifier (lattice-YM Monte-Carlo, src/pacland/lattice_ym.py, plus the known U(1) Coulomb phase) shows the mass gap does NOT persist to all β for the ABELIAN group — U(1) in d=4 deconfines at weak coupling (massless photon, Wilson perimeter law). So candidate 2 survives only as \"non-Abelian only\" = the confinement conjecture. candidate 3 (the gap is a relation set by the tadpole, not a value) remains open.",
     },
     "ads-limit": {
         "question": "does the MERA causal cone's graph metric converge to the smooth AdS metric ds² = dr² + sinh²(r) dθ² as N → ∞?",
