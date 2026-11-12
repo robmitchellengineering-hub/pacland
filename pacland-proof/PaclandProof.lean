@@ -58,3 +58,5 @@ import PaclandProof.QM.WilsonOscillation
 import PaclandProof.QM.Bessel
 import PaclandProof.QM.Su2Character
 import PaclandProof.QM.ReflectionPositivity
+import PaclandProof.QM.PosDefKernel
+import PaclandProof.QM.CosPowers
