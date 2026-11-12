@@ -45,7 +45,7 @@ HYPOTHESES: dict[str, dict] = {
     "ym-bakry-ceiling": {
         "question": "does the SU(2) Bakry-Emery ceiling (curvature 1/4 + 2β·cos θ, negative at the antipode θ=π for β > 1/8) survive as a true spectral-gap obstruction, or does the measure suppression at the antipode dissolve it?",
         "forced": "the 1-plaquette SU(2) curvature 1/4 + 2β·cos θ and the named ceiling β > 1/8 (Su2Curvature.lean, #513); the Bakry-Emery Γ₂ framework (#511); the log-Sobolev ⇒ Poincaré bridge (#514); the OS3 reflection positivity (#510); the gauge-orbit quotient setup (GaugeOrbit.lean).",
-        "open": "whether the pointwise ceiling (β > 1/8 at the antipode) is the TRUE spectral-gap ceiling, or whether the measure-suppressed antipode (weight e^{−2β} at weak coupling) makes it an artifact.",
+        "open": "ANSWERED at the 1-plaquette level: the ceiling dissolves (Wang's criterion + the Lyapunov condition). The open frontier moves to the FULL d=4 lattice.",
         "candidates": [
             {"hypothesis": "Wang's criterion: the negative curvature lives on the measure-negligible antipode, so the spectral gap survives — a Lyapunov drift pulls the dynamics back to the trivial connection",
              "falsifier": "a Lyapunov condition that fails at the antipode (the drift does not pull back to the trivial connection)"},
@@ -55,7 +55,20 @@ HYPOTHESES: dict[str, dict] = {
              "falsifier": "a full-lattice configuration where the curvature stays negative on a measure-non-negligible set"},
         ],
         "attack": "formalize Wang's criterion (pointwise negative curvature on a measure-negligible set + a Lyapunov drift ⇒ positive spectral gap, β-uniform), then apply it to the SU(2) 1-plaquette. FIRST: verify the sign convention of e^{±β·Re Tr} in Su2Curvature.lean (the standard Wilson measure concentrates at the trivial connection via e^{+β·Re Tr}).",
-        "progress": "the ceiling is NAMED (kernel-checked, #513): curvature 1/4 + 2β·cos θ, negative at the antipode θ=π iff β > 1/8. The measure-suppression observation (the antipode carries weight e^{−2β} at weak coupling) is NOT yet formalized, and Wang's criterion is not yet in the repo — these are the next moves.",
+        "progress": "ANSWERED (1-plaquette): WangCriterion.lean formalizes the measure-suppression (antipode weight e^{−2β}, ratio e^{−4β} → 0) + the abstract Lyapunov-weighted Poincaré; #520 proves the SU(2) Lyapunov drift is downhill, #521 proves the condition LW ≤ −W + 2 holds for β ≥ 0 — so the β > 1/8 ceiling DISSOLVES. The open frontier moves to the full lattice (see ym-full-lattice).",
+    },
+    "ym-full-lattice": {
+        "question": "does the full d=4 lattice Yang-Mills Lyapunov condition hold with a β-uniform drift rate — L(Σ_p Re Tr U_p) ≤ −c·(Σ_p Re Tr U_p) + b with c > 0 uniform in β — or does the collective soft mode drive c → 0?",
+        "forced": "the 1-plaquette Wang's criterion + Lyapunov condition (WangCriterion.lean, #520, #521 — the ceiling dissolves for ONE plaquette); the Bakry-Emery framework (#511) + log-Sobolev ⇒ Poincaré (#514) + OS3 (#510); the gauge-orbit quotient (GaugeOrbit.lean).",
+        "open": "whether the 1-plaquette Lyapunov condition generalizes to the FULL lattice (many plaquettes, d=4), where the Lyapunov function is the total action Σ_p Re Tr U_p and the soft modes are the COLLECTIVE low-momentum gluons.",
+        "candidates": [
+            {"hypothesis": "the full-lattice Lyapunov condition holds with c > 0 uniform in β — the total action Σ_p Re Tr U_p decays exponentially along the Langevin dynamics, so the full-lattice gap is positive at weak coupling",
+             "falsifier": "a full-lattice configuration where the total action does NOT decay (the drift c ≤ 0)"},
+            {"hypothesis": "the collective soft mode (the low-momentum gluon) drives c → 0 as β → ∞, so the drift rate vanishes and the gap is non-perturbative (e^{−cβ})",
+             "falsifier": "a β-uniform positive drift rate c on the full lattice (which would disprove the soft-mode obstruction)"},
+        ],
+        "attack": "generalize the 1-plaquette Lyapunov function to the full lattice: W = Σ_p (2 − Re Tr U_p) (the total distance from the trivial connection), and compute L W = Σ_p [2 cos θ_p − β (2 sin θ_p)²] — then check whether the coefficient c(β) is uniform in β or vanishes with the collective (low-momentum) mode. This is the moment of truth at the real d=4 scale.",
+        "progress": "the 1-plaquette ceiling is dissolved (#520/#521). The full-lattice Lyapunov condition is the next target: the natural Lyapunov function is the total action, and the key question is whether the drift rate c(β) is β-uniform or vanishes with the collective soft mode (the low-momentum gluon = the non-perturbative mechanism). Not yet formalized.",
     },
     "ads-limit": {
         "question": "does the MERA causal cone's graph metric converge to the smooth AdS metric ds² = dr² + sinh²(r) dθ² as N → ∞?",
