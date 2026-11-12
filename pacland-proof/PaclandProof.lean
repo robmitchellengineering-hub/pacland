@@ -48,3 +48,4 @@ import PaclandProof.Tactic.Cayley
 import PaclandProof.MassGap
 import PaclandProof.QM.CayleyMatching
 import PaclandProof.QM.MajoranaGap
+import PaclandProof.QM.YMMassGap
