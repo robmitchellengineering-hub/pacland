@@ -1509,6 +1509,13 @@
    "title": "Working across the estate from this repo"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-spacing-uniform.md",
+   "kind": "doc",
+   "path": "docs/ym-mass-gap-spacing-uniform.md",
+   "summary": "Source: the lgt formalization (Douglas + Rajasekaran), LGT/MassGap/StrongCoupling.lean. This records the exact boundary of what is proven and the exact statement that remains.",
+   "title": "The continuum 4D Yang\u2013Mills mass gap \u2014 the precise missing lemma"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ap_health.py",
    "kind": "script",
    "path": "scripts/ap_health.py",
