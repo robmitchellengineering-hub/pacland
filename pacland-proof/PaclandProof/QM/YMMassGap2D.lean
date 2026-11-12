@@ -150,4 +150,18 @@ theorem su2_boltzmann_fundamental_max {g A : ℝ} (hA : 0 ≤ A) {n : ℕ} (hn :
     nlinarith [mul_le_mul_of_nonneg_left hcas hgA]
   norm_num
   nlinarith [harg]
+/-- The truncated genus-0 SU(2) partition function (the Peter–Weyl sum over the spin-k/2 sectors):
+`Z = Σ_{k=0}^{n} (k+1)² · exp(−t·k(k+2)/4)`, with `t = g²A/2`. The dimension is (k+1)² and the
+heat-kernel weight is exp(−t·k(k+2)/4) (the Casimir k(k+2)/4). -/
+def su2_partition (t : ℝ) (n : ℕ) : ℝ :=
+  ∑ k ∈ Finset.range (n+1), ((k : ℝ) + 1)^2 * Real.exp (-t * (k : ℝ) * ((k : ℝ) + 2) / 4)
+
+theorem su2_partition_ge_one (t : ℝ) (n : ℕ) :
+    1 ≤ su2_partition t n := by
+  dsimp [su2_partition]
+  rw [Finset.sum_range_succ']
+  norm_num [Real.exp_zero]
+  have hrest : 0 ≤ ∑ k ∈ Finset.range n, (((k : ℝ) + 1) + 1)^2 * Real.exp (-(t * ((k : ℝ) + 1) * (((k : ℝ) + 1) + 2)) / 4) := by
+    exact Finset.sum_nonneg (by intro k hk; exact mul_nonneg (sq_nonneg (((k : ℝ) + 1) + 1)) (le_of_lt (Real.exp_pos (-(t * ((k : ℝ) + 1) * (((k : ℝ) + 1) + 2)) / 4))))
+  nlinarith
 end QM
