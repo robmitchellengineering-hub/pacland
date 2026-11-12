@@ -63,3 +63,4 @@ import PaclandProof.QM.CosPowers
 import PaclandProof.QM.BakryEmery
 import PaclandProof.QM.Su2Curvature
 import PaclandProof.QM.LogSobolev
+import PaclandProof.QM.GaugeOrbit
