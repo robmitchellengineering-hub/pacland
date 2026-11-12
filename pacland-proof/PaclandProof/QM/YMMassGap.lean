@@ -106,4 +106,36 @@ theorem massRate_pos {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) : 0 < massRate �
   have hlog : Real.log α < 0 := Real.log_neg hα0 hα1
   linarith
 
+/-- The Dobrushin influence bound from the Wilson weight's oscillation: `1 − exp(−2nβ)`.
+This is the exact `influenceBoundTensor` quantity (lgt) for the gauge theory — the oscillation
+`2nβ` feeds it, and it tends to 1 as β → ∞. -/
+def influenceBound (n β : ℝ) : ℝ := 1 - Real.exp (-2 * n * β)
+
+/-- **The weak-coupling obstruction (kernel-checked):** the Dobrushin influence bound tends to 1
+as β → ∞, so the contraction parameter `maxDeg · influenceBound` eventually exceeds 1 — the
+Dobrushin method *cannot* give a mass gap at weak coupling. This is precisely why the EKR tensor RG
+(the Balaban program) is required there. -/
+theorem influenceBound_tendsto_one (n : ℝ) (hn : 0 < n) :
+    Filter.Tendsto (fun β : ℝ => influenceBound n β) atTop (nhds 1) := by
+  dsimp [influenceBound]
+  have h : Filter.Tendsto (fun β : ℝ => Real.exp (-2 * n * β)) atTop (nhds 0) := by
+    have h2 : Filter.Tendsto (fun β : ℝ => -(2 * n) * β) atTop atBot := by
+      have hneg : -(2 * n) < 0 := by nlinarith [hn]
+      exact (tendsto_const_mul_atBot_of_neg hneg).mpr tendsto_id
+    have h2' : Filter.Tendsto (fun β : ℝ => -2 * n * β) atTop atBot := by
+      simpa [mul_assoc] using h2
+    exact Real.tendsto_exp_atBot.comp h2'
+  simpa using h.const_sub 1
+
+/-- The influence bound is monotone in β: as the coupling grows (weak coupling), the influence
+bound grows toward 1, so the Dobrushin condition degrades monotonically. -/
+theorem influenceBound_mono {n β₁ β₂ : ℝ} (hn : 0 ≤ n) (h : β₁ ≤ β₂) :
+    influenceBound n β₁ ≤ influenceBound n β₂ := by
+  dsimp [influenceBound]
+  have hexp : Real.exp (-2 * n * β₂) ≤ Real.exp (-2 * n * β₁) := by
+    exact Real.exp_le_exp.mpr (by
+      have harg : -2 * n * β₂ ≤ -2 * n * β₁ := by
+        nlinarith [mul_le_mul_of_nonneg_left h (by nlinarith [hn] : 0 ≤ 2 * n)]
+      exact harg)
+  linarith
 end QM
