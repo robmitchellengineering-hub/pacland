@@ -43,4 +43,32 @@ theorem posdef_smul {α : Type*} [Fintype α] (K : α → α → ℝ) (w : ℝ) 
   rw [h]
   exact mul_nonneg hw (hK c)
 
+/-- **PSD is closed under pointwise limits**: the pointwise limit of PSD kernels is PSD. -/
+theorem posdef_of_tendsto {α : Type*} [Fintype α] (K : ℕ → α → α → ℝ) (Klim : α → α → ℝ)
+    (h : ∀ i j, Filter.Tendsto (fun n => K n i j) Filter.atTop (nhds (Klim i j)))
+    (hK : ∀ n, PosDefKernel (K n)) : PosDefKernel Klim := by
+  intro c
+  have hsum : Filter.Tendsto (fun n => ∑ i : α, ∑ j : α, c i * c j * K n i j) Filter.atTop (nhds (∑ i : α, ∑ j : α, c i * c j * Klim i j)) := by
+    apply tendsto_finsetSum
+    intro i _
+    apply tendsto_finsetSum
+    intro j _
+    exact (h i j).const_mul (c i * c j)
+  exact ge_of_tendsto hsum (Filter.Eventually.of_forall (fun n => hK n c))
+/-- **PSD is closed under finite sums**: the pointwise sum of finitely many PSD kernels is PSD. -/
+theorem posdef_sum {α : Type*} [Fintype α] {ι : Type*} [Fintype ι]
+    (K : ι → α → α → ℝ) (hK : ∀ i, PosDefKernel (K i)) :
+    PosDefKernel (fun a b => ∑ i, K i a b) := by
+  classical
+  have h : ∀ s : Finset ι, PosDefKernel (fun a b => ∑ i ∈ s, K i a b) := by
+    intro s
+    refine Finset.induction_on s ?_ ?_
+    · intro c
+      simp
+    · intro x s hx ih
+      intro c
+      simp_rw [Finset.sum_insert hx]
+      simp_rw [mul_add, Finset.sum_add_distrib]
+      exact add_nonneg (hK x c) (ih c)
+  simpa using (h Finset.univ)
 end QM
