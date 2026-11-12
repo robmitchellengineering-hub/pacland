@@ -42,6 +42,21 @@ HYPOTHESES: dict[str, dict] = {
         "attack": "Lean (the negative direction — m(β) ≤ 0 past the ceiling — is kernel-checked) + a lattice-YM Monte-Carlo falsifier for the positive direction.",
         "progress": "candidate 1 is REFUTED (kernel-checked): YMMassGap.lean proves m(α) = (−log α)/2 → 0 as α → 1, α(β*)=1 at the ceiling, and massRate_neg_of_one_lt (m < 0 for α > 1) — the strong-coupling bound is zero at the ceiling and negative past it, so it cannot be extended. candidate 2 is REFINED: the falsifier (lattice-YM Monte-Carlo, src/pacland/lattice_ym.py, plus the known U(1) Coulomb phase) shows the mass gap does NOT persist to all β for the ABELIAN group — U(1) in d=4 deconfines at weak coupling (massless photon, Wilson perimeter law). So candidate 2 survives only as \"non-Abelian only\" = the confinement conjecture. candidate 3 (the gap is a relation set by the tadpole, not a value) remains open.",
     },
+    "ym-bakry-ceiling": {
+        "question": "does the SU(2) Bakry-Emery ceiling (curvature 1/4 + 2β·cos θ, negative at the antipode θ=π for β > 1/8) survive as a true spectral-gap obstruction, or does the measure suppression at the antipode dissolve it?",
+        "forced": "the 1-plaquette SU(2) curvature 1/4 + 2β·cos θ and the named ceiling β > 1/8 (Su2Curvature.lean, #513); the Bakry-Emery Γ₂ framework (#511); the log-Sobolev ⇒ Poincaré bridge (#514); the OS3 reflection positivity (#510); the gauge-orbit quotient setup (GaugeOrbit.lean).",
+        "open": "whether the pointwise ceiling (β > 1/8 at the antipode) is the TRUE spectral-gap ceiling, or whether the measure-suppressed antipode (weight e^{−2β} at weak coupling) makes it an artifact.",
+        "candidates": [
+            {"hypothesis": "Wang's criterion: the negative curvature lives on the measure-negligible antipode, so the spectral gap survives — a Lyapunov drift pulls the dynamics back to the trivial connection",
+             "falsifier": "a Lyapunov condition that fails at the antipode (the drift does not pull back to the trivial connection)"},
+            {"hypothesis": "the gap is a concentration rate: the measure concentrates exponentially on the trivial connection (θ=0, where the curvature 1/4 + 2β is positive), and the spectral gap equals that concentration rate",
+             "falsifier": "a concentration estimate that does NOT decay exponentially in β"},
+            {"hypothesis": "the β > 1/8 ceiling is a single-plaquette artifact; the full lattice's many-plaquette correlations kill it (coarse-graining)",
+             "falsifier": "a full-lattice configuration where the curvature stays negative on a measure-non-negligible set"},
+        ],
+        "attack": "formalize Wang's criterion (pointwise negative curvature on a measure-negligible set + a Lyapunov drift ⇒ positive spectral gap, β-uniform), then apply it to the SU(2) 1-plaquette. FIRST: verify the sign convention of e^{±β·Re Tr} in Su2Curvature.lean (the standard Wilson measure concentrates at the trivial connection via e^{+β·Re Tr}).",
+        "progress": "the ceiling is NAMED (kernel-checked, #513): curvature 1/4 + 2β·cos θ, negative at the antipode θ=π iff β > 1/8. The measure-suppression observation (the antipode carries weight e^{−2β} at weak coupling) is NOT yet formalized, and Wang's criterion is not yet in the repo — these are the next moves.",
+    },
     "ads-limit": {
         "question": "does the MERA causal cone's graph metric converge to the smooth AdS metric ds² = dr² + sinh²(r) dθ² as N → ∞?",
         "forced": "the discrete hyperbolicity — Gromov 0-hyperbolicity (treeDist_four_point), exponential volume 2^(r+1)−1, log depth FORCED (logDepthForced: ≥⌈log₂N⌉ layers), the emergence direction (meraEmergence: the hyperbolic tree is the unique optimum), the exact area law (srank_maximally_entangled: entanglement = area = D^m, not ≤), and the QI map treeToH2 (radially isometric + depth-injective).",
