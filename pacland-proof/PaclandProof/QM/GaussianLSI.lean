@@ -180,4 +180,18 @@ lemma gaussian_density_deriv (x : ℝ) :
   rw [h]
   ring
 
+/-- `HasDerivAt` form of the Gaussian density derivative, for the integration-by-parts input. -/
+lemma gaussian_density_hasDerivAt (x : ℝ) :
+    HasDerivAt (fun y => Real.exp (-y ^ 2 / 2)) (-x * Real.exp (-x ^ 2 / 2)) x := by
+  have hg : HasDerivAt (fun y => -y ^ 2 / 2) (-x) x := by
+    have hpow : HasDerivAt (fun y => y ^ 2) (2 * x) x := by
+      simpa using (hasDerivAt_pow 2 x)
+    have h := hpow.const_mul ((-1 : ℝ) / 2)
+    rw [show (fun y => ((-1 : ℝ) / 2) * y ^ 2) = fun y => -y ^ 2 / 2 by funext y; ring] at h
+    convert h using 1
+    ring
+  have h := (Real.hasDerivAt_exp (x := -x ^ 2 / 2)).comp x hg
+  rw [mul_comm]
+  exact h
+
 end QM
