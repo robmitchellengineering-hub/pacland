@@ -38,10 +38,10 @@ def aTensorNormSq (X Y : Fin 3 → ℝ) : ℝ :=
   ∑ a : Fin 3, (aTensor X Y a) ^ 2
 
 /-- The standard basis vector e₀ = (1,0,0) of su(2) (the first generator T₁). -/
-def e0 : Fin 3 → ℝ := fun i => if i = 0 then 1 else 0
+def su2e0 : Fin 3 → ℝ := fun i => if i = 0 then 1 else 0
 
 /-- The standard basis vector e₁ = (0,1,0) of su(2) (the second generator T₂). -/
-def e1 : Fin 3 → ℝ := fun i => if i = 1 then 1 else 0
+def su2e1 : Fin 3 → ℝ := fun i => if i = 1 then 1 else 0
 
 /-- **The A-tensor is NON-ZERO** (the non-abelianness, kernel-checked): for the two generators
 `X = T₁`, `Y = T₂`, the Lie bracket is `[T₁,T₂] = T₃` (the structure constant `ε^{012} = 1 ≠ 0`), so
@@ -49,8 +49,8 @@ def e1 : Fin 3 → ℝ := fun i => if i = 1 then 1 else 0
 not assumed. -/
 theorem aTensor_nonzero :
     ∃ X Y : Fin 3 → ℝ, 0 < aTensorNormSq X Y := by
-  refine ⟨e0, e1, ?_⟩
-  norm_num [aTensorNormSq, aTensor, su2LieBracket, e0, e1,
+  refine ⟨su2e0, su2e1, ?_⟩
+  norm_num [aTensorNormSq, aTensor, su2LieBracket, su2e0, su2e1,
     su2StructureConstant, su2LeviCivita, Fin.sum_univ_three]
 
 /-- **The connection space is FLAT** (`K = 0`): the affine space of connections has zero sectional
