@@ -271,4 +271,28 @@ theorem bochner_lichnerowicz (f : ℝ → ℝ)
   rw [deriv_ou f hf' hf'' x]
   ring
 
+/-- **The OU generator has mean zero against the Gaussian** (the invariant measure):
+`∫ e^{-x²/2} · Lg = 0`. From the committed integration-by-parts `∫ γ g'' = ∫ γ x g'`, the two
+terms in `Lg = g'' - x g'` cancel. This is the divergence form that turns the Bochner–Lichnerowicz
+formula into the Fisher decay `I' = -2∫γ Γ₂`. -/
+theorem ou_invariant (g : ℝ → ℝ)
+    (hgd' : ∀ x, HasDerivAt (deriv g) (deriv (deriv g) x) x)
+    (hint1 : MeasureTheory.Integrable (fun x => deriv (deriv g) x * Real.exp (-x^2/2)) MeasureTheory.volume)
+    (hint2 : MeasureTheory.Integrable (fun x => (deriv g x) * (-x * Real.exp (-x^2/2))) MeasureTheory.volume)
+    (hbot : Tendsto (fun x => deriv g x * Real.exp (-x^2/2)) atBot (nhds 0))
+    (htop : Tendsto (fun x => deriv g x * Real.exp (-x^2/2)) atTop (nhds 0)) :
+    ∫ x, Real.exp (-x^2/2) * ouGenerator g x = 0 := by
+  have hibp := gaussian_ibp (deriv g) hgd' hint1 hint2 hbot htop
+  rw [show ouGenerator g = fun x => deriv (deriv g) x - x * deriv g x by rfl]
+  have hsplit : (∫ x, Real.exp (-x^2/2) * (deriv (deriv g) x - x * deriv g x)) =
+      (∫ x, Real.exp (-x^2/2) * deriv (deriv g) x) - (∫ x, Real.exp (-x^2/2) * (x * deriv g x)) := by
+    rw [show (fun x => Real.exp (-x^2/2) * (deriv (deriv g) x - x * deriv g x)) = fun x => Real.exp (-x^2/2) * deriv (deriv g) x - Real.exp (-x^2/2) * (x * deriv g x) by funext x; ring]
+    rw [MeasureTheory.integral_sub]
+    · exact (by simpa [mul_comm] using hint1)
+    · exact (by simpa [mul_comm, mul_left_comm, mul_assoc] using hint2.neg)
+  rw [hsplit]
+  rw [show (∫ x, Real.exp (-x^2/2) * deriv (deriv g) x) = (∫ x, Real.exp (-x^2/2) * (x * deriv g x)) by
+    simpa [mul_comm, mul_left_comm, mul_assoc] using hibp]
+  ring
+
 end QM
