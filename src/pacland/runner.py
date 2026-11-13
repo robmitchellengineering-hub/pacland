@@ -71,9 +71,40 @@ def verify_su2_weak_coupling() -> tuple[bool, str]:
                      f"({'positive → area law / confinement' if survived else 'non-positive → deconfined'})"
 
 
+def _glueball_ratio(beta: float, N: int = 5):
+    """The RG-invariant m/sqrt(σ) at one coupling, or None if the string tension is noisy/non-positive."""
+    import numpy as np
+    from pacland.glueball import glueball_mass
+    from pacland.lattice_ym_su2 import measure_string_tension
+    m = glueball_mass(beta, N=N, n_sweeps=6, n_meas=20, seed=0)
+    sigma = measure_string_tension(beta, d=4, N=N, n_sweeps=3, seed=0)
+    if sigma <= 0 or m <= 0:
+        return None, (m, sigma)   # noise-dominated: the signal is not resolved at this lattice/statistics
+    return m / np.sqrt(sigma), (m, sigma)
+
+
+def verify_glueball_mass_ratio() -> tuple[bool, str]:
+    """The SU(2) glueball mass ratio m/sqrt(σ) at two weak-coupling points — the RG-invariant
+    should be roughly constant (approaching the continuum value)."""
+    ratios, details = [], []
+    for beta in (2.4, 2.6):
+        r, det = _glueball_ratio(beta)
+        if r is None:
+            return False, f"noise-dominated at β={beta}: m={det[0]:.4f}, σ={det[1]:.4f} — the signal is unresolved (needs larger lattice / more statistics)"
+        ratios.append(r)
+        details.append(det)
+    spread = abs(ratios[0] - ratios[1]) / max(abs(ratios[0]), abs(ratios[1]))
+    survived = spread < 0.3
+    return survived, (
+        f"m/sqrt(σ) at β=2.4,2.6: {ratios[0]:.3f}, {ratios[1]:.3f} (spread {spread:.2f}) — "
+        f"{'approaching a constant → continuum ratio' if survived else 'diverging → no continuum limit'}"
+    )
+
+
 FALSIFIERS: dict[str, object] = {
     "ou-gap": verify_ou_gap,
     "su2-weak-coupling": verify_su2_weak_coupling,
+    "glueball-mass-ratio": verify_glueball_mass_ratio,
 }
 
 
@@ -147,6 +178,7 @@ STRATEGIES: dict[str, str] = {
     "combine": "combine two facts into a new inequality/statement",
     "generalize": "generalize a fact to a wider scope",
     "specialize": "specialize an open question to a computable instance",
+    "conjecture-value": "conjecture a concrete value from an open question and falsify it",
 }
 
 
@@ -179,6 +211,17 @@ def generate(fact_ids: list[str], strategy: str) -> Candidate:
                 source_facts=("ou-curvature",),
                 test="ou-gap",  # placeholder until an n-dim falsifier exists
             )
+
+    if strategy == "conjecture-value":
+        # the open question → a concrete VALUE to conjecture and falsify.
+        return Candidate(
+            id="su2-glueball-mass-ratio",
+            statement="the SU(2) glueball mass ratio m/sqrt(σ) approaches a constant (the continuum value) at weak coupling",
+            falsifier="m/sqrt(σ) diverges or does not plateau as β → ∞",
+            strategy="conjecture-value",
+            source_facts=tuple(fact_ids),
+            test="glueball-mass-ratio",
+        )
 
     if strategy == "specialize":
         # the confinement-frontier open question → a computable weak-coupling instance.
@@ -215,6 +258,7 @@ def run(candidate: Candidate) -> Verdict:
     if test is None:
         raise ValueError(f"no falsifier registered for {candidate.test!r}")
     survived, evidence = test()
+    survived = bool(survived)  # cast numpy.bool_ → Python bool (JSON-serializable)
     return Verdict(
         candidate_id=candidate.id,
         statement=candidate.statement,
