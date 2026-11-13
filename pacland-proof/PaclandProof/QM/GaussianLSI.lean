@@ -334,4 +334,32 @@ theorem gaussian_dirichlet (f g : ℝ → ℝ)
   rw [hfg2]
   ring
 
+/-- **The Fisher-information identity** (the static key step of the de Bruijn identity):
+`∫ e^{-x²/2} (Lf)·log f = -∫ e^{-x²/2} (f')²/f`. From the committed Dirichlet form with `g = log f`
+and the chain rule `(log f)' = f'/f`. -/
+theorem fisher_information_identity (f : ℝ → ℝ)
+    (hfg : ∀ x, HasDerivAt (fun y => Real.log (f y) * deriv f y) (deriv (fun y => Real.log (f y) * deriv f y) x) x)
+    (hprod : deriv (fun y => Real.log (f y) * deriv f y) = fun x => deriv (fun y => Real.log (f y)) x * deriv f x + Real.log (f x) * deriv (deriv f) x)
+    (hchain : ∀ x, deriv (fun y => Real.log (f y)) x = deriv f x / f x)
+    (hint1 : MeasureTheory.Integrable (fun x => deriv (fun y => Real.log (f y) * deriv f y) x * Real.exp (-x^2/2)) MeasureTheory.volume)
+    (hint2 : MeasureTheory.Integrable (fun x => (Real.log (f x) * deriv f x) * (-x * Real.exp (-x^2/2))) MeasureTheory.volume)
+    (hint3 : MeasureTheory.Integrable (fun x => Real.exp (-x^2/2) * (deriv (fun y => Real.log (f y)) x * deriv f x)) MeasureTheory.volume)
+    (hint4 : MeasureTheory.Integrable (fun x => Real.exp (-x^2/2) * (Real.log (f x) * deriv (deriv f) x)) MeasureTheory.volume)
+    (hint5 : MeasureTheory.Integrable (fun x => Real.exp (-x^2/2) * (Real.log (f x) * (x * deriv f x))) MeasureTheory.volume)
+    (hbot : Tendsto (fun x => Real.exp (-x^2/2) * (Real.log (f x) * deriv f x)) atBot (nhds 0))
+    (htop : Tendsto (fun x => Real.exp (-x^2/2) * (Real.log (f x) * deriv f x)) atTop (nhds 0)) :
+    ∫ x, Real.exp (-x^2/2) * ouGenerator f x * Real.log (f x) = -∫ x, Real.exp (-x^2/2) * (deriv f x)^2 / (f x) := by
+  have hdir := gaussian_dirichlet (fun y => Real.log (f y)) f hfg hprod hint1 hint2 hint3 hint4 hint5 hbot htop
+  rw [show (∫ x, Real.exp (-x^2/2) * ouGenerator f x * Real.log (f x)) = (∫ x, Real.exp (-x^2/2) * Real.log (f x) * ouGenerator f x) by
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards with x
+    ring]
+  rw [hdir]
+  have hchain' : (∫ x, Real.exp (-x^2/2) * deriv (fun y => Real.log (f y)) x * deriv f x) = (∫ x, Real.exp (-x^2/2) * deriv f x ^ 2 / f x) := by
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards with x
+    rw [hchain x]
+    ring_nf
+  rw [hchain']
+
 end QM
