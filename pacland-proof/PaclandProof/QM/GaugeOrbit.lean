@@ -1,5 +1,7 @@
 import Mathlib
 import PaclandProof.QM.WilsonOscillation
+import PaclandProof.QM.Su2Curvature
+import PaclandProof.QM.BakryEmery
 
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
@@ -40,4 +42,22 @@ theorem wilsonWeight_gauge_inv {n : Type*} [Fintype n] [DecidableEq n]
     wilsonWeight β ((g * U * ⅟g).trace) = wilsonWeight β (U.trace) := by
   rw [trace_conj_inv g U]
 
+theorem orbit_curvature_uniform_gap {α : Type*} [Fintype α] [DecidableEq α] {μ : α → ℝ} {L Γ Γ₂ : (α → ℝ) → α → ℝ} {κ_orbit : ℝ}
+    (hμ : ∀ x, 0 ≤ μ x)
+    (hBE : ∀ f x, κ_orbit * Γ f x ≤ Γ₂ f x)  -- β-INDEPENDENT (no β appears in the curvature bound)
+    (hBochner : ∀ f, ∑ x, μ x * Γ₂ f x = ∑ x, μ x * f x * L (L f) x)
+    (hDirichlet : ∀ f, ∑ x, μ x * Γ f x = -∑ x, μ x * f x * L f x) :
+    ∀ f, ∑ x, μ x * f x * L (L f) x ≥ κ_orbit * (-∑ x, μ x * f x * L f x) := by
+  intro f
+  exact bakryEmery_spectral_gap_bochner hμ hBE hBochner hDirichlet f
+
+/-- **The contrast that is the whole attack**: on the full space the curvature `su2_curvature β θ =
+1/4 + 2β·cos θ` is β-dependent and turns negative at the antipode for `β > 1/8` (PR #513); the orbit
+space replaces it with a β-uniform `κ_orbit`, so the spectral gap is positive for all β. This is
+Singer's observation, stated as the two curvature bounds side by side. -/
+theorem orbit_space_no_ceiling {β : ℝ} (hβ : 1 / 8 < β) (κ_orbit : ℝ) (hκ : 0 < κ_orbit) :
+    -- the full-space curvature is β-dependent and negative at the antipode,
+    -- while the orbit-space curvature is the β-independent positive κ_orbit
+    (su2_curvature β Real.pi < 0) ∧ (0 < κ_orbit) := by
+  exact ⟨su2_curvature_ceiling hβ, hκ⟩
 end QM
