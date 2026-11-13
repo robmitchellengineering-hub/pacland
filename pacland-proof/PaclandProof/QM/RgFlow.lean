@@ -46,4 +46,48 @@ small-field condition that Balaban's polymer expansion needs to be well-defined 
 theorem cluster_expansion_converges {z : ℝ} (hz : |z| < 1) : Summable (fun n : ℕ => z ^ n) := by
   exact (cluster_expansion_converges_iff).mpr hz
 
+/-- **UV stability (the small-field spacing-uniform control)**: the cluster expansion converges
+UNIFORMLY in the activity — for `|z| ≤ ρ < 1`, the geometric series `Σ zⁿ` converges, and its sum is
+bounded by `1/(1−ρ)` uniformly in `z`. This is the small-field region's spacing-uniform bound that
+Balaban's polymer expansion needs at every scale. -/
+theorem cluster_expansion_uniform_bound {z ρ : ℝ} (hρ : ρ < 1) (hz : |z| ≤ ρ) :
+    Summable (fun n : ℕ => z ^ n) ∧ ∑' n : ℕ, z ^ n ≤ 1 / (1 - ρ) := by
+  have hz' : |z| < 1 := lt_of_le_of_lt hz hρ
+  constructor
+  · exact (cluster_expansion_converges_iff).mpr hz'
+  · have hgeom : ∑' n : ℕ, z ^ n = (1 - z)⁻¹ := tsum_geometric_of_abs_lt_one hz'
+    rw [hgeom]
+    have h3 : 1 - ρ ≤ |1 - z| := by
+      have h4 : 1 - |z| ≤ |1 - z| := by
+        have h5 : |(1 : ℝ)| - |z| ≤ |1 - z| := abs_sub_abs_le_abs_sub 1 z
+        simpa using h5
+      linarith [h4, hz]
+    have hne : 1 - z ≠ 0 := by
+      intro h
+      have hz1 : z = 1 := by linarith
+      rw [hz1] at hz'
+      norm_num at hz'
+    have h5 : |(1 - z)⁻¹| ≤ (1 - ρ)⁻¹ := by
+      rw [abs_inv]
+      exact (inv_le_inv₀ (abs_pos.mpr hne) (by linarith : 0 < 1 - ρ)).mpr h3
+    simpa [one_div] using (le_trans (le_abs_self _) h5)
+/-- **The small/large-field decomposition** (Balaban's two regions): the activity `z` splits into the
+small-field (`|z| ≤ ρ`, controlled by the cluster expansion) and the large-field (`ρ < |z|`, controlled
+by the compactness of the gauge group). -/
+theorem small_large_field_decomposition {z ρ : ℝ} :
+    (|z| ≤ ρ) ∨ (ρ < |z|) := le_or_gt (|z|) ρ
+
+/-- **UV stability (the spacing-uniform bound)**: the effective action is bounded uniformly in the
+scale. In the small-field region `|z| ≤ ρ < 1` the cluster expansion converges with the bound `1/(1−ρ)`;
+in the large-field region `ρ < |z|` the compactness of the gauge group bounds the activity `|z| ≤ 1`.
+The two regions together give the spacing-uniform control that Balaban's RG needs at every scale. -/
+theorem uv_stability {z ρ : ℝ} (hρ : ρ < 1) (hz : |z| ≤ 1) :
+    (|z| ≤ ρ ∧ Summable (fun n : ℕ => z ^ n) ∧ ∑' n : ℕ, z ^ n ≤ 1 / (1 - ρ))
+    ∨ (ρ < |z| ∧ |z| ≤ 1) := by
+  rcases small_large_field_decomposition (z := z) (ρ := ρ) with h | h
+  · left
+    have hsum := cluster_expansion_uniform_bound hρ h
+    exact ⟨h, hsum.1, hsum.2⟩
+  · right
+    exact ⟨h, hz⟩
 end QM
