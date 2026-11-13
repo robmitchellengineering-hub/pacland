@@ -77,3 +77,4 @@ import PaclandProof.QM.OneLoopBeta
 import PaclandProof.QM.SeeleyDeWitt
 import PaclandProof.QM.SuNStructure
 import PaclandProof.QM.AsymptoticFreedomSign
+import PaclandProof.QM.ForcedRelation
