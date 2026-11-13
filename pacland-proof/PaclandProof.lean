@@ -74,3 +74,6 @@ import PaclandProof.QM.CollectiveInstanton
 import PaclandProof.QM.MassGapJoin
 import PaclandProof.QM.WickRotation
 import PaclandProof.QM.OneLoopBeta
+import PaclandProof.QM.SeeleyDeWitt
+import PaclandProof.QM.SuNStructure
+import PaclandProof.QM.AsymptoticFreedomSign
