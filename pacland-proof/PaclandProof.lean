@@ -83,3 +83,5 @@ import PaclandProof.QM.THooftRenormalizability
 import PaclandProof.QM.OrbitGeometry
 import PaclandProof.QM.OrbitCurvature
 import PaclandProof.QM.OrbitSpectralGap
+import PaclandProof.QM.OttoReznikoff
+import PaclandProof.QM.ClayReduction
