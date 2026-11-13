@@ -17,12 +17,12 @@ from pacland.glueball import glueball_mass  # noqa: E402
 from pacland.lattice_ym_su2 import measure_string_tension  # noqa: E402
 
 
-def sweep(betas, N, seeds, n_sweeps=20, n_meas=100):
+def sweep(betas, N, seeds, n_sweeps=20, n_meas=100, n_smear=3):
     print(f"beta  N  seed  m          sigma      m/sqrt(sigma)", flush=True)
     rows = []
     for beta in betas:
         for seed in seeds:
-            m = glueball_mass(beta, N=N, n_sweeps=n_sweeps, n_meas=n_meas, seed=seed)
+            m = glueball_mass(beta, N=N, n_sweeps=n_sweeps, n_meas=n_meas, seed=seed, n_smear=n_smear)
             sigma = measure_string_tension(beta, d=4, N=N, n_sweeps=3, seed=seed)
             ratio = m / np.sqrt(sigma) if sigma > 0 and m > 0 else float("nan")
             print(f"{beta:<5.2f} {N}  {seed}   {m:+.4f}  {sigma:.4f}  {ratio:.4f}", flush=True)
@@ -40,8 +40,9 @@ def main(argv):
     ap.add_argument("--seeds", nargs="*", type=int, default=[0, 1])
     ap.add_argument("--n-sweeps", type=int, default=20)
     ap.add_argument("--n-meas", type=int, default=100)
+    ap.add_argument("--n-smear", type=int, default=3)
     args = ap.parse_args(argv)
-    sweep(args.betas, args.N, args.seeds, args.n_sweeps, args.n_meas)
+    sweep(args.betas, args.N, args.seeds, args.n_sweeps, args.n_meas, args.n_smear)
     return 0
 
 

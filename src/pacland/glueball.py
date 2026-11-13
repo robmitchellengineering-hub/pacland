@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from pacland.lattice_ym_su2 import metropolis, plaquette_trace, random_su2
+from pacland.lattice_ym_su2 import ape_smear, metropolis, plaquette_trace, random_su2
 
 
 def glueball_op(links, t):
@@ -23,12 +23,13 @@ def glueball_op(links, t):
     return total
 
 
-def glueball_correlation(d=4, N=6, beta=2.4, n_sweeps=30, n_meas=200, seed=0):
+def glueball_correlation(d=4, N=6, beta=2.4, n_sweeps=30, n_meas=200, seed=0, n_smear=3):
     """Measure the connected glueball correlation C(dt) and effective mass m_eff(dt)."""
     rng = np.random.default_rng(seed)
     links = np.array([random_su2(rng) for _ in range(d * N**d)])
     links = links.reshape((d,) + (N,) * d + (4,))
     links = metropolis(links, beta, rng, n_sweeps)
+    links = ape_smear(links, alpha=0.5, n_iter=n_smear)
 
     g_sum = np.zeros(N)
     g_sq = np.zeros(N)
@@ -50,7 +51,9 @@ def glueball_correlation(d=4, N=6, beta=2.4, n_sweeps=30, n_meas=200, seed=0):
     return c_connected, m_eff, g_bar
 
 
-def glueball_mass(beta, N=6, n_sweeps=30, n_meas=200, seed=0):
-    """The glueball mass in lattice units: the effective-mass plateau (last two bins)."""
-    _, m_eff, _ = glueball_correlation(N=N, beta=beta, n_sweeps=n_sweeps, n_meas=n_meas, seed=seed)
-    return float(m_eff[-2])
+def glueball_mass(beta, N=6, n_sweeps=30, n_meas=200, seed=0, n_smear=3):
+    """The glueball mass in lattice units: the median of the MIDDLE effective-mass bins (where the
+    backward-propagating state is negligible and the signal survives)."""
+    _, m_eff, _ = glueball_correlation(N=N, beta=beta, n_sweeps=n_sweeps, n_meas=n_meas, seed=seed, n_smear=n_smear)
+    lo, hi = N // 3, 2 * N // 3
+    return float(np.median(m_eff[lo:hi]))

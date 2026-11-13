@@ -92,6 +92,39 @@ def creutz_ratio(links, R, T):
     return float(-np.log(W(R, T) * W(R - 1, T - 1) / (W(R, T - 1) * W(R - 1, T))))
 
 
+
+def ape_smear(links, alpha=0.5, n_iter=3):
+    """Spatial APE smearing: U_mu → P_SU(2)[(1-α)U_mu + α/4 Σ_staples], spatial directions only.
+
+    Suppresses UV/vacuum contamination and boosts the 0++ glueball overlap (the fix for the
+    connected-correlator signal-to-noise collapse). The time direction (0) is left untouched."""
+    d, N = links.shape[0], links.shape[1]
+    links = links.copy()
+    for _ in range(n_iter):
+        new_links = links.copy()
+        for mu in range(1, d):
+            for flat in range(N**d):
+                idx = np.unravel_index(flat, (N,) * d)
+                staple = np.zeros(4)
+                for nu in range(1, d):
+                    if nu == mu:
+                        continue
+                    xn = list(idx); xn[nu] = (xn[nu] + 1) % N
+                    xm = list(idx); xm[mu] = (xm[mu] + 1) % N
+                    fwd = qmul(links[nu][tuple(idx)], links[mu][tuple(xn)])
+                    fwd = qmul(fwd, qconj(links[nu][tuple(xm)]))
+                    staple += np.array(fwd)
+                    xnm = list(idx); xnm[nu] = (xnm[nu] - 1) % N
+                    xnm2 = list(xnm); xnm2[mu] = (xnm2[mu] + 1) % N
+                    bwd = qmul(qconj(links[nu][tuple(xnm)]), links[mu][tuple(xnm)])
+                    bwd = qmul(bwd, links[nu][tuple(xnm2)])
+                    staple += np.array(bwd)
+                smeared = (1.0 - alpha) * links[mu][tuple(idx)] + (alpha / 4.0) * staple
+                n = float(np.linalg.norm(smeared))
+                new_links[mu][tuple(idx)] = smeared / n if n > 1e-12 else links[mu][tuple(idx)]
+        links = new_links
+    return links
+
 def measure_string_tension(beta, d=4, N=8, n_sweeps=6, seed=0):
     rng = np.random.default_rng(seed)
     links = np.array([random_su2(rng) for _ in range(d * N**d)])
