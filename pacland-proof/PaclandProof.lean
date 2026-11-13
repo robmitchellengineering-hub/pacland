@@ -68,3 +68,4 @@ import PaclandProof.QM.WangCriterion
 import PaclandProof.QM.FullLatticeLyapunov
 import PaclandProof.QM.AsymptoticFreedom
 import PaclandProof.QM.InstantonTrial
+import PaclandProof.QM.SpacingUniform
