@@ -295,4 +295,43 @@ theorem ou_invariant (g : ℝ → ℝ)
     simpa [mul_comm, mul_left_comm, mul_assoc] using hibp]
   ring
 
+/-- **The Dirichlet form (self-adjointness of the OU generator)**: `∫ e^{-x²/2} f·Lg = -∫ e^{-x²/2} f'·g'`. -/
+theorem gaussian_dirichlet (f g : ℝ → ℝ)
+    (hfg : ∀ x, HasDerivAt (fun y => f y * deriv g y) (deriv (fun y => f y * deriv g y) x) x)
+    (hprod : deriv (fun y => f y * deriv g y) = fun x => deriv f x * deriv g x + f x * deriv (deriv g) x)
+    (hint1 : MeasureTheory.Integrable (fun x => deriv (fun y => f y * deriv g y) x * Real.exp (-x^2/2)) MeasureTheory.volume)
+    (hint2 : MeasureTheory.Integrable (fun x => (f x * deriv g x) * (-x * Real.exp (-x^2/2))) MeasureTheory.volume)
+    (hint3 : MeasureTheory.Integrable (fun x => Real.exp (-x^2/2) * (deriv f x * deriv g x)) MeasureTheory.volume)
+    (hint4 : MeasureTheory.Integrable (fun x => Real.exp (-x^2/2) * (f x * deriv (deriv g) x)) MeasureTheory.volume)
+    (hint5 : MeasureTheory.Integrable (fun x => Real.exp (-x^2/2) * (f x * (x * deriv g x))) MeasureTheory.volume)
+    (hbot : Tendsto (fun x => Real.exp (-x^2/2) * (f x * deriv g x)) atBot (nhds 0))
+    (htop : Tendsto (fun x => Real.exp (-x^2/2) * (f x * deriv g x)) atTop (nhds 0)) :
+    ∫ x, Real.exp (-x^2/2) * f x * ouGenerator g x = -∫ x, Real.exp (-x^2/2) * deriv f x * deriv g x := by
+  have hibp := gaussian_ibp (fun y => f y * deriv g y) hfg hint1 hint2 (by simpa [mul_comm] using hbot) (by simpa [mul_comm] using htop)
+  rw [hprod] at hibp
+  have hsplit : (∫ x, Real.exp (-x^2/2) * (deriv f x * deriv g x)) + (∫ x, Real.exp (-x^2/2) * (f x * deriv (deriv g) x)) = (∫ x, Real.exp (-x^2/2) * (f x * deriv g x) * x) := by
+    have hsum : (∫ x, Real.exp (-x^2/2) * (deriv f x * deriv g x) + Real.exp (-x^2/2) * (f x * deriv (deriv g) x)) = (∫ x, Real.exp (-x^2/2) * (deriv f x * deriv g x + f x * deriv (deriv g) x)) := by
+      apply MeasureTheory.integral_congr_ae
+      filter_upwards with x
+      ring
+    rw [← MeasureTheory.integral_add hint3 hint4]
+    rw [hsum]
+    simpa [mul_assoc, mul_comm, mul_left_comm] using hibp
+  have hfg2 : (∫ x, Real.exp (-x^2/2) * (f x * deriv (deriv g) x)) = (∫ x, Real.exp (-x^2/2) * (f x * deriv g x) * x) - (∫ x, Real.exp (-x^2/2) * (deriv f x * deriv g x)) := by
+    linarith
+  rw [show ouGenerator g = fun x => deriv (deriv g) x - x * deriv g x by rfl]
+  have hdist : (∫ x, Real.exp (-x^2/2) * f x * (deriv (deriv g) x - x * deriv g x)) = (∫ x, Real.exp (-x^2/2) * (f x * deriv (deriv g) x)) - (∫ x, Real.exp (-x^2/2) * (f x * (x * deriv g x))) := by
+    have hf : (fun x => Real.exp (-x^2/2) * f x * (deriv (deriv g) x - x * deriv g x)) = fun x => Real.exp (-x^2/2) * (f x * deriv (deriv g) x) - Real.exp (-x^2/2) * (f x * (x * deriv g x)) := by
+      funext x; ring
+    rw [hf]
+    rw [MeasureTheory.integral_sub hint4 hint5]
+  rw [hdist]
+  have hcongr : (∫ x, Real.exp (-x^2/2) * (f x * (x * deriv g x))) = (∫ x, Real.exp (-x^2/2) * (f x * deriv g x) * x) := by
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards with x
+    ring
+  rw [hcongr]
+  rw [hfg2]
+  ring
+
 end QM
