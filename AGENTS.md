@@ -312,3 +312,12 @@ source, not a textbook formula:**
      `docs/sm-boundary-map.md`): the 19 values (underdetermined), the UV completion
      (underdetermined), UV verification (unmeasurable), non-perturbative QCD (intractable),
      strong CP (underdetermined). The SM's exact structure is computable — the values are not.
+
+## SOP — DO THE WORK, don't output a substitute (Rob 2026-11-13, enforced)
+
+**Do what was asked, and if answering needs building something — a faster MC, link smearing, a
+falsifier, a proof step, a tool — build it. Do not give up, pivot to a status report, or classify
+a wall just to produce output.** The deliverable is the actual answer (the number, the proof, the
+measurement), not a wall-classification or a note that it is hard. A wall may be reported only after
+the *same* blocker has persisted across three real attempts AND the concrete blocker is named —
+never as a substitute for doing the work.
