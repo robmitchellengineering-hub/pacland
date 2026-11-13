@@ -11,17 +11,18 @@ import numpy as np
 
 def qmul(p, q):
     a0, a1, a2, a3 = p; b0, b1, b2, b3 = q
-    return np.array([a0*b0-a1*b1-a2*b2-a3*b3, a0*b1+a1*b0+a2*b3-a3*b2,
-                     a0*b2-a1*b3+a2*b0+a3*b1, a0*b3+a1*b2-a2*b1+a3*b0])
+    return (a0*b0-a1*b1-a2*b2-a3*b3, a0*b1+a1*b0+a2*b3-a3*b2,
+            a0*b2-a1*b3+a2*b0+a3*b1, a0*b3+a1*b2-a2*b1+a3*b0)
 
 
 def qconj(p):
-    return np.array([p[0], -p[1], -p[2], -p[3]])
+    return (p[0], -p[1], -p[2], -p[3])
 
 
 def random_su2(rng):
     v = rng.normal(size=4)
-    return v / np.linalg.norm(v)
+    v = v / np.linalg.norm(v)
+    return (float(v[0]), float(v[1]), float(v[2]), float(v[3]))
 
 
 def plaquette_trace(links, mu, nu, idx):
