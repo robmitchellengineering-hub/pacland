@@ -62,4 +62,34 @@ theorem ou_carre_du_champ (f : ℝ → ℝ) (hf : Differentiable ℝ f) (hf' : D
   rw [hsq, hsq']
   ring
 
+/-- **The diffusion identity: `Γ(f,g) = f'·g'`** for the OU generator.
+
+A second-order diffusion `L f = a f'' + b f'` has carré du champ `Γ(f,g) = a f'·g'`; for the OU
+generator `a = 1`, so `Γ(f,g) = f'·g'`. Proof: `Γ = (L(fg) − f Lg − g Lf)/2`, and the second-derivative
+cross terms cancel, leaving `2 f' g'`. -/
+theorem ou_carre_du_champ_general (f g : ℝ → ℝ) (hf : Differentiable ℝ f) (hg : Differentiable ℝ g)
+    (hf' : Differentiable ℝ (deriv f)) (hg' : Differentiable ℝ (deriv g)) (x : ℝ) :
+    carreDuChamp ouGenerator f g x = deriv f x * deriv g x := by
+  dsimp [carreDuChamp, ouGenerator]
+  have hfg : deriv (fun y => f y * g y) x = deriv f x * g x + f x * deriv g x := by
+    change deriv (f * g) x = deriv f x * g x + f x * deriv g x
+    rw [deriv_mul (hf x) (hg x)]
+  have hfg2 : deriv (deriv (fun y => f y * g y)) x = deriv (deriv f) x * g x + 2 * deriv f x * deriv g x + f x * deriv (deriv g) x := by
+    calc
+      deriv (deriv (fun y => f y * g y)) x = deriv (fun y => deriv f y * g y + f y * deriv g y) x := by
+        congr 1
+        funext y
+        change deriv (f * g) y = deriv f y * g y + f y * deriv g y
+        rw [deriv_mul (hf y) (hg y)]
+      _ = deriv (fun y => deriv f y * g y) x + deriv (fun y => f y * deriv g y) x := by
+        change deriv (deriv f * g + f * deriv g) x = deriv (deriv f * g) x + deriv (f * deriv g) x
+        rw [deriv_add ((hf'.mul hg) x) ((hf.mul hg') x)]
+      _ = (deriv (deriv f) x * g x + deriv f x * deriv g x) + (deriv f x * deriv g x + f x * deriv (deriv g) x) := by
+        change deriv (deriv f * g) x + deriv (f * deriv g) x = (deriv (deriv f) x * g x + deriv f x * deriv g x) + (deriv f x * deriv g x + f x * deriv (deriv g) x)
+        rw [deriv_mul (hf' x) (hg x)]
+        rw [deriv_mul (hf x) (hg' x)]
+      _ = deriv (deriv f) x * g x + 2 * deriv f x * deriv g x + f x * deriv (deriv g) x := by ring
+  rw [hfg, hfg2]
+  ring
+
 end QM
