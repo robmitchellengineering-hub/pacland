@@ -161,4 +161,23 @@ theorem ou_bakry_emery (f : ℝ → ℝ) (hf : Differentiable ℝ f) (hf' : Diff
   rw [ou_carre_du_champ f hf hf' x]
   nlinarith [sq_nonneg (deriv (deriv f) x)]
 
+/-- `(e^{-x²/2})' = -x e^{-x²/2}` — the derivative of the Gaussian density. -/
+lemma gaussian_density_deriv (x : ℝ) :
+    deriv (fun y => Real.exp (-y ^ 2 / 2)) x = -x * Real.exp (-x ^ 2 / 2) := by
+  have hg : DifferentiableAt ℝ (fun y => -y ^ 2 / 2) x := by
+    rw [show (fun y => -y ^ 2 / 2) = fun y => ((-1 : ℝ) / 2) * y ^ 2 by funext y; ring]
+    exact (differentiableAt_id.pow 2).const_mul ((-1 : ℝ) / 2)
+  rw [deriv_exp hg]
+  have h : deriv (fun y => -y ^ 2 / 2) x = -x := by
+    rw [show (fun y => -y ^ 2 / 2) = fun y => ((-1 : ℝ) / 2) * y ^ 2 by funext y; ring]
+    rw [deriv_const_mul]
+    · have hpow : deriv (fun y => y ^ 2) x = 2 * x := by
+        rw [show (fun y => y ^ 2) = id ^ 2 by rfl]
+        simp [id, deriv_id', deriv_pow]
+      rw [hpow]
+      ring
+    · exact differentiableAt_id.pow 2
+  rw [h]
+  ring
+
 end QM
