@@ -232,4 +232,43 @@ theorem gaussian_ibp (f : ℝ → ℝ)
   rw [hC]
   nlinarith
 
+/-- **The Bochner–Lichnerowicz formula (OU case)**: `L(Γ f) = 2Γ(f, Lf) + 2Γ₂(f)`, pointwise.
+
+This is the identity behind the Fisher decay `I' ≤ -2κI` in the Bakry–Émery interpolation: integrated
+against `γ`, the `Γ₂` term is bounded below by `κΓ` (the committed curvature), giving the decay. -/
+theorem bochner_lichnerowicz (f : ℝ → ℝ)
+    (hf : Differentiable ℝ f) (hf' : Differentiable ℝ (deriv f)) (hf'' : Differentiable ℝ (deriv (deriv f)))
+    (hf''' : Differentiable ℝ (deriv (deriv (deriv f)))) :
+    ouGenerator (fun x => carreDuChamp ouGenerator f f x) =
+      fun x => 2 * carreDuChamp ouGenerator f (ouGenerator f) x + 2 * Gamma2 ouGenerator f x := by
+  have hLf : Differentiable ℝ (ouGenerator f) := hf''.sub (differentiable_id.mul hf')
+  have hLf' : Differentiable ℝ (deriv (ouGenerator f)) := by
+    rw [show deriv (ouGenerator f) = fun y => deriv (deriv (deriv f)) y - deriv f y - (fun y => y) y * deriv (deriv f) y by
+      funext y; rw [deriv_ou f hf' hf'' y]]
+    exact (hf'''.sub hf').sub (differentiable_id.mul hf'')
+  funext x
+  have hd1 : deriv (fun y => (deriv f y) ^ 2) x = 2 * deriv f x * deriv (deriv f) x := deriv_deriv_sq f hf' x
+  have hd2 : deriv (deriv (fun y => (deriv f y) ^ 2)) x = 2 * (deriv (deriv f) x) ^ 2 + 2 * deriv f x * deriv (deriv (deriv f)) x := by
+    rw [show deriv (fun y => (deriv f y) ^ 2) = fun y => 2 * (deriv f y * deriv (deriv f) y) by
+      funext y; rw [deriv_deriv_sq f hf' y]; ring]
+    rw [deriv_const_mul]
+    · change 2 * deriv (deriv f * deriv (deriv f)) x = 2 * (deriv (deriv f) x) ^ 2 + 2 * deriv f x * deriv (deriv (deriv f)) x
+      rw [deriv_mul (hf' x) (hf'' x)]
+      ring
+    · exact (hf' x).mul (hf'' x)
+  rw [show ouGenerator (fun x => carreDuChamp ouGenerator f f x) = fun y => deriv (deriv (fun z => (deriv f z) ^ 2)) y - (fun y => y) y * deriv (fun z => (deriv f z) ^ 2) y by
+    funext y
+    have h : carreDuChamp ouGenerator f f = fun z => (deriv f z) ^ 2 := by
+      funext z; rw [ou_carre_du_champ_general f f hf hf hf' hf' z]; ring
+    simp [h]
+    rfl]
+  change deriv (deriv (fun z => deriv f z ^ 2)) x - x * deriv (fun z => deriv f z ^ 2) x = 2 * carreDuChamp ouGenerator f (ouGenerator f) x + 2 * Gamma2 ouGenerator f x
+  rw [hd2, hd1]
+  rw [show carreDuChamp ouGenerator f (ouGenerator f) x = deriv f x * deriv (ouGenerator f) x by
+    exact ou_carre_du_champ_general f (ouGenerator f) hf hLf hf' hLf' x]
+  rw [show Gamma2 ouGenerator f x = (deriv (deriv f) x) ^ 2 + (deriv f x) ^ 2 by
+    exact ou_gamma2 f hf hf' hf'' hf''' x]
+  rw [deriv_ou f hf' hf'' x]
+  ring
+
 end QM
