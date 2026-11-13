@@ -79,3 +79,4 @@ import PaclandProof.QM.SuNStructure
 import PaclandProof.QM.AsymptoticFreedomSign
 import PaclandProof.QM.ForcedRelation
 import PaclandProof.QM.RgFlow
+import PaclandProof.QM.THooftRenormalizability
