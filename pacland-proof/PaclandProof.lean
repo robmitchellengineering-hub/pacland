@@ -69,3 +69,5 @@ import PaclandProof.QM.FullLatticeLyapunov
 import PaclandProof.QM.AsymptoticFreedom
 import PaclandProof.QM.InstantonTrial
 import PaclandProof.QM.SpacingUniform
+import PaclandProof.QM.OSAxioms
+import PaclandProof.QM.CollectiveInstanton
