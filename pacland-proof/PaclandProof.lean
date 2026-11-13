@@ -81,3 +81,4 @@ import PaclandProof.QM.ForcedRelation
 import PaclandProof.QM.RgFlow
 import PaclandProof.QM.THooftRenormalizability
 import PaclandProof.QM.OrbitGeometry
+import PaclandProof.QM.OrbitCurvature
