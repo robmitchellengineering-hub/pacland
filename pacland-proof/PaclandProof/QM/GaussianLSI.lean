@@ -92,4 +92,73 @@ theorem ou_carre_du_champ_general (f g : ℝ → ℝ) (hf : Differentiable ℝ f
   rw [hfg, hfg2]
   ring
 
+/-- `(Lf)' = f''' − f' − x f''` — the derivative of the OU generator. -/
+lemma deriv_ou (f : ℝ → ℝ) (hf' : Differentiable ℝ (deriv f)) (hf'' : Differentiable ℝ (deriv (deriv f))) (x : ℝ) :
+    deriv (ouGenerator f) x = deriv (deriv (deriv f)) x - deriv f x - x * deriv (deriv f) x := by
+  rw [show ouGenerator f = deriv (deriv f) - id * deriv f by rfl]
+  rw [deriv_sub (hf'' x) ((differentiable_id.mul hf') x)]
+  rw [deriv_mul (differentiable_id x) (hf' x)]
+  rw [deriv_id']
+  rw [show id x = x by rfl]
+  ring
+
+/-- `((f')²)' = 2 f' f''` — the derivative of the squared derivative. -/
+lemma deriv_deriv_sq (f : ℝ → ℝ) (hf' : Differentiable ℝ (deriv f)) (x : ℝ) :
+    deriv (fun y => (deriv f y) ^ 2) x = 2 * deriv f x * deriv (deriv f) x := by
+  change deriv ((deriv f) ^ 2) x = 2 * deriv f x * deriv (deriv f) x
+  simpa using (deriv_pow (hf' x) 2)
+
+/-- **The iterated carré du champ is `Γ₂(f) = (f'')² + (f')²`** (the Bochner formula, curvature 1). -/
+theorem ou_gamma2 (f : ℝ → ℝ) (hf : Differentiable ℝ f) (hf' : Differentiable ℝ (deriv f))
+    (hf'' : Differentiable ℝ (deriv (deriv f))) (hf''' : Differentiable ℝ (deriv (deriv (deriv f)))) (x : ℝ) :
+    Gamma2 ouGenerator f x = (deriv (deriv f) x) ^ 2 + (deriv f x) ^ 2 := by
+  dsimp [Gamma2]
+  have hΓ : carreDuChamp ouGenerator f f = fun y => (deriv f y) ^ 2 := by
+    funext y
+    exact ou_carre_du_champ f hf hf' y
+  have hg : Differentiable ℝ (ouGenerator f) := by
+    intro y
+    change DifferentiableAt ℝ (fun z => deriv (deriv f) z - z * deriv f z) y
+    exact (hf'' y).sub ((differentiable_id.mul hf') y)
+  have hg' : Differentiable ℝ (deriv (ouGenerator f)) := by
+    have hderiv : deriv (ouGenerator f) = fun y => deriv (deriv (deriv f)) y - deriv f y - y * deriv (deriv f) y := by
+      funext y
+      exact deriv_ou f hf' hf'' y
+    rw [hderiv]
+    intro y
+    exact ((hf''' y).sub (hf' y)).sub ((differentiable_id.mul hf'') y)
+  have hΓgen : carreDuChamp ouGenerator f (ouGenerator f) x = deriv f x * deriv (ouGenerator f) x :=
+    ou_carre_du_champ_general f (ouGenerator f) hf hg hf' hg' x
+  have h1 : deriv (ouGenerator f) x = deriv (deriv (deriv f)) x - deriv f x - x * deriv (deriv f) x :=
+    deriv_ou f hf' hf'' x
+  have h2 : deriv (fun y => (deriv f y) ^ 2) x = 2 * deriv f x * deriv (deriv f) x :=
+    deriv_deriv_sq f hf' x
+  have h3 : deriv (deriv (fun y => (deriv f y) ^ 2)) x = 2 * (deriv (deriv f) x) ^ 2 + 2 * deriv f x * deriv (deriv (deriv f)) x := by
+    calc
+      deriv (deriv (fun y => (deriv f y) ^ 2)) x = deriv (fun y => 2 * deriv f y * deriv (deriv f) y) x := by
+        congr 1
+        funext y
+        exact deriv_deriv_sq f hf' y
+      _ = 2 * (deriv (deriv f) x) ^ 2 + 2 * deriv f x * deriv (deriv (deriv f)) x := by
+        rw [show (fun y => 2 * deriv f y * deriv (deriv f) y) = fun y => (2 * deriv f y) * deriv (deriv f) y by rfl]
+        rw [show (fun y => (2 * deriv f y) * deriv (deriv f) y) = (fun y => 2 * deriv f y) * deriv (deriv f) by rfl]
+        rw [deriv_mul ((fun y => (hf' y).const_mul 2) x) (hf'' x)]
+        rw [deriv_const_mul (2 : ℝ) (hf' x)]
+        ring
+  rw [hΓ]
+  rw [hΓgen]
+  rw [h1]
+  dsimp [ouGenerator]
+  rw [h2, h3]
+  ring_nf
+
+/-- **The OU generator has Bakry–Émery curvature 1** (`Γ₂ ≥ Γ`), from the Bochner formula
+`Γ₂ = (f'')² + (f')² ≥ (f')²`. This is the curvature input that gives the Gaussian LSI. -/
+theorem ou_bakry_emery (f : ℝ → ℝ) (hf : Differentiable ℝ f) (hf' : Differentiable ℝ (deriv f))
+    (hf'' : Differentiable ℝ (deriv (deriv f))) (hf''' : Differentiable ℝ (deriv (deriv (deriv f)))) (x : ℝ) :
+    carreDuChamp ouGenerator f f x ≤ Gamma2 ouGenerator f x := by
+  rw [ou_gamma2 f hf hf' hf'' hf''' x]
+  rw [ou_carre_du_champ f hf hf' x]
+  nlinarith [sq_nonneg (deriv (deriv f) x)]
+
 end QM
