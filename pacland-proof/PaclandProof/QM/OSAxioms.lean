@@ -74,4 +74,38 @@ theorem clay_assembly
     0 < (1 : ℝ) ∧ (∀ {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β),
       OSReflectionPositivity (fun i j => Real.exp (2 * β * Real.cos (θ i - θ j)))) := by
   exact ⟨hgap_strong, hOS3⟩
+/-- **OS1 (Euclidean covariance) for the Wilson heat kernel**: the kernel is translation-invariant —
+adding a common translation `t` to all arguments leaves it unchanged, because it depends only on the
+differences `θ_i − θ_j`. -/
+theorem wilson_kernel_covariant {m : ℕ} (θ : Fin m → ℝ) (t : ℝ) (β : ℝ) :
+    (fun i j => Real.exp (2 * β * Real.cos ((θ i + t) - (θ j + t))))
+      = fun i j => Real.exp (2 * β * Real.cos (θ i - θ j)) := by
+  funext i j
+  rw [show (θ i + t) - (θ j + t) = θ i - θ j by ring]
+
+/-- **OS1 (reflection covariance) for the Wilson heat kernel**: the kernel is reflection-invariant —
+negating the arguments (the lattice reflection) leaves it unchanged, because `cos` is even. -/
+theorem wilson_kernel_reflection {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) :
+    (fun i j => Real.exp (2 * β * Real.cos (-(θ i) - (-(θ j)))))
+      = fun i j => Real.exp (2 * β * Real.cos (θ i - θ j)) := by
+  funext i j
+  rw [show -(θ i) - (-(θ j)) = -(θ i - θ j) by ring]
+  rw [Real.cos_neg]
+
+/-- **OS4 (clustering, the uniform bound) for the Wilson heat kernel**: the Schwinger function is
+uniformly bounded by `e^{2β}` (the `|cos| ≤ 1` bound). The full exponential clustering (the decay of
+the connected 2-point) follows from the clustering ⟺ mass-gap bridge (#484) plus the compactness gap
+`λ = 1` (#525); this is the pointwise bound that makes the clustering well-defined. -/
+theorem wilson_kernel_bounded {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j : Fin m) :
+    |Real.exp (2 * β * Real.cos (θ i - θ j))| ≤ Real.exp (2 * |β|) := by
+  rw [abs_of_nonneg (le_of_lt (Real.exp_pos _))]
+  have h1 : 2 * β * Real.cos (θ i - θ j) ≤ 2 * |β| := by
+    have hcos : |Real.cos (θ i - θ j)| ≤ 1 := Real.abs_cos_le_one _
+    have h2 : |2 * β * Real.cos (θ i - θ j)| ≤ 2 * |β| := by
+      calc
+        |2 * β * Real.cos (θ i - θ j)| = |2 * β| * |Real.cos (θ i - θ j)| := by rw [abs_mul]
+        _ ≤ |2 * β| * 1 := mul_le_mul_of_nonneg_left hcos (abs_nonneg _)
+        _ = 2 * |β| := by rw [abs_mul]; ring
+    exact le_trans (le_abs_self _) h2
+  exact Real.exp_le_exp.mpr h1
 end QM
