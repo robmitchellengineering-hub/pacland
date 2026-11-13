@@ -15,6 +15,8 @@ derivative computation in the Gaussian-LSI chain.
 -/
 
 open scoped BigOperators
+open scoped MeasureTheory
+open Filter
 
 noncomputable section
 
@@ -193,5 +195,41 @@ lemma gaussian_density_hasDerivAt (x : ℝ) :
   have h := (Real.hasDerivAt_exp (x := -x ^ 2 / 2)).comp x hg
   rw [mul_comm]
   exact h
+
+/-- **The Gaussian integration by parts**: `∫ e^{-x²/2} f' = ∫ e^{-x²/2} x f`.
+
+From `integral_deriv_mul_eq_sub` with `u = f`, `v = e^{-x²/2}` (derivative `-x e^{-x²/2}`), boundary
+terms vanishing. This is the Dirichlet-form identity feeding the direct Bakry-Émery route. -/
+theorem gaussian_ibp (f : ℝ → ℝ)
+    (hfd : ∀ x, HasDerivAt f (deriv f x) x)
+    (hint1 : MeasureTheory.Integrable (fun x => deriv f x * Real.exp (-x^2/2)) MeasureTheory.volume)
+    (hint2 : MeasureTheory.Integrable (fun x => f x * (-x * Real.exp (-x^2/2))) MeasureTheory.volume)
+    (hbot : Tendsto (fun x => f x * Real.exp (-x^2/2)) atBot (nhds 0))
+    (htop : Tendsto (fun x => f x * Real.exp (-x^2/2)) atTop (nhds 0)) :
+    ∫ x, deriv f x * Real.exp (-x^2/2) = ∫ x, f x * x * Real.exp (-x^2/2) := by
+  have hv : ∀ x ∈ tsupport f, HasDerivAt (fun y => Real.exp (-y^2/2)) (-x * Real.exp (-x^2/2)) x := by
+    intro x hx
+    exact gaussian_density_hasDerivAt x
+  have h := MeasureTheory.integral_deriv_mul_eq_sub
+    (u := f) (v := fun x => Real.exp (-x^2/2))
+    (u' := deriv f) (v' := fun x => -x * Real.exp (-x^2/2))
+    (hu := by intro x hx; exact hfd x) (hv := hv) (huv := hint1.add hint2) (h_bot := hbot) (h_top := htop)
+  have hsplit : (∫ x, deriv f x * Real.exp (-x^2/2)) + (∫ x, f x * (-x * Real.exp (-x^2/2))) = 0 := by
+    rw [← MeasureTheory.integral_add hint1 hint2]
+    simpa using h
+  have hneg : (∫ x, f x * (-x * Real.exp (-x^2/2))) = -(∫ x, f x * (x * Real.exp (-x^2/2))) := by
+    have hcongr : (∫ x, f x * (-x * Real.exp (-x^2/2))) = (∫ x, -(f x * (x * Real.exp (-x^2/2)))) := by
+      apply MeasureTheory.integral_congr_ae
+      filter_upwards with x
+      ring
+    rw [hcongr]
+    rw [MeasureTheory.integral_neg]
+  rw [hneg] at hsplit
+  have hC : (∫ x, f x * x * Real.exp (-x^2/2)) = (∫ x, f x * (x * Real.exp (-x^2/2))) := by
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards with x
+    ring
+  rw [hC]
+  nlinarith
 
 end QM
