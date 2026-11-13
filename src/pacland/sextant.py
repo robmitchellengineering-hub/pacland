@@ -274,6 +274,39 @@ CATALOG: dict[str, dict] = {
          "verdict": "FORCED",
          "why": "a pure state stays pure under any unitary map (purity is invariant), so the interior's information cannot vanish — it is re-encoded in the Hawking radiation's entanglement. The mechanism of the recovery is the open part; the unitarity itself is forced.",
      },
+    "wang-criterion": {
+        "claim": "a positive spectral gap survives a measure-negligible negative-curvature region, when a Lyapunov drift forces return to the dominant state",
+        "theorem": "QM.WangCriterion (Lyapunov-weighted Poincaré) + QM.LogSobolev (log-Sobolev ⟹ spectral gap)",
+        "falsifier": "a measure-negligible negative-curvature region that still collapses the gap (no Lyapunov return)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "a pointwise curvature/expansion ceiling on a measure-negligible set (the SU(2) antipode, weight e^{-2β}) does not obstruct the gap — the Lyapunov drift returns the measure to the trivial connection. Use when a spectral-gap argument fails at a pointwise ceiling: check the failing set's measure, not its curvature.",
+    },
+    "concentration-gap": {
+        "claim": "the spectral gap of a Markov generator is the exponential concentration rate of its invariant measure around its dominant state",
+        "theorem": "QM.BakryEmery (Γ₂-calculus → spectral gap) + QM.LogSobolev",
+        "falsifier": "a generator whose invariant measure concentrates faster or slower than its spectral gap",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the gap is a concentration rate, not a curvature bound — the Wilson measure concentrates on the trivial connection, and the gap is how fast it does. Use when a 'curvature' picture stalls: reframe the gap as the leak rate from the dominant state.",
+    },
+    "mode-sum-exponent": {
+        "claim": "a non-perturbative exponent that is a sum over soft modes equals the beta-function coefficient (c = 1/(2b₀))",
+        "theorem": "QM.AsymptoticFreedom + QM.FullLatticeLyapunov (the collective soft mode)",
+        "falsifier": "a mode-sum exponent that does not match the beta-function coefficient",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the weak-coupling mass-gap exponent is the SUM over the low-momentum gluon modes, not a single tunneling event — that sum is the beta-function. Use when an exponent looks like it needs 'one more tunneling': it may be a mode sum, not a single instanton.",
+    },
+    "gauge-orbit-quotient": {
+        "claim": "running the spectral machinery on the gauge-invariant quotient removes the unphysical flat directions",
+        "theorem": "QM.GaugeOrbit (conjugacy-invariant trace) + QM.AxialGauge (global gauge fixing)",
+        "falsifier": "a quotient that fails to remove the gauge flat directions (a residual Gribov copy)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the trivial connection's gauge orbit is a flat direction that is gauge, not physics — quotient by it before running the spectral machinery. Use when a 'ceiling' sits on the gauge orbit: remove the flat directions first.",
+    },
+
 }
 
 VERDICT_GLYPH = {"FORCED": "●", "FREE": "○", "IMPOSSIBLE": "✕"}
