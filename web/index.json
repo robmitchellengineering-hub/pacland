@@ -466,6 +466,13 @@
    "title": "The constraint/observable split \u2014 the structure miner's answer"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/cs-kahler-convention.md",
+   "kind": "doc",
+   "path": "docs/cs-kahler-convention.md",
+   "summary": "The blocker named in src/pacland/limits.py for the instanton-corrected spectrum: \"the CS-vs-K\u00e4hler (mirror) moduli convention.\" This file records what that convention is, so the\u2026",
+   "title": "The CS-vs-K\u00e4hler (mirror) moduli convention \u2014 read from arXiv:2306.06160"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/cycles.md",
    "kind": "doc",
    "path": "docs/cycles.md",
