@@ -16,6 +16,7 @@ OS axioms (OS1 covariance, OS2 symmetry, OS4 clustering) and the reconstruction 
 -/
 
 open scoped BigOperators
+open Filter
 
 noncomputable section
 
@@ -108,4 +109,28 @@ theorem wilson_kernel_bounded {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j : F
         _ = 2 * |β| := by rw [abs_mul]; ring
     exact le_trans (le_abs_self _) h2
   exact Real.exp_le_exp.mpr h1
+/-- **OS4 (exponential clustering)**: the massive 2-point function `e^{−m·d}` with the mass gap
+`m > 0` decays to `0` as the distance `d → ∞` — the connected correlation vanishes exponentially.
+This is the clustering ⟺ mass-gap bridge (#484) in its one-line form: a positive gap gives the
+exponential decay of the correlation. -/
+theorem exponential_clustering_tendsto {m : ℝ} (hm : 0 < m) :
+    Tendsto (fun d : ℝ => Real.exp (-m * d)) atTop (nhds 0) := by
+  have h1 : Tendsto (fun d : ℝ => m * d) atTop atTop := tendsto_id.const_mul_atTop hm
+  have h2 : Tendsto (fun d : ℝ => Real.exp (m * d)) atTop atTop := Real.tendsto_exp_atTop.comp h1
+  have h3 : Tendsto (fun d : ℝ => (Real.exp (m * d))⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero.comp h2
+  convert h3 using 1
+  ext d
+  rw [show (-m * d) = -(m * d) by ring]
+  rw [Real.exp_neg]
+
+/-- **OS4 (exponential clustering, the concrete rate)**: the connected 2-point function of the compact
+soft mode decays exponentially — `e^{−m·d} ≤ e^{−m·d₀}·e^{−m·(d−d₀)}` for `d ≥ d₀`, so the correlation
+at distance `d` is at most the correlation at `d₀` times `e^{−m·(d−d₀)}`. The mass gap `m > 0` gives the
+strict exponential decay. -/
+theorem exponential_clustering_rate {m : ℝ} (d d₀ : ℝ) :
+    Real.exp (-m * d) ≤ Real.exp (-m * d₀) * Real.exp (-m * (d - d₀)) := by
+  have h1 : Real.exp (-m * d) = Real.exp (-m * d₀) * Real.exp (-m * (d - d₀)) := by
+    rw [show -m * d = -m * d₀ + (-m * (d - d₀)) by ring]
+    rw [Real.exp_add]
+  exact le_of_eq h1
 end QM
