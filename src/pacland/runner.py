@@ -298,6 +298,17 @@ def list_discoveries() -> list[dict]:
     return list(reversed(rows))
 
 
+def all_facts() -> dict[str, Fact]:
+    """The validated facts PLUS the promoted discoveries — the loop feeds survivors back as facts
+    the next run can combine/generalize over. This is what makes the engine *compound*."""
+    merged = dict(FACTS)
+    for d in list_discoveries():
+        merged[d["id"]] = Fact(
+            id=d["id"], statement=d["statement"], falsifier=d["falsifier"],
+            source=d["source"], category=d.get("category", "discovered"))
+    return merged
+
+
 def record(verdict: Verdict) -> Path:
     """Append a *structured* verdict (JSON, not prose) to the run record."""
     RECORD.parent.mkdir(parents=True, exist_ok=True)
@@ -332,7 +343,7 @@ def _main() -> int:
     args = ap.parse_args()
 
     if args.list_facts:
-        for fid, f in FACTS.items():
+        for fid, f in all_facts().items():
             print(f"{fid:16s} [{f.category:12s}] {f.statement}\n    falsifier: {f.falsifier}\n    source: {f.source}")
         return 0
     if args.list_strategies:
