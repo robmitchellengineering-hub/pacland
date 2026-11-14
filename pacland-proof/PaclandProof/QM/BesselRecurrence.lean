@@ -132,4 +132,15 @@ lemma bessel_recurrence {x : ℝ} (hx : 0 < x) :
     exact hsub'
   exact tendsto_nhds_unique hlhs hrhs
 
+/-- **The modified Bessel functions are decreasing in order** (the ν = 1 case): `I₂(x) < I₀(x)`
+for `x > 0`. Direct from the recurrence `I₀ − I₂ = (2/x)·I₁` and the positivity of `I₁`. This is the
+non-triviality of the spectral gap: the next-to-leading eigenvalue `I₂` is strictly below the
+leading `I₀`. -/
+lemma besselI2_lt_besselI0 {x : ℝ} (hx : 0 < x) : besselI 2 x < besselI 0 x := by
+  have hrec := bessel_recurrence hx
+  have hI1 : 0 < besselI 1 x := besselI_pos hx
+  have hpos : 0 < (2 / x) * besselI 1 x := mul_pos (div_pos two_pos hx) hI1
+  rw [← hrec] at hpos
+  linarith
+
 end QM
