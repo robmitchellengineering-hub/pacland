@@ -160,4 +160,18 @@ theorem asymptotic_freedom_physical_gap {A c : ℝ} (hA : 0 < A) (mGap spacing :
   rw [le_div_iff₀' hpos]
   simpa [mul_comm] using hm β
 
+/-- **The strong-coupling fragment of the join's proof** (the provable part). Below the Dobrushin
+ceiling the rate `massRate (alphaAt c n β)` is positive (`massRate_pos`), so a gap `mGap` bounded
+below by the rate (`mDobrushin ≤ mGap`, clause 0) is itself positive (clause 1). This is the maximal
+fragment of the join provable from the Dobrushin input alone; clauses (2)+(3) — the volume-uniform
+continuation to the continuum — are the open Clay rung (`dobrushin_not_volume_uniform` shows the rate
+itself fails them). -/
+theorem dobrushin_join_strong_coupling {c n : ℝ} (hc : 1 < c) (hn : 0 < n)
+    (mGap : ℝ → ℝ → ℝ)
+    (hdob : ∀ β V, 0 < massRate (alphaAt c n β) → massRate (alphaAt c n β) ≤ mGap β V) :
+    ∀ β V, alphaAt c n β < 1 → 0 < alphaAt c n β → 0 < mGap β V := by
+  intro β V hα1 hα0
+  have hrate : 0 < massRate (alphaAt c n β) := massRate_pos hα0 hα1
+  exact lt_of_lt_of_le hrate (hdob β V hrate)
+
 end QM
