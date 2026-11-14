@@ -176,6 +176,14 @@ FACTS: dict[str, Fact] = {
         category="yang-mills",
         formalization_target="(done) — feeds ClusteringGap (clustering ⟺ transfer-operator spectral gap) for the correlation-length = 1/gap condition",
     ),
+    "su2-spectral-gap-monotone": Fact(
+        id="su2-spectral-gap-monotone",
+        statement="the transfer-matrix spectral gap is monotone decreasing in the coupling: for the 1-link SU(2) (Z₂ torus) transfer matrix the gap m(β) = -log(tanh β) is antitone — the toy pattern the full-lattice gap needs",
+        falsifier="a β₁ < β₂ with tanh β₁ > tanh β₂ (the gap ratio increasing)",
+        source="PaclandProof.QM.TransferMatrixGap.isingGap_antitone (Lean, kernel-checked; via tanh_mono)",
+        category="yang-mills",
+        formalization_target="the 1-link full-torus monotonicity: bessel_ratio_mono (I₁/I₀ increasing) — the Bessel-ratio spectral gap, generalizing tanh to the continuous torus",
+    ),
 }
 
 
