@@ -74,6 +74,21 @@
     <button class="ghost" onclick="askAI()">Ask your AI to attack the selected quest</button>
     <div id="aiReply" class="mono"></div>
   </section>
+  <section>
+    <h2>Prove a theorem <span class="muted">(the engine's prover — propose → kernel-check → repair)</span></h2>
+    <div class="muted" style="font-size:12px">Paste a Lean statement with a <code>sorry</code>. The prover asks the AI
+      (same endpoint/model as above) to complete it, then the Lean kernel checks the result, and on failure the
+      error is fed back for a bounded repair. Only a kernel-checked proof comes back as ok.</div>
+    <textarea id="pStatement" placeholder="import Mathlib
+
+theorem your_theorem : … := by
+  sorry"></textarea>
+    <div class="row">
+      <button onclick="proveTheorem()">Prove it</button>
+      <button class="ghost" onclick="document.getElementById('pStatement').value=''">clear</button>
+    </div>
+    <div id="proveOut" class="mono"></div>
+  </section>
 </main>
 <script>
 let state = { claims: [], hypotheses: [] };
@@ -165,6 +180,25 @@ async function askAI() {
   const r = await fetch('/api/ai', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
   const j = await r.json();
   out.textContent = j.reply || ('error: ' + (j.error || 'unknown'));
+}
+
+async function proveTheorem() {
+  const statement = document.getElementById('pStatement').value.trim();
+  const out = document.getElementById('proveOut');
+  if (!statement) { out.textContent = 'paste a Lean statement first.'; return; }
+  out.textContent = 'proving (propose → kernel-check → repair)…';
+  const body = { statement, attempts: 5 };
+  try {
+    const r = await fetch('/api/prove', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const j = await r.json();
+    if (j.ok) {
+      out.textContent = 'KERNEL-CHECKED ✓ (attempt ' + j.attempts + ')\n\n' + j.code;
+    } else {
+      out.textContent = 'not proved: ' + (j.error || j.last_error || 'unknown');
+    }
+  } catch (e) {
+    out.textContent = 'prover error: ' + e;
+  }
 }
 
 load();

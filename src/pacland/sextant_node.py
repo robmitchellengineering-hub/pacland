@@ -27,6 +27,7 @@ sys.path.insert(0, str(_SRC))
 from pacland import phantom  # noqa: E402
 from pacland import sextant  # noqa: E402
 from pacland import hypotheses  # noqa: E402
+from pacland import runner  # noqa: E402
 
 REPO_ROOT = _SRC.parent  # .../pacland
 NODE_HTML = REPO_ROOT / "web" / "node.html"
@@ -195,6 +196,13 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json({"reply": _ask_ai(payload)})
             except Exception as exc:  # the visitor's AI is unreachable/misconfigured
                 return self._json({"error": f"could not reach your AI: {exc}"}, 502)
+        if path == "/api/prove":
+            statement = payload.get("statement", "")
+            attempts = int(payload.get("attempts", 5))
+            if not statement:
+                return self._json({"error": "statement (Lean code with a sorry) is required"}, 400)
+            result = runner.prove(statement, attempts=attempts)
+            return self._json(result, 200 if result.get("ok") else 422)
         return self._json({"error": "not found"}, 404)
 
     def log_message(self, *args) -> None:  # keep the console quiet

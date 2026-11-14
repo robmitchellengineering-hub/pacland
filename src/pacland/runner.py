@@ -20,12 +20,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import re
+import subprocess
 import sys
+import urllib.request
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+from pacland import hypotheses  # noqa: E402  (the open-question registry the runner decomposes)
+
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # .../pacland
+PROOF_DIR = REPO_ROOT / "pacland-proof"
 RECORD = REPO_ROOT / "runs" / "runner.jsonl"
 DISCOVERIES = REPO_ROOT / "runs" / "discoveries.jsonl"
 
@@ -179,6 +186,7 @@ STRATEGIES: dict[str, str] = {
     "generalize": "generalize a fact to a wider scope",
     "specialize": "specialize an open question to a computable instance",
     "conjecture-value": "conjecture a concrete value from an open question and falsify it",
+    "decompose": "decompose an OPEN hypothesis into its next falsifiable sub-lemma (the frontier move)",
 }
 
 
@@ -234,12 +242,197 @@ def generate(fact_ids: list[str], strategy: str) -> Candidate:
             test="su2-weak-coupling",
         )
 
+    if strategy == "decompose":
+        # the frontier move: emit the OPEN hypothesis's next falsifiable sub-lemma.
+        return next_sublemma(fact_ids[0])
+
     raise ValueError(f"no candidate for facts {fact_ids} under strategy {strategy!r}")
 
 
 # ------------------------------------------------------------------------------------------ #
-# The runner: test → verdict → promote | drop → record.
+# The frontier generator: decompose an OPEN hypothesis into its next falsifiable sub-lemma.
+# This is the move the recombination strategies cannot make — it points at the *unproven* step
+# (from the hypothesis's candidates) instead of re-deriving a known fact.
 # ------------------------------------------------------------------------------------------ #
+
+def _slug(text: str) -> str:
+    """A short stable id from a candidate hypothesis string."""
+    words = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-").split("-")
+    return "-".join(words[:6]) or "sublemma"
+
+
+def _runnable_test(statement: str) -> str:
+    """A runnable falsifier key for a candidate sub-lemma, or "" when it needs a thinking agent.
+
+    Honest by design: only the sub-lemmas with a real falsifier get one; the rest are emitted as
+    ``MANUAL`` so the engine says "here is the next thing to prove/refute" without pretending it
+    can test it. Add a falsifier to ``FALSIFIERS`` and map it here to make a sub-lemma runnable.
+    """
+    if "string tension" in statement or "area law" in statement:
+        return "su2-weak-coupling"          # the Creutz ratio tests the area law / confinement
+    if "glueball" in statement and "m/sqrt" in statement:
+        return "glueball-mass-ratio"
+    return ""
+
+
+def _prior_refuted() -> set[str]:
+    """The candidate statements already REFUTED in the record — decompose skips them so the
+    engine compounds (it never re-emits a sub-lemma it has already killed)."""
+    if not RECORD.exists():
+        return set()
+    refuted = set()
+    for line in RECORD.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if row.get("verdict") == "REFUTED":
+            refuted.add(row.get("statement", ""))
+    return refuted
+
+
+def next_sublemma(hypothesis_id: str) -> Candidate:
+    """The next falsifiable sub-lemma of an OPEN hypothesis — its first candidate that is not yet
+    refuted, with the falsifier that would refute it. Grounded in ``hypotheses.HYPOTHESES`` (not a
+    free-floating conjecture): the hypothesis already carries the decomposition; this emits one rung
+    of it, skipping any rung the runner has already killed.
+    """
+    if hypothesis_id not in hypotheses.HYPOTHESES:
+        raise ValueError(
+            f"unknown hypothesis {hypothesis_id!r}; known: {', '.join(hypotheses.HYPOTHESES)}")
+    h = hypotheses.HYPOTHESES[hypothesis_id]
+    refuted = _prior_refuted()
+    for cand in h.get("candidates", []):
+        statement = cand["hypothesis"]
+        if statement in refuted:
+            continue
+        return Candidate(
+            id=f"{hypothesis_id}::{_slug(statement)}",
+            statement=statement,
+            falsifier=cand["falsifier"],
+            strategy="decompose",
+            source_facts=(hypothesis_id,),
+            test=_runnable_test(statement),
+        )
+    raise ValueError(f"hypothesis {hypothesis_id!r} has no candidates to decompose")
+
+
+# ------------------------------------------------------------------------------------------ #
+# The prover: formalize → LLM-propose → kernel-check → repair → record.
+# This is the loop that turns the engine from a *pointer* into a *prover* for the reachable
+# rungs. It proves "assemble known lemmas into a new theorem"; it does not do novel mathematics
+# (that is Level 2 — proof search with RL). Config via env: SEXTANT_LLM_ENDPOINT / _KEY / _MODEL.
+# ------------------------------------------------------------------------------------------ #
+
+def _llm_config() -> tuple[str, str, str]:
+    """The OpenAI-compatible endpoint, key and model from the environment."""
+    return (
+        os.environ.get("SEXTANT_LLM_ENDPOINT", "http://localhost:11434/v1"),
+        os.environ.get("SEXTANT_LLM_KEY", ""),
+        os.environ.get("SEXTANT_LLM_MODEL", ""),
+    )
+
+
+def _ask_llm(prompt: str, endpoint: str, key: str, model: str) -> str:
+    """One OpenAI-compatible ``/chat/completions`` call, returning the assistant text."""
+    body = json.dumps({
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+    }).encode()
+    headers = {"Content-Type": "application/json"}
+    if key:
+        headers["Authorization"] = f"Bearer {key}"
+    req = urllib.request.Request(
+        f"{endpoint.rstrip('/')}/chat/completions", data=body, headers=headers, method="POST")
+    with urllib.request.urlopen(req, timeout=300) as resp:
+        data = json.load(resp)
+    return data["choices"][0]["message"]["content"]
+
+
+def _check_lean(code: str) -> tuple[bool, str]:
+    """Write the proposal to a temp file inside the proof tree and run the Lean kernel.
+
+    Returns ``(ok, error)`` — ``ok`` when ``lake env lean`` exits 0, else the kernel's message
+    (trimmed to the tail, which carries the error).
+    """
+    if not PROOF_DIR.exists():
+        return False, f"proof tree not found at {PROOF_DIR}"
+    d = PROOF_DIR / ".prove"
+    d.mkdir(exist_ok=True)
+    f = d / "Proposal.lean"
+    f.write_text(code, encoding="utf-8")
+    env = dict(os.environ)
+    elan = str(Path.home() / ".elan" / "bin")
+    env["PATH"] = elan + os.pathsep + env.get("PATH", "")
+    try:
+        r = subprocess.run(
+            ["lake", "env", "lean", str(f)],
+            cwd=str(PROOF_DIR), capture_output=True, text=True, timeout=600, env=env,
+        )
+    except FileNotFoundError:
+        return False, "lake not found — is the Lean toolchain installed and on PATH?"
+    except subprocess.TimeoutExpired:
+        return False, "kernel timed out (600s)"
+    if r.returncode == 0:
+        return True, ""
+    return False, (r.stdout + r.stderr).strip()[-4000:]
+
+
+def _proof_prompt(statement: str, error: str | None) -> str:
+    """The prover prompt: complete the Lean code, replacing ``sorry`` with a real proof."""
+    err = (
+        f"\n\nYour previous attempt did NOT compile. The kernel said:\n{error}\n"
+        f"Fix the proof and output the corrected, complete Lean code (imports + theorem + proof)."
+        if error else ""
+    )
+    return (
+        "You are a Lean 4 theorem prover. Output a COMPLETE, compiling Lean 4 file.\n\n"
+        f"The file to complete (replace every `sorry` with a real proof):\n\n{statement}\n\n"
+        "Rules:\n"
+        "- Output ONLY Lean code (no markdown fences, no prose).\n"
+        "- Use Mathlib and the imports already in the file; do not add `axiom` or `sorry`.\n"
+        "- The file must compile under `lake env lean`."
+        f"{err}"
+    )
+
+
+def prove(statement: str, attempts: int = 5, save: str | None = None) -> dict:
+    """One run of the prove loop: propose → kernel-check → repair, up to ``attempts`` tries.
+
+    ``statement`` is the full Lean file to complete (imports + theorem with a ``sorry``). On success
+    returns ``ok`` + the compiled code; optionally persists it to ``save`` (a ``.lean`` path) so a
+    proven theorem lands in the tower rather than only on stdout.
+    """
+    endpoint, key, model = _llm_config()
+    if not model:
+        return {"ok": False, "error": "no LLM configured — set SEXTANT_LLM_ENDPOINT / "
+                                     "SEXTANT_LLM_MODEL (and SEXTANT_LLM_KEY if the endpoint needs it)"}
+    error = None
+    for i in range(attempts):
+        try:
+            code = _ask_llm(_proof_prompt(statement, error), endpoint, key, model)
+        except Exception as e:  # noqa: BLE001 — network / API failures are not fatal, report them
+            return {"ok": False, "attempts": i + 1, "error": f"LLM call failed: {type(e).__name__}: {e}"}
+        code = code.strip()
+        if code.startswith("```"):
+            code = re.sub(r"^```[a-z]*\n?", "", code)
+            code = re.sub(r"\n?```$", "", code)
+        ok, err = _check_lean(code)
+        if ok:
+            saved = None
+            if save:
+                Path(save).parent.mkdir(parents=True, exist_ok=True)
+                Path(save).write_text(code + "\n", encoding="utf-8")
+                saved = save
+            return {"ok": True, "attempts": i + 1, "code": code, "checked_by": "lake env lean",
+                    "saved": saved}
+        error = err
+    return {"ok": False, "attempts": attempts, "last_error": error}
+
+
+
 
 @dataclass
 class Verdict:
@@ -256,7 +449,19 @@ class Verdict:
 def run(candidate: Candidate) -> Verdict:
     test = FALSIFIERS.get(candidate.test)
     if test is None:
-        raise ValueError(f"no falsifier registered for {candidate.test!r}")
+        # A decomposed sub-lemma without a runnable falsifier is not an error — it is the
+        # *frontier*: the engine names the next unproven step and says so, instead of pretending.
+        return Verdict(
+            candidate_id=candidate.id,
+            statement=candidate.statement,
+            strategy=candidate.strategy,
+            source_facts=list(candidate.source_facts),
+            survived=None,
+            verdict="MANUAL",
+            evidence=f"no runnable falsifier — this sub-lemma needs a thinking agent "
+                     f"(falsifier to check: {candidate.falsifier})",
+            timestamp=datetime.now(timezone.utc).isoformat(),
+        )
     survived, evidence = test()
     survived = bool(survived)  # cast numpy.bool_ → Python bool (JSON-serializable)
     return Verdict(
@@ -273,7 +478,10 @@ def run(candidate: Candidate) -> Verdict:
 
 def promote(verdict: Verdict) -> str:
     """A survived candidate becomes a new validated fact, persisted to the discoveries store so the
-    next run can build on it; a refuted one is dropped. Returns the promotion note."""
+    next run can build on it; a refuted one is dropped; a MANUAL one is recorded as an open step.
+    Returns the promotion note."""
+    if verdict.survived is None:
+        return f"MANUAL {verdict.candidate_id} → recorded as an open sub-lemma (needs a thinking agent)"
     if verdict.survived:
         fact = {
             "id": verdict.candidate_id,
@@ -339,7 +547,14 @@ def _main() -> int:
     ap.add_argument("--list-discoveries", action="store_true")
     ap.add_argument("--fact", action="append", default=[], help="fact id (repeatable)")
     ap.add_argument("--strategy", choices=list(STRATEGIES))
+    ap.add_argument("--list-open", action="store_true", help="list the OPEN hypotheses and their next sub-lemma")
+    ap.add_argument("--decompose", metavar="HYPOTHESIS", help="decompose one OPEN hypothesis into its next sub-lemma")
     ap.add_argument("--advance-all", action="store_true")
+    ap.add_argument("--prove", nargs="?", const="", metavar="FILE",
+                    help="run the prove loop (FILE = a .lean file with the statement + sorry)")
+    ap.add_argument("--statement", help="inline Lean code to prove (implies --prove)")
+    ap.add_argument("--prove-attempts", type=int, default=5, help="max LLM repair attempts (default 5)")
+    ap.add_argument("--prove-save", metavar="PATH", help="save the proven .lean file to PATH (relative to the proof tree)")
     args = ap.parse_args()
 
     if args.list_facts:
@@ -354,11 +569,45 @@ def _main() -> int:
         for d in list_discoveries():
             print(f"{d['id']:32s} {d['statement']}\n    source: {d['source']}\n    evidence: {d['falsifier']}")
         return 0
+    if args.list_open:
+        for hid, h in hypotheses.HYPOTHESES.items():
+            cands = h.get("candidates", [])
+            first = cands[0] if cands else None
+            print(f"◇ {hid}\n    open: {h.get('open', '(none)')}")
+            if h.get("progress"):
+                print(f"    progress: {h['progress']}")
+            if first:
+                print(f"    next : {first['hypothesis']}\n    falsifier: {first['falsifier']}"
+                      f"  [{ 'runnable' if _runnable_test(first['hypothesis']) else 'manual — needs a thinking agent' }]")
+            else:
+                print("    next : (no candidates)")
+        return 0
+    if args.decompose:
+        v = advance([args.decompose], "decompose")
+        print(_fmt(v))
+        return 0
     if args.advance_all:
-        for (a, b) in [(["ou-curvature", "gronwall-decay"], "combine"), (["confinement-frontier"], "specialize")]:
+        # the recombinations (known facts) + the frontier move (every OPEN hypothesis decomposed)
+        turns = [(["ou-curvature", "gronwall-decay"], "combine"), (["confinement-frontier"], "specialize")]
+        turns += [([hid], "decompose") for hid in hypotheses.HYPOTHESES]
+        for (a, b) in turns:
             v = advance(a, b)
             print(_fmt(v))
         return 0
+    if args.prove is not None or args.statement:
+        statement = args.statement
+        if statement is None:
+            f = Path(args.prove)
+            if not f.exists():
+                print(f"file not found: {f}", file=sys.stderr)
+                return 1
+            statement = f.read_text(encoding="utf-8")
+        save = None
+        if args.prove_save:
+            save = str(PROOF_DIR / args.prove_save)
+        result = prove(statement, attempts=args.prove_attempts, save=save)
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("ok") else 1
     if args.fact and args.strategy:
         v = advance(args.fact, args.strategy)
         print(_fmt(v))
