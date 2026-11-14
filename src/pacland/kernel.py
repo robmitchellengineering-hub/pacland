@@ -44,27 +44,35 @@ def _mul(a0, a1, a2, a3, b0, b1, b2, b3):
 
 
 @nb.njit(inline="always")
+def _shift(idx, d, N, axis, delta):
+    """Row-major flat index of the neighbor: idx = c0*N^3 + c1*N^2 + c2*N + c3."""
+    c3 = idx % N
+    c2 = (idx // N) % N
+    c1 = (idx // (N * N)) % N
+    c0 = idx // (N * N * N)
+    if axis == 0:
+        c0 = (c0 + delta) % N
+    elif axis == 1:
+        c1 = (c1 + delta) % N
+    elif axis == 2:
+        c2 = (c2 + delta) % N
+    else:
+        c3 = (c3 + delta) % N
+    return c0 * N * N * N + c1 * N * N + c2 * N + c3
+
+
+@nb.njit(inline="always")
 def _plaquette(links, d, N, mu, nu, idx):
-    """Re Tr of the (mu,nu) plaquette at flat site idx."""
-    # coords of idx (little-endian base N)
-    c0 = idx % N
-    c1 = (idx // N) % N
-    c2 = (idx // (N*N)) % N
-    c3 = idx // (N*N*N)
-    coords = (c0, c1, c2, c3)
-    # +mu neighbor
-    cm = list(coords); cm[mu] = (cm[mu] + 1) % N
-    xm = cm[0] + cm[1]*N + cm[2]*N*N + cm[3]*N*N*N
-    # +nu neighbor
-    cn = list(coords); cn[nu] = (cn[nu] + 1) % N
-    xn = cn[0] + cn[1]*N + cn[2]*N*N + cn[3]*N*N*N
+    """Re Tr of the (mu,nu) plaquette at flat site idx (row-major)."""
+    xm = _shift(idx, d, N, mu, 1)
+    xn = _shift(idx, d, N, nu, 1)
     # U_mu(x) U_nu(x+mu) U_mu(x+nu)^† U_nu(x)^†
     a = _mul(links[mu, idx, 0], links[mu, idx, 1], links[mu, idx, 2], links[mu, idx, 3],
              links[nu, xm, 0], links[nu, xm, 1], links[nu, xm, 2], links[nu, xm, 3])
     b = _mul(a[0], a[1], a[2], a[3],
-             -links[mu, xn, 0], -links[mu, xn, 1], -links[mu, xn, 2], -links[mu, xn, 3])
+             links[mu, xn, 0], -links[mu, xn, 1], -links[mu, xn, 2], -links[mu, xn, 3])
     c = _mul(b[0], b[1], b[2], b[3],
-             -links[nu, idx, 0], -links[nu, idx, 1], -links[nu, idx, 2], -links[nu, idx, 3])
+             links[nu, idx, 0], -links[nu, idx, 1], -links[nu, idx, 2], -links[nu, idx, 3])
     return 2.0 * c[0]
 
 
@@ -81,12 +89,8 @@ def sweep(links, beta, state, d, N, n_sweeps):
                 for nu in range(d):
                     if nu == mu:
                         continue
-                    for delta in (1, -1):
-                        # neighbor in nu by delta (flat index)
-                        c0 = idx % N; c1 = (idx // N) % N; c2 = (idx // (N*N)) % N; c3 = idx // (N*N*N)
-                        cc = [c0, c1, c2, c3]
-                        cc[nu] = (cc[nu] + delta) % N
-                        xn = cc[0] + cc[1]*N + cc[2]*N*N + cc[3]*N*N*N
+                    for delta in (0, -1):
+                        xn = _shift(idx, d, N, nu, delta)
                         links[mu, idx, 0] = old[0]; links[mu, idx, 1] = old[1]
                         links[mu, idx, 2] = old[2]; links[mu, idx, 3] = old[3]
                         s_old = _plaquette(links, d, N, mu, nu, xn)
@@ -96,9 +100,10 @@ def sweep(links, beta, state, d, N, n_sweeps):
                         dS += -0.5 * (s_new - s_old)
                 dS *= beta
                 r = _next(state)
-                if not (dS > 0.0 and r > math.exp(-dS)):
-                    links[mu, idx, 0] = new[0]; links[mu, idx, 1] = new[1]
-                    links[mu, idx, 2] = new[2]; links[mu, idx, 3] = new[3]
+                if dS > 0.0 and r > math.exp(-dS):
+                    # reject: the staple left the link as `new`, restore `old`
+                    links[mu, idx, 0] = old[0]; links[mu, idx, 1] = old[1]
+                    links[mu, idx, 2] = old[2]; links[mu, idx, 3] = old[3]
     return links
 
 
@@ -108,3 +113,55 @@ def metropolis_nb(links, beta, n_sweeps, seed=0):
     N = int(round(links.shape[1] ** (1.0 / d)))
     state = np.array([seed + 1, seed + 123456789], dtype=np.uint64)
     return sweep(links.copy(), beta, state, d, N, n_sweeps)
+
+
+@nb.njit
+def _spatial_plaq_sum(links, d, N, t):
+    """Sum of spatial plaquettes at time slice t (the 0++ glueball operator), zero-momentum."""
+    total = 0.0
+    for x in range(N):
+        for y in range(N):
+            for z in range(N):
+                idx = t*N*N*N + x*N*N + y*N + z
+                for mu in range(1, d):
+                    for nu in range(mu + 1, d):
+                        total += _plaquette(links, d, N, mu, nu, idx)
+    return total
+
+
+@nb.njit
+def measure_glueball(beta, d, N, n_sweeps, n_meas, seed, n_between=3):
+    """Full Numba glueball measurement: thermalize + measure the connected plaquette correlator.
+
+    Returns (C, m_eff, gbar): C[dt] is the connected <G(t)G(t+dt)> - <G>², m_eff the effective mass."""
+    n = N**d
+    links = np.empty((d, n, 4), dtype=np.float64)
+    state = np.array([seed + 1, seed + 123456789], dtype=np.uint64)
+    # initialize + thermalize
+    for mu in range(d):
+        for idx in range(n):
+            q = _rand4(state)
+            links[mu, idx, 0] = q[0]; links[mu, idx, 1] = q[1]; links[mu, idx, 2] = q[2]; links[mu, idx, 3] = q[3]
+    sweep(links, beta, state, d, N, n_sweeps)
+    g_sum = np.zeros(N)
+    cross = np.zeros(N)
+    for _ in range(n_meas):
+        sweep(links, beta, state, d, N, n_between)
+        g = np.empty(N)
+        for t in range(N):
+            g[t] = _spatial_plaq_sum(links, d, N, t)
+        g_sum += g
+        for dt in range(N):
+            s = 0.0
+            for t in range(N):
+                s += g[t] * g[(t + dt) % N]
+            cross[dt] += s
+    g_mean = g_sum / n_meas
+    gbar = g_mean.mean()
+    C = np.empty(N)
+    for dt in range(N):
+        C[dt] = cross[dt] / (n_meas * N) - gbar * gbar
+    m_eff = np.empty(N - 1)
+    for dt in range(N - 1):
+        m_eff[dt] = -math.log(max(C[dt + 1], 1e-12) / max(C[dt], 1e-12))
+    return C, m_eff, gbar
