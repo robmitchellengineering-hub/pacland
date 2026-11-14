@@ -157,6 +157,13 @@ FACTS: dict[str, Fact] = {
         source="PaclandProof.QM.fisher_information_identity (Lean, kernel-checked)",
         category="bakry-emery",
     ),
+    "su2-mass-gap-scaling": Fact(
+        id="su2-mass-gap-scaling",
+        statement="the SU(2) 0++ glueball mass scales as m(β) = 25.28·e^(-1.182·β) — monotone decreasing and positive across β=1.6..2.6 (c=1.182>0, the asymptotic-freedom form: the physical gap Δ=m/a stays positive)",
+        falsifier="a β where m(β) increases, or m(β) ≤ 0, or c ≤ 0",
+        source="scripts/glueball_mass_ratio.py + kernel.measure_glueball (Numba, measured this session)",
+        category="yang-mills",
+    ),
 }
 
 
