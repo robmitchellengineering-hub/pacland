@@ -112,4 +112,22 @@ instantiation, not a proof of the join. -/
 def refereeScalingLaw (mGap : ℝ → ℝ) : Prop :=
   asymptoticFreedomLowerBound mGap (25.28) (1.182)
 
+/-- **The Dobrushin rate fails the asymptotic-freedom lower bound** — the precise statement that the
+strong-coupling bound cannot be the join's clause (2). For any positive A, c′, the Dobrushin rate
+`massRate (alphaAt c n β)` is negative past the ceiling while `A·e^(−c′β) > 0`, so no positive
+asymptotic-freedom bound holds. This connects the obstruction (round 12) to the referee instantiation
+(round 13): the join needs a bound *other* than Dobrushin. -/
+theorem dobrushin_fails_asymptotic_freedom {c n : ℝ} (hc : 1 < c) (hn : 0 < n) :
+    ∀ A c' : ℝ, 0 < A → ¬ asymptoticFreedomLowerBound (fun β => massRate (alphaAt c n β)) A c' := by
+  intro A c' hA hb
+  have hceiling : alphaAt c n (ceilingBeta c n) = 1 := alphaAt_ceiling_eq_one hc (ne_of_gt hn)
+  have hα : 1 < alphaAt c n (ceilingBeta c n + 1) := by
+    rw [← hceiling]
+    exact alphaAt_strictMono (lt_trans zero_lt_one hc) hn (by linarith)
+  have hneg : massRate (alphaAt c n (ceilingBeta c n + 1)) < 0 := massRate_neg_of_one_lt hα
+  have hpos : 0 < A * Real.exp (-c' * (ceilingBeta c n + 1)) := mul_pos hA (Real.exp_pos _)
+  have hb' : A * Real.exp (-c' * (ceilingBeta c n + 1)) ≤ massRate (alphaAt c n (ceilingBeta c n + 1)) :=
+    hb (ceilingBeta c n + 1)
+  exact not_lt_of_ge hb' (lt_trans hneg hpos)
+
 end QM
