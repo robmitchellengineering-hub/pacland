@@ -53,3 +53,30 @@ The effective sampler is `scripts/sample_h12_ds.py` (PR #575).
   | 10 | 4 | 547 | 338 | **61.8%** | [57.7%, 65.8%] |
 
   Flat (59.5%–79.0%), every interval tight (n ≥ 200) — the opposite of the retracted "collapse".
+
+  > **Caveat (added 2026-11-14):** "in-domain" = |z| in the sampler's arbitrary seed window (1.0, 5.0),
+  > not a physics domain. The SUSY vacua are genuinely spread over a broad |z| range (h12=5 spans
+  > [2.6, 89.5], h12=6 spans [0.6, 23.4]); the seed window does not bound them. So the "in-domain
+  > fraction" above is a *modulus-distribution* statistic, not a SUSY-existence statistic.
+
+## The real signal under the garbled claim — a *stability* collapse
+
+The retracted "collapse" was garbling a genuine effect. Classifying each SUSY vacuum by its Hessian
+(positive-definite mass matrix = stable minimum; otherwise a saddle/tachyonic direction):
+
+| h12 | model_ID | SUSY vacua | stable minima | fraction |
+|---|---|---|---|---|
+| 2 | 1 | 634 | 57 | **9.0%** |
+| 3 | 2 | 203 | 0 | 0.0% |
+| 4 | 1 | 249 | 0 | 0.0% |
+| 5 | 2 | 160 | 0 | 0.0% |
+| 6 | 1 | 472 | 1 | 0.2% |
+
+**Stable SUSY minima drop from ~9% at h12=2 to ≤0.2% at h12≥3** — a sharp *stability cliff*, not the
+smooth "SUSY collapse" the old headline claimed. The SUSY vacua do not disappear (hundreds at every
+h12); the **stable** ones essentially do.
+
+Verified: the Hessian classification is cleanly bimodal (min-eigenvalues are deeply negative or
+clearly positive, nothing near zero) and two independent computations (`mode="SUSY"` and `mode=None`)
+agree to 2 decimals. Caveat: h12=3 and h12=5 use model_ID=2 (model_ID=1 has no Kähler cone there), so
+the cliff is measured within model_ID=1 (h12=2→4→6: 9% → 0% → 0.2%) and is consistent.
