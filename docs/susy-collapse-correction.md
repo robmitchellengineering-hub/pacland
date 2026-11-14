@@ -78,5 +78,20 @@ h12); the **stable** ones essentially do.
 
 Verified: the Hessian classification is cleanly bimodal (min-eigenvalues are deeply negative or
 clearly positive, nothing near zero) and two independent computations (`mode="SUSY"` and `mode=None`)
-agree to 2 decimals. Caveat: h12=3 and h12=5 use model_ID=2 (model_ID=1 has no Kähler cone there), so
-the cliff is measured within model_ID=1 (h12=2→4→6: 9% → 0% → 0.2%) and is consistent.
+agree to 2 decimals. The cliff is robust across model_ID (both triangulations):
+
+| model_ID | h12=2 | h12=4 | h12=6 |
+|---|---|---|---|
+| 1 | 9.0% | 0.0% | 0.2% |
+| 2 | 15.9% | 0.0% | 0.0% |
+
+(For the mixed table above, h12=3 and h12=5 use model_ID=2 because model_ID=1 has no Kähler cone there.)
+
+### Literature cross-check
+
+This is the known flux-vacua physics, not a model quirk. Denef–Douglas ("Distributions of flux vacua",
+hep-th/0404116) show the mass matrix satisfies `M = H² − 3Λ̂^{1/2}H`, so stability (`M > 0`) requires the
+eigenvalues of `H` to avoid a tachyonic window `0 < λ < 3Λ̂^{1/2}` — a random-matrix condition whose
+*stable fraction decreases with the number of moduli* (more eigenvalues → more chances for a tachyon).
+Measured here: ~10–16% at h12=2 (3 fields incl. dilaton), ≤0.2% at h12≥3 — **same direction and the
+same order of magnitude** as the known result.
