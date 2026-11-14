@@ -628,4 +628,24 @@ theorem barrier_pos {β : ℝ} (hβ : 1 < β) :
   have hβI1 : 0 < β * besselI 1 β - (β - 1) * besselI 0 β := lt_trans hw1 hw
   exact hβI1
 
+/-- **The concentration bound**: `1 − I₁/I₀ ≤ 1/β` for all β > 0. For β ≤ 1 the activity is ≤ 1 ≤ 1/β;
+for β > 1 the barrier `βI₁ − (β−1)I₀ > 0` gives `I₁/I₀ > (β−1)/β = 1 − 1/β`. This is the ym-bakry-ceiling
+antipode-suppression bound — the Clay step, now closed. -/
+theorem bessel_activity_le_one_div_beta {β : ℝ} (hβ : 0 < β) :
+    1 - besselI 1 β / besselI 0 β ≤ 1 / β := by
+  by_cases hβle : β ≤ 1
+  · have hI0 : 0 < besselI 0 β := besselI_pos hβ
+    have hI1 : 0 ≤ besselI 1 β := le_of_lt (besselI_pos hβ)
+    have hratio : 0 ≤ besselI 1 β / besselI 0 β := div_nonneg hI1 (le_of_lt hI0)
+    have hle1 : 1 - besselI 1 β / besselI 0 β ≤ 1 := by linarith
+    have hle2 : (1 : ℝ) ≤ 1 / β := (one_le_div hβ).mpr hβle
+    exact le_trans hle1 hle2
+  · have hβ1 : 1 < β := lt_of_not_ge hβle
+    have hbar := barrier_pos hβ1
+    have hI0 : 0 < besselI 0 β := besselI_pos hβ
+    have h : 1 - besselI 1 β / besselI 0 β < 1 / β := by
+      field_simp [ne_of_gt hI0, ne_of_gt hβ]
+      nlinarith [hbar]
+    exact le_of_lt h
+
 end QM
