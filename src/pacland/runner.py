@@ -160,8 +160,8 @@ FACTS: dict[str, Fact] = {
     ),
     "su2-mass-gap-scaling": Fact(
         id="su2-mass-gap-scaling",
-        statement="the SU(2) 0++ glueball mass scales as m(β) = 25.28·e^(-1.182·β) — monotone decreasing and positive across β=1.6..2.6 (c=1.182>0, the asymptotic-freedom form: the physical gap Δ=m/a stays positive)",
-        falsifier="a β where m(β) increases, or m(β) ≤ 0, or c ≤ 0",
+        statement="the SU(2) 0++ glueball mass scales as m(β) = 25.28·e^(-1.182·β) (round-8 fit; re-measurement gives 29.24·e^(-1.252β), so A,c carry ~15% MC noise) — monotone decreasing and positive across β=1.6..2.6. The ROBUST referee is the ratio m/√σ ≈ 3.2 (±5%).",
+        falsifier="a β where m(β) increases, or m(β) ≤ 0, or c ≤ 0, or m/√σ outside 3.2±0.5",
         source="scripts/glueball_mass_ratio.py + kernel.measure_glueball (Numba, measured this session)",
         category="yang-mills",
         formalization_target="PaclandProof.QM.tanh_mono (monotonicity of the transfer-matrix spectral gap) "
