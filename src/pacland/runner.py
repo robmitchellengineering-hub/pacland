@@ -20,8 +20,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
+import subprocess
 import sys
+import urllib.request
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -29,6 +32,7 @@ from pathlib import Path
 from pacland import hypotheses  # noqa: E402  (the open-question registry the runner decomposes)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # .../pacland
+PROOF_DIR = REPO_ROOT / "pacland-proof"
 RECORD = REPO_ROOT / "runs" / "runner.jsonl"
 DISCOVERIES = REPO_ROOT / "runs" / "discoveries.jsonl"
 
@@ -316,8 +320,119 @@ def next_sublemma(hypothesis_id: str) -> Candidate:
 
 
 # ------------------------------------------------------------------------------------------ #
-# The runner: test → verdict → promote | drop → record.
+# The prover: formalize → LLM-propose → kernel-check → repair → record.
+# This is the loop that turns the engine from a *pointer* into a *prover* for the reachable
+# rungs. It proves "assemble known lemmas into a new theorem"; it does not do novel mathematics
+# (that is Level 2 — proof search with RL). Config via env: SEXTANT_LLM_ENDPOINT / _KEY / _MODEL.
 # ------------------------------------------------------------------------------------------ #
+
+def _llm_config() -> tuple[str, str, str]:
+    """The OpenAI-compatible endpoint, key and model from the environment."""
+    return (
+        os.environ.get("SEXTANT_LLM_ENDPOINT", "http://localhost:11434/v1"),
+        os.environ.get("SEXTANT_LLM_KEY", ""),
+        os.environ.get("SEXTANT_LLM_MODEL", ""),
+    )
+
+
+def _ask_llm(prompt: str, endpoint: str, key: str, model: str) -> str:
+    """One OpenAI-compatible ``/chat/completions`` call, returning the assistant text."""
+    body = json.dumps({
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+    }).encode()
+    headers = {"Content-Type": "application/json"}
+    if key:
+        headers["Authorization"] = f"Bearer {key}"
+    req = urllib.request.Request(
+        f"{endpoint.rstrip('/')}/chat/completions", data=body, headers=headers, method="POST")
+    with urllib.request.urlopen(req, timeout=300) as resp:
+        data = json.load(resp)
+    return data["choices"][0]["message"]["content"]
+
+
+def _check_lean(code: str) -> tuple[bool, str]:
+    """Write the proposal to a temp file inside the proof tree and run the Lean kernel.
+
+    Returns ``(ok, error)`` — ``ok`` when ``lake env lean`` exits 0, else the kernel's message
+    (trimmed to the tail, which carries the error).
+    """
+    if not PROOF_DIR.exists():
+        return False, f"proof tree not found at {PROOF_DIR}"
+    d = PROOF_DIR / ".prove"
+    d.mkdir(exist_ok=True)
+    f = d / "Proposal.lean"
+    f.write_text(code, encoding="utf-8")
+    env = dict(os.environ)
+    elan = str(Path.home() / ".elan" / "bin")
+    env["PATH"] = elan + os.pathsep + env.get("PATH", "")
+    try:
+        r = subprocess.run(
+            ["lake", "env", "lean", str(f)],
+            cwd=str(PROOF_DIR), capture_output=True, text=True, timeout=600, env=env,
+        )
+    except FileNotFoundError:
+        return False, "lake not found — is the Lean toolchain installed and on PATH?"
+    except subprocess.TimeoutExpired:
+        return False, "kernel timed out (600s)"
+    if r.returncode == 0:
+        return True, ""
+    return False, (r.stdout + r.stderr).strip()[-4000:]
+
+
+def _proof_prompt(statement: str, error: str | None) -> str:
+    """The prover prompt: complete the Lean code, replacing ``sorry`` with a real proof."""
+    err = (
+        f"\n\nYour previous attempt did NOT compile. The kernel said:\n{error}\n"
+        f"Fix the proof and output the corrected, complete Lean code (imports + theorem + proof)."
+        if error else ""
+    )
+    return (
+        "You are a Lean 4 theorem prover. Output a COMPLETE, compiling Lean 4 file.\n\n"
+        f"The file to complete (replace every `sorry` with a real proof):\n\n{statement}\n\n"
+        "Rules:\n"
+        "- Output ONLY Lean code (no markdown fences, no prose).\n"
+        "- Use Mathlib and the imports already in the file; do not add `axiom` or `sorry`.\n"
+        "- The file must compile under `lake env lean`."
+        f"{err}"
+    )
+
+
+def prove(statement: str, attempts: int = 5, save: str | None = None) -> dict:
+    """One run of the prove loop: propose → kernel-check → repair, up to ``attempts`` tries.
+
+    ``statement`` is the full Lean file to complete (imports + theorem with a ``sorry``). On success
+    returns ``ok`` + the compiled code; optionally persists it to ``save`` (a ``.lean`` path) so a
+    proven theorem lands in the tower rather than only on stdout.
+    """
+    endpoint, key, model = _llm_config()
+    if not model:
+        return {"ok": False, "error": "no LLM configured — set SEXTANT_LLM_ENDPOINT / "
+                                     "SEXTANT_LLM_MODEL (and SEXTANT_LLM_KEY if the endpoint needs it)"}
+    error = None
+    for i in range(attempts):
+        try:
+            code = _ask_llm(_proof_prompt(statement, error), endpoint, key, model)
+        except Exception as e:  # noqa: BLE001 — network / API failures are not fatal, report them
+            return {"ok": False, "attempts": i + 1, "error": f"LLM call failed: {type(e).__name__}: {e}"}
+        code = code.strip()
+        if code.startswith("```"):
+            code = re.sub(r"^```[a-z]*\n?", "", code)
+            code = re.sub(r"\n?```$", "", code)
+        ok, err = _check_lean(code)
+        if ok:
+            saved = None
+            if save:
+                Path(save).parent.mkdir(parents=True, exist_ok=True)
+                Path(save).write_text(code + "\n", encoding="utf-8")
+                saved = save
+            return {"ok": True, "attempts": i + 1, "code": code, "checked_by": "lake env lean",
+                    "saved": saved}
+        error = err
+    return {"ok": False, "attempts": attempts, "last_error": error}
+
+
+
 
 @dataclass
 class Verdict:
@@ -435,6 +550,11 @@ def _main() -> int:
     ap.add_argument("--list-open", action="store_true", help="list the OPEN hypotheses and their next sub-lemma")
     ap.add_argument("--decompose", metavar="HYPOTHESIS", help="decompose one OPEN hypothesis into its next sub-lemma")
     ap.add_argument("--advance-all", action="store_true")
+    ap.add_argument("--prove", nargs="?", const="", metavar="FILE",
+                    help="run the prove loop (FILE = a .lean file with the statement + sorry)")
+    ap.add_argument("--statement", help="inline Lean code to prove (implies --prove)")
+    ap.add_argument("--prove-attempts", type=int, default=5, help="max LLM repair attempts (default 5)")
+    ap.add_argument("--prove-save", metavar="PATH", help="save the proven .lean file to PATH (relative to the proof tree)")
     args = ap.parse_args()
 
     if args.list_facts:
@@ -474,6 +594,20 @@ def _main() -> int:
             v = advance(a, b)
             print(_fmt(v))
         return 0
+    if args.prove is not None or args.statement:
+        statement = args.statement
+        if statement is None:
+            f = Path(args.prove)
+            if not f.exists():
+                print(f"file not found: {f}", file=sys.stderr)
+                return 1
+            statement = f.read_text(encoding="utf-8")
+        save = None
+        if args.prove_save:
+            save = str(PROOF_DIR / args.prove_save)
+        result = prove(statement, attempts=args.prove_attempts, save=save)
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("ok") else 1
     if args.fact and args.strategy:
         v = advance(args.fact, args.strategy)
         print(_fmt(v))
