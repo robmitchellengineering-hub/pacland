@@ -255,4 +255,95 @@ theorem integral_tsum_exp_cos_mul_cos (x : ℝ) :
       exact ((NormedSpace.expSeries_div_hasSum_exp (x * Real.cos θ)).summable.hasSum).mul_right (Real.cos θ))
   exact hswap.tsum_eq.symm
 
+/-- **The n=1 coefficient identity**: `Σₘ x^m/m!·∫₀^π cos^{m+1} θ = π·besselI 1 x`. The even m vanish,
+the odd m = 2k+1 give the Wallis closed form, whose factorial cancellation leaves the
+`(x/2)^{2k+1}/(k!(k+1)!)` coefficient of `besselI 1`. -/
+theorem tsum_exp_cos_mul_cos_coeff (x : ℝ) :
+    (∑' m : ℕ, x^m / (m.factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(m+1))) = π * besselI 1 x := by
+  let f : ℕ → ℝ := fun m => x^m / (m.factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(m+1))
+  have hsum : Summable f := by
+    have hnorm : Summable (fun m => |x|^m / (m.factorial : ℝ)) := (NormedSpace.expSeries_div_hasSum_exp |x|).summable
+    have hbound : ∀ m, ‖f m‖ ≤ π * (|x|^m / (m.factorial : ℝ)) := by
+      intro m
+      dsimp [f]
+      have hint : ‖∫ θ in (0 : ℝ)..π, (Real.cos θ)^(m+1)‖ ≤ π := by
+        have hle : ∀ θ ∈ Set.uIoc (0 : ℝ) π, ‖(Real.cos θ)^(m+1)‖ ≤ 1 := by
+          intro θ hθ
+          rw [Real.norm_eq_abs, abs_pow]
+          exact pow_le_one₀ (abs_nonneg _) (abs_cos_le_one θ)
+        simpa using (intervalIntegral.norm_integral_le_of_norm_le_const (a := (0 : ℝ)) (b := π) (f := fun θ => (Real.cos θ)^(m+1)) (C := 1) hle)
+      calc
+        ‖x^m / (m.factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(m+1))‖
+          = |x|^m / (m.factorial : ℝ) * ‖∫ θ in (0 : ℝ)..π, (Real.cos θ)^(m+1)‖ := by
+            rw [Real.norm_eq_abs, abs_mul, abs_div, abs_pow]
+            rw [abs_of_nonneg (show (0 : ℝ) ≤ (m.factorial : ℝ) by exact Nat.cast_nonneg _)]
+            rw [Real.norm_eq_abs]
+        _ ≤ π * (|x|^m / (m.factorial : ℝ)) := by
+            simpa [mul_comm] using (mul_le_mul_of_nonneg_left hint (div_nonneg (pow_nonneg (abs_nonneg x) m) (Nat.cast_nonneg (m.factorial))))
+    exact Summable.of_norm_bounded (hnorm.mul_left π) hbound
+  have hsum_even : Summable (fun k => f (2*k)) := hsum.comp_injective (i := fun k : ℕ => 2*k) (by intro a b h; exact Nat.mul_left_cancel (by norm_num : (0 : ℕ) < 2) h)
+  have hsum_odd : Summable (fun k => f (2*k+1)) := hsum.comp_injective (i := fun k : ℕ => 2*k+1) (by intro a b h; exact Nat.mul_left_cancel (by norm_num : (0 : ℕ) < 2) (Nat.succ.inj h))
+  have heven_zero : (∑' k, f (2*k)) = 0 := by
+    dsimp [f]
+    have hzero : (fun k : ℕ => x^(2*k) / ((2*k).factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(2*k+1))) = (fun _ : ℕ => 0) := by
+      funext k
+      rw [integral_cos_odd_pow k]
+      simp
+    rw [hzero, tsum_zero]
+  have hodd : (∑' k, f (2*k+1)) = π * besselI 1 x := by
+    dsimp [f]
+    rw [show (fun k : ℕ => x^(2*k+1) / ((2*k+1).factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(2*k+2))) =
+        (fun k : ℕ => π * (x/2)^(2*k+1) / ((k.factorial : ℝ) * (k+1).factorial)) by
+      funext k
+      rw [show 2*k+2 = 2*(k+1) by omega]
+      rw [wallis_closed (k+1)]
+      rw [show (2*(k+1)).factorial = (2*(k+1)) * (2*k+1).factorial by
+        rw [show 2*(k+1) = (2*k+1)+1 by omega]; rw [Nat.factorial_succ]]
+      rw [show (2*k+1).factorial = (2*k+1) * (2*k).factorial by
+        rw [show 2*k+1 = (2*k)+1 by omega]; rw [Nat.factorial_succ]]
+      rw [show (k+1).factorial = (k+1) * k.factorial by rw [Nat.factorial_succ]]
+      norm_num
+      field_simp
+      rw [div_pow]
+      have hpow2 : (2 : ℝ)^(2*(k+1)) = 2^(2*k+1) * 2 := by
+        rw [show 2*(k+1) = (2*k+1)+1 by omega]
+        rw [pow_succ]
+      rw [hpow2]
+      field_simp]
+    rw [show (fun k : ℕ => π * (x/2)^(2*k+1) / ((k.factorial : ℝ) * (k+1).factorial)) =
+        (fun k : ℕ => π * ((x/2)^(2*k+1) / ((k.factorial : ℝ) * (k+1).factorial))) by
+      funext k; ring]
+    rw [tsum_mul_left]
+    congr 1
+  have hsplit := tsum_even_add_odd (f := f) hsum_even hsum_odd
+  rw [← hsplit]
+  rw [heven_zero, hodd]
+  simp
+
+/-- **The Jacobi–Anger n=1 projection**: `∫₀^π exp(x cos θ)·cos θ dθ = π·besselI 1 x`. The same
+assembly as the n=0 case with a `cos θ` factor: exp series → swap → linearity → coefficient identity.
+This gives `E[cos θ] = I₁/I₀` under the von-Mises measure, the input to the concentration bound. -/
+theorem integral_exp_cos_mul_cos_eq_besselI1 (x : ℝ) :
+    (∫ θ in (0 : ℝ)..π, Real.exp (x * Real.cos θ) * Real.cos θ) = π * besselI 1 x := by
+  have hexp : (∫ θ in (0 : ℝ)..π, Real.exp (x * Real.cos θ) * Real.cos θ) =
+      (∫ θ in (0 : ℝ)..π, (∑' m : ℕ, (x * Real.cos θ)^m / (m.factorial : ℝ)) * Real.cos θ) := by
+    apply intervalIntegral.integral_congr
+    intro θ hθ
+    rw [Real.exp_eq_exp_ℝ]
+    exact congrArg (fun y : ℝ => y * Real.cos θ) ((NormedSpace.expSeries_div_hasSum_exp (x * Real.cos θ)).tsum_eq.symm)
+  rw [hexp, integral_tsum_exp_cos_mul_cos x]
+  rw [show (∑' m : ℕ, ∫ θ in (0 : ℝ)..π, (x * Real.cos θ)^m / (m.factorial : ℝ) * Real.cos θ) =
+      (∑' m : ℕ, x^m / (m.factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(m+1))) by
+    apply tsum_congr
+    intro m
+    have hlin : (∫ θ in (0 : ℝ)..π, (x * Real.cos θ)^m / (m.factorial : ℝ) * Real.cos θ) =
+        x^m / (m.factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(m+1)) := by
+      rw [show (fun θ : ℝ => (x * Real.cos θ)^m / (m.factorial : ℝ) * Real.cos θ) = (fun θ : ℝ => (x^m / (m.factorial : ℝ)) * (Real.cos θ)^(m+1)) by
+        funext θ
+        rw [mul_pow]
+        ring]
+      rw [intervalIntegral.integral_const_mul]
+    exact hlin]
+  exact tsum_exp_cos_mul_cos_coeff x
+
 end QM
