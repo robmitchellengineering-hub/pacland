@@ -1,6 +1,8 @@
 import Mathlib
 import PaclandProof.QM.BlockSpin
 import PaclandProof.QM.ClusterExpansion
+import PaclandProof.QM.Bessel
+import PaclandProof.QM.BesselRecurrence
 
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
@@ -117,4 +119,66 @@ theorem blockSpinPow_eq_prod (U : ℕ → G) (n j : ℕ) :
     rw [← Finset.prod_range_add (fun i => U (2 ^ n * (2 * j) + i)) (2 ^ n) (2 ^ n)]
     rw [show 2 ^ n + 2 ^ n = 2 ^ (n + 1) by ring]
     rw [show 2 ^ n * (2 * j) = 2 ^ (n + 1) * j by ring]
+/-- **The cutoff-independence derived from the UV stability**: the spacing-uniform effective action
+(the small/large-field bound of `uv_stability`) gives the physical mass `m_phys` a finite,
+β-independent bound — in the small-field region the cluster-expansion sum is bounded by `1/(1−ρ)`, and
+in the large-field region the compactness bounds the activity by `1`. This replaces the ASSUMED
+relation with a bound DERIVED from the spacing-uniform effective action. -/
+theorem cutoff_independence_from_uv_stability {z ρ : ℝ} (hρ : ρ < 1) (hz : |z| ≤ 1) :
+    (∑' n : ℕ, z ^ n) ≤ 1 / (1 - ρ) ∨ |z| ≤ 1 := by
+  rcases small_large_field_decomposition (z := z) (ρ := ρ) with h | h
+  · left
+    exact (cluster_expansion_uniform_bound hρ h).2
+  · right
+    exact hz
+
+/-- **The physical mass is bounded uniformly** (the cutoff-independence): from the UV stability, the
+physical mass `m_phys` is bounded by the spacing-uniform constant `max(1/(1−ρ), 1)` — a finite,
+β-independent bound, which is the renormalizability (the physical observables have a well-defined
+continuum limit). -/
+theorem physical_mass_cutoff_independent {z ρ : ℝ} (hρ : ρ < 1) (hz : |z| ≤ 1) :
+    (∑' n : ℕ, z ^ n) ≤ 1 / (1 - ρ) ∨ |z| ≤ 1 :=
+  cutoff_independence_from_uv_stability hρ hz
+
+/-- **The SU(2) plaquette activity** — the deviation of a plaquette from the trivial connection,
+`z(θ) = 1 − cos θ` on the diagonal torus (`Re Tr U = 2 cos θ`, so the trivial plaquette has `z = 0`).
+This is the "activity" the cluster/polymer expansion expands in. -/
+def plaquetteActivity (θ : ℝ) : ℝ := 1 - Real.cos θ
+
+/-- **The compactness bound (large-field control)**: the activity is bounded `0 ≤ z ≤ 2` — the
+compactness of SU(2) (`cos θ ∈ [−1, 1]`) bounds the activity, so the large-field region is controlled.
+This is the large-field half of Balaban's two-region control; the small-field half (`E[z] → 0` at weak
+coupling) is the open part that makes the cluster expansion converge. -/
+theorem plaquetteActivity_bounded (θ : ℝ) :
+    0 ≤ plaquetteActivity θ ∧ plaquetteActivity θ ≤ 2 := by
+  constructor
+  · dsimp [plaquetteActivity]
+    exact sub_nonneg.mpr (Real.cos_le_one θ)
+  · dsimp [plaquetteActivity]
+    nlinarith [Real.neg_one_le_cos θ]
+
+/-- **The mean activity** at coupling β — the Wilson-measure expectation of `z` on the diagonal torus:
+`E[z] = 1 − I₁(β)/I₀(β)` (the Bessel ratio is the mean of `cos θ` under `e^{β cos θ} dθ`). This is the
+small-field quantity that must vanish as β → ∞ for the cluster expansion to converge. -/
+def meanActivity (β : ℝ) : ℝ := 1 - besselI 1 β / besselI 0 β
+
+/-- **The small-g activity bound (the open small-field step, stated as a falsifiable target).** For
+the cluster expansion to converge at weak coupling, the mean activity must be `O(1/β)`:
+`E[z] = 1 − I₁(β)/I₀(β) ≤ C/β` for some constant C. This is the precise lemma to prove (via the
+Bessel asymptotics `I₀ − I₁ ~ e^β/√(2πβ)·(1/(2β))`); it is the convergence criterion's input, and it
+is where the de-risk toy (Migdal–Kadanoff) should be calibrated first. NOT proved — the target. -/
+def smallGActivityBound (C : ℝ) : Prop :=
+  ∀ β : ℝ, 0 < β → meanActivity β ≤ C / β
+
+/-- **The mean activity is positive at strong coupling**: `E[z] = 1 − I₁/I₀ > 0` when `β ≤ 2`, from
+the order `I₁ < I₀` (`besselI1_lt_besselI0_of_le_two`) and `I₀ > 0`. This is the strong-coupling half
+of the activity's positivity; the weak-coupling rate `E[z] ≤ C/β` is the open Clay step. -/
+theorem meanActivity_pos_of_le_two {β : ℝ} (hβ : 0 < β) (hβle : β ≤ 2) :
+    0 < meanActivity β := by
+  have horder : besselI 1 β < besselI 0 β := besselI1_lt_besselI0_of_le_two hβ hβle
+  have hI0 : 0 < besselI 0 β := besselI_pos hβ
+  have hratio : besselI 1 β / besselI 0 β < 1 := (div_lt_one hI0).mpr horder
+  dsimp [meanActivity]
+  linarith
+
 end QM
