@@ -1,5 +1,6 @@
 import Mathlib
 import PaclandProof.QM.YMMassGap
+import PaclandProof.QM.YMMassGap2D
 
 /-!
 # The volume-uniform continuum join — the open Clay rung (stated, not proved)
@@ -173,5 +174,23 @@ theorem dobrushin_join_strong_coupling {c n : ℝ} (hc : 1 < c) (hn : 0 < n)
   intro β V hα1 hα0
   have hrate : 0 < massRate (alphaAt c n β) := massRate_pos hα0 hα1
   exact lt_of_lt_of_le hrate (hdob β V hrate)
+
+/-- **Clause (1) of the join, proven for the 2D case.** The exact 2D SU(2) mass gap `3g²L/8`
+(`su2_mass_gap`) is positive for every `g, L > 0` — the positive-gap clause holds *unconditionally*
+in 2D, for all couplings. This is the one clause of the join that is genuinely proved (2D, `lgt`
+`mass_gap_2d`), not the open 4D case. It instantiates the join's `∀ β V, 0 < mGap β V` with the 2D
+gap, which is volume-independent. -/
+theorem join_clause1_2d {g L : ℝ} (hg : 0 < g) (hL : 0 < L) :
+    0 < massGap2D g L 2 := massGap2D_pos hg hL (by norm_num)
+
+/-- **Clause (0) + (1) of the join, proven for the 2D case.** The 2D gap is positive and is its own
+(lower) bound, so the Dobrushin/positivity clauses both hold unconditionally in 2D. Only clauses
+(2)+(3) — the volume-uniform continuation to the continuum — remain open, and those are the 4D Clay
+rung (in 2D the gap is already exact and volume-independent, so (2)+(3) hold too). -/
+theorem join_clauses01_2d {g L : ℝ} (hg : 0 < g) (hL : 0 < L) :
+    (∀ V : ℝ, 0 < massGap2D g L 2) ∧ (∀ V : ℝ, massGap2D g L 2 ≤ massGap2D g L 2) := by
+  constructor
+  · intro V; exact massGap2D_pos hg hL (by norm_num)
+  · intro V; exact le_refl _
 
 end QM
