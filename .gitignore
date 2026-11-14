@@ -21,3 +21,6 @@ node_modules/
 dist/
 *.egg-info/
 data/discoveries/
+
+# SEXTANT runner local state (discoveries/verdicts are regenerated per run)
+runs/

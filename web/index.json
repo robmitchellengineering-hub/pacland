@@ -382,6 +382,20 @@
    "title": "The verified reference model \u2014 GISS-E2-1-G"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-scream-report.md",
+   "kind": "doc",
+   "path": "docs/climate-scream-report.md",
+   "summary": "term the STRATA report left open: STRATA is verified against SCREAM (reference-fidelity, p\u0302g); this asks the next level, is the oracle itself right against the Earth (p\u0302e).",
+   "title": "SCREAM \u2014 the oracle behind STRATA: does *it* leak?"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-strata-report.md",
+   "kind": "doc",
+   "path": "docs/climate-strata-report.md",
+   "summary": "worked example (docs/climate-ace-report.md) applied one resolution tier up: to the first storm-resolving AI climate emulator.",
+   "title": "STRATA (NVIDIA) \u2014 the km-scale emulator, reference-fidelity is not reality-fidelity"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/climate-trust-board.md",
    "kind": "doc",
    "path": "docs/climate-trust-board.md",
@@ -401,6 +415,13 @@
    "path": "docs/colibri-evaluation.md",
    "summary": "Rob's idea (2026-10-20): use [Colibri](https://github.com/JustVugg/colibri) to run the research LLMs on a machine we own, removing the graphics-card cost \u2014 and develop it further (RAID0\u2026",
    "title": "Colibri evaluation \u2014 run frontier LLMs locally on RAM + NVMe (no GPU)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/community-post.md",
+   "kind": "doc",
+   "path": "docs/community-post.md",
+   "summary": "361 theorems + 138 defs across 44 Lean 4 + Mathlib files, lake build green, no sorry/axiom. Citable snapshot: 10.5281/zenodo.24073510. Site: https://pacland.morpheus.nz.",
+   "title": "Come help machine-check a Theory of Everything (three pick-up-able Lean theorems)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/complete-exact-structure.md",
@@ -774,6 +795,13 @@
    "title": "Dedicated Linux compute nodes \u2014 the cheap path to native Linux on the mesh"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mass-gap-deficit.md",
+   "kind": "doc",
+   "path": "docs/mass-gap-deficit.md",
+   "summary": "Uniqueness (the tadpole F\u1d40JH is the unique bilinear symplectic invariant):",
+   "title": "The mass gap is a value \u2014 using the n=10 wall (the deficit is the deliverable)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/measure-invariance.md",
    "kind": "doc",
    "path": "docs/measure-invariance.md",
@@ -793,6 +821,13 @@
    "path": "docs/measurement-001.md",
    "summary": "SSID: Telstra3696 freq: 2462.0 signal: -37 dBm rx bitrate: 144.4 MBit/s MCS 15 short GI tx bitrate: 144.4 MBit/s MCS 15 short GI",
    "title": "Measurement 001 \u2014 the first real link, recorded so it can be re-read"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mechanical-completion.md",
+   "kind": "doc",
+   "path": "docs/mechanical-completion.md",
+   "summary": "Measured on the Cayley identity work: the reverseZeroCyclecycleOfzero proof is ~40 lines and ~35 of them are glue. The insight \u2014 use cycleOfmulofapplyrighteqself instead of cycleOfinv to\u2026",
+   "title": "Mechanical completion \u2014 route the decision to the AI, the glue to the CPU"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/method-transfer.md",
@@ -1474,6 +1509,27 @@
    "title": "Working across the estate from this repo"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-m3.md",
+   "kind": "doc",
+   "path": "docs/ym-mass-gap-m3.md",
+   "summary": "The open endgame of the mass-gap plan. M1 (the exact 2D mass gap) and M2 (the clustering \u27fa gap bridge) are done and kernel-checked. M3 is the machinery for the weak-coupling regime \u2014 \u03b2 \u2192 \u221e\u2026",
+   "title": "M3 \u2014 the weak-coupling multiscale RG scaffolding (the Balaban program)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-plan.md",
+   "kind": "doc",
+   "path": "docs/ym-mass-gap-plan.md",
+   "summary": "The residual open sentence (from the hypothesis engine): non-Abelian YM has exponential clustering at weak coupling (\u03b2 \u2192 \u221e) in d \u2265 3. This file is the roadmap to attack it, built from a\u2026",
+   "title": "Yang-Mills mass gap \u2014 the plan (post research fan-out, 2026-11-12)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-spacing-uniform.md",
+   "kind": "doc",
+   "path": "docs/ym-mass-gap-spacing-uniform.md",
+   "summary": "Source: the lgt formalization (Douglas + Rajasekaran), LGT/MassGap/StrongCoupling.lean. This records the exact boundary of what is proven and the exact statement that remains.",
+   "title": "The continuum 4D Yang\u2013Mills mass gap \u2014 the precise missing lemma"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ap_health.py",
    "kind": "script",
    "path": "scripts/ap_health.py",
@@ -2139,6 +2195,20 @@
    "title": "find_flux_vacua.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/glueball_mass.py",
+   "kind": "script",
+   "path": "scripts/glueball_mass.py",
+   "summary": "SU(2) 0++ glueball mass \u2014 thin CLI over pacland.glueball.",
+   "title": "glueball_mass.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/glueball_ratio_sweep.py",
+   "kind": "script",
+   "path": "scripts/glueball_ratio_sweep.py",
+   "summary": "SU(2) glueball mass ratio m/sqrt(\u03c3) sweep \u2014 the continuum ratio conjecture.",
+   "title": "glueball_ratio_sweep.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/gpu_bootstrap.sh",
    "kind": "script",
    "path": "scripts/gpu_bootstrap.sh",
@@ -2207,6 +2277,13 @@
    "path": "scripts/ingest_rtdsm_releases.py",
    "summary": "Ingest the Fed's own first/second/third release table into JSON.",
    "title": "ingest_rtdsm_releases.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/install-sextant.sh",
+   "kind": "script",
+   "path": "scripts/install-sextant.sh",
+   "summary": "SEXTANT installer \u2014 the headless simulated quantum computer, one command.",
+   "title": "install-sextant.sh"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/install_cytools.sh",
@@ -3369,13 +3446,6 @@
    "path": "web/index.html",
    "summary": "page on this site",
    "title": "The front page \u2014 what PACLAND is"
-  },
-  {
-   "href": "./mera-3d.html",
-   "kind": "page",
-   "path": "web/mera-3d.html",
-   "summary": "page on this site",
-   "title": "mera-3d"
   },
   {
    "href": "./mera.html",

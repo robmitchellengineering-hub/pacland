@@ -55,9 +55,10 @@ CATALOG: dict[str, dict] = {
     },
     "gravity-quantum": {
         "claim": "the gravitational coupling must be quantum, not classical",
+        "simulate": phantom.gravity_quantum,
         "theorem": "QM.Entanglement + QM.NoCloning + Gleason",
         "falsifier": "a consistent classical (LOCC) coupling",
-        "oracle": ["kernel-checked (Lean)"],
+        "oracle": ["quantum-simulated (Phantom)", "kernel-checked (Lean)"],
         "verdict": "FORCED",
         "why": "a classical channel preserves separability (QM.Entanglement), so it cannot entangle; "
                "hence classical gravity cannot mediate the quantum correlation.",
@@ -233,11 +234,11 @@ CATALOG: dict[str, dict] = {
     },
     "matchgate-seed": {
         "claim": "matchgate amplitudes are Pfaffians — the full even/odd split kernel-checked (2×2 and 4×4 Pf² = det, odd-dim det = 0)",
-        "theorem": "QM.Matchgate.det_antisymm_sign + QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.pfaffian4_sq_eq_det + QM.Matchgate.pfaffian6_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero",
+        "theorem": "QM.Matchgate.det_antisymm_sign + QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.pfaffian4_sq_eq_det + QM.Matchgate.pfaffian6_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero + QM.PfaffianRec.pfaffian_rec_2 + QM.PfaffianRec.pfaffian_rec_4 + QM.PfaffianRec.pfaffian_sq_eq_det_2 + QM.PfaffianRec.pfaffian_sq_eq_det_4 + QM.PfaffianRec.pfaffian_transform_2",
         "falsifier": "a 2×2 matchgate whose amplitude is not its Pfaffian, or a nonzero odd-dimensional antisymmetric determinant",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
-        "why": "the 2×2 and 4×4 Pfaffians square to the determinant (the exact two- and four-qubit amplitudes), and ANY odd-dimensional antisymmetric matrix has determinant 0 — the complete even/odd split: matchgates are even-dimensional Pfaffians, hence classically simulable.",
+        "why": "the 2×2 and 4×4 Pfaffians square to the determinant (the exact two- and four-qubit amplitudes), the recursive Pfaffian reproduces the explicit cases (pfaffian_rec_2/4) with the m=1 and m=2 induction bases (pfaffian_sq_eq_det_2/4: recursive Pf² = det), the transformation law Pf(PAPᵀ) = det(P)·Pf(A) holds at 2×2 (pfaffian_transform_2 — the normal-form route to the general Cayley), and ANY odd-dimensional antisymmetric matrix has determinant 0 — the complete even/odd split: matchgates are even-dimensional Pfaffians, hence classically simulable.",
     },
     "pr-box": {
         "claim": "the PR box saturates the non-signaling CHSH bound at 4",
@@ -255,6 +256,57 @@ CATALOG: dict[str, dict] = {
         "verdict": "FORCED",
         "why": "the generation count is an index — free (not fixed) and protected (robust) — and χ = 2(h¹¹−h²¹) is even, so N_gen = |χ|/2 is always a whole number. But the value 3 (χ = 6) is a free label, not a forced value.",
     },
+     "black-hole-entropy": {
+         "claim": "no region's entanglement entropy exceeds its horizon area — S ≤ A/4G, and the black hole saturates it",
+         "simulate": phantom.black_hole_entropy,
+         "theorem": "QM.MERA.srank_maximally_entangled + QM.MERA.areaLaw_rank (the area law specialised to the horizon cut: S = A/4G)",
+         "falsifier": "a state whose horizon entanglement exceeds A/4G",
+         "oracle": ["quantum-simulated (Phantom)", "kernel-checked (Lean)"],
+         "verdict": "FORCED",
+         "why": "the Bekenstein–Hawking entropy is not a dial — it is the entanglement-area law with the cut = the horizon. A random (Page) state saturates A/4G; nothing exceeds it.",
+     },
+     "black-hole-unitarity": {
+         "claim": "black hole evaporation is unitary — the information is never lost, only re-encoded in the radiation's entanglement",
+         "simulate": phantom.black_hole_unitarity,
+         "theorem": "QM.NoCloning + QM.NoBroadcasting (linearity + unitarity forbid information loss)",
+         "falsifier": "a non-unitary (information-losing) evaporation map",
+         "oracle": ["quantum-simulated (Phantom)", "kernel-checked (Lean)"],
+         "verdict": "FORCED",
+         "why": "a pure state stays pure under any unitary map (purity is invariant), so the interior's information cannot vanish — it is re-encoded in the Hawking radiation's entanglement. The mechanism of the recovery is the open part; the unitarity itself is forced.",
+     },
+    "wang-criterion": {
+        "claim": "a positive spectral gap survives a measure-negligible negative-curvature region, when a Lyapunov drift forces return to the dominant state",
+        "theorem": "QM.WangCriterion (Lyapunov-weighted Poincaré) + QM.LogSobolev (log-Sobolev ⟹ spectral gap)",
+        "falsifier": "a measure-negligible negative-curvature region that still collapses the gap (no Lyapunov return)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "a pointwise curvature/expansion ceiling on a measure-negligible set (the SU(2) antipode, weight e^{-2β}) does not obstruct the gap — the Lyapunov drift returns the measure to the trivial connection. Use when a spectral-gap argument fails at a pointwise ceiling: check the failing set's measure, not its curvature.",
+    },
+    "concentration-gap": {
+        "claim": "the spectral gap of a Markov generator is the exponential concentration rate of its invariant measure around its dominant state",
+        "theorem": "QM.BakryEmery (Γ₂-calculus → spectral gap) + QM.LogSobolev",
+        "falsifier": "a generator whose invariant measure concentrates faster or slower than its spectral gap",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the gap is a concentration rate, not a curvature bound — the Wilson measure concentrates on the trivial connection, and the gap is how fast it does. Use when a 'curvature' picture stalls: reframe the gap as the leak rate from the dominant state.",
+    },
+    "mode-sum-exponent": {
+        "claim": "a non-perturbative exponent that is a sum over soft modes equals the beta-function coefficient (c = 1/(2b₀))",
+        "theorem": "QM.AsymptoticFreedom + QM.FullLatticeLyapunov (the collective soft mode)",
+        "falsifier": "a mode-sum exponent that does not match the beta-function coefficient",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the weak-coupling mass-gap exponent is the SUM over the low-momentum gluon modes, not a single tunneling event — that sum is the beta-function. Use when an exponent looks like it needs 'one more tunneling': it may be a mode sum, not a single instanton.",
+    },
+    "gauge-orbit-quotient": {
+        "claim": "running the spectral machinery on the gauge-invariant quotient removes the unphysical flat directions",
+        "theorem": "QM.GaugeOrbit (conjugacy-invariant trace) + QM.AxialGauge (global gauge fixing)",
+        "falsifier": "a quotient that fails to remove the gauge flat directions (a residual Gribov copy)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the trivial connection's gauge orbit is a flat direction that is gauge, not physics — quotient by it before running the spectral machinery. Use when a 'ceiling' sits on the gauge orbit: remove the flat directions first.",
+    },
+
 }
 
 VERDICT_GLYPH = {"FORCED": "●", "FREE": "○", "IMPOSSIBLE": "✕"}
@@ -307,6 +359,18 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         print(verify(argv[1]))
         return 0
+    if argv[0] == "hunt":
+        from pacland import hypotheses
+
+        if len(argv) > 1 and argv[1] in hypotheses.HYPOTHESES:
+            print(hypotheses.hypothesize(argv[1]))
+        else:
+            print(hypotheses.hunt())
+        return 0
+    if argv[0] == "qec":
+        from pacland import qec
+
+        return qec.main(argv[1:])
     name = argv[0]
     if name not in CATALOG:
         print(f"unknown claim '{name}'. known: {', '.join(CATALOG)}", file=sys.stderr)

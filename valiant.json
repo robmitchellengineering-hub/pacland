@@ -54,7 +54,8 @@
       "check": [
         "python3",
         "scripts/check-site-links.py"
-      ]
+      ],
+      "local": true
     },
     {
       "name": "site-honest-line",

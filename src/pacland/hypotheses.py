@@ -14,6 +14,49 @@ Usage:
 from __future__ import annotations
 
 HYPOTHESES: dict[str, dict] = {
+    "confinement-frontier": {
+        "question": "does non-Abelian lattice Yang-Mills have exponential clustering (a mass gap) at weak coupling (β → ∞) in d ≥ 3 — i.e. confinement?",
+        "forced": "clustering ⟺ transfer-operator spectral gap (Douglas+Rajasekaran, 'Clustering and the Transfer-Operator Gap', machine-checked via SpectralPositivity's Perron-Frobenius/Jentzsch); the strong-coupling mass gap (lgt, Dobrushin); the 2D mass gap for ALL β (lgt mass_gap_2d, Doeblin); the value-is-free (confinementScale_mono_of_coupling).",
+        "open": "the exponential clustering of the plaquette correlation at weak coupling for non-Abelian groups in d ≥ 3 — the single irreducible statement left after the engine's run on ym-mass-gap.",
+        "candidates": [
+            {"hypothesis": "the cluster expansion around the trivial connection gives exponential clustering at weak coupling",
+             "falsifier": "a divergence in the cluster expansion at small g"},
+            {"hypothesis": "the Wilson area law (string tension) is equivalent to the mass gap, so proving either proves both",
+             "falsifier": "a mass gap coexisting with a perimeter law (deconfined)"},
+        ],
+        "attack": "Lean (the clustering⟺gap bridge is already machine-checked; the open part is the weak-coupling cluster expansion) + lattice Monte-Carlo (the string tension / area law at weak coupling).",
+        "progress": "the frontier is DECOMPOSED: the bridge (clustering ⟺ mass gap) is forced, so the open part is exactly 'exponential clustering at weak coupling'. Candidate 2 (area law ⟺ mass gap) is the known equivalence that lets a string-tension Monte-Carlo falsify confinement directly. No proof of weak-coupling clustering exists anywhere — this is the Clay problem, now reduced to one precise, falsifiable statement.",
+    },
+    "ym-mass-gap": {
+        "question": "does the lattice Yang-Mills mass gap persist past the Dobrushin ceiling (β → ∞, the continuum 4D limit)?",
+        "forced": "the lattice mass gap at strong coupling (β < 1/(4n·maxNeighbors d)) — lgt's ym_mass_gap_rate_exists, machine-verified by Douglas+Rajasekaran (Lean FRO comparator, axioms = propext/Classical.choice/Quot.sound); the ceiling α(β*)=1 with m=(−log α)/2 → 0 at it (our YMMassGap.lean: massRate_tendsto_zero + alphaAt_ceiling_eq_one); the 2D mass gap for ALL β ≥ 0 (lgt's mass_gap_2d, sorry-free).",
+        "open": "the mass gap at β → ∞ in d ≥ 3 — the continuum limit (asymptotic freedom), the open Clay problem.",
+        "candidates": [
+            {"hypothesis": "the Dobrushin strong-coupling bound extends past the ceiling",
+             "falsifier": "a β past the ceiling where m(β) = (−log α(β))/2 is ≤ 0 — the bound is vacuous or negative"},
+            {"hypothesis": "the mass gap is positive for all β > 0 in d ≥ 3 (not just strong coupling)",
+             "falsifier": "a d ≥ 3, β past the ceiling with no exponential decay"},
+            {"hypothesis": "the weak-coupling gap is a VALUE — the confinement scale Λ set by the free coupling g via dimensional transmutation, not a fixed prediction",
+             "falsifier": "a dimensionless constant that fixes Λ independently of g"},
+        ],
+        "attack": "Lean (the negative direction — m(β) ≤ 0 past the ceiling — is kernel-checked) + a lattice-YM Monte-Carlo falsifier for the positive direction.",
+        "progress": "candidate 1 is REFUTED (kernel-checked): YMMassGap.lean proves m(α) = (−log α)/2 → 0 as α → 1, α(β*)=1 at the ceiling, and massRate_neg_of_one_lt (m < 0 for α > 1) — the strong-coupling bound is zero at the ceiling and negative past it, so it cannot be extended. candidate 2 is REFINED: the falsifier (lattice-YM Monte-Carlo, src/pacland/lattice_ym.py, plus the known U(1) Coulomb phase) shows the mass gap does NOT persist to all β for the ABELIAN group — U(1) in d=4 deconfines at weak coupling (massless photon, Wilson perimeter law). So candidate 2 survives only as \"non-Abelian only\" = the confinement conjecture. candidate 3 (the gap is a relation set by the tadpole, not a value) remains open.",
+    },
+    "ym-bakry-ceiling": {
+        "question": "does the SU(2) Bakry-Emery ceiling (curvature 1/4 + 2β·cos θ, negative at the antipode θ=π for β > 1/8) survive as a true spectral-gap obstruction, or does the measure suppression at the antipode dissolve it?",
+        "forced": "the 1-plaquette SU(2) curvature 1/4 + 2β·cos θ and the named ceiling β > 1/8 (Su2Curvature.lean, #513); the Bakry-Emery Γ₂ framework (#511); the log-Sobolev ⇒ Poincaré bridge (#514); the OS3 reflection positivity (#510); the gauge-orbit quotient setup (GaugeOrbit.lean).",
+        "open": "whether the pointwise ceiling (β > 1/8 at the antipode) is the TRUE spectral-gap ceiling, or whether the measure-suppressed antipode (weight e^{−2β} at weak coupling) makes it an artifact.",
+        "candidates": [
+            {"hypothesis": "Wang's criterion: the negative curvature lives on the measure-negligible antipode, so the spectral gap survives — a Lyapunov drift pulls the dynamics back to the trivial connection",
+             "falsifier": "a Lyapunov condition that fails at the antipode (the drift does not pull back to the trivial connection)"},
+            {"hypothesis": "the gap is a concentration rate: the measure concentrates exponentially on the trivial connection (θ=0, where the curvature 1/4 + 2β is positive), and the spectral gap equals that concentration rate",
+             "falsifier": "a concentration estimate that does NOT decay exponentially in β"},
+            {"hypothesis": "the β > 1/8 ceiling is a single-plaquette artifact; the full lattice's many-plaquette correlations kill it (coarse-graining)",
+             "falsifier": "a full-lattice configuration where the curvature stays negative on a measure-non-negligible set"},
+        ],
+        "attack": "formalize Wang's criterion (pointwise negative curvature on a measure-negligible set + a Lyapunov drift ⇒ positive spectral gap, β-uniform), then apply it to the SU(2) 1-plaquette. FIRST: verify the sign convention of e^{±β·Re Tr} in Su2Curvature.lean (the standard Wilson measure concentrates at the trivial connection via e^{+β·Re Tr}).",
+        "progress": "the ceiling is NAMED (kernel-checked, #513): curvature 1/4 + 2β·cos θ, negative at the antipode θ=π iff β > 1/8. The measure-suppression observation (the antipode carries weight e^{−2β} at weak coupling) is NOT yet formalized, and Wang's criterion is not yet in the repo — these are the next moves.",
+    },
     "ads-limit": {
         "question": "does the MERA causal cone's graph metric converge to the smooth AdS metric ds² = dr² + sinh²(r) dθ² as N → ∞?",
         "forced": "the discrete hyperbolicity — Gromov 0-hyperbolicity (treeDist_four_point), exponential volume 2^(r+1)−1, log depth FORCED (logDepthForced: ≥⌈log₂N⌉ layers), the emergence direction (meraEmergence: the hyperbolic tree is the unique optimum), the exact area law (srank_maximally_entangled: entanglement = area = D^m, not ≤), and the QI map treeToH2 (radially isometric + depth-injective).",
