@@ -40,4 +40,24 @@ theorem wallis_recurrence (m : ℕ) :
   rw [integral_cos_pow (a := (0 : ℝ)) (b := π) (n := 2*m)]
   simp [Real.sin_pi, Real.sin_zero]
 
+/-- **The closed Wallis form**: `∫₀^π cos^{2m} θ = π(2m)!/(2^{2m}(m!)²)`. Induction on the Wallis
+recurrence, base `∫ 1 = π`. This is the term-by-term coefficient the Jacobi–Anger expansion needs. -/
+theorem wallis_closed (m : ℕ) :
+    (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(2*m)) =
+      π * ((2*m).factorial : ℝ) / (2^(2*m) * (m.factorial : ℝ)^2) := by
+  induction m with
+  | zero => simp [intervalIntegral.integral_const]
+  | succ m ih =>
+      rw [show 2*(m+1) = 2*m+2 by omega]
+      rw [wallis_recurrence m]
+      rw [ih]
+      have hfact2 : ((2*m+2).factorial : ℝ) = (2*m+2) * (2*m+1) * ((2*m).factorial : ℝ) := by
+        norm_num [Nat.factorial_succ]
+        ring
+      have hfactm : ((m+1).factorial : ℝ) = (m+1) * (m.factorial : ℝ) := by
+        norm_num [Nat.factorial_succ]
+      field_simp
+      rw [hfact2, hfactm]
+      ring
+
 end QM
