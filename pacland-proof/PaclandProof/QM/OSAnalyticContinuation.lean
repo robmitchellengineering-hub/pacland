@@ -233,4 +233,31 @@ theorem wick_rotation_wilson_real (β t : ℝ) :
   rw [← Complex.ofReal_cosh]
   norm_num [Complex.ofReal_exp]
 
+/-! ## B1 (the spectral representation) — the transfer matrix is diagonalizable, and H = -log T
+
+The Wick rotation above is the *concrete* continuation for the free heat kernel. The general
+statement is the spectral theorem: a PSD symmetric transfer matrix is unitarily diagonalizable with
+non-negative eigenvalues, so the Hamiltonian `H = -log T` (the generator of the time evolution) is
+well-defined via the eigenvalue log. These two pieces are that general representation.
+-/
+
+set_option maxHeartbeats 600000 in
+/-- **B1 (spectral representation)** — the PSD symmetric transfer matrix is unitarily diagonalizable
+with non-negative (real) eigenvalues: `T = U · diag(λ) · U†`, λ ≥ 0. This is the spectral theorem for
+the transfer matrix, the input to the Hamiltonian `H = -log T` and the complex-time continuation. -/
+theorem transferMatrix_spectral {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) :
+    transferMatrix K = ((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ))
+        (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+        (Matrix.diagonal (RCLike.ofReal ∘ (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues)) := by
+  exact Matrix.IsHermitian.spectral_theorem (transferMatrix_posSemidef_matrix K hSymm hK).1
+
+/-- **The Hamiltonian** (the generator of the time evolution) — the functional-calculus
+`H = -log T` via the eigenvalue log of the spectral representation. -/
+noncomputable def transferHamiltonian {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) : Matrix (Fin m) (Fin m) ℝ :=
+  ((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ))
+      (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+      (Matrix.diagonal (fun i => -Real.log ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues i)))
+
 end QM
