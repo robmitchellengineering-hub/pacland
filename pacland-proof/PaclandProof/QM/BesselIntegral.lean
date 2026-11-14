@@ -435,4 +435,82 @@ theorem integral_sin_sq_exp_cos {x : ℝ} (hx : x ≠ 0) :
   field_simp [hx]
   exact hibp
 
+/-- **The second derivative recurrence `I₁′ = I₀ − I₁/β`** (for β ≠ 0). Differentiation under the
+integral of the n=1 projection gives `∫cos²θ e^{x cos θ}`, which by `integral_sin_sq_exp_cos` and the
+n=0 projection equals `π(I₀ − I₁/x)`. -/
+theorem besselI1_hasDerivAt (β : ℝ) (hβ : β ≠ 0) :
+    HasDerivAt (fun x : ℝ => besselI 1 x) (besselI 0 β - besselI 1 β / β) β := by
+  have h := intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (𝕜 := ℝ) (μ := MeasureTheory.volume) (a := (0 : ℝ)) (b := π)
+    (F := fun x θ => Real.cos θ * Real.exp (x * Real.cos θ))
+    (F' := fun x θ => (Real.cos θ)^2 * Real.exp (x * Real.cos θ))
+    (x₀ := β) (s := Set.Icc (β - 1) (β + 1))
+    (bound := fun _ => Real.exp (|β| + 1))
+    (Icc_mem_nhds (by linarith) (by linarith))
+    (by
+      filter_upwards with x
+      exact (Real.continuous_cos.mul (Real.continuous_exp.comp (continuous_const.mul Real.continuous_cos))).aestronglyMeasurable)
+    (by
+      exact (Real.continuous_cos.mul (Real.continuous_exp.comp (continuous_const.mul Real.continuous_cos))).intervalIntegrable (0 : ℝ) π)
+    (by
+      exact ((Real.continuous_cos.pow 2).mul (Real.continuous_exp.comp (continuous_const.mul Real.continuous_cos))).aestronglyMeasurable)
+    (by
+      filter_upwards with θ hθ
+      intro x hx
+      rw [Real.norm_eq_abs, abs_mul]
+      have hcos2 : |(Real.cos θ)^2| ≤ 1 := by
+        rw [abs_pow]
+        exact pow_le_one₀ (abs_nonneg _) (abs_cos_le_one θ)
+      have hxle : x * Real.cos θ ≤ |β| + 1 := by
+        have hx_abs : |x| ≤ |β| + 1 := by
+          rcases Set.mem_Icc.mp hx with ⟨hxl, hxu⟩
+          have hx1 : x ≤ |β| + 1 := le_trans hxu (by linarith [le_abs_self β])
+          have hx2 : -(|β| + 1) ≤ x := by linarith [hxl, neg_le_abs β]
+          exact abs_le.mpr ⟨hx2, hx1⟩
+        have h1 : x * Real.cos θ ≤ |x| * |Real.cos θ| := by
+          rw [← abs_mul]; exact le_abs_self _
+        have h2 : |x| * |Real.cos θ| ≤ |β| + 1 := by
+          have h21 : |x| * |Real.cos θ| ≤ |x| := mul_le_of_le_one_right (abs_nonneg x) (abs_cos_le_one θ)
+          exact le_trans h21 hx_abs
+        exact le_trans h1 h2
+      have hexp : Real.exp (x * Real.cos θ) ≤ Real.exp (|β| + 1) := Real.exp_le_exp.mpr hxle
+      simpa using (mul_le_mul hcos2 hexp (by positivity) (by positivity)))
+    (by exact continuous_const.intervalIntegrable (0 : ℝ) π)
+    (by
+      filter_upwards with θ hθ
+      intro x hx
+      have hlin : HasDerivAt (fun x : ℝ => x * Real.cos θ) (Real.cos θ) x := by
+        simpa using (hasDerivAt_id x).mul_const (Real.cos θ)
+      have hexp' : HasDerivAt (fun x : ℝ => Real.exp (x * Real.cos θ)) (Real.cos θ * Real.exp (x * Real.cos θ)) x := by
+        simpa [Function.comp_def, mul_comm] using (Real.hasDerivAt_exp (x * Real.cos θ)).comp x hlin
+      simpa [pow_two, mul_assoc] using hexp'.const_mul (Real.cos θ))
+  have h0 : (fun x : ℝ => ∫ θ in (0 : ℝ)..π, Real.cos θ * Real.exp (x * Real.cos θ) ∂MeasureTheory.volume) =
+      (fun x : ℝ => π * besselI 1 x) := by
+    funext x
+    simpa [mul_comm] using integral_exp_cos_mul_cos_eq_besselI1 x
+  have hval : (∫ θ in (0 : ℝ)..π, (Real.cos θ)^2 * Real.exp (β * Real.cos θ)) = π * (besselI 0 β - besselI 1 β / β) := by
+    have hpoint : (fun θ : ℝ => (Real.cos θ)^2 * Real.exp (β * Real.cos θ)) =
+        (fun θ : ℝ => Real.exp (β * Real.cos θ) - (Real.sin θ)^2 * Real.exp (β * Real.cos θ)) := by
+      funext θ
+      have hsq : (Real.cos θ)^2 + (Real.sin θ)^2 = 1 := Real.cos_sq_add_sin_sq θ
+      have hsq' : (Real.cos θ)^2 = 1 - (Real.sin θ)^2 := by linarith [hsq]
+      rw [hsq']
+      ring
+    have hcont_exp : Continuous (fun θ : ℝ => Real.exp (β * Real.cos θ)) :=
+      Real.continuous_exp.comp ((continuous_const : Continuous (fun _ : ℝ => β)).mul Real.continuous_cos)
+    have hcont_cos2 : Continuous (fun θ : ℝ => (Real.cos θ)^2 * Real.exp (β * Real.cos θ)) :=
+      (Real.continuous_cos.pow 2).mul hcont_exp
+    have hcont_sin2 : Continuous (fun θ : ℝ => (Real.sin θ)^2 * Real.exp (β * Real.cos θ)) :=
+      (Real.continuous_sin.pow 2).mul hcont_exp
+    rw [hpoint, intervalIntegral.integral_sub (hcont_exp.intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) π) (hcont_sin2.intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) π)]
+    -- now simplify the RHS
+    rw [integral_exp_cos_eq_besselI0 β]
+    rw [integral_sin_sq_exp_cos hβ]
+    rw [show (∫ θ in (0 : ℝ)..π, Real.cos θ * Real.exp (β * Real.cos θ)) = π * besselI 1 β by
+      simpa [mul_comm] using integral_exp_cos_mul_cos_eq_besselI1 β]
+    ring
+  rw [h0] at h
+  rw [hval] at h
+  simpa using h.2.const_mul (1 / π)
+
 end QM
