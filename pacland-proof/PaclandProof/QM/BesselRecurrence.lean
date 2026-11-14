@@ -1,5 +1,7 @@
 import Mathlib
 
+noncomputable section
+
 /-!
 # The Bessel recurrence — algebraic heart (first sub-step of `bessel_ratio_mono`)
 
@@ -56,10 +58,33 @@ lemma bessel_telescope_sum (N : ℕ) (x : ℝ) (hx : x ≠ 0) :
         (x / 2) ^ (2 * (k + 1)) / (((k + 1).factorial : ℝ)^2)
           - (x / 2) ^ (2 * k + 2) / ((k.factorial : ℝ) * (k + 2).factorial))
       = (2 / x) * Finset.sum (Finset.range N) (fun k =>
-        (x / 2) ^ (2 * (k + 1) + 1) / (((k + 1).factorial : ℝ) * (k + 2).factorial)) := by
+        (x / 2) ^ (2 * (k + 1) + 1) / (((k + 1).factorial : ℝ) * ((k + 1) + 1).factorial)) := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
     exact bessel_term_identity (k + 1) (by omega) x hx
+
+/-- The partial sum of the modified Bessel series: `S_n(N, x) = Σ_{k=0}^N (x/2)^{2k+n}/(k!(k+n)!)`. -/
+def besselPartial (n N : ℕ) (x : ℝ) : ℝ :=
+  ∑ k ∈ Finset.range (N + 1), (x / 2) ^ (2 * k + n) / ((k.factorial : ℝ) * (k + n).factorial)
+
+/-- **The finite Bessel recurrence**: `S₀(N) − S₂(N) = (2/x)·S₁(N) − (x/2)^{2N+2}/(N!(N+2)!)`.
+The error term vanishes as N → ∞, giving `I₀ − I₂ = (2/x)·I₁`. -/
+lemma bessel_recurrence_partial (N : ℕ) (x : ℝ) (hx : x ≠ 0) :
+    besselPartial 0 N x - besselPartial 2 N x
+      = (2 / x) * besselPartial 1 N x - (x / 2)^(2 * N + 2) / ((N.factorial : ℝ) * (N + 2).factorial) := by
+  dsimp [besselPartial]
+  rw [Finset.sum_range_succ', Finset.sum_range_succ, Finset.sum_range_succ']
+  have hsub : Finset.sum (Finset.range N) (fun k => (x / 2) ^ (2 * (k + 1)) / (((k + 1).factorial : ℝ) * ((k + 1).factorial : ℝ)))
+        - Finset.sum (Finset.range N) (fun k => (x / 2) ^ (2 * k + 2) / ((k.factorial : ℝ) * (k + 2).factorial))
+      = (2 / x) * Finset.sum (Finset.range N) (fun k => (x / 2) ^ (2 * (k + 1) + 1) / (((k + 1).factorial : ℝ) * ((k + 1) + 1).factorial)) := by
+    rw [← Finset.sum_sub_distrib]
+    simpa only [pow_two] using bessel_telescope_sum N x hx
+  have hA0 : (x / 2) ^ (2 * 0) / ((Nat.factorial 0 : ℝ) * (Nat.factorial 0 : ℝ)) = 1 := by norm_num
+  have hC0 : (2 / x) * ((x / 2) ^ (2 * 0 + 1) / ((Nat.factorial 0 : ℝ) * (Nat.factorial 1 : ℝ))) = 1 := by
+    field_simp [hx]
+    ring
+  rw [mul_add]
+  nlinarith [hsub, hA0, hC0]
 
 end QM
