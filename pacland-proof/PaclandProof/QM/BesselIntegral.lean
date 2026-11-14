@@ -587,4 +587,16 @@ theorem barrier_hasDerivAt (β : ℝ) (hβ : β ≠ 0) :
   field_simp [hβ]
   ring
 
+/-- **Continuity of `I₀`** from `I₀′=I₁` (`HasDerivAt` ⟹ `ContinuousAt` at every point). -/
+theorem besselI0_continuous : Continuous (fun x : ℝ => besselI 0 x) := by
+  rw [continuous_iff_continuousAt]
+  intro x
+  exact (besselI0_hasDerivAt x).continuousAt
+
+/-- **Continuity of `I₁` on `[1, ∞)`** from `I₁′=I₀−I₁/x` (x ≠ 0 on [1,∞)). -/
+theorem besselI1_continuousOn_Ici_one : ContinuousOn (fun x : ℝ => besselI 1 x) (Set.Ici (1 : ℝ)) := by
+  intro x hx
+  have hx0 : x ≠ 0 := ne_of_gt (lt_of_lt_of_le zero_lt_one (Set.mem_Ici.mp hx))
+  exact (besselI1_hasDerivAt x hx0).continuousAt.continuousWithinAt
+
 end QM
