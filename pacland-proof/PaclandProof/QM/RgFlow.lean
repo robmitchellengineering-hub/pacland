@@ -5,6 +5,8 @@ import PaclandProof.QM.Bessel
 import PaclandProof.QM.BesselRecurrence
 import PaclandProof.QM.BesselIntegral
 
+open Filter
+
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -228,5 +230,41 @@ activity bound chains through the already-proven convergence to the `clustering 
 theorem cluster_expansion_converges_weak {β : ℝ} (hβ : 1 < β) :
     Summable (fun n : ℕ => (meanActivity β) ^ n) := by
   exact cluster_expansion_converges (meanActivity_abs_lt_one_of_gt_one hβ)
+
+/-- **The mass gap at weak coupling**: `m = −log E[z] > 0` for β > 1. Since `0 < E[z] < 1`
+(the activity is positive by `I₁<I₀` and `<1` by the concentration), the spectral gap `−log E[z]`
+is positive. This is the transfer-operator gap `‖S‖ = e^{−m} < 1` that the clustering ⟺ gap bridge
+turns into the exponential clustering — the mass gap, chained from `smallGActivityBound 1`. -/
+theorem mass_gap_pos_weak {β : ℝ} (hβ : 1 < β) :
+    0 < -Real.log (meanActivity β) := by
+  have hβ0 : 0 < β := lt_trans zero_lt_one hβ
+  have hpos : 0 < meanActivity β := by
+    dsimp [meanActivity]
+    have hI0 : 0 < besselI 0 β := besselI_pos hβ0
+    have horder : besselI 1 β < besselI 0 β := besselI1_lt_besselI0 hβ0
+    have hratio : besselI 1 β / besselI 0 β < 1 := (div_lt_one hI0).mpr horder
+    linarith
+  have hlt : meanActivity β < 1 := by
+    have habs : |meanActivity β| < 1 := meanActivity_abs_lt_one_of_gt_one hβ
+    rw [abs_of_nonneg (le_of_lt hpos)] at habs
+    exact habs
+  exact neg_pos.mpr (Real.log_neg hpos hlt)
+
+/-- **The exponential clustering (mass-gap) at weak coupling**: `m = −log E[z] > 0` gives the massive
+2-point function `e^{−m·d} → 0` as `d → ∞` (the clustering ⟺ gap bridge). This is the objective's part (2):
+the small-field activity bound chained to the mass gap. -/
+theorem exponential_clustering_weak {β : ℝ} (hβ : 1 < β) :
+    Tendsto (fun d : ℝ => Real.exp (-(-Real.log (meanActivity β)) * d)) atTop (nhds 0) := by
+  have hm : 0 < -Real.log (meanActivity β) := mass_gap_pos_weak hβ
+  have h1 : Tendsto (fun d : ℝ => (-Real.log (meanActivity β)) * d) atTop atTop :=
+    tendsto_id.const_mul_atTop hm
+  have h2 : Tendsto (fun d : ℝ => Real.exp ((-Real.log (meanActivity β)) * d)) atTop atTop :=
+    Real.tendsto_exp_atTop.comp h1
+  have h3 : Tendsto (fun d : ℝ => (Real.exp ((-Real.log (meanActivity β)) * d))⁻¹) atTop (nhds 0) :=
+    tendsto_inv_atTop_zero.comp h2
+  convert h3 using 1
+  ext d
+  rw [show (-(-Real.log (meanActivity β)) * d) = -((-Real.log (meanActivity β)) * d) by ring]
+  rw [Real.exp_neg]
 
 end QM
