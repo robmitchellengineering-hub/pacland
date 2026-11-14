@@ -1,6 +1,7 @@
 import Mathlib
 import PaclandProof.QM.YMMassGap
 import PaclandProof.QM.YMMassGap2D
+import PaclandProof.QM.AsymptoticFreedom
 
 /-!
 # The volume-uniform continuum join — the open Clay rung (stated, not proved)
@@ -120,12 +121,14 @@ a mere lower bound). -/
 def asymptoticFreedomLowerBoundFalsifier (mGap : ℝ → ℝ) (A c' : ℝ) : Prop :=
   ∃ β, mGap β < A * Real.exp (-c' * β)
 
-/-- **The measured scaling law is referee-consistent with the asymptotic-freedom bound**: with the
-measured `A = 25.28`, `c′ = 1.182`, the bound `25.28·e^(−1.182β) ≤ mGap β` holds at equality for the
-measured `mGap`. This is the *numerical referee* the join must reproduce — stated as the exact
-instantiation, not a proof of the join. -/
+/-- **The referee as the universal exponent, not the amplitude.** The amplitude `A = 25.28` and the
+crossover exponent `c′ = 1.182` are non-universal lattice fits (MC noise ~15%). The *universal* target
+is the asymptotic-freedom exponent `asymptoticFreedomExponent 2 = 12π²/11` (`su2_exponent`). So the
+referee is: there is *some* amplitude `A > 0` for which `A·e^(−(12π²/11)β) ≤ mGap β` holds for all β —
+the exponent is the check, the amplitude is free. This is the precise, universal form of the join's
+clause (2); the fitted 1.182 is the crossover value that must flow up to 12π²/11 in the continuum. -/
 def refereeScalingLaw (mGap : ℝ → ℝ) : Prop :=
-  asymptoticFreedomLowerBound mGap (25.28) (1.182)
+  ∃ A : ℝ, 0 < A ∧ asymptoticFreedomLowerBound mGap A (asymptoticFreedomExponent 2)
 
 /-- **The Dobrushin rate fails the asymptotic-freedom lower bound** — the precise statement that the
 strong-coupling bound cannot be the join's clause (2). For any positive A, c′, the Dobrushin rate
