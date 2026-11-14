@@ -1,4 +1,5 @@
 import Mathlib
+import PaclandProof.QM.Bessel
 
 noncomputable section
 
@@ -86,5 +87,49 @@ lemma bessel_recurrence_partial (N : ℕ) (x : ℝ) (hx : x ≠ 0) :
     ring
   rw [mul_add]
   nlinarith [hsub, hA0, hC0]
+
+/-- The partial sums `besselPartial n N x` converge to the full Bessel function `besselI n x`
+(for `x ≥ 0`, where the series is summable). This is the N → ∞ step that turns the finite
+recurrence into the full recurrence. -/
+lemma besselPartial_tendsto (n : ℕ) {x : ℝ} (hx : 0 ≤ x) :
+    Filter.Tendsto (fun N : ℕ => besselPartial n N x) Filter.atTop (nhds (besselI n x)) := by
+  dsimp [besselPartial]
+  have hsum : Summable (fun k => (x / 2) ^ (2 * k + n) / ((k.factorial : ℝ) * (k + n).factorial)) :=
+    besselI_summable_of_nonneg n hx
+  have hhas : HasSum (fun k => (x / 2) ^ (2 * k + n) / ((k.factorial : ℝ) * (k + n).factorial)) (besselI n x) := by
+    simpa [besselI] using (Summable.hasSum hsum)
+  exact (HasSum.tendsto_sum_nat hhas).comp (Filter.tendsto_add_atTop_nat 1)
+
+/-- **The full Bessel recurrence**: `I₀(x) − I₂(x) = (2/x)·I₁(x)` for `x > 0`. This is the N → ∞
+limit of the finite recurrence `bessel_recurrence_partial`. -/
+lemma bessel_recurrence {x : ℝ} (hx : 0 < x) :
+    besselI 0 x - besselI 2 x = (2 / x) * besselI 1 x := by
+  have hx0 : 0 ≤ x := le_of_lt hx
+  have hconv0 : Filter.Tendsto (fun N : ℕ => besselPartial 0 N x) Filter.atTop (nhds (besselI 0 x)) :=
+    besselPartial_tendsto 0 hx0
+  have hconv2 : Filter.Tendsto (fun N : ℕ => besselPartial 2 N x) Filter.atTop (nhds (besselI 2 x)) :=
+    besselPartial_tendsto 2 hx0
+  have hconv1 : Filter.Tendsto (fun N : ℕ => besselPartial 1 N x) Filter.atTop (nhds (besselI 1 x)) :=
+    besselPartial_tendsto 1 hx0
+  have herr : Filter.Tendsto (fun N : ℕ => (x / 2)^(2 * N + 2) / ((N.factorial : ℝ) * (N + 2).factorial)) Filter.atTop (nhds 0) := by
+    have hsum : Summable (fun k => (x / 2) ^ (2 * k + 2) / ((k.factorial : ℝ) * (k + 2).factorial)) :=
+      besselI_summable_of_nonneg 2 hx0
+    exact (Summable.tendsto_cofinite_zero hsum).mono_left Filter.atTop_le_cofinite
+  have hlhs : Filter.Tendsto (fun N : ℕ => besselPartial 0 N x - besselPartial 2 N x) Filter.atTop (nhds (besselI 0 x - besselI 2 x)) :=
+    hconv0.sub hconv2
+  have hrhs : Filter.Tendsto (fun N : ℕ => besselPartial 0 N x - besselPartial 2 N x) Filter.atTop (nhds ((2 / x) * besselI 1 x)) := by
+    have hxne : x ≠ 0 := ne_of_gt hx
+    have hmul : Filter.Tendsto (fun N : ℕ => (2 / x) * besselPartial 1 N x) Filter.atTop (nhds ((2 / x) * besselI 1 x)) :=
+      hconv1.const_mul (2 / x)
+    have hsub : Filter.Tendsto (fun N : ℕ => (2 / x) * besselPartial 1 N x - (x / 2)^(2 * N + 2) / ((N.factorial : ℝ) * (N + 2).factorial)) Filter.atTop (nhds ((2 / x) * besselI 1 x - 0)) :=
+      hmul.sub herr
+    have hsub' : Filter.Tendsto (fun N : ℕ => (2 / x) * besselPartial 1 N x - (x / 2)^(2 * N + 2) / ((N.factorial : ℝ) * (N + 2).factorial)) Filter.atTop (nhds ((2 / x) * besselI 1 x)) := by
+      simpa using hsub
+    rw [show (fun N : ℕ => besselPartial 0 N x - besselPartial 2 N x)
+          = (fun N : ℕ => (2 / x) * besselPartial 1 N x - (x / 2)^(2 * N + 2) / ((N.factorial : ℝ) * (N + 2).factorial)) by
+      funext N
+      exact bessel_recurrence_partial N x hxne]
+    exact hsub'
+  exact tendsto_nhds_unique hlhs hrhs
 
 end QM
