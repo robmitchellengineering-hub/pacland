@@ -117,4 +117,27 @@ theorem integral_tsum_exp_cos (x : ℝ) :
       exact (NormedSpace.expSeries_div_hasSum_exp (x * Real.cos θ)).summable.hasSum)
   exact hswap.tsum_eq.symm
 
+/-- **The even terms give the Bessel series**: `Σₖ x^{2k}/(2k)!·∫₀^π cos^{2k} = π·besselI 0 x`. The
+Wallis closed form turns each even integral into `π(2k)!/(2^{2k}(k!)²)`, whose factorial cancellation
+leaves exactly the `(x/2)^{2k}/(k!)²` coefficient of `besselI 0`. -/
+theorem tsum_even_cos_eq_besselI0 (x : ℝ) :
+    (∑' k : ℕ, x^(2*k) / ((2*k).factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(2*k))) = π * besselI 0 x := by
+  rw [show (fun k : ℕ => x^(2*k) / ((2*k).factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(2*k))) =
+      (fun k : ℕ => π * (x/2)^(2*k) / (k.factorial : ℝ)^2) by
+    funext k
+    rw [wallis_closed k]
+    field_simp [div_pow]
+    rw [← mul_pow]
+    norm_num
+    ring_nf]
+  rw [show (fun k : ℕ => π*(x/2)^(2*k)/(k.factorial : ℝ)^2) = (fun k : ℕ => π*((x/2)^(2*k)/(k.factorial : ℝ)^2)) by
+    funext k; ring]
+  rw [tsum_mul_left]
+  congr 1
+  rw [show (fun k : ℕ => (x/2)^(2*k) / (k.factorial : ℝ)^2) =
+      (fun k : ℕ => (x/2)^(2*k+0) / ((k.factorial : ℝ) * (k+0).factorial)) by
+    funext k
+    simp [pow_two]]
+  rfl
+
 end QM
