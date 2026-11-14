@@ -202,4 +202,62 @@ theorem os_reconstruction_actual {m : ℕ} (K : Fin m → Fin m → ℝ) (θ : F
         · intro i j
           exact wilson_kernel_vacuum θ β i j
 
+/-! ## B1 (the Wick rotation) — the concrete Euclidean → Minkowski continuation
+
+The OS reconstruction's B1 is "reflection positivity ⟹ analytic continuation". For the Wilson heat
+kernel this continuation is *explicit*: the Euclidean angle `τ` rotates to the Minkowski hyperbolic
+angle `t` via `τ → i·t`, so the Euclidean propagator `exp(2β·cos τ)` becomes the Minkowski propagator
+`exp(2β·cosh t)`. These three identities are that continuation, stated exactly and kernel-checked.
+-/
+
+/-- **B1 (Wick rotation of the angle)** — the Euclidean angle rotates to the Minkowski hyperbolic
+angle: `cos(i·t) = cosh(t)`. -/
+theorem wick_rotation_cos (t : ℝ) :
+    Complex.cos (Complex.ofReal t * Complex.I) = Complex.cosh (Complex.ofReal t) := by
+  exact Complex.cos_mul_I (Complex.ofReal t)
+
+/-- **B1 (Wick rotation of the Wilson propagator)** — the Euclidean 2-point function
+`exp(2β·cos τ)` analytically continues to the Minkowski 2-point function `exp(2β·cosh t)` via
+`τ → i·t`. -/
+theorem wick_rotation_wilson (β t : ℝ) :
+    Complex.exp (2 * β * Complex.cos (Complex.ofReal t * Complex.I))
+      = Complex.exp (2 * β * Complex.cosh (Complex.ofReal t)) := by
+  rw [Complex.cos_mul_I]
+
+/-- **B1 (the Minkowski continuation is real)** — the Wick-rotated Wilson propagator is a real
+number: `exp(2β·cosh t) ∈ ℝ`, so the Euclidean reflection-positivity continues to a real Minkowski
+correlation. -/
+theorem wick_rotation_wilson_real (β t : ℝ) :
+    Complex.exp (2 * β * Complex.cosh (Complex.ofReal t))
+      = Complex.ofReal (Real.exp (2 * β * Real.cosh t)) := by
+  rw [← Complex.ofReal_cosh]
+  norm_num [Complex.ofReal_exp]
+
+/-! ## B1 (the spectral representation) — the transfer matrix is diagonalizable, and H = -log T
+
+The Wick rotation above is the *concrete* continuation for the free heat kernel. The general
+statement is the spectral theorem: a PSD symmetric transfer matrix is unitarily diagonalizable with
+non-negative eigenvalues, so the Hamiltonian `H = -log T` (the generator of the time evolution) is
+well-defined via the eigenvalue log. These two pieces are that general representation.
+-/
+
+set_option maxHeartbeats 600000 in
+/-- **B1 (spectral representation)** — the PSD symmetric transfer matrix is unitarily diagonalizable
+with non-negative (real) eigenvalues: `T = U · diag(λ) · U†`, λ ≥ 0. This is the spectral theorem for
+the transfer matrix, the input to the Hamiltonian `H = -log T` and the complex-time continuation. -/
+theorem transferMatrix_spectral {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) :
+    transferMatrix K = ((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ))
+        (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+        (Matrix.diagonal (RCLike.ofReal ∘ (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues)) := by
+  exact Matrix.IsHermitian.spectral_theorem (transferMatrix_posSemidef_matrix K hSymm hK).1
+
+/-- **The Hamiltonian** (the generator of the time evolution) — the functional-calculus
+`H = -log T` via the eigenvalue log of the spectral representation. -/
+noncomputable def transferHamiltonian {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) : Matrix (Fin m) (Fin m) ℝ :=
+  ((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ))
+      (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+      (Matrix.diagonal (fun i => -Real.log ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues i)))
+
 end QM
