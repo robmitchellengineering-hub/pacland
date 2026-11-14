@@ -535,4 +535,40 @@ theorem activity_hasDerivAt (β : ℝ) (hβ : 0 < β) :
   convert HasDerivAt.const_sub (1 : ℝ) hr using 1
   ring
 
+/-- **The Bessel order `I₁ < I₀` for all β > 0**: `I₀ − I₁ = (1/π)∫(1−cos θ)e^{β cos θ} dθ > 0`
+because the integrand is positive on (0, π). Input to the `w = βI₁ − (β−1)I₀` comparison. -/
+theorem besselI1_lt_besselI0 {β : ℝ} (hβ : 0 < β) :
+    besselI 1 β < besselI 0 β := by
+  have hcont_exp : Continuous (fun θ : ℝ => Real.exp (β * Real.cos θ)) := by
+    simpa [Function.comp_def] using (Real.continuous_exp.comp ((continuous_const : Continuous (fun _ : ℝ => β)).mul Real.continuous_cos))
+  have hdiff : (∫ θ in (0 : ℝ)..π, Real.exp (β * Real.cos θ) * (1 - Real.cos θ)) = π * (besselI 0 β - besselI 1 β) := by
+    calc
+      (∫ θ in (0 : ℝ)..π, Real.exp (β * Real.cos θ) * (1 - Real.cos θ))
+        = (∫ θ in (0 : ℝ)..π, Real.exp (β * Real.cos θ) - Real.exp (β * Real.cos θ) * Real.cos θ) := by
+          apply intervalIntegral.integral_congr
+          intro θ hθ
+          ring
+      _ = (∫ θ in (0 : ℝ)..π, Real.exp (β * Real.cos θ)) - (∫ θ in (0 : ℝ)..π, Real.exp (β * Real.cos θ) * Real.cos θ) := by
+          simpa [Pi.mul_apply] using (intervalIntegral.integral_sub (hcont_exp.intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) π) ((hcont_exp.mul Real.continuous_cos).intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) π))
+      _ = π * besselI 0 β - π * besselI 1 β := by
+          rw [show (∫ θ in (0 : ℝ)..π, Real.exp (β * Real.cos θ)) = π * besselI 0 β by
+            simpa [Function.comp_def] using integral_exp_cos_eq_besselI0 β]
+          rw [show (∫ θ in (0 : ℝ)..π, Real.exp (β * Real.cos θ) * Real.cos θ) = π * besselI 1 β by
+            simpa [Function.comp_def] using integral_exp_cos_mul_cos_eq_besselI1 β]
+      _ = π * (besselI 0 β - besselI 1 β) := by ring
+  have hpos : 0 < (∫ θ in (0 : ℝ)..π, Real.exp (β * Real.cos θ) * (1 - Real.cos θ)) := by
+    apply intervalIntegral.integral_pos Real.pi_pos
+    · exact ((hcont_exp.mul (continuous_const.sub Real.continuous_cos))).continuousOn
+    · intro θ hθ
+      have hcos : Real.cos θ ≤ 1 := Real.cos_le_one θ
+      have h1 : 0 ≤ 1 - Real.cos θ := by linarith
+      exact mul_nonneg (le_of_lt (Real.exp_pos _)) h1
+    · refine ⟨(π / 2 : ℝ), ?_, ?_⟩
+      · exact ⟨by positivity, by linarith [Real.pi_pos]⟩
+      · rw [Real.cos_pi_div_two]
+        norm_num
+  rw [hdiff] at hpos
+  have h : 0 < besselI 0 β - besselI 1 β := (mul_pos_iff_of_pos_left Real.pi_pos).mp hpos
+  exact lt_of_sub_pos h
+
 end QM
