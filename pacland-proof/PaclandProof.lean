@@ -70,6 +70,7 @@ import PaclandProof.QM.AsymptoticFreedom
 import PaclandProof.QM.InstantonTrial
 import PaclandProof.QM.SpacingUniform
 import PaclandProof.QM.OSAxioms
+import PaclandProof.QM.OSAnalyticContinuation
 import PaclandProof.QM.CollectiveInstanton
 import PaclandProof.QM.MassGapJoin
 import PaclandProof.QM.WickRotation
