@@ -5,16 +5,15 @@ import Mathlib
 
 The modified Bessel functions satisfy `I₀(x) − I₂(x) = (2/x)·I₁(x)`. Its algebraic core is the
 factorial identity `1/(k!)² − 1/((k−1)!(k+1)!) = 1/(k!(k+1)!)`, which makes the two series cancel
-term-by-term after reindexing. This file proves that identity — the sub-step that unblocks the
-recurrence, which feeds the derivative `I₁′ = I₀ − I₁/x`, which feeds the monotonicity of `I₁/I₀`
-(the 1-link SU(2) spectral gap in the coupling).
+term-by-term. This file proves the identity and its term-wise corollary — the sub-steps that feed
+the derivative `I₁′ = I₀ − I₁/x`, which feeds the monotonicity of `I₁/I₀` (the 1-link SU(2)
+spectral gap in the coupling).
 -/
 
 namespace QM
 
 /-- The factorial identity at the heart of the Bessel recurrence: for `k ≥ 1`,
-`1/(k!)² − 1/((k−1)!(k+1)!) = 1/(k!(k+1)!)`. This is the term-wise cancellation that gives
-`I₀ − I₂ = (2/x)·I₁`. -/
+`1/(k!)² − 1/((k−1)!(k+1)!) = 1/(k!(k+1)!)`. -/
 lemma bessel_factorial_identity (k : ℕ) (hk : 1 ≤ k) :
     1 / ((k.factorial : ℝ)^2) - 1 / (((k - 1).factorial : ℝ) * (k + 1).factorial)
       = 1 / ((k.factorial : ℝ) * (k + 1).factorial) := by
@@ -31,5 +30,22 @@ lemma bessel_factorial_identity (k : ℕ) (hk : 1 ≤ k) :
   rw [h1, h2]
   field_simp [hk0, hk10]
   ring
+
+/-- The term-wise identity that telescopes the Bessel recurrence: for `k ≥ 1` and `x ≠ 0`,
+`(x/2)^{2k}/(k!)² − (x/2)^{2k}/((k−1)!(k+1)!) = (2/x)·(x/2)^{2k+1}/(k!(k+1)!)`. -/
+lemma bessel_term_identity (k : ℕ) (hk : 1 ≤ k) (x : ℝ) (hx : x ≠ 0) :
+    (x / 2)^(2 * k) / ((k.factorial : ℝ)^2) - (x / 2)^(2 * k) / (((k - 1).factorial : ℝ) * (k + 1).factorial)
+      = (2 / x) * ((x / 2)^(2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial)) := by
+  have hfac := bessel_factorial_identity k hk
+  have hscal : (2 / x) * (x / 2)^(2 * k + 1) = (x / 2)^(2 * k) := by
+    rw [pow_succ]
+    field_simp [hx]
+  calc
+    (x / 2)^(2 * k) / ((k.factorial : ℝ)^2) - (x / 2)^(2 * k) / (((k - 1).factorial : ℝ) * (k + 1).factorial)
+        = (x / 2)^(2 * k) * (1 / ((k.factorial : ℝ)^2) - 1 / (((k - 1).factorial : ℝ) * (k + 1).factorial)) := by ring
+    _ = (x / 2)^(2 * k) * (1 / ((k.factorial : ℝ) * (k + 1).factorial)) := by rw [hfac]
+    _ = (2 / x) * ((x / 2)^(2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial)) := by
+      rw [← hscal]
+      ring
 
 end QM
