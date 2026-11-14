@@ -513,4 +513,17 @@ theorem besselI1_hasDerivAt (β : ℝ) (hβ : β ≠ 0) :
   rw [hval] at h
   simpa using h.2.const_mul (1 / π)
 
+/-- **The Riccati equation for the Bessel ratio** `r = I₁/I₀`: from `I₀′=I₁` and `I₁′=I₀−I₁/β`,
+the quotient rule gives `r′ = 1 − r/β − r²`. Its fixed point is `1 − 1/(2β)`, which is the
+concentration `1 − r ≤ C/β` — the ym-bakry-ceiling antipode-suppression bound. -/
+theorem bessel_ratio_hasDerivAt (β : ℝ) (hβ : 0 < β) :
+    HasDerivAt (fun x : ℝ => besselI 1 x / besselI 0 x)
+      (1 - (besselI 1 β / besselI 0 β) / β - (besselI 1 β / besselI 0 β)^2) β := by
+  have hI0 : besselI 0 β ≠ 0 := ne_of_gt (besselI_pos hβ)
+  have hd0 : HasDerivAt (fun x : ℝ => besselI 0 x) (besselI 1 β) β := besselI0_hasDerivAt β
+  have hd1 : HasDerivAt (fun x : ℝ => besselI 1 x) (besselI 0 β - besselI 1 β / β) β := besselI1_hasDerivAt β (ne_of_gt hβ)
+  have hdiv := hd1.div hd0 hI0
+  convert hdiv using 1
+  field_simp [hI0]
+
 end QM
