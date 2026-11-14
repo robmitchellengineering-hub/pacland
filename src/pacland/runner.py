@@ -119,6 +119,7 @@ class Fact:
     falsifier: str          # the description of what would refute it
     source: str             # the Lean theorem / script that validates it
     category: str
+    formalization_target: str = ""  # the Lean lemma/theorem that would turn this fact into a proof
 
 
 FACTS: dict[str, Fact] = {
@@ -163,6 +164,9 @@ FACTS: dict[str, Fact] = {
         falsifier="a β where m(β) increases, or m(β) ≤ 0, or c ≤ 0",
         source="scripts/glueball_mass_ratio.py + kernel.measure_glueball (Numba, measured this session)",
         category="yang-mills",
+        formalization_target="PaclandProof.QM.tanh_mono (monotonicity of the transfer-matrix spectral gap) "
+        "+ the transfer-matrix spectral condition (correlation length = 1/gap) "
+        "→ the monotonicity of m(β), which extends the strong-coupling gap to β→∞",
     ),
 }
 
