@@ -1,4 +1,5 @@
 import Mathlib
+import PaclandProof.QM.YMMassGap
 
 /-!
 # The volume-uniform continuum join — the open Clay rung (stated, not proved)
@@ -62,5 +63,31 @@ theorem volumeUniformJoin_not_falsifier (mGap : ℝ → ℝ → ℝ) (spacing : 
     -- push the negation through the three disjuncts
     push_neg at hn
     exact hn
+
+/-- `alphaAt` is strictly monotone increasing in β: the Dobrushin parameter grows toward 1 as the
+coupling weakens. -/
+lemma alphaAt_strictMono {c n β₁ β₂ : ℝ} (hc : 0 < c) (hn : 0 < n) (h : β₁ < β₂) :
+    alphaAt c n β₁ < alphaAt c n β₂ := by
+  dsimp [alphaAt]
+  have hexp : Real.exp (-4 * n * β₂) < Real.exp (-4 * n * β₁) := by
+    rw [Real.exp_lt_exp]
+    have harg : -4 * n * β₂ < -4 * n * β₁ := by
+      nlinarith [mul_lt_mul_of_pos_left h (by nlinarith : 0 < 4 * n)]
+    exact harg
+  nlinarith [mul_lt_mul_of_pos_left (sub_lt_sub_right hexp 1) hc]
+
+/-- **The Dobrushin mass rate is NOT a volume-uniform positive lower bound** — the exact obstruction
+that makes the volume-uniform join the open Clay rung. Past the ceiling `β > ceilingBeta`, the
+Dobrushin parameter `α > 1`, so `massRate α = (−log α)/2 < 0`: the strong-coupling bound is vacuous
+there and cannot be the `c(β) > 0` the join's clause (2) requires. This is what `mass_gap_join : Δ/a = 1`
+hides: the strong-coupling gap does not survive to the continuum uniformly. -/
+theorem dobrushin_not_volume_uniform {c n : ℝ} (hc : 1 < c) (hn : 0 < n) :
+    ∃ β : ℝ, massRate (alphaAt c n β) ≤ 0 := by
+  use ceilingBeta c n + 1
+  have hceiling : alphaAt c n (ceilingBeta c n) = 1 := alphaAt_ceiling_eq_one hc (ne_of_gt hn)
+  have hα : 1 < alphaAt c n (ceilingBeta c n + 1) := by
+    rw [← hceiling]
+    exact alphaAt_strictMono (lt_trans zero_lt_one hc) hn (by linarith)
+  exact le_of_lt (massRate_neg_of_one_lt hα)
 
 end QM
