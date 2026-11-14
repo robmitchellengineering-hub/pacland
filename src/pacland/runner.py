@@ -168,6 +168,14 @@ FACTS: dict[str, Fact] = {
         "+ the transfer-matrix spectral condition (correlation length = 1/gap) "
         "→ the monotonicity of m(β), which extends the strong-coupling gap to β→∞",
     ),
+    "su2-transfer-matrix-posdef": Fact(
+        id="su2-transfer-matrix-posdef",
+        statement="the SU(2) Wilson heat kernel exp(2β·cos(θ_i−θ_j)) is positive-definite for β≥0 (OS3 reflection positivity = the transfer matrix is positive)",
+        falsifier="a β≥0 and angles θ, coefficients c with Σ c_i c_j exp(2β cos(θ_i−θ_j)) < 0",
+        source="PaclandProof.QM.CosPowers.heat_kernel_posdef (Lean, kernel-checked; via cos_pow_posdef + posdef_of_tendsto)",
+        category="yang-mills",
+        formalization_target="(done) — feeds ClusteringGap (clustering ⟺ transfer-operator spectral gap) for the correlation-length = 1/gap condition",
+    ),
 }
 
 
