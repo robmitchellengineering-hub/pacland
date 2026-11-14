@@ -45,9 +45,10 @@ TENSIONS = [
         "discriminator": "the robustness engine — pool the strata with the stated weights and see whether the "
                         "pooled number is the weighted average",
         "state": "resolved",
-        "resolution": ("no contradiction: 21.17% **is** the row-weighted average of the strata. The tension "
-                       "was in the quoting, not the physics — so the fraction must be quoted stratified, with "
-                       "its weighting (`python3 scripts/robustness.py`)."),
+        "resolution": ("RETRACTED 2026-11-14: the stratified rates (27.9% / 1.2%) are sampler artefacts "
+                       "(runaway-laden corpus); the corrected finding is a *stability* cliff. "
+                       "See docs/susy-collapse-correction.md. Previously: no contradiction — 21.17% **is** "
+                       "the row-weighted average of the strata; the tension was in the quoting, not the physics."),
         "cost": "done",
     },
     {

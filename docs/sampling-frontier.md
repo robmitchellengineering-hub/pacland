@@ -56,8 +56,10 @@ points, 1,245 SUSY vacua.**
 
 ## What the full run shows
 
-1. **The SUSY fraction collapses ~25×** from h12=2 (28%) → h12=3 (20%) → h12=4 (1%)
-   → h12=5 (~1%). The frontier is a measured curve, not a single cliff.
+1. **RETRACTED (2026-11-14)**: the "~25× collapse" below is a **sampler artefact** — the
+   `sample_critical_points(ISD−)` method finds 0 SUSY at h12=4, while the correct `data_sampler`
+   finds 0 runaway and ~60–80% in-domain SUSY (flat). See `docs/susy-collapse-correction.md`.
+   The raw (artefact-laden) numbers were: h12=2 (28%) → h12=3 (20%) → h12=4 (1%) → h12=5 (~1%).
 2. **The constraint holds everywhere** — all 5,885 vacua satisfy `N_flux ≤ L`, no
    exceptions.
 3. **W₀ is free** — spans ~77 orders of magnitude (`10^0.1` to `10^78.9`); `g_s` stays

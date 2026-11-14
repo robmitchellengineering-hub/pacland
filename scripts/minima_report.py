@@ -4,6 +4,9 @@
 "27.9%" and "43.3% at a 37.9% runaway share" are different claims, and only the second is about the theory.
 
     python3 scripts/minima_report.py
+
+Note (2026-11-14): the *stable*-minima finding that replaces the retracted "collapse" lives in
+`scripts/susy_minima.py` (see `docs/susy-collapse-correction.md`).
 """
 import sys
 from pathlib import Path

@@ -1,5 +1,11 @@
 # The h12 wall's discriminator, calibrated — and it is confounded by the thing it measures
 
+> **RE-MEASURED 2026-11-14** (`scripts/cond_isd.py`): the "1.8e2 → 4.8e6" curve was a single-point
+> reading. Over the corrected `data_sampler` SUSY-vacuum population (0 runaway), the ill-conditioning
+> is **real but non-monotonic and spread 4–5 orders at every rung** — median cond(M) = 1.55e3 (h12=2),
+> 3.62e4 (h12=3), 3.66e5 (h12=4), 3.85e6 (h12=5), **1.46e4 (h12=6)**. The near-null direction is
+> physical; the "1.8e2 → 4.8e6" curve is not reproducible as stated.
+
 **The question** (from `docs/h12-25-sampling-wall.md`): `cond(M)` rises from **1.8e2 at h12=2 to 4.8e6 at h12=25** (up to
 2.7e10 across polytopes). **Is the near-null direction a truncation artefact or a real hierarchy?** No measurement has
 settled it, and the sampling wall above h12 = 5 depends on the answer.

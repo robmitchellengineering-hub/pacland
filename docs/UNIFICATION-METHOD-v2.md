@@ -68,7 +68,8 @@ generic rows show a rough `|W_T|/|W| ≈ 0.6·|τ|`. Follow-up: re-fit on `|W|` 
   (weight 0.969 → 1.000 → 0.572) at every h12, boundary-aligned weight ≈ 0 (≤ 0.028) throughout,
   and the dilaton direction only mixes in at h12=25 (0.426). So the ISD ill-conditioning
   (cond 4.2e3 → 1.2e7) is a **flattish physical direction in the CS-moduli metric**, and the
-  SUSY-fraction collapse is a physical effect, not a proposal curve. The projection/regularisation
+  SUSY-fraction collapse ~~is a physical effect, not a proposal curve~~ **RETRACTED 2026-11-14**: it was a
+  sampler artefact (see `docs/susy-collapse-correction.md`); the real effect is a *stability* cliff. The projection/regularisation
   fix is legitimate. (The earlier `1e135` was a stage error: at a converged vacuum `⋆G=iG` makes
   `M` singular by construction.)
 - **Orbit-space-is-a-point.** Redefines the target (covariance table + rank), does not block it.
