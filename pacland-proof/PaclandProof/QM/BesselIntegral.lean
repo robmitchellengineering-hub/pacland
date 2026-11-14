@@ -209,4 +209,50 @@ theorem integral_exp_cos_eq_besselI0 (x : ℝ) :
     exact hlin]
   exact tsum_exp_cos_coeff x
 
+/-- **The term-by-term integration of the exp series × cos on [0, π]** (the n=1 companion to
+`integral_tsum_exp_cos`): `∫ (Σₘ (x cos θ)^m/m!)·cos θ = Σₘ ∫ (x cos θ)^m/m!·cos θ`, with the same
+dominated-convergence bound `|x|^m/m!` (since `|cos θ| ≤ 1`). -/
+theorem integral_tsum_exp_cos_mul_cos (x : ℝ) :
+    (∫ θ in (0 : ℝ)..π, (∑' m : ℕ, (x * Real.cos θ)^m / (m.factorial : ℝ)) * Real.cos θ) =
+      ∑' m : ℕ, ∫ θ in (0 : ℝ)..π, (x * Real.cos θ)^m / (m.factorial : ℝ) * Real.cos θ := by
+  have hswap := intervalIntegral.hasSum_integral_of_dominated_convergence
+    (μ := MeasureTheory.volume) (a := (0 : ℝ)) (b := π)
+    (F := fun m θ => (x * Real.cos θ)^m / (m.factorial : ℝ) * Real.cos θ)
+    (f := fun θ => (∑' m : ℕ, (x * Real.cos θ)^m / (m.factorial : ℝ)) * Real.cos θ)
+    (bound := fun m _ => |x|^m / (m.factorial : ℝ))
+    (by
+      intro m
+      exact ((((continuous_const.mul Real.continuous_cos).pow m).div_const (m.factorial : ℝ)).mul Real.continuous_cos).aestronglyMeasurable)
+    (by
+      intro m
+      filter_upwards with θ hθ
+      have hcos : |Real.cos θ| ≤ 1 := abs_cos_le_one θ
+      have hpow : |x * Real.cos θ|^m ≤ |x|^m := by
+        rw [abs_mul, mul_pow]
+        have h1 : |x|^m * |Real.cos θ|^m ≤ |x|^m * 1 :=
+          mul_le_mul_of_nonneg_left (pow_le_one₀ (abs_nonneg _) hcos) (pow_nonneg (abs_nonneg x) m)
+        simpa using h1
+      rw [Real.norm_eq_abs, abs_mul, abs_div, abs_pow, abs_of_nonneg (show (0 : ℝ) ≤ (m.factorial : ℝ) by exact Nat.cast_nonneg _)]
+      have hle : |x * Real.cos θ|^m * |Real.cos θ| ≤ |x|^m := by
+        have h1 : |x * Real.cos θ|^m * |Real.cos θ| ≤ |x|^m * |Real.cos θ| :=
+          mul_le_mul_of_nonneg_right hpow (abs_nonneg _)
+        have h2 : |x|^m * |Real.cos θ| ≤ |x|^m :=
+          mul_le_of_le_one_right (pow_nonneg (abs_nonneg x) m) hcos
+        exact le_trans h1 h2
+      simpa [div_eq_mul_inv, mul_assoc, mul_left_comm, mul_comm] using (div_le_div_of_nonneg_right hle (Nat.cast_nonneg (m.factorial))))
+    (by
+      filter_upwards with θ hθ
+      exact (NormedSpace.expSeries_div_hasSum_exp |x|).summable)
+    (by
+      have hconst : (fun _ : ℝ => ∑' m : ℕ, |x|^m / (m.factorial : ℝ)) = (fun _ : ℝ => Real.exp |x|) := by
+        funext θ
+        rw [Real.exp_eq_exp_ℝ]
+        exact (NormedSpace.expSeries_div_hasSum_exp |x|).tsum_eq
+      rw [hconst]
+      exact continuous_const.intervalIntegrable (0 : ℝ) π)
+    (by
+      filter_upwards with θ hθ
+      exact ((NormedSpace.expSeries_div_hasSum_exp (x * Real.cos θ)).summable.hasSum).mul_right (Real.cos θ))
+  exact hswap.tsum_eq.symm
+
 end QM
