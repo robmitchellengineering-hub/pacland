@@ -181,4 +181,18 @@ theorem meanActivity_pos_of_le_two {β : ℝ} (hβ : 0 < β) (hβle : β ≤ 2) 
   dsimp [meanActivity]
   linarith
 
+/-- **The strong-coupling concentration bound**: `E[z] = 1 − I₁/I₀ ≤ 2/β` for `β ≤ 2`. Since
+`I₁/I₀ ≥ 0` (positivity), `E[z] ≤ 1`, and for `β ≤ 2` we have `1 ≤ 2/β`. This is the tractable
+strong-coupling half of `smallGActivityBound 2`; the weak-coupling (β → ∞) half is the open Clay step. -/
+theorem meanActivity_le_two_div_beta_of_le_two {β : ℝ} (hβ : 0 < β) (hβle : β ≤ 2) :
+    meanActivity β ≤ 2 / β := by
+  have hI1 : 0 < besselI 1 β := besselI_pos hβ
+  have hI0 : 0 < besselI 0 β := besselI_pos hβ
+  have hle1 : meanActivity β ≤ 1 := by
+    dsimp [meanActivity]
+    have hratio : 0 ≤ besselI 1 β / besselI 0 β := div_nonneg (le_of_lt hI1) (le_of_lt hI0)
+    linarith
+  have hle2 : (1 : ℝ) ≤ 2 / β := (one_le_div hβ).mpr hβle
+  exact le_trans hle1 hle2
+
 end QM
