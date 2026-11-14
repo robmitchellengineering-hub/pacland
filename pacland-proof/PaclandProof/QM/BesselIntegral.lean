@@ -140,4 +140,47 @@ theorem tsum_even_cos_eq_besselI0 (x : ℝ) :
     simp [pow_two]]
   rfl
 
+/-- **The full coefficient identity**: `Σₘ x^m/m!·∫₀^π cos^m θ = π·besselI 0 x`. The odd powers vanish
+and the even powers give `tsum_even_cos_eq_besselI0`, combined by the even/odd split. This is the
+Jacobi–Anger n=0 coefficient expansion. -/
+theorem tsum_exp_cos_coeff (x : ℝ) :
+    (∑' m : ℕ, x^m / (m.factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^m)) = π * besselI 0 x := by
+  let f : ℕ → ℝ := fun m => x^m / (m.factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^m)
+  have hsum : Summable f := by
+    have hnorm : Summable (fun m => |x|^m / (m.factorial : ℝ)) := (NormedSpace.expSeries_div_hasSum_exp |x|).summable
+    have hbound : ∀ m, ‖f m‖ ≤ π * (|x|^m / (m.factorial : ℝ)) := by
+      intro m
+      dsimp [f]
+      have hint : ‖∫ θ in (0 : ℝ)..π, (Real.cos θ)^m‖ ≤ π := by
+        have hle : ∀ θ ∈ Set.uIoc (0 : ℝ) π, ‖(Real.cos θ)^m‖ ≤ 1 := by
+          intro θ hθ
+          rw [Real.norm_eq_abs, abs_pow]
+          exact pow_le_one₀ (abs_nonneg _) (abs_cos_le_one θ)
+        simpa using (intervalIntegral.norm_integral_le_of_norm_le_const (a := (0 : ℝ)) (b := π) (f := fun θ => (Real.cos θ)^m) (C := 1) hle)
+      calc
+        ‖x^m / (m.factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^m)‖
+          = |x|^m / (m.factorial : ℝ) * ‖∫ θ in (0 : ℝ)..π, (Real.cos θ)^m‖ := by
+            rw [Real.norm_eq_abs, abs_mul, abs_div, abs_pow]
+            rw [abs_of_nonneg (show (0 : ℝ) ≤ (m.factorial : ℝ) by exact Nat.cast_nonneg _)]
+            rw [Real.norm_eq_abs]
+        _ ≤ π * (|x|^m / (m.factorial : ℝ)) := by
+            simpa [mul_comm] using (mul_le_mul_of_nonneg_left hint (div_nonneg (pow_nonneg (abs_nonneg x) m) (Nat.cast_nonneg (m.factorial))))
+    exact Summable.of_norm_bounded (hnorm.mul_left π) hbound
+  have hsum_even : Summable (fun k => f (2*k)) := hsum.comp_injective (i := fun k : ℕ => 2*k) (by intro a b h; exact Nat.mul_left_cancel (by norm_num : (0 : ℕ) < 2) h)
+  have hsum_odd : Summable (fun k => f (2*k+1)) := hsum.comp_injective (i := fun k : ℕ => 2*k+1) (by intro a b h; exact Nat.mul_left_cancel (by norm_num : (0 : ℕ) < 2) (Nat.succ.inj h))
+  have hodd : (∑' k, f (2*k+1)) = 0 := by
+    dsimp [f]
+    have hzero : (fun k : ℕ => x^(2*k+1) / ((2*k+1).factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(2*k+1))) = (fun _ : ℕ => 0) := by
+      funext k
+      rw [integral_cos_odd_pow k]
+      simp
+    rw [hzero, tsum_zero]
+  have heven : (∑' k, f (2*k)) = π * besselI 0 x := by
+    dsimp [f]
+    exact tsum_even_cos_eq_besselI0 x
+  have hsplit := tsum_even_add_odd (f := f) hsum_even hsum_odd
+  rw [← hsplit]
+  rw [hodd, heven]
+  simp
+
 end QM
