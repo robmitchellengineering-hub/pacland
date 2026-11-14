@@ -143,4 +143,31 @@ lemma besselI2_lt_besselI0 {x : ℝ} (hx : 0 < x) : besselI 2 x < besselI 0 x :=
   rw [← hrec] at hpos
   linarith
 
+/-- The derivative of the finite partial sum `besselPartial n N` at `x` — the term-by-term derivative
+of the finite polynomial (derivative written with `(1/2)` last to match `HasDerivAt.pow`). This is the
+finite step toward the derivative recurrence `I₀′ = I₁`, feeding the small-field activity bound. -/
+lemma besselPartial_hasDerivAt (n N : ℕ) (x : ℝ) :
+    HasDerivAt (fun y => besselPartial n N y)
+      (∑ k ∈ Finset.range (N + 1), (2 * k + n : ℝ) * (x / 2)^(2 * k + n - 1) * (1 / 2) / ((k.factorial : ℝ) * (k + n).factorial)) x := by
+  have hterm : ∀ k : ℕ, HasDerivAt (fun y : ℝ => (y / 2)^(2 * k + n) / ((k.factorial : ℝ) * (k + n).factorial))
+      ((2 * k + n : ℝ) * (x / 2)^(2 * k + n - 1) * (1 / 2) / ((k.factorial : ℝ) * (k + n).factorial)) x := by
+    intro k
+    have hlin : HasDerivAt (fun y : ℝ => y / 2) (1 / 2) x := by
+      simpa using (hasDerivAt_id x).div_const 2
+    have hpow : HasDerivAt (fun y : ℝ => (y / 2) ^ (2 * k + n)) ((2 * k + n : ℝ) * (x / 2) ^ (2 * k + n - 1) * (1 / 2)) x := by
+      convert (hasDerivAt_pow (2 * k + n) (x / 2)).comp x hlin using 1
+      · funext y
+        rfl
+      · norm_num
+    exact hpow.div_const ((k.factorial : ℝ) * (k + n).factorial)
+  induction N with
+  | zero =>
+      simp [besselPartial]
+      simpa using hterm 0
+  | succ N ih =>
+      convert ih.add (hterm (N + 1)) using 1
+      · ext y
+        simp [besselPartial, Finset.sum_range_succ]
+      · simp [Finset.sum_range_succ]
+
 end QM
