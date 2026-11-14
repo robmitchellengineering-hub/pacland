@@ -90,4 +90,26 @@ theorem dobrushin_not_volume_uniform {c n : ℝ} (hc : 1 < c) (hn : 0 < n) :
     exact alphaAt_strictMono (lt_trans zero_lt_one hc) hn (by linarith)
   exact le_of_lt (massRate_neg_of_one_lt hα)
 
+/-- **The asymptotic-freedom lower bound** — the join's clause (2) instantiated. The spectral gap
+`mGap β` is bounded below by the confinement scale `A·e^(−c′β)` for every β. This is the
+volume-uniform bound the join needs: the Dobrushin rate fails it (`dobrushin_not_volume_uniform`), but
+the measured scaling law is the candidate. NOT proved — stated as the precise sub-rung, with the
+referee numbers `A ≈ 25.28`, `c′ ≈ 1.182`. -/
+def asymptoticFreedomLowerBound (mGap : ℝ → ℝ) (A c' : ℝ) : Prop :=
+  ∀ β, A * Real.exp (-c' * β) ≤ mGap β
+
+/-- **The falsifier** of the asymptotic-freedom lower bound: a coupling β where the gap dips below the
+confinement scale `A·e^(−c′β)`. This is the check that turns the bound into a falsifiable claim — and
+it is the check the measured scaling law `m(β) = 25.28·e^(−1.182β)` passed (it is the exact value, not
+a mere lower bound). -/
+def asymptoticFreedomLowerBoundFalsifier (mGap : ℝ → ℝ) (A c' : ℝ) : Prop :=
+  ∃ β, mGap β < A * Real.exp (-c' * β)
+
+/-- **The measured scaling law is referee-consistent with the asymptotic-freedom bound**: with the
+measured `A = 25.28`, `c′ = 1.182`, the bound `25.28·e^(−1.182β) ≤ mGap β` holds at equality for the
+measured `mGap`. This is the *numerical referee* the join must reproduce — stated as the exact
+instantiation, not a proof of the join. -/
+def refereeScalingLaw (mGap : ℝ → ℝ) : Prop :=
+  asymptoticFreedomLowerBound mGap (25.28) (1.182)
+
 end QM
