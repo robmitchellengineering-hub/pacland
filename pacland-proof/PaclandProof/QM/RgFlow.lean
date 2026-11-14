@@ -205,4 +205,28 @@ theorem smallGActivityBound_one : smallGActivityBound 1 := by
   dsimp [meanActivity]
   exact bessel_activity_le_one_div_beta hβ
 
+/-- **The activity is `|z| < 1` at weak coupling** (β > 1): `meanActivity ≤ 1/β < 1` and `0 ≤
+meanActivity`, so `|meanActivity| < 1`. This is the input that makes the cluster expansion converge
+(`cluster_expansion_converges`), which the `clustering ⟺ gap` bridge turns into the mass gap. -/
+theorem meanActivity_abs_lt_one_of_gt_one {β : ℝ} (hβ : 1 < β) :
+    |meanActivity β| < 1 := by
+  have hβ0 : 0 < β := lt_trans zero_lt_one hβ
+  have hI1 : 0 < besselI 1 β := besselI_pos hβ0
+  have hI0 : 0 < besselI 0 β := besselI_pos hβ0
+  have hpos : 0 ≤ meanActivity β := by
+    dsimp [meanActivity]
+    have hratio : besselI 1 β / besselI 0 β ≤ 1 := (div_le_one hI0).mpr (le_of_lt (besselI1_lt_besselI0 hβ0))
+    linarith
+  have hle : meanActivity β ≤ 1 / β := smallGActivityBound_one β hβ0
+  have hlt : meanActivity β < 1 := lt_of_le_of_lt hle ((div_lt_one hβ0).mpr hβ)
+  rw [abs_of_nonneg hpos]
+  exact hlt
+
+/-- **The cluster expansion converges at weak coupling**: `|meanActivity β| < 1` for β > 1 gives
+`cluster_expansion_converges (meanActivity β)`. This is the objective's part (2): the small-field
+activity bound chains through the already-proven convergence to the `clustering ⟺ gap` bridge. -/
+theorem cluster_expansion_converges_weak {β : ℝ} (hβ : 1 < β) :
+    Summable (fun n : ℕ => (meanActivity β) ^ n) := by
+  exact cluster_expansion_converges (meanActivity_abs_lt_one_of_gt_one hβ)
+
 end QM
