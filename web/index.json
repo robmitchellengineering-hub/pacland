@@ -2195,6 +2195,20 @@
    "title": "find_flux_vacua.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/glueball_mass.py",
+   "kind": "script",
+   "path": "scripts/glueball_mass.py",
+   "summary": "SU(2) 0++ glueball mass \u2014 thin CLI over pacland.glueball.",
+   "title": "glueball_mass.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/glueball_ratio_sweep.py",
+   "kind": "script",
+   "path": "scripts/glueball_ratio_sweep.py",
+   "summary": "SU(2) glueball mass ratio m/sqrt(\u03c3) sweep \u2014 the continuum ratio conjecture.",
+   "title": "glueball_ratio_sweep.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/gpu_bootstrap.sh",
    "kind": "script",
    "path": "scripts/gpu_bootstrap.sh",
