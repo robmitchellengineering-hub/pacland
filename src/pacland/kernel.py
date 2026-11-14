@@ -165,3 +165,100 @@ def measure_glueball(beta, d, N, n_sweeps, n_meas, seed, n_between=3):
     for dt in range(N - 1):
         m_eff[dt] = -math.log(max(C[dt + 1], 1e-12) / max(C[dt], 1e-12))
     return C, m_eff, gbar
+
+
+@nb.njit
+def ape_smear_nb(links, d, N, alpha, n_iter):
+    """Spatial APE smearing (Numba): U_mu → P_SU(2)[(1-α)U_mu + α/4 Σ staples], mu in 1..d-1."""
+    links = links.copy()
+    n = N**d
+    for _ in range(n_iter):
+        new = links.copy()
+        for mu in range(1, d):
+            for idx in range(n):
+                st = np.zeros(4)
+                for nu in range(1, d):
+                    if nu == mu:
+                        continue
+                    xn = _shift(idx, d, N, nu, 1)
+                    xm = _shift(idx, d, N, mu, 1)
+                    fwd = _mul(links[nu, idx, 0], links[nu, idx, 1], links[nu, idx, 2], links[nu, idx, 3],
+                               links[mu, xn, 0], links[mu, xn, 1], links[mu, xn, 2], links[mu, xn, 3])
+                    fwd = _mul(fwd[0], fwd[1], fwd[2], fwd[3],
+                               links[nu, xm, 0], -links[nu, xm, 1], -links[nu, xm, 2], -links[nu, xm, 3])
+                    st[0] += fwd[0]; st[1] += fwd[1]; st[2] += fwd[2]; st[3] += fwd[3]
+                    xnm = _shift(idx, d, N, nu, -1)
+                    xnm2 = _shift(xnm, d, N, mu, 1)
+                    bwd = _mul(links[nu, xnm, 0], -links[nu, xnm, 1], -links[nu, xnm, 2], -links[nu, xnm, 3],
+                               links[mu, xnm, 0], links[mu, xnm, 1], links[mu, xnm, 2], links[mu, xnm, 3])
+                    bwd = _mul(bwd[0], bwd[1], bwd[2], bwd[3],
+                               links[nu, xnm2, 0], links[nu, xnm2, 1], links[nu, xnm2, 2], links[nu, xnm2, 3])
+                    st[0] += bwd[0]; st[1] += bwd[1]; st[2] += bwd[2]; st[3] += bwd[3]
+                s0 = (1.0 - alpha) * links[mu, idx, 0] + (alpha / 4.0) * st[0]
+                s1 = (1.0 - alpha) * links[mu, idx, 1] + (alpha / 4.0) * st[1]
+                s2 = (1.0 - alpha) * links[mu, idx, 2] + (alpha / 4.0) * st[2]
+                s3 = (1.0 - alpha) * links[mu, idx, 3] + (alpha / 4.0) * st[3]
+                norm = math.sqrt(s0*s0 + s1*s1 + s2*s2 + s3*s3)
+                if norm > 1e-12:
+                    new[mu, idx, 0] = s0 / norm; new[mu, idx, 1] = s1 / norm
+                    new[mu, idx, 2] = s2 / norm; new[mu, idx, 3] = s3 / norm
+        links = new
+    return links
+
+
+@nb.njit
+def measure_variational(beta, d, N, n_sweeps, n_meas, seed, smears):
+    """Numba variational: smeared-operator cross-correlator matrix + GEVP ground-state masses.
+
+    smears: array of smear iterations (e.g. [0, 3, 6]). Returns (masses, gbar)."""
+    n = N**d
+    links = np.empty((d, n, 4), dtype=np.float64)
+    state = np.array([seed + 1, seed + 123456789], dtype=np.uint64)
+    for mu in range(d):
+        for idx in range(n):
+            q = _rand4(state)
+            links[mu, idx, 0] = q[0]; links[mu, idx, 1] = q[1]; links[mu, idx, 2] = q[2]; links[mu, idx, 3] = q[3]
+    sweep(links, beta, state, d, N, n_sweeps)
+    n_op = smears.shape[0]
+    C = np.zeros((n_op, n_op, N))
+    g_mean = np.zeros((n_op, N))
+    for _ in range(n_meas):
+        sweep(links, beta, state, d, N, 3)
+        gs = np.empty((n_op, N))
+        for i in range(n_op):
+            sm = ape_smear_nb(links, d, N, 0.5, smears[i])
+            for t in range(N):
+                gs[i, t] = _spatial_plaq_sum(sm, d, N, t)
+        for i in range(n_op):
+            g_mean[i] += gs[i]
+            for j in range(n_op):
+                for dt in range(N):
+                    s = 0.0
+                    for t in range(N):
+                        s += gs[i, t] * gs[j, (t + dt) % N]
+                    C[i, j, dt] += s
+    g_mean /= n_meas
+    gbar = np.empty(n_op)
+    for i in range(n_op):
+        gbar[i] = g_mean[i].mean()
+    for i in range(n_op):
+        for j in range(n_op):
+            for dt in range(N):
+                C[i, j, dt] = C[i, j, dt] / (n_meas * N) - gbar[i] * gbar[j]
+    return C, gbar
+
+
+def gevp_masses(C, N, t0=1):
+    """Python GEVP: solve C(t) v = λ C(t0) v, ground state = largest |λ|. Returns the masses."""
+    masses = []
+    for t in range(t0 + 1, N // 2):
+        Ct = C[:, :, t]
+        Ct0 = C[:, :, t0]
+        try:
+            lam = np.linalg.eigvals(np.linalg.solve(Ct0, Ct))
+            lam_max = float(np.abs(lam).max())
+            if lam_max > 1e-9:
+                masses.append(-math.log(lam_max) / (t - t0))
+        except np.linalg.LinAlgError:
+            pass
+    return np.array(masses)
