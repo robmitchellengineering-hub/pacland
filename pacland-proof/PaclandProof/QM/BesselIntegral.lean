@@ -346,4 +346,62 @@ theorem integral_exp_cos_mul_cos_eq_besselI1 (x : ℝ) :
     exact hlin]
   exact tsum_exp_cos_mul_cos_coeff x
 
+/-- **The derivative recurrence `I₀′ = I₁`** via differentiation under the integral (the parametric
+interval-integral derivative, not the tsum derivative). The n=0/n=1 projections give the integrand and
+its derivative, and `hasDerivAt_integral_of_dominated_loc_of_deriv_le` commutes them. -/
+theorem besselI0_hasDerivAt (β : ℝ) :
+    HasDerivAt (fun x : ℝ => besselI 0 x) (besselI 1 β) β := by
+  have h := intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (𝕜 := ℝ) (μ := MeasureTheory.volume) (a := (0 : ℝ)) (b := π)
+    (F := fun x θ => Real.exp (x * Real.cos θ))
+    (F' := fun x θ => Real.cos θ * Real.exp (x * Real.cos θ))
+    (x₀ := β) (s := Set.Icc (β - 1) (β + 1))
+    (bound := fun _ => Real.exp (|β| + 1))
+    (Icc_mem_nhds (by linarith) (by linarith))
+    (by
+      filter_upwards with x
+      exact (Real.continuous_exp.comp (continuous_const.mul Real.continuous_cos)).aestronglyMeasurable)
+    (by
+      exact (Real.continuous_exp.comp (continuous_const.mul Real.continuous_cos)).intervalIntegrable (0 : ℝ) π)
+    (by
+      exact (Real.continuous_cos.mul (Real.continuous_exp.comp (continuous_const.mul Real.continuous_cos))).aestronglyMeasurable)
+    (by
+      filter_upwards with θ hθ
+      intro x hx
+      rw [Real.norm_eq_abs, abs_mul]
+      have hcos : |Real.cos θ| ≤ 1 := abs_cos_le_one θ
+      have hxle : x * Real.cos θ ≤ |β| + 1 := by
+        have hx_abs : |x| ≤ |β| + 1 := by
+          rcases Set.mem_Icc.mp hx with ⟨hxl, hxu⟩
+          have hx1 : x ≤ |β| + 1 := le_trans hxu (by linarith [le_abs_self β])
+          have hx2 : -(|β| + 1) ≤ x := by linarith [hxl, neg_le_abs β]
+          exact abs_le.mpr ⟨hx2, hx1⟩
+        have h1 : x * Real.cos θ ≤ |x| * |Real.cos θ| := by
+          rw [← abs_mul]
+          exact le_abs_self _
+        have h2 : |x| * |Real.cos θ| ≤ |β| + 1 := by
+          have h21 : |x| * |Real.cos θ| ≤ |x| := mul_le_of_le_one_right (abs_nonneg x) hcos
+          exact le_trans h21 hx_abs
+        exact le_trans h1 h2
+      have hexp : Real.exp (x * Real.cos θ) ≤ Real.exp (|β| + 1) :=
+        Real.exp_le_exp.mpr hxle
+      simpa using (mul_le_mul hcos hexp (by positivity) (by positivity)))
+    (by
+      exact continuous_const.intervalIntegrable (0 : ℝ) π)
+    (by
+      filter_upwards with θ hθ
+      intro x hx
+      have hlin : HasDerivAt (fun x : ℝ => x * Real.cos θ) (Real.cos θ) x := by
+        simpa using (hasDerivAt_id x).mul_const (Real.cos θ)
+      simpa [Function.comp_def, mul_comm] using (Real.hasDerivAt_exp (x * Real.cos θ)).comp x hlin)
+  have h0 : (fun x : ℝ => ∫ θ in (0 : ℝ)..π, Real.exp (x * Real.cos θ) ∂MeasureTheory.volume) =
+      (fun x : ℝ => π * besselI 0 x) := by
+    funext x
+    exact integral_exp_cos_eq_besselI0 x
+  have h1 : (∫ θ in (0 : ℝ)..π, Real.cos θ * Real.exp (β * Real.cos θ)) = π * besselI 1 β := by
+    simpa [mul_comm] using integral_exp_cos_mul_cos_eq_besselI1 β
+  rw [h0] at h
+  rw [h1] at h
+  simpa using h.2.const_mul (1 / π)
+
 end QM
