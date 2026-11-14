@@ -48,4 +48,18 @@ lemma bessel_term_identity (k : ℕ) (hk : 1 ≤ k) (x : ℝ) (hx : x ≠ 0) :
       rw [← hscal]
       ring
 
+/-- **The telescoping sum** of the Bessel recurrence: the partial sums telescope term-by-term,
+`Σ_{k<N} (A_{k+1} − B_k) = (2/x)·Σ_{k<N} C_{k+1}`, where each term is `bessel_term_identity`. This is
+the sum-level identity that the finite recurrence `S₀ − S₂ = (2/x)·S₁ − E_N` assembles from. -/
+lemma bessel_telescope_sum (N : ℕ) (x : ℝ) (hx : x ≠ 0) :
+    Finset.sum (Finset.range N) (fun k =>
+        (x / 2) ^ (2 * (k + 1)) / (((k + 1).factorial : ℝ)^2)
+          - (x / 2) ^ (2 * k + 2) / ((k.factorial : ℝ) * (k + 2).factorial))
+      = (2 / x) * Finset.sum (Finset.range N) (fun k =>
+        (x / 2) ^ (2 * (k + 1) + 1) / (((k + 1).factorial : ℝ) * (k + 2).factorial)) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl ?_
+    intro k _
+    exact bessel_term_identity (k + 1) (by omega) x hx
+
 end QM
