@@ -170,4 +170,26 @@ lemma besselPartial_hasDerivAt (n N : ℕ) (x : ℝ) :
         simp [besselPartial, Finset.sum_range_succ]
       · simp [Finset.sum_range_succ]
 
+/-- **The order monotonicity for strong coupling**: `I₁ < I₀` when `β ≤ 2`. From `I₀ = I₂ + (2/β)I₁`
+(the recurrence), `I₀ − I₁ = I₂ + (2/β − 1)I₁`, and for `β ≤ 2` the coefficient `2/β − 1 ≥ 0`, so the
+difference is `≥ I₂ > 0`. Hence `I₁/I₀ < 1` and `E[z] = 1 − I₁/I₀ > 0` at strong coupling. The
+weak-coupling (β > 2) half needs the Bessel asymptotics (the open Clay step). -/
+lemma besselI1_lt_besselI0_of_le_two {β : ℝ} (hβ : 0 < β) (hβle : β ≤ 2) :
+    besselI 1 β < besselI 0 β := by
+  have hrec : besselI 0 β - besselI 2 β = (2 / β) * besselI 1 β := bessel_recurrence hβ
+  have hI1 : 0 < besselI 1 β := besselI_pos hβ
+  have hI2 : 0 < besselI 2 β := besselI_pos hβ
+  have hcoef : 0 ≤ (2 / β) - 1 := by
+    have h2β : 1 ≤ 2 / β := (one_le_div hβ).mpr hβle
+    linarith
+  have hdiff : 0 < besselI 0 β - besselI 1 β := by
+    have hI0 : besselI 0 β = besselI 2 β + (2 / β) * besselI 1 β := by linarith
+    have h : besselI 0 β - besselI 1 β = besselI 2 β + ((2 / β) - 1) * besselI 1 β := by
+      rw [hI0]
+      ring
+    rw [h]
+    have hnonneg : 0 ≤ ((2 / β) - 1) * besselI 1 β := mul_nonneg hcoef (le_of_lt hI1)
+    linarith
+  linarith
+
 end QM
