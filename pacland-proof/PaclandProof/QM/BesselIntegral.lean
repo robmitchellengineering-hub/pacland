@@ -571,4 +571,20 @@ theorem besselI1_lt_besselI0 {β : ℝ} (hβ : 0 < β) :
   have h : 0 < besselI 0 β - besselI 1 β := (mul_pos_iff_of_pos_left Real.pi_pos).mp hpos
   exact lt_of_sub_pos h
 
+/-- **The derivative of the barrier** `w = βI₁ − (β−1)I₀`: from `I₀′=I₁`, `I₁′=I₀−I₁/β`, the product
+rule gives `w′ = (β−1)(I₀ − I₁)`, positive for β>1 since `I₀ > I₁`. The FTC input for `w > 0`. -/
+theorem barrier_hasDerivAt (β : ℝ) (hβ : β ≠ 0) :
+    HasDerivAt (fun x : ℝ => x * besselI 1 x - (x - 1) * besselI 0 x)
+      ((β - 1) * (besselI 0 β - besselI 1 β)) β := by
+  have hd0 : HasDerivAt (fun x : ℝ => besselI 0 x) (besselI 1 β) β := besselI0_hasDerivAt β
+  have hd1 : HasDerivAt (fun x : ℝ => besselI 1 x) (besselI 0 β - besselI 1 β / β) β := besselI1_hasDerivAt β hβ
+  have hmul1 : HasDerivAt (fun x : ℝ => x * besselI 1 x) (1 * besselI 1 β + β * (besselI 0 β - besselI 1 β / β)) β :=
+    (hasDerivAt_id β).mul hd1
+  have hmul0 : HasDerivAt (fun x : ℝ => (x - 1) * besselI 0 x) (1 * besselI 0 β + (β - 1) * besselI 1 β) β :=
+    ((hasDerivAt_id β).sub_const 1).mul hd0
+  have h := hmul1.sub hmul0
+  convert h using 1
+  field_simp [hβ]
+  ring
+
 end QM
