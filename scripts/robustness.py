@@ -32,6 +32,8 @@ def main() -> int:
     print("\nThe pooled 21.2% is not the spectrum's number — it is the campaign's. Stratified, the rate")
     print("runs from 27.9% (h12=2) to 1.2% (h12=4), so any pooled figure is partly a statement about how")
     print("many runs each h12 received. That is the kind of sentence a bare '21.17% +/- 1.2%' hides.")
+    print("\n  RETRACTED 2026-11-14: the strata above are sampler artefacts (runaway-laden corpus).")
+    print("  The corrected finding is a *stability* cliff — see docs/susy-collapse-correction.md.")
     return 0
 
 

@@ -43,6 +43,9 @@
 
 **No.** the pooled SUSY fraction (21.17%) sits between strata of 27.9% and 1.2%
 
+> **RETRACTED 2026-11-14:** those strata are sampler artefacts (runaway-laden corpus). The corrected
+> finding is a *stability* cliff, not an existence collapse — see `docs/susy-collapse-correction.md`.
+
 **Question.** which number is *the* SUSY fraction?
 
 **Object / answer.** both are, at different weights — the pool **is** the weighted average of the strata

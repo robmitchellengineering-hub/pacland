@@ -441,6 +441,11 @@ parameter sensitivity, coverage — and the engine says which part decides it.
 | **minima fraction** | 39.87% | [38.63%, 41.12%] | **parameter-limited** — the `is_minimum` threshold moves it by 87% of itself |
 | primitive fraction | 99.950% | [99.85%, 99.98%] | measured |
 
+> **RETRACTED 2026-11-14 (SUSY/minima fractions above):** measured on the runaway-laden corpus
+> (`data/h12_*_stats.json`, 91% runaway at b3=10). The corrected corpus + stability classifier are
+> `scripts/susy_ds_fraction.py` / `scripts/susy_minima.py`; the real finding is a *stability* cliff
+> (stable SUSY minima ~10% at h12=2, ~0% at h12≥3). See `docs/susy-collapse-correction.md`.
+
 **The contrast is the finding.** At ±1.2% the SUSY fraction is a real measurement backed by 5,962 rows. The
 minima fraction has the *same quality of interval* and is still not a property of the landscape: its
 threshold moves it by 35 points, five times the statistical error. Two numbers with identical error bars,

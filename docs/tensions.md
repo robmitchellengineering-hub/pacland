@@ -28,6 +28,9 @@ Facts:
 - the pooled SUSY fraction is **21.17%** (95% CI [20.15, 22.22], 5,962 primitive rows)
 - the stratified rates are **27.9%** at `h12 = 2` and **1.2%** at `h12 = 4`
 
+> **RETRACTED 2026-11-14:** the stratified rates are sampler artefacts (runaway-laden corpus). The
+> corrected finding is a *stability* cliff — see `docs/susy-collapse-correction.md`.
+
 **Clash.** a pooled 21% and a 1.2% stratum cannot both be *the* SUSY fraction.
 
 **Cheapest discriminator.** the robustness engine — pool the strata with the stated weights and see whether the pooled number is the weighted average
