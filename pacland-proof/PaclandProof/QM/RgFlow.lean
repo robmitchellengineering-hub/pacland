@@ -3,6 +3,7 @@ import PaclandProof.QM.BlockSpin
 import PaclandProof.QM.ClusterExpansion
 import PaclandProof.QM.Bessel
 import PaclandProof.QM.BesselRecurrence
+import PaclandProof.QM.BesselIntegral
 
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
@@ -194,5 +195,14 @@ theorem meanActivity_le_two_div_beta_of_le_two {β : ℝ} (hβ : 0 < β) (hβle 
     linarith
   have hle2 : (1 : ℝ) ≤ 2 / β := (one_le_div hβ).mpr hβle
   exact le_trans hle1 hle2
+
+/-- **The small-field activity bound `C = 1`**: `E[z] = 1 − I₁/I₀ ≤ 1/β` for all β > 0. This is
+the ym-bakry-ceiling antipode-suppression bound, proved via the Riccati/barrier route
+(`bessel_activity_le_one_div_beta`). It is the convergence-criterion input: the cluster expansion
+converges uniformly at weak coupling. -/
+theorem smallGActivityBound_one : smallGActivityBound 1 := by
+  intro β hβ
+  dsimp [meanActivity]
+  exact bessel_activity_le_one_div_beta hβ
 
 end QM
