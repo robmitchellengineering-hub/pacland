@@ -1264,6 +1264,13 @@
    "title": "The tadpole is a sufficient statistic \u2014 flux acts on the mass spectrum only through one scalar"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/susy-collapse-correction.md",
+   "kind": "doc",
+   "path": "docs/susy-collapse-correction.md",
+   "summary": "The corpus (data/h12stats.json) was produced by a sampler that did not hold the modulus in its own declared domain. At b3=10 (h12=4) 91% of its rows are runaway points at |z| ~ 1e29\u2026",
+   "title": "CORRECTION \u2014 the \"SUSY-fraction collapse\" is a sampler artefact, not a landscape fact"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/swampland-connection.md",
    "kind": "doc",
    "path": "docs/swampland-connection.md",
@@ -2844,6 +2851,20 @@
    "path": "scripts/step_trace_analysis.py",
    "summary": "Design the step detector from a real waveform instead of from a threshold picked out of the air.",
    "title": "step_trace_analysis.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/susy_ds_fraction.py",
+   "kind": "script",
+   "path": "scripts/susy_ds_fraction.py",
+   "summary": "The corrected SUSY fraction, computed on the data_sampler corpus (0 runaway).",
+   "title": "susy_ds_fraction.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/susy_minima.py",
+   "kind": "script",
+   "path": "scripts/susy_minima.py",
+   "summary": "Stable SUSY minima vs saddles \u2014 the physically meaningful classification.",
+   "title": "susy_minima.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/swampland_checks.py",
