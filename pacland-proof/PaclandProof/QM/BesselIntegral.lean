@@ -599,4 +599,33 @@ theorem besselI1_continuousOn_Ici_one : ContinuousOn (fun x : ℝ => besselI 1 x
   have hx0 : x ≠ 0 := ne_of_gt (lt_of_lt_of_le zero_lt_one (Set.mem_Ici.mp hx))
   exact (besselI1_hasDerivAt x hx0).continuousAt.continuousWithinAt
 
+/-- **The barrier positivity**: `w = βI₁ − (β−1)I₀ > 0` for β > 1. From `w′=(β−1)(I₀−I₁)>0` on
+(1,∞) and `w` continuous, `w` is strictly increasing on [1,∞), so `w(β) > w(1) = I₁(1) > 0`. -/
+theorem barrier_pos {β : ℝ} (hβ : 1 < β) :
+    0 < β * besselI 1 β - (β - 1) * besselI 0 β := by
+  let w : ℝ → ℝ := fun x => x * besselI 1 x - (x - 1) * besselI 0 x
+  have hmono : StrictMonoOn w (Set.Ici (1 : ℝ)) := by
+    apply strictMonoOn_of_deriv_pos (convex_Ici (1 : ℝ))
+    · have hc1 : ContinuousOn (fun x : ℝ => x * besselI 1 x) (Set.Ici (1 : ℝ)) :=
+        continuousOn_id.mul besselI1_continuousOn_Ici_one
+      have hc0 : ContinuousOn (fun x : ℝ => (x - 1) * besselI 0 x) (Set.Ici (1 : ℝ)) :=
+        (continuousOn_id.sub continuousOn_const).mul besselI0_continuous.continuousOn
+      exact hc1.sub hc0
+    · intro x hx
+      rw [interior_Ici] at hx
+      have hx1 : 1 < x := Set.mem_Ioi.mp hx
+      have hx0 : x ≠ 0 := ne_of_gt (lt_trans zero_lt_one hx1)
+      have hderiv := barrier_hasDerivAt x hx0
+      have hd : deriv w x = (x - 1) * (besselI 0 x - besselI 1 x) := hderiv.deriv
+      rw [hd]
+      exact mul_pos (sub_pos.mpr hx1) (sub_pos.mpr (besselI1_lt_besselI0 (lt_trans zero_lt_one hx1)))
+  have hw1 : 0 < w 1 := by
+    dsimp [w]
+    have hI1 : 0 < besselI 1 (1 : ℝ) := besselI_pos (by norm_num : (0 : ℝ) < 1)
+    simpa using hI1
+  have hw : w 1 < w β := hmono (by norm_num : (1 : ℝ) ∈ Set.Ici (1 : ℝ)) (le_of_lt hβ) hβ
+  dsimp [w] at hw
+  have hβI1 : 0 < β * besselI 1 β - (β - 1) * besselI 0 β := lt_trans hw1 hw
+  exact hβI1
+
 end QM
