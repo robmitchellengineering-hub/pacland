@@ -21,36 +21,51 @@ noncomputable section
 
 namespace QM
 
-/-- **The volume-uniform continuum join** (the open Clay rung). `mGap β V` is the lattice spectral
-gap (lattice units) at coupling β on volume V; `spacing β` is the lattice spacing `a(β)`. The join
-asserts three things, all required:
-1. the gap is positive on every finite volume (the Dobrushin/strong-coupling input);
+/-- **The volume-uniform continuum join** (the open Clay rung), with its exact hypotheses.
+`G` is the compact gauge group (SU(2)); `S_Wilson` its Wilson action; `mDobrushin` the strong-coupling
+Dobrushin lower bound; `mGap β V` the lattice spectral gap (lattice units) at coupling β on volume V;
+`spacing β` the lattice spacing `a(β)`. The join asserts, all required:
+0. the Dobrushin bound is a lower bound wherever it is positive (the strong-coupling input);
+1. the gap is positive on every finite volume;
 2. at each coupling there is a *volume-independent* lower bound `c(β) ≤ mGap β V`;
-3. the physical gap `Δ = lim_{β→∞} mGap β V / spacing β` is positive, *uniformly in V* (same Δ for
-   every volume).
-NOT proved. Stated with exact hypotheses + a falsifier. -/
-def volumeUniformJoin (mGap : ℝ → ℝ → ℝ) (spacing : ℝ → ℝ) : Prop :=
+3. the physical gap `Δ = lim_{β→∞} mGap β V / spacing β` is positive, *uniformly in V*.
+NOT proved. Stated with the exact hypotheses + a falsifier. -/
+def volumeUniformJoin
+    (G : Type*) [Group G]         -- the compact gauge group (SU(2))
+    (S_Wilson : ℝ → ℝ)            -- the Wilson action (coupling ↦ action coefficient)
+    (mDobrushin : ℝ → ℝ)          -- the Dobrushin strong-coupling lower bound
+    (mGap : ℝ → ℝ → ℝ)            -- the spectral gap (β, V) ↦ m(β, V)
+    (spacing : ℝ → ℝ) : Prop :=    -- the lattice spacing a(β)
+  (∀ β V, 0 < mDobrushin β → mDobrushin β ≤ mGap β V) ∧
   (∀ β V, 0 < mGap β V) ∧
   (∃ c : ℝ → ℝ, (∀ β, 0 < c β) ∧ (∀ β V, c β ≤ mGap β V)) ∧
   (∃ Δ : ℝ, 0 < Δ ∧ ∀ V, Tendsto (fun β => mGap β V / spacing β) atTop (nhds Δ))
 
-/-- **The falsifier** of the volume-uniform join: any of the three clauses fails — a non-positive gap
-on some (β, V); no positive volume-uniform lower bound; or no positive physical gap that is
-volume-independent. This is the check that turns the join into a falsifiable claim. -/
-def volumeUniformJoinFalsifier (mGap : ℝ → ℝ → ℝ) (spacing : ℝ → ℝ) : Prop :=
+/-- **The falsifier** of the volume-uniform join: any of the four clauses fails — the Dobrushin bound
+is violated where it is positive; a non-positive gap on some (β, V); no positive volume-uniform lower
+bound; or no positive physical gap that is volume-independent. This is the check that turns the join
+into a falsifiable claim. -/
+def volumeUniformJoinFalsifier
+    (G : Type*) [Group G] (S_Wilson mDobrushin : ℝ → ℝ)
+    (mGap : ℝ → ℝ → ℝ) (spacing : ℝ → ℝ) : Prop :=
+  (∃ β V, 0 < mDobrushin β ∧ mDobrushin β > mGap β V) ∨
   (∃ β V, mGap β V ≤ 0) ∨
   (∀ c : ℝ → ℝ, (∀ β, 0 < c β) → ∃ β V, c β > mGap β V) ∨
   (∀ Δ : ℝ, 0 < Δ → ∃ V, ¬ Tendsto (fun β => mGap β V / spacing β) atTop (nhds Δ))
 
 /-- **The join is the exact negation of its falsifier**: `volumeUniformJoin` ⟺ `¬ falsifier`. This is
 the definitional shape that makes the rung a real, checkable statement rather than a slogan. -/
-theorem volumeUniformJoin_not_falsifier (mGap : ℝ → ℝ → ℝ) (spacing : ℝ → ℝ) :
-    volumeUniformJoin mGap spacing ↔ ¬ volumeUniformJoinFalsifier mGap spacing := by
+theorem volumeUniformJoin_not_falsifier
+    (G : Type*) [Group G] (S_Wilson mDobrushin : ℝ → ℝ)
+    (mGap : ℝ → ℝ → ℝ) (spacing : ℝ → ℝ) :
+    volumeUniformJoin G S_Wilson mDobrushin mGap spacing ↔ ¬ volumeUniformJoinFalsifier G S_Wilson mDobrushin mGap spacing := by
   unfold volumeUniformJoin volumeUniformJoinFalsifier
   constructor
   · intro h hf
-    rcases h with ⟨hpos, ⟨c, hc0, hcb⟩, ⟨Δ, hΔ0, hΔt⟩⟩
-    rcases hf with hf1 | hf2 | hf3
+    rcases h with ⟨hd, hpos, ⟨c, hc0, hcb⟩, ⟨Δ, hΔ0, hΔt⟩⟩
+    rcases hf with hf0 | hf1 | hf2 | hf3
+    · rcases hf0 with ⟨β, V, hβV⟩
+      exact (not_lt_of_ge (hd β V hβV.1)) hβV.2
     · rcases hf1 with ⟨β, V, hβV⟩
       exact (not_lt_of_ge hβV) (hpos β V)
     · have hbad := hf2 c hc0
@@ -60,7 +75,6 @@ theorem volumeUniformJoin_not_falsifier (mGap : ℝ → ℝ → ℝ) (spacing : 
       rcases hbad with ⟨V, hV⟩
       exact hV (hΔt V)
   · intro hn
-    -- push the negation through the three disjuncts
     push_neg at hn
     exact hn
 
