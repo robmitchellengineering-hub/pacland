@@ -130,4 +130,20 @@ theorem dobrushin_fails_asymptotic_freedom {c n : ℝ} (hc : 1 < c) (hn : 0 < n)
     hb (ceilingBeta c n + 1)
   exact not_lt_of_ge hb' (lt_trans hneg hpos)
 
+/-- **The asymptotic-freedom bound + the matching spacing ⟹ a uniformly positive physical gap.**
+If `m(β) ≥ A·e^(−cβ)` (clause (2), the asymptotic-freedom lower bound) and the spacing `a(β) = e^(−cβ)`
+has the *same* exponent, then `m/a ≥ A > 0` for every β — the physical gap is uniformly bounded below
+by the positive amplitude. This is the referee-consistent instantiation of the join's clause (3):
+clause (3) follows from clause (2) precisely when the mass and the spacing share the RG exponent. The
+matching-exponent condition is the open part (the Clay rung). -/
+theorem asymptotic_freedom_physical_gap {A c : ℝ} (hA : 0 < A) (mGap spacing : ℝ → ℝ)
+    (hm : ∀ β, A * Real.exp (-c * β) ≤ mGap β)
+    (ha : ∀ β, spacing β = Real.exp (-c * β)) :
+    ∀ β, A ≤ mGap β / spacing β := by
+  intro β
+  rw [ha β]
+  have hpos : 0 < Real.exp (-c * β) := Real.exp_pos _
+  rw [le_div_iff₀' hpos]
+  simpa [mul_comm] using hm β
+
 end QM
