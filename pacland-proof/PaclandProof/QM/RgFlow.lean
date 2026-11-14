@@ -2,6 +2,7 @@ import Mathlib
 import PaclandProof.QM.BlockSpin
 import PaclandProof.QM.ClusterExpansion
 import PaclandProof.QM.Bessel
+import PaclandProof.QM.BesselRecurrence
 
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
@@ -168,5 +169,16 @@ Bessel asymptotics `I₀ − I₁ ~ e^β/√(2πβ)·(1/(2β))`); it is the conv
 is where the de-risk toy (Migdal–Kadanoff) should be calibrated first. NOT proved — the target. -/
 def smallGActivityBound (C : ℝ) : Prop :=
   ∀ β : ℝ, 0 < β → meanActivity β ≤ C / β
+
+/-- **The mean activity is positive at strong coupling**: `E[z] = 1 − I₁/I₀ > 0` when `β ≤ 2`, from
+the order `I₁ < I₀` (`besselI1_lt_besselI0_of_le_two`) and `I₀ > 0`. This is the strong-coupling half
+of the activity's positivity; the weak-coupling rate `E[z] ≤ C/β` is the open Clay step. -/
+theorem meanActivity_pos_of_le_two {β : ℝ} (hβ : 0 < β) (hβle : β ≤ 2) :
+    0 < meanActivity β := by
+  have horder : besselI 1 β < besselI 0 β := besselI1_lt_besselI0_of_le_two hβ hβle
+  have hI0 : 0 < besselI 0 β := besselI_pos hβ
+  have hratio : besselI 1 β / besselI 0 β < 1 := (div_lt_one hI0).mpr horder
+  dsimp [meanActivity]
+  linarith
 
 end QM
