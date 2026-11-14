@@ -1754,6 +1754,13 @@
    "title": "compression.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/cond_isd.py",
+   "kind": "script",
+   "path": "scripts/cond_isd.py",
+   "summary": "cond(M) at the corrected SUSY vacua \u2014 re-measures the ISD ill-conditioning claim.",
+   "title": "cond_isd.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/conifold_connection.py",
    "kind": "script",
    "path": "scripts/conifold_connection.py",
