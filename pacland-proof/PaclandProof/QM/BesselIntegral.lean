@@ -404,4 +404,35 @@ theorem besselI0_hasDerivAt (β : ℝ) :
   rw [h1] at h
   simpa using h.2.const_mul (1 / π)
 
+/-- **The second derivative recurrence's key integral**: `∫₀^π sin² θ e^{x cos θ} dθ = π·I₁(x)/x` for
+`x > 0`. Integration by parts with `u = sin θ`, `dv = sin θ e^{x cos θ} dθ = −(1/x) d(e^{x cos θ})`:
+the boundary term vanishes, and the remainder is the n=1 integrand. This gives `I₁′ = I₀ − I₁/x`. -/
+theorem integral_sin_sq_exp_cos {x : ℝ} (hx : x ≠ 0) :
+    (∫ θ in (0 : ℝ)..π, (Real.sin θ)^2 * Real.exp (x * Real.cos θ)) =
+      (1 / x) * (∫ θ in (0 : ℝ)..π, Real.cos θ * Real.exp (x * Real.cos θ)) := by
+  have hderiv : ∀ θ, HasDerivAt (fun t : ℝ => Real.exp (x * Real.cos t)) (-x * Real.sin θ * Real.exp (x * Real.cos θ)) θ := by
+    intro θ
+    have hcos : HasDerivAt (fun t : ℝ => Real.cos t) (-Real.sin θ) θ := Real.hasDerivAt_cos θ
+    have hlin : HasDerivAt (fun t : ℝ => x * Real.cos t) (-x * Real.sin θ) θ := by
+      convert (hcos.const_mul x) using 1
+      ring
+    convert (Real.hasDerivAt_exp (x * Real.cos θ)).comp θ hlin using 1
+    · funext t; rfl
+    · ring
+  have hibp := intervalIntegral.integral_mul_deriv_eq_deriv_mul
+    (u := fun θ => Real.sin θ) (v := fun θ => Real.exp (x * Real.cos θ))
+    (u' := fun θ => Real.cos θ)
+    (v' := fun θ => -x * Real.sin θ * Real.exp (x * Real.cos θ))
+    (fun θ hθ => Real.hasDerivAt_sin θ) (fun θ hθ => hderiv θ)
+    (Real.continuous_cos.intervalIntegrable (0 : ℝ) π)
+    ((by
+        simpa [mul_assoc] using ((Real.continuous_sin.mul (Real.continuous_exp.comp (continuous_const.mul Real.continuous_cos))).const_mul (-x)) : Continuous (fun θ : ℝ => -x * Real.sin θ * Real.exp (x * Real.cos θ))).intervalIntegrable (0 : ℝ) π)
+  rw [show (fun θ : ℝ => Real.sin θ * (-x * Real.sin θ * Real.exp (x * Real.cos θ))) =
+      (fun θ : ℝ => -x * ((Real.sin θ)^2 * Real.exp (x * Real.cos θ))) by
+    funext θ; ring] at hibp
+  rw [intervalIntegral.integral_const_mul (-x) (fun θ => (Real.sin θ)^2 * Real.exp (x * Real.cos θ))] at hibp
+  simp [Real.sin_pi, Real.sin_zero] at hibp
+  field_simp [hx]
+  exact hibp
+
 end QM
