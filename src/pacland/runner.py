@@ -184,6 +184,14 @@ FACTS: dict[str, Fact] = {
         category="yang-mills",
         formalization_target="the 1-link full-torus monotonicity: bessel_ratio_mono (I₁/I₀ increasing) — the Bessel-ratio spectral gap, generalizing tanh to the continuous torus",
     ),
+    "su2-volume-uniform-join": Fact(
+        id="su2-volume-uniform-join",
+        statement="the volume-uniform continuum join (the open Clay rung): the strong-coupling positive gap must survive the continuum limit uniformly in volume — a bound m(β) ≥ A·e^(-c'β) OTHER than Dobrushin (whose rate is negative past the ceiling)",
+        falsifier="a candidate bound that fails to reproduce m(β) = 25.28·e^(-1.182β) or m/√σ ≈ 3.2, or a volume where the gap dips below the confinement scale",
+        source="PaclandProof.QM.VolumeUniformJoin (volumeUniformJoin + dobrushin_not_volume_uniform + dobrushin_fails_asymptotic_freedom, Lean, kernel-checked)",
+        category="yang-mills",
+        formalization_target="the join's proof: prove a volume-uniform lower bound m(β) ≥ A·e^(-c'β) for the actual lattice spectral gap (NOT Dobrushin), reproducing the referee numbers",
+    ),
 }
 
 
