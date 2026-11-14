@@ -38,3 +38,18 @@ numbers are composition artefacts of the runaway-laden corpus.
 - `docs/known-positives.md` — the stratified 27.9% / 20.2% / 1.2% numbers are sampler artefacts.
 
 The effective sampler is `scripts/sample_h12_ds.py` (PR #575).
+
+## The replacement (not just the retraction)
+
+- **Corrected corpus**: `data/h12_2_ds.json`, `data/h12_3_ds.json`, `data/h12_4_ds.json` — the
+  `data_sampler` SUSY vacua (0 runaway), added to replace the runaway-laden `data/h12_*_stats.json`.
+- **Corrected analysis**: `scripts/susy_ds_fraction.py` — the in-domain SUSY fraction per b3 with a
+  Wilson interval:
+
+  | b3 | h12 | SUSY | in-domain | fraction | 95% CI |
+  |---|---|---|---|---|---|
+  | 6 | 2 | 1513 | 1195 | **79.0%** | [76.9%, 81.0%] |
+  | 8 | 3 | 474 | 282 | **59.5%** | [55.0%, 63.8%] |
+  | 10 | 4 | 547 | 338 | **61.8%** | [57.7%, 65.8%] |
+
+  Flat (59.5%–79.0%), every interval tight (n ≥ 200) — the opposite of the retracted "collapse".
