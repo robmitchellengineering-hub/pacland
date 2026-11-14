@@ -76,4 +76,45 @@ theorem integral_cos_odd_pow (k : ℕ) :
       ring
       tauto
 
+/-- **The term-by-term integration of the exp series on [0, π]**: `∫ Σₘ (x cos θ)^m/m! = Σₘ ∫ (x cos θ)^m/m!`.
+Dominated convergence with the bound `|x|^m/m!` (since `|cos θ| ≤ 1`), whose tsum is `exp|x|`. This is
+the swap that turns the exp series into the Bessel series (the Jacobi–Anger step). -/
+theorem integral_tsum_exp_cos (x : ℝ) :
+    (∫ θ in (0 : ℝ)..π, ∑' m : ℕ, (x * Real.cos θ)^m / (m.factorial : ℝ)) =
+      ∑' m : ℕ, ∫ θ in (0 : ℝ)..π, (x * Real.cos θ)^m / (m.factorial : ℝ) := by
+  have hswap := intervalIntegral.hasSum_integral_of_dominated_convergence
+    (μ := MeasureTheory.volume) (a := (0 : ℝ)) (b := π)
+    (F := fun m θ => (x * Real.cos θ)^m / (m.factorial : ℝ))
+    (f := fun θ => ∑' m : ℕ, (x * Real.cos θ)^m / (m.factorial : ℝ))
+    (bound := fun m _ => |x|^m / (m.factorial : ℝ))
+    (by
+      intro m
+      exact (((continuous_const.mul Real.continuous_cos).pow m).div_const (m.factorial : ℝ)).aestronglyMeasurable)
+    (by
+      intro m
+      filter_upwards with θ hθ
+      dsimp
+      have hcos : |Real.cos θ| ≤ 1 := abs_cos_le_one θ
+      have hpow : |x * Real.cos θ|^m ≤ |x|^m := by
+        rw [abs_mul, mul_pow]
+        have h1 : |x|^m * |Real.cos θ|^m ≤ |x|^m * 1 :=
+          mul_le_mul_of_nonneg_left (pow_le_one₀ (abs_nonneg _) hcos) (pow_nonneg (abs_nonneg x) m)
+        simpa using h1
+      rw [abs_div, abs_pow, abs_of_nonneg (show (0 : ℝ) ≤ (m.factorial : ℝ) by exact Nat.cast_nonneg _)]
+      exact div_le_div_of_nonneg_right hpow (Nat.cast_nonneg _))
+    (by
+      filter_upwards with θ hθ
+      exact (NormedSpace.expSeries_div_hasSum_exp |x|).summable)
+    (by
+      have hconst : (fun _ : ℝ => ∑' m : ℕ, |x|^m / (m.factorial : ℝ)) = (fun _ : ℝ => Real.exp |x|) := by
+        funext θ
+        rw [Real.exp_eq_exp_ℝ]
+        exact (NormedSpace.expSeries_div_hasSum_exp |x|).tsum_eq
+      rw [hconst]
+      exact continuous_const.intervalIntegrable (0 : ℝ) π)
+    (by
+      filter_upwards with θ hθ
+      exact (NormedSpace.expSeries_div_hasSum_exp (x * Real.cos θ)).summable.hasSum)
+  exact hswap.tsum_eq.symm
+
 end QM
