@@ -60,4 +60,20 @@ theorem wallis_closed (m : ℕ) :
       rw [hfact2, hfactm]
       ring
 
+/-- **The odd powers integrate to zero**: `∫₀^π cos^{2k+1} θ = 0`. Induction on the reduction formula
+(`integral_cos_pow`): the odd recurrence `∫cos^{2k+3} = (2k+2)/(2k+3)·∫cos^{2k+1}` with base `∫cos = 0`.
+Together with `wallis_closed`, this is the full term-by-term decomposition of `e^{x cos θ}` the
+Jacobi–Anger expansion needs (odd powers vanish, even powers give the `1/(m!)²` series). -/
+theorem integral_cos_odd_pow (k : ℕ) :
+    (∫ θ in (0 : ℝ)..π, (Real.cos θ)^(2*k+1)) = 0 := by
+  induction k with
+  | zero => simpa using integral_cos_zero_pi
+  | succ k ih =>
+      rw [show 2*(k+1)+1 = (2*k+1)+2 by omega]
+      rw [integral_cos_pow (a := (0 : ℝ)) (b := π) (n := 2*k+1)]
+      simp [Real.sin_pi, Real.sin_zero]
+      rw [ih]
+      ring
+      tauto
+
 end QM
