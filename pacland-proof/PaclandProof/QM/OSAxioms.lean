@@ -175,13 +175,12 @@ theorem os_reconstruction_full {m : ℕ} (K : Fin m → Fin m → ℝ)
           norm_num at hx
         have h : 1 ≤ |(x : ℝ)| := by exact_mod_cast (Int.one_le_abs (by exact_mod_cast hx0))
         exact (one_le_sq_iff_one_le_abs (x : ℝ)).mpr h
-/-- **The Clay assembly (the honest one theorem)**: the Yang–Mills theory EXISTS — the Wightman
-Hilbert space (from the OS3 reflection positivity, the GNS step) — and has a POSITIVE MASS GAP — the
-physical mass `m_phys = Λ_QCD = 1 > 0` (from the spacing-uniform lemma #535: the lattice gap and the
-running spacing cancel, leaving the cutoff-independent constant). This is the existence + mass-gap
-statement, assembled from the proven OS axioms and the spacing-uniform lemma. Honest scope: the mass
-gap here is the compactness scale `Δ = 1` and the physical scale is `Λ_QCD`; the full Minkowski
-analytic continuation is the remaining refinement inside the reconstruction. -/
+/-- **scaffold (D47) — NOT the Clay theorem.** This proves only that a positive-definite kernel yields
+a Wightman Hilbert space, and that `physicalMass c β` is positive when the spacing-uniform lemma
+applies. It does NOT prove Yang–Mills existence, and it does NOT prove a mass gap: the `0 <
+physicalMass` here is the spacing-uniform lemma's positivity, not the non-perturbative spectral gap
+`Δ > 0` of the Clay problem. The Clay problem — continuum existence + a positive mass gap in 4D
+non-abelian Yang–Mills — remains OPEN. -/
 theorem clay_assembly_final {m : ℕ} (K : Fin m → Fin m → ℝ) (hOS3 : PosDefKernel K) (c β : ℝ) :
     WightmanHilbert (fun (f g : Fin m → ℝ) => ∑ i, ∑ j, f i * g j * K i j) ∧ 0 < physicalMass c β := by
   constructor
