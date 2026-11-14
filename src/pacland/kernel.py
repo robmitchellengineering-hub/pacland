@@ -129,6 +129,40 @@ def _spatial_plaq_sum(links, d, N, t):
     return total
 
 
+@nb.njit(inline="always")
+def _rect(links, d, N, mu, nu, idx):
+    """Re Tr of the 1x2 rectangle (two mu links, one nu link) at flat site idx."""
+    x1 = _shift(idx, d, N, mu, 1)
+    x2 = _shift(x1, d, N, mu, 1)
+    xn = _shift(idx, d, N, nu, 1)
+    xn2 = _shift(x1, d, N, nu, 1)
+    a = _mul(links[mu, idx, 0], links[mu, idx, 1], links[mu, idx, 2], links[mu, idx, 3],
+             links[mu, x1, 0], links[mu, x1, 1], links[mu, x1, 2], links[mu, x1, 3])
+    b = _mul(a[0], a[1], a[2], a[3],
+             links[nu, x2, 0], links[nu, x2, 1], links[nu, x2, 2], links[nu, x2, 3])
+    c = _mul(b[0], b[1], b[2], b[3],
+             links[mu, xn2, 0], -links[mu, xn2, 1], -links[mu, xn2, 2], -links[mu, xn2, 3])
+    e = _mul(c[0], c[1], c[2], c[3],
+             links[mu, xn, 0], -links[mu, xn, 1], -links[mu, xn, 2], -links[mu, xn, 3])
+    f = _mul(e[0], e[1], e[2], e[3],
+             links[nu, idx, 0], -links[nu, idx, 1], -links[nu, idx, 2], -links[nu, idx, 3])
+    return 2.0 * f[0]
+
+
+@nb.njit
+def _spatial_rect_sum(links, d, N, t):
+    """Sum of spatial 1x2 rectangles at time slice t (a second 0++ interpolator)."""
+    total = 0.0
+    for x in range(N):
+        for y in range(N):
+            for z in range(N):
+                idx = t*N*N*N + x*N*N + y*N + z
+                for mu in range(1, d):
+                    for nu in range(mu + 1, d):
+                        total += _rect(links, d, N, mu, nu, idx)
+    return total
+
+
 @nb.njit
 def measure_glueball(beta, d, N, n_sweeps, n_meas, seed, n_between=3):
     """Full Numba glueball measurement: thermalize + measure the connected plaquette correlator.
@@ -262,3 +296,45 @@ def gevp_masses(C, N, t0=1):
         except np.linalg.LinAlgError:
             pass
     return np.array(masses)
+
+
+@nb.njit
+def measure_variational_2(beta, d, N, n_sweeps, n_meas, seed, smears):
+    """Two-shape variational: basis = {plaquette, rectangle} × smears; returns C (cross-correlator)."""
+    n = N**d
+    links = np.empty((d, n, 4), dtype=np.float64)
+    state = np.array([seed + 1, seed + 123456789], dtype=np.uint64)
+    for mu in range(d):
+        for idx in range(n):
+            q = _rand4(state)
+            links[mu, idx, 0] = q[0]; links[mu, idx, 1] = q[1]; links[mu, idx, 2] = q[2]; links[mu, idx, 3] = q[3]
+    sweep(links, beta, state, d, N, n_sweeps)
+    n_sm = smears.shape[0]
+    n_op = 2 * n_sm
+    C = np.zeros((n_op, n_op, N))
+    g_mean = np.zeros((n_op, N))
+    for _ in range(n_meas):
+        sweep(links, beta, state, d, N, 3)
+        gs = np.empty((n_op, N))
+        for i in range(n_sm):
+            sm = ape_smear_nb(links, d, N, 0.5, smears[i])
+            for t in range(N):
+                gs[i, t] = _spatial_plaq_sum(sm, d, N, t)
+                gs[n_sm + i, t] = _spatial_rect_sum(sm, d, N, t)
+        for i in range(n_op):
+            g_mean[i] += gs[i]
+            for j in range(n_op):
+                for dt in range(N):
+                    s = 0.0
+                    for t in range(N):
+                        s += gs[i, t] * gs[j, (t + dt) % N]
+                    C[i, j, dt] += s
+    g_mean /= n_meas
+    gbar = np.empty(n_op)
+    for i in range(n_op):
+        gbar[i] = g_mean[i].mean()
+    for i in range(n_op):
+        for j in range(n_op):
+            for dt in range(N):
+                C[i, j, dt] = C[i, j, dt] / (n_meas * N) - gbar[i] * gbar[j]
+    return C, gbar
