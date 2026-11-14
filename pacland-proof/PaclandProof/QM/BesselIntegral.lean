@@ -183,4 +183,30 @@ theorem tsum_exp_cos_coeff (x : ℝ) :
   rw [hodd, heven]
   simp
 
+/-- **The Jacobi–Anger n=0 projection**: `∫₀^π exp(x cos θ) dθ = π·besselI 0 x`. The exp series
+(`expSeries_div_hasSum_exp`), the term-by-term swap (`integral_tsum_exp_cos`), the linearity, and the
+coefficient identity (`tsum_exp_cos_coeff`) assemble into the modified Bessel function. -/
+theorem integral_exp_cos_eq_besselI0 (x : ℝ) :
+    (∫ θ in (0 : ℝ)..π, Real.exp (x * Real.cos θ)) = π * besselI 0 x := by
+  have hexp : (∫ θ in (0 : ℝ)..π, Real.exp (x * Real.cos θ)) =
+      (∫ θ in (0 : ℝ)..π, ∑' m : ℕ, (x * Real.cos θ)^m / (m.factorial : ℝ)) := by
+    apply intervalIntegral.integral_congr
+    intro θ hθ
+    rw [Real.exp_eq_exp_ℝ]
+    exact (NormedSpace.expSeries_div_hasSum_exp (x * Real.cos θ)).tsum_eq.symm
+  rw [hexp, integral_tsum_exp_cos x]
+  rw [show (∑' m : ℕ, ∫ θ in (0 : ℝ)..π, (x * Real.cos θ)^m / (m.factorial : ℝ)) =
+      (∑' m : ℕ, x^m / (m.factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^m)) by
+    apply tsum_congr
+    intro m
+    have hlin : (∫ θ in (0 : ℝ)..π, (x * Real.cos θ)^m / (m.factorial : ℝ)) =
+        x^m / (m.factorial : ℝ) * (∫ θ in (0 : ℝ)..π, (Real.cos θ)^m) := by
+      rw [show (fun θ : ℝ => (x * Real.cos θ)^m / (m.factorial : ℝ)) = (fun θ : ℝ => (x^m / (m.factorial : ℝ)) * (Real.cos θ)^m) by
+        funext θ
+        rw [mul_pow]
+        ring]
+      rw [intervalIntegral.integral_const_mul]
+    exact hlin]
+  exact tsum_exp_cos_coeff x
+
 end QM
