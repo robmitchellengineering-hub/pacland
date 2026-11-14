@@ -526,4 +526,13 @@ theorem bessel_ratio_hasDerivAt (β : ℝ) (hβ : 0 < β) :
   convert hdiv using 1
   field_simp [hI0]
 
+/-- **The Riccati equation for the activity** `s = 1 − I₁/I₀`: `s′ = s² − (2+1/β)s + 1/β`, from
+`r′ = 1 − r/β − r²` with `s = 1 − r`. The comparison input for the concentration `s ≤ C/β`. -/
+theorem activity_hasDerivAt (β : ℝ) (hβ : 0 < β) :
+    HasDerivAt (fun x : ℝ => 1 - besselI 1 x / besselI 0 x)
+      ((1 - besselI 1 β / besselI 0 β)^2 - (2 + 1/β) * (1 - besselI 1 β / besselI 0 β) + 1/β) β := by
+  have hr := bessel_ratio_hasDerivAt β hβ
+  convert HasDerivAt.const_sub (1 : ℝ) hr using 1
+  ring
+
 end QM
