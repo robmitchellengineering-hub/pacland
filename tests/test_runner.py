@@ -41,6 +41,25 @@ class TestRunner(unittest.TestCase):
             finally:
                 runner.RECORD, runner.DISCOVERIES = old_rec, old_disc
 
+    def test_decompose_emits_next_sublemma(self):
+        c = runner.next_sublemma("ym-mass-gap")
+        self.assertEqual(c.strategy, "decompose")
+        self.assertIn("Dobrushin", c.statement)
+        self.assertTrue(c.falsifier)
+        self.assertEqual(c.source_facts, ("ym-mass-gap",))
+
+    def test_decompose_runnable_maps_to_falsifier(self):
+        # the area-law candidate of confinement-frontier has a runnable Creutz-ratio falsifier
+        c = runner.generate(["confinement-frontier"], "specialize")
+        self.assertEqual(c.test, "su2-weak-coupling")
+
+    def test_manual_candidate_is_not_an_error(self):
+        c = runner.next_sublemma("ym-mass-gap")
+        v = runner.run(c)
+        self.assertEqual(v.verdict, "MANUAL")
+        self.assertIsNone(v.survived)
+        self.assertIn("thinking agent", v.evidence)
+
 
 if __name__ == "__main__":
     unittest.main()

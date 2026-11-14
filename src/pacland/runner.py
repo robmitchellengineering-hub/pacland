@@ -20,10 +20,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from pathlib import Path
+
+from pacland import hypotheses  # noqa: E402  (the open-question registry the runner decomposes)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # .../pacland
 RECORD = REPO_ROOT / "runs" / "runner.jsonl"
@@ -179,6 +182,7 @@ STRATEGIES: dict[str, str] = {
     "generalize": "generalize a fact to a wider scope",
     "specialize": "specialize an open question to a computable instance",
     "conjecture-value": "conjecture a concrete value from an open question and falsify it",
+    "decompose": "decompose an OPEN hypothesis into its next falsifiable sub-lemma (the frontier move)",
 }
 
 
@@ -234,7 +238,81 @@ def generate(fact_ids: list[str], strategy: str) -> Candidate:
             test="su2-weak-coupling",
         )
 
+    if strategy == "decompose":
+        # the frontier move: emit the OPEN hypothesis's next falsifiable sub-lemma.
+        return next_sublemma(fact_ids[0])
+
     raise ValueError(f"no candidate for facts {fact_ids} under strategy {strategy!r}")
+
+
+# ------------------------------------------------------------------------------------------ #
+# The frontier generator: decompose an OPEN hypothesis into its next falsifiable sub-lemma.
+# This is the move the recombination strategies cannot make — it points at the *unproven* step
+# (from the hypothesis's candidates) instead of re-deriving a known fact.
+# ------------------------------------------------------------------------------------------ #
+
+def _slug(text: str) -> str:
+    """A short stable id from a candidate hypothesis string."""
+    words = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-").split("-")
+    return "-".join(words[:6]) or "sublemma"
+
+
+def _runnable_test(statement: str) -> str:
+    """A runnable falsifier key for a candidate sub-lemma, or "" when it needs a thinking agent.
+
+    Honest by design: only the sub-lemmas with a real falsifier get one; the rest are emitted as
+    ``MANUAL`` so the engine says "here is the next thing to prove/refute" without pretending it
+    can test it. Add a falsifier to ``FALSIFIERS`` and map it here to make a sub-lemma runnable.
+    """
+    if "string tension" in statement or "area law" in statement:
+        return "su2-weak-coupling"          # the Creutz ratio tests the area law / confinement
+    if "glueball" in statement and "m/sqrt" in statement:
+        return "glueball-mass-ratio"
+    return ""
+
+
+def _prior_refuted() -> set[str]:
+    """The candidate statements already REFUTED in the record — decompose skips them so the
+    engine compounds (it never re-emits a sub-lemma it has already killed)."""
+    if not RECORD.exists():
+        return set()
+    refuted = set()
+    for line in RECORD.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if row.get("verdict") == "REFUTED":
+            refuted.add(row.get("statement", ""))
+    return refuted
+
+
+def next_sublemma(hypothesis_id: str) -> Candidate:
+    """The next falsifiable sub-lemma of an OPEN hypothesis — its first candidate that is not yet
+    refuted, with the falsifier that would refute it. Grounded in ``hypotheses.HYPOTHESES`` (not a
+    free-floating conjecture): the hypothesis already carries the decomposition; this emits one rung
+    of it, skipping any rung the runner has already killed.
+    """
+    if hypothesis_id not in hypotheses.HYPOTHESES:
+        raise ValueError(
+            f"unknown hypothesis {hypothesis_id!r}; known: {', '.join(hypotheses.HYPOTHESES)}")
+    h = hypotheses.HYPOTHESES[hypothesis_id]
+    refuted = _prior_refuted()
+    for cand in h.get("candidates", []):
+        statement = cand["hypothesis"]
+        if statement in refuted:
+            continue
+        return Candidate(
+            id=f"{hypothesis_id}::{_slug(statement)}",
+            statement=statement,
+            falsifier=cand["falsifier"],
+            strategy="decompose",
+            source_facts=(hypothesis_id,),
+            test=_runnable_test(statement),
+        )
+    raise ValueError(f"hypothesis {hypothesis_id!r} has no candidates to decompose")
 
 
 # ------------------------------------------------------------------------------------------ #
@@ -256,7 +334,19 @@ class Verdict:
 def run(candidate: Candidate) -> Verdict:
     test = FALSIFIERS.get(candidate.test)
     if test is None:
-        raise ValueError(f"no falsifier registered for {candidate.test!r}")
+        # A decomposed sub-lemma without a runnable falsifier is not an error — it is the
+        # *frontier*: the engine names the next unproven step and says so, instead of pretending.
+        return Verdict(
+            candidate_id=candidate.id,
+            statement=candidate.statement,
+            strategy=candidate.strategy,
+            source_facts=list(candidate.source_facts),
+            survived=None,
+            verdict="MANUAL",
+            evidence=f"no runnable falsifier — this sub-lemma needs a thinking agent "
+                     f"(falsifier to check: {candidate.falsifier})",
+            timestamp=datetime.now(timezone.utc).isoformat(),
+        )
     survived, evidence = test()
     survived = bool(survived)  # cast numpy.bool_ → Python bool (JSON-serializable)
     return Verdict(
@@ -273,7 +363,10 @@ def run(candidate: Candidate) -> Verdict:
 
 def promote(verdict: Verdict) -> str:
     """A survived candidate becomes a new validated fact, persisted to the discoveries store so the
-    next run can build on it; a refuted one is dropped. Returns the promotion note."""
+    next run can build on it; a refuted one is dropped; a MANUAL one is recorded as an open step.
+    Returns the promotion note."""
+    if verdict.survived is None:
+        return f"MANUAL {verdict.candidate_id} → recorded as an open sub-lemma (needs a thinking agent)"
     if verdict.survived:
         fact = {
             "id": verdict.candidate_id,
@@ -339,6 +432,8 @@ def _main() -> int:
     ap.add_argument("--list-discoveries", action="store_true")
     ap.add_argument("--fact", action="append", default=[], help="fact id (repeatable)")
     ap.add_argument("--strategy", choices=list(STRATEGIES))
+    ap.add_argument("--list-open", action="store_true", help="list the OPEN hypotheses and their next sub-lemma")
+    ap.add_argument("--decompose", metavar="HYPOTHESIS", help="decompose one OPEN hypothesis into its next sub-lemma")
     ap.add_argument("--advance-all", action="store_true")
     args = ap.parse_args()
 
@@ -354,8 +449,28 @@ def _main() -> int:
         for d in list_discoveries():
             print(f"{d['id']:32s} {d['statement']}\n    source: {d['source']}\n    evidence: {d['falsifier']}")
         return 0
+    if args.list_open:
+        for hid, h in hypotheses.HYPOTHESES.items():
+            cands = h.get("candidates", [])
+            first = cands[0] if cands else None
+            print(f"◇ {hid}\n    open: {h.get('open', '(none)')}")
+            if h.get("progress"):
+                print(f"    progress: {h['progress']}")
+            if first:
+                print(f"    next : {first['hypothesis']}\n    falsifier: {first['falsifier']}"
+                      f"  [{ 'runnable' if _runnable_test(first['hypothesis']) else 'manual — needs a thinking agent' }]")
+            else:
+                print("    next : (no candidates)")
+        return 0
+    if args.decompose:
+        v = advance([args.decompose], "decompose")
+        print(_fmt(v))
+        return 0
     if args.advance_all:
-        for (a, b) in [(["ou-curvature", "gronwall-decay"], "combine"), (["confinement-frontier"], "specialize")]:
+        # the recombinations (known facts) + the frontier move (every OPEN hypothesis decomposed)
+        turns = [(["ou-curvature", "gronwall-decay"], "combine"), (["confinement-frontier"], "specialize")]
+        turns += [([hid], "decompose") for hid in hypotheses.HYPOTHESES]
+        for (a, b) in turns:
             v = advance(a, b)
             print(_fmt(v))
         return 0
