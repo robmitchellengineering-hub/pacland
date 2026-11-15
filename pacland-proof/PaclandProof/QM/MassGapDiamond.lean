@@ -141,4 +141,33 @@ theorem transferMatrix_power_spectral {m : ℕ} (K : Fin m → Fin m → ℝ)
   rw [Matrix.diagonal_pow]
   rfl
 
+/-- **The quadratic form of a unitarily-diagonalized matrix is the spectral sum.** For
+`M = U·diag(d)·Uᴴ`, the quadratic form `⟨f, M g⟩ = Σₖ dₖ · (Uᴴ f)ₖ · (Uᴴ g)ₖ`. This is the pure
+matrix-algebra identity that makes the correlation decay *explicit*: the power `Tⁿ = U·diag(λⁿ)·Uᴴ`
+gives `⟨f, Tⁿ g⟩ = Σₖ λₖⁿ (Uᴴ f)ₖ (Uᴴ g)ₖ`. -/
+theorem conj_diagonal_quadratic {m : ℕ} (U : unitary (Matrix (Fin m) (Fin m) ℝ))
+    (d : Fin m → ℝ) (f g : Fin m → ℝ) :
+    dotProduct f (((↑U : Matrix (Fin m) (Fin m) ℝ) * Matrix.diagonal d * (↑U : Matrix (Fin m) (Fin m) ℝ)ᴴ).mulVec g)
+      = ∑ k : Fin m, d k * ((↑U : Matrix (Fin m) (Fin m) ℝ)ᴴ.mulVec f) k * ((↑U : Matrix (Fin m) (Fin m) ℝ)ᴴ.mulVec g) k := by
+  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
+  rw [Matrix.dotProduct_mulVec]
+  have hAdj : Matrix.vecMul f (↑U : Matrix (Fin m) (Fin m) ℝ) = (↑U : Matrix (Fin m) (Fin m) ℝ)ᴴ.mulVec f := by
+    ext k
+    simp [Matrix.vecMul, Matrix.mulVec, Matrix.conjTranspose_apply, dotProduct_comm]
+  rw [hAdj]
+  simp [dotProduct, Matrix.mulVec_diagonal, mul_assoc, mul_left_comm, mul_comm, dotProduct_comm]
+
+/-- **Step 3 — the correlation is the spectral sum.** `⟨f, Tⁿ g⟩ = Σₖ λₖⁿ (Uᴴ f)ₖ (Uᴴ g)ₖ`. The
+correlation of the transfer-matrix power is the spectral sum of the eigenvalue powers — the statement
+that makes the decay `λ₁ⁿ` explicit. -/
+theorem correlation_spectral_sum {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (n : ℕ) (f g : Fin m → ℝ) :
+    dotProduct f (((transferMatrix K)^n).mulVec g)
+      = ∑ k : Fin m, ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k)^n
+          * ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary : Matrix (Fin m) (Fin m) ℝ)ᴴ.mulVec f k
+          * ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary : Matrix (Fin m) (Fin m) ℝ)ᴴ.mulVec g k := by
+  rw [transferMatrix_power_spectral K hSymm hK n]
+  exact conj_diagonal_quadratic ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+    (fun i => ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues i)^n) f g
+
 end QM
