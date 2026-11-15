@@ -233,4 +233,29 @@ theorem volumeUniformClusterJoin_not_falsifier (mGap : ℝ → ℝ → ℝ) (spa
     push_neg at hn
     exact hn
 
+/-- **The concentration does NOT close clause (3) — the honest negative result.** The cluster-expansion
+mass `m ≥ log(β/2)` (from `mass_gap_ge_log_half_beta`) is *logarithmic*, while the referee spacing
+`a(β) = e^{−(12π²/11)β}` is *exponential*. So the concentration's physical gap
+`m/a ≥ log(β/2)·e^{(12π²/11)β} → ∞` diverges: the concentration proves the cluster expansion converges,
+but it supplies the wrong scale for the physical mass gap. Clause (3) needs the asymptotic-freedom gap
+`m ~ e^{−cβ}` (the referee `refereeScalingLaw`), not the cluster-expansion `m ~ log β`. -/
+theorem concentration_physical_gap_diverges :
+    Tendsto (fun β : ℝ => Real.log (β / 2) * Real.exp ((12 * Real.pi ^ 2 / 11) * β)) atTop atTop := by
+  have hlog : Tendsto (fun β : ℝ => Real.log (β / 2)) atTop atTop := by
+    have h1 : Tendsto (fun β : ℝ => β / 2) atTop atTop := by
+      simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using (tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 1 / 2))
+    exact Real.tendsto_log_atTop.comp h1
+  have hexp : Tendsto (fun β : ℝ => Real.exp ((12 * Real.pi ^ 2 / 11) * β)) atTop atTop := by
+    have h1 : Tendsto (fun β : ℝ => (12 * Real.pi ^ 2 / 11) * β) atTop atTop :=
+      tendsto_id.const_mul_atTop (by positivity : (0 : ℝ) < 12 * Real.pi ^ 2 / 11)
+    exact Real.tendsto_exp_atTop.comp h1
+  exact Filter.tendsto_atTop_mono' atTop (by
+    filter_upwards [Filter.eventually_ge_atTop (2 * Real.exp 1)] with β hβ
+    have hlog1 : 1 ≤ Real.log (β / 2) := by
+      have hβe : Real.exp 1 ≤ β / 2 := by nlinarith [hβ, (by norm_num : (0 : ℝ) < 2)]
+      have h1 : Real.log (Real.exp 1) ≤ Real.log (β / 2) := Real.log_le_log (Real.exp_pos 1) hβe
+      simpa using h1
+    have hpos : 0 ≤ Real.exp ((12 * Real.pi ^ 2 / 11) * β) := le_of_lt (Real.exp_pos _)
+    nlinarith [hlog1, hpos]) hexp
+
 end QM
