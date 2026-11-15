@@ -322,4 +322,50 @@ theorem mass_gap_reduction (mGap : ℝ → ℝ) (h : refereeScalingLaw mGap) :
   intro β hβ
   exact hA β hβ
 
+/-- **The conjugation is linear.** `U·diag(a)·Uᴴ − U·diag(b)·Uᴴ = U·diag(a−b)·Uᴴ` — the
+conjugation by a unitary commutes with the diagonal difference. This is the step that turns the
+defect `Tⁿ − P₀` into `U·diag(λⁿ − e₀)·Uᴴ` in the chessboard estimate. -/
+lemma conj_diagonal_sub {m : ℕ} (U : unitary (Matrix (Fin m) (Fin m) ℝ)) (a b : Fin m → ℝ) :
+    (Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ) U) (Matrix.diagonal a)
+      - (Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ) U) (Matrix.diagonal b)
+    = (Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ) U) (Matrix.diagonal (fun i => a i - b i)) := by
+  rw [← map_sub]
+  congr 1
+  ext i j
+  by_cases hij : i = j <;> simp [Matrix.diagonal_apply, hij]
+
+/-- **The chessboard estimate (transfer-matrix form) — the OS3 reflection-positivity route.** For a
+normalized PSD transfer matrix `T = U·diag(λ)·Uᴴ` with the vacuum eigenvalue `λ₀ = 1` and the second
+eigenvalue `λ₁ < 1` (the gap), the *defect* `Tⁿ − P₀` (where `P₀ = U·diag(e₀)·Uᴴ` is the vacuum
+projection) decays entrywise at the second-eigenvalue rate: `|(Tⁿ − P₀)ᵢⱼ| ≤ λ₁ⁿ·m`. This is the
+Fröhlich–Lieb–Loss chessboard estimate in its transfer-matrix form: the correlation decays with the
+rate set by the gap, via the reflection-positivity (PSD) + normalization (contraction) + the defect. -/
+theorem chessboard_estimate {m : ℕ} [NeZero m] (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (n : ℕ) (lam1 : ℝ)
+    (hvacuum : (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues 0 = 1)
+    (hgap : ∀ k, k ≠ 0 → |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (i j : Fin m) :
+    |((transferMatrix K)^n) i j
+      - (((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ))
+            (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+          (Matrix.diagonal (fun k => if k = 0 then 1 else 0))) i j| ≤ lam1^n * (m : ℝ) := by
+  rw [transferMatrix_power_spectral K hSymm hK n]
+  rw [← Matrix.sub_apply]
+  rw [conj_diagonal_sub (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary
+    (fun k => ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k)^n)
+    (fun k => if k = 0 then 1 else 0)]
+  refine conj_diagonal_entry_bound (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary
+    (fun k => ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k)^n - (if k = 0 then 1 else 0))
+    (lam1^n) ?_ ?_ i j
+  · intro k
+    by_cases hk : k = 0
+    · subst hk
+      rw [hvacuum, if_pos rfl]
+      simp [pow_nonneg hlam0 n]
+    · rw [if_neg hk]
+      rw [sub_zero]
+      rw [abs_pow]
+      exact pow_le_pow_left₀ (abs_nonneg _) (hgap k hk) n
+  · exact pow_nonneg hlam0 n
+
 end QM
