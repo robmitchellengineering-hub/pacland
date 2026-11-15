@@ -196,4 +196,41 @@ theorem join_clauses01_2d {g L : ℝ} (hg : 0 < g) (hL : 0 < L) :
   · intro V; exact massGap2D_pos hg hL (by norm_num)
   · intro V; exact le_refl _
 
+/-- **The remaining rung of the volume-uniform join, stated as one falsifiable claim.** It is exactly
+the two open pieces the weak-coupling concentration feeds, conjoined:
+  (i)  the volume-uniform cluster-expansion bound — the single-plaquette mass `c(β) = log(β/2)`
+       (`mass_gap_ge_log_half_beta`, machine-checked) is a lower bound on the full-lattice gap for
+       every volume V;
+  (ii) the continuum limit — the physical gap `mGap β V / spacing β` converges to a positive,
+       volume-independent `Δ`.
+NOT proved. This is the precise reduction of the join's open clauses (2)+(3). -/
+def volumeUniformClusterJoin (mGap : ℝ → ℝ → ℝ) (spacing : ℝ → ℝ) : Prop :=
+  (∀ β V, 2 < β → Real.log (β / 2) ≤ mGap β V) ∧
+  (∃ Δ : ℝ, 0 < Δ ∧ ∀ V, Tendsto (fun β => mGap β V / spacing β) atTop (nhds Δ))
+
+/-- **The falsifier** of the remaining rung: either some (β, V) has the full-lattice gap dip below the
+single-plaquette bound `log(β/2)`, or no positive volume-independent physical gap `Δ` exists. This is
+the check that turns the remaining rung into a falsifiable claim. -/
+def volumeUniformClusterJoinFalsifier (mGap : ℝ → ℝ → ℝ) (spacing : ℝ → ℝ) : Prop :=
+  (∃ β V, 2 < β ∧ mGap β V < Real.log (β / 2)) ∨
+  (∀ Δ : ℝ, 0 < Δ → ∃ V, ¬ Tendsto (fun β => mGap β V / spacing β) atTop (nhds Δ))
+
+/-- **The remaining rung is the exact negation of its falsifier.** Definitional shape, mirroring
+`volumeUniformJoin_not_falsifier`. -/
+theorem volumeUniformClusterJoin_not_falsifier (mGap : ℝ → ℝ → ℝ) (spacing : ℝ → ℝ) :
+    volumeUniformClusterJoin mGap spacing ↔ ¬ volumeUniformClusterJoinFalsifier mGap spacing := by
+  unfold volumeUniformClusterJoin volumeUniformClusterJoinFalsifier
+  constructor
+  · intro h hf
+    rcases h with ⟨hc, ⟨Δ, hΔ0, hΔt⟩⟩
+    rcases hf with hf0 | hf1
+    · rcases hf0 with ⟨β, V, hβ, hβV⟩
+      exact (not_lt_of_ge (hc β V hβ)) hβV
+    · have hbad := hf1 Δ hΔ0
+      rcases hbad with ⟨V, hV⟩
+      exact hV (hΔt V)
+  · intro hn
+    push_neg at hn
+    exact hn
+
 end QM
