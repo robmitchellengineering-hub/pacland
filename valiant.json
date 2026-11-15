@@ -32,7 +32,7 @@
       "cmd": [
         "sh",
         "-c",
-        "cd pacland-proof && export PATH=\"$HOME/.elan/bin:$PATH\" && lake build"
+        "cd pacland-proof && export PATH=\"$HOME/.elan/bin:$PATH\" && (command -v lake >/dev/null 2>&1 || { echo \"lake not installed on this node (Lean/Elan toolchain missing)\"; exit 2; }); lake build"
       ]
     },
     {
@@ -65,7 +65,8 @@
       "check": [
         "python3",
         "scripts/check-site-links.py"
-      ]
+      ],
+      "local": true
     },
     {
       "name": "conservation-unit-scale",
@@ -76,7 +77,8 @@
         "sh",
         "-c",
         "PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift tests.test_climate_reference_model -q"
-      ]
+      ],
+      "local": true
     },
     {
       "name": "worst-energy-offender-zeroed",
@@ -87,7 +89,8 @@
         "sh",
         "-c",
         "PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift tests.test_climate_reference_model -q"
-      ]
+      ],
+      "local": true
     },
     {
       "name": "giss-ecs-out-of-range",
@@ -98,7 +101,8 @@
         "sh",
         "-c",
         "PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift tests.test_climate_reference_model -q"
-      ]
+      ],
+      "local": true
     },
     {
       "name": "giss-erf2x-out-of-band",
@@ -109,7 +113,8 @@
         "sh",
         "-c",
         "PYTHONPATH=src python3 -m unittest tests.test_climate_cmip6_drift tests.test_climate_reference_model -q"
-      ]
+      ],
+      "local": true
     },
     {
       "name": "exactness-f-term-covariant",
@@ -120,7 +125,8 @@
         "sh",
         "-c",
         "PYTHONPATH=src python3 -m unittest tests.test_exactness -q"
-      ]
+      ],
+      "local": true
     },
     {
       "name": "exactness-split-flux-order",
@@ -131,7 +137,8 @@
         "sh",
         "-c",
         "PYTHONPATH=src python3 -m unittest tests.test_exactness -q"
-      ]
+      ],
+      "local": true
     }
   ]
 }
