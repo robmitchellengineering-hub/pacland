@@ -486,4 +486,63 @@ volume-uniformity is the extra statement that survives the continuum limit. -/
 theorem mass_gap_reduction_volumeUniform (gap : ℕ → ℝ) (h : volumeUniformGap gap) :
     ∃ Δ : ℝ, 0 < Δ ∧ ∀ m : ℕ, 0 < m → Δ ≤ gap m := h
 
+/-- **The row unitarity.** For a unitary `U`, each row is a unit vector: `Σₖ Uᵢₖ² = 1`. -/
+lemma unitary_row_norm {m : ℕ} (U : unitary (Matrix (Fin m) (Fin m) ℝ)) (i : Fin m) :
+    ∑ k : Fin m, ((↑U : Matrix (Fin m) (Fin m) ℝ) i k)^2 = 1 := by
+  have h := U.property.right
+  have h' := congrArg (fun M : Matrix (Fin m) (Fin m) ℝ => M i i) h
+  simpa [Matrix.mul_apply, Matrix.conjTranspose_apply, sq] using h'
+
+/-- **The Cauchy–Schwarz row bound — the key to the volume-uniform entrywise bound.** For a unitary
+`U`, `Σₖ |Uᵢₖ|·|Uⱼₖ| ≤ 1` (Cauchy–Schwarz on the abs values + the row unitarity). This is what removes
+the `·m` factor: the naive bound `Σₖ 1 = m` is replaced by the sharp `Σₖ |Uᵢₖ||Uⱼₖ| ≤ 1`. -/
+lemma unitary_row_sum_abs_le_one {m : ℕ} (U : unitary (Matrix (Fin m) (Fin m) ℝ)) (i j : Fin m) :
+    ∑ k : Fin m, |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k| ≤ 1 := by
+  have hnorm_i := unitary_row_norm U i
+  have hnorm_j := unitary_row_norm U j
+  have hcs : (∑ k : Fin m, |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k|)^2
+      ≤ (∑ k : Fin m, ((↑U : Matrix (Fin m) (Fin m) ℝ) i k)^2) * (∑ k : Fin m, ((↑U : Matrix (Fin m) (Fin m) ℝ) j k)^2) := by
+    simpa [sq_abs] using (Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset (Fin m))
+      (fun k => |(↑U : Matrix (Fin m) (Fin m) ℝ) i k|) (fun k => |(↑U : Matrix (Fin m) (Fin m) ℝ) j k|))
+  rw [hnorm_i, hnorm_j] at hcs
+  have hnonneg : 0 ≤ ∑ k : Fin m, |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k| := by
+    apply Finset.sum_nonneg
+    intro k hk
+    exact mul_nonneg (abs_nonneg _) (abs_nonneg _)
+  nlinarith [hcs, hnonneg]
+
+/-- **The volume-uniform entrywise bound — `|Tᵢⱼ| ≤ r`, with no `·m` factor.** The naive bound
+`|Tᵢⱼ| ≤ r·m` sums `m` terms; the sharp bound uses the Cauchy–Schwarz row bound `Σₖ |Uᵢₖ||Uⱼₖ| ≤ 1` to
+remove the volume factor. This is the volume-uniform form the falsifier (volume-uniform-gap) requires
+for `refereeScalingLaw`. -/
+theorem transferMatrix_entry_bound_uniform {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (r : ℝ)
+    (hr : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ r)
+    (hr0 : 0 ≤ r) (i j : Fin m) :
+    |(transferMatrix K) i j| ≤ r := by
+  let U : unitary (Matrix (Fin m) (Fin m) ℝ) := (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary
+  let lam : Fin m → ℝ := (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues
+  rw [transferMatrix_spectral K hSymm hK, Unitary.conjStarAlgAut_apply]
+  simp only [Matrix.mul_apply, Matrix.diagonal_apply, Matrix.conjTranspose_apply]
+  simp
+  refine le_trans (Finset.abs_sum_le_sum_abs (fun k => (↑U : Matrix (Fin m) (Fin m) ℝ) i k * lam k * (↑U : Matrix (Fin m) (Fin m) ℝ) j k) Finset.univ) ?_
+  calc
+    ∑ k : Fin m, |(↑U : Matrix (Fin m) (Fin m) ℝ) i k * lam k * (↑U : Matrix (Fin m) (Fin m) ℝ) j k|
+        = ∑ k : Fin m, |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |lam k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k| := by
+            simp [abs_mul]
+    _ ≤ ∑ k : Fin m, r * (|(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k|) := by
+            apply Finset.sum_le_sum
+            intro k hk
+            have hlk := hr k
+            have hstep1 : |lam k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k| ≤ r * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k| :=
+              mul_le_mul_of_nonneg_right hlk (abs_nonneg _)
+            have hstep2 : |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * (|lam k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k|)
+                ≤ |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * (r * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k|) :=
+              mul_le_mul_of_nonneg_left hstep1 (abs_nonneg _)
+            nlinarith [hstep2]
+    _ = r * (∑ k : Fin m, |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k|) := by
+            rw [← Finset.mul_sum]
+    _ ≤ r * 1 := by exact mul_le_mul_of_nonneg_left (unitary_row_sum_abs_le_one U i j) hr0
+    _ = r := by ring
+
 end QM
