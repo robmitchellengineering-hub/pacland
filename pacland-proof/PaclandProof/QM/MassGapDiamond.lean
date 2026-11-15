@@ -608,4 +608,59 @@ theorem surface_tension_bounds_gap (lam1 σ : ℝ) (hlam1 : 0 < lam1) :
     have hlog : Real.log lam1 ≤ -σ := (Real.log_le_iff_le_exp hlam1).mpr h
     nlinarith
 
+/-- **The strict contraction — `⟨x, T x⟩ < ⟨x, x⟩` for non-constant `x`.** For a *strictly positive*
+symmetric matrix with unit row sums (a mixing kernel), the contraction is strict on non-constant
+vectors: the strict AM-GM `2ab < a² + b²` (at a pair `xᵢ ≠ xⱼ`, connected by `Tᵢⱼ > 0`) makes the
+double sum strict. This is the "mixing ⟹ strict gap" step — the Perron–Frobenius / Jentzsch core:
+the second eigenvalue `λ₁ < 1`, not merely `≤ 1`. Route (1) of the `refereeScalingLaw` attack. -/
+theorem contraction_quadratic_strict {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
+    (hpos : ∀ i j, 0 < T i j)
+    (hrow : ∀ i, ∑ j : Fin m, T i j = 1)
+    (hsymm : ∀ i j, T i j = T j i)
+    (x : Fin m → ℝ) (hx : ∃ i j : Fin m, x i ≠ x j) :
+    ∑ i : Fin m, x i * (∑ j : Fin m, T i j * x j) < ∑ i : Fin m, x i^2 := by
+  rcases hx with ⟨i₀, j₀, hneq⟩
+  have hrow_s := row_sum_quadratic T hrow x
+  have hcol_s := col_sum_quadratic T hrow hsymm x
+  have hmain : ∑ i : Fin m, ∑ j : Fin m, T i j * (2 * (x i * x j)) < ∑ i : Fin m, ∑ j : Fin m, T i j * (x i^2 + x j^2) := by
+    have hle : ∀ i j, T i j * (2 * (x i * x j)) ≤ T i j * (x i^2 + x j^2) := by
+      intro i j
+      have ham : 2 * (x i * x j) ≤ x i^2 + x j^2 := by nlinarith [sq_nonneg (x i - x j)]
+      exact mul_le_mul_of_nonneg_left ham (le_of_lt (hpos i j))
+    have hstrict : T i₀ j₀ * (2 * (x i₀ * x j₀)) < T i₀ j₀ * (x i₀^2 + x j₀^2) := by
+      have ham : 2 * (x i₀ * x j₀) < x i₀^2 + x j₀^2 := two_mul_lt_sq_add_sq_of_ne hneq
+      exact mul_lt_mul_of_pos_left ham (hpos i₀ j₀)
+    have hle_outer : ∀ i, (∑ j : Fin m, T i j * (2 * (x i * x j))) ≤ (∑ j : Fin m, T i j * (x i^2 + x j^2)) := by
+      intro i
+      apply Finset.sum_le_sum
+      intro j hj
+      exact hle i j
+    have hlt_outer : ∃ i ∈ Finset.univ, (∑ j : Fin m, T i j * (2 * (x i * x j))) < (∑ j : Fin m, T i j * (x i^2 + x j^2)) := by
+      refine ⟨i₀, Finset.mem_univ i₀, ?_⟩
+      exact Finset.sum_lt_sum (s := Finset.univ) (fun j hj => hle i₀ j) ⟨j₀, Finset.mem_univ j₀, hstrict⟩
+    exact Finset.sum_lt_sum (s := Finset.univ) (fun i hi => hle_outer i) hlt_outer
+  have h3 : ∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j) = ∑ i : Fin m, x i * (∑ j : Fin m, T i j * x j) := by
+    apply Finset.sum_congr rfl
+    intro i hi
+    calc
+      ∑ j : Fin m, T i j * (x i * x j) = ∑ j : Fin m, x i * (T i j * x j) := by
+        apply Finset.sum_congr rfl; intro j hj; ring
+      _ = x i * (∑ j : Fin m, T i j * x j) := by rw [← Finset.mul_sum]
+  have hsum : ∑ i : Fin m, ∑ j : Fin m, T i j * (x i^2 + x j^2) = 2 * (∑ i : Fin m, x i^2) := by
+    rw [show (∑ i : Fin m, ∑ j : Fin m, T i j * (x i^2 + x j^2))
+        = (∑ i : Fin m, ∑ j : Fin m, T i j * x i^2) + (∑ i : Fin m, ∑ j : Fin m, T i j * x j^2) by
+      simp_rw [mul_add]
+      simp_rw [Finset.sum_add_distrib]]
+    rw [hrow_s, hcol_s]
+    ring
+  have h2 : 2 * (∑ i : Fin m, x i * (∑ j : Fin m, T i j * x j)) < 2 * (∑ i : Fin m, x i^2) := by
+    have hlhs : (∑ i : Fin m, ∑ j : Fin m, T i j * (2 * (x i * x j))) = 2 * (∑ i : Fin m, x i * (∑ j : Fin m, T i j * x j)) := by
+      rw [show (∑ i : Fin m, ∑ j : Fin m, T i j * (2 * (x i * x j))) = 2 * (∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j)) by
+        simp_rw [Finset.mul_sum]
+        ring_nf]
+      rw [h3]
+    rw [hlhs, hsum] at hmain
+    simpa using hmain
+  nlinarith
+
 end QM
