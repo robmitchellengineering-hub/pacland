@@ -170,4 +170,46 @@ theorem correlation_spectral_sum {m : ℕ} (K : Fin m → Fin m → ℝ)
   exact conj_diagonal_quadratic ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
     (fun i => ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues i)^n) f g
 
+/-- **The entries of a unitary matrix are bounded by 1** (the columns are unit vectors:
+`Σₓ Uₓₖ² = 1`, so `|Uᵢₖ| ≤ 1`). This is the bound that turns the spectral sum into the entrywise
+decay. -/
+lemma unitary_entry_le_one {m : ℕ} (U : unitary (Matrix (Fin m) (Fin m) ℝ)) (i k : Fin m) :
+    |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| ≤ 1 := by
+  have hkk : ∑ x : Fin m, ((↑U : Matrix (Fin m) (Fin m) ℝ) x k)^2 = 1 := by
+    have hcol := U.property.left
+    have h := congrArg (fun M : Matrix (Fin m) (Fin m) ℝ => M k k) hcol
+    simpa [Matrix.mul_apply, Matrix.conjTranspose_apply, sq] using h
+  have hsq : ((↑U : Matrix (Fin m) (Fin m) ℝ) i k)^2 ≤ 1 := by
+    have hle : ((↑U : Matrix (Fin m) (Fin m) ℝ) i k)^2 ≤ ∑ x : Fin m, ((↑U : Matrix (Fin m) (Fin m) ℝ) x k)^2 :=
+      Finset.single_le_sum (f := fun x => ((↑U : Matrix (Fin m) (Fin m) ℝ) x k)^2)
+        (fun x _ => sq_nonneg _) (a := i) (Finset.mem_univ i)
+    rwa [hkk] at hle
+  exact (sq_le_one_iff_abs_le_one ((↑U : Matrix (Fin m) (Fin m) ℝ) i k)).mp hsq
+
+/-- **Step 4 (the entrywise bound) — the eigenvalue radius bounds the matrix entries.** For a
+transfer matrix `T = U·diag(λ)·Uᴴ` with all `|λₖ| ≤ r`, the entries satisfy `|Tᵢⱼ| ≤ r·m`. This is the
+spectral-radius bound that turns "the second eigenvalue is below 1" into "the entries decay". -/
+theorem transferMatrix_entry_bound {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (r : ℝ)
+    (hr : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ r)
+    (hr0 : 0 ≤ r) (i j : Fin m) :
+    |(transferMatrix K) i j| ≤ r * (m : ℝ) := by
+  let U : Matrix (Fin m) (Fin m) ℝ := ↑((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+  let lam : Fin m → ℝ := (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues
+  rw [transferMatrix_spectral K hSymm hK, Unitary.conjStarAlgAut_apply]
+  simp only [Matrix.mul_apply, Matrix.diagonal_apply, Matrix.conjTranspose_apply]
+  simp
+  refine le_trans (Finset.abs_sum_le_sum_abs (fun k => U i k * lam k * U j k) Finset.univ) ?_
+  trans ∑ k : Fin m, (1 : ℝ) * r * 1
+  · apply Finset.sum_le_sum
+    intro k hk
+    rw [abs_mul, abs_mul]
+    have hUik : |U i k| ≤ 1 := unitary_entry_le_one ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary) i k
+    have hUjk : |U j k| ≤ 1 := unitary_entry_le_one ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary) j k
+    have hlk : |lam k| ≤ r := hr k
+    have hstep1 : |U i k| * |lam k| ≤ 1 * r := mul_le_mul hUik hlk (abs_nonneg _) (by nlinarith)
+    have hstep2 : |U i k| * |lam k| * |U j k| ≤ (1 * r) * 1 := mul_le_mul hstep1 hUjk (abs_nonneg _) (by nlinarith)
+    nlinarith [hstep2]
+  · simp [Finset.card_univ, Fintype.card_fin, mul_assoc, mul_comm, mul_left_comm]
+
 end QM
