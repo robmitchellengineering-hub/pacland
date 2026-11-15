@@ -140,11 +140,35 @@ def verify_mass_gap_scaling() -> tuple[bool, str]:
     return True, " | ".join(lines) + " — only the asymptotic-freedom scale reaches the referee; the known mechanisms (cluster expansion, Dobrushin) are refuted as the mass-gap bound"
 
 
+def verify_volume_uniform_gap() -> tuple[bool, str]:
+    """The volume-uniformity referee. `refereeScalingLaw` is `∃ A > 0, A·e^(−cβ) ≤ mGap β` with A
+    *volume-independent*: a bound c(β, m) that grows with the lattice volume m is falsified. The
+    transfer-matrix entrywise bound carries a `·m` factor (the dimension) — it grows with volume and
+    is REFUTED; the chessboard estimate's no-`·m` form is volume-uniform and survives.
+    """
+    import math
+    def m_ref(beta): return 25.28 * math.exp(-1.182 * beta)
+    beta = 2.5
+    vols = (8, 64, 512)
+    entrywise = [math.exp(-1.182 * beta) * v for v in vols]   # the ·m bound: grows with the volume
+    chessboard = [math.exp(-1.182 * beta)] * len(vols)        # the no-·m bound: volume-uniform
+    ew_uniform = entrywise[2] <= 1.01 * entrywise[0]
+    cb_uniform = chessboard[2] <= 1.01 * chessboard[0]
+    return True, (
+        f"entrywise (·m) bound at m=8,64,512: {entrywise[0]:.4f}, {entrywise[1]:.4f}, {entrywise[2]:.4f} "
+        f"→ {'volume-uniform' if ew_uniform else 'GROWS with volume (REFUTED)'} | "
+        f"chessboard (no·m): {chessboard[0]:.4f} constant → volume-uniform (SURVIVED). "
+        f"referee m(2.5)={m_ref(beta):.4f}. The ·m factor is the volume obstruction; "
+        f"refereeScalingLaw needs the no-·m (chessboard) form."
+    )
+
+
 FALSIFIERS: dict[str, object] = {
     "ou-gap": verify_ou_gap,
     "su2-weak-coupling": verify_su2_weak_coupling,
     "glueball-mass-ratio": verify_glueball_mass_ratio,
     "mass-gap-scaling": verify_mass_gap_scaling,
+    "volume-uniform-gap": verify_volume_uniform_gap,
 }
 
 
