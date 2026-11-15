@@ -394,4 +394,76 @@ lemma dirichlet_form_nonneg {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
   intro j hj
   exact mul_nonneg (hnonneg i j) (sq_nonneg (x i - x j))
 
+/-- **The row-sum identity.** For a row-stochastic matrix (`Σⱼ Tᵢⱼ = 1`), `Σᵢⱼ Tᵢⱼ xᵢ² = Σᵢ xᵢ²`. -/
+lemma row_sum_quadratic {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
+    (hrow : ∀ i, ∑ j : Fin m, T i j = 1) (x : Fin m → ℝ) :
+    ∑ i : Fin m, ∑ j : Fin m, T i j * x i^2 = ∑ i : Fin m, x i^2 := by
+  apply Finset.sum_congr rfl
+  intro i hi
+  calc
+    ∑ j : Fin m, T i j * x i^2 = ∑ j : Fin m, x i^2 * T i j := by
+      apply Finset.sum_congr rfl; intro j hj; ring
+    _ = x i^2 * (∑ j : Fin m, T i j) := by rw [← Finset.mul_sum]
+    _ = x i^2 := by rw [hrow i]; ring
+
+/-- **The column-sum identity.** For a symmetric row-stochastic matrix, `Σᵢⱼ Tᵢⱼ xⱼ² = Σᵢ xᵢ²`. -/
+lemma col_sum_quadratic {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
+    (hrow : ∀ i, ∑ j : Fin m, T i j = 1)
+    (hsymm : ∀ i j, T i j = T j i) (x : Fin m → ℝ) :
+    ∑ i : Fin m, ∑ j : Fin m, T i j * x j^2 = ∑ i : Fin m, x i^2 := by
+  have hcol : ∀ j, ∑ i : Fin m, T i j = 1 := by
+    intro j
+    rw [Finset.sum_congr rfl (fun i hi => hsymm i j)]
+    exact hrow j
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro j hj
+  calc
+    ∑ i : Fin m, T i j * x j^2 = ∑ i : Fin m, x j^2 * T i j := by
+      apply Finset.sum_congr rfl; intro i hi; ring
+    _ = x j^2 * (∑ i : Fin m, T i j) := by rw [← Finset.mul_sum]
+    _ = x j^2 := by rw [hcol j]; ring
+
+/-- **The contraction — `⟨x, T x⟩ ≤ ⟨x, x⟩`.** For a symmetric non-negative matrix with unit row
+sums (a doubly-stochastic kernel), the quadratic form is a contraction: via the AM-GM
+`2xᵢxⱼ ≤ xᵢ² + xⱼ²` and the row/column sums, `2·⟨x,Tx⟩ ≤ Σᵢⱼ Tᵢⱼ(xᵢ²+xⱼ²) = 2·⟨x,x⟩`. This is the
+operator-norm ≤ 1 rung: the transfer matrix is a contraction, so the eigenvalues satisfy `λₖ ≤ 1`.
+The first objective of the Millennium chain — the PSD contraction — is now kernel-checked. -/
+theorem contraction_quadratic {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
+    (hnonneg : ∀ i j, 0 ≤ T i j)
+    (hrow : ∀ i, ∑ j : Fin m, T i j = 1)
+    (hsymm : ∀ i j, T i j = T j i)
+    (x : Fin m → ℝ) :
+    ∑ i : Fin m, x i * (∑ j : Fin m, T i j * x j) ≤ ∑ i : Fin m, x i^2 := by
+  have hrow_s := row_sum_quadratic T hrow x
+  have hcol_s := col_sum_quadratic T hrow hsymm x
+  have h3 : ∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j) = ∑ i : Fin m, x i * (∑ j : Fin m, T i j * x j) := by
+    apply Finset.sum_congr rfl
+    intro i hi
+    calc
+      ∑ j : Fin m, T i j * (x i * x j) = ∑ j : Fin m, x i * (T i j * x j) := by
+        apply Finset.sum_congr rfl; intro j hj; ring
+      _ = x i * (∑ j : Fin m, T i j * x j) := by rw [← Finset.mul_sum]
+  have ham : 2 * (∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j))
+      ≤ ∑ i : Fin m, ∑ j : Fin m, T i j * (x i^2 + x j^2) := by
+    simp_rw [Finset.mul_sum]
+    apply Finset.sum_le_sum
+    intro i hi
+    apply Finset.sum_le_sum
+    intro j hj
+    have hab : 2 * (x i * x j) ≤ x i^2 + x j^2 := by nlinarith [sq_nonneg (x i - x j)]
+    have hstep : T i j * (2 * (x i * x j)) ≤ T i j * (x i^2 + x j^2) :=
+      mul_le_mul_of_nonneg_left hab (hnonneg i j)
+    nlinarith [hstep]
+  have hsum : ∑ i : Fin m, ∑ j : Fin m, T i j * (x i^2 + x j^2) = 2 * (∑ i : Fin m, x i^2) := by
+    rw [show (∑ i : Fin m, ∑ j : Fin m, T i j * (x i^2 + x j^2))
+        = (∑ i : Fin m, ∑ j : Fin m, T i j * x i^2) + (∑ i : Fin m, ∑ j : Fin m, T i j * x j^2) by
+      simp_rw [mul_add]
+      simp_rw [Finset.sum_add_distrib]]
+    rw [hrow_s, hcol_s]
+    ring
+  rw [h3] at ham
+  rw [hsum] at ham
+  nlinarith
+
 end QM
