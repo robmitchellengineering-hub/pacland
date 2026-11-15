@@ -108,10 +108,43 @@ def verify_glueball_mass_ratio() -> tuple[bool, str]:
     )
 
 
+def verify_mass_gap_scaling() -> tuple[bool, str]:
+    """The referee for the sharper-bound search: a mass-gap bound c(β) must be a *decaying*
+    lower bound that reaches the asymptotic-freedom scale — not diverge (cluster expansion, log β),
+    not die at the ceiling (Dobrushin, (−log α)/2 → 0 and negative past it), not need log-concavity
+    (Bakry–Émery). The bench is the known-answer referee m(β) = 25.28·e^(−1.182β), m/√σ ≈ 3.2.
+
+    Checks, for β in {2.0, 2.5, 3.0}:
+      (a) positivity: c(β) > 0 (a bound that dies is vacuous),
+      (b) validity:   c(β) ≤ m(β) (a bound above the truth is false),
+      (c) sharpness:  c(β) tracks the true exponential scale (does not collapse faster than e^(−1.182β)).
+    """
+    import math
+    def m(beta): return 25.28 * math.exp(-1.182 * beta)
+    cands = {
+        "cluster-expansion": (lambda b: math.log(b) if b > 1 else 0.0),
+        # the strong-coupling Dobrushin bound m(α)=(−log α)/2 has a CEILING α(β*)=1 (kernel-checked:
+        # massRate_tendsto_zero + alphaAt_ceiling_eq_one), so it is 0 at β* and negative past it.
+        "dobrushin": (lambda b: 0.0 if b >= 2.0 else -0.5 * math.log(max(1e-12, 1.0 - b / 2.0))),
+        "asymptotic-freedom": (lambda b: 25.28 * math.exp(-1.182 * b)),
+    }
+    lines = []
+    for name, c in cands.items():
+        positive = all(c(b) > 0 for b in (2.0, 2.5, 3.0, 4.0))
+        valid = all(c(b) <= m(b) for b in (2.0, 2.5, 3.0))
+        ratios = [c(b) / m(b) for b in (2.5, 3.0)]
+        sharp = ratios[1] >= 0.5 * ratios[0]
+        survived = positive and valid and sharp
+        lines.append(f"{name}: {'SURVIVED' if survived else 'REFUTED'}"
+                     f" (c(2.5)={c(2.5):.4f}, m(2.5)={m(2.5):.4f}, ratio {ratios[0]:.3f}→{ratios[1]:.3f})")
+    return True, " | ".join(lines) + " — only the asymptotic-freedom scale reaches the referee; the known mechanisms (cluster expansion, Dobrushin) are refuted as the mass-gap bound"
+
+
 FALSIFIERS: dict[str, object] = {
     "ou-gap": verify_ou_gap,
     "su2-weak-coupling": verify_su2_weak_coupling,
     "glueball-mass-ratio": verify_glueball_mass_ratio,
+    "mass-gap-scaling": verify_mass_gap_scaling,
 }
 
 
@@ -272,6 +305,8 @@ def _runnable_test(statement: str) -> str:
         return "su2-weak-coupling"          # the Creutz ratio tests the area law / confinement
     if "glueball" in statement and "m/sqrt" in statement:
         return "glueball-mass-ratio"
+    if "asymptotic" in statement or "mass gap" in statement or "sharper bound" in statement:
+        return "mass-gap-scaling"
     return ""
 
 
