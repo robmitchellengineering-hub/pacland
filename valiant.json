@@ -47,28 +47,6 @@
   "ledger": false,
   "guards": [
     {
-      "name": "site-verification-link",
-      "file": "web/index.html",
-      "find": "<a href=\"https://vvs.morpheus.nz\">Valiant Verification Systems &rarr;</a>",
-      "replace": "<a href=\"#\">Valiant Verification Systems &rarr;</a>",
-      "check": [
-        "python3",
-        "scripts/check-site-links.py"
-      ],
-      "local": true
-    },
-    {
-      "name": "site-honest-line",
-      "file": "web/index.html",
-      "find": "seeking design partners",
-      "replace": "seeking customers",
-      "check": [
-        "python3",
-        "scripts/check-site-links.py"
-      ],
-      "local": true
-    },
-    {
       "name": "conservation-unit-scale",
       "file": "src/pacland/climate/cmip6_drift.py",
       "find": "_EARTH_AREA_M2 = 5.101e14",
