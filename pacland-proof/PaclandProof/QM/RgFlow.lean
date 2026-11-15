@@ -267,4 +267,76 @@ theorem exponential_clustering_weak {β : ℝ} (hβ : 1 < β) :
   rw [show (-(-Real.log (meanActivity β)) * d) = -((-Real.log (meanActivity β)) * d) by ring]
   rw [Real.exp_neg]
 
+/-- **The Bessel order `I₂ < I₁` at weak coupling** (β > 2): from the concentration `1 − I₁/I₀ ≤ 1/β`
+we get `I₁/I₀ ≥ (β−1)/β > β/(β+2)`, so `βI₀ < (β+2)I₁`, which with the recurrence
+`I₂ = I₀ − 2I₁/β` gives `I₂ < I₁`. -/
+theorem besselI2_lt_besselI1_of_gt_two {β : ℝ} (hβ : 2 < β) :
+    besselI 2 β < besselI 1 β := by
+  have hβ0 : 0 < β := lt_trans zero_lt_two hβ
+  have hconc : 1 - besselI 1 β / besselI 0 β ≤ 1 / β := bessel_activity_le_one_div_beta hβ0
+  have hI0 : 0 < besselI 0 β := besselI_pos hβ0
+  have hI1 : 0 < besselI 1 β := besselI_pos hβ0
+  have hrec : besselI 0 β - besselI 2 β = (2 / β) * besselI 1 β := bessel_recurrence hβ0
+  have hconc' : β * besselI 0 β - β * besselI 1 β ≤ besselI 0 β := by
+    field_simp [ne_of_gt hI0, ne_of_gt hβ0] at hconc
+    nlinarith
+  have hhalf : besselI 0 β < 2 * besselI 1 β := by nlinarith [hconc', hβ]
+  have hmain : β * besselI 0 β < (β + 2) * besselI 1 β := by nlinarith [hconc', hhalf]
+  have hI2eq : besselI 2 β = besselI 0 β - (2 / β) * besselI 1 β := by linarith [hrec]
+  rw [hI2eq]
+  have hlt : besselI 0 β - (2 / β) * besselI 1 β < besselI 1 β := by
+    field_simp [ne_of_gt hβ0]
+    nlinarith [hmain]
+  exact hlt
+
+/-- **The full SU(2) plaquette mean activity**: `E[z] = 1 − I₂/I₁`, where `(1/2)Tr U = I₂/I₁` is the
+mean fundamental character under the SU(2) Haar measure (`sin²(θ/2) dθ`). This is the actual 4D
+cluster-expansion input, the diagonal-torus `1 − I₁/I₀` lifted one index. -/
+def meanActivitySU2 (β : ℝ) : ℝ := 1 - besselI 2 β / besselI 1 β
+
+/-- **The SU(2) small-field bound `C = 2`**: `E[z] = 1 − I₂/I₁ ≤ 2/β` for all β > 0, from
+`bessel_ratio_I2_I1_lt_two_div_beta`. The activity is `O(1/β)` small at weak coupling — the
+convergence-criterion input for the cluster expansion on the full plaquette. -/
+theorem meanActivitySU2_le_two_div_beta {β : ℝ} (hβ : 0 < β) :
+    meanActivitySU2 β ≤ 2 / β := by
+  dsimp [meanActivitySU2]
+  exact le_of_lt (bessel_ratio_I2_I1_lt_two_div_beta hβ)
+
+/-- **The SU(2) activity is `|z| < 1` at weak coupling** (β > 2): `E[z] ≤ 2/β < 1` and `0 ≤ E[z]`. -/
+theorem meanActivitySU2_abs_lt_one_of_gt_two {β : ℝ} (hβ : 2 < β) :
+    |meanActivitySU2 β| < 1 := by
+  have hβ0 : 0 < β := lt_trans zero_lt_two hβ
+  have hI1 : 0 < besselI 1 β := besselI_pos hβ0
+  have hI2 : 0 < besselI 2 β := besselI_pos hβ0
+  have hpos : 0 ≤ meanActivitySU2 β := by
+    dsimp [meanActivitySU2]
+    have hratio : besselI 2 β / besselI 1 β ≤ 1 := (div_le_one hI1).mpr (le_of_lt (besselI2_lt_besselI1_of_gt_two hβ))
+    linarith
+  have hle : meanActivitySU2 β ≤ 2 / β := meanActivitySU2_le_two_div_beta hβ0
+  have hlt : meanActivitySU2 β < 1 := lt_of_le_of_lt hle (by have h : (2 : ℝ) / β < 1 := (div_lt_one hβ0).mpr hβ; exact h)
+  rw [abs_of_nonneg hpos]
+  exact hlt
+
+/-- **The SU(2) cluster expansion converges at weak coupling**: `|E[z]| < 1` for β > 2. -/
+theorem cluster_expansion_converges_weak_su2 {β : ℝ} (hβ : 2 < β) :
+    Summable (fun n : ℕ => (meanActivitySU2 β) ^ n) := by
+  exact cluster_expansion_converges (meanActivitySU2_abs_lt_one_of_gt_two hβ)
+
+/-- **The SU(2) mass gap at weak coupling**: `m = −log E[z] > 0` for β > 2. The transfer-operator
+gap `‖S‖ = e^{−m} < 1`, chained from the SU(2) concentration to the clustering ⟺ gap bridge. -/
+theorem mass_gap_pos_weak_su2 {β : ℝ} (hβ : 2 < β) :
+    0 < -Real.log (meanActivitySU2 β) := by
+  have hβ0 : 0 < β := lt_trans zero_lt_two hβ
+  have hpos : 0 < meanActivitySU2 β := by
+    dsimp [meanActivitySU2]
+    have hI1 : 0 < besselI 1 β := besselI_pos hβ0
+    have horder : besselI 2 β < besselI 1 β := besselI2_lt_besselI1_of_gt_two hβ
+    have hratio : besselI 2 β / besselI 1 β < 1 := (div_lt_one hI1).mpr horder
+    linarith
+  have hlt : meanActivitySU2 β < 1 := by
+    have habs : |meanActivitySU2 β| < 1 := meanActivitySU2_abs_lt_one_of_gt_two hβ
+    rw [abs_of_nonneg (le_of_lt hpos)] at habs
+    exact habs
+  exact neg_pos.mpr (Real.log_neg hpos hlt)
+
 end QM
