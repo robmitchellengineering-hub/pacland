@@ -1,5 +1,6 @@
 import Mathlib
 import PaclandProof.QM.PosDefKernel
+import PaclandProof.QM.OSAnalyticContinuation
 
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
@@ -107,5 +108,37 @@ spectral-radius equality from the spectral theorem). -/
 def spectralRadiusDecay {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (P0 : Matrix (Fin m) (Fin m) ℝ)
     (lam1 : ℝ) : Prop :=
   lam1 < 1 ∧ ∀ n i j, |(T ^ n - P0) i j| ≤ lam1 ^ n
+
+/-- **The telescoping (the conjugation commutes with powers).** For a unitary `U`,
+`(U·D·Uᴴ)ⁿ = U·Dⁿ·Uᴴ` — the conjugation by a unitary commutes with taking powers. This is the
+genuine (non-Mathlib) spectral step: the transfer matrix power `Tⁿ` has the same eigenbasis as `T`,
+with eigenvalues raised to `n`. -/
+theorem conj_pow {m : ℕ} (U : unitary (Matrix (Fin m) (Fin m) ℝ)) (D : Matrix (Fin m) (Fin m) ℝ) (n : ℕ) :
+    ((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ) U) D)^n
+      = (Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ) U) (D^n) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [pow_succ, ih, pow_succ]
+      rw [← map_mul]
+
+/-- **The spectral theorem for the transfer-matrix power.** `Tⁿ = U·diag(λⁿ)·Uᴴ` — the power of the
+transfer matrix is unitarily diagonalized by the same `U`, with eigenvalues `λᵢⁿ`. This is the key
+step for the clustering decay: the correlation `⟨f, Tⁿ g⟩ = Σ λᵢⁿ ⟨f, uᵢ⟩⟨uᵢ, g⟩` decays at the rate of
+the second eigenvalue `λ₁ⁿ`. -/
+theorem transferMatrix_power_spectral {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (n : ℕ) :
+    (transferMatrix K)^n = ((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ))
+        (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+        (Matrix.diagonal (fun i => ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues i)^n)) := by
+  let e := Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ)
+    ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+  let D := Matrix.diagonal ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues)
+  have hT : transferMatrix K = e D := transferMatrix_spectral K hSymm hK
+  conv_lhs => rw [hT]
+  rw [conj_pow ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary) D n]
+  congr 1
+  rw [Matrix.diagonal_pow]
+  rfl
 
 end QM
