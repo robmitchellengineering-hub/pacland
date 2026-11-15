@@ -92,4 +92,20 @@ theorem pow_hermitian {m : ℕ} (M : Matrix (Fin m) (Fin m) ℝ) (hM : M.IsHermi
       rw [Matrix.IsHermitian, pow_succ, Matrix.conjTranspose_mul, ih, hM]
       exact (pow_succ' M n).symm.trans (pow_succ M n)
 
+/-- **The reflection positivity persists (PSD)** — every power of a PSD matrix is PSD. This is
+Mathlib's `Matrix.PosSemidef.pow`, stated here as a named rung of the diamond: the chessboard
+estimate's second ingredient (the transfer-matrix semigroup is PSD at every time step). -/
+theorem posdef_pow {m : ℕ} (M : Matrix (Fin m) (Fin m) ℝ) (hM : M.PosSemidef) (n : ℕ) :
+    (M ^ n).PosSemidef := Matrix.PosSemidef.pow hM n
+
+/-- **The spectral-radius decay (the deep rung — NOT yet kernel-checked).** For a symmetric PSD
+transfer matrix with top eigenvalue `1` and second eigenvalue `λ₁ < 1`, the semigroup `Tⁿ` converges
+to the vacuum projection `P₀` at rate `λ₁ⁿ`: `‖Tⁿ − P₀‖ ≤ λ₁ⁿ`. This is the "spectral gap ⟹
+exponential clustering" direction, via the operator norm equalling the spectral radius for symmetric
+matrices. Stated as a named hypothesis; the proof is the next substantial rung (the operator-norm /
+spectral-radius equality from the spectral theorem). -/
+def spectralRadiusDecay {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (P0 : Matrix (Fin m) (Fin m) ℝ)
+    (lam1 : ℝ) : Prop :=
+  lam1 < 1 ∧ ∀ n i j, |(T ^ n - P0) i j| ≤ lam1 ^ n
+
 end QM
