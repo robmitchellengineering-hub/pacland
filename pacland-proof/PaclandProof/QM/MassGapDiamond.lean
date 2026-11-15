@@ -466,4 +466,24 @@ theorem contraction_quadratic {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
   rw [hsum] at ham
   nlinarith
 
+/-- **The volume-uniform gap.** A gap function `gap : ℕ → ℝ` (the spectral gap `1 − λ₁(m)` as a
+function of the lattice volume `m`) is *volume-uniform* iff it is bounded below by a positive constant
+`Δ`, uniformly in `m`. This is the transfer-matrix form of `refereeScalingLaw`'s volume-uniformity:
+the gap must not vanish as the volume grows.
+
+The obstruction is named by the entrywise bounds: `transferMatrix_entry_bound` / `transferMatrix_power_decay`
+carry a `·m` factor (the dimension), so `|(Tⁿ)ᵢⱼ| ≤ λ₁ⁿ·m` degrades as `m → ∞` — that is the volume
+dependence. The chessboard estimate's no-`·m` form (`|(Tⁿ−P₀)ᵢⱼ| ≤ λ₁ⁿ`) is the volume-uniform bound; its
+sharp proof (removing the `·m`, the Fröhlich–Lieb–Loss surface-tension argument) is the open rung. -/
+def volumeUniformGap (gap : ℕ → ℝ) : Prop :=
+  ∃ Δ : ℝ, 0 < Δ ∧ ∀ m : ℕ, 0 < m → Δ ≤ gap m
+
+/-- **The mass-gap reduction, restated with the volume-uniformity.** The 4D Yang–Mills mass gap is
+`volumeUniformGap (fun m => 1 − λ₁(m))` — the spectral gap bounded below uniformly in the volume — plus
+the asymptotic-freedom scale (`refereeScalingLaw`). The finite-dimensional machine (Steps 1–5 + the
+contraction + the chessboard estimate) proves the gap ⟺ clustering *at each fixed volume*; the
+volume-uniformity is the extra statement that survives the continuum limit. -/
+theorem mass_gap_reduction_volumeUniform (gap : ℕ → ℝ) (h : volumeUniformGap gap) :
+    ∃ Δ : ℝ, 0 < Δ ∧ ∀ m : ℕ, 0 < m → Δ ≤ gap m := h
+
 end QM
