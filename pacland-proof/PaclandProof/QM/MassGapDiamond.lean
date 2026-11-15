@@ -379,4 +379,19 @@ theorem vacuum_fixed_point {m : ℕ} (K : Fin m → Fin m → ℝ)
   ext i
   simpa [transferMatrix, Matrix.mulVec, dotProduct] using (hrow i)
 
+/-- **The Dirichlet form is non-negative — the core of the contraction.** For a non-negative
+matrix `T`, the Dirichlet form `Σᵢⱼ Tᵢⱼ (xᵢ − xⱼ)² ≥ 0`. This is the ingredient that makes the
+transfer matrix a contraction: `⟨x,x⟩ − ⟨x,Tx⟩ = (1/2)·Σᵢⱼ Tᵢⱼ (xᵢ−xⱼ)² ≥ 0` (the Dirichlet identity),
+so `⟨x, Tx⟩ ≤ ⟨x, x⟩`, i.e. `‖T‖ ≤ 1` and `λₖ ≤ 1`. The full contraction (the Dirichlet *identity*,
+which reorders the double sum via `Finset.sum_comm`) is the remaining sum-manipulation rung; this
+lemma is its kernel-checked core. -/
+lemma dirichlet_form_nonneg {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
+    (hnonneg : ∀ i j, 0 ≤ T i j) (x : Fin m → ℝ) :
+    0 ≤ ∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2 := by
+  apply Finset.sum_nonneg
+  intro i hi
+  apply Finset.sum_nonneg
+  intro j hj
+  exact mul_nonneg (hnonneg i j) (sq_nonneg (x i - x j))
+
 end QM
