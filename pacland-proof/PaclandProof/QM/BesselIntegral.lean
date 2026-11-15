@@ -1,5 +1,6 @@
 import Mathlib
 import PaclandProof.QM.Bessel
+import PaclandProof.QM.BesselRecurrence
 
 /-!
 # The integral representation's foundation — the orthogonality of cos on [0, π]
@@ -647,5 +648,28 @@ theorem bessel_activity_le_one_div_beta {β : ℝ} (hβ : 0 < β) :
       field_simp [ne_of_gt hI0, ne_of_gt hβ]
       nlinarith [hbar]
     exact le_of_lt h
+
+/-- **The full SU(2) plaquette concentration**: `E[z] = 1 − I₂/I₁ < 2/β` for all β > 0. The mean
+`(1/2)Tr U = I₂/I₁` under the SU(2) Haar measure (`sin²(θ/2) dθ`), and `I₁ − I₂ = (I₁−I₀) + (2/β)I₁ <
+(2/β)I₁` by the recurrence `I₀−I₂=(2/β)I₁` and the order `I₁<I₀`. This is the actual 4D cluster-expansion
+input — the diagonal-torus concentration lifted to the SU(2) character. -/
+theorem bessel_ratio_I2_I1_lt_two_div_beta {β : ℝ} (hβ : 0 < β) :
+    1 - besselI 2 β / besselI 1 β < 2 / β := by
+  have hrec : besselI 0 β - besselI 2 β = (2 / β) * besselI 1 β := bessel_recurrence hβ
+  have horder : besselI 1 β < besselI 0 β := besselI1_lt_besselI0 hβ
+  have hI1 : 0 < besselI 1 β := besselI_pos hβ
+  have hdiff : besselI 1 β - besselI 2 β < 2 * besselI 1 β / β := by
+    have h1 : besselI 1 β - besselI 2 β = (besselI 1 β - besselI 0 β) + (besselI 0 β - besselI 2 β) := by ring
+    rw [h1, hrec]
+    have h2 : besselI 1 β - besselI 0 β < 0 := sub_neg.mpr horder
+    have h3 : (besselI 1 β - besselI 0 β) + (2 / β) * besselI 1 β < (2 / β) * besselI 1 β := by linarith
+    simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using h3
+  have hdiv : (besselI 1 β - besselI 2 β) / besselI 1 β < 2 / β := by
+    rw [div_lt_iff₀ hI1]
+    simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hdiff
+  have hmain : 1 - besselI 2 β / besselI 1 β = (besselI 1 β - besselI 2 β) / besselI 1 β := by
+    field_simp [ne_of_gt hI1]
+  rw [hmain]
+  exact hdiv
 
 end QM
