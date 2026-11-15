@@ -1,0 +1,38 @@
+# The Lean kernel check: `lake build` + the no-sorry/axiom audit.
+#
+# WHY THIS IS A PROBE FIRST AND REQUIRED SECOND
+#
+# The `tests` job is Python-only, so the Lean tower can be broken (missing files, missing theorems)
+# and merge silently — which is exactly what happened: main's PaclandProof.lean imports five files
+# that only exist on foundations/qf0-hinge-ledger, and two theorems are referenced but never defined.
+# This job runs `lake build` and the kernel-level axiom audit so that state is *visible*, not silent.
+#
+# It is deliberately NOT added to the required checks yet: the tower is still red until
+# foundations/qf0-hinge-ledger lands and the two missing theorems are written. Once this job is green
+# on main, add `lean` to the required checks on main (the same probe-then-require sequence the `tests`
+# job followed).
+name: lean
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: pacland-proof
+          # run `lake build` only; leave test/lint off until there are targets for them
+          auto-config: false
+          build: true
+          # kernel-level no-sorry/no-axiom audit (allowlist: propext, Classical.choice, Quot.sound)
+          axiom-audit: true
