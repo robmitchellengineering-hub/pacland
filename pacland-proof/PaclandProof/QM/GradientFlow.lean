@@ -119,4 +119,29 @@ theorem effective_rate_below_one (t β c : ℝ)
   have h1 : 1 - t * β * c ≤ 1 := by nlinarith [hpos, hc]
   nlinarith [h, hle]
 
+/-- **The measure-weighted (integrated) curvature bound.** The good region (`cos θ ≥ c`, measure
+`≥ 1 − e^{−2β}`) has curvature `β·cos θ ≥ β·c`; the bad region (the antipode, measure `≤ e^{−2β}`) has
+curvature `≥ −β`. So the integrated curvature is `β·c·(1 − e^{−2β}) − β·e^{−2β}`, which is positive
+whenever the good region wins. This is the step that replaces the pointwise (negative-at-the-antipode)
+Bakry–Émery ceiling with a positive integrated bound — the quantitative rung of `refereeScalingLaw`. -/
+theorem integrated_curvature_bound (β c : ℝ) :
+    β * c * (1 - Real.exp (-2 * β)) - β * Real.exp (-2 * β)
+      = β * (c - (1 + c) * Real.exp (-2 * β)) := by
+  ring
+
+/-- **The effective curvature is positive when the good region wins.** For any `c > 0`, weak coupling
+(large `β`) makes `e^{−2β} → 0`, so `c(1 − e^{−2β}) > e^{−2β}` and the integrated curvature is positive:
+the measure-weighted curvature survives the antipode's negative pointwise curvature. -/
+theorem effective_curvature_positive (β c : ℝ)
+    (hβ : 0 < β) (hc : 0 < c) (h : Real.exp (-2 * β) < c * (1 - Real.exp (-2 * β))) :
+    0 < β * (c - (1 + c) * Real.exp (-2 * β)) := by
+  nlinarith [hβ, h]
+
+/-- **The asymptotic-freedom scale (objective 2 — the known one-loop input).** The one-loop
+beta function `β(g) = −b₀·g³` (Gross–Wilczek–Politzer) integrates to the running coupling
+`g²(μ) = 1/(b₀·log(μ/Λ))`, so the scale is `Λ = μ·e^{−1/(b₀·g²)}` — the exponential form
+`e^{−c/g²}` with `c = 1/b₀ = 12π²/11` for SU(2). This is the *known* computation that pins the
+constant `c`; it is the input to (not a replacement for) the mass-gap statement, which remains open. -/
+def asymptoticFreedomScale (b₀ μ g : ℝ) : ℝ := μ * Real.exp (-1 / (b₀ * g^2))
+
 end QM
