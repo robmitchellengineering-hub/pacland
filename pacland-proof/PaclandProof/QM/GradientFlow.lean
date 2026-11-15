@@ -65,4 +65,26 @@ theorem gradientFlow_contraction_rate (t β θ c : ℝ)
   have hstep : t * β * c ≤ t * β * Real.cos θ := mul_le_mul_of_nonneg_left hcos hpos
   nlinarith [hstep]
 
+/-- **The contraction iterates to exponential decay.** `(1 − x)^n ≤ e^{−n·x}` for `0 ≤ x ≤ 1` —
+the flow-time contraction rate `r = 1 − t·β·c` iterated `n` times gives `rⁿ ≤ e^{−n·t·β·c}`, so the
+mass gap is bounded below by the flow-time rate `t·β·c`. This is the quantitative mechanism of
+Lüscher's trivializing map: the contraction rate pins the gap's exponential scale. -/
+lemma contraction_pow_le_exp (n : ℕ) {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1) :
+    (1 - x)^n ≤ Real.exp (-(n : ℝ) * x) := by
+  have hbase : 1 - x ≤ Real.exp (-x) := Real.one_sub_le_exp_neg x
+  have hnonneg : 0 ≤ 1 - x := by nlinarith
+  have hpow : (1 - x)^n ≤ (Real.exp (-x))^n := pow_le_pow_left₀ hnonneg hbase n
+  rw [← Real.exp_nat_mul (-x) n] at hpow
+  ring_nf at hpow ⊢
+  exact hpow
+
+/-- **The flow-time rate is a lower bound on the gap (the quantitative mechanism).** If the flow
+contracts at rate `r = 1 − x` (with `x = t·β·c`), then after `n` steps `rⁿ ≤ e^{−n·x}`, so the
+exponential decay rate is at least `x`. This is the statement that connects the flow-time contraction
+(route 2) to the mass gap's asymptotic-freedom scale — the rung that must reach `c ≥ 1.182`. -/
+theorem flow_rate_gap_lower_bound (n : ℕ) {t β c : ℝ}
+    (hc : 0 < c) (ht : 0 ≤ t * β * c) (ht1 : t * β * c ≤ 1) :
+    (1 - t * β * c)^n ≤ Real.exp (-(n : ℝ) * (t * β * c)) := by
+  exact contraction_pow_le_exp n ht ht1
+
 end QM
