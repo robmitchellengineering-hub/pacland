@@ -585,4 +585,27 @@ theorem transferMatrix_power_decay_uniform {m : ℕ} (K : Fin m → Fin m → �
     _ ≤ lam1^n * 1 := by exact mul_le_mul_of_nonneg_left (unitary_row_sum_abs_le_one U i j) (pow_nonneg hlam0 n)
     _ = lam1^n := by ring
 
+/-- **The strict AM-GM.** `2·(a·b) < a² + b²` for `a ≠ b` — the strictness that turns the
+contraction `λₖ ≤ 1` into the strict gap `λ₁ < 1` for a mixing (strictly positive) transfer matrix.
+This is the Perron–Frobenius / Jentzsch core, in its simplest algebraic form. -/
+lemma two_mul_lt_sq_add_sq_of_ne {a b : ℝ} (hab : a ≠ b) :
+    2 * (a * b) < a^2 + b^2 := by
+  have hpos : 0 < (a - b)^2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hab)
+  nlinarith [hpos]
+
+/-- **The surface tension bounds the gap — the chessboard estimate's content.** A string tension
+`σ` (the domain-wall free-energy cost, the area-law coefficient) bounds the mass gap via
+`-log λ₁ ≥ σ ⟺ λ₁ ≤ e^{−σ}`. This is the Fröhlich–Lieb–Loss chessboard estimate's transfer-matrix
+form: a positive string tension is equivalent to the second eigenvalue being bounded below `1`, i.e.
+the gap `1 − λ₁ ≥ 1 − e^{−σ}`. Route (1) of the `refereeScalingLaw` attack. -/
+theorem surface_tension_bounds_gap (lam1 σ : ℝ) (hlam1 : 0 < lam1) :
+    (-Real.log lam1 ≥ σ) ↔ (lam1 ≤ Real.exp (-σ)) := by
+  constructor
+  · intro h
+    have hlog : Real.log lam1 ≤ -σ := by nlinarith
+    exact (Real.log_le_iff_le_exp hlam1).mp hlog
+  · intro h
+    have hlog : Real.log lam1 ≤ -σ := (Real.log_le_iff_le_exp hlam1).mpr h
+    nlinarith
+
 end QM
