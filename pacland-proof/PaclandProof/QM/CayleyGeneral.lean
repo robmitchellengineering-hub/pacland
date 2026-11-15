@@ -317,8 +317,10 @@ theorem reverseZeroCycle_support {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) (h0 :
   have hr : reverseZeroCycle σ = c⁻¹ * τ := by
     dsimp [reverseZeroCycle, τ]
     rw [mul_assoc]
-  rw [hr, hσ]
-  rw [hdisj_inv.support_mul, hdisj.support_mul, Equiv.Perm.support_inv c]
+  rw [hr]
+  rw [hdisj_inv.support_mul, Equiv.Perm.support_inv c]
+  rw [← hdisj.support_mul]
+  rw [hσ]
 
 /-- The full (univ) term-negation: the determinant term of `reverseZeroCycle σ` is the negative of
 `σ`'s, for fixed-point-free `σ` with an odd cycle of `0`. -/
@@ -330,7 +332,9 @@ theorem reverseZeroCycle_term_neg_univ {n : ℕ} (σ : Equiv.Perm (Fin (n + 1)))
   have hfree' : ∀ i, (reverseZeroCycle σ) i ≠ i := by
     intro i
     have hs := reverseZeroCycle_support σ h0
+    rw [← Equiv.Perm.mem_support]
     rw [hs]
+    rw [Equiv.Perm.mem_support]
     exact hfree i
   rw [prod_univ_eq_prod_support (reverseZeroCycle σ) A hfree',
       prod_univ_eq_prod_support σ A hfree]
