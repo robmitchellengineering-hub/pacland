@@ -99,4 +99,25 @@ theorem bakryEmery_decay {P : ℝ → (α → ℝ) → (α → ℝ)} {Γ Γ₂ :
   have h := hgronwall (u := fun s => Γ (P s f) x) (c := 2 * κ) (mul_nonneg (by norm_num : 0 ≤ (2 : ℝ)) hκ) hdiff hpos' t ht
   rw [hP0 f] at h
   simpa [mul_assoc, mul_left_comm, mul_comm] using h
+
+/-- **The integrated Bochner bound — the spectral-gap rung.** The pointwise Bakry–Émery condition
+`κ·Γ(f) ≤ Γ₂(f)` (with a non-negative measure) integrates to `E[f·L²f] ≥ κ·E[Γ(f)]` via the Bochner
+identity `E[Γ₂(f)] = E[f·L²f]` and the Dirichlet form `E[Γ(f)] = −E[f·Lf]`. This is the bound that,
+combined with the Dirichlet-form spectral-gap characterization, gives the spectral gap `λ ≥ κ`. -/
+theorem bakryEmery_spectral_gap_bochner {α : Type*} [Fintype α] [DecidableEq α] {μ : α → ℝ}
+    {L Γ Γ₂ : (α → ℝ) → α → ℝ} {κ : ℝ}
+    (hμ : ∀ x, 0 ≤ μ x)
+    (hBE : ∀ f x, κ * Γ f x ≤ Γ₂ f x)
+    (hBochner : ∀ f, ∑ x, μ x * Γ₂ f x = ∑ x, μ x * f x * L (L f) x)
+    (hDirichlet : ∀ f, ∑ x, μ x * Γ f x = -∑ x, μ x * f x * L f x)
+    (f : α → ℝ) :
+    ∑ x, μ x * f x * L (L f) x ≥ κ * (-∑ x, μ x * f x * L f x) := by
+  rw [← hBochner f]
+  rw [← hDirichlet f]
+  have hsum : κ * (∑ x, μ x * Γ f x) ≤ ∑ x, μ x * Γ₂ f x := by
+    calc
+      κ * (∑ x, μ x * Γ f x) = ∑ x, κ * (μ x * Γ f x) := by rw [Finset.mul_sum]
+      _ = ∑ x, μ x * (κ * Γ f x) := by congr 1; ext x; ring
+      _ ≤ ∑ x, μ x * Γ₂ f x := Finset.sum_le_sum (fun x _ => mul_le_mul_of_nonneg_left (hBE f x) (hμ x))
+  exact hsum
 end QM
