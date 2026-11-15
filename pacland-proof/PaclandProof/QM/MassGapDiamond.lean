@@ -663,4 +663,33 @@ theorem contraction_quadratic_strict {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
     simpa using hmain
   nlinarith
 
+/-- **The column unitarity.** For a unitary `U`, each column is a unit vector: `Σᵢ Uᵢₖ² = 1`. -/
+lemma unitary_column_norm {m : ℕ} (U : unitary (Matrix (Fin m) (Fin m) ℝ)) (k : Fin m) :
+    ∑ i : Fin m, ((↑U : Matrix (Fin m) (Fin m) ℝ) i k)^2 = 1 := by
+  have h := U.property.left
+  have h' := congrArg (fun M : Matrix (Fin m) (Fin m) ℝ => M k k) h
+  simpa [Matrix.mul_apply, Matrix.conjTranspose_apply, sq] using h'
+
+/-- **The strict gap — mixing ⟹ `λₖ < 1`.** For a strictly positive symmetric matrix with unit row
+sums, every non-constant eigenvector has eigenvalue strictly below `1`: `λₖ = ⟨uₖ, T uₖ⟩ < ⟨uₖ, uₖ⟩ = 1`
+via the strict contraction. This is the Perron–Frobenius / Jentzsch theorem in algebraic form — the
+second eigenvalue is strictly below the vacuum, so the gap `1 − λ₁ > 0` is positive for a mixing kernel. -/
+theorem strict_gap_of_mixing {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
+    (hpos : ∀ i j, 0 < T i j)
+    (hrow : ∀ i, ∑ j : Fin m, T i j = 1)
+    (hsymm : ∀ i j, T i j = T j i)
+    (hA : T.IsHermitian) (k : Fin m)
+    (hk : ∃ i j : Fin m, (hA.eigenvectorBasis k).ofLp i ≠ (hA.eigenvectorBasis k).ofLp j) :
+    hA.eigenvalues k < 1 := by
+  have hlam : hA.eigenvalues k = (hA.eigenvectorBasis k).ofLp ⬝ᵥ (T.mulVec (hA.eigenvectorBasis k).ofLp) := by
+    simpa using (Matrix.IsHermitian.eigenvalues_eq hA k)
+  rw [hlam]
+  have hunit : ∑ i : Fin m, ((hA.eigenvectorBasis k).ofLp i)^2 = 1 := by
+    have hcol := unitary_column_norm hA.eigenvectorUnitary k
+    simpa using hcol
+  have hstrict : ∑ i : Fin m, (hA.eigenvectorBasis k).ofLp i * (∑ j : Fin m, T i j * (hA.eigenvectorBasis k).ofLp j)
+      < ∑ i : Fin m, (hA.eigenvectorBasis k).ofLp i^2 := by
+    exact contraction_quadratic_strict T hpos hrow hsymm (hA.eigenvectorBasis k).ofLp hk
+  simpa [dotProduct, Matrix.mulVec_apply, Matrix.row_apply, hunit] using hstrict
+
 end QM
