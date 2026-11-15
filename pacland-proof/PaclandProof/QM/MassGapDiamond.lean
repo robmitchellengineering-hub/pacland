@@ -545,4 +545,44 @@ theorem transferMatrix_entry_bound_uniform {m : ℕ} (K : Fin m → Fin m → �
     _ ≤ r * 1 := by exact mul_le_mul_of_nonneg_left (unitary_row_sum_abs_le_one U i j) hr0
     _ = r := by ring
 
+/-- **The volume-uniform power decay — `|(Tⁿ)ᵢⱼ| ≤ λ₁ⁿ`, no `·m` factor.** The naive
+`|(Tⁿ)ᵢⱼ| ≤ λ₁ⁿ·m` degrades with the volume; the sharp bound uses the Cauchy–Schwarz row bound to
+collapse the `·m`. This is the volume-uniform exponential clustering: the correlation decays at the
+second-eigenvalue rate, uniformly in the lattice volume — the precise content `refereeScalingLaw`
+requires of the clustering face. -/
+theorem transferMatrix_power_decay_uniform {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (n : ℕ) (lam1 : ℝ)
+    (hlam : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (i j : Fin m) :
+    |((transferMatrix K)^n) i j| ≤ lam1^n := by
+  let U : unitary (Matrix (Fin m) (Fin m) ℝ) := (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary
+  let lam : Fin m → ℝ := (transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues
+  rw [transferMatrix_power_spectral K hSymm hK n]
+  rw [show ((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ) U) (Matrix.diagonal (fun k => (lam k)^n))) i j
+      = ((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ) U) (Matrix.diagonal (fun k => (lam k)^n))) i j from rfl]
+  rw [Unitary.conjStarAlgAut_apply]
+  simp only [Matrix.mul_apply, Matrix.diagonal_apply, Matrix.conjTranspose_apply]
+  simp
+  refine le_trans (Finset.abs_sum_le_sum_abs (fun k => (↑U : Matrix (Fin m) (Fin m) ℝ) i k * (lam k)^n * (↑U : Matrix (Fin m) (Fin m) ℝ) j k) Finset.univ) ?_
+  calc
+    ∑ k : Fin m, |(↑U : Matrix (Fin m) (Fin m) ℝ) i k * (lam k)^n * (↑U : Matrix (Fin m) (Fin m) ℝ) j k|
+        = ∑ k : Fin m, |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |(lam k)^n| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k| := by
+            simp [abs_mul]
+    _ ≤ ∑ k : Fin m, lam1^n * (|(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k|) := by
+            apply Finset.sum_le_sum
+            intro k hk
+            have hlk : |(lam k)^n| ≤ lam1^n := by
+              rw [abs_pow]
+              exact pow_le_pow_left₀ (abs_nonneg _) (hlam k) n
+            have hstep1 : |(lam k)^n| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k| ≤ lam1^n * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k| :=
+              mul_le_mul_of_nonneg_right hlk (abs_nonneg _)
+            have hstep2 : |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * (|(lam k)^n| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k|)
+                ≤ |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * (lam1^n * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k|) :=
+              mul_le_mul_of_nonneg_left hstep1 (abs_nonneg _)
+            nlinarith [hstep2]
+    _ = lam1^n * (∑ k : Fin m, |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k|) := by
+            rw [← Finset.mul_sum]
+    _ ≤ lam1^n * 1 := by exact mul_le_mul_of_nonneg_left (unitary_row_sum_abs_le_one U i j) (pow_nonneg hlam0 n)
+    _ = lam1^n := by ring
+
 end QM
