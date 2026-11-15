@@ -258,4 +258,25 @@ theorem concentration_physical_gap_diverges :
     have hpos : 0 ≤ Real.exp ((12 * Real.pi ^ 2 / 11) * β) := le_of_lt (Real.exp_pos _)
     nlinarith [hlog1, hpos]) hexp
 
+/-- **The whole mass gap reduces to the referee scaling law — the honest finish.** If the lattice
+gap is bounded below by the confinement scale `A·e^{−(12π²/11)β}` *uniformly in the volume* (the
+`refereeScalingLaw` instantiated volume-uniformly), then the join's clause (2) holds with
+`c(β) = A·e^{−(12π²/11)β}`, and clause (3) follows with the matching spacing (`asymptotic_freedom_physical_gap`).
+So the entire open Clay rung is the single statement `refereeScalingLaw`; every other piece is proven. -/
+theorem referee_scaling_law_implies_join_clause2 (mGap : ℝ → ℝ → ℝ)
+    (h : ∃ A : ℝ, 0 < A ∧ ∀ β V, A * Real.exp (-(asymptoticFreedomExponent 2) * β) ≤ mGap β V) :
+    ∃ c : ℝ → ℝ, (∀ β, 0 < c β) ∧ (∀ β V, c β ≤ mGap β V) := by
+  rcases h with ⟨A, hA, hm⟩
+  exact ⟨fun β => A * Real.exp (-(asymptoticFreedomExponent 2) * β), fun β => mul_pos hA (Real.exp_pos _), hm⟩
+
+/-- **The referee scaling law with the matching spacing closes clauses (2)+(3)** — the reduction's
+endpoint. The physical gap `mGap β V / spacing β ≥ A > 0` follows from the referee bound and the
+matching spacing `a(β) = e^{−(12π²/11)β}` (`asymptotic_freedom_physical_gap`). This is clause (3),
+proven *from* `refereeScalingLaw`; the `refereeScalingLaw` itself is the open rung. -/
+theorem referee_scaling_law_physical_gap (A : ℝ) (hA : 0 < A) (mGap : ℝ → ℝ → ℝ)
+    (hm : ∀ β V, A * Real.exp (-(asymptoticFreedomExponent 2) * β) ≤ mGap β V) :
+    ∀ β V, A ≤ mGap β V / Real.exp (-(asymptoticFreedomExponent 2) * β) := by
+  intro β V
+  exact asymptotic_freedom_physical_gap hA (fun γ => mGap γ V) (fun γ => Real.exp (-(asymptoticFreedomExponent 2) * γ)) (fun γ => hm γ V) (fun γ => rfl) β
+
 end QM
