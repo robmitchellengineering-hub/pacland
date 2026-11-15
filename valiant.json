@@ -140,5 +140,8 @@
       ],
       "local": true
     }
+  ],
+  "hooks": [
+    "pre-push:gate"
   ]
 }
