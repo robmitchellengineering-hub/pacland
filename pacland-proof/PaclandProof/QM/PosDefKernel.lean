@@ -43,6 +43,22 @@ theorem posdef_smul {α : Type*} [Fintype α] (K : α → α → ℝ) (w : ℝ) 
   rw [h]
   exact mul_nonneg hw (hK c)
 
+/-- **PSD is closed under finite sums**: the pointwise sum of a finite family of PSD kernels is PSD. -/
+theorem posdef_sum {α ι : Type*} [Fintype α] [Fintype ι] (K : ι → α → α → ℝ)
+    (hK : ∀ n, PosDefKernel (K n)) : PosDefKernel (fun i j => ∑ n, K n i j) := by
+  intro c
+  have h : 0 ≤ ∑ n, ∑ i, ∑ j, c i * c j * K n i j :=
+    Finset.sum_nonneg (fun n _ => (hK n) c)
+  have hsum : (∑ i, ∑ j, c i * c j * (∑ n, K n i j)) = ∑ n, ∑ i, ∑ j, c i * c j * K n i j := by
+    calc
+      (∑ i, ∑ j, c i * c j * (∑ n, K n i j))
+        = ∑ i, ∑ j, ∑ n, c i * c j * K n i j := by simp_rw [Finset.mul_sum]
+      _ = ∑ i, ∑ n, ∑ j, c i * c j * K n i j := by
+          congr 1; ext i; rw [Finset.sum_comm]
+      _ = ∑ n, ∑ i, ∑ j, c i * c j * K n i j := by rw [Finset.sum_comm]
+  rw [hsum]
+  exact h
+
 /-- **PSD is closed under pointwise limits**: the pointwise limit of PSD kernels is PSD. -/
 theorem posdef_of_tendsto {α : Type*} [Fintype α] (K : ℕ → α → α → ℝ) (Klim : α → α → ℝ)
     (h : ∀ i j, Filter.Tendsto (fun n => K n i j) Filter.atTop (nhds (Klim i j)))
