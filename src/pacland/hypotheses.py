@@ -27,6 +27,23 @@ HYPOTHESES: dict[str, dict] = {
         "attack": "Lean (the clustering⟺gap bridge is already machine-checked; the open part is the weak-coupling cluster expansion) + lattice Monte-Carlo (the string tension / area law at weak coupling).",
         "progress": "the frontier is DECOMPOSED: the bridge (clustering ⟺ mass gap) is forced, so the open part is exactly 'exponential clustering at weak coupling'. Candidate 2 (area law ⟺ mass gap) is the known equivalence that lets a string-tension Monte-Carlo falsify confinement directly. No proof of weak-coupling clustering exists anywhere — this is the Clay problem, now reduced to one precise, falsifiable statement.",
     },
+    "mass-gap-sharper-bound": {
+        "question": "does ANY lower bound c(β) on the lattice mass gap reach the asymptotic-freedom scale (A·e^{−(12π²/11)β}) uniformly in volume — or do all known mechanisms stop at a weaker scale?",
+        "forced": "the finite-dimensional machine (kernel-checked, MassGapDiamond.lean #587): spectral theorem → telescoping → correlation = spectral sum → entrywise bound → gap ⟺ clustering, both directions. The referee (known-answer bench): m(β) = 25.28·e^{−1.182β}, m/√σ ≈ 3.2.",
+        "open": "a *sharp* lower bound c(β) ≥ A·e^{−c'β} with c' ≥ 1.182 that is also volume-uniform — the single rung separating the machine from refereeScalingLaw (the Clay statement).",
+        "candidates": [
+            {"hypothesis": "the mass gap bound reaches the asymptotic-freedom scale (a sharp, decaying lower bound), not a weaker scale",
+             "falsifier": "a candidate bound that diverges (log β), dies at the ceiling (Dobrushin), or collapses faster than e^{−1.182β}"},
+            {"hypothesis": "the cluster expansion gives a sharp bound at weak coupling (not just log β)",
+             "falsifier": "a divergence in the cluster expansion at small g"},
+            {"hypothesis": "the OS3 chessboard estimate (Fröhlich–Lieb–Loss) gives the exponential clustering with the asymptotic-freedom scale",
+             "falsifier": "a reflection-positive lattice model whose chessboard bound gives a weaker-than-exponential decay"},
+            {"hypothesis": "the gradient flow (Lüscher's Wilson flow / trivializing map) gives the exponential clustering",
+             "falsifier": "a flow-time lower bound that does not reach e^{−cβ}"},
+        ],
+        "attack": "falsifier-driven search: register each candidate bound c(β), run the referee (mass-gap-scaling falsifier: positivity + validity + sharpness against m(β)=25.28·e^{−1.182β}), keep the survivors, kernel-check the survivor in Lean.",
+        "progress": "the search ran: cluster-expansion (log β) REFUTED (diverges, exceeds m(β) at β=3), Dobrushin ((−log α)/2) REFUTED (kernel-checked: 0 at the ceiling, negative past it), asymptotic-freedom (25.28·e^{−1.182β}) SURVIVED (it is the referee's own scale). So the known mechanisms all die before the AF scale; the chessboard estimate + gradient flow are the un-falsified candidates to try next.",
+    },
     "ym-mass-gap": {
         "question": "does the lattice Yang-Mills mass gap persist past the Dobrushin ceiling (β → ∞, the continuum 4D limit)?",
         "forced": "the lattice mass gap at strong coupling (β < 1/(4n·maxNeighbors d)) — lgt's ym_mass_gap_rate_exists, machine-verified by Douglas+Rajasekaran (Lean FRO comparator, axioms = propext/Classical.choice/Quot.sound); the ceiling α(β*)=1 with m=(−log α)/2 → 0 at it (our YMMassGap.lean: massRate_tendsto_zero + alphaAt_ceiling_eq_one); the 2D mass gap for ALL β ≥ 0 (lgt's mass_gap_2d, sorry-free).",
