@@ -339,4 +339,24 @@ theorem mass_gap_pos_weak_su2 {β : ℝ} (hβ : 2 < β) :
     exact habs
   exact neg_pos.mpr (Real.log_neg hpos hlt)
 
+/-- **The mass-gap lower bound `c(β) = log(β/2)`** (the join's clause-(2) candidate, single-plaquette).
+From the concentration `E[z] ≤ 2/β` and the monotonicity of `log`, `−log E[z] ≥ −log(2/β) = log(β/2)`.
+This is the positive, volume-independent lower bound the join's clause (2) needs — it depends only on β,
+grows like `log β`, and is `> 0` for β > 2. -/
+theorem mass_gap_ge_log_half_beta {β : ℝ} (hβ : 2 < β) :
+    Real.log (β / 2) ≤ -Real.log (meanActivitySU2 β) := by
+  have hβ0 : 0 < β := lt_trans zero_lt_two hβ
+  have hle : meanActivitySU2 β ≤ 2 / β := meanActivitySU2_le_two_div_beta hβ0
+  have hpos : 0 < meanActivitySU2 β := by
+    dsimp [meanActivitySU2]
+    have hI1 : 0 < besselI 1 β := besselI_pos hβ0
+    have horder : besselI 2 β < besselI 1 β := besselI2_lt_besselI1_of_gt_two hβ
+    have hratio : besselI 2 β / besselI 1 β < 1 := (div_lt_one hI1).mpr horder
+    linarith
+  have h2β : 0 < 2 / β := div_pos (by norm_num) hβ0
+  have hlog : Real.log (meanActivitySU2 β) ≤ Real.log (2 / β) := Real.log_le_log hpos hle
+  have hneg : -Real.log (2 / β) ≤ -Real.log (meanActivitySU2 β) := neg_le_neg hlog
+  rw [← Real.log_inv (2 / β)] at hneg
+  simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hneg
+
 end QM
