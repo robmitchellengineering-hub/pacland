@@ -250,4 +250,38 @@ theorem transferMatrix_power_decay {m : ℕ} (K : Fin m → Fin m → ℝ)
     exact pow_le_pow_left₀ (abs_nonneg _) (hlam k) n
   · exact pow_nonneg hlam0 n
 
+/-- **Step 5 converse (clustering ⟹ gap) — the eigenvalue is bounded by the entries.** The
+eigenvalue is the Rayleigh quotient `λₖ = ⟨uₖ, T uₖ⟩` (`eigenvalues_eq`), so `|λₖ| ≤ Σᵢⱼ |uₖᵢ||Tᵢⱼ||uₖⱼ| ≤ r·m²`
+when `|Tᵢⱼ| ≤ r` and the eigenvector `uₖ` is a unit vector. This closes `clustering_iff_gap`: with
+`transferMatrix_power_decay` (the forward direction), the gap and the clustering are equivalent. -/
+theorem eigenvalue_bound_of_entries {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (r : ℝ)
+    (hr : ∀ i j, |(transferMatrix K) i j| ≤ r) (hr0 : 0 ≤ r) (k : Fin m) :
+    |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ r * (m : ℝ) * (m : ℝ) := by
+  let hA : (transferMatrix K).IsHermitian := (transferMatrix_posSemidef_matrix K hSymm hK).1
+  have hlam : hA.eigenvalues k = (hA.eigenvectorBasis k).ofLp ⬝ᵥ ((transferMatrix K).mulVec (hA.eigenvectorBasis k).ofLp) := by
+    simpa using (Matrix.IsHermitian.eigenvalues_eq hA k)
+  rw [hlam]
+  simp [dotProduct, Matrix.mulVec_apply, Matrix.row_apply, Finset.mul_sum, mul_assoc]
+  refine le_trans (Finset.abs_sum_le_sum_abs (fun i => ∑ j, (hA.eigenvectorBasis k).ofLp i * ((transferMatrix K) i j * (hA.eigenvectorBasis k).ofLp j)) Finset.univ) ?_
+  trans ∑ i : Fin m, ∑ j : Fin m, r
+  · apply Finset.sum_le_sum
+    intro i hi
+    refine le_trans (Finset.abs_sum_le_sum_abs (fun j => (hA.eigenvectorBasis k).ofLp i * ((transferMatrix K) i j * (hA.eigenvectorBasis k).ofLp j)) Finset.univ) ?_
+    apply Finset.sum_le_sum
+    intro j hj
+    rw [abs_mul, abs_mul]
+    have hui : |(hA.eigenvectorBasis k).ofLp i| ≤ 1 := by
+      simpa using unitary_entry_le_one hA.eigenvectorUnitary i k
+    have huj : |(hA.eigenvectorBasis k).ofLp j| ≤ 1 := by
+      simpa using unitary_entry_le_one hA.eigenvectorUnitary j k
+    have hTij : |(transferMatrix K) i j| ≤ r := hr i j
+    have hstep1 : |(hA.eigenvectorBasis k).ofLp i| * |(transferMatrix K) i j| ≤ 1 * r :=
+      mul_le_mul hui hTij (abs_nonneg _) (by nlinarith)
+    have hstep2 : |(hA.eigenvectorBasis k).ofLp i| * |(transferMatrix K) i j| * |(hA.eigenvectorBasis k).ofLp j| ≤ (1 * r) * 1 :=
+      mul_le_mul hstep1 huj (abs_nonneg _) (by nlinarith)
+    nlinarith [hstep2]
+  · simp [Finset.sum_const, Finset.card_univ, Fintype.card_fin]
+    nlinarith
+
 end QM
