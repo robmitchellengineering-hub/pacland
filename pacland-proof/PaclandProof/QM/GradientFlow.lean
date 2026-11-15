@@ -102,4 +102,21 @@ theorem antipode_measure_suppression (β : ℝ) :
   simp [Real.cos_pi, Real.cos_zero]
   ring
 
+/-- **The effective (measure-weighted) flow rate — the last clean rung before the AF constant.** The
+good region contracts at the flow-time rate `t·β·c`, the antipode contributes measure `e^{−2β}`. The
+effective gap bound is `t·β·c − e^{−2β}`, positive iff the good-region rate exceeds the antipode's
+measure. This is the measure-weighted combination of the flow-time contraction and the antipode
+suppression; the remaining (open) rung is pinning `t·β·c` to the asymptotic-freedom constant `c ≥ 1.182`. -/
+theorem effective_gap_positive (t β c : ℝ) (h : Real.exp (-2 * β) < t * β * c) :
+    0 < t * β * c - Real.exp (-2 * β) := by
+  nlinarith
+
+/-- **The flow still contracts on net.** The effective rate `(1 − t·β·c) + e^{−2β} < 1` whenever the
+good-region rate exceeds the antipode's measure: the measure suppression does not undo the contraction. -/
+theorem effective_rate_below_one (t β c : ℝ)
+    (hc : 0 < c) (hpos : 0 < t * β) (hle : t * β * c ≤ 1) (h : Real.exp (-2 * β) < t * β * c) :
+    (1 - t * β * c) + Real.exp (-2 * β) < 1 := by
+  have h1 : 1 - t * β * c ≤ 1 := by nlinarith [hpos, hc]
+  nlinarith [h, hle]
+
 end QM
