@@ -212,4 +212,42 @@ theorem transferMatrix_entry_bound {m : ℕ} (K : Fin m → Fin m → ℝ)
     nlinarith [hstep2]
   · simp [Finset.card_univ, Fintype.card_fin, mul_assoc, mul_comm, mul_left_comm]
 
+/-- **The general entry bound.** For `U·diag(λ)·Uᴴ` with `|λₖ| ≤ r`, the entries satisfy
+`|(U·diag(λ)·Uᴴ)ᵢⱼ| ≤ r·m`. This is the spectral-radius bound in its cleanest form, and Step 4 is its
+special case. -/
+lemma conj_diagonal_entry_bound {m : ℕ} (U : unitary (Matrix (Fin m) (Fin m) ℝ))
+    (lam : Fin m → ℝ) (r : ℝ) (hr : ∀ k, |lam k| ≤ r) (hr0 : 0 ≤ r) (i j : Fin m) :
+    |(((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ) U) (Matrix.diagonal lam)) i j)| ≤ r * (m : ℝ) := by
+  rw [Unitary.conjStarAlgAut_apply]
+  simp only [Matrix.mul_apply, Matrix.diagonal_apply, Matrix.conjTranspose_apply]
+  simp
+  refine le_trans (Finset.abs_sum_le_sum_abs (fun k => (↑U : Matrix (Fin m) (Fin m) ℝ) i k * lam k * (↑U : Matrix (Fin m) (Fin m) ℝ) j k) Finset.univ) ?_
+  trans ∑ k : Fin m, (1 : ℝ) * r * 1
+  · apply Finset.sum_le_sum
+    intro k hk
+    rw [abs_mul, abs_mul]
+    have hUik : |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| ≤ 1 := unitary_entry_le_one U i k
+    have hUjk : |(↑U : Matrix (Fin m) (Fin m) ℝ) j k| ≤ 1 := unitary_entry_le_one U j k
+    have hlk : |lam k| ≤ r := hr k
+    have hstep1 : |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |lam k| ≤ 1 * r := mul_le_mul hUik hlk (abs_nonneg _) (by nlinarith)
+    have hstep2 : |(↑U : Matrix (Fin m) (Fin m) ℝ) i k| * |lam k| * |(↑U : Matrix (Fin m) (Fin m) ℝ) j k| ≤ (1 * r) * 1 := mul_le_mul hstep1 hUjk (abs_nonneg _) (by nlinarith)
+    nlinarith [hstep2]
+  · simp [Finset.card_univ, Fintype.card_fin, mul_assoc, mul_comm, mul_left_comm]
+
+/-- **Step 5 (the decay — gap ⟹ clustering).** If all eigenvalues satisfy `|λₖ| ≤ λ₁`, then the
+transfer-matrix power decays entrywise: `|(Tⁿ)ᵢⱼ| ≤ λ₁ⁿ·m`. This is the spectral-gap ⟹ exponential-
+clustering direction of the diamond, via the spectral theorem for `Tⁿ` plus the general entry bound. -/
+theorem transferMatrix_power_decay {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (n : ℕ) (lam1 : ℝ)
+    (hlam : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (i j : Fin m) :
+    |((transferMatrix K)^n) i j| ≤ lam1^n * (m : ℝ) := by
+  rw [transferMatrix_power_spectral K hSymm hK n]
+  refine conj_diagonal_entry_bound ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+    (fun k => ((transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k)^n) (lam1^n) ?_ ?_ i j
+  · intro k
+    rw [abs_pow]
+    exact pow_le_pow_left₀ (abs_nonneg _) (hlam k) n
+  · exact pow_nonneg hlam0 n
+
 end QM
