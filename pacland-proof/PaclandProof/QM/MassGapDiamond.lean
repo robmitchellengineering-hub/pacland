@@ -368,4 +368,15 @@ theorem chessboard_estimate {m : ℕ} [NeZero m] (K : Fin m → Fin m → ℝ)
       exact pow_le_pow_left₀ (abs_nonneg _) (hgap k hk) n
   · exact pow_nonneg hlam0 n
 
+/-- **The vacuum — the normalization.** For a transfer matrix with unit row sums (`Σⱼ Kᵢⱼ = 1`),
+the constant vector `1` is a fixed point (`T·1 = 1`), so `1` is an eigenvalue. This is the
+normalization that the chessboard estimate's vacuum assumption (`λ₀ = 1`) corresponds to: the vacuum
+is the constant vector, and the vacuum projection `P₀` is the projection onto it. The contraction
+(`λₖ ≤ 1` for all `k`) is the remaining (deep) rung — the operator norm = spectral radius, not in Mathlib. -/
+theorem vacuum_fixed_point {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hrow : ∀ i, ∑ j : Fin m, K i j = 1) :
+    (transferMatrix K).mulVec (fun _ => (1 : ℝ)) = fun _ => (1 : ℝ) := by
+  ext i
+  simpa [transferMatrix, Matrix.mulVec, dotProduct] using (hrow i)
+
 end QM
