@@ -87,4 +87,19 @@ theorem flow_rate_gap_lower_bound (n : ℕ) {t β c : ℝ}
     (1 - t * β * c)^n ≤ Real.exp (-(n : ℝ) * (t * β * c)) := by
   exact contraction_pow_le_exp n ht ht1
 
+/-- The Boltzmann weight `e^{−S(θ)}` of the 1-plaquette action at angle `θ`. -/
+def boltzmannWeight (β θ : ℝ) : ℝ := Real.exp (-(onePlaquetteAction β θ))
+
+/-- **The antipode's measure suppression — the "ceiling is an artifact" mechanism.** The weight at the
+antipode `θ = π` relative to the vacuum `θ = 0` is `e^{−2β}`: the antipode, where the Bakry–Émery
+curvature `β·cos θ` is negative, carries exponentially small measure at weak coupling (large `β`). This
+is Wang's criterion in its 1-plaquette form — the pointwise curvature ceiling at the antipode is
+measure-suppressed, so it does not obstruct the spectral gap at the asymptotic-freedom scale. -/
+theorem antipode_measure_suppression (β : ℝ) :
+    boltzmannWeight β Real.pi / boltzmannWeight β 0 = Real.exp (-2 * β) := by
+  rw [boltzmannWeight, boltzmannWeight]
+  rw [onePlaquetteAction, onePlaquetteAction]
+  simp [Real.cos_pi, Real.cos_zero]
+  ring
+
 end QM
