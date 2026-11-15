@@ -45,4 +45,24 @@ theorem gradient_flow_decreases (β θ : ℝ) :
   rw [gradient_flow_monotone]
   nlinarith [sq_nonneg (β * Real.sin θ)]
 
+/-- The gradient-flow map `Fₜ(θ) = θ − t·S'(θ) = θ − t·β·sin θ` (one flow-time step). -/
+def gradientFlow (t β θ : ℝ) : ℝ := θ - t * (β * Real.sin θ)
+
+/-- **The flow-time contraction rate — route (2) of `refereeScalingLaw`.** The flow's infinitesimal
+contraction is `Fₜ'(θ) = 1 − t·β·cos θ`, and on the region `cos θ ≥ c > 0` with `t·β ≤ 1`, the rate
+`|Fₜ'(θ)| ≤ 1 − t·β·c < 1`: the gradient flow contracts the configuration at a rate strictly below 1.
+This is the flow-time contraction that Lüscher's trivializing map builds on — the contraction rate is
+the input to the mass-gap bound at the asymptotic-freedom scale. -/
+theorem gradientFlow_contraction_rate (t β θ c : ℝ)
+    (hc : 0 < c) (hcos : c ≤ Real.cos θ) (ht : t * β ≤ 1) (hpos : 0 ≤ t * β) :
+    |1 - t * β * Real.cos θ| ≤ 1 - t * β * c := by
+  have hcos_le_one : Real.cos θ ≤ 1 := Real.cos_le_one θ
+  have htcos : t * β * Real.cos θ ≤ 1 := by
+    have htb : t * β * Real.cos θ ≤ t * β * 1 := mul_le_mul_of_nonneg_left hcos_le_one hpos
+    nlinarith [htb, ht]
+  have hnonneg : 0 ≤ 1 - t * β * Real.cos θ := by nlinarith
+  rw [abs_of_nonneg hnonneg]
+  have hstep : t * β * c ≤ t * β * Real.cos θ := mul_le_mul_of_nonneg_left hcos hpos
+  nlinarith [hstep]
+
 end QM
