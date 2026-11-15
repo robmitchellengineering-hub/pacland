@@ -47,7 +47,7 @@ def exponentialClustering (c : ℝ) : Prop := 0 < c
 
 /-- **Face 5 — positive string tension.** The Wilson loop obeys the area law with a positive string
 tension `σ > 0`. This is the confinement face. -/
-def stringTension (σ : ℝ) : Prop := 0 < σ
+def stringTensionPositive (σ : ℝ) : Prop := 0 < σ
 
 /-- **Face 4 — the area law.** `⟨W(C)⟩ ≤ e^{−σ·Area(C)}` for some `σ > 0`, for all large Wilson loops
 `C`. Equivalent to positive string tension by `σ = −lim (1/Area) log⟨W(C)⟩`. -/
@@ -57,7 +57,7 @@ def areaLaw (Area : Type → ℝ) (expect : Type → ℝ) (σ : ℝ) : Prop :=
 /-- **Face 6 — the volume-uniform join.** The lattice spectral gap `m(β, V)` has a volume-uniform
 positive lower bound whose continuum limit is positive. This is `refereeScalingLaw`, the open Clay
 rung. -/
-def volumeUniformJoin (mGap : ℝ → ℝ → ℝ) : Prop :=
+def volumeUniformJoinLower (mGap : ℝ → ℝ → ℝ) : Prop :=
   ∃ c : ℝ, 0 < c ∧ ∀ β V, c ≤ mGap β V
 
 /-- **The first equivalence (kernel-checked): the spectral gap is the second eigenvalue below one.**
@@ -77,6 +77,6 @@ def clustering_iff_gap (c lam1 : ℝ) : Prop :=
 positive mass gap for the lattice gauge theory. Stated as a hypothesis; the kernel-checked proof is a
 next rung. -/
 def areaLaw_iff_massGap (σ lam1 : ℝ) : Prop :=
-  stringTension σ ↔ secondEigenvalueBelowOne lam1
+  stringTensionPositive σ ↔ secondEigenvalueBelowOne lam1
 
 end QM
