@@ -79,4 +79,17 @@ next rung. -/
 def areaLaw_iff_massGap (σ lam1 : ℝ) : Prop :=
   stringTensionPositive σ ↔ secondEigenvalueBelowOne lam1
 
+/-- **The time-reflection persists** — for any Hermitian matrix, every power `Mⁿ` is Hermitian.
+This is the key input to the chessboard estimate: reflection positivity (symmetry) is preserved under
+time evolution, so the correlation function is symmetric in time. -/
+theorem pow_hermitian {m : ℕ} (M : Matrix (Fin m) (Fin m) ℝ) (hM : M.IsHermitian) (n : ℕ) :
+    (M ^ n).IsHermitian := by
+  induction n with
+  | zero =>
+      rw [Matrix.IsHermitian, pow_zero]
+      simp
+  | succ n ih =>
+      rw [Matrix.IsHermitian, pow_succ, Matrix.conjTranspose_mul, ih, hM]
+      exact (pow_succ' M n).symm.trans (pow_succ M n)
+
 end QM
