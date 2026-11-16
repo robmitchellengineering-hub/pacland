@@ -1,0 +1,3 @@
+TITLE: the Yang-Mills mass gap — a falsifier-first kernel-checked reduction (methods + formalization)
+DOI: 10.5281/zenodo.24293330
+RECORD: https://zenodo.org/records/24293330
