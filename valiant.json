@@ -32,7 +32,7 @@
       "cmd": [
         "sh",
         "-c",
-        "cd pacland-proof && export PATH=\"$HOME/.elan/bin:$PATH\" && (command -v lake >/dev/null 2>&1 || { echo \"lake not installed on this node (Lean/Elan toolchain missing)\"; exit 2; }); lake build"
+        "cd pacland-proof && export PATH=\"$HOME/.elan/bin:$PATH\" && (command -v lake >/dev/null 2>&1 || { echo \"lake not installed on this node (Lean/Elan toolchain missing)\"; exit 2; }); lake exe cache get || true; lake build"
       ]
     },
     {
