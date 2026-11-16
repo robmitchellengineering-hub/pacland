@@ -80,7 +80,7 @@
   <p>SEXTANT is a headless command that runs on your own hardware — no cloud, no account, no trust required. One command installs it on Linux, macOS, or a Raspberry Pi:</p>
   <pre style="background:#0d1b3d;color:#e8ecf7;padding:.8rem 1rem;border-radius:8px;overflow-x:auto"><code>curl -fsSL https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/scripts/install-sextant.sh | bash</code></pre>
   <p class="small">That puts <code>sextant</code> and <code>sextant-node</code> on your PATH. Then run the whole engine:</p>
-  <pre style="background:#0d1b3d;color:#e8ecf7;padding:.8rem 1rem;border-radius:8px;overflow-x:auto"><code>sextant --verify    # all 28 claims — every falsifier runs
+  <pre style="background:#0d1b3d;color:#e8ecf7;padding:.8rem 1rem;border-radius:8px;overflow-x:auto"><code>sextant --verify    # all 34 claims — every falsifier runs
 sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
   <p class="small" style="margin-top:.6rem">
     <strong>x86_64</strong> (Linux / macOS): <code>stim</code> installs as a pre-built wheel — instant, full 28/28.<br>
@@ -106,7 +106,7 @@ sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
       <div id="catdesc" class="catdesc"></div>
       <input id="q" class="searchbox" type="search" placeholder="search… e.g. 'entanglement', 'clone', 'gravity'">
       <ul id="list" class="claimlist"></ul>
-      <div class="small" style="margin-top:.4rem">30 claims · 8 live oracles · 22 kernel-checked theorems</div>
+      <div class="small" style="margin-top:.4rem">34 claims · 8 live oracles · 26 kernel-checked theorems</div>
     </div>
     <div id="out" class="out">
       <p class="small">Pick a claim to see its academic proof and a one-page plain-speak explainer.</p>
@@ -195,6 +195,15 @@ const CLAIMS = [
     plain:"The Bekenstein–Hawking entropy — S = A/4G — is not a dial the universe turns. It is the entanglement-area law with the cut drawn at the horizon: a black hole is the state that saturates the bound, and nothing exceeds it. Entropy is area, not volume." },
   { id:'black-hole-unitarity', v:'FORCED', th:'QM.NoCloning + QM.NoBroadcasting', claim:'black hole evaporation is unitary — the information is never lost, only re-encoded in the radiation\'s entanglement', falsifier:'a non-unitary (information-losing) evaporation map', oracle:'quantum-simulated + kernel-checked', ev:'unitary evaporation preserves purity = 1.00000000 — pure stays pure',
     plain:"Past the horizon, the information is not lost — it is re-encoded. A pure state stays pure under any unitary map, so the interior's information cannot vanish: it comes back out in the Hawking radiation's entanglement. The fact of unitarity is forced; the exact mechanism of the recovery is the open question." },
+
+  { id:'wang-criterion', v:'FORCED', th:'QM.WangCriterion + QM.LogSobolev', claim:'a positive spectral gap survives a measure-negligible negative-curvature region, when a Lyapunov drift forces return to the dominant state', falsifier:'a measure-negligible negative-curvature region that still collapses the gap', oracle:'kernel-checked', ev:'the SU(2) antipode (weight e^{-2β}) is measure-suppressed — the Lyapunov drift returns the measure to the trivial connection',
+    plain:"A spectral-gap argument can fail at a pointwise curvature ceiling — a spot where the local curvature is negative. The move: ask how much MEASURE that spot has, not how negative its curvature is. If the bad set is measure-negligible (like the antipode, weight e^{-2β}), the Lyapunov drift returns the measure to the dominant state, and the gap survives. Use this whenever a gap argument dies at a pointwise ceiling: check the failing set's measure." },
+  { id:'concentration-gap', v:'FORCED', th:'QM.BakryEmery + QM.LogSobolev', claim:'the spectral gap of a Markov generator is the exponential concentration rate of its invariant measure around its dominant state', falsifier:'a generator whose invariant measure concentrates faster or slower than its spectral gap', oracle:'kernel-checked', ev:'log-Sobolev ⟹ Poincaré: the concentration rate IS the spectral gap',
+    plain:"The gap is not a curvature bound — it is a concentration rate. The Wilson measure concentrates on the trivial connection, and the spectral gap is exactly how fast it does. When a 'curvature' picture stalls, reframe: the gap is the leak rate from the dominant state to everything else." },
+  { id:'mode-sum-exponent', v:'FORCED', th:'QM.AsymptoticFreedom + QM.FullLatticeLyapunov', claim:'a non-perturbative exponent that is a sum over soft modes equals the beta-function coefficient (c = 1/(2b₀))', falsifier:'a mode-sum exponent that does not match the beta-function coefficient', oracle:'kernel-checked', ev:'the weak-coupling exponent c = 12π²/11 is the SUM over the low-momentum gluon modes = the beta-function',
+    plain:"An exponent that looks like it needs 'one more tunneling event' may instead be a MODE SUM. The weak-coupling mass-gap exponent is the sum over all the low-momentum gluon modes, and that sum is the beta-function coefficient. Use this whenever an exponent seems to need one more mechanism: count the modes first." },
+  { id:'gauge-orbit-quotient', v:'FORCED', th:'QM.GaugeOrbit + QM.AxialGauge', claim:'running the spectral machinery on the gauge-invariant quotient removes the unphysical flat directions', falsifier:'a quotient that fails to remove the gauge flat directions (a residual Gribov copy)', oracle:'kernel-checked', ev:'the trivial connection's gauge orbit is a flat direction that is gauge, not physics — quotient removes it',
+    plain:"A 'ceiling' can sit on the gauge orbit — the flat direction of the trivial connection, which is pure gauge, not physics. Remove it: run the spectral machinery on the gauge-invariant quotient, not the full space. Use this whenever a flat direction is actually gauge redundancy." },
 ];
 
 const CAT = {

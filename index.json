@@ -32,6 +32,13 @@
  "generated_from": "scripts/build_site_index.py",
  "items": [
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-METHODS.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-METHODS.md",
+   "summary": "4D Yang\u2013Mills mass-gap problem to a single named statement. This is not a solution of the Clay problem. It is a traceable methods record: what was assumed, what was proven, what was\u2026",
+   "title": "The Yang\u2013Mills mass gap: a falsifier-first reduction to one open rung"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MITCHELLS-LAWS.md",
    "kind": "doc",
    "path": "docs/MITCHELLS-LAWS.md",
@@ -72,6 +79,13 @@
    "path": "docs/UNIFICATION-STATUS.md",
    "summary": "One document: everything proven, everything measured, and the sharper picture they form. Status is tiered \u2014 proven (symbolic, machine-checked) vs measured (node, with a control) vs asserted\u2026",
    "title": "UNIFICATION \u2014 where we are, and the path (2026-10-23)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ZENODO-PAPER.md",
+   "kind": "doc",
+   "path": "docs/ZENODO-PAPER.md",
+   "summary": "mass gap.",
+   "title": "Zenodo submission \u2014 mass-gap reduction paper"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ads-cft-plan.md",
@@ -795,6 +809,13 @@
    "title": "Dedicated Linux compute nodes \u2014 the cheap path to native Linux on the mesh"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mass-gap-deficit.md",
+   "kind": "doc",
+   "path": "docs/mass-gap-deficit.md",
+   "summary": "Uniqueness (the tadpole F\u1d40JH is the unique bilinear symplectic invariant):",
+   "title": "The mass gap is a value \u2014 using the n=10 wall (the deficit is the deliverable)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/measure-invariance.md",
    "kind": "doc",
    "path": "docs/measure-invariance.md",
@@ -814,6 +835,13 @@
    "path": "docs/measurement-001.md",
    "summary": "SSID: Telstra3696 freq: 2462.0 signal: -37 dBm rx bitrate: 144.4 MBit/s MCS 15 short GI tx bitrate: 144.4 MBit/s MCS 15 short GI",
    "title": "Measurement 001 \u2014 the first real link, recorded so it can be re-read"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/mechanical-completion.md",
+   "kind": "doc",
+   "path": "docs/mechanical-completion.md",
+   "summary": "Measured on the Cayley identity work: the reverseZeroCyclecycleOfzero proof is ~40 lines and ~35 of them are glue. The insight \u2014 use cycleOfmulofapplyrighteqself instead of cycleOfinv to\u2026",
+   "title": "Mechanical completion \u2014 route the decision to the AI, the glue to the CPU"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/method-transfer.md",
@@ -1082,11 +1110,25 @@
    "title": "The quantum arm: the biggest questions we can actually reach"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-chemistry-certification-plan.md",
+   "kind": "doc",
+   "path": "docs/quantum-chemistry-certification-plan.md",
+   "summary": "the second, larger monetization path: sell certified ground-state energies for strongly-correlated molecules, where the certificate is the differentiator (the open DMRG solvers don't ship a\u2026",
+   "title": "Wedge 2 plan \u2014 certified quantum chemistry (DMRG ground states + the certificate)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-computer-on-classical.md",
    "kind": "doc",
    "path": "docs/quantum-computer-on-classical.md",
    "summary": "Quantum computing's power is entanglement (the free column); its forced structure \u2014 the Born rule, unitarity, the probability rule \u2014 is classically cheap. Our kernel-checked theorems give\u2026",
    "title": "A quantum computer on regular hardware \u2014 the machine-checked boundary"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-hardware-verification.md",
+   "kind": "doc",
+   "path": "docs/quantum-hardware-verification.md",
+   "summary": "product, built and runnable: a machine-checked, reproducible certificate for a quantum computation, plus the referee that refuses a wrong answer.",
+   "title": "Quantum hardware verification \u2014 the certificate is the product"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/research-fanout.md",
@@ -1285,6 +1327,13 @@
    "title": "Tensions \u2014 facts that cannot both be true as stated"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/tensor-network-commercial.md",
+   "kind": "doc",
+   "path": "docs/tensor-network-commercial.md",
+   "summary": "and by whom.\" Written against what is actually in the repo (not a pitch): the exact MPS backend (src/pacland/tnbackend.py), the machine-checked area law\u2026",
+   "title": "Tensor networks on existing hardware \u2014 who pays for this, and why"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/the-impostor-count.md",
    "kind": "doc",
    "path": "docs/the-impostor-count.md",
@@ -1304,6 +1353,13 @@
    "path": "docs/three-machines-plan.md",
    "summary": "Build order: 3 \u2192 1 \u2192 2. Each machine turns a \"can't\" (a verification wall) into a computable/falsifiable positive. Status tiered: built / in progress / spec.",
    "title": "The Three Machines \u2014 dissolving the remaining \"can'ts\""
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/tn-backend-usage.md",
+   "kind": "doc",
+   "path": "docs/tn-backend-usage.md",
+   "summary": "The quantum computer has two backends: statevector (the default, 2^n amplitudes, ~30-qubit ceiling) and tn (an exact matrix-product state, ~n\u00b7D\u00b2 memory, past 30 qubits for low-entanglement\u2026",
+   "title": "Using the tensor-network backend"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/toolchain.md",
@@ -1493,6 +1549,27 @@
    "path": "docs/working-across-the-estate.md",
    "summary": "paying for it; each line names the failure that bought it. All of them are mirrored on the Mac.",
    "title": "Working across the estate from this repo"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-m3.md",
+   "kind": "doc",
+   "path": "docs/ym-mass-gap-m3.md",
+   "summary": "The open endgame of the mass-gap plan. M1 (the exact 2D mass gap) and M2 (the clustering \u27fa gap bridge) are done and kernel-checked. M3 is the machinery for the weak-coupling regime \u2014 \u03b2 \u2192 \u221e\u2026",
+   "title": "M3 \u2014 the weak-coupling multiscale RG scaffolding (the Balaban program)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-plan.md",
+   "kind": "doc",
+   "path": "docs/ym-mass-gap-plan.md",
+   "summary": "The residual open sentence (from the hypothesis engine): non-Abelian YM has exponential clustering at weak coupling (\u03b2 \u2192 \u221e) in d \u2265 3. This file is the roadmap to attack it, built from a\u2026",
+   "title": "Yang-Mills mass gap \u2014 the plan (post research fan-out, 2026-11-12)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ym-mass-gap-spacing-uniform.md",
+   "kind": "doc",
+   "path": "docs/ym-mass-gap-spacing-uniform.md",
+   "summary": "Source: the lgt formalization (Douglas + Rajasekaran), LGT/MassGap/StrongCoupling.lean. This records the exact boundary of what is proven and the exact statement that remains.",
+   "title": "The continuum 4D Yang\u2013Mills mass gap \u2014 the precise missing lemma"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ap_health.py",
@@ -1794,6 +1871,13 @@
    "path": "scripts/deploy-pages.sh",
    "summary": "the front-page trust count is generated, not typed (see docs/verify-bar.md)",
    "title": "deploy-pages.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/deterministic_vs_sampling.py",
+   "kind": "script",
+   "path": "scripts/deterministic_vs_sampling.py",
+   "summary": "Deterministic-in-use vs sampling, on one real number \u2014 the flux tadpole distribution.",
+   "title": "deterministic_vs_sampling.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/diag_transformation_laws.py",
@@ -2158,6 +2242,20 @@
    "path": "scripts/find_flux_vacua.py",
    "summary": "Find SUSY flux vacua for a bundled KS model (JAXVacua quickstart workflow).",
    "title": "find_flux_vacua.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/glueball_mass.py",
+   "kind": "script",
+   "path": "scripts/glueball_mass.py",
+   "summary": "SU(2) 0++ glueball mass \u2014 thin CLI over pacland.glueball.",
+   "title": "glueball_mass.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/glueball_ratio_sweep.py",
+   "kind": "script",
+   "path": "scripts/glueball_ratio_sweep.py",
+   "summary": "SU(2) glueball mass ratio m/sqrt(\u03c3) sweep \u2014 the continuum ratio conjecture.",
+   "title": "glueball_ratio_sweep.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/gpu_bootstrap.sh",
@@ -2599,6 +2697,13 @@
    "path": "scripts/qg-proof-beliefs.py",
    "summary": "The QG proof-belief graph \u2014 apply the belief layer to the three deferred proofs.",
    "title": "qg-proof-beliefs.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/quantum_verification_demo.py",
+   "kind": "script",
+   "path": "scripts/quantum_verification_demo.py",
+   "summary": "The hardware-verification demo \u2014 the certificate catches a wrong answer.",
+   "title": "quantum_verification_demo.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/quintic_periods.py",
@@ -3264,6 +3369,13 @@
    "path": "scripts/zenodo_upload_flagship.py",
    "summary": "",
    "title": "zenodo_upload_flagship.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_massgap.py",
+   "kind": "script",
+   "path": "scripts/zenodo_upload_massgap.py",
+   "summary": "Upload the Yang-Mills mass-gap reduction paper to Zenodo.",
+   "title": "zenodo_upload_massgap.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_qg.py",
