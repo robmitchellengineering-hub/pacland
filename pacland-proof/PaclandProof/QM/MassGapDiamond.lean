@@ -24,7 +24,8 @@ diamond `Δ > 0 ⟺ λ₁ < 1`. The clustering and geometric faces are named hyp
 citations, to be closed in the next rungs.
 -/
 
-open scoped BigOperators Matrix
+open scoped BigOperators Matrix Topology
+open Filter
 
 noncomputable section
 
@@ -723,5 +724,15 @@ theorem correlation_length_exponential (C c β m : ℝ) (hC : 0 < C) (hc : 0 < c
   field_simp [ne_of_gt hC]
   rw [Real.exp_neg]
   field_simp
+
+/-- **The U(1) Coulomb tension is ZERO** — the Abelian deconfinement. The Coulomb potential
+`V(r) = 1/r` has no linear part (`V(r)/r = 1/r² → 0`), so `σ_Coul = 0` for U(1): the Coulomb phase,
+no confinement. This is the clean negative side that makes the SU(2) Coulomb confinement (`σ_Coul > 0`)
+a genuinely NON-ABELIAN phenomenon — the non-commutativity of the gauge group is exactly what the
+open rung hinges on. -/
+theorem u1_coulomb_tension_zero :
+    Tendsto (fun r : ℝ => (1 / r) / r) atTop (𝓝 0) := by
+  have hinv : Tendsto (fun r : ℝ => r⁻¹) atTop (𝓝 0) := tendsto_inv_atTop_zero
+  simpa [div_eq_mul_inv, mul_assoc] using (hinv.mul hinv)
 
 end QM
