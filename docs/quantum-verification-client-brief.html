@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantum Verification — exact, machine-checked computation</title>
+<style>
+  :root { --ink:#1a1a1a; --muted:#5a5a5a; --accent:#0b5cad; --rule:#e5e5e5; --soft:#f7f9fb; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color:var(--ink); line-height:1.6; background:#fff; }
+  .page { max-width: 640px; margin: 0 auto; padding: 56px 28px 72px; }
+  .kicker { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 10px; }
+  h1 { font-size:30px; line-height:1.2; margin:0 0 12px; font-weight:700; }
+  .lede { font-size:18px; color:var(--muted); margin:0 0 8px; }
+  .rule { border:0; border-top:1px solid var(--rule); margin:32px 0; }
+  h2 { font-size:19px; margin:0 0 10px; font-weight:650; }
+  p { margin:0 0 14px; }
+  ol.steps { margin:0 0 14px; padding-left:0; list-style:none; counter-reset:step; }
+  ol.steps li { position:relative; padding-left:40px; margin-bottom:16px; counter-increment:step; }
+  ol.steps li::before { content:counter(step); position:absolute; left:0; top:2px;
+      width:26px; height:26px; border-radius:50%; background:var(--accent); color:#fff;
+      font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:18px 0; }
+  .card { background:var(--soft); border:1px solid var(--rule); border-radius:10px; padding:18px; }
+  .card .big { font-size:26px; font-weight:700; color:var(--accent); line-height:1.1; }
+  .card .label { font-size:14px; color:var(--muted); margin-top:6px; }
+  .scope { background:var(--soft); border:1px solid var(--rule); border-radius:10px; padding:20px; }
+  .scope ul { margin:0; padding-left:18px; }
+  .scope li { margin-bottom:8px; }
+  .next { background:var(--accent); color:#fff; border-radius:10px; padding:22px; }
+  .next h2 { color:#fff; margin-bottom:8px; }
+  .next p { color:#eaf2fb; margin:0; }
+  .next a { color:#fff; text-decoration:underline; }
+  .foot { font-size:12px; color:var(--muted); margin-top:12px; }
+  a { color:var(--accent); overflow-wrap:anywhere; }
+  @media print { .page { padding:0; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <p class="kicker">Capability brief</p>
+  <h1>Quantum Verification</h1>
+  <p class="lede">Exact, machine-checked quantum computation on existing hardware.</p>
+
+  <p>We run a quantum circuit exactly on existing hardware and return the answer together with a
+  machine-checked proof that the answer is correct.</p>
+
+  <hr class="rule">
+
+  <h2>The problem</h2>
+  <p>Quantum devices are getting bigger, but their answers are hard to trust. A naive simulator
+  needs a memory slot for every possible outcome, so it runs out of memory around 30 qubits. The
+  standard alternative, sampling, returns estimates with error bars and never an exact answer.
+  Both failures are invisible until the wrong answer ships. Then it lands in a design loop, a
+  chemistry prediction, or a hardware claim.</p>
+
+  <h2>How we solve it</h2>
+  <p>We store the quantum state as a tensor network rather than a list of outcomes. For circuits
+  with low entanglement, the network stays small, so the computation is exact and fast. Its
+  exactness is a theorem, checked by a proof assistant.</p>
+
+  <ol class="steps">
+    <li><strong>Exact computation.</strong> Our simulator reproduces quantum circuits bit for bit,
+    verified against the standard method on every benchmark, and passes the naive limit: a
+    100,000-qubit state in about six seconds.</li>
+    <li><strong>Machine-checked correctness.</strong> The method rests on a theorem checked in
+    Lean: the entanglement across any cut is at most the size of that cut, and reaches it exactly
+    for maximally entangled states. When a result is labeled exact, a machine has verified it.</li>
+    <li><strong>A certificate.</strong> Each computation produces a certificate with the result, a
+    fingerprint, the evidence of exactness, and a one-line command that re-runs the check. A
+    tampered certificate is refused, and so is a submitted result that disagrees with the
+    certificate.</li>
+  </ol>
+
+  <h2>What you receive</h2>
+  <p>For each computation: a certificate file, the exact result, the evidence (bond dimension and
+  theorem reference), and a re-run command that confirms the certificate offline, without trusting
+  whoever served it.</p>
+
+  <hr class="rule">
+
+  <h2>Results</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="big">100,000</div>
+      <div class="label">qubits, low-entanglement circuits, in about six seconds and 12.5 MB of
+      memory. A naive simulator stops at 30.</div>
+    </div>
+    <div class="card">
+      <div class="big">Exact</div>
+      <div class="label">matches the standard method bit for bit on every benchmark. No rounding,
+      no sampling.</div>
+    </div>
+    <div class="card">
+      <div class="big">0.99997</div>
+      <div class="label">the total-variation distance of a forged result, which we refuse. The
+      true result measures zero.</div>
+    </div>
+  </div>
+
+  <h2>Scope, stated plainly</h2>
+  <div class="scope">
+    <ul>
+      <li>Exact certificates cover circuits up to 20 qubits in full. Beyond that we certify the
+      evidence (bond dimension) rather than the full outcome list.</li>
+      <li>Low-entanglement circuits only. A high-entanglement circuit is flagged, not certified.</li>
+      <li>We sell verification and exactness. We do not claim to make quantum computing faster.</li>
+    </ul>
+  </div>
+
+  <hr class="rule">
+
+  <div class="next">
+    <h2>Next step</h2>
+    <p>Send us a circuit and, if you have one, the result your device returned. We return a
+    certificate that confirms or refutes it. Reach us on
+    <a href="https://github.com/robmitchellengineering-hub/pacland">GitHub</a>.</p>
+  </div>
+
+  <p class="foot">Every result in this brief is reproducible from the published source:
+  <a href="https://github.com/robmitchellengineering-hub/pacland">pacland on GitHub</a>.</p>
+
+</div>
+</body>
+</html>
