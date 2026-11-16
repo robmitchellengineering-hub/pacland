@@ -98,6 +98,24 @@ theorem string_tension_iff_gap (lam1 : ℝ) (hlam1 : 0 < lam1) :
   · intro hgap
     exact mass_gap_bounds_string_tension lam1 hlam1 hgap
 
+/-- **The forward transport: the area law ⟹ the mass gap.** A Wilson-loop area law with string
+tension `σ = −log λ₁` (its first conjunct, the positivity `σ > 0`) forces the gap `λ₁ < 1`. This is
+the easy half of the Fröhlich–Lieb–Loss transport — the area-law *coefficient* already equals the
+mass gap, so its positivity is the gap's positivity. -/
+theorem areaLaw_bounds_gap (Area : Type → ℝ) (expect : Type → ℝ) (lam1 : ℝ) (hlam1 : 0 < lam1) :
+    areaLaw Area expect (-Real.log lam1) → secondEigenvalueBelowOne lam1 := by
+  intro h
+  rcases h with ⟨hσ, _⟩
+  have hlog : Real.log lam1 < 0 := by nlinarith [hσ]
+  exact (Real.log_neg_iff hlam1).mp hlog
+
+/-- **The reverse transport — the open rung.** The gap `λ₁ < 1` forcing the *area-law bound*
+`∀ C, expect C ≤ e^{−(−log λ₁)·Area C}` (i.e. `expect C ≤ λ₁^{Area C}`) is the Fröhlich–Lieb–Loss
+chessboard estimate proper — the exponential clustering carried onto the Wilson loop. Stated precisely
+as the remaining transport; not yet kernel-checked. -/
+def gap_bounds_areaLaw (Area : Type → ℝ) (expect : Type → ℝ) (lam1 : ℝ) : Prop :=
+  secondEigenvalueBelowOne lam1 → areaLaw Area expect (-Real.log lam1)
+
 /-- **The time-reflection persists** — for any Hermitian matrix, every power `Mⁿ` is Hermitian.
 This is the key input to the chessboard estimate: reflection positivity (symmetry) is preserved under
 time evolution, so the correlation function is symmetric in time. -/
