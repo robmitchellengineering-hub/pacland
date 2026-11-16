@@ -3371,6 +3371,13 @@
    "title": "zenodo_upload_flagship.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_massgap.py",
+   "kind": "script",
+   "path": "scripts/zenodo_upload_massgap.py",
+   "summary": "Upload the Yang-Mills mass-gap reduction paper to Zenodo.",
+   "title": "zenodo_upload_massgap.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_qg.py",
    "kind": "script",
    "path": "scripts/zenodo_upload_qg.py",
