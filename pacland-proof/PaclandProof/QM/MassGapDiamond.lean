@@ -709,4 +709,19 @@ Coulomb tension is bounded below uniformly in the volume. -/
 def volumeUniformCoulomb (σ_Coul : ℕ → ℝ) : Prop :=
   ∃ c : ℝ, 0 < c ∧ ∀ V : ℕ, 0 < V → c ≤ σ_Coul V
 
+/-- **The correlation length** `ξ = 1/m` (the inverse mass gap). -/
+def correlationLength (m : ℝ) : ℝ := 1 / m
+
+/-- **The numerics route's fundamental limit.** At asymptotic freedom, the correlation length grows
+exponentially: `ξ = (1/C)·e^{cβ}`. So the Monte-Carlo needs an exponentially large lattice to resolve
+the mass gap (critical slowing down) — the validated-numerics route cannot reach the AF scale. This is
+the honest reason the search's only remaining route is the analytic Coulomb string tension. -/
+theorem correlation_length_exponential (C c β m : ℝ) (hC : 0 < C) (hc : 0 < c)
+    (hm : m = C * Real.exp (-c * β)) :
+    correlationLength m = (1 / C) * Real.exp (c * β) := by
+  rw [correlationLength, hm]
+  field_simp [ne_of_gt hC]
+  rw [Real.exp_neg]
+  field_simp
+
 end QM
