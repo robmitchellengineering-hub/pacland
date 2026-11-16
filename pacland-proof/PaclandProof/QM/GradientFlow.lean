@@ -144,4 +144,34 @@ beta function `β(g) = −b₀·g³` (Gross–Wilczek–Politzer) integrates to 
 constant `c`; it is the input to (not a replacement for) the mass-gap statement, which remains open. -/
 def asymptoticFreedomScale (b₀ μ g : ℝ) : ℝ := μ * Real.exp (-1 / (b₀ * g^2))
 
+/-- **The asymptotic-freedom scale** `Λ = μ·e^{−1/(b₀·g²)}` — the KNOWN perturbative beta-function
+input (Gross–Wilczek–Politzer). The exponential `e^{−cβ}` is THIS scale; it is not the discovery. -/
+def afScale (b₀ μ g : ℝ) : ℝ := μ * Real.exp (-1 / (b₀ * g^2))
+
+/-- **The dimensionless mass gap** `m/Λ` — the mass gap in units of the AF scale. This is the
+NON-PERTURBATIVE constant; the referee's `m/√σ ≈ 3.2` is its cousin. Its positivity is the open Clay rung. -/
+def dimensionlessMassGap (mGap Λ : ℝ) : ℝ := mGap / Λ
+
+/-- **The dimensional transmutation — the honest reframing.** The mass gap is the dimensionless
+constant times the AF scale, `m = C·Λ`. The exponential `e^{−cβ}` is the KNOWN scale (the beta
+function); the open Clay rung is `C > 0` — that the dimensionless ratio is a positive constant. -/
+theorem mass_gap_dimensional_transmutation (mGap Λ C : ℝ) (hΛ : Λ ≠ 0)
+    (h : C = dimensionlessMassGap mGap Λ) :
+    mGap = C * Λ := by
+  rw [h, dimensionlessMassGap]
+  field_simp [hΛ]
+
+/-- **The mass gap is positive iff the dimensionless ratio is positive.** Proving the mass gap is
+proving `m/Λ > 0` — the ratio's positivity — not re-deriving the exponential (which is the known
+beta function). -/
+theorem mass_gap_iff_positive_ratio (mGap Λ : ℝ) (hΛ : 0 < Λ) :
+    (0 < mGap) ↔ (0 < dimensionlessMassGap mGap Λ) := by
+  rw [dimensionlessMassGap]
+  constructor
+  · intro hm
+    exact div_pos hm hΛ
+  · intro h
+    rw [← div_mul_cancel₀ mGap (ne_of_gt hΛ)]
+    exact mul_pos h hΛ
+
 end QM
