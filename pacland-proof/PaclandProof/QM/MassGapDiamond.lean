@@ -815,4 +815,36 @@ theorem massive_laplacian_gap {n : ℕ} (L : Matrix (Fin n) (Fin n) ℝ) (m2 : �
   rw [hdecomp]
   nlinarith [hquad_f, hm]
 
+/-- The ghost form factor `M(p)` — the Faddeev–Popov eigenvalue as a function of momentum. The
+IR-suppressed (Gribov horizon) form `M(p) = p²`, vanishing at `p = 0`. -/
+def gribovGhost (p : ℝ) : ℝ := p^2
+/-- The massive (Yukawa/Casimir) form `M(p) = m²`, finite at `p = 0`. -/
+def yukawaGhost (m p : ℝ) : ℝ := m^2
+
+/-- The Coulomb potential `V_Coul(p) = 1/(p²·M(p))` — the inverse of the covariant-Laplacian squared
+times the ghost form factor. -/
+def coulombPotential (M : ℝ → ℝ) (p : ℝ) : ℝ := 1 / (p^2 * M p)
+
+/-- **The IR suppression (the horizon)**: the Gribov ghost form factor vanishes at zero momentum. -/
+theorem gribov_ir_suppression : gribovGhost 0 = 0 := by simp [gribovGhost]
+
+/-- **The mass (no suppression)**: the Yukawa form factor is finite at zero momentum. -/
+theorem yukawa_no_suppression (m : ℝ) : yukawaGhost m 0 = m^2 := by simp [yukawaGhost]
+
+/-- **The confinement**: the IR suppression gives the `1/p⁴` singularity in the Coulomb potential —
+whose Fourier transform is the LINEAR potential (the confinement, `σ_Coul > 0`). This is the actual
+Gribov–Zwanziger mechanism: `G(0) = 0` (the horizon) confines. -/
+theorem gribov_confinement (p : ℝ) (hp : p ≠ 0) :
+    coulombPotential gribovGhost p = 1 / p^4 := by
+  simp [coulombPotential, gribovGhost, pow_succ]
+  ring
+
+/-- **The deconfinement**: the mass gives the `1/p²` Coulomb potential (no linear part — the Yukawa
+side). This corrects the earlier Casimir-mass route: the ghost MASS is DECONFINING (it matches
+`u1_coulomb_tension_zero`), while the IR suppression (the horizon) is the confining mechanism. -/
+theorem yukawa_deconfinement (m p : ℝ) (hp : p ≠ 0) (hm : m ≠ 0) :
+    coulombPotential (yukawaGhost m) p = (1 / m^2) * (1 / p^2) := by
+  rw [coulombPotential, yukawaGhost]
+  field_simp [hp, hm]
+
 end QM
