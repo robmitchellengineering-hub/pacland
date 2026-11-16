@@ -1,9 +1,9 @@
-# Wedge 2 plan — certified quantum chemistry (DMRG ground states + the certificate)
+# Wedge 2 — certified quantum chemistry (DMRG ground states + the certificate)
 
-**Status: plan (not built).** Wedge 1 (`docs/quantum-hardware-verification.md`) is built. This is
-the second, larger monetization path: sell *certified* ground-state energies for strongly-correlated
-molecules, where the certificate is the differentiator (the open DMRG solvers don't ship a proof the
-bond dimension was sufficient).
+**Status: built (first milestone).** The DMRG sufficiency certificate is live: `src/pacland/chemistry_certify.py`
+runs a D-sweep, proves the bond dimension was sufficient, and cross-checks against the exact Bethe-ansatz
+value for the Heisenberg chain. A re-run reproduces the converged energy to tolerance and refuses a forged
+certificate. The remaining milestone is a real molecule Hamiltonian (PySCF) — the plan below stands.
 
 ## Why this market
 
