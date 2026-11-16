@@ -65,7 +65,8 @@ functions on a stratum, on one tractable slice, and ask whether the map is const
 
 If the orbit-space picture is the connecting structure, it must not be an artefact of the truncation.
 `h12` is the number of complex-structure moduli **kept** (2 of 272 in the bundled KS model), so the
-whole measured frontier — the structure map, the fingerprint result, the SUSY-fraction curve — lives
+whole measured frontier — the structure map, the fingerprint result, the SUSY-fraction curve (now a
+*stability* cliff, not an existence collapse — see `docs/susy-collapse-correction.md`) — lives
 inside a 2-moduli slice at the bottom of the table and a 4-moduli slice at its top.
 
 `docs/h12-25-sampling-wall.md` locates the obstruction at the ISD proposal: the Hodge-⋆ matrix `M`

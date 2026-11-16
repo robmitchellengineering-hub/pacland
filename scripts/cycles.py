@@ -45,7 +45,8 @@ LOOPS = [
     },
     {
         "id": "C4",
-        "negative": "the pooled SUSY fraction (21.17%) sits between strata of 27.9% and 1.2%",
+        "negative": "RETRACTED 2026-11-14 (strata are sampler artefacts; see docs/susy-collapse-correction.md): "
+                    "the pooled SUSY fraction (21.17%) sits between strata of 27.9% and 1.2%",
         "question": "which number is *the* SUSY fraction?",
         "object": "both are, at different weights — the pool **is** the weighted average of the strata",
         "excluded": "quoting a single pooled SUSY fraction without its weighting",

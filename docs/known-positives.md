@@ -30,8 +30,8 @@
 - **SUSY fraction (primitive rows) = 21.167% (95% CI [20.149%, 22.223%], 5962 rows)**
   - why it matters: narrow interval and stable under the stated choices
   - reproduce: `python3 scripts/observability.py`
-- **SUSY fraction stratified: h12 = 2 rows only = 27.9%, h12 = 3 rows only = 20.2%, h12 = 4 rows only = 1.2%**
-  - why it matters: the spread is the finding: the pooled number is between the strata
+- ~~**SUSY fraction stratified: h12 = 2 = 27.9%, h12 = 3 = 20.2%, h12 = 4 = 1.2%**~~ — **RETRACTED 2026-11-14**: these are sampler artefacts (runaway-laden corpus). The correct `data_sampler` gives ~60–80% in-domain SUSY, flat. See `docs/susy-collapse-correction.md`.
+  - why it mattered: the spread was read as a landscape fact; it was a composition artefact
   - reproduce: `python3 scripts/robustness.py`
 - **primitive fraction = 99.950% (95% CI [99.852%, 99.983%], 5965 rows)**
   - why it matters: narrow interval and stable under the stated choices

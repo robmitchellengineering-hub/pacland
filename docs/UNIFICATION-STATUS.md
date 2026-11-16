@@ -59,7 +59,7 @@ everything else is covariance + counting."
 | # | assertion | falsifier | how |
 |---|---|---|---|
 | A | the h12≥5 wall is a sampler bug — a robust iterated shift finds SUSY vacua at h12=5..25 in-cone | iterated shift finds 0 in-cone vacua | measurement — **confirmed at h12=5** (12/24 in-cone) |
-| B | the SUSY-fraction collapse (27.9%→19.7%→1.1%) is a landscape fact, not a proposal curve | collapse vanishes with the fix | measurement — **CONFIRMED** (in-cone fraction 80%→50%→0% at h12=2/5/10) |
+| B | ~~the SUSY-fraction collapse (27.9%→19.7%→1.1%) is a landscape fact~~ — **RETRACTED 2026-11-14**: a sampler artefact (`docs/susy-collapse-correction.md`) | collapse vanishes with the fix | measurement — the correct `data_sampler` finds 0 runaway and ~60–80% in-domain SUSY, flat |
 | C | the covariance laws (II, IIb, III) hold at h12=5..10 | a law scatters at higher h12 | measurement — **h12=5 confirmed** (laws exact) |
 | D | the ℤ₂ torsion correspondence — Freed–Witten ≡ Witten SU(2) global anomaly | the two Z₂'s are provably distinct | math + literature |
 | E | the counting (19) is stable — no new relation appears at higher h12 | a 20th relation | rank test |
@@ -88,7 +88,7 @@ everything else is covariance + counting."
    UV symmetry" is false (SO(10) is standard and more restrictive). The 16 is right, the stated
    mechanism is not.
 
-## The frontier — the SUSY collapse is a landscape fact
+## The frontier — the SUSY collapse was a sampler artefact (RETRACTED 2026-11-14)
 
 With the iterated-shift sampler (Newton iteration, cone-sampled starting points via the cone's
 extreme rays), the in-cone SUSY-vacuum fraction as a function of h12:
@@ -99,13 +99,12 @@ extreme rays), the in-cone SUSY-vacuum fraction as a function of h12:
 | 5 | `Im z > 0` | 8/15 | 3–5/15 | **~20–30%** |
 | 10 | mixed-sign (26 rays) | 39/60 | **0/60** | **0%** |
 
-The F-flat points *exist* at every h12 (the iterated shift converges), but they move **out of
-the Kähler cone** as h12 grows: 80% → ~25% → 0%. The SUSY-fraction collapse (27.9%→19.7%→1.1%
-in the corpus) is therefore a **landscape fact** (assertion B), not a proposal artefact — the
-physical (in-cone) SUSY vacua genuinely thin out and vanish by h12=10. This is the sharpest
-form of the constraint-first picture: the exact structure (constraint + label + counting) is
-h12-independent, while the *physical* selection (where in the cone the SUSY vacua sit) collapses
-with the number of moduli kept.
+**RETRACTED (2026-11-14).** The in-cone/out-of-cone table above was produced by the
+`sample_critical_points(ISD−)` sampler, which finds **0 SUSY at h12=4 out of 400 candidates** — an
+ineffective method, not a physical vanishing. The correct `data_sampler` finds **0 runaway at every
+rung** and an in-domain SUSY fraction of **79% (b3=6) / 60% (b3=8) / 62% (b3=10)** — roughly flat.
+The quoted collapse (27.9%→19.7%→1.1%) is a composition artefact of a runaway-laden corpus, not a
+landscape fact. See `docs/susy-collapse-correction.md`.
 
 ## Where to go next
 
