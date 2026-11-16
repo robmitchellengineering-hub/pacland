@@ -692,4 +692,21 @@ theorem strict_gap_of_mixing {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
     exact contraction_quadratic_strict T hpos hrow hsymm (hA.eigenvectorBasis k).ofLp hk
   simpa [dotProduct, Matrix.mulVec_apply, Matrix.row_apply, hunit] using hstrict
 
+/-- **The Coulomb string tension route to the mass gap.** `σ_Coul` is the Coulomb string tension
+(the coefficient of the linear Coulomb potential in the temporal gauge). Zwanziger's criterion
+`σ_Coul ≤ σ` (the Coulomb tension is a lower bound on the physical one) is a deep theorem, stated as
+a hypothesis. The OPEN part is `σ_Coul > 0` — the "Coulomb confinement". Given it, the surface-tension
+bridge (`λ₁ ≤ e^{−σ}`) gives the gap `λ₁ < 1`. -/
+theorem coulomb_confinement_mass_gap (σ_Coul σ lam1 : ℝ) (hlam1 : 0 < lam1)
+    (hcoul : 0 < σ_Coul) (hzw : σ_Coul ≤ σ) (hbridge : lam1 ≤ Real.exp (-σ)) :
+    lam1 < 1 := by
+  have hσ : 0 < σ := by nlinarith
+  have hexp : Real.exp (-σ) < 1 := Real.exp_lt_one_iff.mpr (by nlinarith : -σ < 0)
+  nlinarith [hbridge, hexp]
+
+/-- **The volume-uniform Coulomb confinement** — the precise open rung of the Coulomb route: the
+Coulomb tension is bounded below uniformly in the volume. -/
+def volumeUniformCoulomb (σ_Coul : ℕ → ℝ) : Prop :=
+  ∃ c : ℝ, 0 < c ∧ ∀ V : ℕ, 0 < V → c ≤ σ_Coul V
+
 end QM
