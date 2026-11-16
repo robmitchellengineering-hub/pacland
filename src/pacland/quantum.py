@@ -141,11 +141,15 @@ def grover(iterations: int = 1, cls=QuantumCircuit):
 
 
 def ghz(n: int = 3, cls=QuantumCircuit):
-    """The GHZ state (|0…0⟩ + |1…1⟩)/√2 — n-qubit entanglement, measured all-equal."""
+    """The GHZ state (|0…0⟩ + |1…1⟩)/√2 — n-qubit entanglement, measured all-equal.
+
+    Built with a chain of ADJACENT CNOTs (H on 0, then CNOT(q,q+1)) — O(n) gates and bond
+    dimension stays 2, so the tn backend reaches tens of thousands of qubits. (The naive
+    CNOT(0,q) star construction is O(n²) swaps and was the reason the demo stopped at 64.)"""
     c = cls(n)
     c.apply_gate("H", 0)
-    for q in range(1, n):
-        c.apply_cnot(0, q)
+    for q in range(n - 1):
+        c.apply_cnot(q, q + 1)
     return c
 
 
@@ -207,9 +211,10 @@ def _run(program: str, shots: int, backend: str, qubits: int) -> int:
         counts[r] = counts.get(r, 0) + 1
     print(f"{program}: {shots} shots on {c.n} qubit(s) [{backend} backend]")
     if backend == "tn" and probs is None:
-        # large n: no full distribution — print the observed histogram instead
-        for bits, n in sorted(counts.items(), key=lambda t: -t[1])[:10]:
-            print(f"  |{bits}>  observed {n}/{shots} ({n/shots:.4f})")
+        # large n: no full distribution — print the observed histogram instead (bitstrings truncated)
+        for bits, cnt in sorted(counts.items(), key=lambda t: -t[1])[:10]:
+            disp = bits if len(bits) <= 48 else bits[:12] + "…" + bits[-12:] + f" ({len(bits)} bits)"
+            print(f"  |{disp}>  observed {cnt}/{shots} ({cnt/shots:.4f})")
     else:
         for bits, p in sorted(zip([format(i, f'0{c.n}b') for i in range(2 ** c.n)], probs),
                               key=lambda t: -t[1]):
@@ -217,11 +222,11 @@ def _run(program: str, shots: int, backend: str, qubits: int) -> int:
             print(f"  |{bits}>  P={p:.4f}   observed {got}/{shots} ({got/shots:.4f})")
     if backend == "tn":
         r = c.report()
+        log10_sv = c.n * math.log10(2) + math.log10(16)  # 2^n · 16 bytes, as 10^x (no float overflow)
         print(f"  area-law gate: max bond dim D={r['max_bond_dim']} "
-              f"(volume-law ceiling 2^(n/2)={r['volume_law_ceiling']}), "
+              f"(volume-law ceiling 2^(n/2)=2^{c.n // 2}), "
               f"central-cut Schmidt rank={r['central_cut_schmidt_rank']}, "
-              f"MPS {r['mps_bytes']/1024:.1f} KB vs state-vector "
-              f"{r['statevector_bytes']/1e9:.2e} GB")
+              f"MPS {r['mps_bytes']/1024:.1f} KB vs state-vector 10^{log10_sv:.1f} bytes")
     return 0
 
 
