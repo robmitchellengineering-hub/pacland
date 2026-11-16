@@ -1313,6 +1313,13 @@
    "title": "Tensions \u2014 facts that cannot both be true as stated"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/tensor-network-commercial.md",
+   "kind": "doc",
+   "path": "docs/tensor-network-commercial.md",
+   "summary": "and by whom.\" Written against what is actually in the repo (not a pitch): the exact MPS backend (src/pacland/tnbackend.py), the machine-checked area law\u2026",
+   "title": "Tensor networks on existing hardware \u2014 who pays for this, and why"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/the-impostor-count.md",
    "kind": "doc",
    "path": "docs/the-impostor-count.md",
@@ -1332,6 +1339,13 @@
    "path": "docs/three-machines-plan.md",
    "summary": "Build order: 3 \u2192 1 \u2192 2. Each machine turns a \"can't\" (a verification wall) into a computable/falsifiable positive. Status tiered: built / in progress / spec.",
    "title": "The Three Machines \u2014 dissolving the remaining \"can'ts\""
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/tn-backend-usage.md",
+   "kind": "doc",
+   "path": "docs/tn-backend-usage.md",
+   "summary": "The quantum computer has two backends: statevector (the default, 2^n amplitudes, ~30-qubit ceiling) and tn (an exact matrix-product state, ~n\u00b7D\u00b2 memory, past 30 qubits for low-entanglement\u2026",
+   "title": "Using the tensor-network backend"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/toolchain.md",
@@ -1843,6 +1857,13 @@
    "path": "scripts/deploy-pages.sh",
    "summary": "the front-page trust count is generated, not typed (see docs/verify-bar.md)",
    "title": "deploy-pages.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/deterministic_vs_sampling.py",
+   "kind": "script",
+   "path": "scripts/deterministic_vs_sampling.py",
+   "summary": "Deterministic-in-use vs sampling, on one real number \u2014 the flux tadpole distribution.",
+   "title": "deterministic_vs_sampling.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/diag_transformation_laws.py",
