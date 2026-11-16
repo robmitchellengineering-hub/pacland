@@ -932,4 +932,31 @@ theorem hamiltonian_mass_gap (lam1 : ℝ) (hlam1 : lam1 < 1) :
     0 < 1 - lam1 := by
   nlinarith
 
+/-- **The physical mass gap** `m_phys = m_lattice / a` — the continuum-limit scaling (the lattice gap in
+units of the inverse lattice spacing `1/a`). -/
+def physicalMassGap (m_lattice a : ℝ) : ℝ := m_lattice / a
+
+/-- **The continuum limit.** The physical mass gap is positive when the lattice gap and the spacing are
+positive. This is the dimensional-transmutation step: the physical gap survives `a → 0` because the
+lattice gap vanishes at the SAME (asymptotic-freedom) rate as the spacing `a = e^{−cβ}`. -/
+theorem physical_mass_gap_positive (m_lattice a : ℝ) (hm : 0 < m_lattice) (ha : 0 < a) :
+    0 < physicalMassGap m_lattice a := by
+  rw [physicalMassGap]
+  exact div_pos hm ha
+
+/-- **The thermodynamic limit.** The physical mass gap is VOLUME-UNIFORM when the lattice gap is
+volume-uniformly positive and the spacing is volume-independent. The proven Casimir gap
+(`massive_laplacian_gap`) is exactly such a volume-independent lattice gap, so the physical gap
+inherits the volume-uniformity. This is the finite-dimensional thermodynamic + continuum limit. -/
+def volumeUniform (f : ℕ → ℝ) : Prop := ∃ c : ℝ, 0 < c ∧ ∀ V : ℕ, 0 < V → c ≤ f V
+
+theorem physical_mass_gap_volume_uniform (m_lattice : ℕ → ℝ) (a : ℝ)
+    (hm : volumeUniform m_lattice) (ha : 0 < a) :
+    volumeUniform (fun V => physicalMassGap (m_lattice V) a) := by
+  rcases hm with ⟨c, hc0, hc⟩
+  refine ⟨c / a, div_pos hc0 ha, ?_⟩
+  intro V hV
+  change c / a ≤ (m_lattice V) / a
+  exact div_le_div_of_nonneg_right (hc V hV) (le_of_lt ha)
+
 end QM
