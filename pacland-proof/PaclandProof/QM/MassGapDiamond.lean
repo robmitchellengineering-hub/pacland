@@ -736,27 +736,27 @@ theorem u1_coulomb_tension_zero :
   simpa [div_eq_mul_inv, mul_assoc] using (hinv.mul hinv)
 
 /-- The standard basis vectors `e₁, e₂, e₃` of `ℝ³` (the 𝔰𝔲(2) Lie-algebra basis). -/
-def e1 : Fin 3 → ℝ := fun i => if i = 0 then 1 else 0
-def e2 : Fin 3 → ℝ := fun i => if i = 1 then 1 else 0
-def e3 : Fin 3 → ℝ := fun i => if i = 2 then 1 else 0
+def basis0 : Fin 3 → ℝ := fun i => if i = 0 then 1 else 0
+def basis1 : Fin 3 → ℝ := fun i => if i = 1 then 1 else 0
+def basis2 : Fin 3 → ℝ := fun i => if i = 2 then 1 else 0
 
 /-- **The 𝔰𝔲(2) Lie bracket (the cross product) is NON-TRIVIAL**: `e₁ × e₂ = e₃`. This is the
 non-commutativity that makes SU(2) non-Abelian — the Lie-algebraic origin of the Coulomb confinement:
 the Faddeev–Popov operator's commutator term `[A, ·]` is non-zero for SU(2), whereas for U(1) it is
 identically zero (the plain Laplacian, no confinement — the `u1_coulomb_tension_zero` side). -/
 theorem crossProduct_nonTrivial :
-    crossProduct e1 e2 = e3 := by
+    crossProduct basis0 basis1 = basis2 := by
   ext i
-  fin_cases i <;> simp [e1, e2, e3, crossProduct]
+  fin_cases i <;> simp [basis0, basis1, basis2, crossProduct]
 
 /-- **The 𝔰𝔲(2) Lie bracket is non-zero**: `e₁ × e₂ ≠ 0` — the non-Abelian structure that the open
 rung (`σ_Coul > 0` for SU(2)) hinges on. -/
 theorem crossProduct_ne_zero :
-    crossProduct e1 e2 ≠ 0 := by
+    crossProduct basis0 basis1 ≠ 0 := by
   rw [crossProduct_nonTrivial]
   intro h
   have h2 := congrArg (fun v : Fin 3 → ℝ => v 2) h
-  simp [e3] at h2
+  simp [basis2] at h2
 
 /-- **The 𝔰𝔲(2) Casimir is `−2·id`** — the double cross product `Σᵢ eᵢ×(eᵢ×v) = −2v`. So the
 operator `−Σᵢ ad(eᵢ)²` (the Faddeev–Popov "mass term", the commutator squared) is POSITIVE-DEFINITE
@@ -765,10 +765,10 @@ makes the Faddeev–Popov operator's spectrum start at `2`, not `0`. The Abelian
 the Casimir `0` — no gap — exactly the `u1_coulomb_tension_zero` side. This is the Lie-algebraic
 middle of the Gribov–Zwanziger Coulomb confinement. -/
 theorem casimir_su2 (v : Fin 3 → ℝ) :
-    crossProduct e1 (crossProduct e1 v) + crossProduct e2 (crossProduct e2 v)
-      + crossProduct e3 (crossProduct e3 v) = -(2 : ℝ) • v := by
+    crossProduct basis0 (crossProduct basis0 v) + crossProduct basis1 (crossProduct basis1 v)
+      + crossProduct basis2 (crossProduct basis2 v) = -(2 : ℝ) • v := by
   ext i
-  fin_cases i <;> simp [e1, e2, e3, crossProduct] <;> ring
+  fin_cases i <;> simp [basis0, basis1, basis2, crossProduct] <;> ring
 
 /-- **The Casimir is non-degenerate (positive)**: the commutator squared has no zero mode — the gap
 is strictly positive, unlike the Abelian case. -/
@@ -785,8 +785,8 @@ theorem casimir_su2_positive (v : Fin 3 → ℝ) (hv : v ≠ 0) :
 modes is the Casimir `−Σᵢ ad(eᵢ)²` (the covariant derivative's commutator term, with the Laplacian
 `−∇²` killing the constants). This is the geometric transport of the Lie-algebraic gap to the operator. -/
 def faddeevPopovConstantMode (v : Fin 3 → ℝ) : Fin 3 → ℝ :=
-  -(crossProduct e1 (crossProduct e1 v) + crossProduct e2 (crossProduct e2 v)
-      + crossProduct e3 (crossProduct e3 v))
+  -(crossProduct basis0 (crossProduct basis0 v) + crossProduct basis1 (crossProduct basis1 v)
+      + crossProduct basis2 (crossProduct basis2 v))
 
 /-- **The gap transports.** The Faddeev–Popov operator's zero-momentum sector has eigenvalue `2` (the
 Casimir). The full operator is `−∇² + 2·id`, so its spectrum is `p² + 2` — the GAP is `2`, from the
@@ -853,15 +853,15 @@ non-commuting ghosts (the `e₁`–`e₂` plane) are rotated (massive). The hori
 appears for a specific Cartan gauge field; the restriction away from it (the Gribov region) is the IR
 suppression that confines (`gribov_confinement`). -/
 theorem ad_e3_zero_mode (v : Fin 3 → ℝ) :
-    crossProduct e3 v = 0 ↔ v 0 = 0 ∧ v 1 = 0 := by
+    crossProduct basis2 v = 0 ↔ v 0 = 0 ∧ v 1 = 0 := by
   constructor
   · intro h
     have h0 := congrArg (fun w : Fin 3 → ℝ => w 0) h
     have h1 := congrArg (fun w : Fin 3 → ℝ => w 1) h
-    simp [e3, crossProduct] at h0 h1
+    simp [basis2, crossProduct] at h0 h1
     constructor <;> nlinarith [h0, h1]
   · intro h
     ext i
-    fin_cases i <;> simp [e3, crossProduct] <;> nlinarith [h.1, h.2]
+    fin_cases i <;> simp [basis2, crossProduct] <;> nlinarith [h.1, h.2]
 
 end QM
