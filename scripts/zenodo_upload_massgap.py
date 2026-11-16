@@ -88,7 +88,7 @@ def main():
         "ZENODO-PAPER.md": (open("docs/ZENODO-PAPER.md", "rb").read()),
     }
     for name, data in files.items():
-        req("POST", f"/deposit/depositions/{dep_id}/files", files={name: (name, data)})
+        req("POST", f"/deposit/depositions/{dep_id}/files", files={"file": (name, data)})
         print(f"uploaded {name}")
 
     # publish
