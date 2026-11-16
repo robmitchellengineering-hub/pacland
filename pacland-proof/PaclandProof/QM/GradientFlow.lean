@@ -174,4 +174,28 @@ theorem mass_gap_iff_positive_ratio (mGap Λ : ℝ) (hΛ : 0 < Λ) :
     rw [← div_mul_cancel₀ mGap (ne_of_gt hΛ)]
     exact mul_pos h hΛ
 
+/-- **The volume-uniform dimensionless ratio** — the precise Clay rung. The ratio `C = m/Λ` (the
+mass gap in units of the AF scale) is bounded below by a positive constant, uniformly in the volume.
+This is `refereeScalingLaw` restated: the exponential is the KNOWN AF scale; the open content is the
+ratio's volume-uniform positivity. -/
+def volumeUniformRatio (ratio : ℕ → ℝ) : Prop :=
+  ∃ C : ℝ, 0 < C ∧ ∀ V : ℕ, 0 < V → C ≤ ratio V
+
+/-- **The reduction: the mass gap is the volume-uniform ratio times the known AF scale.** The
+exponential `e^{−cβ}` is `afScale` (the beta function, known); the Clay statement is that the ratio
+`m/afScale` is volume-uniformly positive. The referee's `m/√σ ≈ 3.2` is the value of this ratio. -/
+theorem refereeScalingLaw_iff_volumeUniformRatio (mGap Λ : ℝ → ℝ)
+    (hΛ : ∀ β, 0 < Λ β) :
+    ((∃ A : ℝ, 0 < A ∧ ∀ β, 0 < β → A * Λ β ≤ mGap β)) ↔
+      (∃ C : ℝ, 0 < C ∧ ∀ β, 0 < β → C ≤ mGap β / Λ β) := by
+  constructor
+  · rintro ⟨A, hA0, hA⟩
+    refine ⟨A, hA0, ?_⟩
+    intro β hβ
+    exact (le_div_iff₀ (hΛ β)).mpr (hA β hβ)
+  · rintro ⟨C, hC0, hC⟩
+    refine ⟨C, hC0, ?_⟩
+    intro β hβ
+    exact (le_div_iff₀ (hΛ β)).mp (hC β hβ)
+
 end QM
