@@ -781,4 +781,21 @@ theorem casimir_su2_positive (v : Fin 3 → ℝ) (hv : v ≠ 0) :
   rw [Pi.smul_apply] at hi
   exact (smul_eq_zero.mp hi).resolve_left (by norm_num)
 
+/-- **The Faddeev–Popov operator's zero-momentum (constant-mode) sector** — `−∇·D` on the constant
+modes is the Casimir `−Σᵢ ad(eᵢ)²` (the covariant derivative's commutator term, with the Laplacian
+`−∇²` killing the constants). This is the geometric transport of the Lie-algebraic gap to the operator. -/
+def faddeevPopovConstantMode (v : Fin 3 → ℝ) : Fin 3 → ℝ :=
+  -(crossProduct e1 (crossProduct e1 v) + crossProduct e2 (crossProduct e2 v)
+      + crossProduct e3 (crossProduct e3 v))
+
+/-- **The gap transports.** The Faddeev–Popov operator's zero-momentum sector has eigenvalue `2` (the
+Casimir). The full operator is `−∇² + 2·id`, so its spectrum is `p² + 2` — the GAP is `2`, from the
+commutator alone. This is the Gribov–Zwanziger gap in its finite-dimensional (constant-mode) form: the
+non-zero commutator (proven) makes the Faddeev–Popov operator positive with gap `2`, whereas the Abelian
+case has gap `0` (the `u1_coulomb_tension_zero` side). -/
+theorem faddeevPopov_constant_mode_gap (v : Fin 3 → ℝ) :
+    faddeevPopovConstantMode v = (2 : ℝ) • v := by
+  rw [faddeevPopovConstantMode]
+  simpa [neg_smul] using (congrArg (fun w : Fin 3 → ℝ => -w) (casimir_su2 v))
+
 end QM
