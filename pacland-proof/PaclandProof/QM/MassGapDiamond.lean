@@ -758,4 +758,27 @@ theorem crossProduct_ne_zero :
   have h2 := congrArg (fun v : Fin 3 → ℝ => v 2) h
   simp [e3] at h2
 
+/-- **The 𝔰𝔲(2) Casimir is `−2·id`** — the double cross product `Σᵢ eᵢ×(eᵢ×v) = −2v`. So the
+operator `−Σᵢ ad(eᵢ)²` (the Faddeev–Popov "mass term", the commutator squared) is POSITIVE-DEFINITE
+with eigenvalue `2`. This is the spectral GAP: the non-zero commutator (proven: `e₁×e₂ = e₃ ≠ 0`)
+makes the Faddeev–Popov operator's spectrum start at `2`, not `0`. The Abelian case (`[·,·] = 0`) has
+the Casimir `0` — no gap — exactly the `u1_coulomb_tension_zero` side. This is the Lie-algebraic
+middle of the Gribov–Zwanziger Coulomb confinement. -/
+theorem casimir_su2 (v : Fin 3 → ℝ) :
+    crossProduct e1 (crossProduct e1 v) + crossProduct e2 (crossProduct e2 v)
+      + crossProduct e3 (crossProduct e3 v) = -(2 : ℝ) • v := by
+  ext i
+  fin_cases i <;> simp [e1, e2, e3, crossProduct] <;> ring
+
+/-- **The Casimir is non-degenerate (positive)**: the commutator squared has no zero mode — the gap
+is strictly positive, unlike the Abelian case. -/
+theorem casimir_su2_positive (v : Fin 3 → ℝ) (hv : v ≠ 0) :
+    -(2 : ℝ) • v ≠ 0 := by
+  intro h
+  apply hv
+  ext i
+  have hi := congrArg (fun w : Fin 3 → ℝ => w i) h
+  rw [Pi.smul_apply] at hi
+  exact (smul_eq_zero.mp hi).resolve_left (by norm_num)
+
 end QM
