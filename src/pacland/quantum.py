@@ -195,9 +195,12 @@ PROGRAMS = {"bell": bell, "superposition": superposition, "grover": grover,
             "ghz": ghz, "qft2": qft2, "teleport": teleport, "qec": qec_bitflip}
 
 
-def _run(program: str, shots: int, backend: str) -> int:
+def _run(program: str, shots: int, backend: str, qubits: int) -> int:
     cls = TNQuantumCircuit if backend == "tn" else QuantumCircuit
-    c = PROGRAMS[program](cls=cls)
+    if program == "ghz":
+        c = PROGRAMS[program](n=qubits, cls=cls)
+    else:
+        c = PROGRAMS[program](cls=cls)
     results, probs = c.measure(shots)
     counts: dict[str, int] = {}
     for r in results:
@@ -228,8 +231,10 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--shots", type=int, default=1000)
     ap.add_argument("--backend", choices=["statevector", "tn"], default="statevector",
                     help="statevector (2^n, ~30-qubit ceiling) or tn (exact MPS, past 30 for low-entanglement)")
+    ap.add_argument("--qubits", type=int, default=3,
+                    help="number of qubits for `ghz` (ignored by the other programs)")
     args = ap.parse_args(argv)
-    return _run(args.program, args.shots, args.backend)
+    return _run(args.program, args.shots, args.backend, args.qubits)
 
 
 if __name__ == "__main__":
