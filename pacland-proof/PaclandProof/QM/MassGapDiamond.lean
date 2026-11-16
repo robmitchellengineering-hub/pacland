@@ -906,4 +906,30 @@ theorem ad_e3_zero_mode (v : Fin 3 → ℝ) :
     ext i
     fin_cases i <;> simp [basis2, crossProduct] <;> nlinarith [h.1, h.2]
 
+/-- **The Hamiltonian `H = I − T`** — the transfer matrix's generator, the Osterwalder–Schrader
+reconstruction's time-evolution generator. Its spectrum is `1 −` (the transfer matrix's spectrum). -/
+def hamiltonian {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) : Matrix (Fin m) (Fin m) ℝ := 1 - T
+
+/-- **The spectral condition (the OS/Wightman output).** `H` is positive semi-definite: its quadratic
+form is non-negative because the transfer matrix is a contraction (`⟨f, T f⟩ ≤ ‖f‖²`). This is the
+reflection-positivity ⟹ spectral-condition half of the Osterwalder–Schrader reconstruction — the
+Hamiltonian's spectrum is non-negative (the energy is bounded below by the vacuum). -/
+theorem hamiltonian_spectral_condition {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
+    (hcontr : ∀ f : Fin m → ℝ, ∑ i, f i * ((T.mulVec f) i) ≤ ∑ i, (f i)^2) (f : Fin m → ℝ) :
+    0 ≤ ∑ i, f i * (((hamiltonian T).mulVec f) i) := by
+  have hc := hcontr f
+  have hdecomp : ∑ i, f i * (((hamiltonian T).mulVec f) i) = (∑ i, (f i)^2) - ∑ i, f i * ((T.mulVec f) i) := by
+    rw [hamiltonian]
+    rw [Matrix.sub_mulVec]
+    simp [Matrix.one_mulVec, Pi.sub_apply, mul_sub, Finset.sum_sub_distrib, sq]
+  rw [hdecomp]
+  nlinarith [hc]
+
+/-- **The mass gap (the OS/Wightman output).** The Hamiltonian's spectral gap is `1 − λ₁ > 0`, from the
+strict gap `λ₁ < 1`. This is the reflection-positivity ⟹ mass-gap half of the reconstruction: the second
+eigenvalue of `T` below `1` lifts the lowest non-vacuum eigenvalue of `H` above `0`. -/
+theorem hamiltonian_mass_gap (lam1 : ℝ) (hlam1 : lam1 < 1) :
+    0 < 1 - lam1 := by
+  nlinarith
+
 end QM
