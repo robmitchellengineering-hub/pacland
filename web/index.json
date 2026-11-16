@@ -1113,7 +1113,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-chemistry-certification-plan.md",
    "kind": "doc",
    "path": "docs/quantum-chemistry-certification-plan.md",
-   "summary": "runs a D-sweep, proves the bond dimension was sufficient, and cross-checks against the exact Bethe-ansatz value for the Heisenberg chain. A re-run reproduces the converged energy to\u2026",
+   "summary": "molecule pipeline is wired: moleculecertify.py takes H2 through PySCF \u2192 OpenFermion \u2192 Jordan-Wigner \u2192 solve, and certifies E(H2) = \u22121.137270174661 Hartree against the FCI reference (delta\u2026",
    "title": "Wedge 2 \u2014 certified quantum chemistry (DMRG ground states + the certificate)"
   },
   {

@@ -1,9 +1,9 @@
 # Wedge 2 — certified quantum chemistry (DMRG ground states + the certificate)
 
-**Status: built (first milestone).** The DMRG sufficiency certificate is live: `src/pacland/chemistry_certify.py`
-runs a D-sweep, proves the bond dimension was sufficient, and cross-checks against the exact Bethe-ansatz
-value for the Heisenberg chain. A re-run reproduces the converged energy to tolerance and refuses a forged
-certificate. The remaining milestone is a real molecule Hamiltonian (PySCF) — the plan below stands.
+**Status: built (both milestones).** The DMRG sufficiency certificate is live (`chemistry_certify.py`), and the
+molecule pipeline is wired: `molecule_certify.py` takes H2 through PySCF → OpenFermion → Jordan-Wigner →
+solve, and certifies E(H2) = −1.137270174661 Hartree against the FCI reference (delta 7e-16). The next
+milestone is a larger molecule where DMRG (not exact diagonalization) is the solver.
 
 ## Why this market
 
