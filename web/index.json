@@ -1110,11 +1110,25 @@
    "title": "The quantum arm: the biggest questions we can actually reach"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-chemistry-certification-plan.md",
+   "kind": "doc",
+   "path": "docs/quantum-chemistry-certification-plan.md",
+   "summary": "the second, larger monetization path: sell certified ground-state energies for strongly-correlated molecules, where the certificate is the differentiator (the open DMRG solvers don't ship a\u2026",
+   "title": "Wedge 2 plan \u2014 certified quantum chemistry (DMRG ground states + the certificate)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-computer-on-classical.md",
    "kind": "doc",
    "path": "docs/quantum-computer-on-classical.md",
    "summary": "Quantum computing's power is entanglement (the free column); its forced structure \u2014 the Born rule, unitarity, the probability rule \u2014 is classically cheap. Our kernel-checked theorems give\u2026",
    "title": "A quantum computer on regular hardware \u2014 the machine-checked boundary"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-hardware-verification.md",
+   "kind": "doc",
+   "path": "docs/quantum-hardware-verification.md",
+   "summary": "product, built and runnable: a machine-checked, reproducible certificate for a quantum computation, plus the referee that refuses a wrong answer.",
+   "title": "Quantum hardware verification \u2014 the certificate is the product"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/research-fanout.md",
@@ -2683,6 +2697,13 @@
    "path": "scripts/qg-proof-beliefs.py",
    "summary": "The QG proof-belief graph \u2014 apply the belief layer to the three deferred proofs.",
    "title": "qg-proof-beliefs.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/quantum_verification_demo.py",
+   "kind": "script",
+   "path": "scripts/quantum_verification_demo.py",
+   "summary": "The hardware-verification demo \u2014 the certificate catches a wrong answer.",
+   "title": "quantum_verification_demo.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/quintic_periods.py",
