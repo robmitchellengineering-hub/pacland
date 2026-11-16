@@ -87,3 +87,4 @@ import PaclandProof.QM.OrbitSpectralGap
 import PaclandProof.QM.OttoReznikoff
 import PaclandProof.QM.ClayReduction
 import PaclandProof.QM.MassGapDiamond
+import PaclandProof.QM.GradientFlow

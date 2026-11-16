@@ -42,7 +42,7 @@ theorem matchingSign_eq_one_of_two :
       (by constructor
           · ext i; fin_cases i <;> rfl
           · intro i; fin_cases i <;> norm_num) = 1 := by
-  native_decide
+  decide
 
 end QM
 
@@ -59,9 +59,9 @@ theorem atomic4_weight (A : Matrix (Fin 4) (Fin 4) ℂ) (hA : A.transpose = -A) 
     ((Equiv.Perm.sign sigma4 : ℤ) : ℂ) * (A 1 0 * A 2 1 * A 3 2 * A 0 3)
     = ((Equiv.Perm.sign evenEdges4 : ℤ) : ℂ) * (A 0 1 * A 2 3)
       * ((Equiv.Perm.sign oddEdges4 : ℤ) : ℂ) * (A 0 3 * A 1 2) := by
-  have hs4 : (Equiv.Perm.sign sigma4 : ℤ) = -1 := by native_decide
-  have hs1 : (Equiv.Perm.sign evenEdges4 : ℤ) = 1 := by native_decide
-  have hs2 : (Equiv.Perm.sign oddEdges4 : ℤ) = 1 := by native_decide
+  have hs4 : (Equiv.Perm.sign sigma4 : ℤ) = -1 := by decide
+  have hs1 : (Equiv.Perm.sign evenEdges4 : ℤ) = 1 := by decide
+  have hs2 : (Equiv.Perm.sign oddEdges4 : ℤ) = 1 := by decide
   rw [hs4, hs1, hs2]
   norm_num
   have h10 : A 1 0 = -A 0 1 := congr_fun (congr_fun hA 0) 1

@@ -32,6 +32,13 @@
  "generated_from": "scripts/build_site_index.py",
  "items": [
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-METHODS.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-METHODS.md",
+   "summary": "4D Yang\u2013Mills mass-gap problem to a single named statement. This is not a solution of the Clay problem. It is a traceable methods record: what was assumed, what was proven, what was\u2026",
+   "title": "The Yang\u2013Mills mass gap: a falsifier-first reduction to one open rung"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MITCHELLS-LAWS.md",
    "kind": "doc",
    "path": "docs/MITCHELLS-LAWS.md",
@@ -72,6 +79,13 @@
    "path": "docs/UNIFICATION-STATUS.md",
    "summary": "One document: everything proven, everything measured, and the sharper picture they form. Status is tiered \u2014 proven (symbolic, machine-checked) vs measured (node, with a control) vs asserted\u2026",
    "title": "UNIFICATION \u2014 where we are, and the path (2026-10-23)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ZENODO-PAPER.md",
+   "kind": "doc",
+   "path": "docs/ZENODO-PAPER.md",
+   "summary": "mass gap.",
+   "title": "Zenodo submission \u2014 mass-gap reduction paper"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ads-cft-plan.md",
