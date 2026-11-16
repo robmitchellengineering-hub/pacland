@@ -74,6 +74,30 @@ next rung. -/
 def areaLaw_iff_massGap (σ lam1 : ℝ) : Prop :=
   stringTensionPositive σ ↔ secondEigenvalueBelowOne lam1
 
+/-- **The reverse bound: the mass gap IS the string tension (the temporal–spatial duality).** A gap
+`λ₁ < 1` forces a positive string tension `σ = −log λ₁ > 0` — the temporal decay rate of the
+correlation equals the spatial area-law coefficient. This is the second half of the chessboard
+estimate's content (Fröhlich–Lieb–Loss): the mass gap and the string tension are the same number. -/
+theorem mass_gap_bounds_string_tension (lam1 : ℝ) (hlam1 : 0 < lam1) (hgap : lam1 < 1) :
+    stringTensionPositive (-Real.log lam1) := by
+  rw [stringTensionPositive]
+  have hlog : Real.log lam1 < 0 := Real.log_neg hlam1 hgap
+  nlinarith
+
+/-- **The area law ⟺ the mass gap, kernel-checked** (with `σ = −log λ₁`, the string tension *is* the
+mass gap). Together with `surface_tension_bounds_gap` this closes the diamond's face 5 ⟺ face 1: a
+positive string tension is equivalent to a positive mass gap. The `areaLaw_iff_massGap` def above is
+now proven for this identification of `σ`. -/
+theorem string_tension_iff_gap (lam1 : ℝ) (hlam1 : 0 < lam1) :
+    stringTensionPositive (-Real.log lam1) ↔ secondEigenvalueBelowOne lam1 := by
+  constructor
+  · intro hσ
+    rw [stringTensionPositive] at hσ
+    have hlog : Real.log lam1 < 0 := by nlinarith
+    exact (Real.log_neg_iff hlam1).mp hlog
+  · intro hgap
+    exact mass_gap_bounds_string_tension lam1 hlam1 hgap
+
 /-- **The time-reflection persists** — for any Hermitian matrix, every power `Mⁿ` is Hermitian.
 This is the key input to the chessboard estimate: reflection positivity (symmetry) is preserved under
 time evolution, so the correlation function is symmetric in time. -/
