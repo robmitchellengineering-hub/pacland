@@ -735,4 +735,27 @@ theorem u1_coulomb_tension_zero :
   have hinv : Tendsto (fun r : ℝ => r⁻¹) atTop (𝓝 0) := tendsto_inv_atTop_zero
   simpa [div_eq_mul_inv, mul_assoc] using (hinv.mul hinv)
 
+/-- The standard basis vectors `e₁, e₂, e₃` of `ℝ³` (the 𝔰𝔲(2) Lie-algebra basis). -/
+def e1 : Fin 3 → ℝ := fun i => if i = 0 then 1 else 0
+def e2 : Fin 3 → ℝ := fun i => if i = 1 then 1 else 0
+def e3 : Fin 3 → ℝ := fun i => if i = 2 then 1 else 0
+
+/-- **The 𝔰𝔲(2) Lie bracket (the cross product) is NON-TRIVIAL**: `e₁ × e₂ = e₃`. This is the
+non-commutativity that makes SU(2) non-Abelian — the Lie-algebraic origin of the Coulomb confinement:
+the Faddeev–Popov operator's commutator term `[A, ·]` is non-zero for SU(2), whereas for U(1) it is
+identically zero (the plain Laplacian, no confinement — the `u1_coulomb_tension_zero` side). -/
+theorem crossProduct_nonTrivial :
+    crossProduct e1 e2 = e3 := by
+  ext i
+  fin_cases i <;> simp [e1, e2, e3, crossProduct]
+
+/-- **The 𝔰𝔲(2) Lie bracket is non-zero**: `e₁ × e₂ ≠ 0` — the non-Abelian structure that the open
+rung (`σ_Coul > 0` for SU(2)) hinges on. -/
+theorem crossProduct_ne_zero :
+    crossProduct e1 e2 ≠ 0 := by
+  rw [crossProduct_nonTrivial]
+  intro h
+  have h2 := congrArg (fun v : Fin 3 → ℝ => v 2) h
+  simp [e3] at h2
+
 end QM
