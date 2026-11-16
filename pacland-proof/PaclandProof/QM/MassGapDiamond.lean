@@ -798,4 +798,21 @@ theorem faddeevPopov_constant_mode_gap (v : Fin 3 → ℝ) :
   rw [faddeevPopovConstantMode]
   simpa [neg_smul] using (congrArg (fun w : Fin 3 → ℝ => -w) (casimir_su2 v))
 
+/-- **The massive-Laplacian gap (the finite-dimensional transport to the FULL operator).** For a
+PSD Laplacian `L` (the momentum modes: the quadratic form is non-negative) and the Casimir gap `m2`
+(the constant-mode eigenvalue, proven `= 2`), the full Faddeev–Popov operator `L + m2·id` has the
+quadratic form `≥ m2·‖f‖²`. The momentum modes only RAISE the eigenvalue, so the constant-mode gap
+`m2` is the full operator's spectral gap. This is the geometric transport: the Lie-algebraic Casimir
+gap carries to the whole operator, with the PSD momentum sector only strengthening it. -/
+theorem massive_laplacian_gap {n : ℕ} (L : Matrix (Fin n) (Fin n) ℝ) (m2 : ℝ)
+    (hquad : ∀ f : Fin n → ℝ, 0 ≤ ∑ i, f i * ((L.mulVec f) i)) (hm : 0 ≤ m2) (f : Fin n → ℝ) :
+    m2 * (∑ i, (f i)^2) ≤ ∑ i, f i * (((L + m2 • (1 : Matrix (Fin n) (Fin n) ℝ)).mulVec f) i) := by
+  have hquad_f := hquad f
+  have hdecomp : ∑ i, f i * (((L + m2 • (1 : Matrix (Fin n) (Fin n) ℝ)).mulVec f) i)
+      = (∑ i, f i * ((L.mulVec f) i)) + m2 * (∑ i, (f i)^2) := by
+    rw [Matrix.add_mulVec, Matrix.smul_mulVec, Matrix.one_mulVec]
+    simp [Pi.add_apply, Pi.smul_apply, mul_add, Finset.sum_add_distrib, Finset.mul_sum, mul_comm, mul_left_comm, mul_assoc, sq]
+  rw [hdecomp]
+  nlinarith [hquad_f, hm]
+
 end QM
