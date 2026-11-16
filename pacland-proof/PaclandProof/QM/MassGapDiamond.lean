@@ -847,4 +847,21 @@ theorem yukawa_deconfinement (m p : ℝ) (hp : p ≠ 0) (hm : m ≠ 0) :
   rw [coulombPotential, yukawaGhost]
   field_simp [hp, hm]
 
+/-- **The zero mode of `ad(e₃)` is the Cartan direction** — `e₃ × v = 0 ⟺ v` is on the `e₃`-axis.
+This is the Gribov-copy structure: the commuting ghosts (the Cartan) are the zero modes, while the
+non-commuting ghosts (the `e₁`–`e₂` plane) are rotated (massive). The horizon is where this zero mode
+appears for a specific Cartan gauge field; the restriction away from it (the Gribov region) is the IR
+suppression that confines (`gribov_confinement`). -/
+theorem ad_e3_zero_mode (v : Fin 3 → ℝ) :
+    crossProduct e3 v = 0 ↔ v 0 = 0 ∧ v 1 = 0 := by
+  constructor
+  · intro h
+    have h0 := congrArg (fun w : Fin 3 → ℝ => w 0) h
+    have h1 := congrArg (fun w : Fin 3 → ℝ => w 1) h
+    simp [e3, crossProduct] at h0 h1
+    constructor <;> nlinarith [h0, h1]
+  · intro h
+    ext i
+    fin_cases i <;> simp [e3, crossProduct] <;> nlinarith [h.1, h.2]
+
 end QM
