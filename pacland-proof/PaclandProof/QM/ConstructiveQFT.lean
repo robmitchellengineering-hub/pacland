@@ -233,4 +233,32 @@ theorem dirichlet_identity {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
 
 
 
+/-- **The mixing gap bound (the explicit volume-uniform lower bound).** For `Tᵢⱼ ≥ δ > 0` (the mixing,
+a local/volume-independent quantity), the contraction has the explicit bound `⟨x, Tx⟩ ≤ ‖x‖² − (δ/2)·Σᵢⱼ
+(xᵢ−xⱼ)²`. The gap is bounded below by `(δ/2)·(the spread)`, so it cannot close as the volume grows. This
+is the search's target mechanism, in full dimension: a positive mixing gives a positive volume-uniform gap. -/
+theorem mixing_gap_bound {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (δ : ℝ)
+    (hδ : ∀ i j, δ ≤ T i j) (hrow : ∀ i, ∑ j : Fin m, T i j = 1)
+    (hsymm : ∀ i j, T i j = T j i) (x : Fin m → ℝ) :
+    ∑ i : Fin m, x i * (∑ j : Fin m, T i j * x j)
+      ≤ (∑ i : Fin m, (x i)^2) - (δ/2) * (∑ i : Fin m, ∑ j : Fin m, (x i - x j)^2) := by
+  rw [dirichlet_identity T hrow hsymm x]
+  have hδ' : ∀ i j, δ * (x i - x j)^2 ≤ T i j * (x i - x j)^2 := by
+    intro i j
+    exact mul_le_mul_of_nonneg_right (hδ i j) (sq_nonneg _)
+  have hsum : δ * (∑ i : Fin m, ∑ j : Fin m, (x i - x j)^2) ≤ ∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2 := by
+    calc
+      δ * (∑ i : Fin m, ∑ j : Fin m, (x i - x j)^2) = ∑ i : Fin m, ∑ j : Fin m, δ * (x i - x j)^2 := by
+          simp [Finset.mul_sum, mul_comm, mul_left_comm, mul_assoc]
+      _ ≤ ∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2 := by
+          apply Finset.sum_le_sum; intro i hi
+          apply Finset.sum_le_sum; intro j hj
+          exact hδ' i j
+  have hhalf : (δ/2) * (∑ i : Fin m, ∑ j : Fin m, (x i - x j)^2)
+      ≤ (1/2) * (∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2) := by
+    nlinarith [hsum]
+  nlinarith
+
+
+
 end QM
