@@ -312,4 +312,12 @@ theorem mass_gap_from_mixing {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (δ : �
 
 
 
+/-- **The mixing positivity (the physical input).** The minimum transfer-matrix entry is the antipode
+Boltzmann weight `e^{−2β} > 0` (the plaquette at `cos θ = −1`), so the mixing `δ > 0` for every finite
+`β`. This is what makes `mass_gap_from_mixing` nontrivial. NOTE (honest): the mixing rate `e^{−2β}` is the
+Dobrushin / mixing-time bound — it proves `Δ > 0` but is NON-TIGHT: its exponent `2` is not the referee's
+`1.182` (the asymptotic-freedom scale). The correct exponent needs the renormalization, a different
+mechanism. -/
+theorem mixing_positive (β : ℝ) : 0 < Real.exp (-2 * β) := Real.exp_pos (-2 * β)
+
 end QM

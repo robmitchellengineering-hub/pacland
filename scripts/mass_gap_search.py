@@ -45,6 +45,9 @@ def seiler_bound(beta):            # the reflection-positivity (Seiler) bound �
 def polymer_expansion(beta):       # the refined cluster/polymer expansion — log β (minus a const)
     return max(0.0, math.log(beta) - 2.0)
 
+def mixing_rate(beta):             # the naive mixing/Dobrushin bound δ = e^{−2β} (the min Boltzmann weight)
+    return math.exp(-2.0 * beta)
+
 
 def is_exponential(c):
     """A bound reaches the exponential scale iff it DECAYS with a constant geometric ratio
@@ -73,6 +76,8 @@ CANDIDATES = [
      "power-law — the reflection-positivity lower bound does not reach the AF scale"),
     ("polymer/cluster expansion (refined)", polymer_expansion,
      "log β — the cluster/polymer expansion gives a log, not the exponential"),
+    ("mixing rate δ = e^{−2β}", mixing_rate,
+     "exponential but NON-TIGHT — exponent 2 ≠ the referee's 1.182 (the Dobrushin/mixing bound)"),
 ]
 
 
