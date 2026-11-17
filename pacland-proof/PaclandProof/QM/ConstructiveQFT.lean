@@ -131,4 +131,106 @@ theorem two_state_gap (p : ℝ) (hp : 0 < p) :
     0 < 2 * p := by
   nlinarith
 
+/-- **The Dirichlet identity (the general mixing-rate gap).** For a symmetric stochastic matrix `T`
+(row sums 1, symmetric), the quadratic form is `⟨x, Tx⟩ = ‖x‖² − (1/2)·Σᵢⱼ Tᵢⱼ·(xᵢ−xⱼ)²`. The gap IS the
+Dirichlet form (the weighted spread), so the mixing `Tᵢⱼ ≥ δ` bounds the gap below by `(δ/2)·(the
+spread)` — the volume-uniform lower bound the search targets, now in general dimension. -/
+theorem dirichlet_identity {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
+    (hrow : ∀ i, ∑ j : Fin m, T i j = 1) (hsymm : ∀ i j, T i j = T j i) (x : Fin m → ℝ) :
+    ∑ i : Fin m, x i * (∑ j : Fin m, T i j * x j)
+      = (∑ i : Fin m, (x i)^2) - (1/2) * (∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2) := by
+  -- Step A: ⟨x,Tx⟩ = ∑_ij T_ij x_i x_j
+  have hA : ∑ i : Fin m, x i * (∑ j : Fin m, T i j * x j) = ∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j) := by
+    apply Finset.sum_congr rfl; intro i hi
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl; intro j hj
+    ring
+  rw [hA]
+  -- Step B: ∑_ij T_ij x_i x_j = ∑_ij T_ij x_j x_i  (swap + symmetry)
+  have hB : ∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j) = ∑ i : Fin m, ∑ j : Fin m, T i j * (x j * x i) := by
+    calc
+      ∑ i, ∑ j, T i j * (x i * x j) = ∑ j, ∑ i, T i j * (x i * x j) := by rw [Finset.sum_comm]
+      _ = ∑ i, ∑ j, T j i * (x j * x i) := by
+          -- rename the swapped indices back
+          apply Finset.sum_congr rfl; intro j hj
+          apply Finset.sum_congr rfl; intro i hi
+          rfl
+      _ = ∑ i, ∑ j, T i j * (x j * x i) := by
+          apply Finset.sum_congr rfl; intro i hi
+          apply Finset.sum_congr rfl; intro j hj
+          rw [hsymm i j]
+  -- Step C: 2·(the sum) = ∑_ij T_ij (x_i x_j + x_j x_i)
+  have hC : (2 : ℝ) * (∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j))
+      = ∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j + x j * x i) := by
+    calc
+      (2 : ℝ) * (∑ i, ∑ j, T i j * (x i * x j))
+        = (∑ i, ∑ j, T i j * (x i * x j)) + (∑ i, ∑ j, T i j * (x i * x j)) := by ring
+      _ = (∑ i, ∑ j, T i j * (x i * x j)) + (∑ i, ∑ j, T i j * (x j * x i)) := by rw [hB]
+      _ = ∑ i, ∑ j, T i j * (x i * x j + x j * x i) := by
+          rw [← Finset.sum_add_distrib]
+          apply Finset.sum_congr rfl; intro i hi
+          rw [← Finset.sum_add_distrib]
+          apply Finset.sum_congr rfl; intro j hj
+          ring
+  -- Step D: x_i x_j + x_j x_i = x_i² + x_j² - (x_i - x_j)²
+  have hD : ∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j + x j * x i)
+      = ∑ i : Fin m, ∑ j : Fin m, T i j * ((x i)^2 + (x j)^2 - (x i - x j)^2) := by
+    apply Finset.sum_congr rfl; intro i hi
+    apply Finset.sum_congr rfl; intro j hj
+    ring
+  -- Step E: ∑_ij T_ij (x_i² + x_j²) = 2‖x‖²
+  have hE : ∑ i : Fin m, ∑ j : Fin m, T i j * ((x i)^2 + (x j)^2) = 2 * (∑ i : Fin m, (x i)^2) := by
+    calc
+      ∑ i, ∑ j, T i j * ((x i)^2 + (x j)^2)
+        = (∑ i, ∑ j, T i j * (x i)^2) + (∑ i, ∑ j, T i j * (x j)^2) := by
+            rw [← Finset.sum_add_distrib]
+            apply Finset.sum_congr rfl; intro i hi
+            rw [← Finset.sum_add_distrib]
+            apply Finset.sum_congr rfl; intro j hj
+            ring
+      _ = (∑ i, (x i)^2 * (∑ j, T i j)) + (∑ i, ∑ j, T i j * (x j)^2) := by
+            congr 1
+            apply Finset.sum_congr rfl; intro i hi
+            rw [Finset.mul_sum]
+            apply Finset.sum_congr rfl; intro j hj
+            rw [mul_comm]
+      _ = (∑ i, (x i)^2 * 1) + (∑ j, (x j)^2 * (∑ i, T i j)) := by
+            rw [← Finset.sum_comm]
+            congr 1
+            · apply Finset.sum_congr rfl; intro i hi; rw [hrow i]
+            · apply Finset.sum_congr rfl; intro j hj
+              rw [Finset.mul_sum]
+              apply Finset.sum_congr rfl; intro i hi
+              rw [mul_comm]
+      _ = (∑ i, (x i)^2) + (∑ j, (x j)^2) := by
+            congr 1
+            · apply Finset.sum_congr rfl; intro i hi; ring
+            · apply Finset.sum_congr rfl; intro j hj
+              -- column sums = 1 via hrow + hsymm
+              have hcol : ∑ i : Fin m, T i j = 1 := by
+                calc
+                  ∑ i : Fin m, T i j = ∑ i : Fin m, T j i := by
+                    apply Finset.sum_congr rfl; intro i hi; rw [hsymm i j]
+                  _ = 1 := by rw [hrow j]
+              rw [hcol]; ring
+      _ = 2 * (∑ i, (x i)^2) := by
+          rw [show (∑ j : Fin m, (x j)^2) = (∑ i : Fin m, (x i)^2) by rfl]
+          ring
+  -- Step F: combine
+  -- 2⟨x,Tx⟩ = ∑_ij T_ij (x_i²+x_j²-(x_i-x_j)²) = 2‖x‖² - D
+  -- hence ⟨x,Tx⟩ = ‖x‖² - D/2
+  -- combine: 2·S = ∑_ij T_ij (x_i x_j + x_j x_i) = ∑_ij T_ij (x_i²+x_j²-(x_i-x_j)²) = 2‖x‖² - D
+  have hkey : (2 : ℝ) * (∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j))
+      = 2 * (∑ i : Fin m, (x i)^2) - ∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2 := by
+    calc
+      (2 : ℝ) * (∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j))
+        = ∑ i : Fin m, ∑ j : Fin m, T i j * (x i * x j + x j * x i) := hC
+      _ = ∑ i : Fin m, ∑ j : Fin m, T i j * ((x i)^2 + (x j)^2 - (x i - x j)^2) := hD
+      _ = (∑ i : Fin m, ∑ j : Fin m, T i j * ((x i)^2 + (x j)^2)) - (∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2) := by
+          simp [Finset.sum_sub_distrib, mul_sub]
+      _ = 2 * (∑ i : Fin m, (x i)^2) - ∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2 := by rw [hE]
+  nlinarith
+
+
+
 end QM
