@@ -32,6 +32,24 @@ rate), axiom-clean, and FRO-kernel-verified. Re-deriving it here would be wasted
 3. **The M0 real-group + Doeblin work here** is a thin, publishable seed but is superseded by LGT for the
    strong-coupling conclusion.
 
+## Source-level verification (this session)
+
+Read `LGT/MassGap/StrongCoupling.lean` directly. Confirmed:
+
+- `ym_mass_gap_strong_coupling` is a **real theorem with a full proof** (not scaffolded, not vacuous):
+  it discharges ~20 measure-theoretic hypotheses and leaves only the genuinely-hard analytic ones
+  (`hRep_cont` — representation continuity, `hInfluence` — the Dobrushin influence bound, `dLink` +
+  refl/triangle/support). The final step is `exact ym_mass_gap_2pt_via_multisite …`.
+- The hard analytic core is `gibbsCondMeasure_cylinder_ratio` (the on-plaquette influence bound via the
+  cylinder-ratio argument) — the step that genuinely uses strong coupling (`β < 1/(4n·maxNeighbors d)`).
+- The U(n) specialization (`instMeasurableSpaceUN`/`instBorelSpaceUN` + the `UnitaryGroup.lean`
+  instances) is the concrete instantiation of the generic `G` theorem.
+- The distance is caller-supplied (`dLink`) — the geometric exponential decay comes from the ambient
+  shared-plaquette graph distance (`linkGraphDist`), not baked into the wrapper.
+
+This is a faithful, rigorous strong-coupling mass gap, correctly scoped to the IR end. The genuinely-open
+parts remain the UV/crossover (β → large) and the `Bridge/` TRG→Dobrushin fields stated as hypotheses.
+
 ## Version note
 
 The reservoir metadata lists many Lean versions, but the README pins **Lean/Mathlib v4.29.0** (with
