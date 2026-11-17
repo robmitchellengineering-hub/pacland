@@ -47,6 +47,14 @@ noncomputable def su2PositiveCompact : TopologicalSpace.PositiveCompacts SU2 :=
 noncomputable def su2Haar : MeasureTheory.Measure SU2 :=
   MeasureTheory.Measure.haarMeasure (K₀ := su2PositiveCompact)
 
+-- M0 (normalization, PROVEN): the Haar measure is a PROBABILITY measure (K₀ = Set.univ, so the whole
+-- group has measure 1).
+theorem su2Haar_probability : su2Haar Set.univ = 1 := by
+  unfold su2Haar
+  have h : (MeasureTheory.Measure.haarMeasure (K₀ := su2PositiveCompact)) su2PositiveCompact.carrier = 1 :=
+    MeasureTheory.Measure.haarMeasure_self (K₀ := su2PositiveCompact)
+  simpa [su2PositiveCompact] using h
+
 -- M0 obligations (TODO, in order):
 -- 0. `SU2` above is the SET `Metric.sphere (0 : ℍ) 1`; the group instance `Metric.unitSphere.instGroup`
 --    lives on the bundled subtype `Metric.unitSphere`. Use the subtype (or `Metric.unitSphere`) for the
