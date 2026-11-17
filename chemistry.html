@@ -11,11 +11,12 @@
   body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
          color:var(--ink); background:var(--bg); line-height:1.6; }
   .wrap { max-width:760px; margin:0 auto; padding:0 1.5rem; }
-  header { background:var(--accent); color:#fff; padding:3rem 0 2.4rem; }
+  header { background:var(--accent); color:#fff; padding:2.4rem 0 2.2rem; }
+  header .back { font-size:.8rem; color:#9fb0d8; display:block; margin-bottom:.9rem; }
+  header .back a { color:#9fb0d8; }
   header .kicker { font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:#9fb0d8; margin:0 0 .6rem; }
   header h1 { margin:0 0 .4rem; font-size:2rem; letter-spacing:-.02em; }
   header p { color:#c7d2ee; margin:.3rem 0 0; max-width:600px; }
-  header a { color:#fff; }
   main { padding:2rem 0 3rem; }
   h2 { font-size:1.3rem; color:var(--accent); margin:2.2rem 0 .5rem; }
   p { margin:0 0 1rem; }
@@ -30,6 +31,11 @@
   .card .caption { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:0 0 8px; }
   .card .big { font-size:24px; font-weight:700; color:var(--accent2); line-height:1.15; }
   .card .label { font-size:14px; color:var(--muted); margin-top:6px; }
+  .use { margin:14px 0; }
+  .usecase { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:12px; }
+  .usecase h3 { margin:0 0 6px; font-size:1.05rem; color:var(--accent); }
+  .usecase p { margin:0; color:var(--ink); }
+  .usecase .ex { color:var(--muted); font-size:.95rem; margin-top:4px; }
   .scope { background:var(--soft); border:1px solid var(--line); border-radius:12px; padding:18px 20px; }
   .scope ul { margin:0; padding-left:18px; }
   .scope li { margin-bottom:8px; }
@@ -38,6 +44,7 @@
   .next p { color:#c7d2ee; margin:0; }
   .next a { color:#fff; }
   footer { border-top:1px solid var(--line); padding:1.5rem 0 2.5rem; color:var(--muted); font-size:.85rem; }
+  footer .nav { margin-top:8px; }
   footer a { color:var(--accent2); }
   code { background:#eef1f6; padding:.1rem .4rem; border-radius:5px; font-size:.92em; }
   a { color:var(--accent2); overflow-wrap:anywhere; }
@@ -47,6 +54,7 @@
 
 <header>
   <div class="wrap">
+    <a class="back" href="./index.html">&larr; Back to Pacland</a>
     <p class="kicker">Pacland · capability</p>
     <h1>Certified Chemistry</h1>
     <p>Molecular ground-state energies, computed with the density matrix renormalization group
@@ -70,8 +78,9 @@
   <ol class="steps">
     <li><strong>Compute the energy.</strong> Run DMRG at increasing bond dimension. The energy
     converges from above as the representation improves.</li>
-    <li><strong>Prove it has converged.</strong> The certificate records the sweep. When the energy
-    stops changing, the bond dimension was sufficient, and the certificate says so.</li>
+    <li><strong>Prove it has converged.</strong> The certificate records the convergence scan.
+    When the energy stops changing, the representation is sufficient, and the certificate says
+    so.</li>
     <li><strong>Make it re-runnable.</strong> One command re-runs the calculation and confirms the
     energy, offline. A forged or drifted result is refused.</li>
   </ol>
@@ -81,14 +90,14 @@
     <div class="card">
       <p class="caption">Result</p>
       <div class="big">&#8722;1.137270</div>
-      <div class="label">the H&#8322; ground-state energy in Hartree (STO-3G), matching the exact
-      reference to 7&#215;10&#8315;&#185;&#8310;.</div>
+      <div class="label">the H&#8322; ground-state energy in Hartree, within 7&#215;10&#8315;&#185;&#8310; of
+      the full-CI value in the same STO&#8209;3G basis.</div>
     </div>
     <div class="card">
       <p class="caption">Proof</p>
-      <div class="big">D-sweep</div>
-      <div class="label">energy versus bond dimension, recorded in the certificate as the proof of
-      convergence.</div>
+      <div class="big">Converged</div>
+      <div class="label">the energy stops changing as the representation grows, recorded in the
+      certificate as the proof of convergence.</div>
     </div>
     <div class="card">
       <p class="caption">Guard</p>
@@ -97,10 +106,43 @@
     </div>
   </div>
 
+  <h2>Who uses this, and how</h2>
+  <p class="lead">Anyone who builds or tests molecules needs a molecule's energy: the number that
+  says how stable it is. When the standard software cannot be trusted, we provide the energy plus a
+  proof it is correct.</p>
+  <div class="use">
+    <div class="usecase">
+      <h3>Pharmaceuticals</h3>
+      <p>Drug molecules often contain metals (iron, copper) that break the standard software.</p>
+      <p class="ex">Example: a pharma team screening a new iron-containing drug needs the energy to
+      predict how it binds to its target. We compute it and prove it converged.</p>
+    </div>
+    <div class="usecase">
+      <h3>Batteries</h3>
+      <p>Cathode materials are strongly-correlated metal oxides, exactly where standard methods
+      fail.</p>
+      <p class="ex">Example: a battery maker testing a new cathode needs the energy to predict
+      stability and voltage. Our certificate means they can trust the design call.</p>
+    </div>
+    <div class="usecase">
+      <h3>Catalysis</h3>
+      <p>Industrial chemistry runs on transition-metal catalysts, and their active sites are the
+      hard part.</p>
+      <p class="ex">Example: a chemical company optimising a catalyst gets the energy of the active
+      site, with proof, before committing to a pilot plant.</p>
+    </div>
+    <div class="usecase">
+      <h3>Materials</h3>
+      <p>Superconductors and magnetic materials are strongly correlated.</p>
+      <p class="ex">Example: a materials group screening for a new superconductor gets a trusted
+      energy for each candidate, so it can rank them without a supercomputer.</p>
+    </div>
+  </div>
+
   <h2>What you receive</h2>
-  <p>The energy, the D-sweep (the proof of convergence), the theorem reference (the area law that
-  justifies the method), and a one-line re-run command that confirms the certificate offline, without
-  trusting whoever served it.</p>
+  <p>The energy, the convergence scan (the proof of convergence), the theorem reference (the
+  proven result that justifies the method), and a one-line re&#8209;run command that confirms the
+  certificate offline, without trusting whoever served it.</p>
 
   <h2>Scope, stated plainly</h2>
   <div class="scope">
@@ -112,10 +154,9 @@
     </ul>
   </div>
 
-  <h2>Quantum verification</h2>
-  <p>The same certificate machinery certifies quantum circuits. We run a circuit exactly and return
-  the answer with a proof it is correct, refusing a wrong one. The tensor-network backend reaches
-  100,000 qubits on low-entanglement circuits, past the 30-qubit limit of a naive simulator.</p>
+  <h2>Also: quantum verification</h2>
+  <p>The same certificate machinery certifies quantum circuits, refusing a wrong answer.
+  <a href="./quantum-verification.html">See&#160;quantum&#160;verification&#160;&rarr;</a></p>
 
   <div class="next">
     <h2>Next step</h2>
@@ -131,6 +172,8 @@
   <div class="wrap">
     <p>Pacland · <a href="https://pacland.morpheus.nz">pacland.morpheus.nz</a> · every result is
     reproducible from the published source.</p>
+    <p class="nav"><a href="./index.html">&larr; Back to Pacland</a> ·
+    <a href="./quantum-verification.html">Quantum verification</a></p>
   </div>
 </footer>
 
