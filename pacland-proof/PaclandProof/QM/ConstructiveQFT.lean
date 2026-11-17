@@ -404,4 +404,21 @@ theorem mass_gap_from_hypotheses {m : ℕ} [NeZero m] (T : Matrix (Fin m) (Fin m
 
 
 
+/-- **The last rung's scaling: the continuum limit.** If the lattice gap `m_lattice = C·e^{−cβ}` vanishes
+at the SAME rate as the AF scale `a = e^{−cβ}` (the matching-exponent / dimensional-transmutation
+condition), then the physical mass gap `m_phys = m_lattice/a = C` is a constant — the mass gap survives
+`a → 0`. The scaling is proven; the matching-exponent (that the lattice gap actually vanishes at the AF
+rate, i.e. the renormalization) is the open Clay content. -/
+theorem physical_mass_gap_constant (C c β : ℝ) :
+    physicalMassGap (C * Real.exp (-c * β)) (Real.exp (-c * β)) = C := by
+  rw [physicalMassGap]
+  field_simp [Real.exp_ne_zero]
+
+/-- **The last rung's positivity:** the constant physical mass gap is positive when `C > 0` — the
+referee's `m/√σ ≈ 3.2` is this `C`. -/
+theorem physical_mass_gap_constant_pos (C c β : ℝ) (hC : 0 < C) :
+    0 < physicalMassGap (C * Real.exp (-c * β)) (Real.exp (-c * β)) := by
+  rw [physical_mass_gap_constant C c β]
+  exact hC
+
 end QM
