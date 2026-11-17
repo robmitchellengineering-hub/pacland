@@ -325,7 +325,7 @@ sequence of cluster activities (`|φ(n)| ≤ e^{−c·n}`, the polymer weights) 
 log-partition function has an infinite-volume limit. This is the analytic core of the Mayer/polymer
 expansion: the cluster weights decay exponentially, so the infinite-volume measure exists (the
 thermodynamic limit of the partition function). -/
-theorem cluster_expansion_converges (activity : ℕ → ℝ) (c : ℝ) (hc : 0 < c)
+theorem mayer_series_converges (activity : ℕ → ℝ) (c : ℝ) (hc : 0 < c)
     (hdecay : ∀ n : ℕ, |activity n| ≤ Real.exp (-c * (n : ℝ))) :
     ∃ S : ℝ, Tendsto (fun V : ℕ => (Finset.range V).sum (fun n => activity n)) atTop (𝓝 S) := by
   have hgeom : Summable (fun n : ℕ => (Real.exp (-c))^n) := by
