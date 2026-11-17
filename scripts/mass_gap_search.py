@@ -14,6 +14,17 @@ Run: python3 scripts/mass_gap_search.py
 import math
 
 # The lattice referee — the known-answer bench.
+def exact_su2_plaquette(beta):   # EXACT 1-plaquette SU(2) Wilson loop = I₂(2β)/I₁(2β) (Weyl integral)
+    from scipy.special import ive
+    z = 2.0 * beta
+    return ive(2, z) / ive(1, z)
+
+def exact_su2_plaquette_mass(beta):  # the single-plaquette mass proxy = -log ⟨χ₁/₂⟩
+    return -math.log(max(1e-12, exact_su2_plaquette(beta)))
+
+def u1_mass(_beta):                 # the U(1) NEGATIVE CONTROL — 4D U(1) at weak coupling has NO gap
+    return 0.0
+
 def referee_m(beta):
     return 25.28 * math.exp(-1.182 * beta)
 
@@ -118,7 +129,7 @@ def main():
     for name, c, note in survivors:
         print(f"  • {name} — {note}")
     print()
-    print("the survivors are the mechanisms worth kernel-checking next. the open rung remains:")
+    print("the U(1) gate: any candidate claiming a mass gap must provably FAIL for abelian U(1) (no gap).\n    the survivors are the mechanisms worth kernel-checking next. the open rung remains:")
     print("  the infinite-volume + continuum limit existence of the gap (the thermodynamic limit).")
 
 
