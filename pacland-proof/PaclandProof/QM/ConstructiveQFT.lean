@@ -674,4 +674,35 @@ theorem doeblin_contraction {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (μ : Fin
 
 
 
+/-- **The bare Wilson potential** `V(θ) = β(1 − cos θ)` and its Hessian `β·cos θ` — the single-scale
+route we FALSIFIED (the Hessian is β-dependent and negative at the antipode θ = π). -/
+def barePotential (β θ : ℝ) : ℝ := β * (1 - Real.cos θ)
+def bareHessian (β θ : ℝ) : ℝ := β * Real.cos θ
+
+-- The RG-softened effective potential: the flow adds a convex mass term Λ·θ² (the toy Polchinski
+-- softening), so the effective Hessian is β·cos θ + Λ, bounded below by Λ - β (positive for Λ > β).
+def effectiveHessian (β Λ θ : ℝ) : ℝ := β * Real.cos θ + Λ
+
+-- THE MULTISCALE FIX (toy): the effective Hessian is bounded below by Λ - β, uniformly in θ.
+-- Unlike the bare Hessian (which is -β at θ = π, unbounded below in β), the effective Hessian is
+-- POSITIVE for Λ > β. This is the mechanism that fixes the falsified single-scale route.
+/-- **The multiscale Bakry–Émery fix (toy).** The RG flow softens the potential (adds a convex mass term
+`Λ·θ²`), so the EFFECTIVE Hessian `β·cos θ + Λ` is bounded below by `Λ − β` — POSITIVE for `Λ > β`, unlike
+the bare `β·cos θ` (unbounded below in β). This is the mechanism that fixes the falsified single-scale
+route: the Polchinski flow controls the curvature scale-by-scale (the Bauerschmidt–Bodineau multiscale BE
+criterion, proven for sine-Gordon β < 6π, NOT yet for gauge theory — the `Λ·θ²` here is a stand-in). -/
+theorem effectiveHessian_bounded_below (β Λ : ℝ) (hβ : 0 ≤ β) :
+    ∀ θ : ℝ, Λ - β ≤ effectiveHessian β Λ θ := by
+  intro θ
+  unfold effectiveHessian
+  have hcos : -1 ≤ Real.cos θ := Real.neg_one_le_cos θ
+  nlinarith
+
+-- The honest gap: this toy captures the MECHANISM (the flow softens the curvature), but the REAL
+-- multiscale BE criterion needs the actual Polchinski equation + the curvature's differential inequality
+-- along the flow (Bauerschmidt-Bodineau). The toy's "Λ·θ²" is a stand-in for the flow's true convex
+-- contribution, which for gauge theory is the open content (the literature has sine-Gordon, not gauge).
+
+
+
 end QM
