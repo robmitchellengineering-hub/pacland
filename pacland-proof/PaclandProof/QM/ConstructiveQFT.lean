@@ -12,8 +12,9 @@ is positive). This is clause A's first library: the machinery that assembles the
 
 noncomputable section
 
-open scoped BigOperators Matrix Topology
+open scoped BigOperators Matrix Topology intervalIntegral
 open Filter
+open MeasureTheory
 
 namespace QM
 
@@ -471,6 +472,63 @@ theorem log_gap_to_exp (μ b₀ g γ : ℝ) (hb₀ : 0 < b₀) (hg : 0 < g) (hμ
       rw [div_eq_mul_inv]
       rw [← Real.exp_neg]
       ring
+
+
+
+/-- **The one-loop integral (the NON-TAUTOLOGICAL logarithmic UV divergence).** `∫₀^μ p³/(p⁴+γ⁴) dp =
+(1/4)·log((μ⁴+γ⁴)/γ⁴)` — the exact antiderivative, computed via the fundamental theorem. This is the
+integral that feeds the horizon condition: its LOGARITHMIC divergence, via `log_gap_to_exp`, generates
+the exponential scale. Together with `log_gap_to_exp` this closes the 'integral ⟹ log ⟹ exp' chain: the
+one-loop divergence produces the log, and the log produces the AF exponent. -/
+theorem one_loop_integral_log (μ γ : ℝ) (hμ : 0 < μ) (hγ : 0 < γ) :
+    ∫ p in (0)..μ, p^3 / (p^4 + γ^4) = (4 : ℝ)⁻¹ * Real.log ((μ^4 + γ^4) / γ^4) := by
+  let F := fun p : ℝ => (4 : ℝ)⁻¹ * Real.log (p^4 + γ^4)
+  have hne : ∀ p, p^4 + γ^4 ≠ 0 := by
+    intro p
+    have : 0 < γ^4 := pow_pos hγ 4
+    have : 0 ≤ p^4 := by positivity
+    nlinarith
+  have hF' : ∀ p, HasDerivAt F (p^3 / (p^4 + γ^4)) p := by
+    intro p
+    have hinner : HasDerivAt (fun q : ℝ => q^4 + γ^4) (4 * p^3) p := by
+      simpa using ((hasDerivAt_pow 4 p).add_const (γ^4))
+    have houter : HasDerivAt Real.log ((p^4 + γ^4)⁻¹) (p^4 + γ^4) := Real.hasDerivAt_log (hne p)
+    have hcomp := HasDerivAt.comp p houter hinner
+    have hF := HasDerivAt.const_mul (4 : ℝ)⁻¹ hcomp
+    have hval : (4 : ℝ)⁻¹ * ((p^4 + γ^4)⁻¹ * (4 * p^3)) = p^3 / (p^4 + γ^4) := by
+      field_simp [hne p]
+    simpa [F, hval] using hF
+  have hdiff : ∀ p ∈ Set.uIcc 0 μ, DifferentiableAt ℝ F p := by
+    intro p _
+    exact (hF' p).differentiableAt
+  have hderiv_eq : ∀ p, deriv F p = p^3 / (p^4 + γ^4) := by
+    intro p
+    exact (hF' p).deriv
+  have hcont : ContinuousOn (deriv F) (Set.uIcc 0 μ) := by
+    have hcont' : ContinuousOn (fun p : ℝ => p^3 / (p^4 + γ^4)) (Set.uIcc 0 μ) := by
+      refine Continuous.continuousOn ?_
+      exact (continuous_id.pow 3).div (continuous_id.pow 4 |>.add continuous_const) (fun p => hne p)
+    have hderiv_fun : deriv F = fun p : ℝ => p^3 / (p^4 + γ^4) := by
+      funext p
+      exact hderiv_eq p
+    simpa [hderiv_fun] using hcont'
+  have hinteg : IntervalIntegrable (deriv F) volume 0 μ := hcont.intervalIntegrable
+  have hcong : ∫ p in (0)..μ, p^3 / (p^4 + γ^4) = ∫ p in (0)..μ, deriv F p := by
+    apply intervalIntegral.integral_congr
+    intro p _
+    exact (hderiv_eq p).symm
+  rw [hcong]
+  rw [intervalIntegral.integral_deriv_eq_sub hdiff hinteg]
+  simp only [F]
+  have hz : (0 : ℝ)^4 + γ^4 = γ^4 := by norm_num
+  rw [hz]
+  rw [← mul_sub]
+  congr 1
+  rw [Real.log_div]
+  · have : 0 < γ^4 := pow_pos hγ 4
+    have : 0 ≤ μ^4 := by positivity
+    nlinarith
+  · exact pow_ne_zero 4 (ne_of_gt hγ)
 
 
 
