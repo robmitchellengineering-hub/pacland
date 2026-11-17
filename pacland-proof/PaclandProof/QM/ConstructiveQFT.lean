@@ -320,4 +320,28 @@ Dobrushin / mixing-time bound — it proves `Δ > 0` but is NON-TIGHT: its expon
 mechanism. -/
 theorem mixing_positive (β : ℝ) : 0 < Real.exp (-2 * β) := Real.exp_pos (-2 * β)
 
+/-- **The cluster-expansion convergence (the construction's first rung).** An exponentially-decaying
+sequence of cluster activities (`|φ(n)| ≤ e^{−c·n}`, the polymer weights) gives a convergent series — the
+log-partition function has an infinite-volume limit. This is the analytic core of the Mayer/polymer
+expansion: the cluster weights decay exponentially, so the infinite-volume measure exists (the
+thermodynamic limit of the partition function). -/
+theorem cluster_expansion_converges (activity : ℕ → ℝ) (c : ℝ) (hc : 0 < c)
+    (hdecay : ∀ n : ℕ, |activity n| ≤ Real.exp (-c * (n : ℝ))) :
+    ∃ S : ℝ, Tendsto (fun V : ℕ => (Finset.range V).sum (fun n => activity n)) atTop (𝓝 S) := by
+  have hgeom : Summable (fun n : ℕ => (Real.exp (-c))^n) := by
+    apply summable_geometric_of_norm_lt_one
+    rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos (-c))]
+    exact Real.exp_lt_one_iff.mpr (by linarith [hc])
+  have hexp : (fun n : ℕ => Real.exp (-c * (n : ℝ))) = (fun n : ℕ => (Real.exp (-c))^n) := by
+    funext n
+    rw [show -c * (n : ℝ) = (n : ℝ) * (-c) by ring, Real.exp_nat_mul (-c) n]
+  have hsum : Summable activity := by
+    apply Summable.of_norm_bounded (g := fun n : ℕ => Real.exp (-c * (n : ℝ)))
+    · simpa [← hexp] using hgeom
+    · intro n
+      simpa [Real.norm_eq_abs] using hdecay n
+  exact ⟨∑' n, activity n, hsum.hasSum.tendsto_sum_nat⟩
+
+
+
 end QM
