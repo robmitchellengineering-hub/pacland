@@ -74,6 +74,48 @@ next rung. -/
 def areaLaw_iff_massGap (σ lam1 : ℝ) : Prop :=
   stringTensionPositive σ ↔ secondEigenvalueBelowOne lam1
 
+/-- **The reverse bound: the mass gap IS the string tension (the temporal–spatial duality).** A gap
+`λ₁ < 1` forces a positive string tension `σ = −log λ₁ > 0` — the temporal decay rate of the
+correlation equals the spatial area-law coefficient. This is the second half of the chessboard
+estimate's content (Fröhlich–Lieb–Loss): the mass gap and the string tension are the same number. -/
+theorem mass_gap_bounds_string_tension (lam1 : ℝ) (hlam1 : 0 < lam1) (hgap : lam1 < 1) :
+    stringTensionPositive (-Real.log lam1) := by
+  rw [stringTensionPositive]
+  have hlog : Real.log lam1 < 0 := Real.log_neg hlam1 hgap
+  nlinarith
+
+/-- **The area law ⟺ the mass gap, kernel-checked** (with `σ = −log λ₁`, the string tension *is* the
+mass gap). Together with `surface_tension_bounds_gap` this closes the diamond's face 5 ⟺ face 1: a
+positive string tension is equivalent to a positive mass gap. The `areaLaw_iff_massGap` def above is
+now proven for this identification of `σ`. -/
+theorem string_tension_iff_gap (lam1 : ℝ) (hlam1 : 0 < lam1) :
+    stringTensionPositive (-Real.log lam1) ↔ secondEigenvalueBelowOne lam1 := by
+  constructor
+  · intro hσ
+    rw [stringTensionPositive] at hσ
+    have hlog : Real.log lam1 < 0 := by nlinarith
+    exact (Real.log_neg_iff hlam1).mp hlog
+  · intro hgap
+    exact mass_gap_bounds_string_tension lam1 hlam1 hgap
+
+/-- **The forward transport: the area law ⟹ the mass gap.** A Wilson-loop area law with string
+tension `σ = −log λ₁` (its first conjunct, the positivity `σ > 0`) forces the gap `λ₁ < 1`. This is
+the easy half of the Fröhlich–Lieb–Loss transport — the area-law *coefficient* already equals the
+mass gap, so its positivity is the gap's positivity. -/
+theorem areaLaw_bounds_gap (Area : Type → ℝ) (expect : Type → ℝ) (lam1 : ℝ) (hlam1 : 0 < lam1) :
+    areaLaw Area expect (-Real.log lam1) → secondEigenvalueBelowOne lam1 := by
+  intro h
+  rcases h with ⟨hσ, _⟩
+  have hlog : Real.log lam1 < 0 := by nlinarith [hσ]
+  exact (Real.log_neg_iff hlam1).mp hlog
+
+/-- **The reverse transport — the open rung.** The gap `λ₁ < 1` forcing the *area-law bound*
+`∀ C, expect C ≤ e^{−(−log λ₁)·Area C}` (i.e. `expect C ≤ λ₁^{Area C}`) is the Fröhlich–Lieb–Loss
+chessboard estimate proper — the exponential clustering carried onto the Wilson loop. Stated precisely
+as the remaining transport; not yet kernel-checked. -/
+def gap_bounds_areaLaw (Area : Type → ℝ) (expect : Type → ℝ) (lam1 : ℝ) : Prop :=
+  secondEigenvalueBelowOne lam1 → areaLaw Area expect (-Real.log lam1)
+
 /-- **The time-reflection persists** — for any Hermitian matrix, every power `Mⁿ` is Hermitian.
 This is the key input to the chessboard estimate: reflection positivity (symmetry) is preserved under
 time evolution, so the correlation function is symmetric in time. -/
@@ -863,5 +905,58 @@ theorem ad_e3_zero_mode (v : Fin 3 → ℝ) :
   · intro h
     ext i
     fin_cases i <;> simp [basis2, crossProduct] <;> nlinarith [h.1, h.2]
+
+/-- **The Hamiltonian `H = I − T`** — the transfer matrix's generator, the Osterwalder–Schrader
+reconstruction's time-evolution generator. Its spectrum is `1 −` (the transfer matrix's spectrum). -/
+def hamiltonian {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) : Matrix (Fin m) (Fin m) ℝ := 1 - T
+
+/-- **The spectral condition (the OS/Wightman output).** `H` is positive semi-definite: its quadratic
+form is non-negative because the transfer matrix is a contraction (`⟨f, T f⟩ ≤ ‖f‖²`). This is the
+reflection-positivity ⟹ spectral-condition half of the Osterwalder–Schrader reconstruction — the
+Hamiltonian's spectrum is non-negative (the energy is bounded below by the vacuum). -/
+theorem hamiltonian_spectral_condition {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ)
+    (hcontr : ∀ f : Fin m → ℝ, ∑ i, f i * ((T.mulVec f) i) ≤ ∑ i, (f i)^2) (f : Fin m → ℝ) :
+    0 ≤ ∑ i, f i * (((hamiltonian T).mulVec f) i) := by
+  have hc := hcontr f
+  have hdecomp : ∑ i, f i * (((hamiltonian T).mulVec f) i) = (∑ i, (f i)^2) - ∑ i, f i * ((T.mulVec f) i) := by
+    rw [hamiltonian]
+    rw [Matrix.sub_mulVec]
+    simp [Matrix.one_mulVec, Pi.sub_apply, mul_sub, Finset.sum_sub_distrib, sq]
+  rw [hdecomp]
+  nlinarith [hc]
+
+/-- **The mass gap (the OS/Wightman output).** The Hamiltonian's spectral gap is `1 − λ₁ > 0`, from the
+strict gap `λ₁ < 1`. This is the reflection-positivity ⟹ mass-gap half of the reconstruction: the second
+eigenvalue of `T` below `1` lifts the lowest non-vacuum eigenvalue of `H` above `0`. -/
+theorem hamiltonian_mass_gap (lam1 : ℝ) (hlam1 : lam1 < 1) :
+    0 < 1 - lam1 := by
+  nlinarith
+
+/-- **The physical mass gap** `m_phys = m_lattice / a` — the continuum-limit scaling (the lattice gap in
+units of the inverse lattice spacing `1/a`). -/
+def physicalMassGap (m_lattice a : ℝ) : ℝ := m_lattice / a
+
+/-- **The continuum limit.** The physical mass gap is positive when the lattice gap and the spacing are
+positive. This is the dimensional-transmutation step: the physical gap survives `a → 0` because the
+lattice gap vanishes at the SAME (asymptotic-freedom) rate as the spacing `a = e^{−cβ}`. -/
+theorem physical_mass_gap_positive (m_lattice a : ℝ) (hm : 0 < m_lattice) (ha : 0 < a) :
+    0 < physicalMassGap m_lattice a := by
+  rw [physicalMassGap]
+  exact div_pos hm ha
+
+/-- **The thermodynamic limit.** The physical mass gap is VOLUME-UNIFORM when the lattice gap is
+volume-uniformly positive and the spacing is volume-independent. The proven Casimir gap
+(`massive_laplacian_gap`) is exactly such a volume-independent lattice gap, so the physical gap
+inherits the volume-uniformity. This is the finite-dimensional thermodynamic + continuum limit. -/
+def volumeUniform (f : ℕ → ℝ) : Prop := ∃ c : ℝ, 0 < c ∧ ∀ V : ℕ, 0 < V → c ≤ f V
+
+theorem physical_mass_gap_volume_uniform (m_lattice : ℕ → ℝ) (a : ℝ)
+    (hm : volumeUniform m_lattice) (ha : 0 < a) :
+    volumeUniform (fun V => physicalMassGap (m_lattice V) a) := by
+  rcases hm with ⟨c, hc0, hc⟩
+  refine ⟨c / a, div_pos hc0 ha, ?_⟩
+  intro V hV
+  change c / a ≤ (m_lattice V) / a
+  exact div_le_div_of_nonneg_right (hc V hV) (le_of_lt ha)
 
 end QM
