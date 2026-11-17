@@ -261,4 +261,55 @@ theorem mixing_gap_bound {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (δ : ℝ)
 
 
 
+/-- **The spread is positive on non-constant vectors** — `Σᵢⱼ (xᵢ−xⱼ)² > 0` whenever some `xᵢ ≠ xⱼ`. This is
+the geometric input that turns the mixing gap bound into a strict gap. -/
+theorem spread_pos_of_nonconstant {m : ℕ} (x : Fin m → ℝ) (hnonconst : ∃ i j : Fin m, x i ≠ x j) :
+    0 < ∑ i : Fin m, ∑ j : Fin m, (x i - x j)^2 := by
+  rcases hnonconst with ⟨i₀, j₀, hneq⟩
+  have hterm : 0 < (x i₀ - x j₀)^2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hneq)
+  have hinner : (x i₀ - x j₀)^2 ≤ ∑ j : Fin m, (x i₀ - x j)^2 :=
+    Finset.single_le_sum (fun j hj => sq_nonneg (x i₀ - x j)) (Finset.mem_univ j₀)
+  have houter : ∑ j : Fin m, (x i₀ - x j)^2 ≤ ∑ i : Fin m, ∑ j : Fin m, (x i - x j)^2 :=
+    Finset.single_le_sum (fun i hi => Finset.sum_nonneg (fun j hj => sq_nonneg (x i - x j))) (Finset.mem_univ i₀)
+  exact lt_of_lt_of_le hterm (le_trans hinner houter)
+
+/-- **The finite-dimensional mass gap.** For a mixing transfer matrix (`δ > 0`, the physical input —
+the mixing positivity) and a non-constant vector, the Hamiltonian's quadratic form is `⟨x, (I−T)x⟩ ≥
+(δ/2)·Σᵢⱼ (xᵢ−xⱼ)² > 0`. This is the mass-gap clause at the finite-volume level: the mechanism (the
+Dirichlet identity) turns the mixing positivity `δ > 0` into `Δ > 0`. The remaining open input is
+proving `δ > 0` uniformly for 4D YM. -/
+theorem mass_gap_from_mixing {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (δ : ℝ)
+    (hδ : ∀ i j, δ ≤ T i j) (hδ0 : 0 < δ) (hrow : ∀ i, ∑ j : Fin m, T i j = 1)
+    (hsymm : ∀ i j, T i j = T j i) (x : Fin m → ℝ) (hnonconst : ∃ i j : Fin m, x i ≠ x j) :
+    0 < ∑ i : Fin m, x i * ((x i) - ∑ j : Fin m, T i j * x j) := by
+  have hdir : ∑ i : Fin m, x i * ((x i) - ∑ j : Fin m, T i j * x j)
+      = (1/2) * ∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2 := by
+    calc
+      ∑ i : Fin m, x i * ((x i) - ∑ j : Fin m, T i j * x j)
+        = ∑ i : Fin m, ((x i)^2 - x i * ∑ j : Fin m, T i j * x j) := by
+            apply Finset.sum_congr rfl; intro i hi; ring
+      _ = (∑ i : Fin m, (x i)^2) - (∑ i : Fin m, x i * ∑ j : Fin m, T i j * x j) := by
+            rw [Finset.sum_sub_distrib]
+      _ = (1/2) * ∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2 := by
+            rw [dirichlet_identity T hrow hsymm x]
+            ring
+  rw [hdir]
+  have hle : (δ/2) * (∑ i : Fin m, ∑ j : Fin m, (x i - x j)^2)
+      ≤ (1/2) * (∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2) := by
+    have hδ' : ∀ i j, δ * (x i - x j)^2 ≤ T i j * (x i - x j)^2 := by
+      intro i j
+      exact mul_le_mul_of_nonneg_right (hδ i j) (sq_nonneg _)
+    have hsum : δ * (∑ i : Fin m, ∑ j : Fin m, (x i - x j)^2) ≤ ∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2 := by
+      calc
+        δ * (∑ i : Fin m, ∑ j : Fin m, (x i - x j)^2) = ∑ i : Fin m, ∑ j : Fin m, δ * (x i - x j)^2 := by
+            simp [Finset.mul_sum, mul_comm, mul_left_comm, mul_assoc]
+        _ ≤ ∑ i : Fin m, ∑ j : Fin m, T i j * (x i - x j)^2 := by
+            apply Finset.sum_le_sum; intro i hi
+            apply Finset.sum_le_sum; intro j hj
+            exact hδ' i j
+    nlinarith [hsum]
+  exact lt_of_lt_of_le (mul_pos (div_pos hδ0 (by norm_num)) (spread_pos_of_nonconstant x hnonconst)) hle
+
+
+
 end QM
