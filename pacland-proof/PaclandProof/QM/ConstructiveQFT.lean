@@ -12,7 +12,8 @@ is positive). This is clause A's first library: the machinery that assembles the
 
 noncomputable section
 
-open scoped BigOperators Matrix
+open scoped BigOperators Matrix Topology
+open Filter
 
 namespace QM
 
@@ -47,5 +48,23 @@ theorem os_reconstruction_spectral_condition {m : ℕ} (T : Matrix (Fin m) (Fin 
 of the OS axioms plus the strict positivity) gives the mass gap `1 − λ₁ > 0`. -/
 theorem os_reconstruction_mass_gap (lam1 : ℝ) (hlam1 : lam1 < 1) :
     0 < 1 - lam1 := hamiltonian_mass_gap lam1 hlam1
+
+/-- **The thermodynamic limit (the construction's infinite-volume passage).** A monotone-decreasing
+finite-volume gap `m(V)` (the transfer matrix's `1 − λ₁(V)`, non-increasing in the volume), bounded
+below by `c > 0` (the volume-uniformity — the Casimir gap is exactly such a lower bound), converges to
+a positive limit: the mass gap survives `V → ∞`. This is the monotone-convergence step of the
+construction — the finite gaps have a limit, and the limit is positive when the gap is volume-uniform. -/
+theorem thermodynamic_limit_mass_gap (m : ℕ → ℝ)
+    (hmono : Antitone m)
+    (hbounded : ∃ c : ℝ, 0 < c ∧ ∀ V : ℕ, c ≤ m V) :
+    ∃ mlim : ℝ, Tendsto m atTop (𝓝 mlim) ∧ 0 < mlim := by
+  rcases hbounded with ⟨c, hc0, hc⟩
+  have hbdd : BddBelow (Set.range m) := ⟨c, by
+    rintro y ⟨V, rfl⟩
+    exact hc V⟩
+  let mlim : ℝ := iInf (fun i : ℕ => m i)
+  refine ⟨mlim, tendsto_atTop_ciInf hmono hbdd, ?_⟩
+  have hle : c ≤ mlim := le_ciInf hc
+  exact lt_of_lt_of_le hc0 hle
 
 end QM
