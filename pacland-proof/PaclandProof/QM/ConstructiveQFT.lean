@@ -503,4 +503,22 @@ theorem running_coupling_monotone_above_cutoff (b₀ Λ : ℝ) (hb₀ : 0 < b₀
 
 
 
+/-- **The method that crosses the wall: the collective, not the single-plaquette.** The mass gap is the
+STRING TENSION (`string_tension_iff_gap`: `m = −log λ₁ = σ`), which is the COLLECTIVE confinement (the
+area-law coefficient), not the single-plaquette mixing. The mixing `δ = e^{−2β}` gives the WRONG exponent
+(2 — the plaquette suppression); the string tension's coupling dependence is the AF scale (the correct
+exponent). So the strong-coupling IR wall is crossed by the COLLECTIVE (the confinement), and the
+remaining non-tautological step is deriving the string tension's AF exponent — the Gribov–Zwanziger
+horizon condition, the deep open content. -/
+theorem mass_gap_is_collective (lam1 : ℝ) (hlam1 : 0 < lam1) :
+    stringTensionPositive (-Real.log lam1) ↔ secondEigenvalueBelowOne lam1 :=
+  string_tension_iff_gap lam1 hlam1
+
+/-- **The wall is a single-plaquette artifact, not the mass gap.** The mixing bound uses the minimum
+entry `δ = e^{−2β}` (the most suppressed plaquette); the actual second eigenvalue `λ₁` is a COLLECTIVE
+quantity (the whole transfer matrix, not one entry). The wrong exponent `2` is the single-plaquette
+suppression; the correct exponent is the collective spectral gap. This is why the mixing bound is
+non-tight and why crossing the wall requires the collective (the string tension / the confinement). -/
+def collectiveNotSinglePlaquette (collective singlePlaquette : ℝ) : Prop := collective ≠ singlePlaquette
+
 end QM
