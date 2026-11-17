@@ -78,6 +78,8 @@ CANDIDATES = [
      "log β — the cluster/polymer expansion gives a log, not the exponential"),
     ("mixing rate δ = e^{−2β}", mixing_rate,
      "exponential but NON-TIGHT — exponent 2 ≠ the referee's 1.182 (the Dobrushin/mixing bound)"),
+    ("asymptotic-freedom scale e^{−cβ} (c = 12π²/11)", lambda b: math.exp(-(12*math.pi**2/11)*b),
+     "the KNOWN beta-function input — the correct exponent, not a search result (Gross–Wilczek–Politzer)"),
 ]
 
 
