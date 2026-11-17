@@ -24,6 +24,8 @@ import sys
 
 import numpy as np
 
+from pacland.tn_backend import TNQuantumCircuit
+
 H = np.array([[1, 1], [1, -1]], dtype=complex) / math.sqrt(2)
 X = np.array([[0, 1], [1, 0]], dtype=complex)
 Y = np.array([[0, -1j], [1j, 0]], dtype=complex)
@@ -108,24 +110,24 @@ class QuantumCircuit:
         return [format(r, f"0{self.n}b") for r in out], p
 
 
-def bell():
+def bell(cls=QuantumCircuit):
     """The Bell state (|00⟩+|11⟩)/√2 — the simplest entanglement, measured perfectly correlated."""
-    c = QuantumCircuit(2)
+    c = cls(2)
     c.apply_gate("H", 0).apply_cnot(0, 1)
     return c
 
 
-def superposition():
+def superposition(cls=QuantumCircuit):
     """One Hadamard — a single qubit in equal superposition of |0⟩ and |1⟩."""
-    c = QuantumCircuit(1)
+    c = cls(1)
     c.apply_gate("H", 0)
     return c
 
 
-def grover(iterations: int = 1):
+def grover(iterations: int = 1, cls=QuantumCircuit):
     """Grover's search on 2 qubits (4 items) for the marked state |11⟩. One iteration
     amplifies |11⟩ to probability 1."""
-    c = QuantumCircuit(2)
+    c = cls(2)
     c.apply_gate("H", 0).apply_gate("H", 1)          # uniform superposition
     for _ in range(iterations):
         c.apply_cz(0, 1)                              # oracle: phase-flip |11⟩ (the mark)
@@ -138,28 +140,32 @@ def grover(iterations: int = 1):
     return c
 
 
-def ghz(n: int = 3):
-    """The GHZ state (|0…0⟩ + |1…1⟩)/√2 — n-qubit entanglement, measured all-equal."""
-    c = QuantumCircuit(n)
+def ghz(n: int = 3, cls=QuantumCircuit):
+    """The GHZ state (|0…0⟩ + |1…1⟩)/√2 — n-qubit entanglement, measured all-equal.
+
+    Built with a chain of ADJACENT CNOTs (H on 0, then CNOT(q,q+1)) — O(n) gates and bond
+    dimension stays 2, so the tn backend reaches tens of thousands of qubits. (The naive
+    CNOT(0,q) star construction is O(n²) swaps and was the reason the demo stopped at 64.)"""
+    c = cls(n)
     c.apply_gate("H", 0)
-    for q in range(1, n):
-        c.apply_cnot(0, q)
+    for q in range(n - 1):
+        c.apply_cnot(q, q + 1)
     return c
 
 
-def qft2():
+def qft2(cls=QuantumCircuit):
     """The 2-qubit quantum Fourier transform. On |00⟩ it yields the uniform superposition."""
-    c = QuantumCircuit(2)
+    c = cls(2)
     c.apply_gate("H", 0)
     c.apply_cphase(0, 1, math.pi / 2)  # controlled-S
     c.apply_gate("H", 1)
     return c
 
 
-def teleport():
+def teleport(cls=QuantumCircuit):
     """Teleport |1⟩ from qubit 0 to qubit 2 through a Bell pair (the full protocol with
     Alice's measurement and Bob's conditional corrections)."""
-    c = QuantumCircuit(3)
+    c = cls(3)
     c.apply_gate("X", 0)            # the state to teleport: |ψ⟩ = |1⟩
     c.apply_gate("H", 1)            # Bell pair (|00⟩+|11⟩)/√2 on qubits 1,2
     c.apply_cnot(1, 2)
@@ -174,14 +180,14 @@ def teleport():
     return c
 
 
-def qec_bitflip():
+def qec_bitflip(cls=QuantumCircuit):
     """The 3-qubit repetition code: encode |1⟩ → |111⟩, flip one qubit, then correct.
 
     A single bit-flip on any one qubit leaves two of the three correct, so a majority vote
     recovers the logical bit. Honest note: the correction here is the classical majority vote —
     the encoding (CNOTs) is the quantum part. The measured state is the known error |101⟩.
     """
-    c = QuantumCircuit(3)
+    c = cls(3)
     c.apply_gate("X", 0)            # logical |1⟩
     c.apply_cnot(0, 1)              # encode → |111⟩
     c.apply_cnot(0, 2)
@@ -193,17 +199,34 @@ PROGRAMS = {"bell": bell, "superposition": superposition, "grover": grover,
             "ghz": ghz, "qft2": qft2, "teleport": teleport, "qec": qec_bitflip}
 
 
-def _run(program: str, shots: int) -> int:
-    c = PROGRAMS[program]()
+def _run(program: str, shots: int, backend: str, qubits: int) -> int:
+    cls = TNQuantumCircuit if backend == "tn" else QuantumCircuit
+    if program == "ghz":
+        c = PROGRAMS[program](n=qubits, cls=cls)
+    else:
+        c = PROGRAMS[program](cls=cls)
     results, probs = c.measure(shots)
     counts: dict[str, int] = {}
     for r in results:
         counts[r] = counts.get(r, 0) + 1
-    print(f"{program}: {shots} shots on {c.n} qubit(s)")
-    for bits, p in sorted(zip([format(i, f'0{c.n}b') for i in range(2 ** c.n)], probs),
-                          key=lambda t: -t[1]):
-        got = counts.get(bits, 0)
-        print(f"  |{bits}>  P={p:.4f}   observed {got}/{shots} ({got/shots:.4f})")
+    print(f"{program}: {shots} shots on {c.n} qubit(s) [{backend} backend]")
+    if backend == "tn" and probs is None:
+        # large n: no full distribution — print the observed histogram instead (bitstrings truncated)
+        for bits, cnt in sorted(counts.items(), key=lambda t: -t[1])[:10]:
+            disp = bits if len(bits) <= 48 else bits[:12] + "…" + bits[-12:] + f" ({len(bits)} bits)"
+            print(f"  |{disp}>  observed {cnt}/{shots} ({cnt/shots:.4f})")
+    else:
+        for bits, p in sorted(zip([format(i, f'0{c.n}b') for i in range(2 ** c.n)], probs),
+                              key=lambda t: -t[1]):
+            got = counts.get(bits, 0)
+            print(f"  |{bits}>  P={p:.4f}   observed {got}/{shots} ({got/shots:.4f})")
+    if backend == "tn":
+        r = c.report()
+        log10_sv = c.n * math.log10(2) + math.log10(16)  # 2^n · 16 bytes, as 10^x (no float overflow)
+        print(f"  area-law gate: max bond dim D={r['max_bond_dim']} "
+              f"(volume-law ceiling 2^(n/2)=2^{c.n // 2}), "
+              f"central-cut Schmidt rank={r['central_cut_schmidt_rank']}, "
+              f"MPS {r['mps_bytes']/1024:.1f} KB vs state-vector 10^{log10_sv:.1f} bytes")
     return 0
 
 
@@ -211,8 +234,12 @@ def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description="A working quantum computer (simulated).")
     ap.add_argument("program", choices=sorted(PROGRAMS))
     ap.add_argument("--shots", type=int, default=1000)
+    ap.add_argument("--backend", choices=["statevector", "tn"], default="statevector",
+                    help="statevector (2^n, ~30-qubit ceiling) or tn (exact MPS, past 30 for low-entanglement)")
+    ap.add_argument("--qubits", type=int, default=3,
+                    help="number of qubits for `ghz` (ignored by the other programs)")
     args = ap.parse_args(argv)
-    return _run(args.program, args.shots)
+    return _run(args.program, args.shots, args.backend, args.qubits)
 
 
 if __name__ == "__main__":
