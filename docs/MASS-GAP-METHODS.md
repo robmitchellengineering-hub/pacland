@@ -37,6 +37,9 @@ single distinction — power law vs exponential — is what the whole reduction 
 All of the following live in `pacland-proof/PaclandProof/QM/`, import into `PaclandProof.lean`,
 and are checked by the full `lake build` (9157 jobs, exit 0).
 
+CAVEAT: `T` in `YMHypotheses` / `mass_gap_from_hypotheses` is a finite `Fin m × Fin m` matrix — a
+DISCRETISATION of the transfer operator, NOT the infinite-dimensional `SU(2)^E` operator.
+
 ### 3.1 The transfer-matrix diamond (`MassGapDiamond.lean`)
 
 The six equivalent faces of the mass gap, proven equivalent through the spectral theorem:
@@ -87,18 +90,17 @@ The exponential `Λ(β) = e^{−cβ}` cancels out; it is the known beta function
 
 ### 3.4 The Coulomb route, corrected (`MassGapDiamond.lean`)
 
-The confinement mechanism, kernel-checked end to end:
+The confinement mechanism — **checked** vs **modelled** (NOT "end to end"):
 
+**Checked (kernel, no `sorry`):**
 ```
-[·,·] ≠ 0                              (crossProduct_ne_zero — the 𝔰𝔲(2) bracket is non-trivial)
-  →  Casimir −Σᵢ ad(eᵢ)² = −2·id       (casimir_su2 — the commutator squared is negative-definite)
-  →  Faddeev–Popov constant-mode gap 2  (faddeevPopov_constant_mode_gap)
-  →  full-operator gap ≥ m²             (massive_laplacian_gap)
-  →  zero mode = the Cartan             (ad_e3_zero_mode — the Gribov copy)
-  →  IR suppression G(0) = 0            (gribov_ir_suppression — the horizon)
-  →  1/p⁴ singularity                   (gribov_confinement)
-  →  linear Coulomb potential σ_Coul > 0 (the confinement)
+[·,·] ≠ 0 → Casimir −2·id → FP constant-mode gap 2 → full-operator gap ≥ m² → zero mode = Cartan
 ```
+**Modelled (the `M(p) = p²` choice, NOT derived from the FP operator):**
+```
+IR suppression G(0) = 0 (gribovGhost_zero) → 1/p⁴ (gribov_confinement) → linear potential σ_Coul > 0
+```
+**Open:** the horizon condition — deriving `M(p)` from the Faddeev–Popov operator.
 
 with the Abelian / massive side proven *deconfining*:
 

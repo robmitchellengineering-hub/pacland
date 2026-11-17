@@ -857,8 +857,9 @@ theorem massive_laplacian_gap {n : ℕ} (L : Matrix (Fin n) (Fin n) ℝ) (m2 : �
   rw [hdecomp]
   nlinarith [hquad_f, hm]
 
-/-- The ghost form factor `M(p)` — the Faddeev–Popov eigenvalue as a function of momentum. The
-IR-suppressed (Gribov horizon) form `M(p) = p²`, vanishing at `p = 0`. -/
+/-- **MODEL** ghost form factor `M(p)`. `M(p) = p²` is CHOSEN to vanish at `p = 0` (the Gribov-horizon
+model), NOT derived from the Faddeev–Popov operator. Deriving `M(p)` from the FP operator is the open
+horizon condition. -/
 def gribovGhost (p : ℝ) : ℝ := p^2
 /-- The massive (Yukawa/Casimir) form `M(p) = m²`, finite at `p = 0`. -/
 def yukawaGhost (m p : ℝ) : ℝ := m^2
@@ -867,15 +868,16 @@ def yukawaGhost (m p : ℝ) : ℝ := m^2
 times the ghost form factor. -/
 def coulombPotential (M : ℝ → ℝ) (p : ℝ) : ℝ := 1 / (p^2 * M p)
 
-/-- **The IR suppression (the horizon)**: the Gribov ghost form factor vanishes at zero momentum. -/
-theorem gribov_ir_suppression : gribovGhost 0 = 0 := by simp [gribovGhost]
+/-- **The model vanishes at zero momentum** — a consequence of the CHOSEN `M(p) = p²`, not a derived
+horizon condition. -/
+theorem gribovGhost_zero : gribovGhost 0 = 0 := by simp [gribovGhost]
 
 /-- **The mass (no suppression)**: the Yukawa form factor is finite at zero momentum. -/
 theorem yukawa_no_suppression (m : ℝ) : yukawaGhost m 0 = m^2 := by simp [yukawaGhost]
 
-/-- **The confinement**: the IR suppression gives the `1/p⁴` singularity in the Coulomb potential —
-whose Fourier transform is the LINEAR potential (the confinement, `σ_Coul > 0`). This is the actual
-Gribov–Zwanziger mechanism: `G(0) = 0` (the horizon) confines. -/
+/-- **Algebra on the `M(p) = p²` model**: `coulombPotential gribovGhost p = 1/p⁴`. The `1/p⁴`
+singularity (hence the linear potential) is a consequence of the CHOSEN `M(p) = p²`; it is NOT derived
+from the Faddeev–Popov operator — that requires the open horizon condition. -/
 theorem gribov_confinement (p : ℝ) (hp : p ≠ 0) :
     coulombPotential gribovGhost p = 1 / p^4 := by
   simp [coulombPotential, gribovGhost, pow_succ]

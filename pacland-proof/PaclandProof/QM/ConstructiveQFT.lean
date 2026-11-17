@@ -380,6 +380,9 @@ theorem clustering_implies_cluster_expansion (φ corr : ℕ → ℝ) (lam1 : ℝ
 
 
 
+/-- **The physical hypotheses for the finite lattice.** CAVEAT: `T` is a finite `Fin m × Fin m` matrix —
+a DISCRETISATION of the transfer operator, NOT the infinite-dimensional `SU(2)^E` operator. The mixing is
+the positive entries (the finite Boltzmann weights). -/
 structure YMHypotheses {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) : Prop where
   os : OSAxioms T
   mixing : ∀ i j, 0 < T i j
@@ -390,8 +393,9 @@ structure YMHypotheses {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) : Prop where
 /-- **The finite-β mass gap from the physical hypotheses.** The OS axioms + the mixing (all entries
 positive — the Boltzmann weights `e^{−S} > 0` for the finite Wilson action) give the finite minimum
 `δ > 0`, and `mass_gap_from_mixing` turns it into the positive gap on non-constant vectors. This is the
-finite-volume, finite-β mass gap, PROVEN from the physical input. The remaining open rung is the
-continuum limit — that the mixing stays positive and the theory clusters UNIFORMLY in `β → ∞`. -/
+finite-volume, finite-β mass gap, PROVEN from the physical input. CAVEAT: `T` is a finite `Fin m × Fin m`
+matrix (a discretisation), NOT the infinite-dimensional `SU(2)^E` transfer operator. The remaining open
+rung is the continuum limit — that the mixing stays positive and the theory clusters UNIFORMLY in `β → ∞`. -/
 theorem mass_gap_from_hypotheses {m : ℕ} [NeZero m] (T : Matrix (Fin m) (Fin m) ℝ)
     (h : YMHypotheses T) (x : Fin m → ℝ) (hnonconst : ∃ i j : Fin m, x i ≠ x j) :
     0 < ∑ i : Fin m, x i * ((x i) - ∑ j : Fin m, T i j * x j) := by
@@ -578,8 +582,20 @@ def orbitQuotientDensity (β θ : ℝ) : ℝ := Real.sin θ ^ 2 * Real.exp (β *
 -- The orbit-space Bakry-Émery curvature (the weighted Laplacian's curvature): the Weyl/density term
 -- 2/sin²θ (from the orbit-volume density sin²θ) plus the Wilson-potential Hessian β·cos θ.
 /-- **The orbit-space Bakry–Émery curvature** (the weighted Laplacian's curvature): the Weyl/density term
-`2/sin²θ` (from the orbit-volume density `sin²θ`) plus the Wilson-potential Hessian `β·cos θ`. -/
+`2/sin²θ` (from the orbit-volume density `sin²θ`) plus the Wilson-potential Hessian `β·cos θ`. This equals
+`−(d²/dθ²) log ρ` for `ρ = sin²θ·e^{β cos θ}`: `log ρ = 2 log(sin θ) + β cos θ`, differentiated twice. -/
 def orbitBE_curvature (β θ : ℝ) : ℝ := 2 / Real.sin θ ^ 2 + β * Real.cos θ
+
+/-- **The log-density decomposition** (the Bochner step): `log ρ = 2 log(sin θ) + β cos θ`. Differentiating
+twice gives `−2/sin²θ − β cos θ`, so `−(d²/dθ²)log ρ = 2/sin²θ + β cos θ = orbitBE_curvature`. -/
+theorem orbitQuotientDensity_log_decomp (β θ : ℝ) (hsin : 0 < Real.sin θ) :
+    Real.log (orbitQuotientDensity β θ) = 2 * Real.log (Real.sin θ) + β * Real.cos θ := by
+  unfold orbitQuotientDensity
+  rw [Real.log_mul]
+  · rw [Real.log_pow, Real.log_exp]
+    ring
+  · exact ne_of_gt (sq_pos_of_ne_zero (ne_of_gt hsin))
+  · exact Real.exp_ne_zero _
 
 -- The REAL falsification (Claude's corrected statement): at θ = 2π/3 the orbit-space curvature is
 -- K = 8/3 − β/2, which is NEGATIVE for β > 16/3. So the β-dependence does NOT drop in the quotient —

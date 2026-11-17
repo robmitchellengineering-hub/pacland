@@ -79,7 +79,7 @@ contraction → strict gap → chessboard → string tension → Gribov–Zwanzi
 - `BakryEmery.lean` — Γ₂-calculus: `carreDuChamp`, `Gamma2`, `BakryEmeryCondition`, and the final
   `bakryEmery_spectral_gap_bochner` (CONDITIONAL on `hBE`).
 - `LogSobolev.lean` — log-Sobolev ⟹ Poincaré.
-- `OrbitSpectralGap.lean` — `orbit_spectral_gap_coefficient` (∃ κ > 0), `orbit_spectral_gap_derived`.
+- `OrbitSpectralGap.lean` — `orbit_bracket_witness_pos` (∃ κ > 0), `orbit_bracket_witness_pos_inv`.
 - `GaugeOrbit.lean` — `trace_conj_inv`, `wilsonWeight_gauge_inv`, `orbit_curvature_uniform_gap`
   (CONDITIONAL on `hBE`), `orbit_space_no_ceiling`.
 
@@ -105,7 +105,7 @@ curvature bound)".
 
 **Claude's full findings (correct; the remaining Lean cleanups are now done — see the files):**
 
-1. `orbit_spectral_gap_derived` and `orbit_spectral_gap_coefficient` are **VACUOUS** (`∃ κ > 0`, satisfied by κ = 1) — they mention no operator, measure, or gap. Docstrings now say so.
+1. `orbit_bracket_witness_pos_inv` and `orbit_bracket_witness_pos` are **VACUOUS** (`∃ κ > 0`, satisfied by κ = 1) — they mention no operator, measure, or gap. Docstrings now say so.
 2. The "derived orbit curvature" is only `aTensor_nonzero` (`[T₁,T₂] = T₃`); no orbit space, metric, or O'Neill submersion is defined. `connection_space_flat` is `0 = 0`; `kinetic_metric_pos_def` is `0 ≤ ‖α‖²`; `oneill_sectional_curvature` is `K + ¾KA ≥ K`. All trivial/tautological.
 3. `orbit_curvature_uniform_gap` is a **relabelling**: Γ, Γ₂, L are free variables, `hBE` is assumed, and the proof just calls `bakryEmery_spectral_gap_bochner` — which gives `E[fL²f] ≥ κE[−fLf]`, NOT `λ ≥ κ` (the eigenfunction step is missing). BakryEmery also works over a `Fintype`, not a manifold.
 4. The earlier `full_curvature_not_beta_independent` was a **TOY** (arithmetic on `wilsonHessian`/`bakryEmeryCurvature` definitions) and **overstated** (negative BE curvature only kills the *sufficient condition*, not the gap).
@@ -122,7 +122,7 @@ curvature bound)".
 - **PR #601** — MERGED (the 22-commit mass-gap tower: search harness, constructive-QFT library,
   Dirichlet/mixing/finite-β mass gap, cluster expansion, physical hypotheses, AF sign, RG boundary).
 - **PR #602** — OPEN — `feat/gap-equation`: the gap equation + `log_gap_to_exp` + `one_loop_integral_log`
-  + the real orbit-space falsification (`orbitBE_fails_for_large_beta`). Head `dcd2ead`.
+  + the real orbit-space falsification (`orbitBE_fails_for_large_beta`). See PR #602.
 
 Build: `lake build` green at **9158 jobs**, no `sorry`. Env: `export PATH="$HOME/.elan/bin:$PATH"`
 then `cd /tmp/pacland-os-exist/pacland-proof && lake build`.
@@ -139,7 +139,7 @@ is falsified. The geometric route is vacuous/overclaimed, not a Clay-crossing ca
 corrected. What remains, per Claude's redirect:
 
 1. **Fix the target.** A β-uniform *lattice-unit* bound is impossible (m(β) → 0). The real goal is the
-   PHYSICAL gap: `Δ(β) ≥ c·a·Λ(β)` (gap × spacing = β-independent physical scale). Formalize this as the
+   PHYSICAL gap: `m_phys = Δ_lat/a ≥ c·Λ`, so `Δ_lat ≥ c·a·Λ(β)` (the lattice gap bound scales as spacing × physical scale). Formalize this as the
    correct statement, with `a·Λ(β)` the lattice spacing / AF scale.
 2. **Uniform-in-volume gap at small β** (Holley–Stroock / SZZ strong coupling) — a genuinely new theorem:
    the finite-volume gap is bounded below UNIFORMLY in the volume at strong coupling (small β), before the

@@ -30,11 +30,10 @@ uniformly in the volume. The exponential `e^{−cβ}` is identified as the known
 Against a lattice referee (`m(β) = 25.28·e^{−1.182β}`, `m/√σ ≈ 3.2`), we falsify the candidate
 mechanisms that fail — the plaquette concentration (power law `1/β`), the cluster expansion (`log β`),
 the Dobrushin coupling (dies at the ceiling), and the chessboard surface-tension bound (circular) —
-and we prove, kernel-checked with no `sorry`, the finite-dimensional Gribov–Zwanziger confinement
-mechanism: non-commutativity of the gauge group → the Cartan zero mode → the IR suppression
-`G(0) = 0` → the `1/p⁴` singularity → the linear Coulomb potential. We correct an earlier step by
-showing the Casimir *mass* is deconfining (Yukawa), while the *IR suppression* is the confining
-mechanism.
+we kernel-check (no `sorry`) the Casimir → Faddeev–Popov constant-mode gap → positive-semidefinite
+transport chain, and MODEL (`M(p) = p²` chosen, NOT derived) the IR suppression `G(0) = 0` → the `1/p⁴`
+singularity → the linear Coulomb potential. We correct an earlier step by showing the Casimir *mass* is
+deconfining (Yukawa), while the *IR suppression* is the confining mechanism. Open: the horizon condition.
 
 **We do not prove the mass gap.** The remaining rung — the infinite-dimensional horizon condition
 (`γ > 0` for the full Faddeev–Popov operator) — is stated precisely and left open.
@@ -70,8 +69,8 @@ mechanism.
 6. **The reduction** — dimensional transmutation `m = C·Λ`; `refereeScalingLaw ⟺ C > 0`
    volume-uniformly; the exponential is known, the ratio is the open content.
 7. **The Coulomb route, corrected** — the Casimir mass deconfines (Yukawa `1/p²`); the Gribov horizon's
-   IR suppression confines (`G(0) = 0` → `1/p⁴` → linear potential); the finite-dimensional chain
-   kernel-checked.
+   IR suppression confines (`G(0) = 0` → `1/p⁴` → linear potential). Checked: Casimir → FP gap → PSD
+   transport. Modelled: IR suppression → 1/p⁴. Open: the horizon condition.
 8. **The falsifications** — the table of eliminated candidates and why.
 9. **The open rung** — the infinite-dimensional horizon condition, stated precisely.
 10. **The honest boundary** — proven vs assumed vs open.
