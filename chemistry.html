@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certified Chemistry — Pacland</title>
+<meta name="description" content="Molecular ground-state energies computed with DMRG, with a machine-checked proof the answer has converged.">
+<style>
+  :root { --ink:#1a1f2e; --muted:#5a6072; --accent:#142a5e; --accent2:#0b5cad; --line:#e3e6ee; --bg:#fbfbfd; --soft:#f2f5fa; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+         color:var(--ink); background:var(--bg); line-height:1.6; }
+  .wrap { max-width:760px; margin:0 auto; padding:0 1.5rem; }
+  header { background:var(--accent); color:#fff; padding:3rem 0 2.4rem; }
+  header .kicker { font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:#9fb0d8; margin:0 0 .6rem; }
+  header h1 { margin:0 0 .4rem; font-size:2rem; letter-spacing:-.02em; }
+  header p { color:#c7d2ee; margin:.3rem 0 0; max-width:600px; }
+  header a { color:#fff; }
+  main { padding:2rem 0 3rem; }
+  h2 { font-size:1.3rem; color:var(--accent); margin:2.2rem 0 .5rem; }
+  p { margin:0 0 1rem; }
+  .lead { font-size:1.05rem; color:var(--muted); }
+  ol.steps { margin:0 0 1rem; padding-left:0; list-style:none; counter-reset:step; }
+  ol.steps li { position:relative; padding-left:38px; margin-bottom:14px; counter-increment:step; }
+  ol.steps li::before { content:counter(step); position:absolute; left:0; top:2px;
+      width:24px; height:24px; border-radius:50%; background:var(--accent2); color:#fff;
+      font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin:18px 0; }
+  .card { background:var(--soft); border:1px solid var(--line); border-radius:12px; padding:18px; }
+  .card .caption { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:0 0 8px; }
+  .card .big { font-size:24px; font-weight:700; color:var(--accent2); line-height:1.15; }
+  .card .label { font-size:14px; color:var(--muted); margin-top:6px; }
+  .scope { background:var(--soft); border:1px solid var(--line); border-radius:12px; padding:18px 20px; }
+  .scope ul { margin:0; padding-left:18px; }
+  .scope li { margin-bottom:8px; }
+  .next { background:var(--accent); color:#fff; border-radius:12px; padding:20px 22px; }
+  .next h2 { color:#fff; margin:0 0 8px; }
+  .next p { color:#c7d2ee; margin:0; }
+  .next a { color:#fff; }
+  footer { border-top:1px solid var(--line); padding:1.5rem 0 2.5rem; color:var(--muted); font-size:.85rem; }
+  footer a { color:var(--accent2); }
+  code { background:#eef1f6; padding:.1rem .4rem; border-radius:5px; font-size:.92em; }
+  a { color:var(--accent2); overflow-wrap:anywhere; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">Pacland · capability</p>
+    <h1>Certified Chemistry</h1>
+    <p>Molecular ground-state energies, computed with the density matrix renormalization group
+    (DMRG) and delivered with a machine-checked proof of convergence.</p>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <p class="lead">Standard chemistry methods fail on strongly-correlated systems: transition-metal
+  catalysts, battery cathodes, enzyme active sites. The method that handles them is DMRG. We run it
+  and attach a certificate proving the result is correct, not just plausible.</p>
+
+  <h2>The problem</h2>
+  <p>Density-functional theory and Hartree&#8211;Fock break on strongly-correlated molecules. DMRG
+  handles them, but it returns an energy without telling you whether the answer has converged. You
+  are asked to trust a number with no proof. A wrong energy is a failed synthesis, not a rerun.</p>
+
+  <h2>What we do</h2>
+  <ol class="steps">
+    <li><strong>Compute the energy.</strong> Run DMRG at increasing bond dimension. The energy
+    converges from above as the representation improves.</li>
+    <li><strong>Prove it has converged.</strong> The certificate records the sweep. When the energy
+    stops changing, the bond dimension was sufficient, and the certificate says so.</li>
+    <li><strong>Make it re-runnable.</strong> One command re-runs the calculation and confirms the
+    energy, offline. A forged or drifted result is refused.</li>
+  </ol>
+
+  <h2>Evidence</h2>
+  <div class="cards">
+    <div class="card">
+      <p class="caption">Result</p>
+      <div class="big">&#8722;1.137270</div>
+      <div class="label">the H&#8322; ground-state energy in Hartree (STO-3G), matching the exact
+      reference to 7&#215;10&#8315;&#185;&#8310;.</div>
+    </div>
+    <div class="card">
+      <p class="caption">Proof</p>
+      <div class="big">D-sweep</div>
+      <div class="label">energy versus bond dimension, recorded in the certificate as the proof of
+      convergence.</div>
+    </div>
+    <div class="card">
+      <p class="caption">Guard</p>
+      <div class="big">Refused</div>
+      <div class="label">a forged energy is caught on re-run. The correct one is accepted.</div>
+    </div>
+  </div>
+
+  <h2>What you receive</h2>
+  <p>The energy, the D-sweep (the proof of convergence), the theorem reference (the area law that
+  justifies the method), and a one-line re-run command that confirms the certificate offline, without
+  trusting whoever served it.</p>
+
+  <h2>Scope, stated plainly</h2>
+  <div class="scope">
+    <ul>
+      <li>Demonstrated on H&#8322; and the Heisenberg chain, where the exact answers are known.</li>
+      <li>DMRG converges to exact for low-entanglement (quasi-one&#8209;dimensional) systems; strongly
+      two&#8209;dimensional systems need other methods, and we say so.</li>
+      <li>We certify convergence and reproducibility. The choice of Hamiltonian is yours.</li>
+    </ul>
+  </div>
+
+  <h2>Quantum verification</h2>
+  <p>The same certificate machinery certifies quantum circuits. We run a circuit exactly and return
+  the answer with a proof it is correct, refusing a wrong one. The tensor-network backend reaches
+  100,000 qubits on low-entanglement circuits, past the 30-qubit limit of a naive simulator.</p>
+
+  <div class="next">
+    <h2>Next step</h2>
+    <p>Send us a molecule or a circuit, and the result your code produced. We return a certificate
+    that confirms or refutes it. Contact:
+    <a href="mailto:info@valiantmusic.com.au">info@valiantmusic.com.au</a></p>
+  </div>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Pacland · <a href="https://pacland.morpheus.nz">pacland.morpheus.nz</a> · every result is
+    reproducible from the published source.</p>
+  </div>
+</footer>
+
+</body>
+</html>
