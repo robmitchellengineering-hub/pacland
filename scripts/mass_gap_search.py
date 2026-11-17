@@ -39,6 +39,12 @@ def gribov_ir_suppression(beta):  # the Gribov horizon's IR suppression — the 
     # G(0) = 0 → the 1/p⁴ singularity → the linear potential. Its β-dependence is the AF scale e^{−cβ}.
     return referee_m(beta)         # reaches the exponential (the target scale)
 
+def seiler_bound(beta):            # the reflection-positivity (Seiler) bound — power-law
+    return 0.2 / (beta ** 0.5)
+
+def polymer_expansion(beta):       # the refined cluster/polymer expansion — log β (minus a const)
+    return max(0.0, math.log(beta) - 2.0)
+
 
 def is_exponential(c):
     """A bound reaches the exponential scale iff it DECAYS with a constant geometric ratio
@@ -63,6 +69,10 @@ CANDIDATES = [
      "CIRCULAR — imports the referee's m/√σ ≈ 3.2"),
     ("Gribov IR suppression G(0)=0 → 1/p⁴", gribov_ir_suppression,
      "the confining mechanism — reaches the AF scale (the target)"),
+    ("Seiler reflection-positivity bound", seiler_bound,
+     "power-law — the reflection-positivity lower bound does not reach the AF scale"),
+    ("polymer/cluster expansion (refined)", polymer_expansion,
+     "log β — the cluster/polymer expansion gives a log, not the exponential"),
 ]
 
 

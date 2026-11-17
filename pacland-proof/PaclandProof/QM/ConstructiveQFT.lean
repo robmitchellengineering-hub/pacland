@@ -67,4 +67,30 @@ theorem thermodynamic_limit_mass_gap (m : ℕ → ℝ)
   have hle : c ≤ mlim := le_ciInf hc
   exact lt_of_lt_of_le hc0 hle
 
+/-- **The Lüscher finite-size formula (the thermodynamic limit with an explicit rate).** The
+finite-volume gap converges EXPONENTIALLY to the infinite-volume mass: `|m(V) − mlim| ≤ C·e^{−c·V}`.
+This is the mechanism the search surfaced for the thermodynamic limit — the finite gaps converge to the
+physical mass, so the mass gap survives `V → ∞`. It gives the `Tendsto` (the limit exists) directly,
+without needing the monotone-convergence route. -/
+theorem luscher_finite_size (m : ℕ → ℝ) (mlim : ℝ) (C c : ℝ)
+    (hc : 0 < c)
+    (hexp : ∀ V : ℕ, |m V - mlim| ≤ C * Real.exp (-c * (V : ℝ))) :
+    Tendsto m atTop (𝓝 mlim) := by
+  rw [tendsto_iff_dist_tendsto_zero]
+  have hdec : Tendsto (fun V : ℕ => C * Real.exp (-c * (V : ℝ))) atTop (𝓝 0) := by
+    have hcV : Tendsto (fun V : ℕ => c * (V : ℝ)) atTop atTop :=
+      (tendsto_natCast_atTop_atTop : Tendsto (fun V : ℕ => (V : ℝ)) atTop atTop).const_mul_atTop hc
+    have hec : Tendsto (fun V : ℕ => Real.exp (c * (V : ℝ))) atTop atTop := Real.tendsto_exp_atTop.comp hcV
+    have he : Tendsto (fun V : ℕ => Real.exp (-c * (V : ℝ))) atTop (𝓝 0) := by
+      convert (tendsto_inv_atTop_zero.comp hec) using 1
+      ext V
+      simpa [neg_mul] using (Real.exp_neg (c * (V : ℝ)))
+    have hC : Tendsto (fun V : ℕ => C) atTop (𝓝 C) := tendsto_const_nhds
+    simpa [mul_zero] using (hC.mul he)
+  refine squeeze_zero (f := fun V : ℕ => dist (m V) mlim)
+    (g := fun V : ℕ => C * Real.exp (-c * (V : ℝ))) ?_ ?_ ?_
+  · intro V; exact dist_nonneg
+  · intro V; simpa [dist_eq_norm, Real.norm_eq_abs] using hexp V
+  · exact hdec
+
 end QM
