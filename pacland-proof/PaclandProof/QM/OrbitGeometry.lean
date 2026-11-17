@@ -46,9 +46,11 @@ theorem orbit_space_positive_curvature {K KA : ℝ} (hK : 0 ≤ K) (hA : 0 < KA)
     0 < K + (3 / 4 : ℝ) * KA := by
   nlinarith
 
-/-- **The mass gap from the positive orbit-space curvature**: with the kernel-checked positive
-curvature `κ_orbit = K + (3/4)|A|² > 0`, the Bakry–Émery spectral-gap machinery (the Γ₂ ≥ κΓ bound) on
-the orbit space gives the mass gap — the geometric route made rigorous. -/
+/-- **NOT a mass gap — only the curvature positivity.** This is literally `orbit_space_positive_curvature`
+(`0 < K + (3/4)|A|²`), which is `nlinarith` from the hypotheses. It does NOT give a mass gap: the
+Bakry–Émery condition `Γ₂ ≥ κΓ` for the reduced generator is unproven, and the orbit-space curvature is
+β-dependent (see `ConstructiveQFT.orbitBE_fails_for_large_beta`). The former "gives the mass gap" claim
+was FALSE. -/
 theorem orbit_space_mass_gap {K KA : ℝ} (hK : 0 ≤ K) (hA : 0 < KA) :
     0 < K + (3 / 4 : ℝ) * KA := orbit_space_positive_curvature hK hA
 

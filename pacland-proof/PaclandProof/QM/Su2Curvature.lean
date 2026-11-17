@@ -10,9 +10,9 @@ Authors: Rob Mitchell
 
 The gauge-fixed (axial-gauge) 1-plaquette space is SU(2) ≅ S³. Its Bakry–Émery curvature for the
 measure `e^{−β·Re Tr}` is `Ric − β·Hess(Re Tr) = 1/4 + 2β·cos θ`. This file names the ceiling: the
-curvature turns negative at the antipode (`Re Tr = −2`) exactly when `β > 1/8`. The fix is Singer's
-observation — quotient the flat gauge orbit (the axial gauge, PR #489), leaving the positively-curved
-orbit space, so the bound becomes β-uniform.
+curvature turns negative at the antipode (`Re Tr = −2`) exactly when `β > 1/8`. NOTE (corrected): the
+former "the quotient leaves a β-uniform bound" claim is FALSIFIED — the orbit-space curvature is
+β-dependent (`2/sin²θ + β·cos θ`, negative at θ = 2π/3 for β > 16/3; see ConstructiveQFT.lean).
 -/
 
 open scoped BigOperators

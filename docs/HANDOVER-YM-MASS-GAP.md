@@ -61,8 +61,10 @@ suppression, the AF scale (known input), and the mixing rate (non-tight, exponen
 - RG flow (`runningCouplingSq`, `running_coupling_monotone_above_cutoff`).
 - Gap equation + transmutation (`gapEquation`, `gap_equation_well_posed`, `log_gap_to_exp`,
   `one_loop_integral_log`).
-- **The falsification (this session):** `wilsonHessian_negative_at_pi`,
-  `full_curvature_not_beta_independent`, `gap_is_beta_dependent`.
+- **The real falsification (this session):** `orbitBE_curvature_at_2pi_over_3`,
+  `orbitBE_fails_for_large_beta` (the orbit-space curvature `2/sin²θ + β·cos θ` is negative at θ = 2π/3
+  for β > 16/3). The earlier `full_curvature_not_beta_independent` / `gap_is_beta_dependent` are now
+  labelled TOY (arithmetic on definitions) — see §4.
 
 **`pacland-proof/PaclandProof/QM/MassGapDiamond.lean`** — spectral theorem → transfer matrix →
 contraction → strict gap → chessboard → string tension → Gribov–Zwanziger confinement → reduction.
@@ -98,18 +100,18 @@ non-abelianness (aTensor_nonzero) ✓
 hypothesis", and `GaugeOrbit.lean`'s `hBE` has the comment "β-INDEPENDENT (no β appears in the
 curvature bound)".
 
-**RESOLVED — the quotient does NOT remove the β-dependence (Claude's assessment, confirmed + kernel-checked).** For the 1-D quotient density `ρ(θ) = sin²θ·e^{β cos θ}`, the weighted Bakry–Émery curvature is
+**RESOLVED — the quotient does NOT remove the β-dependence.** The θ = 2π/3 point (`K = 8/3 − β/2`) is kernel-checked; the β-scan figures (+0.66, −1.7, −47, −0.94·β) are from Claude's numeric scan, not Lean. For the 1-D quotient density `ρ(θ) = sin²θ·e^{β cos θ}`, the weighted Bakry–Émery curvature is
 `K(θ) = 2/sin²θ + β·cos θ` (the Weyl/density term from the orbit volume, plus the Wilson-potential Hessian). The Weyl term helps near `θ = π` but not enough: min K is `+0.66` at β = 4, then `−1.7` at β = 8, `−47` at β = 64, approaching `−0.94·β`. There is **no uniform κ**. Kernel-checked: `orbitBE_curvature_at_2pi_over_3` and `orbitBE_fails_for_large_beta` — at `θ = 2π/3`, `K = 8/3 − β/2 < 0` for `β > 16/3`.
 
-**Claude's full findings (all correct, all acted on):**
+**Claude's full findings (correct; the remaining Lean cleanups are now done — see the files):**
 
 1. `orbit_spectral_gap_derived` and `orbit_spectral_gap_coefficient` are **VACUOUS** (`∃ κ > 0`, satisfied by κ = 1) — they mention no operator, measure, or gap. Docstrings now say so.
 2. The "derived orbit curvature" is only `aTensor_nonzero` (`[T₁,T₂] = T₃`); no orbit space, metric, or O'Neill submersion is defined. `connection_space_flat` is `0 = 0`; `kinetic_metric_pos_def` is `0 ≤ ‖α‖²`; `oneill_sectional_curvature` is `K + ¾KA ≥ K`. All trivial/tautological.
 3. `orbit_curvature_uniform_gap` is a **relabelling**: Γ, Γ₂, L are free variables, `hBE` is assumed, and the proof just calls `bakryEmery_spectral_gap_bochner` — which gives `E[fL²f] ≥ κE[−fLf]`, NOT `λ ≥ κ` (the eigenfunction step is missing). BakryEmery also works over a `Fintype`, not a manifold.
 4. The earlier `full_curvature_not_beta_independent` was a **TOY** (arithmetic on `wilsonHessian`/`bakryEmeryCurvature` definitions) and **overstated** (negative BE curvature only kills the *sufficient condition*, not the gap).
-5. The **TARGET was mis-specified**: the referee `m(β) → 0` in lattice units, so a β-uniform *lattice-unit* bound is impossible by construction. The code never links the Langevin-generator gap to the transfer-matrix gap.
+5. The **TARGET was mis-specified**: the referee `m(β) → 0` in lattice units, so a β-uniform *lattice-unit* bound cannot BE the mass gap (given m(β) → 0). The Langevin gap is a DIFFERENT object — and linking it to the transfer-matrix gap is exactly the missing step the code never does.
 
-**Redirect (Claude's, correct):** aim for `Δ(β) ≥ c·a·Λ(β)` (a physical-gap bound — the lattice gap times the spacing, the β-independent physical scale), or a **uniform-in-volume gap at small β** (Holley–Stroock / SZZ strong coupling), as a genuinely new theorem."
+**Redirect (Claude's, correct):** aim for `Δ(β) ≥ c·a·Λ(β)` (the physical mass is `m = Δ_lat/a`, so `m ≥ cΛ` means `Δ_lat ≥ c·a·Λ(β)` — the lattice gap bound scales as spacing × physical scale), or a **uniform-in-volume gap at small β** (Holley–Stroock / SZZ strong coupling), as a genuinely new theorem."
 
 ---
 
@@ -120,7 +122,7 @@ curvature bound)".
 - **PR #601** — MERGED (the 22-commit mass-gap tower: search harness, constructive-QFT library,
   Dirichlet/mixing/finite-β mass gap, cluster expansion, physical hypotheses, AF sign, RG boundary).
 - **PR #602** — OPEN — `feat/gap-equation`: the gap equation + `log_gap_to_exp` + `one_loop_integral_log`
-  + the real orbit-space falsification (`orbitBE_fails_for_large_beta`). Head `53e3b96`.
+  + the real orbit-space falsification (`orbitBE_fails_for_large_beta`). Head `dcd2ead`.
 
 Build: `lake build` green at **9158 jobs**, no `sorry`. Env: `export PATH="$HOME/.elan/bin:$PATH"`
 then `cd /tmp/pacland-os-exist/pacland-proof && lake build`.

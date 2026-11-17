@@ -56,8 +56,8 @@ theorem orbit_curvature_uniform_gap {α : Type*} [Fintype α] [DecidableEq α] {
 space does NOT remove the β-dependence: its curvature is `2/sin²θ + β·cos θ`, negative at θ = 2π/3 for
 β > 16/3 (see ConstructiveQFT.orbitBE_fails_for_large_beta). The β-uniform claim is FALSIFIED. -/
 theorem orbit_space_no_ceiling {β : ℝ} (hβ : 1 / 8 < β) (κ_orbit : ℝ) (hκ : 0 < κ_orbit) :
-    -- the full-space curvature is β-dependent and negative at the antipode,
-    -- while the orbit-space curvature is the β-independent positive κ_orbit
+    -- the full-space curvature is β-dependent and negative at the antipode;
+    -- the orbit-space curvature is ALSO β-dependent (2/sin²θ + β·cos θ), so no uniform κ
     (su2_curvature β Real.pi < 0) ∧ (0 < κ_orbit) := by
   exact ⟨su2_curvature_ceiling hβ, hκ⟩
 end QM

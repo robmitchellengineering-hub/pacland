@@ -547,29 +547,25 @@ theorem wilsonHessian_negative_at_pi (β : ℝ) (hβ : 0 < β) :
 -- The Bochner decomposition: the Bakry-Émery curvature of the generator L = Δ − ∇S·∇ is κ = Ric + Hess(S).
 def bakryEmeryCurvature (Ric hessS : ℝ) : ℝ := Ric + hessS
 
--- The FALSIFICATION: the full Bakry-Émery curvature κ = κ_orbit + β·cos θ is NOT uniformly positive
--- with a β-independent bound. At the antipode θ = π, κ = κ_orbit − β < 0 whenever β > κ_orbit. So the
--- "β-INDEPENDENT curvature bound" claim (orbit_curvature_uniform_gap's comment) is FALSE for the full
--- generator: the Wilson potential's Hessian (β-dependent, negative at θ = π) spoils it. The geometric
--- route's β-independent κ_orbit is only the KINETIC (Ricci) part; the full curvature is β-dependent.
-/-- **FALSIFICATION of the 'β-independent curvature gap' claim.** The full Bakry–Émery curvature of the
-generator `L = Δ − ∇S·∇` is `κ = Ric + Hess(S)` (the Bochner decomposition), and for the Wilson action
-`Hess(S) = β·cos θ` is β-dependent and negative at `θ = π`. So `κ = κ_orbit + β·cos θ < 0` for `β > κ_orbit`
-— the orbit-space curvature `κ_orbit > 0` (β-independent) is only the KINETIC (Ricci) part; the full
-curvature is β-dependent and NOT uniformly positive. The 'β-independent mass gap' claim in the geometric
-route is therefore FALSE for the full generator. -/
+-- TOY (relabelled, per Claude's review): this is arithmetic on the DEFINITIONS of wilsonHessian
+-- (β·cos θ) and bakryEmeryCurvature (Ric + hess), so it is not a real falsification. It is about the
+-- FULL space (not the orbit space), and negative pointwise BE curvature only means the SUFFICIENT
+-- condition fails — it does NOT show there is no gap. The real statement is orbitBE_fails_for_large_beta.
+/-- **TOY, relabelled — full-space pointwise BE failure, not a gap statement.** Arithmetic on the
+definitions of `wilsonHessian` and `bakryEmeryCurvature`; it only shows the FULL-space (not orbit-space)
+pointwise Bakry–Émery curvature is negative at the antipode for `β > κ_orbit`. Negative pointwise BE
+curvature means the SUFFICIENT condition fails, NOT that there is no gap. -/
 theorem full_curvature_not_beta_independent (κ_orbit β : ℝ) (hκ : 0 < κ_orbit) (hβ : κ_orbit < β) :
     bakryEmeryCurvature κ_orbit (wilsonHessian β Real.pi) < 0 := by
   unfold bakryEmeryCurvature
   rw [wilsonHessian_negative_at_pi β (lt_trans hκ hβ)]
   nlinarith
 
--- The honest conclusion: the mass gap's coupling dependence is NOT β-independent. The kinetic curvature
--- κ_orbit > 0 is β-independent, but the potential Hessian β·cos θ makes the full curvature β-dependent
--- and negative in the antipodal directions. The gap therefore runs with β — consistent with the referee's
--- m(β) = 25.28·e^{−1.182β} (β-dependent), NOT a β-independent constant.
-/-- **The mass gap is β-dependent** — consistent with the referee's `m(β) = 25.28·e^{−1.182β}`, NOT a
-β-independent constant. -/
+-- RELABELLED: this only shows ∃θ with negative FULL-space pointwise BE curvature. It does NOT prove the
+-- mass gap is β-dependent (that is a separate, open statement about the transfer-matrix gap).
+/-- **Relabelled — ∃θ where the full-space pointwise BE curvature is negative.** NOT a proof that the
+mass gap is β-dependent; only the existence of a point where the (sufficient, not necessary) BE condition
+fails on the full space. -/
 theorem gap_is_beta_dependent (κ_orbit β : ℝ) (hκ : 0 < κ_orbit) (hβ : κ_orbit < β) :
     ∃ θ : ℝ, bakryEmeryCurvature κ_orbit (wilsonHessian β θ) < 0 :=
   ⟨Real.pi, full_curvature_not_beta_independent κ_orbit β hκ hβ⟩
