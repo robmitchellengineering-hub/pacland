@@ -25,8 +25,16 @@ noncomputable section
 
 namespace QM
 
-/-- **SU(2) = the unit quaternions = S³.** -/
-abbrev SU2 := Metric.sphere (0 : Quaternion ℝ) 1
+/-- **SU(2) = the unit quaternions = S³** (the SUBTYPE of the sphere, where the group instance lives). -/
+abbrev SU2 := ↥(Metric.sphere (0 : Quaternion ℝ) 1)
+
+-- M0 (PROVEN): SU(2) = the unit quaternions is a compact topological group. All three instances
+-- synthesize from Mathlib (the quaternion route; the matrix `specialUnitaryGroup` route has no
+-- `CompactSpace`). This fills the compact/topological-group part of the formal-conjectures
+-- `sun_compactSimpleLieGroup` gap, for SU(2).
+instance : Group SU2 := inferInstance
+instance : CompactSpace SU2 := inferInstance
+instance : IsTopologicalGroup SU2 := inferInstance
 
 -- M0 obligations (TODO, in order):
 -- 0. `SU2` above is the SET `Metric.sphere (0 : ℍ) 1`; the group instance `Metric.unitSphere.instGroup`
