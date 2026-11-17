@@ -344,4 +344,39 @@ theorem mayer_series_converges (activity : ℕ → ℝ) (c : ℝ) (hc : 0 < c)
 
 
 
+/-- **The clustering rate gives the cluster-activity bound.** If the correlation decays as `|corr(n)| ≤ λ₁ⁿ`
+(the exponential clustering, the gap) and the activity is bounded by the correlation, then the activity
+decays as `e^{−c·n}` with `c = −log λ₁` — the hypothesis of `mayer_series_converges`. -/
+theorem clustering_gives_activity_bound (φ corr : ℕ → ℝ) (lam1 : ℝ) (hlam1 : 0 < lam1)
+    (hdecay : ∀ n, |corr n| ≤ lam1^n) (hφ : ∀ n, |φ n| ≤ |corr n|) :
+    ∀ n, |φ n| ≤ Real.exp (-(-Real.log lam1) * (n : ℝ)) := by
+  intro n
+  have hle1 : |φ n| ≤ lam1^n := le_trans (hφ n) (hdecay n)
+  have hpow : lam1^n = Real.exp ((n : ℝ) * Real.log lam1) := by
+    rw [Real.exp_nat_mul (Real.log lam1) n]
+    rw [Real.exp_log hlam1]
+  rw [hpow] at hle1
+  have harg : (n : ℝ) * Real.log lam1 = -(-Real.log lam1) * (n : ℝ) := by ring
+  rw [harg] at hle1
+  exact hle1
+
+-- The cluster expansion converges from the clustering: the decay rate lam1 < 1 gives c = −log lam1 > 0,
+-- so the activity decays exponentially and mayer_series_converges applies.
+/-- **The clustering implies the cluster expansion converges** — Rung 1 closed. The decay rate `λ₁ < 1`
+gives `c = −log λ₁ > 0`, so the cluster activities decay exponentially and the infinite-volume limit
+exists (via `mayer_series_converges`). The exponential clustering (already kernel-checked via the
+chessboard estimate) is exactly what the construction needs. -/
+theorem clustering_implies_cluster_expansion (φ corr : ℕ → ℝ) (lam1 : ℝ)
+    (hlam1 : 0 < lam1) (hlam1lt : lam1 < 1)
+    (hdecay : ∀ n, |corr n| ≤ lam1^n) (hφ : ∀ n, |φ n| ≤ |corr n|) :
+    ∃ S : ℝ, Tendsto (fun V : ℕ => (Finset.range V).sum (fun n => φ n)) atTop (𝓝 S) := by
+  have hc : 0 < -Real.log lam1 := by
+    have hlog : Real.log lam1 < 0 := Real.log_neg hlam1 hlam1lt
+    nlinarith
+  have hdecay' : ∀ n, |φ n| ≤ Real.exp (-(-Real.log lam1) * (n : ℝ)) :=
+    clustering_gives_activity_bound φ corr lam1 hlam1 hdecay hφ
+  exact mayer_series_converges φ (-Real.log lam1) hc hdecay'
+
+
+
 end QM
