@@ -576,4 +576,47 @@ theorem gap_is_beta_dependent (κ_orbit β : ℝ) (hκ : 0 < κ_orbit) (hβ : κ
 
 
 
+/-- **The 1-D orbit-space density** (one plaquette modulo conjugation): `ρ(θ) = sin²θ·e^{β cos θ}`. -/
+def orbitQuotientDensity (β θ : ℝ) : ℝ := Real.sin θ ^ 2 * Real.exp (β * Real.cos θ)
+
+-- The orbit-space Bakry-Émery curvature (the weighted Laplacian's curvature): the Weyl/density term
+-- 2/sin²θ (from the orbit-volume density sin²θ) plus the Wilson-potential Hessian β·cos θ.
+/-- **The orbit-space Bakry–Émery curvature** (the weighted Laplacian's curvature): the Weyl/density term
+`2/sin²θ` (from the orbit-volume density `sin²θ`) plus the Wilson-potential Hessian `β·cos θ`. -/
+def orbitBE_curvature (β θ : ℝ) : ℝ := 2 / Real.sin θ ^ 2 + β * Real.cos θ
+
+-- The REAL falsification (Claude's corrected statement): at θ = 2π/3 the orbit-space curvature is
+-- K = 8/3 − β/2, which is NEGATIVE for β > 16/3. So the β-dependence does NOT drop in the quotient —
+-- the pointwise Bakry-Émery condition fails on the orbit space too. (This is "the uniform pointwise BE
+-- condition fails", NOT "no gap".)
+/-- **The REAL falsification (Claude's corrected statement).** At `θ = 2π/3` the orbit-space curvature is
+`K = 8/3 − β/2`, NEGATIVE for `β > 16/3`. So the β-dependence does NOT drop in the quotient — the
+pointwise Bakry–Émery condition fails on the orbit space too. Label: the UNIFORM POINTWISE BE condition
+fails (not 'no gap'). -/
+theorem orbitBE_curvature_at_2pi_over_3 (β : ℝ) :
+    orbitBE_curvature β (2 * Real.pi / 3) = 8 / 3 - β / 2 := by
+  unfold orbitBE_curvature
+  have hsin : Real.sin (2 * Real.pi / 3) ^ 2 = 3 / 4 := by
+    rw [show 2 * Real.pi / 3 = Real.pi - Real.pi / 3 by ring]
+    rw [Real.sin_pi_sub]
+    rw [Real.sin_pi_div_three]
+    have hsq : (Real.sqrt 3)^2 = 3 := Real.sq_sqrt (by norm_num)
+    nlinarith [hsq]
+  have hcos : Real.cos (2 * Real.pi / 3) = -1 / 2 := by
+    rw [show 2 * Real.pi / 3 = Real.pi - Real.pi / 3 by ring]
+    rw [Real.cos_pi_sub]
+    rw [Real.cos_pi_div_three]
+    norm_num
+  rw [hsin, hcos]
+  field_simp
+  ring
+
+-- The pointwise BE condition fails for β > 16/3: K(2π/3) < 0.
+theorem orbitBE_fails_for_large_beta (β : ℝ) (hβ : 16 / 3 < β) :
+    orbitBE_curvature β (2 * Real.pi / 3) < 0 := by
+  rw [orbitBE_curvature_at_2pi_over_3 β]
+  nlinarith
+
+
+
 end QM

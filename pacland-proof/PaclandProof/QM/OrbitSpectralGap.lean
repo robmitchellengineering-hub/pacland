@@ -10,9 +10,11 @@ Authors: Rob Mitchell
 /-!
 # The spectral gap from the DERIVED orbit-space curvature
 
-Mondal's geometric route closed: non-abelianness (#565) ⟹ positive orbit-space curvature ⟹ positive
-Bakry–Émery coefficient ⟹ Γ₂ ≥ κΓ ⟹ the spectral gap `λ ≥ κ > 0`. The ONLY input is the derived
-curvature — no "if positive", no loop factor, no β → ∞ limit.
+NOT CLOSED. The theorems here only witness the non-abelian bracket (aTensor_nonzero); they do NOT
+prove the Bakry–Émery condition `Γ₂ ≥ κΓ` for the reduced generator, and they do NOT prove a mass gap.
+The former 'no positivity hypothesis / no β → ∞ limit' claim is OVERSTATED: the hBE in GaugeOrbit.lean
+is an unproven hypothesis, and the orbit-space curvature is β-dependent (orbitBE_curvature =
+2/sin²θ + β·cos θ, negative at θ = 2π/3 for β > 16/3). See ConstructiveQFT.lean.
 -/
 
 open scoped BigOperators
@@ -30,10 +32,8 @@ theorem orbit_spectral_gap_coefficient :
   rcases orbit_curvature_positive_derived with ⟨X, Y, hK⟩
   exact ⟨(3 / 4 : ℝ) * aTensorNormSq X Y, hK⟩
 
-/-- **The spectral gap from the derived orbit-space curvature** (the geometric route closed): the
-positive curvature (#565) gives the Bakry–Émery coefficient `κ > 0`, the Γ₂ ≥ κΓ bound, and hence the
-spectral gap `λ ≥ κ > 0` via the integrated-Bochner route (`bakryEmery_spectral_gap_bochner`). The
-ONLY input is the derived curvature — the mass gap follows with no positivity hypothesis. -/
+/-- **VACUOUS witness, not a spectral gap.** This only proves `∃ κ > 0` (satisfied by `κ = 1`); it
+mentions no operator, measure, or gap. The former 'the mass gap follows' claim is false. -/
 theorem orbit_spectral_gap_derived :
     ∃ κ : ℝ, 0 < κ ∧ 0 < 1 / κ := by
   rcases orbit_spectral_gap_coefficient with ⟨κ, hκ⟩
