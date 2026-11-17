@@ -631,4 +631,47 @@ theorem orbitBE_fails_for_large_beta (β : ℝ) (hβ : 16 / 3 < β) :
 
 
 
+/-- **The Doeblin minorization ⟹ L∞ contraction (M1).** A stochastic matrix `T` minorized by `δ·μ`
+(`T_ij ≥ δ·μ_j`, the Doeblin condition with the invariant measure `μ`) contracts mean-zero functions: if
+`μ(f) = 0` and `|f| ≤ M`, then `|(Tf)_i| ≤ (1−δ)·M`. This is the TRUE finite-volume statement — the
+Doeblin condition (minorization by the invariant measure) replaces the entrywise mixing, and it survives
+the volume limit because `δ` is the minorization constant, not the minimum entry. -/
+theorem doeblin_contraction {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (μ : Fin m → ℝ) (δ : ℝ)
+    (hrow : ∀ i, ∑ j, T i j = 1) (hμnn : ∀ j, 0 ≤ μ j) (hμsum : ∑ j, μ j = 1)
+    (hminor : ∀ i j, δ * μ j ≤ T i j) (hδnn : 0 ≤ δ) (f : Fin m → ℝ) (hf : ∑ j, μ j * f j = 0)
+    (M : ℝ) (hfM : ∀ j, |f j| ≤ M) (i : Fin m) :
+    |(T.mulVec f) i| ≤ (1 - δ) * M := by
+  have hdecomp : (T.mulVec f) i = ∑ j, (T i j - δ * μ j) * f j := by
+    calc
+      (T.mulVec f) i = ∑ j, T i j * f j := rfl
+      _ = ∑ j, ((T i j - δ * μ j) * f j + δ * μ j * f j) := by
+        apply Finset.sum_congr rfl; intro j hj; ring
+      _ = ∑ j, (T i j - δ * μ j) * f j + ∑ j, (δ * μ j * f j) := Finset.sum_add_distrib
+      _ = ∑ j, (T i j - δ * μ j) * f j + δ * ∑ j, (μ j * f j) := by
+        simp [Finset.mul_sum, mul_assoc, mul_left_comm, mul_comm]
+      _ = ∑ j, (T i j - δ * μ j) * f j := by simp [hf]
+  rw [hdecomp]
+  have hnn : ∀ j, 0 ≤ T i j - δ * μ j := by
+    intro j; exact sub_nonneg.mpr (hminor i j)
+  calc
+    |∑ j, (T i j - δ * μ j) * f j| ≤ ∑ j, (T i j - δ * μ j) * |f j| := by
+      calc
+        |∑ j, (T i j - δ * μ j) * f j| ≤ ∑ j, |(T i j - δ * μ j) * f j| :=
+          Finset.abs_sum_le_sum_abs (fun j => (T i j - δ * μ j) * f j) Finset.univ
+        _ = ∑ j, (T i j - δ * μ j) * |f j| := by
+          apply Finset.sum_congr rfl; intro j hj; rw [abs_mul, abs_of_nonneg (hnn j)]
+    _ ≤ ∑ j, (T i j - δ * μ j) * M := by
+      apply Finset.sum_le_sum; intro j hj
+      exact mul_le_mul_of_nonneg_left (hfM j) (hnn j)
+    _ = (∑ j, (T i j - δ * μ j)) * M := by rw [← Finset.sum_mul]
+    _ = (1 - δ) * M := by
+      congr 1
+      have hsum : ∑ j, (T i j - δ * μ j) = 1 - δ := by
+        rw [Finset.sum_sub_distrib, hrow i]
+        rw [← Finset.mul_sum]
+        simp [hμsum]
+      exact hsum
+
+
+
 end QM
