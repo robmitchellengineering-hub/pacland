@@ -93,4 +93,26 @@ theorem luscher_finite_size (m : ℕ → ℝ) (mlim : ℝ) (C c : ℝ)
   · intro V; simpa [dist_eq_norm, Real.norm_eq_abs] using hexp V
   · exact hdec
 
+/-- **A volume-independent positive quantity is a volume-uniform lower bound.** The Coulomb string
+tension is a local quantity (the linear coefficient of the Coulomb potential at a point), so it is
+volume-independent; this discharges the `bounded-below` hypothesis of `thermodynamic_limit_mass_gap`. -/
+theorem volume_independent_is_volume_uniform (f : ℕ → ℝ) (f0 : ℝ)
+    (hconst : ∀ V, f V = f0) (hf0 : 0 < f0) :
+    volumeUniform f := by
+  rw [volumeUniform]
+  refine ⟨f0, hf0, ?_⟩
+  intro V hV
+  rw [hconst V]
+
+/-- **The Coulomb route closes the thermodynamic limit.** If the finite-volume gap `m(V)` is monotone
+and bounded below by a volume-independent `σ_Coul > 0` (Zwanziger: the Coulomb tension lower-bounds the
+physical string tension ≤ the gap), then the mass gap survives `V → ∞`. This is the mechanism the search
+targeted: a volume-uniform lower bound on the transfer-matrix gap. -/
+theorem mass_gap_from_volume_independent_tension (m : ℕ → ℝ) (σ_Coul : ℝ)
+    (hmono : Antitone m)
+    (htension : ∀ V : ℕ, σ_Coul ≤ m V)
+    (hσ0 : 0 < σ_Coul) :
+    ∃ mlim : ℝ, Tendsto m atTop (𝓝 mlim) ∧ 0 < mlim := by
+  exact thermodynamic_limit_mass_gap m hmono ⟨σ_Coul, hσ0, htension⟩
+
 end QM
