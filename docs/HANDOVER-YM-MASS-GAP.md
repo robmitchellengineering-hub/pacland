@@ -98,36 +98,18 @@ non-abelianness (aTensor_nonzero) ✓
 hypothesis", and `GaugeOrbit.lean`'s `hBE` has the comment "β-INDEPENDENT (no β appears in the
 curvature bound)".
 
-**This session falsified the *full-space* version:** the full generator `L = Δ − ∇S·∇` has Bochner
-curvature `κ = Ric + Hess(S) = κ_orbit + β·cos θ` (Wilson Hessian `β·cos θ`), which is β-dependent and
-negative at the antipode `θ = π` for `β > κ_orbit` (`full_curvature_not_beta_independent`,
-`wilsonHessian_negative_at_pi`).
+**RESOLVED — the quotient does NOT remove the β-dependence (Claude's assessment, confirmed + kernel-checked).** For the 1-D quotient density `ρ(θ) = sin²θ·e^{β cos θ}`, the weighted Bakry–Émery curvature is
+`K(θ) = 2/sin²θ + β·cos θ` (the Weyl/density term from the orbit volume, plus the Wilson-potential Hessian). The Weyl term helps near `θ = π` but not enough: min K is `+0.66` at β = 4, then `−1.7` at β = 8, `−47` at β = 64, approaching `−0.94·β`. There is **no uniform κ**. Kernel-checked: `orbitBE_curvature_at_2pi_over_3` and `orbitBE_fails_for_large_beta` — at `θ = 2π/3`, `K = 8/3 − β/2 < 0` for `β > 16/3`.
 
-**BUT — a subtlety that MUST be resolved before "correcting" anything:** the code's "β-independent"
-claim is about the **orbit space** (the gauge-invariant quotient 𝒜/𝒢), NOT the full generator. The
-`GaugeOrbit.lean` `orbit_space_no_ceiling` explicitly contrasts:
+**Claude's full findings (all correct, all acted on):**
 
-- full space: `su2_curvature β θ = 1/4 + 2β·cos θ` — β-dependent, negative at the antipode for `β > 1/8`;
-- orbit space: `κ_orbit` — claimed β-independent positive.
+1. `orbit_spectral_gap_derived` and `orbit_spectral_gap_coefficient` are **VACUOUS** (`∃ κ > 0`, satisfied by κ = 1) — they mention no operator, measure, or gap. Docstrings now say so.
+2. The "derived orbit curvature" is only `aTensor_nonzero` (`[T₁,T₂] = T₃`); no orbit space, metric, or O'Neill submersion is defined. `connection_space_flat` is `0 = 0`; `kinetic_metric_pos_def` is `0 ≤ ‖α‖²`; `oneill_sectional_curvature` is `K + ¾KA ≥ K`. All trivial/tautological.
+3. `orbit_curvature_uniform_gap` is a **relabelling**: Γ, Γ₂, L are free variables, `hBE` is assumed, and the proof just calls `bakryEmery_spectral_gap_bochner` — which gives `E[fL²f] ≥ κE[−fLf]`, NOT `λ ≥ κ` (the eigenfunction step is missing). BakryEmery also works over a `Fintype`, not a manifold.
+4. The earlier `full_curvature_not_beta_independent` was a **TOY** (arithmetic on `wilsonHessian`/`bakryEmeryCurvature` definitions) and **overstated** (negative BE curvature only kills the *sufficient condition*, not the gap).
+5. The **TARGET was mis-specified**: the referee `m(β) → 0` in lattice units, so a β-uniform *lattice-unit* bound is impossible by construction. The code never links the Langevin-generator gap to the transfer-matrix gap.
 
-So my `full_curvature_not_beta_independent` may be a **strawman**: it falsifies the *full-space*
-curvature, while the code's actual claim is that the *reduction to the orbit space* removes the
-β-dependent Wilson Hessian. **Whether that reduction genuinely removes `β·cos θ` is the open question.**
-
-The honest next step is to determine, rigorously:
-
-> Does the gauge-invariant reduction (the quotient by the gauge group) actually drop the β-dependent
-> Wilson-potential Hessian from the Bakry–Émery curvature, or does the β-dependence survive the
-> reduction?
-
-- If the reduction is valid (β-dependence genuinely drops) → my falsification is a strawman, and the
-  geometric route's "β-independent gap" claim stands (and would be a Clay-crossing result).
-- If the reduction does NOT drop it → the "β-independent" claim is false, and the overclaim stands
-  falsified (my theorem is then correct as stated).
-
-Either way, the docstrings in `OrbitSpectralGap.lean` and `GaugeOrbit.lean` are currently overclaiming
-(the `hBE` is a hypothesis, not a theorem) and should be corrected to say "conditional on the
-Bakry–Émery condition Γ₂ ≥ κ·Γ for the reduced generator, which is NOT yet proven."
+**Redirect (Claude's, correct):** aim for `Δ(β) ≥ c·a·Λ(β)` (a physical-gap bound — the lattice gap times the spacing, the β-independent physical scale), or a **uniform-in-volume gap at small β** (Holley–Stroock / SZZ strong coupling), as a genuinely new theorem."
 
 ---
 
@@ -138,7 +120,7 @@ Bakry–Émery condition Γ₂ ≥ κ·Γ for the reduced generator, which is NO
 - **PR #601** — MERGED (the 22-commit mass-gap tower: search harness, constructive-QFT library,
   Dirichlet/mixing/finite-β mass gap, cluster expansion, physical hypotheses, AF sign, RG boundary).
 - **PR #602** — OPEN — `feat/gap-equation`: the gap equation + `log_gap_to_exp` + `one_loop_integral_log`
-  + the falsification (`full_curvature_not_beta_independent`). Head `7e408b2ca`.
+  + the real orbit-space falsification (`orbitBE_fails_for_large_beta`). Head `53e3b96`.
 
 Build: `lake build` green at **9158 jobs**, no `sorry`. Env: `export PATH="$HOME/.elan/bin:$PATH"`
 then `cd /tmp/pacland-os-exist/pacland-proof && lake build`.
@@ -150,15 +132,17 @@ Git push: explicit URL + `--no-verify` (`git push --force --no-verify https://gi
 
 ## 6. Recommended next steps (in order)
 
-1. **Resolve the orbit-space question** (section 4) — the single most important open item. Check whether
-   `orbit_curvature_positive_derived` / `orbit_space_positive_curvature` actually imply the reduced
-   generator's `hBE`, and whether the β-dependent `Hess(S) = β·cos θ` survives the quotient.
-2. **Correct the overclaiming docstrings** in `OrbitSpectralGap.lean` and `GaugeOrbit.lean` to say the
-   `hBE` is a hypothesis, not a theorem (regardless of (1)'s outcome).
-3. **If (1) shows the reduction is valid** → the geometric route's β-uniform gap is a genuinely-new
-   Clay-crossing candidate; kernel-check it end-to-end (reduced generator + `hBE` + the spectral gap).
-4. **If (1) shows the reduction fails** → the "β-independent gap" is falsified; record it, and the honest
-   state is unchanged (no uniform-gap route survives; the wall is the β-dependent renormalization).
+The orbit-space question is RESOLVED (§4): the β-dependence does NOT drop, and the "β-uniform gap" claim
+is falsified. The geometric route is vacuous/overclaimed, not a Clay-crossing candidate. Docstrings are
+corrected. What remains, per Claude's redirect:
 
-Do not claim the mass gap regardless of the outcome — it stays open until the continuum-limit
-positivity is genuinely proven.
+1. **Fix the target.** A β-uniform *lattice-unit* bound is impossible (m(β) → 0). The real goal is the
+   PHYSICAL gap: `Δ(β) ≥ c·a·Λ(β)` (gap × spacing = β-independent physical scale). Formalize this as the
+   correct statement, with `a·Λ(β)` the lattice spacing / AF scale.
+2. **Uniform-in-volume gap at small β** (Holley–Stroock / SZZ strong coupling) — a genuinely new theorem:
+   the finite-volume gap is bounded below UNIFORMLY in the volume at strong coupling (small β), before the
+   cluster expansion degenerates. This is the tractable, non-tautological next rung.
+3. **Link the Langevin-generator gap to the transfer-matrix gap** — the code never does this; without it,
+   the Bakry–Émery / spectral-gap machinery does not touch the actual transfer matrix.
+
+Do not claim the mass gap — it stays open until the continuum-limit positivity is genuinely proven.
