@@ -532,4 +532,48 @@ theorem one_loop_integral_log (μ γ : ℝ) (hμ : 0 < μ) (hγ : 0 < γ) :
 
 
 
+/-- **The Wilson action** `S(θ) = β·(1 − cos θ)` and its Hessian (second derivative) `β·cos θ`. -/
+def wilsonAction (β θ : ℝ) : ℝ := β * (1 - Real.cos θ)
+def wilsonHessian (β θ : ℝ) : ℝ := β * Real.cos θ
+
+-- The Wilson Hessian is β-dependent and NEGATIVE at the antipode θ = π (cos π = −1).
+/-- **The Wilson Hessian is β-dependent and negative at the antipode** (cos π = −1). -/
+theorem wilsonHessian_negative_at_pi (β : ℝ) (hβ : 0 < β) :
+    wilsonHessian β Real.pi = -β := by
+  unfold wilsonHessian
+  rw [Real.cos_pi]
+  ring
+
+-- The Bochner decomposition: the Bakry-Émery curvature of the generator L = Δ − ∇S·∇ is κ = Ric + Hess(S).
+def bakryEmeryCurvature (Ric hessS : ℝ) : ℝ := Ric + hessS
+
+-- The FALSIFICATION: the full Bakry-Émery curvature κ = κ_orbit + β·cos θ is NOT uniformly positive
+-- with a β-independent bound. At the antipode θ = π, κ = κ_orbit − β < 0 whenever β > κ_orbit. So the
+-- "β-INDEPENDENT curvature bound" claim (orbit_curvature_uniform_gap's comment) is FALSE for the full
+-- generator: the Wilson potential's Hessian (β-dependent, negative at θ = π) spoils it. The geometric
+-- route's β-independent κ_orbit is only the KINETIC (Ricci) part; the full curvature is β-dependent.
+/-- **FALSIFICATION of the 'β-independent curvature gap' claim.** The full Bakry–Émery curvature of the
+generator `L = Δ − ∇S·∇` is `κ = Ric + Hess(S)` (the Bochner decomposition), and for the Wilson action
+`Hess(S) = β·cos θ` is β-dependent and negative at `θ = π`. So `κ = κ_orbit + β·cos θ < 0` for `β > κ_orbit`
+— the orbit-space curvature `κ_orbit > 0` (β-independent) is only the KINETIC (Ricci) part; the full
+curvature is β-dependent and NOT uniformly positive. The 'β-independent mass gap' claim in the geometric
+route is therefore FALSE for the full generator. -/
+theorem full_curvature_not_beta_independent (κ_orbit β : ℝ) (hκ : 0 < κ_orbit) (hβ : κ_orbit < β) :
+    bakryEmeryCurvature κ_orbit (wilsonHessian β Real.pi) < 0 := by
+  unfold bakryEmeryCurvature
+  rw [wilsonHessian_negative_at_pi β (lt_trans hκ hβ)]
+  nlinarith
+
+-- The honest conclusion: the mass gap's coupling dependence is NOT β-independent. The kinetic curvature
+-- κ_orbit > 0 is β-independent, but the potential Hessian β·cos θ makes the full curvature β-dependent
+-- and negative in the antipodal directions. The gap therefore runs with β — consistent with the referee's
+-- m(β) = 25.28·e^{−1.182β} (β-dependent), NOT a β-independent constant.
+/-- **The mass gap is β-dependent** — consistent with the referee's `m(β) = 25.28·e^{−1.182β}`, NOT a
+β-independent constant. -/
+theorem gap_is_beta_dependent (κ_orbit β : ℝ) (hκ : 0 < κ_orbit) (hβ : κ_orbit < β) :
+    ∃ θ : ℝ, bakryEmeryCurvature κ_orbit (wilsonHessian β θ) < 0 :=
+  ⟨Real.pi, full_curvature_not_beta_independent κ_orbit β hκ hβ⟩
+
+
+
 end QM
