@@ -379,4 +379,29 @@ theorem clustering_implies_cluster_expansion (φ corr : ℕ → ℝ) (lam1 : ℝ
 
 
 
+structure YMHypotheses {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) : Prop where
+  os : OSAxioms T
+  mixing : ∀ i j, 0 < T i j
+
+-- The finite-β mass gap from the physical hypotheses: OS + mixing ⟹ Δ > 0 on non-constant vectors.
+-- The mixing gives the finite minimum δ > 0 (the minimum Boltzmann weight), and mass_gap_from_mixing
+-- turns it into the positive gap. This is the finite-volume, finite-β mass gap, PROVEN from the input.
+/-- **The finite-β mass gap from the physical hypotheses.** The OS axioms + the mixing (all entries
+positive — the Boltzmann weights `e^{−S} > 0` for the finite Wilson action) give the finite minimum
+`δ > 0`, and `mass_gap_from_mixing` turns it into the positive gap on non-constant vectors. This is the
+finite-volume, finite-β mass gap, PROVEN from the physical input. The remaining open rung is the
+continuum limit — that the mixing stays positive and the theory clusters UNIFORMLY in `β → ∞`. -/
+theorem mass_gap_from_hypotheses {m : ℕ} [NeZero m] (T : Matrix (Fin m) (Fin m) ℝ)
+    (h : YMHypotheses T) (x : Fin m → ℝ) (hnonconst : ∃ i j : Fin m, x i ≠ x j) :
+    0 < ∑ i : Fin m, x i * ((x i) - ∑ j : Fin m, T i j * x j) := by
+  obtain ⟨p₀, hp₀⟩ := Finite.exists_min (fun p : Fin m × Fin m => T p.1 p.2)
+  let δ := T p₀.1 p₀.2
+  have hδ : ∀ i j, δ ≤ T i j := by
+    intro i j
+    exact hp₀ (i, j)
+  have hδ0 : 0 < δ := h.mixing p₀.1 p₀.2
+  exact mass_gap_from_mixing T δ hδ hδ0 h.os.normalization h.os.symmetry x hnonconst
+
+
+
 end QM
