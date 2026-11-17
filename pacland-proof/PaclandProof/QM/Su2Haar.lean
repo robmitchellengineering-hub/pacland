@@ -35,6 +35,17 @@ abbrev SU2 := ↥(Metric.sphere (0 : Quaternion ℝ) 1)
 instance : Group SU2 := inferInstance
 instance : CompactSpace SU2 := inferInstance
 instance : IsTopologicalGroup SU2 := inferInstance
+instance : MeasurableSpace SU2 := borel SU2
+instance : BorelSpace SU2 := ⟨rfl⟩
+
+-- M0 (PROVEN): the Haar measure on SU(2). The whole compact group is a positive compact set; the
+-- Haar measure is `haarMeasure`. (Not yet normalized to probability 1 — that is the next M0 step.)
+noncomputable def su2PositiveCompact : TopologicalSpace.PositiveCompacts SU2 :=
+  { carrier := Set.univ, isCompact' := isCompact_univ,
+    interior_nonempty' := by rw [interior_univ]; exact ⟨1, Set.mem_univ _⟩ }
+
+noncomputable def su2Haar : MeasureTheory.Measure SU2 :=
+  MeasureTheory.Measure.haarMeasure (K₀ := su2PositiveCompact)
 
 -- M0 obligations (TODO, in order):
 -- 0. `SU2` above is the SET `Metric.sphere (0 : ℍ) 1`; the group instance `Metric.unitSphere.instGroup`
