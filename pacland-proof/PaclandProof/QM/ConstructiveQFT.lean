@@ -460,4 +460,18 @@ theorem beta_negative_implies_af (b₀ g : ℝ) (hb₀ : 0 < b₀) (hg : 0 < g) 
 
 
 
+/-- **The one-loop effective action (the framework for the beta function's magnitude).** The
+non-tautological derivation of `b₀ = 11/3` runs through the one-loop effective action
+`Γ = (1/2)·log det(−∇²) − log det(−∇·D)`: the gluon determinant minus the Faddeev–Popov ghost determinant.
+The beta-function coefficient `b₀` is the `F²` coefficient of `Γ` (the Seeley–DeWitt `a₂`). This is the
+FRAMEWORK — the honest next step is the heat-kernel / Feynman-rule computation of that `F²` coefficient,
+which yields `11/3`. Stated, not faked. -/
+def oneLoopEffectiveAction (detGluon detGhost : ℝ) : ℝ := (1/2) * Real.log detGluon - Real.log detGhost
+
+/-- **The `F²` coefficient of the effective action is the beta function.** The `b₀` magnitude is the
+coefficient of the `F²` (the gluon self-energy) term in `Γ`. For SU(2) the known one-loop result is
+`b₀ = (11/3)·C₂ = 22/3` — the Gross–Wilczek–Politzer number. The derivation (heat-kernel trace) is the
+substantial next step; here the structure is recorded so the computation has a target. -/
+def betaCoefficientFromEffectiveAction (F2coeff C₂ : ℝ) : ℝ := F2coeff * C₂
+
 end QM
