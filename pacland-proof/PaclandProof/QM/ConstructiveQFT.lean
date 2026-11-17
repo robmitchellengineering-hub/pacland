@@ -474,4 +474,33 @@ coefficient of the `F²` (the gluon self-energy) term in `Γ`. For SU(2) the kno
 substantial next step; here the structure is recorded so the computation has a target. -/
 def betaCoefficientFromEffectiveAction (F2coeff C₂ : ℝ) : ℝ := F2coeff * C₂
 
+/-- **The running coupling** `g²(μ) = 1/(b₀·log(μ/Λ))` — the RG flow (the AF scale's coupling). -/
+def runningCouplingSq (b₀ μ Λ : ℝ) : ℝ := 1 / (b₀ * Real.log (μ / Λ))
+
+-- The RG flow ABOVE the IR cutoff: g²(μ) = 1/(b₀·log(μ/Λ)) is monotone DECREASING for μ > Λ — the
+-- asymptotic freedom, the perturbative content the multiscale program (MRS 1993) uses. The IR-cutoff
+-- removal (μ → Λ⁺) is where the coupling diverges — the NON-perturbative wall, the Clay content.
+/-- **The RG flow above the IR cutoff.** The running coupling is monotone DECREASING for `μ > Λ` — the
+asymptotic freedom, the perturbative content the multiscale program (MRS 1993) uses. The IR-cutoff removal
+(`μ → Λ⁺`) is where the coupling DIVERGES — the NON-perturbative wall, which is the Clay content. This
+theorem is the honest boundary: it formalizes the RG control that exists (above the cutoff), and marks
+precisely where it breaks (the cutoff itself). -/
+theorem running_coupling_monotone_above_cutoff (b₀ Λ : ℝ) (hb₀ : 0 < b₀) (hΛ : 0 < Λ) :
+    AntitoneOn (fun μ : ℝ => runningCouplingSq b₀ μ Λ) (Set.Ioi Λ) := by
+  intro μ₁ hμ₁ μ₂ hμ₂ hμ
+  unfold runningCouplingSq
+  have hμ₁Λ : Λ < μ₁ := hμ₁
+  have hμ₂Λ : Λ < μ₂ := hμ₂
+  have hlog₁_pos : 0 < Real.log (μ₁ / Λ) := by
+    exact Real.log_pos ((one_lt_div hΛ).mpr hμ₁Λ)
+  have hlog₂_pos : 0 < Real.log (μ₂ / Λ) := by
+    exact Real.log_pos ((one_lt_div hΛ).mpr hμ₂Λ)
+  have hlog_le : Real.log (μ₁ / Λ) ≤ Real.log (μ₂ / Λ) := by
+    exact Real.log_le_log (div_pos (lt_trans hΛ hμ₁Λ) hΛ) (div_le_div_of_nonneg_right hμ (le_of_lt hΛ))
+  have hmul_le : b₀ * Real.log (μ₁ / Λ) ≤ b₀ * Real.log (μ₂ / Λ) := by
+    exact mul_le_mul_of_nonneg_left hlog_le (le_of_lt hb₀)
+  exact one_div_le_one_div_of_le (mul_pos hb₀ hlog₁_pos) hmul_le
+
+
+
 end QM
