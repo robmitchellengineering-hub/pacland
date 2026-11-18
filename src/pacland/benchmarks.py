@@ -227,8 +227,10 @@ def _judge_config() -> tuple[str, str, str]:
 
 _JUDGE_PROMPT = (
     "Withheld answer: {jump}\n\nCandidates:\n{candidates}\n\n"
-    "Which candidates express the SAME hypothesis as the withheld answer (semantic equivalence, not "
-    "exact wording)? Answer ONLY as a comma-separated list of the indices that match, or NONE."
+    "Which candidates state the SAME specific claim as the withheld answer? The answer is a NOVEL "
+    "discovery; a candidate that merely restates the premise or describes the observation does NOT "
+    "match. Only mark a candidate that expresses the same new idea. Answer ONLY as a comma-separated "
+    "list of the indices that match, or NONE."
 )
 
 
