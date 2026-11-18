@@ -171,9 +171,12 @@ class TestFalsifierRouting(unittest.TestCase):
         self.assertEqual(runner._falsifier_for_statement("the mass gap is non-perturbative"),
                          runner.verify_mass_gap_scaling)
 
-    def test_leaves_theta_d5_and_polyakov_open(self):
+    def test_leaves_theta_open(self):
         self.assertIsNone(runner._falsifier_for_statement("the mass gap is robust against a θ-term"))
-        self.assertIsNone(runner._falsifier_for_statement("Polyakov-loop correlators cluster exponentially"))
+
+    def test_polyakov_routes_to_the_clustering_falsifier(self):
+        self.assertEqual(runner._falsifier_for_statement("Polyakov-loop correlators cluster exponentially"),
+                         runner.FALSIFIERS["polyakov-clustering"])
 
     def test_routes_to_the_new_candidate_specific_falsifiers(self):
         self.assertEqual(runner._falsifier_for_statement("the d=5 mass gap survives the continuum limit"),

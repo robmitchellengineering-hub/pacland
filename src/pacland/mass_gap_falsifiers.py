@@ -120,3 +120,22 @@ def verify_large_n_ratio(beta: float = 2.5, N: int = 4, n_sweeps: int = 8,
     return both, (f"SU(2) σ={sig2:.4f}, SU(3) σ={sig3:.4f} → {verdict}; "
                   "the universal RATIO still needs an SU(3) glueball mass (not built)")
 
+
+def verify_polyakov_clustering(beta: float = 5.0, Nt: int = 2, Ns: int = 6, n_sweeps: int = 10,
+                               n_meas: int = 8) -> tuple[bool, str]:
+    """'Polyakov-loop correlators cluster exponentially at finite T': extract the screening mass m.
+
+    m > 0 means exponential clustering (the claim survives); m -> 0 means the correlation length
+    diverges (the claim fails). Above the deconfinement transition the Polyakov loop is nonzero and the
+    correlator decays with a positive screening mass — this is the regime where the claim is tested.
+    """
+    from pacland import polyakov as pk
+
+    m = pk.measure_correlation_mass(beta, Nt=Nt, Ns=Ns, n_sweeps=n_sweeps, n_meas=n_meas, seed=0)
+    survived = m > 0.05
+    verdict = ("positive screening mass — exponential clustering (the claim survives this probe)"
+               if survived else "no positive screening mass — either the clustering claim fails or the "
+                                "connected signal is too small to resolve at this coupling")
+    return survived, f"SU(3) Polyakov screening mass (N_t={Nt}, N_s={Ns}, β={beta}) = {m:.4f} → {verdict}"
+
+
