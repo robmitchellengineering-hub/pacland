@@ -134,6 +134,15 @@ class TestPairedSeedsAndCutoff(unittest.TestCase):
             with mock.patch.object(b, "_judge_config", return_value=("http://x/v1", "", "gen")):
                 self.assertFalse(b.judge_is_distinct())
 
+    def test_measure_independent_reports_all_three_suites(self):
+        with mock.patch.object(b, "run_campaign") as rc:
+            rc.return_value = [b.ArmResult("llm", "s", problems=10, found=5),
+                               b.ArmResult("untyped-baseline", "s", problems=10, found=0)]
+            out = b.measure_independent(lambda p: [], n_synthetic=5)
+        self.assertEqual(set(out), {"synthetic", "disguised", "post-cutoff"})
+        self.assertEqual(out["synthetic"]["recall"], 0.5)
+        self.assertEqual(out["synthetic"]["problems"], 10)
+
 
 class TestJudge(unittest.TestCase):
     def test_judge_credits_a_paraphrase(self):

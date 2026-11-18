@@ -261,6 +261,31 @@ def run_campaign_repeated(generator: Generator, campaign: str = "A", repeats: in
             "recall_stdev": stdev, "recalls": recalls}
 
 
+def measure_independent(generator: Generator, n_synthetic: int = 20, seed: int = 0,
+                        judged: bool = True) -> dict:
+    """Measure ACTUAL discovery performance on the decontaminated suite (independent baselines).
+
+    Runs the generator against the planted-law synthetic suite, the disguised problems, and the
+    post-cutoff probe, and reports recall on each. These are problems the model cannot have memorised
+    (synthetic tuples, disguised vocabulary, recent resolutions), so recall here is induction, not
+    memorisation — the honest discovery number.
+    """
+    suites = {
+        "synthetic": synthetic_suite(n_synthetic, seed=seed),
+        "disguised": DISGUISED_DATASET,
+        "post-cutoff": POST_CUTOFF_DATASET,
+    }
+    out = {}
+    for label, ds in suites.items():
+        res = run_campaign("A", generator, dataset=ds, judged=judged)
+        llm = next(r for r in res if r.arm == "llm")
+        base = next(r for r in res if r.arm != "llm")
+        out[label] = {"recall": llm.found / max(llm.problems, 1),
+                      "baseline_recall": base.found / max(base.problems, 1),
+                      "problems": llm.problems}
+    return out
+
+
 JUDGE_RUBRIC_VERSION = 2  # the frozen judge rubric (see _JUDGE_PROMPT); bump when the rubric changes
 
 

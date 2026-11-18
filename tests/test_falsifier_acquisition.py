@@ -9,12 +9,13 @@ from pacland import runner
 
 class TestBuildAndRunFalsifier(unittest.TestCase):
     def test_builds_and_runs_a_synthesized_falsifier(self):
-        code = "def falsifier():\n    return (True, 'a numeric check survived')"
+        code = ("def falsifier():\n    x = 5\n    if x > 0:\n"
+                "        return (True, 'positive value survived')\n    return (False, 'refuted')")
         with mock.patch.object(runner, "_ask_llm", return_value=code):
-            out = fa.build_and_run_falsifier("some hypothesis", "http://x", "", "m")
+            out = fa.build_and_run_falsifier("the value is positive", "http://x", "", "m")
         self.assertTrue(out["ran"])
         self.assertTrue(out["survived"])
-        self.assertEqual(out["evidence"], "a numeric check survived")
+        self.assertEqual(out["evidence"], "positive value survived")
         self.assertIn("synthesized", out["note"])
 
     def test_refuses_without_a_model(self):
@@ -22,10 +23,18 @@ class TestBuildAndRunFalsifier(unittest.TestCase):
         self.assertFalse(out["ran"])
         self.assertIn("no LLM", out["reason"])
 
-    def test_bad_code_is_reported_not_crashed(self):
-        code = "def falsifier():\n    raise ValueError('boom')"
+    def test_vacuous_falsifier_is_rejected(self):
+        code = "def falsifier():\n    return (True, 'survived')"
         with mock.patch.object(runner, "_ask_llm", return_value=code):
-            out = fa.build_and_run_falsifier("hypothesis", "http://x", "", "m")
+            out = fa.build_and_run_falsifier("the value is positive", "http://x", "", "m")
+        self.assertFalse(out["ran"])
+        self.assertIn("vacuous", out["reason"])
+
+    def test_crashing_code_is_reported_not_crashed(self):
+        code = ("def falsifier():\n    x = 1 / 0\n    if x > 0:\n"
+                "        return (True, 'positive')\n    return (False, 'refuted')")
+        with mock.patch.object(runner, "_ask_llm", return_value=code):
+            out = fa.build_and_run_falsifier("the value is positive", "http://x", "", "m")
         self.assertFalse(out["ran"])
         self.assertIn("failed", out["reason"])
 

@@ -224,6 +224,25 @@ class TestAutonomousLoop(unittest.TestCase):
                                        return_value={"ok": False, "recorded": True, "proof": "deferred"}):
                     out = runner.run_autonomous("mass-gap")
         self.assertEqual(len(out["rounds"][0]["survivors"]), 1)
+        self.assertIn("run_id", out)
+
+    def test_lean_bridge_rejects_a_different_proposition(self):
+        with mock.patch.object(runner, "_ask_llm", return_value="NO"):
+            ok = runner._lean_matches_hypothesis("theorem wrong : 1 = 2", "the mass gap is positive",
+                                                 "http://x", "", "m")
+        self.assertFalse(ok)
+
+    def test_lean_bridge_accepts_the_same_proposition(self):
+        with mock.patch.object(runner, "_ask_llm", return_value="YES"):
+            ok = runner._lean_matches_hypothesis("theorem", "the mass gap is positive",
+                                                 "http://x", "", "m")
+        self.assertTrue(ok)
+
+    def test_register_experiment_writes_a_run_id(self):
+        with mock.patch.object(runner, "EXPERIMENTS", runner.REPO_ROOT / "runs" / "test-exp.jsonl"):
+            run_id = runner.register_experiment("test", {"seed": 1}, {"recall": 0.5})
+        self.assertTrue(run_id)
+        self.assertEqual(len(run_id), 12)
 
 
 if __name__ == "__main__":

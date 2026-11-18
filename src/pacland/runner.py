@@ -36,6 +36,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # .../pacland
 PROOF_DIR = REPO_ROOT / "pacland-proof"
 RECORD = REPO_ROOT / "runs" / "runner.jsonl"
 DISCOVERIES = REPO_ROOT / "runs" / "discoveries.jsonl"
+EXPERIMENTS = REPO_ROOT / "runs" / "experiments.jsonl"
 
 
 # ------------------------------------------------------------------------------------------ #
@@ -556,6 +557,25 @@ def list_discoveries() -> list[dict]:
     return list(reversed(rows))
 
 
+def register_experiment(kind: str, config: dict, metrics: dict) -> str:
+    """Record an experiment's config + metrics with a reproducibility id (an experiment registry).
+
+    Every run — a campaign, an autonomous pass, a benchmark — is registered with its config (model,
+    seed, dataset) and its measured metrics, so any result can be traced back to exactly how it was
+    produced and re-run with the same inputs.
+    """
+    import time
+    import uuid
+
+    run_id = uuid.uuid4().hex[:12]
+    record = {"run_id": run_id, "kind": kind, "config": config, "metrics": metrics,
+              "timestamp": time.time()}
+    EXPERIMENTS.parent.mkdir(parents=True, exist_ok=True)
+    with EXPERIMENTS.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(record) + "\n")
+    return run_id
+
+
 def all_facts() -> dict[str, Fact]:
     """The validated facts PLUS the promoted discoveries — the loop feeds survivors back as facts
     the next run can combine/generalize over. This is what makes the engine *compound*."""
@@ -985,12 +1005,32 @@ def _formalize_prompt(statement: str) -> str:
     )
 
 
+def _lean_matches_hypothesis(lean: str, statement: str, endpoint: str, key: str, model: str) -> bool:
+    """Protect the Lean bridge: the formalized theorem must state the SAME proposition as the claim.
+
+    The formalizer can silently weaken or change the claim (prove an easier, unrelated theorem). This
+    asks a fresh check whether the Lean statement is logically equivalent to the hypothesis, so a
+    "proof" of a different proposition is rejected rather than recorded.
+    """
+    prompt = (
+        "Does the Lean theorem below state the SAME proposition as the hypothesis (logically "
+        "equivalent — not weaker, not stronger, not unrelated)? Answer YES or NO.\n\n"
+        f"Hypothesis: {statement}\n\nLean:\n{lean}\n\nAnswer (YES/NO):"
+    )
+    try:
+        ans = _ask_llm(prompt, endpoint, key, model).strip().upper()
+    except Exception:  # noqa: BLE001
+        return False
+    return ans.startswith("YES")
+
+
 def prove_and_record(candidate: Candidate, evidence: str) -> dict:
     """A survivor of falsification: persist it, then attempt an automated Lean proof.
 
-    Records the survivor to the discoveries store, formalises it as a Lean statement via the LLM, and
-    runs the prove loop (propose -> kernel-check -> repair). A proof is a bonus; an unproven survivor
-    is still a recorded discovery (a candidate for the human or a later, stronger pass).
+    Records the survivor to the discoveries store, formalises it as a Lean statement via the LLM,
+    checks the formalization states the SAME proposition (not a weaker one), and runs the prove loop
+    (propose -> kernel-check -> repair). A proof is a bonus; an unproven survivor is still a recorded
+    discovery (a candidate for the human or a later, stronger pass).
     """
     fact = {"id": candidate.id, "statement": candidate.statement, "falsifier": evidence,
             "source": f"discovery-engine {candidate.strategy}", "category": "discovered"}
@@ -1005,6 +1045,9 @@ def prove_and_record(candidate: Candidate, evidence: str) -> dict:
         lean = _ask_llm(_formalize_prompt(candidate.statement), endpoint, key, model)
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "recorded": True, "proof": f"formalise failed: {type(e).__name__}"}
+    if not _lean_matches_hypothesis(lean, candidate.statement, endpoint, key, model):
+        return {"ok": False, "recorded": True,
+                "proof": "rejected — the formalized theorem does not state the original claim"}
     proof = prove(lean, attempts=3)
     return {"ok": proof.get("ok", False), "recorded": True, "proof": proof}
 
@@ -1050,6 +1093,12 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
                     entry["candidate_verdict"] = ("survived" if built["survived"] else "refuted")
                 round_out["open"].append(entry)
         out["rounds"].append(round_out)
+    metrics = {"rounds": rounds,
+               "survivors": sum(len(r["survivors"]) for r in out["rounds"]),
+               "falsified": sum(len(r["proposals"]) for r in out["rounds"]),
+               "open": sum(len(r["open"]) for r in out["rounds"])}
+    out["run_id"] = register_experiment("autonomous", {"problem": problem, "rounds": rounds,
+                                                       "budget": budget, "model": model}, metrics)
     return out
 
 
