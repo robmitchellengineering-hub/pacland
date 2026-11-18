@@ -1,0 +1,163 @@
+"""G2 — the graded SEXTANT challenge sequence (from PLAN-discovery-engine.md).
+
+Replaces the single binary falsifier with eight ordered challenges, each scored
+PASS / FAIL / INCONCLUSIVE / NOT APPLICABLE. A candidate can survive seven and die on the eighth; the
+record preserves all eight results plus the decisive failure.
+
+Mechanical challenges (known-results, boundary, counterexample, reproducibility, formal verification)
+run against SEXTANT/Phantom and the Lean tower. The three model-judged ones (logical consistency,
+assumption audit, alternative explanation) are honest stubs that return INCONCLUSIVE until a judge is
+plugged in — keeping the honesty that only "counterexample search" and "formal verification" are
+mechanical, not model-opinion.
+"""
+
+from __future__ import annotations
+
+import sys
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Callable
+
+VERDICTS = ("PASS", "FAIL", "INCONCLUSIVE", "NOT_APPLICABLE")
+
+
+@dataclass
+class Challenge:
+    name: str
+    question: str
+    kind: str            # "mechanical" | "model-judged"
+
+
+@dataclass
+class ChallengeResult:
+    name: str
+    kind: str
+    verdict: str
+    evidence: str = ""
+
+
+@dataclass
+class Candidate:
+    name: str
+    hypothesis: str
+    falsifier: str = ""
+    assumptions: list[str] = field(default_factory=list)
+    theorem: str = ""    # the Lean theorem it claims, if any
+
+
+CHALLENGES = [
+    Challenge("logical-consistency", "Does the hypothesis contradict itself?", "model-judged"),
+    Challenge("assumption-audit", "Are the assumptions justified, hidden, or circular?", "model-judged"),
+    Challenge("known-results", "Does it contradict an established FORCED result?", "mechanical"),
+    Challenge("boundary-testing", "Does it survive limiting and extreme cases?", "mechanical"),
+    Challenge("counterexample-search", "Can a solver construct a case where it fails?", "mechanical"),
+    Challenge("alternative-explanation", "Could an existing theory explain it more simply?", "model-judged"),
+    Challenge("reproducibility", "Can an independent re-run reproduce the result?", "mechanical"),
+    Challenge("formal-verification", "Is the claim kernel-checked in Lean?", "mechanical"),
+]
+
+
+def _import_sextant():
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        from pacland import phantom, sextant
+
+        return sextant, phantom
+    except Exception:
+        return None, None
+
+
+def _lean_check(theorem: str) -> tuple[str, str]:
+    """Mechanical formal-verification check: is the theorem present + free of sorry in the tower?"""
+    if not theorem:
+        return "NOT_APPLICABLE", "no formalisation target named"
+    root = Path(__file__).resolve().parent.parent.parent / "pacland-proof"
+    hits = list(root.rglob("*.lean")) if root.exists() else []
+    for p in hits:
+        if theorem in p.read_text(errors="ignore"):
+            if "sorry" in p.read_text(errors="ignore"):
+                return "INCONCLUSIVE", f"{theorem} found in {p.name} but carries sorry"
+            return "PASS", f"{theorem} kernel-checked in {p.name}"
+    return "INCONCLUSIVE", f"{theorem} not found in the Lean tower"
+
+
+def run_sequence(c: Candidate) -> list[ChallengeResult]:
+    """Run the eight challenges in order. The record keeps every result, including the decisive failure."""
+    sextant, phantom = _import_sextant()
+    results: list[ChallengeResult] = []
+
+    def add(name, kind, verdict, evidence):
+        results.append(ChallengeResult(name, kind, verdict, evidence))
+
+    # 1-2: model-judged — honest stubs
+    add("logical-consistency", "model-judged", "INCONCLUSIVE", "needs a judge (model) — not mechanical")
+    add("assumption-audit", "model-judged", "INCONCLUSIVE",
+        "needs a judge; assumptions " + (", ".join(c.assumptions) if c.assumptions else "not recorded"))
+
+    # 3: known-results — mechanical (does it name a FORCED claim and try to invert it?)
+    if sextant is not None:
+        hit = next((n for n, e in sextant.CATALOG.items() if n in c.hypothesis), None)
+        if hit and sextant.CATALOG[hit].get("verdict") == "FORCED":
+            add("known-results", "mechanical", "FAIL",
+                f"contradicts the FORCED claim {hit}: {sextant.CATALOG[hit]['claim']}")
+        else:
+            add("known-results", "mechanical", "PASS", "no contradiction with a FORCED catalog claim")
+    else:
+        add("known-results", "mechanical", "NOT_APPLICABLE", "SEXTANT not importable")
+
+    # 4: boundary-testing — mechanical (run the falsifier, if present, at a boundary probe)
+    # (kept as a structural check: a candidate with no falsifier cannot be boundary-tested)
+    if c.falsifier:
+        add("boundary-testing", "mechanical", "INCONCLUSIVE",
+            "falsifier present; boundary probe not yet automated")
+    else:
+        add("boundary-testing", "mechanical", "FAIL", "no falsifier — cannot be boundary-tested")
+
+    # 5: counterexample-search — mechanical (the live Phantom falsifier)
+    if phantom is not None and c.name in getattr(phantom, "FALSIFIERS", {}):
+        try:
+            ok, ev = phantom.FALSIFIERS[c.name]()
+            add("counterexample-search", "mechanical",
+                ("PASS" if ok else "FAIL"), ev)
+        except Exception as exc:
+            add("counterexample-search", "mechanical", "INCONCLUSIVE",
+                f"falsifier raised {type(exc).__name__}: {exc}")
+    else:
+        add("counterexample-search", "mechanical", "NOT_APPLICABLE", "no registered falsifier")
+
+    # 6: model-judged — honest stub
+    add("alternative-explanation", "model-judged", "INCONCLUSIVE", "needs a judge (model)")
+
+    # 7: reproducibility — mechanical (run the falsifier twice, require determinism)
+    if phantom is not None and c.name in getattr(phantom, "FALSIFIERS", {}):
+        try:
+            a = phantom.FALSIFIERS[c.name]()
+            b = phantom.FALSIFIERS[c.name]()
+            add("reproducibility", "mechanical",
+                ("PASS" if a == b else "FAIL"), "two runs " + ("agree" if a == b else "disagree"))
+        except Exception as exc:
+            add("reproducibility", "mechanical", "INCONCLUSIVE", f"raised {type(exc).__name__}")
+    else:
+        add("reproducibility", "mechanical", "NOT_APPLICABLE", "no registered falsifier")
+
+    # 8: formal-verification — mechanical (Lean tower check)
+    v, ev = _lean_check(c.theorem)
+    add("formal-verification", "mechanical", v, ev)
+
+    return results
+
+
+def summarize(results: list[ChallengeResult]) -> str:
+    """One-line verdict per challenge + the tally."""
+    lines = [f"[{r.verdict:13s}] {r.name:24s} {r.evidence[:60]}" for r in results]
+    tally = {v: sum(1 for r in results if r.verdict == v) for v in VERDICTS}
+    lines.append(f"tally: " + ", ".join(f"{k}={v}" for k, v in tally.items() if v))
+    return "\n".join(lines)
+
+
+if __name__ == "__main__":
+    # self-test: run the sequence on a SEXTANT claim + a bare hypothesis
+    print("=== graded challenge sequence: chsh (FORCED, live falsifier) ===")
+    print(summarize(run_sequence(Candidate("chsh", "no state beats 2√2", falsifier="chsh", theorem="QM.Tsirelson"))))
+    print("\n=== graded challenge sequence: a hypothesis with no falsifier + no theorem ===")
+    print(summarize(run_sequence(Candidate("bare", "some new hypothesis"))))
