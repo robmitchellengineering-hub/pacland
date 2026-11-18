@@ -143,6 +143,20 @@ class TestPairedSeedsAndCutoff(unittest.TestCase):
         self.assertEqual(out["synthetic"]["recall"], 0.5)
         self.assertEqual(out["synthetic"]["problems"], 10)
 
+    def test_peft_dataset_builder_writes_the_expected_count(self):
+        import os
+        import subprocess
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as d:
+            out = os.path.join(d, "d.jsonl")
+            subprocess.run(["python3", "scripts/build_peft_dataset.py", "--out", out,
+                            "--n-synthetic", "10", "--seed", "0"], check=True,
+                           env={**os.environ, "PYTHONPATH": "src"})
+            with open(out) as fh:
+                lines = fh.read().splitlines()
+        self.assertEqual(len(lines), 10 + 10 + 3 + 10)  # historical + disguised + post-cutoff + synthetic
+
 
 class TestJudge(unittest.TestCase):
     def test_judge_credits_a_paraphrase(self):

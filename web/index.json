@@ -1677,6 +1677,13 @@
    "title": "build_climate_charts.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_peft_dataset.py",
+   "kind": "script",
+   "path": "scripts/build_peft_dataset.py",
+   "summary": "Build the PEFT instruction dataset from the benchmark's (pre-state -> jump) pairs.",
+   "title": "build_peft_dataset.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_site_index.py",
    "kind": "script",
    "path": "scripts/build_site_index.py",
@@ -2300,6 +2307,13 @@
    "title": "find_flux_vacua.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fine_tune_peft.py",
+   "kind": "script",
+   "path": "scripts/fine_tune_peft.py",
+   "summary": "Fine-tune a local LLM on the discovery skill with QLoRA (HuggingFace PEFT + TRL).",
+   "title": "fine_tune_peft.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/glueball_mass.py",
    "kind": "script",
    "path": "scripts/glueball_mass.py",
@@ -2445,6 +2459,13 @@
    "path": "scripts/layout_check.py",
    "summary": "Check a room layout before a coverage map is drawn on it.",
    "title": "layout_check.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/live_measurement.py",
+   "kind": "script",
+   "path": "scripts/live_measurement.py",
+   "summary": "One live end-to-end measurement: independent decontaminated baselines + a frontier pass.",
+   "title": "live_measurement.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_explainer_pdf.py",
