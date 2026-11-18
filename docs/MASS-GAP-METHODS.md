@@ -142,6 +142,16 @@ That is the Gribov–Zwanziger theorem proper, and it is the Coulomb-confinement
 is the open Clay rung. The finite-dimensional transport — non-commutativity → Cartan zero mode → IR
 suppression → `1/p⁴` → linear potential — is proven above; the infinite-dimensional step is not.
 
+**A second, separate bridge is also missing and is equally major — the Langevin-generator gap is not
+the transfer-matrix gap.** The Doeblin/Bakry–Émery machinery (`doeblin_contraction`, M1) bounds the
+spectral gap of the **Langevin generator** (the stochastic-dynamics mixing operator `L = Δ − ∇S·∇`). The
+physical mass gap is the spectral gap of the **transfer matrix** (the Euclidean-time evolution, `1 − λ₁`).
+These are different operators with different spectra. `mass_gap_from_mixing` uses the transfer matrix's
+*entrywise* mixing `δ = e^{−2β}`, which is a **stronger** condition than its spectral gap and is **not**
+the Langevin/Bakry–Émery gap. Bridging the geometric (Langevin) gap to the transfer-matrix (mass) gap is
+the content of stochastic quantization, and it is **unproven** here — a major mathematical bridge, not an
+implementation detail.
+
 ## 6. Reproducibility
 
 ```bash
@@ -168,6 +178,8 @@ hypothesis registry in `src/pacland/hypotheses.py`.
   and the finite-dimensional Gribov–Zwanziger confinement mechanism.
 - **Assumed (known):** the one-loop beta function `b₀ = 11N/3` (Gross–Wilczek–Politzer); the referee's
   `m(β) = 25.28·e^{−1.182β}` and `m/√σ ≈ 3.2`; Zwanziger's `σ_Coul ≤ σ_physical`.
-- **Open:** the infinite-dimensional horizon condition (`γ > 0` for the full operator) — the Clay rung.
+- **Open:** the infinite-dimensional horizon condition (`γ > 0` for the full operator) — the Clay rung;
+  **and** the Langevin-generator ⟹ transfer-matrix bridge (the geometric gap is not the mass gap until
+  this bridge is proven) — a second major open rung.
 
 No `sorry`, no `admit`, no `axiom` anywhere in the two proof files. The open rung is named, not faked.

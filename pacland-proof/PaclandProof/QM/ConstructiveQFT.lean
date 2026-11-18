@@ -278,7 +278,13 @@ theorem spread_pos_of_nonconstant {m : ℕ} (x : Fin m → ℝ) (hnonconst : ∃
 the mixing positivity) and a non-constant vector, the Hamiltonian's quadratic form is `⟨x, (I−T)x⟩ ≥
 (δ/2)·Σᵢⱼ (xᵢ−xⱼ)² > 0`. This is the mass-gap clause at the finite-volume level: the mechanism (the
 Dirichlet identity) turns the mixing positivity `δ > 0` into `Δ > 0`. The remaining open input is
-proving `δ > 0` uniformly for 4D YM. -/
+proving `δ > 0` uniformly for 4D YM.
+
+NOTE (honest, two distinct operators): the `δ > 0` here is the TRANSFER MATRIX's *entrywise* mixing
+(a stronger condition than its spectral gap). It is NOT the spectral gap of the Langevin generator
+(`L = Δ − ∇S·∇`, the stochastic-dynamics mixing operator) that the Doeblin/Bakry–Émery machinery
+(`doeblin_contraction`) bounds. Bridging the Langevin-generator gap to the transfer-matrix (mass) gap
+is a separate, unproven mathematical bridge — see `docs/MASS-GAP-METHODS.md` §5. -/
 theorem mass_gap_from_mixing {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (δ : ℝ)
     (hδ : ∀ i j, δ ≤ T i j) (hδ0 : 0 < δ) (hrow : ∀ i, ∑ j : Fin m, T i j = 1)
     (hsymm : ∀ i j, T i j = T j i) (x : Fin m → ℝ) (hnonconst : ∃ i j : Fin m, x i ≠ x j) :
