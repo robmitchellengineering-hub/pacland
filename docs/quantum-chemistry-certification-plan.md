@@ -1,9 +1,9 @@
-# Wedge 2 plan — certified quantum chemistry (DMRG ground states + the certificate)
+# Wedge 2 — certified quantum chemistry (DMRG ground states + the certificate)
 
-**Status: plan (not built).** Wedge 1 (`docs/quantum-hardware-verification.md`) is built. This is
-the second, larger monetization path: sell *certified* ground-state energies for strongly-correlated
-molecules, where the certificate is the differentiator (the open DMRG solvers don't ship a proof the
-bond dimension was sufficient).
+**Status: built (both milestones).** The DMRG sufficiency certificate is live (`chemistry_certify.py`), and the
+molecule pipeline is wired: `molecule_certify.py` takes H2 through PySCF → OpenFermion → Jordan-Wigner →
+solve, and certifies E(H2) = −1.137270174661 Hartree against the FCI reference (delta 7e-16). The next
+milestone is a larger molecule where DMRG (not exact diagonalization) is the solver.
 
 ## Why this market
 

@@ -233,6 +233,25 @@ def hypothesize(name: str) -> str:
     return "\n".join(lines)
 
 
+def stated_beliefs() -> list[dict]:
+    """The operator's stated prior and falsifier power, for ranking what to test next by EIG.
+
+    These are INPUTS, not findings. ``prior`` is "how likely is this hypothesis true before the
+    test"; ``tp``/``fp`` is "how well does running the falsifier distinguish the hypothesis from its
+    negation" (``tp`` = P(falsifier does not trigger | hypothesis true), ``fp`` = P(falsifier does
+    not trigger | hypothesis false)). Replace with your own numbers — the engine ranks by expected
+    information gain per unit cost, and refuses outside convergence (belief.detect_mode).
+    """
+    return [
+        {"name": "confinement-frontier", "prior": 0.6, "tp": 0.90, "fp": 0.30, "cost": 1.0},
+        {"name": "mass-gap-sharper-bound", "prior": 0.5, "tp": 0.85, "fp": 0.25, "cost": 1.0},
+        {"name": "ym-mass-gap", "prior": 0.55, "tp": 0.90, "fp": 0.20, "cost": 1.0},
+        {"name": "ads-limit", "prior": 0.4, "tp": 0.80, "fp": 0.40, "cost": 1.0},
+        {"name": "mera-lung", "prior": 0.9, "tp": 0.95, "fp": 0.30, "cost": 1.0},  # already answered
+        {"name": "t-count-boundary", "prior": 0.5, "tp": 0.90, "fp": 0.30, "cost": 1.0},
+    ]
+
+
 def list_hypotheses() -> str:
     return "\n".join(f"◇ {n:<18} {HYPOTHESES[n]['question'][:70]}…" for n in HYPOTHESES)
 

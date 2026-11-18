@@ -1113,8 +1113,8 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-chemistry-certification-plan.md",
    "kind": "doc",
    "path": "docs/quantum-chemistry-certification-plan.md",
-   "summary": "the second, larger monetization path: sell certified ground-state energies for strongly-correlated molecules, where the certificate is the differentiator (the open DMRG solvers don't ship a\u2026",
-   "title": "Wedge 2 plan \u2014 certified quantum chemistry (DMRG ground states + the certificate)"
+   "summary": "molecule pipeline is wired: moleculecertify.py takes H2 through PySCF \u2192 OpenFermion \u2192 Jordan-Wigner \u2192 solve, and certifies E(H2) = \u22121.137270174661 Hartree against the FCI reference (delta\u2026",
+   "title": "Wedge 2 \u2014 certified quantum chemistry (DMRG ground states + the certificate)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/quantum-computer-on-classical.md",
@@ -1710,6 +1710,13 @@
    "path": "scripts/check_padgett_claims.py",
    "summary": "An outside claim, put through the same machine: Jason Padgett's \"asymmetric prime\" interference.",
    "title": "check_padgett_claims.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/chemistry_certification_demo.py",
+   "kind": "script",
+   "path": "scripts/chemistry_certification_demo.py",
+   "summary": "The certified-chemistry demo \u2014 a DMRG ground-state energy with a sufficiency proof.",
+   "title": "chemistry_certification_demo.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_carbon.py",
@@ -3490,6 +3497,13 @@
    "title": "Find anything \u2014 every doc, script and explainer"
   },
   {
+   "href": "./chemistry.html",
+   "kind": "page",
+   "path": "web/chemistry.html",
+   "summary": "page on this site",
+   "title": "chemistry"
+  },
+  {
    "href": "./climate-3d.html",
    "kind": "page",
    "path": "web/climate-3d.html",
@@ -3537,6 +3551,13 @@
    "path": "web/node.html",
    "summary": "page on this site",
    "title": "node"
+  },
+  {
+   "href": "./quantum-verification.html",
+   "kind": "page",
+   "path": "web/quantum-verification.html",
+   "summary": "page on this site",
+   "title": "quantum-verification"
   },
   {
    "href": "./sextant.html",

@@ -6,6 +6,22 @@ from pathlib import Path
 from pacland import runner
 
 
+class TestEigRanking(unittest.TestCase):
+    def test_rank_open_by_eig_is_descending(self):
+        ranked = runner.rank_open_by_eig()
+        self.assertTrue(ranked)
+        scores = [s for _, s in ranked]
+        self.assertEqual(scores, sorted(scores, reverse=True))
+        names = {n for n, _ in ranked}
+        self.assertIn("ym-mass-gap", names)
+
+    def test_high_prior_low_information_ranks_low(self):
+        # mera-lung is already answered (prior 0.9), so it yields less information to gain
+        ranked = runner.rank_open_by_eig()
+        by_name = dict(ranked)
+        self.assertGreater(by_name["ym-mass-gap"], by_name["mera-lung"])
+
+
 class TestRunner(unittest.TestCase):
     def test_generate_combine_ou_gap(self):
         c = runner.generate(["ou-curvature", "gronwall-decay"], "combine")
