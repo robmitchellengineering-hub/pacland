@@ -148,9 +148,19 @@ def gate(results: list[ArmResult]) -> dict:
 # Straw-man generators (prove the harness runs; NOT a real discovery test)
 # ----------------------------------------------------------------------------
 
-# The untyped baseline: produces distractors only, never the jump (a deliberately weak straw-man).
+# The untyped baseline: generic distractors only, never the jump (a deliberately weak straw-man —
+# its job is to be beaten, not to compete). Fixed wrong guesses, so it does not restate the premise
+# (which used to leak false positives through the judge) and a real engine must strictly exceed it.
+_UNTYPED_DISTRACTORS = [
+    "a new long-range force",
+    "an undiscovered particle",
+    "a measurement error in the apparatus",
+    "an unmodelled systematic effect",
+]
+
+
 def untyped_generator(pre: str) -> list[str]:
-    return [f"a granular medium explanation of: {pre[:30]}", "a new long-range force"]
+    return list(_UNTYPED_DISTRACTORS)
 
 
 # The five-jump arm: a knowledge-base generator that, for this toy, carries the jump mapping.
@@ -283,6 +293,9 @@ JUDGE_CALIBRATION = [
     ("particles interact by exchanging virtual photons", "non-abelian gauge symmetry (Yang-Mills)", False),
     ("gravity and electromagnetism unify into one force", "electroweak unification", False),
     ("the atom is a miniature solar system", "matrix mechanics / quantum jumps", False),
+    # meta-commentary about the premise is NOT a match (the straw-man used to leak through here)
+    ("a granular medium explanation of the blackbody divergence", "energy is quantised, E = h nu", False),
+    ("an alternative reading of the photoelectric threshold", "light is made of quanta (photons)", False),
 ]
 
 
