@@ -207,6 +207,47 @@ def rank_by_eig(beliefs: list[Belief]) -> list[tuple[str, float]]:
     return scored
 
 
+def _landscape_entropy(priors: dict[str, float]) -> float:
+    """Shannon entropy (nats) of a hypothesis distribution."""
+    return -sum(p * math.log(p) for p in priors.values() if p > 0.0)
+
+
+def discriminating_eig(priors: dict[str, float], true_positive_rate: dict[str, float]) -> float:
+    """Expected information gain of a binary experiment over a *landscape* of competing hypotheses.
+
+    G1 — ``a* = argmax_a E[IG | a] / cost(a)``. ``priors`` maps hypothesis name -> prior;
+    ``true_positive_rate`` maps hypothesis name -> P(experiment positive | hypothesis). An experiment
+    that *separates* the hypotheses (high tpr for some, low for others) earns high EIG; one that
+    merely confirms the leader (same tpr for everyone) earns none, because it does not reduce the
+    uncertainty about *which* hypothesis is true.
+    """
+    norm = sum(priors.values())
+    p = {k: v / norm for k, v in priors.items()}
+    h0 = _landscape_entropy(p)
+    p_pos = sum(p[k] * true_positive_rate[k] for k in p)
+    p_neg = 1.0 - p_pos
+    post_pos = {k: p[k] * true_positive_rate[k] / p_pos for k in p} if p_pos > 0.0 else {}
+    post_neg = {k: p[k] * (1.0 - true_positive_rate[k]) / p_neg for k in p} if p_neg > 0.0 else {}
+    return h0 - (p_pos * _landscape_entropy(post_pos) + p_neg * _landscape_entropy(post_neg))
+
+
+def select_discriminating_experiment(hypotheses: list[dict], experiments: list[dict]) -> tuple[str, float]:
+    """Pick the experiment that most separates competing hypotheses, per unit cost.
+
+    ``hypotheses`` is ``[{"name", "prior"}]``; ``experiments`` is ``[{"name", "cost",
+    "tpr": {hypothesis -> P(pos | h)}}]``. Returns ``(experiment_name, EIG/cost)`` for the maximiser.
+    This is experiment selection, not hypothesis ranking: it asks "which test tells us the most about
+    the whole landscape", not "which leader should I confirm".
+    """
+    priors = {h["name"]: h["prior"] for h in hypotheses}
+    best_name, best_score = None, -1.0
+    for e in experiments:
+        score = discriminating_eig(priors, e["tpr"]) / e["cost"]
+        if score > best_score:
+            best_name, best_score = e["name"], score
+    return best_name, best_score
+
+
 def update(belief: Belief, positive: bool) -> Belief:
     """Return the belief after one test result (refuses an empty likelihood)."""
     if belief.likelihood is None:

@@ -10,6 +10,7 @@ from pacland.belief import (
     bayes_factor,
     brier_score,
     detect_mode,
+    discriminating_eig,
     eig,
     kl_bernoulli,
     log_score,
@@ -18,6 +19,7 @@ from pacland.belief import (
     posterior,
     rank_by_eig,
     require_convergence,
+    select_discriminating_experiment,
     update,
 )
 
@@ -208,6 +210,41 @@ class TestPacBayes(unittest.TestCase):
             pac_bayes_bound(0.5, 0.8, 0, 0.05)      # m must be positive
         with self.assertRaises(ValueError):
             pac_bayes_bound(0.5, 0.8, 100, 0.0)     # delta must be in (0, 1]
+
+
+class TestDiscriminatingExperiment(unittest.TestCase):
+    def test_separating_experiment_beats_a_confirming_one(self):
+        # two competing hypotheses; an experiment that separates them (H1 -> positive, H2 -> negative)
+        # carries more information than one that fires the same way for both (confirming, not separating).
+        priors = {"leader": 0.6, "challenger": 0.4}
+        confirm = {"leader": 0.9, "challenger": 0.9}     # same outcome under both — no separation
+        separate = {"leader": 0.95, "challenger": 0.05}  # opposite outcomes — separates them
+        self.assertGreater(discriminating_eig(priors, separate),
+                           discriminating_eig(priors, confirm))
+
+    def test_perfect_separation_resolves_the_landscape(self):
+        # a perfect separator drives the posterior entropy to zero, so EIG equals the prior entropy.
+        priors = {"a": 0.5, "b": 0.5}
+        perfect = {"a": 1.0, "b": 0.0}
+        self.assertAlmostEqual(discriminating_eig(priors, perfect), math.log(2.0))
+
+    def test_select_picks_the_separator_not_the_confirming_leader(self):
+        hypotheses = [{"name": "leader", "prior": 0.6}, {"name": "challenger", "prior": 0.4}]
+        experiments = [
+            {"name": "confirm", "cost": 1.0, "tpr": {"leader": 0.9, "challenger": 0.9}},
+            {"name": "separate", "cost": 1.0, "tpr": {"leader": 0.95, "challenger": 0.05}},
+        ]
+        name, _score = select_discriminating_experiment(hypotheses, experiments)
+        self.assertEqual(name, "separate")
+
+    def test_cost_penalises_expensive_experiments(self):
+        hypotheses = [{"name": "a", "prior": 0.5}, {"name": "b", "prior": 0.5}]
+        experiments = [
+            {"name": "cheap", "cost": 1.0, "tpr": {"a": 0.9, "b": 0.1}},
+            {"name": "pricey", "cost": 100.0, "tpr": {"a": 0.95, "b": 0.05}},
+        ]
+        name, _score = select_discriminating_experiment(hypotheses, experiments)
+        self.assertEqual(name, "cheap")
 
 
 if __name__ == "__main__":
