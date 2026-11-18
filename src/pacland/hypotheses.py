@@ -252,6 +252,26 @@ def stated_beliefs() -> list[dict]:
     ]
 
 
+def beliefs_for_all() -> list[dict]:
+    """Beliefs for EVERY registered hypothesis, so the EIG ranking never silently drops one.
+
+    Uses the operator's explicit beliefs (``stated_beliefs``) where given. For the rest it derives a
+    default: an answered hypothesis (its ``progress`` says ANSWERED) gets a high prior (0.9 — little
+    left to learn); an open one gets 0.5; both get a neutral falsifier power (tp=0.8, fp=0.3).
+    Explicit numbers always override the default.
+    """
+    explicit = {b["name"]: b for b in stated_beliefs()}
+    out = []
+    for name, h in HYPOTHESES.items():
+        if name in explicit:
+            out.append(explicit[name])
+            continue
+        answered = "ANSWERED" in (h.get("progress", "") or "").upper()
+        out.append({"name": name, "prior": 0.9 if answered else 0.5,
+                    "tp": 0.8, "fp": 0.3, "cost": 1.0})
+    return out
+
+
 def list_hypotheses() -> str:
     return "\n".join(f"◇ {n:<18} {HYPOTHESES[n]['question'][:70]}…" for n in HYPOTHESES)
 
