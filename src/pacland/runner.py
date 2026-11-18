@@ -578,8 +578,8 @@ def advance(fact_ids: list[str], strategy: str) -> Verdict:
 def rank_open_by_eig() -> list[tuple[str, float]]:
     """Rank the open hypotheses by expected information gain per unit cost.
 
-    Bridges the hypothesis registry to the belief layer: each hypothesis's stated prior and
-    falsifier power (``hypotheses.stated_beliefs``) become a ``Belief``, the C/P detector gates it
+    Bridges the hypothesis registry to the belief layer: every registered hypothesis's prior and
+    falsifier power (``hypotheses.beliefs_for_all``) become a ``Belief``, the C/P detector gates it
     (refuses outside convergence), and ``belief.rank_by_eig`` orders them so the first item is the
     test that shrinks our uncertainty the most per unit cost.
     """
@@ -589,7 +589,7 @@ def rank_open_by_eig() -> list[tuple[str, float]]:
         belief.Belief(name=s["name"], prior=s["prior"],
                       likelihood=belief.Likelihood(s["tp"], s["fp"]),
                       cost=s["cost"])
-        for s in hypotheses.stated_beliefs()
+        for s in hypotheses.beliefs_for_all()
     ]
     return belief.rank_by_eig(beliefs)
 

@@ -21,6 +21,18 @@ class TestEigRanking(unittest.TestCase):
         by_name = dict(ranked)
         self.assertGreater(by_name["ym-mass-gap"], by_name["mera-lung"])
 
+    def test_ranking_covers_every_registered_hypothesis(self):
+        # no hypothesis may be silently dropped from the "what to test next" ranking
+        ranked = runner.rank_open_by_eig()
+        self.assertEqual(len(ranked), len(runner.hypotheses.HYPOTHESES))
+        self.assertEqual({n for n, _ in ranked}, set(runner.hypotheses.HYPOTHESES))
+
+    def test_answered_hypotheses_rank_low(self):
+        ranked = runner.rank_open_by_eig()
+        by_name = dict(ranked)
+        self.assertLess(by_name["which-2"], by_name["ym-mass-gap"])
+        self.assertLess(by_name["ngen-3"], by_name["ym-mass-gap"])
+
 
 class TestRunner(unittest.TestCase):
     def test_generate_combine_ou_gap(self):
