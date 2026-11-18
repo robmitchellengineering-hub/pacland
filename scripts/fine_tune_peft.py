@@ -40,7 +40,7 @@ def main() -> int:
         return 1
 
     bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
-                             bnb_4bit_compute_dtype=torch.float16)
+                             bnb_4bit_compute_dtype=torch.bfloat16)
     model = AutoModelForCausalLM.from_pretrained(args.model, quantization_config=bnb,
                                                  device_map="auto")
     model = prepare_model_for_kbit_training(model)
@@ -61,7 +61,7 @@ def main() -> int:
 
     train_args = TrainingArguments(
         output_dir=args.out, per_device_train_batch_size=2, gradient_accumulation_steps=8,
-        num_train_epochs=args.epochs, learning_rate=2e-4, fp16=True, logging_steps=10,
+        num_train_epochs=args.epochs, learning_rate=2e-4, bf16=True, logging_steps=10,
         save_strategy="epoch", report_to="none",
     )
     # Newer TRL: max_seq_length is not a SFTTrainer kwarg — it is dropped (the prompt+output fit the
