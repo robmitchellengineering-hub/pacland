@@ -52,5 +52,13 @@ class TestProperScoringHonesty(unittest.TestCase):
         self.assertLess(cal.mean_brier_score(conf_cal, out), cal.mean_brier_score(conf_over, out))
 
 
+class TestPacBayesCertified(unittest.TestCase):
+    def test_perfect_accuracy_gives_a_finite_nonvacuous_bound(self):
+        c = cal.certified_decision_bound(1.0, 41, 0.05)
+        self.assertLess(c["gap"], 1.0)      # finite, not infinite
+        self.assertGreater(c["lower_bound"], 0.0)  # non-vacuous
+        self.assertEqual(c["confidence"], 0.95)
+
+
 if __name__ == "__main__":
     unittest.main()

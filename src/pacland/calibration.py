@@ -28,7 +28,7 @@ from pathlib import Path
 import numpy as np
 
 from pacland import quantum_certify as qc
-from pacland.belief import brier_score, log_score
+from pacland.belief import brier_score, log_score, pac_bayes_bound
 
 
 def expected_calibration_error(confidences, outcomes, n_bins: int = 10) -> tuple[float, list[dict]]:
@@ -87,6 +87,27 @@ def honesty_theorem(q: float = 0.7) -> dict:
             "honest_minimizes": abs(best - q) < 1e-12}
 
 
+def certified_decision_bound(accuracy: float, m: int, delta: float = 0.05) -> dict:
+    """A PAC-Bayes certified lower bound on the true decision accuracy.
+
+    The gate's accept/refuse decision is a binary classifier whose accuracy is measured over
+    ``m`` samples. McAllester's bound certifies that, with probability >= ``1 - delta``, the true
+    accuracy is at least the smoothed empirical accuracy minus the KL-charged gap. The posterior
+    mean is Laplace-smoothed (Beta(1,1) prior), so a perfect empirical record gives a finite KL
+    instead of a vacuous infinity.
+    """
+    if m <= 0:
+        raise ValueError("m must be positive")
+    if not (0.0 <= accuracy <= 1.0):
+        raise ValueError("accuracy must be in [0, 1]")
+    prior = 0.5
+    q = (accuracy * m + 1.0) / (m + 2.0)          # Beta(1,1) posterior mean
+    gap = pac_bayes_bound(prior=prior, posterior=q, m=m, delta=delta)
+    return {"accuracy": accuracy, "smoothed_accuracy": q, "m": m, "confidence": 1.0 - delta,
+            "gap": gap, "lower_bound": max(0.0, q - gap),
+            "theorem": "McAllester PAC-Bayes (Beta(1,1) prior, KL-charged)"}
+
+
 def gate_quantum_certificate(program: str = "ghz", n_qubits: int = 16, tol: float = 1e-9,
                              seed: int = 0, n_forgeries: int = 40) -> dict:
     """Certify a circuit, referee a batch of true and forged results, and score calibration."""
@@ -123,6 +144,7 @@ def gate_quantum_certificate(program: str = "ghz", n_qubits: int = 16, tol: floa
 
     ece, rows = expected_calibration_error(confidences, outcomes)
     batch = len(distances)
+    accuracy = (true_acc + true_ref) / batch
     return {
         "program": program,
         "n_qubits": n_qubits,
@@ -132,7 +154,8 @@ def gate_quantum_certificate(program: str = "ghz", n_qubits: int = 16, tol: floa
         "false_accept": false_acc,
         "true_refuse": true_ref,
         "false_refuse": false_ref,
-        "decision_accuracy": (true_acc + true_ref) / batch,
+        "decision_accuracy": accuracy,
+        "certified": certified_decision_bound(accuracy, batch),
         "ece": ece,
         "mean_brier": mean_brier_score(confidences, outcomes),
         "mean_log": mean_log_score(confidences, outcomes),
@@ -155,6 +178,10 @@ def main(argv: list[str]) -> int:
           f"{r['true_refuse']} true-refuse, {r['false_refuse']} false-refuse")
     print(f"  decision calibration: {'CALIBRATED' if r['decision_calibrated'] else 'MISCALIBRATED'} "
           f"(decision accuracy {r['decision_accuracy']:.3f})")
+    c = r["certified"]
+    print(f"  PAC-Bayes certified: with {c['confidence']:.0%} confidence, true accuracy >= "
+          f"{c['lower_bound']:.3f} (empirical {c['accuracy']:.3f} minus gap {c['gap']:.3f}; "
+          f"{c['theorem']})")
     print(f"  graded ECE: {r['ece']:.4f}")
     print(f"  proper scores: Brier {r['mean_brier']:.4f}, log {r['mean_log']:.4f} (lower is better)")
     print("  reliability (confidence bin -> accuracy):")
