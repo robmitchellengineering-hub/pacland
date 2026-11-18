@@ -130,15 +130,26 @@ def verify_mass_gap_scaling() -> tuple[bool, str]:
         "asymptotic-freedom": (lambda b: 25.28 * math.exp(-1.182 * b)),
     }
     lines = []
+    survivors = []
     for name, c in cands.items():
         positive = all(c(b) > 0 for b in (2.0, 2.5, 3.0, 4.0))
         valid = all(c(b) <= m(b) for b in (2.0, 2.5, 3.0))
         ratios = [c(b) / m(b) for b in (2.5, 3.0)]
         sharp = ratios[1] >= 0.5 * ratios[0]
         survived = positive and valid and sharp
+        if name == "asymptotic-freedom":
+            # c(β) IS the referee m(β) by construction — reaching it is an identity, not an
+            # independent test, so it must not be counted as a survivor.
+            lines.append(f"{name}: REFEREE IDENTITY (c == m by construction — not an independent bound)")
+            continue
         lines.append(f"{name}: {'SURVIVED' if survived else 'REFUTED'}"
                      f" (c(2.5)={c(2.5):.4f}, m(2.5)={m(2.5):.4f}, ratio {ratios[0]:.3f}→{ratios[1]:.3f})")
-    return True, " | ".join(lines) + " — only the asymptotic-freedom scale reaches the referee; the known mechanisms (cluster expansion, Dobrushin) are refuted as the mass-gap bound"
+        if survived:
+            survivors.append(name)
+    # an INDEPENDENT mechanism must survive — the referee testing itself does not count, so this
+    # falsifier honestly reports that no independent known mechanism reaches the mass-gap scale.
+    return bool(survivors), (" | ".join(lines)
+                             + " — no independent mechanism survives; the asymptotic-freedom scale is the referee itself")
 
 
 FALSIFIERS: dict[str, object] = {
@@ -671,9 +682,12 @@ def _falsify(candidate: Candidate) -> tuple[bool, bool | None, str]:
     if fn is not None:
         try:
             survived, evidence = fn()
-            if not survived and _is_unresolved(evidence):
-                return False, None, evidence + "  [unresolved — not a refutation]"
-            return True, bool(survived), evidence + "  [keyword-routed falsifier]"
+            # A keyword-routed falsifier tests a RELATED claim, not the hypothesis's specific claim —
+            # so its verdict is APPROXIMATE, never a definitive survive/falsify. The hypothesis stays
+            # OPEN (unresolved) until a candidate-specific falsifier is built.
+            return True, None, (evidence
+                                + "  [APPROXIMATE: keyword-routed to a related falsifier, not a "
+                                  "candidate-specific test — the specific claim was not tested]")
         except Exception as e:  # noqa: BLE001
             return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
     return False, None, f"needs a falsifier (proposed: {candidate.falsifier})"
@@ -996,13 +1010,15 @@ def prove_and_record(candidate: Candidate, evidence: str) -> dict:
 
 
 def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
-    """One autonomous pass of the frontier machine: propose -> falsify -> prove -> acquire -> build.
+    """One autonomous pass of the frontier machine: propose -> falsify -> challenge -> prove -> build.
 
-    For each round it runs the LLM search strategy, falsifies every proposal, records and tries to
-    prove every survivor, and — for every OPEN proposal — searches arXiv / the proof tree / the
-    codebase for a falsifier, synthesises one, BUILDS it into an executable test, and retries the
-    hypothesis against it. Returns the whole round's evidence.
+    For each round it runs the LLM search strategy, falsifies every proposal, runs the EIGHT-STAGE
+    SEXTANT challenge sequence on every proposal, records and tries to prove every survivor, and —
+    for every OPEN proposal — searches arXiv / the proof tree / the codebase for a falsifier,
+    synthesises one, BUILDS it into an executable test, and retries the hypothesis against it.
+    Returns the whole round's evidence.
     """
+    from pacland import challenges
     from pacland import falsifier_acquisition as fa
 
     endpoint, key, model = _llm_config()
@@ -1012,17 +1028,23 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
         round_out = {"proposals": [], "survivors": [], "open": []}
         for c in cands:
             ran, survived, evidence = _falsify(c)
+            # the eight-stage graded challenge, on every proposal (not just the single falsifier)
+            seq = challenges.run_sequence(challenges.Candidate(
+                name=c.id, hypothesis=c.statement, falsifier=c.falsifier))
+            stage_verdicts = {r.name: r.verdict for r in seq}
             if ran and survived:
                 proof = prove_and_record(c, evidence)
-                round_out["survivors"].append({"statement": c.statement, "proof": proof})
+                round_out["survivors"].append({"statement": c.statement, "proof": proof,
+                                               "challenges": stage_verdicts})
             elif ran and not survived:
                 round_out["proposals"].append({"statement": c.statement, "verdict": "falsified",
-                                               "evidence": evidence})
+                                               "evidence": evidence, "challenges": stage_verdicts})
             else:
                 acq = fa.acquire(c.statement, endpoint=endpoint, key=key, model=model)
                 built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
                 entry = {"statement": c.statement, "verdict": "open", "evidence": evidence,
-                         "acquisition": acq, "synthesized_test": built}
+                         "acquisition": acq, "synthesized_test": built,
+                         "challenges": stage_verdicts}
                 # a synthesized falsifier that ran gives a CANDIDATE verdict (not definitive)
                 if built.get("ran"):
                     entry["candidate_verdict"] = ("survived" if built["survived"] else "refuted")
