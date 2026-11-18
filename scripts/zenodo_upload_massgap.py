@@ -16,7 +16,7 @@ BASE = "https://zenodo.org/api"
 METADATA = {
     "upload_type": "publication",
     "publication_type": "preprint",
-    "title": "A falsifier-first, kernel-checked reduction of the Yang-Mills mass gap to the Gribov-Zwanziger horizon condition",
+    "title": "A verified map of the Yang-Mills mass-gap problem: strong coupling (LGT), existence (audited), and the two open rungs",
     "creators": [{"name": "Mitchell, Rob"}],
     "description": (
         "A verified MAP of the 4D Yang-Mills mass-gap problem, not a solution. Three anchors. "
