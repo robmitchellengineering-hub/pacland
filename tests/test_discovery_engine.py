@@ -187,6 +187,22 @@ class TestFalsifierRouting(unittest.TestCase):
         self.assertIsNone(survived)
         self.assertIn("unresolved", evidence)
 
+    def test_keyword_routed_falsifier_is_approximate_not_survived(self):
+        c = runner.Candidate(id="x", statement="the mass gap scales as sqrt(sigma)", falsifier="f",
+                             strategy="st", source_facts=(), test="")
+        def _fake_falsifier():
+            return True, "some related test passed"
+        with mock.patch.object(runner, "_falsifier_for_statement", return_value=_fake_falsifier):
+            ran, survived, evidence = runner._falsify(c)
+        self.assertTrue(ran)
+        self.assertIsNone(survived)  # approximate, not a definitive survive
+        self.assertIn("APPROXIMATE", evidence)
+
+    def test_mass_gap_scaling_referee_identity_is_not_a_survivor(self):
+        survived, evidence = runner.verify_mass_gap_scaling()
+        self.assertFalse(survived)  # no INDEPENDENT mechanism survives; AF is the referee itself
+        self.assertIn("REFEREE IDENTITY", evidence)
+
 
 class TestAutonomousLoop(unittest.TestCase):
     def _candidate(self, statement="a hypothesis", test=""):
