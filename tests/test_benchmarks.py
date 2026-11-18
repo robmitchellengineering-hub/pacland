@@ -90,6 +90,25 @@ class TestDatasetSanity(unittest.TestCase):
         self.assertIn("ampere-maxwell", b.DATASET)
 
 
+class TestDecontamination(unittest.TestCase):
+    def test_disguised_prestates_do_not_leak_the_answer(self):
+        for name, d in b.DISGUISED_DATASET.items():
+            pre = d["pre"].lower()
+            self.assertNotIn(d["jump"].lower(), pre)
+
+    def test_diversity_control_emits_five_candidates(self):
+        self.assertEqual(len(b.diversity_matched_generator("anything")), 5)
+
+    def test_synthetic_suite_is_reproducible_and_planted(self):
+        s1 = b.synthetic_suite(20, seed=7)
+        s2 = b.synthetic_suite(20, seed=7)
+        self.assertEqual(s1, s2)
+        self.assertEqual(len(s1), 20)
+        # the jump must not be spelled out in the pre-state
+        for d in s1.values():
+            self.assertNotIn("f(n)", d["pre"])
+
+
 class TestJudge(unittest.TestCase):
     def test_judge_credits_a_paraphrase(self):
         cands = ["photons carry energy in discrete packets", "a new long-range force"]

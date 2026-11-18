@@ -25,10 +25,12 @@ class BeliefLedger:
 
     @classmethod
     def from_stated(cls) -> "BeliefLedger":
+        """Build the ledger from EVERY registered hypothesis (not just the 6 with explicit beliefs),
+        with the falsifier sensitivity (tp/fp) each needs for EIG, and the priors shrunk toward 0.5."""
         ledger = cls()
-        for s in hypotheses.stated_beliefs():
+        for s in hypotheses.beliefs_for_all():
             ledger.beliefs[s["name"]] = belief.Belief(
-                name=s["name"], prior=s["prior"],
+                name=s["name"], prior=belief.shrink_prior(s["prior"]),
                 likelihood=belief.Likelihood(s["tp"], s["fp"]), cost=s["cost"])
         return ledger
 
@@ -40,6 +42,15 @@ class BeliefLedger:
         self.history.append({"name": name, "positive": positive,
                              "prior": before.prior, "posterior": after.prior})
         return after
+
+    def rank_by_eig(self) -> list[tuple[str, float]]:
+        """Rank what to test next by expected information gain per unit cost.
+
+        Uses the falsifier sensitivity (tp/fp) each belief carries, not raw entropy — EIG is the
+        expected shrinkage of uncertainty, which needs how well the falsifier separates truth from
+        falsehood.
+        """
+        return belief.rank_by_eig(list(self.beliefs.values()))
 
     def report(self) -> dict[str, float]:
         """Current posteriors, highest first."""

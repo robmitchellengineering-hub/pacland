@@ -892,6 +892,21 @@ def apply_kill_criteria(ks: KillState) -> KillState:
     return ks
 
 
+def is_non_vacuous_survivor(candidate: Candidate, evidence: str) -> bool:
+    """A survivor is non-vacuous only if it names the real object AND its falsifier actually ran.
+
+    A toy theorem that survives a trivially-true check must not stop the search, so the stop rule
+    counts only survivors that are about the real object (mass gap / Yang-Mills / glueball /
+    confinement) and were falsified by a real, runnable test (not 'needs a falsifier', not unresolved).
+    """
+    low = candidate.statement.lower()
+    about_real_object = any(t in low for t in ("mass gap", "yang-mills", "glueball",
+                                               "confinement", "string tension", "area law"))
+    ran_falsifier = bool(evidence) and "needs a falsifier" not in evidence \
+        and "unresolved" not in evidence
+    return about_real_object and ran_falsifier
+
+
 class DiscoveryEngine:
     """Run strategies, falsify candidates, and score verified discoveries per unit of effort."""
 
@@ -904,12 +919,13 @@ class DiscoveryEngine:
         ks = KillState(budget=budget)
         for c in strategy.generate(problem, budget):
             exp.candidates.append(c)
-            ran, survived, _evidence = _falsify(c)
+            ran, survived, evidence = _falsify(c)
             exp.effort += c.cost
             ks.tried += 1
             if ran and survived:
                 exp.discoveries.append(Discovery(candidate=c, effort=c.cost))
-                ks.survivors += 1
+                if is_non_vacuous_survivor(c, evidence):
+                    ks.survivors += 1
             apply_kill_criteria(ks)
             if ks.stopped:
                 break

@@ -148,6 +148,20 @@ class TestLlmSearch(unittest.TestCase):
         self.assertEqual(out[0].falsifier, "a falsifier")
 
 
+class TestNonVacuousSurvivor(unittest.TestCase):
+    def test_a_toy_theorem_is_not_a_survivor(self):
+        c = runner._mk("mass-gap", "s", "t", "the effective Hessian is bounded below", "f", 1.0, 0.5)
+        self.assertFalse(runner.is_non_vacuous_survivor(c, "some evidence"))
+
+    def test_a_real_object_that_ran_a_falsifier_is_a_survivor(self):
+        c = runner._mk("mass-gap", "s", "t", "the mass gap is positive for Yang-Mills", "f", 1.0, 0.5)
+        self.assertTrue(runner.is_non_vacuous_survivor(c, "keyword-routed falsifier evidence"))
+
+    def test_an_open_candidate_is_not_a_survivor(self):
+        c = runner._mk("mass-gap", "s", "t", "the mass gap is positive", "f", 1.0, 0.5)
+        self.assertFalse(runner.is_non_vacuous_survivor(c, "needs a falsifier (proposed: x)"))
+
+
 class TestFalsifierRouting(unittest.TestCase):
     def test_routes_a_mass_gap_lower_bound_to_the_ratio_falsifier(self):
         self.assertEqual(runner._falsifier_for_statement("m_gap ≥ c·√σ with c > 0"),
