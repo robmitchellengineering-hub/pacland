@@ -32,6 +32,62 @@
  "generated_from": "scripts/build_site_index.py",
  "items": [
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/CLAIM-LEDGER.md",
+   "kind": "doc",
+   "path": "docs/CLAIM-LEDGER.md",
+   "summary": "Each theorem is tagged with one status:",
+   "title": "Claim ledger \u2014 the honest status of every mass-gap theorem"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/CLAY-STATEMENT-AUDIT.md",
+   "kind": "doc",
+   "path": "docs/CLAY-STATEMENT-AUDIT.md",
+   "summary": "Fetched and read the diff of [google-deepmind/formal-conjectures #7636](https://github.com/google-deepmind/formal-conjectures/pull/7636) (\"feat(millennium): formalise 4D Yang-Mills\u2026",
+   "title": "Audit \u2014 the formal-conjectures Yang\u2013Mills statement (PR #7636)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/COMMITTEE-CONSTRUCTION-SURVEY.md",
+   "kind": "doc",
+   "path": "docs/COMMITTEE-CONSTRUCTION-SURVEY.md",
+   "summary": "Full clone at /tmp/OpenAI-YM (9,477 .lean files, 141 MB, ~59,000 theorems/lemmas, Lean v4.32). The proof reaches 100,168 of 250,319 declarations; the other ~150k are unreached scaffolding.",
+   "title": "Survey of the committee's construction (the ~9.5k-file proof, now cloned)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/COMMITTEE-REPO-FIDELITY.md",
+   "kind": "doc",
+   "path": "docs/COMMITTEE-REPO-FIDELITY.md",
+   "summary": "Fetched and read the 5 public statement files (787 lines): Challenge.lean, ChallengeSpec.lean, PublicWilson.lean, PublicTheory.lean, PublicView.lean. This is Claude's plan-A \"crux\": does\u2026",
+   "title": "Fidelity review \u2014 the Gross committee's existence-proof repo (`yang-mills-group/OpenAI-YM-20261028`)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/FIDELITY.md",
+   "kind": "doc",
+   "path": "docs/FIDELITY.md",
+   "summary": "Claude's process rule for the real-group formalization: definition fidelity is where formalizations usually go wrong. Every definition below is paired with its mathematical source. If a\u2026",
+   "title": "FIDELITY \u2014 pairing each formal definition with its textbook counterpart"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/GATE-PROTOCOL.md",
+   "kind": "doc",
+   "path": "docs/GATE-PROTOCOL.md",
+   "summary": "The system's job is to raise the odds of finding the truth and make failure informative (Claude). A candidate mechanism that cannot clear the early gates is dropped before anyone spends\u2026",
+   "title": "Gate protocol \u2014 every candidate lemma must clear these before proof effort is spent"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/HANDOVER-YM-MASS-GAP.md",
+   "kind": "doc",
+   "path": "docs/HANDOVER-YM-MASS-GAP.md",
+   "summary": "This is the complete state of the pacland attack on the Yang\u2013Mills mass gap (Clay Millennium problem), written so a fresh session can pick up without re-deriving anything.",
+   "title": "Handover \u2014 Yang\u2013Mills mass gap attack (for Claude)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/LGT-AUDIT.md",
+   "kind": "doc",
+   "path": "docs/LGT-AUDIT.md",
+   "summary": "Fetched and read the [LGT reservoir page](https://reservoir.lean-lang.org/@mrdouglasny/LGT) and its README. This is a verified, real, complete result \u2014 and it supersedes the M2/M3 skeleton\u2026",
+   "title": "Audit \u2014 Douglas's LGT library (the strong-coupling mass gap is already proved)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-METHODS.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-METHODS.md",
@@ -46,6 +102,13 @@
    "title": "MITCHELL'S LAWS OF DUALITY COVARIANCE"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/OPEN-RUNGS.md",
+   "kind": "doc",
+   "path": "docs/OPEN-RUNGS.md",
+   "summary": "Everything formalizable up to the Clay content is now kernel-checked. These two are the open content \u2014 stated precisely here so the boundary is unambiguous. Both are research programs, not\u2026",
+   "title": "The two open rungs, stated precisely"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOLVING-STRING-THEORY.md",
    "kind": "doc",
    "path": "docs/SOLVING-STRING-THEORY.md",
@@ -58,6 +121,13 @@
    "path": "docs/SOP-FIGURING-SYSTEMS-OUT.md",
    "summary": "A worked method, written down after applying it to macro-finance for nine merged slices ([the roster](economics-model-roster.md)). It is the generalisation, not the case study: the case\u2026",
    "title": "SOP \u2014 figuring a complex system out"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/STRIP-MINE-SYNTHESIS.md",
+   "kind": "doc",
+   "path": "docs/STRIP-MINE-SYNTHESIS.md",
+   "summary": "Five agents mined /tmp/OpenAI-YM (9,477 files). The three findings that genuinely change things:",
+   "title": "Strip-mine synthesis \u2014 what the committee's construction changes in our picture"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/TOE.md",
@@ -79,6 +149,13 @@
    "path": "docs/UNIFICATION-STATUS.md",
    "summary": "One document: everything proven, everything measured, and the sharper picture they form. Status is tiered \u2014 proven (symbolic, machine-checked) vs measured (node, with a control) vs asserted\u2026",
    "title": "UNIFICATION \u2014 where we are, and the path (2026-10-23)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/YM-AUDIT-REPORT.md",
+   "kind": "doc",
+   "path": "docs/YM-AUDIT-REPORT.md",
+   "summary": "Version 1 \u00b7 2026-11-17 \u00b7 pacland worktree @ b5761ac \u00b7 author: pacland audit session",
+   "title": "Yang\u2013Mills formalization landscape \u2014 audit report v1"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ZENODO-PAPER.md",
@@ -3026,6 +3103,13 @@
    "path": "scripts/underdetermination.py",
    "summary": "The exact dimension of the measure space.",
    "title": "underdetermination.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/vacuity_linter.py",
+   "kind": "script",
+   "path": "scripts/vacuity_linter.py",
+   "summary": "Vacuity linter for the pacland QM theorem tower.",
+   "title": "vacuity_linter.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/validate_all_theorems.py",
