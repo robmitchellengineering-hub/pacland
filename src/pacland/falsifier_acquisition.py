@@ -115,3 +115,53 @@ def acquire(statement: str, proof_dir: str | Path = "pacland-proof",
         "verdict": ("falsifier found" if found else
                     ("candidate synthesized — build it" if synthesized else "no falsifier found")),
     }
+
+
+def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str) -> dict:
+    """Turn a synthesized falsifier into an EXECUTABLE test, run it, and retry the hypothesis.
+
+    This closes the acquisition loop: acquire -> build (the LLM writes a Python ``falsifier()``
+    returning ``(bool, str)``) -> run it in a subprocess -> get a verdict. The verdict is honest —
+    it is from a SYNTHESIZED falsifier (LLM-written, not a vetted lattice/Lean computation), so it is
+    a candidate verdict, not a definitive one.
+    """
+    from pacland import runner
+
+    if not model:
+        return {"ran": False, "reason": "no LLM to write the falsifier"}
+    prompt = (
+        "Write a Python function `falsifier()` that tests the hypothesis below and returns "
+        "(bool, str): True if the hypothesis SURVIVES (the test could not refute it), False if it is "
+        "REFUTED, plus a one-line evidence string. Use only numpy / math / sympy — no files, no "
+        "network, no prints except the return. Output ONLY the code.\n\nHypothesis: " + statement
+    )
+    try:
+        code = runner._ask_llm(prompt, endpoint, key, model)
+    except Exception as e:  # noqa: BLE001
+        return {"ran": False, "reason": f"LLM failed: {type(e).__name__}"}
+    code = code.strip().strip("`").replace("```python", "").replace("```", "").strip()
+
+    import json
+    import subprocess
+    import tempfile
+    from pathlib import Path
+
+    harness = ("import json\nimport numpy as np\nimport math\nimport sympy\n"
+               + code + "\n_result = falsifier()\nprint(json.dumps(list(_result)))\n")
+    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
+        f.write(harness)
+        path = f.name
+    try:
+        r = subprocess.run(["python3", path], capture_output=True, text=True, timeout=60)
+    except subprocess.TimeoutExpired:
+        return {"ran": False, "reason": "synthesized falsifier timed out"}
+    finally:
+        Path(path).unlink(missing_ok=True)
+    if r.returncode != 0:
+        return {"ran": False, "reason": f"falsifier code failed: {(r.stderr or r.stdout)[:200]}"}
+    try:
+        survived, evidence = json.loads(r.stdout.strip())
+    except Exception:  # noqa: BLE001
+        return {"ran": False, "reason": f"falsifier returned unparseable output: {r.stdout[:120]}"}
+    return {"ran": True, "survived": bool(survived), "evidence": str(evidence), "code": code,
+            "note": "synthesized falsifier (LLM-written, not a vetted lattice/Lean computation)"}

@@ -996,11 +996,12 @@ def prove_and_record(candidate: Candidate, evidence: str) -> dict:
 
 
 def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
-    """One autonomous pass of the frontier machine: propose -> falsify -> prove -> acquire.
+    """One autonomous pass of the frontier machine: propose -> falsify -> prove -> acquire -> build.
 
     For each round it runs the LLM search strategy, falsifies every proposal, records and tries to
     prove every survivor, and — for every OPEN proposal — searches arXiv / the proof tree / the
-    codebase (and synthesises a candidate) for a falsifier. Returns the whole round's evidence.
+    codebase for a falsifier, synthesises one, BUILDS it into an executable test, and retries the
+    hypothesis against it. Returns the whole round's evidence.
     """
     from pacland import falsifier_acquisition as fa
 
@@ -1019,8 +1020,13 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
                                                "evidence": evidence})
             else:
                 acq = fa.acquire(c.statement, endpoint=endpoint, key=key, model=model)
-                round_out["open"].append({"statement": c.statement, "verdict": "open",
-                                          "evidence": evidence, "acquisition": acq})
+                built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
+                entry = {"statement": c.statement, "verdict": "open", "evidence": evidence,
+                         "acquisition": acq, "synthesized_test": built}
+                # a synthesized falsifier that ran gives a CANDIDATE verdict (not definitive)
+                if built.get("ran"):
+                    entry["candidate_verdict"] = ("survived" if built["survived"] else "refuted")
+                round_out["open"].append(entry)
         out["rounds"].append(round_out)
     return out
 
