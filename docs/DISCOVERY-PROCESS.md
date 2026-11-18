@@ -1,19 +1,26 @@
 # The discovery process — jump taxonomy + jump-seeking loop
 
-Distilled from the history of scientific breakthroughs, so the SEXTANT falsifier-before-believe machinery
-can hunt for *jumps* (new ideas), not just falsify known candidates. The goal is a process that maximizes
-the odds of a discovery and makes failure informative — for the Yang–Mills mass gap today, for any real
-science after.
+**Status: HYPOTHESIS, untested.** The five-type taxonomy is a post-hoc reading of history; nothing yet
+shows that naming the types produces better hypotheses than an untyped baseline. That is exactly what
+`RETRODICTION-TEST.md` is for. Read this doc as a *proposal to be tested*, not an established method.
 
-## The five jump types (with the canonical physics examples)
+## The five jump types (candidate taxonomy)
 
-| # | Type | Historical example | The move |
+| # | Type | Historical example (corrected) | The move |
 |---|---|---|---|
-| 1 | **Anomaly** | Galileo's moons; the photoelectric effect; the blackbody | find the contradiction the field is ignoring |
+| 1 | **Anomaly** | Galilean moons; the photoelectric effect; the blackbody | find the contradiction the *established* framework cannot absorb |
 | 2 | **Inversion / reframe** | Copernicus (Sun fixed, not Earth); Einstein SR (light's speed fixed, not time) | flip an assumption |
 | 3 | **Unification** | Newton (celestial = terrestrial); Maxwell (electricity = magnetism) | two "different" things are one |
-| 4 | **Analogy** | Einstein GR (gravity ≈ acceleration); Yang–Mills (local symmetry from general covariance) | a structure from another domain maps over |
+| 4 | **Analogy** | Einstein GR (gravity ≈ acceleration, the equivalence principle) | a structure from another domain maps over |
 | 5 | **New principle** | least action; gauge invariance; the equivalence principle | a postulate that reorganizes the field |
+
+**Corrections to the first draft:**
+- **Yang–Mills is NOT "analogy from general covariance."** Yang–Mills came from *extending isospin and
+  QED's gauge idea* to a local non-abelian symmetry — a **unification/generalization** of known gauge
+  invariance, not an import of a structure from GR. (Mislabelled; fixed.)
+- **"Anomaly" is mislabelled in the mass-gap application.** The field already knows Bakry–Émery is only
+  *sufficient*, so the single-scale failure is not an ignored contradiction. Drop the "anomaly" framing
+  there; it is a *known sufficient-condition mismatch*, not a Kuhnian anomaly.
 
 ## The jump-seeking loop (five questions, each feeding the falsifier)
 
@@ -23,44 +30,49 @@ science after.
 3. UNIFY     — which two "different" objects are secretly the same?
 4. ANALOGY   — what structure from another domain maps here?
 5. PRINCIPLE — what single postulate would reorganize everything?
-   ↓  each answer is a HYPOTHESIS
-   ↓  SEXTANT falsifier kills the wrong ones (referee + kernel-check + non-vacuity + U(1) gate)
+   ↓  each answer is a HYPOTHESIS (a candidate)
+   ↓  SEXTANT falsifier kills the wrong ones
    ↓  a survivor is a JUMP-CANDIDATE
 ```
 
-The system cannot guarantee the jump — the jump is the rare "aha" that survives falsification — but it can
-*enumerate and falsify the candidate jumps*, which is exactly what the historical jumps were: a candidate
-that cleared the falsifier.
+**Caveat (added):** prompting a model with these five questions is NOT a candidate-production mechanism
+by itself. The questions are a *search structure*; the candidate production must be logged and scored in
+`CANDIDATE-LEDGER.md`, and the whole thing must beat a baseline in `RETRODICTION-TEST.md` before the
+taxonomy earns any claim to "help".
 
-## Applied to the Yang–Mills mass gap (the working example)
+## Applied to the Yang–Mills mass gap
 
 **Rung A — the crossover (Polchinski–Bakry–Émery for gauge).**
-- ANOMALY: the single-scale BE curvature is β-dependent and *negative* at the antipode, yet the theory
-  still has a gap — the contradiction is "negative curvature ⟹ no gap" is the wrong sufficient condition.
 - INVERSION: instead of "the bare action's curvature must be positive", ask "must the *effective* action's
-  curvature at each scale be positive?" (this is exactly the multiscale BE — the inversion we already
-  started).
+  curvature at each scale be positive?" (the multiscale BE — already started).
 - UNIFY: the sine-Gordon β < 6π criterion and the gauge-theory UV hypotheses are secretly one — a single
-  multiscale-BE inequality, just in different groups.
-- ANALOGY: the Polchinski flow's convexification of the potential = the same "softening" as gradient flow
-  on the Ricci curvature (our `GradientFlow.lean` seed).
+  multiscale-BE inequality in different groups.
+- ANALOGY: the Polchinski flow's convexification of the potential ≈ the "softening" in gradient flow on
+  curvature. **Not in our files**: `GradientFlow.lean` is only the SU(2) single-plaquette energy
+  monotonicity (`θ' = −β·sin θ`, `gradient_flow_monotone`), with no Ricci-flow link. The analogy is a
+  *direction*, not a result.
 - PRINCIPLE: "scale-wise curvature positivity" (Γ₂ ≥ κ_Λ Γ at every scale) replaces "bare curvature > 0".
 
 **Rung B — the mass gap itself.**
-- ANOMALY: LGT proves the gap at strong coupling; the committee's construction reaches the continuum;
-  nothing connects them — the missing object *is* the anomaly.
-- INVERSION: instead of "prove Δ > 0", ask "what must be FALSE for Δ = 0?" (a gapless spectrum is a
-  massless particle on the light cone — invert to *exclude* it, which `HasMassGap` already states).
-- UNIFY: the transfer-matrix gap (our finite-β theorem) and the spectral gap (the Wightman PVM) are one —
-  the missing link is `clustering ⟺ gap` at the continuum (the `Semigroup.descent` in the committee repo).
-- ANALOGY: the 2D/3D exactly-solvable mass gaps are the template; the 4D obstruction is the *marginal*
-  coupling, so the analogy to exploit is "what 3D argument survives when the coupling is dimensionless?"
-- PRINCIPLE: "confinement ⟹ mass gap" as a single spectral theorem (the temporal–spatial duality we
-  already formalized as `string_tension_iff_gap`).
+- INVERSION (corrected): "no massless particle" is NOT enough — a continuous spectrum can reach down to 0
+  with no massless particle. The real inversion is: *exclude spectrum in (0, Δ) on the vacuum complement*,
+  i.e. `projection {0 < time p < Δ} = 0` — which is exactly `HasMassGap` and is as hard as the gap.
+- UNIFY: the transfer-matrix gap (finite-β) and the spectral gap (Wightman PVM) are one, via
+  `clustering ⟺ gap` at the continuum. **Caveat**: `string_tension_iff_gap` (`MassGapDiamond.lean:91`) is
+  a statement about a real number `lam1 > 0`, NOT the lattice measure — the lattice-measure version is
+  still open.
+- ANALOGY: 2D/3D exactly-solvable gaps as template; the 4D obstruction is the *marginal* coupling, so the
+  question is "what 3D argument survives a dimensionless coupling?"
+- PRINCIPLE: "confinement ⟹ mass gap" as a single spectral theorem.
+
+**Locations (corrected):** `HasMassGap` lives in `PaclandProof/QM/Committee/MassGapSpec.lean`, with the
+sanity controls in `PaclandProof/QM/Committee/SanityControls.lean`. `Semigroup.descent` exists in the
+committee repo (`YM/…`), as stated.
 
 ## The honest boundary
 
-The taxonomy + loop are buildable and are built here. The *jump* — the candidate that survives all five
-questions and the falsifier — is still the rare, unguaranteed event. What this process does is make the
-search *systematic* and the failures *informative*, which is the highest-leverage thing a discovery system
-can do.
+The taxonomy + loop are a **proposal**, not a result. "Maximizes the odds of a discovery" is **untested**
+— there is no benchmark showing it beats a baseline. The three things that make it testable are:
+`RETRODICTION-TEST.md` (does it beat baseline, blind, no hindsight), `CANDIDATE-LEDGER.md` (log every
+hypothesis with jump type / falsifier / cost / status, fed into the belief layer), and `KILL-CRITERIA.md`
+(a budget and a stop rule per rung).
