@@ -229,13 +229,45 @@ def validate_falsifier(code: str, statement: str) -> list[str]:
     return issues
 
 
+# The restricted-exec harness: the LLM code runs with a whitelist of builtins plus math/numpy/sympy.
+# No __import__ / open / os / subprocess / socket / eval / exec / globals / locals — so the generated
+# code cannot touch the filesystem or network even though it is a real subprocess. (Defense-in-depth;
+# a true OS sandbox — bwrap/sandbox-exec — is the stronger form and is not available here.)
+_RESTRICTED_PRELUDE = '''\
+import builtins as _bi
+import json as _json
+import math as _math
+import numpy as _np
+import sympy as _sympy
+
+_SAFE_BUILTINS = {
+    "abs", "all", "any", "len", "range", "sum", "min", "max", "round", "int", "float", "str",
+    "bool", "list", "dict", "tuple", "set", "frozenset", "enumerate", "zip", "map", "filter",
+    "sorted", "reversed", "pow", "divmod", "isinstance", "print", "complex", "True", "False",
+    "None", "Exception", "ValueError", "TypeError", "ZeroDivisionError", "IndexError", "KeyError",
+    "ArithmeticError", "OverflowError",
+}
+_g = {"__builtins__": {k: getattr(_bi, k) for k in _SAFE_BUILTINS if hasattr(_bi, k)},
+      "math": _math, "np": _np, "numpy": _np, "sympy": _sympy}
+'''
+
+_RESTRICTED_POSTLUDE = '''\
+exec(_code, _g)
+_result = _g["falsifier"]()
+print(_json.dumps(list(_result)))
+'''
+
+
 def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str) -> dict:
     """Turn a synthesized falsifier into an EXECUTABLE test, validate it, run it, and retry.
 
     This closes the acquisition loop: acquire -> build (the LLM writes a Python ``falsifier()``
     returning ``(bool, str)``) -> VALIDATE it actually tests the candidate -> run it in a subprocess ->
-    get a verdict. The verdict is honest — it is from a SYNTHESIZED falsifier (LLM-written, not a
-    vetted lattice/Lean computation), so it is a candidate verdict, not a definitive one.
+    get a verdict. The code runs in a RESTRICTED namespace (whitelisted builtins + math/numpy/sympy —
+    no ``__import__``/``open``/``os``/``subprocess``/``socket``/``eval``) inside a subprocess with a
+    timeout, so the "no files/network" instruction is enforced, not merely requested. The verdict is
+    honest — it is from a SYNTHESIZED falsifier (LLM-written, not a vetted lattice/Lean computation),
+    so it is a candidate verdict, not a definitive one.
     """
     from pacland import runner
 
@@ -262,8 +294,10 @@ def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str)
     import tempfile
     from pathlib import Path
 
-    harness = ("import json\nimport numpy as np\nimport math\nimport sympy\n"
-               + code + "\n_result = falsifier()\nprint(json.dumps(list(_result)))\n")
+    # The LLM code runs in a RESTRICTED namespace: only a whitelist of builtins plus math/numpy/sympy.
+    # No __import__, open, os, subprocess, socket, eval, exec, globals, locals — the instruction not to
+    # touch files/network is ENFORCED, not requested. The subprocess still isolates time (timeout).
+    harness = _RESTRICTED_PRELUDE + "\n_code = " + repr(code) + "\n" + _RESTRICTED_POSTLUDE
     with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
         f.write(harness)
         path = f.name

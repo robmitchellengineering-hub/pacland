@@ -39,6 +39,25 @@ class TestBuildAndRunFalsifier(unittest.TestCase):
         self.assertFalse(out["ran"])
         self.assertIn("failed", out["reason"])
 
+    def test_sandbox_blocks_file_access(self):
+        # the restricted namespace has no `open`/`__import__` — a file write must fail, not succeed
+        code = ("def falsifier():\n    x = 5\n    if x > 0:\n"
+                "        open('/tmp/sandbox_escape', 'w').write('x')\n"
+                "        return (True, 'positive')\n    return (False, 'refuted')")
+        with mock.patch.object(runner, "_ask_llm", return_value=code):
+            out = fa.build_and_run_falsifier("the value is positive", "http://x", "", "m")
+        self.assertFalse(out["ran"])
+        self.assertIn("failed", out["reason"])
+
+    def test_sandbox_blocks_import(self):
+        code = ("def falsifier():\n    x = 5\n    if x > 0:\n"
+                "        import os\n"
+                "        return (True, 'positive')\n    return (False, 'refuted')")
+        with mock.patch.object(runner, "_ask_llm", return_value=code):
+            out = fa.build_and_run_falsifier("the value is positive", "http://x", "", "m")
+        self.assertFalse(out["ran"])
+        self.assertIn("failed", out["reason"])
+
 
 class TestAcquireBuildRetry(unittest.TestCase):
     def test_autonomous_open_entry_carries_the_synthesized_test(self):
@@ -46,11 +65,13 @@ class TestAcquireBuildRetry(unittest.TestCase):
                                 strategy="llm-search", source_facts=(), test="")
         with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
             with mock.patch.object(runner, "_falsify", return_value=(False, None, "needs a falsifier")):
-                with mock.patch.object(fa, "acquire", return_value={"verdict": "no falsifier found"}):
-                    with mock.patch.object(fa, "build_and_run_falsifier",
-                                           return_value={"ran": True, "survived": True,
-                                                         "evidence": "s", "note": "synthesized"}):
-                        out = runner.run_autonomous("mass-gap")
+                with mock.patch("pacland.challenges.run_sequence", return_value=[]):
+                    with mock.patch("pacland.challenges.gate", return_value="PASS"):
+                        with mock.patch.object(fa, "acquire", return_value={"verdict": "no falsifier found"}):
+                            with mock.patch.object(fa, "build_and_run_falsifier",
+                                                   return_value={"ran": True, "survived": True,
+                                                                 "evidence": "s", "note": "synthesized"}):
+                                out = runner.run_autonomous("mass-gap")
         entry = out["rounds"][0]["open"][0]
         self.assertEqual(entry["candidate_verdict"], "survived")
 
@@ -59,12 +80,14 @@ class TestAcquireBuildRetry(unittest.TestCase):
                                 strategy="llm-search", source_facts=(), test="")
         with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
             with mock.patch.object(runner, "_falsify", return_value=(False, None, "needs a falsifier")):
-                with mock.patch.object(fa, "acquire", return_value={"synthesized_falsifier": "a test"}):
-                    with mock.patch.object(fa, "build_and_run_falsifier",
-                                           return_value={"ran": False, "reason": "code failed"}):
-                        with mock.patch.object(fa, "FALSIFIER_JOBS",
-                                               runner.REPO_ROOT / "runs" / "test-jobs.jsonl"):
-                            out = runner.run_autonomous("mass-gap")
+                with mock.patch("pacland.challenges.run_sequence", return_value=[]):
+                    with mock.patch("pacland.challenges.gate", return_value="PASS"):
+                        with mock.patch.object(fa, "acquire", return_value={"synthesized_falsifier": "a test"}):
+                            with mock.patch.object(fa, "build_and_run_falsifier",
+                                                   return_value={"ran": False, "reason": "code failed"}):
+                                with mock.patch.object(fa, "FALSIFIER_JOBS",
+                                                       runner.REPO_ROOT / "runs" / "test-jobs.jsonl"):
+                                    out = runner.run_autonomous("mass-gap")
         entry = out["rounds"][0]["open"][0]
         self.assertIn("falsifier_job", entry)
 

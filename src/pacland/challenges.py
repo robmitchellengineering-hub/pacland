@@ -193,13 +193,16 @@ def run_sequence(c: Candidate) -> list[ChallengeResult]:
     else:
         add("known-results", "mechanical", "NOT_APPLICABLE", "SEXTANT not importable")
 
-    # 4: boundary-testing — mechanical (run the falsifier, if present, at a boundary probe)
-    # (kept as a structural check: a candidate with no falsifier cannot be boundary-tested)
-    if c.falsifier:
-        add("boundary-testing", "mechanical", "INCONCLUSIVE",
-            "falsifier present; boundary probe not yet automated")
+    # 4: boundary-testing — mechanical (RUN the falsifier: it probes the limiting/extreme case)
+    if phantom is not None and c.name in getattr(phantom, "FALSIFIERS", {}):
+        try:
+            ok, ev = phantom.FALSIFIERS[c.name]()
+            add("boundary-testing", "mechanical", ("PASS" if ok else "FAIL"), ev)
+        except Exception as exc:  # noqa: BLE001
+            add("boundary-testing", "mechanical", "INCONCLUSIVE",
+                f"falsifier raised {type(exc).__name__}: {exc}")
     else:
-        add("boundary-testing", "mechanical", "FAIL", "no falsifier — cannot be boundary-tested")
+        add("boundary-testing", "mechanical", "FAIL", "no runnable falsifier — cannot be boundary-tested")
 
     # 5: counterexample-search — mechanical (the live Phantom falsifier)
     if phantom is not None and c.name in getattr(phantom, "FALSIFIERS", {}):
@@ -242,6 +245,21 @@ def summarize(results: list[ChallengeResult]) -> str:
     tally = {v: sum(1 for r in results if r.verdict == v) for v in VERDICTS}
     lines.append(f"tally: " + ", ".join(f"{k}={v}" for k, v in tally.items() if v))
     return "\n".join(lines)
+
+
+def gate(results: list[ChallengeResult]) -> str:
+    """SEXTANT as a DECISION GATE, not just a report.
+
+    ``FAIL`` — any challenge FAILED (the candidate is dead; do not prove/record/promote it).
+    ``PASS`` — no FAIL and at least one challenge actually PASSED (survived a real test).
+    ``INCONCLUSIVE`` — no FAIL and no PASS (nothing decisive happened; proceed but flag it).
+    """
+    verdicts = [r.verdict for r in results]
+    if "FAIL" in verdicts:
+        return "FAIL"
+    if "PASS" in verdicts:
+        return "PASS"
+    return "INCONCLUSIVE"
 
 
 if __name__ == "__main__":

@@ -220,9 +220,12 @@ class TestAutonomousLoop(unittest.TestCase):
         cand = self._candidate("a surviving hypothesis")
         with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
             with mock.patch.object(runner, "_falsify", return_value=(True, True, "survived evidence")):
-                with mock.patch.object(runner, "prove_and_record",
-                                       return_value={"ok": False, "recorded": True, "proof": "deferred"}):
-                    out = runner.run_autonomous("mass-gap")
+                with mock.patch("pacland.challenges.run_sequence", return_value=[]):
+                    with mock.patch("pacland.challenges.gate", return_value="PASS"):
+                        with mock.patch.object(runner, "prove_and_record",
+                                               return_value={"ok": False, "recorded": True,
+                                                             "proof": "deferred"}):
+                            out = runner.run_autonomous("mass-gap")
         self.assertEqual(len(out["rounds"][0]["survivors"]), 1)
         self.assertIn("run_id", out)
 
@@ -232,10 +235,23 @@ class TestAutonomousLoop(unittest.TestCase):
         cand = self._candidate("a hypothesis")
         with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
             with mock.patch.object(runner, "_falsify", return_value=(True, None, "APPROXIMATE")):
-                out = runner.run_autonomous("mass-gap")
+                with mock.patch("pacland.challenges.run_sequence", return_value=[]):
+                    with mock.patch("pacland.challenges.gate", return_value="PASS"):
+                        out = runner.run_autonomous("mass-gap")
         r = out["rounds"][0]
         self.assertEqual(len(r["proposals"]), 0)  # not counted as falsified
         self.assertEqual(len(r["open"]), 1)
+
+    def test_a_challenge_failure_gates_out_the_candidate(self):
+        cand = self._candidate("a hypothesis")
+        with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
+            with mock.patch.object(runner, "_falsify", return_value=(True, True, "survived")):
+                with mock.patch("pacland.challenges.run_sequence", return_value=[]):
+                    with mock.patch("pacland.challenges.gate", return_value="FAIL"):
+                        out = runner.run_autonomous("mass-gap")
+        r = out["rounds"][0]
+        self.assertEqual(len(r["survivors"]), 0)  # gated out, not proved
+        self.assertEqual(r["proposals"][0]["verdict"], "gated-out")
 
     def test_lean_bridge_rejects_a_different_proposition(self):
         with mock.patch.object(runner, "_judge_config", return_value=("http://x", "", "judge")):

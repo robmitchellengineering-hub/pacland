@@ -38,6 +38,21 @@ class TestLeanCheck(unittest.TestCase):
         self.assertIn("not declared", ev)
 
 
+class TestGate(unittest.TestCase):
+    def _r(self, name, verdict):
+        return ch.ChallengeResult(name, "mechanical", verdict, "")
+
+    def test_fails_on_any_fail(self):
+        self.assertEqual(ch.gate([self._r("a", "PASS"), self._r("b", "FAIL")]), "FAIL")
+
+    def test_passes_when_something_passed_and_nothing_failed(self):
+        self.assertEqual(ch.gate([self._r("a", "PASS"), self._r("b", "INCONCLUSIVE")]), "PASS")
+
+    def test_inconclusive_when_nothing_decisive(self):
+        self.assertEqual(ch.gate([self._r("a", "INCONCLUSIVE"), self._r("b", "NOT_APPLICABLE")]),
+                         "INCONCLUSIVE")
+
+
 class TestModelJudge(unittest.TestCase):
     def test_logical_consistency_passes_when_consistent(self):
         with mock.patch.object(ch, "_ask_judge", return_value="INTERNALLY CONSISTENT"):

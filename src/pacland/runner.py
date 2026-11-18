@@ -1120,19 +1120,29 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
             seq = challenges.run_sequence(challenges.Candidate(
                 name=c.id, hypothesis=c.statement, falsifier=c.falsifier))
             stage_verdicts = {r.name: r.verdict for r in seq}
+            gate = challenges.gate(seq)
+            # SEXTANT is a DECISION GATE: a candidate that FAILED a challenge is dead — dropped, not
+            # proved/recorded/acquired. (formal-verification is NOT_APPLICABLE here because the LLM
+            # proposal has no theorem yet; the real kernel-check runs in prove_and_record.)
+            if gate == "FAIL":
+                round_out["proposals"].append({"statement": c.statement, "verdict": "gated-out",
+                                               "evidence": evidence, "challenges": stage_verdicts,
+                                               "gate": gate})
+                continue
             if ran and survived is True:
                 proof = prove_and_record(c, evidence)
                 round_out["survivors"].append({"statement": c.statement, "proof": proof,
-                                               "challenges": stage_verdicts})
+                                               "challenges": stage_verdicts, "gate": gate})
             elif ran and survived is False:
                 round_out["proposals"].append({"statement": c.statement, "verdict": "falsified",
-                                               "evidence": evidence, "challenges": stage_verdicts})
+                                               "evidence": evidence, "challenges": stage_verdicts,
+                                               "gate": gate})
             else:
                 acq = fa.acquire(c.statement, endpoint=endpoint, key=key, model=model)
                 built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
                 entry = {"statement": c.statement, "verdict": "open", "evidence": evidence,
                          "acquisition": acq, "synthesized_test": built,
-                         "challenges": stage_verdicts}
+                         "challenges": stage_verdicts, "gate": gate}
                 # a synthesized falsifier that ran gives a CANDIDATE verdict (not definitive)
                 if built.get("ran"):
                     entry["candidate_verdict"] = ("survived" if built["survived"] else "refuted")
