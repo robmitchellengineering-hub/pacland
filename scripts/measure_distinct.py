@@ -1,10 +1,12 @@
-"""Honest measurement: DeepSeek generates, the ROG's qwen2.5:7b judges (a distinct model)."""
+"""Honest measurement: a DISTINCT judge (deepseek-reasoner) grades deepseek-chat's proposals."""
 import json
+import os
 
 from pacland import benchmarks as b
 
 print("=" * 70)
-print("DISTINCT-JUDGE MEASUREMENT (generator=deepseek-chat, judge=qwen2.5:7b)")
+print(f"DISTINCT-JUDGE MEASUREMENT (generator={os.environ.get('SEXTANT_LLM_MODEL', '?')}, "
+      f"judge={os.environ.get('SEXTANT_JUDGE_MODEL', '?')})")
 print("=" * 70)
 print(f"judge_is_distinct: {b.judge_is_distinct()}")
 print()
