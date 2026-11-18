@@ -61,5 +61,33 @@ class TestStructure(unittest.TestCase):
         self.assertIsNone(structured[1]["claim"])
 
 
+class TestFindContradictions(unittest.TestCase):
+    def _records(self, claims):
+        return [{"arxiv_id": f"id-{i}", "claim": c} for i, c in enumerate(claims)]
+
+    def test_surfaces_a_pair_when_one_claim_negates_on_a_shared_subject(self):
+        records = self._records([
+            "We prove the mass gap is positive for the Yang-Mills theory.",
+            "We refute the mass gap claim: the gap vanishes in the Yang-Mills theory.",
+        ])
+        pairs = lit.find_contradictions(records)
+        self.assertEqual(len(pairs), 1)
+        self.assertIn("mass", pairs[0]["on"])
+
+    def test_no_pair_when_claims_agree(self):
+        records = self._records([
+            "We prove the mass gap is positive for the Yang-Mills theory.",
+            "We strengthen the mass gap bound for the Yang-Mills theory.",
+        ])
+        self.assertEqual(lit.find_contradictions(records), [])
+
+    def test_no_pair_without_a_shared_subject(self):
+        records = self._records([
+            "We refute the positive mass gap.",
+            "We prove the photon is massless.",
+        ])
+        self.assertEqual(lit.find_contradictions(records), [])
+
+
 if __name__ == "__main__":
     unittest.main()

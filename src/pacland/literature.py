@@ -77,6 +77,44 @@ def search_arxiv(query: str, max_results: int = 10) -> list[dict]:
         return structure(parse_atom(resp.read()))
 
 
+_NEGATION_MARKERS = ("refute", "disprove", "contradict", "no such", "does not", "cannot",
+                     "fails", "absent", "vanishes", "incompatible", "impossible", "rule out")
+_STOPWORDS = {
+    "that", "with", "this", "from", "these", "their", "they", "have", "than", "will",
+    "would", "been", "were", "such", "more", "also", "only", "very", "into", "over",
+    "under", "where", "when", "which", "while", "there", "here", "about", "between",
+    "through", "using", "other", "which", "their", "them", "this", "then",
+}
+
+
+def _subject_words(claim: str) -> set[str]:
+    """Lowercased words of length >= 5 that are not stopwords — a rough 'what the claim is about'."""
+    return {w for w in re.findall(r"[a-z]{4,}", (claim or "").lower()) if w not in _STOPWORDS}
+
+
+def find_contradictions(records: list[dict]) -> list[dict]:
+    """Surface candidate contradiction pairs — papers whose claims disagree on a shared subject.
+
+    Conservative first pass: a pair is surfaced only when both records have a claim, the two claims
+    share at least one subject word, and at least one claim carries an explicit negation marker.
+    This SURFACES candidates; it does not judge which side is right — the falsifier does.
+    """
+    out = []
+    for i in range(len(records)):
+        for j in range(i + 1, len(records)):
+            a, b = records[i], records[j]
+            ca, cb = a.get("claim"), b.get("claim")
+            if not ca or not cb:
+                continue
+            shared = _subject_words(ca) & _subject_words(cb)
+            if not shared:
+                continue
+            if any(m in ca.lower() for m in _NEGATION_MARKERS) or \
+               any(m in cb.lower() for m in _NEGATION_MARKERS):
+                out.append({"a": a["arxiv_id"], "b": b["arxiv_id"], "on": sorted(shared)})
+    return out
+
+
 def main(argv: list[str] | None = None) -> int:
     import sys
 
