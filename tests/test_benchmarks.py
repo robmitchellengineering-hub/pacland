@@ -109,6 +109,32 @@ class TestDecontamination(unittest.TestCase):
             self.assertNotIn("f(n)", d["pre"])
 
 
+class TestPairedSeedsAndCutoff(unittest.TestCase):
+    def test_repeated_campaign_reports_mean_and_spread(self):
+        recalls = [0.8, 0.8, 0.8]
+        with mock.patch.object(b, "run_campaign") as rc:
+            rc.side_effect = [
+                [b.ArmResult("llm", "s", problems=10, found=int(r * 10)),
+                 b.ArmResult("untyped-baseline", "s", problems=10, found=0)]
+                for r in recalls
+            ]
+            out = b.run_campaign_repeated(lambda p: [], repeats=3)
+        self.assertAlmostEqual(out["recall_mean"], 0.8)
+        self.assertEqual(out["recall_stdev"], 0.0)
+
+    def test_post_cutoff_prestates_do_not_leak_the_answer(self):
+        self.assertGreaterEqual(len(b.POST_CUTOFF_DATASET), 2)
+        for d in b.POST_CUTOFF_DATASET.values():
+            self.assertNotIn(d["jump"].lower(), d["pre"].lower())
+
+    def test_judge_distinctness_is_detected(self):
+        with mock.patch.object(b, "_llm_config", return_value=("http://x/v1", "", "gen")):
+            with mock.patch.object(b, "_judge_config", return_value=("http://x/v1", "", "judge")):
+                self.assertTrue(b.judge_is_distinct())
+            with mock.patch.object(b, "_judge_config", return_value=("http://x/v1", "", "gen")):
+                self.assertFalse(b.judge_is_distinct())
+
+
 class TestJudge(unittest.TestCase):
     def test_judge_credits_a_paraphrase(self):
         cands = ["photons carry energy in discrete packets", "a new long-range force"]

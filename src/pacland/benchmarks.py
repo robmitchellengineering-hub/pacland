@@ -221,6 +221,46 @@ def synthetic_suite(n: int = 100, seed: int = 0) -> dict:
     return out
 
 
+# Problems whose resolution is recent enough that a pre-cutoff model is unlikely to have memorised
+# it. HONEST NOTE: the exact training cutoff is unverifiable from here, so this is a SECONDARY probe —
+# the planted-law synthetic_suite is the hard decontamination guarantee.
+POST_CUTOFF_DATASET = {
+    "lk99":  {"pre": "a 2023 material was claimed to superconduct at room temperature and ambient pressure, but the claim did not reproduce", "jump": "LK-99 is not a superconductor; the diamagnetism is from an impurity phase"},
+    "jwst-early-galaxies": {"pre": "the earliest galaxies seen by JWST are brighter and more massive than the standard timeline predicts", "jump": "early star formation is more efficient than standard models assumed"},
+    "desi-dark-energy": {"pre": "a 2024 survey of millions of galaxies suggests dark energy may not be a constant over cosmic time", "jump": "dark energy may be a dynamical field, weakening at late times"},
+}
+
+
+def run_campaign_repeated(generator: Generator, campaign: str = "A", repeats: int = 3,
+                          dataset: dict | None = None, judged: bool = True) -> dict:
+    """Run a campaign repeatedly (paired seeds) and report mean +/- spread of recall.
+
+    The LLM is non-deterministic, so one recall number is not a result — report the spread too. A
+    stable engine has a small standard deviation across repeats; a large one means the number is noise.
+    """
+    import statistics
+
+    recalls: list[float] = []
+    for _ in range(repeats):
+        res = run_campaign(campaign, generator, dataset=dataset, judged=judged)
+        llm = next(r for r in res if r.arm == "llm")
+        recalls.append(llm.found / max(llm.problems, 1))
+    mean = statistics.mean(recalls)
+    stdev = statistics.stdev(recalls) if len(recalls) > 1 else 0.0
+    return {"campaign": campaign, "repeats": repeats, "recall_mean": mean,
+            "recall_stdev": stdev, "recalls": recalls}
+
+
+JUDGE_RUBRIC_VERSION = 2  # the frozen judge rubric (see _JUDGE_PROMPT); bump when the rubric changes
+
+
+def judge_is_distinct() -> bool:
+    """True when the judge model differs from the generator model (the honest setup)."""
+    _, _, gen = _llm_config()
+    _, _, judge = _judge_config()
+    return bool(judge) and judge != gen
+
+
 # ----------------------------------------------------------------------------
 # G3-real — the REAL generator: an LLM that sees only the pre-state, never the answer.
 # ----------------------------------------------------------------------------
