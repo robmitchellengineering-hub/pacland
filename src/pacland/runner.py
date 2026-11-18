@@ -215,6 +215,7 @@ class Candidate:
     test: str
     cost: float = 1.0       # research effort, for discoveries-per-effort scoring
     prior: float = 0.5      # operator's prior, for EIG ranking
+    ancestry: tuple[str, ...] = ()   # lineage, root first: A -> A1 -> A2 (the parent ids)
 
 
 STRATEGIES: dict[str, str] = {
@@ -635,12 +636,17 @@ def slug(s: str) -> str:
     return "".join(ch if ch.isalnum() else "-" for ch in s.lower()).strip("-")
 
 
+def lineage(candidate: Candidate) -> str:
+    """Render a candidate's discovery lineage, root first: ``A → A1 → A2`` (G4)."""
+    return " → ".join(candidate.ancestry + (candidate.id,))
+
+
 def _mk(problem: str, strategy: str, tag: str, statement: str, falsifier: str,
-        cost: float, prior: float) -> Candidate:
+        cost: float, prior: float, ancestry: tuple[str, ...] = ()) -> Candidate:
     return Candidate(
         id=f"{slug(problem)}-{tag}-{uuid.uuid4().hex[:6]}",
         statement=statement, falsifier=falsifier, strategy=strategy,
-        source_facts=(), test="", cost=cost, prior=prior,
+        source_facts=(), test="", cost=cost, prior=prior, ancestry=ancestry,
     )
 
 

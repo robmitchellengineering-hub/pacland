@@ -93,5 +93,24 @@ class TestRetrodiction(unittest.TestCase):
             self.assertNotIn(true_jump, emitted, problem)
 
 
+class TestLineage(unittest.TestCase):
+    def test_candidate_carries_its_ancestry(self):
+        parent = runner._mk("mass-gap", "conceptual-jump", "anomaly", "parent hypothesis",
+                            "a falsifier", 2.0, 0.3)
+        child = runner._mk("mass-gap", "conceptual-jump", "inversion", "child hypothesis",
+                           "a falsifier", 2.0, 0.3, ancestry=(parent.id,))
+        self.assertIn(parent.id, child.ancestry)
+        self.assertEqual(runner.lineage(child), f"{parent.id} → {child.id}")
+
+    def test_lineage_retains_the_dead_end_parent(self):
+        # G4: an unsuccessful branch is retained in the child's ancestry, not re-discovered.
+        dead = runner._mk("mass-gap", "computational-search", "counterexample", "dead end",
+                          "a falsifier", 1.0, 0.4)
+        child = runner._mk("mass-gap", "computational-search", "counterexample", "modified",
+                           "a falsifier", 1.0, 0.4, ancestry=(dead.id,))
+        self.assertEqual(child.ancestry, (dead.id,))
+        self.assertIn(dead.id, runner.lineage(child))
+
+
 if __name__ == "__main__":
     unittest.main()
