@@ -92,5 +92,17 @@ class TestJudge(unittest.TestCase):
         self.assertEqual(matched, [True])
 
 
+class TestGate(unittest.TestCase):
+    def test_gate_passes_when_the_engine_beats_the_baseline(self):
+        engine = b.ArmResult(arm="llm", suite="s", problems=10, found=7)
+        baseline = b.ArmResult(arm="untyped-baseline", suite="s", problems=10, found=0)
+        self.assertTrue(b.gate([engine, baseline])["passed"])
+
+    def test_gate_fails_when_the_engine_does_not_beat_the_baseline(self):
+        engine = b.ArmResult(arm="llm", suite="s", problems=10, found=0)
+        baseline = b.ArmResult(arm="untyped-baseline", suite="s", problems=10, found=2)
+        self.assertFalse(b.gate([engine, baseline])["passed"])
+
+
 if __name__ == "__main__":
     unittest.main()

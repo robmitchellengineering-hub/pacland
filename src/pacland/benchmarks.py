@@ -45,6 +45,11 @@ B_DATASET = {
     "k-pg-extinction":    {"pre": "a global iridium spike marks the Cretaceous-Paleogene boundary", "jump": "an asteroid impact caused the mass extinction"},
     "childbed-fever":     {"pre": "childbed fever deaths are far higher in the doctor clinic than home births", "jump": "hand disinfection prevents sepsis (germ theory)"},
     "ozone-hole":         {"pre": "stratospheric ozone collapses over Antarctica every austral spring", "jump": "CFC chlorine catalytically destroys ozone"},
+    "beriberi":           {"pre": "sailors on polished white rice develop paralysis and heart failure; brown rice prevents it", "jump": "a vitamin B1 (thiamine) deficiency causes beriberi"},
+    "prions":             {"pre": "a transmissible spongiform brain disease resists treatments that destroy nucleic acids", "jump": "a misfolded protein (prion) transmits the disease"},
+    "sickle-cell":        {"pre": "the sickle-cell allele persists at high frequency only where malaria is endemic", "jump": "heterozygote advantage protects carriers against malaria"},
+    "great-oxidation":    {"pre": "banded iron formations and red beds mark a shift in the atmosphere about 2.4 billion years ago", "jump": "oxygenic photosynthesis oxygenated the atmosphere"},
+    "endosymbiosis":      {"pre": "mitochondria and chloroplasts have their own DNA, ribosomes, and double membranes", "jump": "they arose from engulfed bacteria (endosymbiosis)"},
 }
 
 # Campaign C — the open frontier: no withheld answer, so no recall is possible. The engine proposes;
@@ -120,6 +125,23 @@ def report(results: list[ArmResult]) -> str:
     out = [f"{r.arm:20s} recall={r.found}/{r.problems}  avg_rank={r.total_rank / max(r.found, 1):.1f}  false_pos={r.false_positives}"
            for r in results]
     return "\n".join(out)
+
+
+def gate(results: list[ArmResult]) -> dict:
+    """The G3 gate: the engine must beat the untyped baseline blind on recall.
+
+    Returns ``passed`` plus the two recall fractions and a one-line reason. This is the honest
+    PASS/FAIL before the engine may claim to help discovery; the baseline is a straw-man that
+    never finds the jump, so a real engine must strictly exceed it.
+    """
+    by_arm = {r.arm: r for r in results}
+    engine, baseline = by_arm.get("llm"), by_arm.get("untyped-baseline")
+    if engine is None or baseline is None:
+        return {"passed": False, "reason": "missing an arm"}
+    e = engine.found / max(engine.problems, 1)
+    b = baseline.found / max(baseline.problems, 1)
+    return {"passed": e > b, "engine_recall": e, "baseline_recall": b,
+            "reason": f"engine recall {e:.2f} vs baseline {b:.2f}"}
 
 
 # ----------------------------------------------------------------------------
@@ -205,8 +227,10 @@ def _judge_config() -> tuple[str, str, str]:
 
 _JUDGE_PROMPT = (
     "Withheld answer: {jump}\n\nCandidates:\n{candidates}\n\n"
-    "Which candidates express the SAME hypothesis as the withheld answer (semantic equivalence, not "
-    "exact wording)? Answer ONLY as a comma-separated list of the indices that match, or NONE."
+    "Which candidates state the SAME specific claim as the withheld answer? The answer is a NOVEL "
+    "discovery; a candidate that merely restates the premise or describes the observation does NOT "
+    "match. Only mark a candidate that expresses the same new idea. Answer ONLY as a comma-separated "
+    "list of the indices that match, or NONE."
 )
 
 
@@ -249,11 +273,13 @@ CAMPAIGNS = {
 
 
 def run_campaign(name: str, generator: Generator, dataset: dict | None = None,
-                 judged: bool = False) -> list[ArmResult]:
+                 judged: bool = True) -> list[ArmResult]:
     """Run one campaign: the given generator against the untyped baseline, on that campaign's suite.
 
-    ``judged=True`` uses the LLM semantic judge for recall; the default is the deterministic full-word
-    match (a lower bound). Campaign C has no withheld answer, so use ``run_frontier`` instead.
+    The default metric is the LLM semantic judge (honest recall of paraphrases); pass ``judged=False``
+    for the deterministic full-word lower bound. Set ``SEXTANT_JUDGE_MODEL`` to a model DISTINCT from
+    the generator so the judge does not grade its own homework (falls back to the generator's model
+    if unset). Campaign C has no withheld answer, so use ``run_frontier`` instead.
     """
     if name not in CAMPAIGNS:
         raise ValueError(f"unknown campaign {name!r}; known: {', '.join(CAMPAIGNS)}")
