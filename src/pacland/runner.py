@@ -585,12 +585,13 @@ def rank_open_by_eig() -> list[tuple[str, float]]:
     Bridges the hypothesis registry to the belief layer: every registered hypothesis's prior and
     falsifier power (``hypotheses.beliefs_for_all``) become a ``Belief``, the C/P detector gates it
     (refuses outside convergence), and ``belief.rank_by_eig`` orders them so the first item is the
-    test that shrinks our uncertainty the most per unit cost.
+    test that shrinks our uncertainty the most per unit cost. The priors are SHRUNK toward 0.5 (the
+    handover measured mean Brier 0.41 against the 0.25 skill floor) so EIG does not over-trust them.
     """
     from pacland import belief
 
     beliefs = [
-        belief.Belief(name=s["name"], prior=s["prior"],
+        belief.Belief(name=s["name"], prior=belief.shrink_prior(s["prior"]),
                       likelihood=belief.Likelihood(s["tp"], s["fp"]),
                       cost=s["cost"])
         for s in hypotheses.beliefs_for_all()
@@ -616,13 +617,44 @@ def _import_sextant():
         return None, None
 
 
+def _falsifier_for_statement(statement: str):
+    """Map a natural-language mass-gap hypothesis to the closest runnable lattice falsifier.
+
+    The LLM proposes in prose ('m_gap ≥ c·√σ', 'mass gap ∝ Λ_QCD', 'robust against θ'). This routes
+    the claims we can already test to the existing lattice falsifiers; returns ``None`` when no
+    falsifier exists yet (the hypothesis stays OPEN — a falsifier for it has not been built).
+    """
+    low = statement.lower()
+    if any(k in low for k in ("theta", "θ", "d=5", "five-dim", "polyakov",
+                              "n-independ", "su(3)", "su(4)", "su(5)")):
+        return None  # no lattice tool for θ, d=5, Polyakov, or multi-N claims
+    if any(k in low for k in ("string tension", "sqrt", "glueball", "sigma", "σ")):
+        return verify_glueball_mass_ratio
+    if "mass gap" in low and any(k in low for k in ("bound", "perturbative", "scales", "lower")):
+        return verify_mass_gap_scaling
+    if "mass gap" in low and "weak coupling" in low:
+        return verify_su2_weak_coupling
+    return None
+
+
+_UNRESOLVED_MARKERS = ("noise-dominated", "unresolved", "signal is unresolved", "cannot measure")
+
+
+def _is_unresolved(evidence: str) -> bool:
+    """A falsifier that could not measure returns 'unresolved', which is OPEN — not FALSIFIED."""
+    return any(m in evidence.lower() for m in _UNRESOLVED_MARKERS)
+
+
 def _falsify(candidate: Candidate) -> tuple[bool, bool | None, str]:
     """Run a candidate's falsifier. Tries ``FALSIFIERS`` first (by ``candidate.test``), then a
-    SEXTANT catalog claim named in the statement. Returns ``(ran, survived, evidence)``; ``ran`` is
-    False when there is no runnable falsifier (the frontier — named, not pretended)."""
+    SEXTANT catalog claim named in the statement, then a keyword-routed mass-gap falsifier. Returns
+    ``(ran, survived, evidence)``; ``ran`` is False when there is no runnable falsifier (the frontier
+    — named, not pretended), and an unresolved measurement (noise-dominated) is OPEN, not refuted."""
     if candidate.test in FALSIFIERS:
         try:
             survived, evidence = FALSIFIERS[candidate.test]()
+            if not survived and _is_unresolved(evidence):
+                return False, None, evidence + "  [unresolved — not a refutation]"
             return True, bool(survived), evidence
         except Exception as e:  # noqa: BLE001 — a missing dependency (e.g. stim) means OPEN, not a crash
             return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
@@ -635,6 +667,15 @@ def _falsify(candidate: Candidate) -> tuple[bool, bool | None, str]:
                     return True, bool(ok), ev
                 except Exception as e:  # noqa: BLE001 — same: missing dep => OPEN, not a crash
                     return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
+    fn = _falsifier_for_statement(candidate.statement)
+    if fn is not None:
+        try:
+            survived, evidence = fn()
+            if not survived and _is_unresolved(evidence):
+                return False, None, evidence + "  [unresolved — not a refutation]"
+            return True, bool(survived), evidence + "  [keyword-routed falsifier]"
+        except Exception as e:  # noqa: BLE001
+            return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
     return False, None, f"needs a falsifier (proposed: {candidate.falsifier})"
 
 
@@ -851,6 +892,21 @@ def apply_kill_criteria(ks: KillState) -> KillState:
     return ks
 
 
+def is_non_vacuous_survivor(candidate: Candidate, evidence: str) -> bool:
+    """A survivor is non-vacuous only if it names the real object AND its falsifier actually ran.
+
+    A toy theorem that survives a trivially-true check must not stop the search, so the stop rule
+    counts only survivors that are about the real object (mass gap / Yang-Mills / glueball /
+    confinement) and were falsified by a real, runnable test (not 'needs a falsifier', not unresolved).
+    """
+    low = candidate.statement.lower()
+    about_real_object = any(t in low for t in ("mass gap", "yang-mills", "glueball",
+                                               "confinement", "string tension", "area law"))
+    ran_falsifier = bool(evidence) and "needs a falsifier" not in evidence \
+        and "unresolved" not in evidence
+    return about_real_object and ran_falsifier
+
+
 class DiscoveryEngine:
     """Run strategies, falsify candidates, and score verified discoveries per unit of effort."""
 
@@ -863,12 +919,13 @@ class DiscoveryEngine:
         ks = KillState(budget=budget)
         for c in strategy.generate(problem, budget):
             exp.candidates.append(c)
-            ran, survived, _evidence = _falsify(c)
+            ran, survived, evidence = _falsify(c)
             exp.effort += c.cost
             ks.tried += 1
             if ran and survived:
                 exp.discoveries.append(Discovery(candidate=c, effort=c.cost))
-                ks.survivors += 1
+                if is_non_vacuous_survivor(c, evidence):
+                    ks.survivors += 1
             apply_kill_criteria(ks)
             if ks.stopped:
                 break
@@ -905,6 +962,69 @@ def engine_self_test() -> dict:
     return DiscoveryEngine().lifecycle("mass-gap", budget=6)
 
 
+def _formalize_prompt(statement: str) -> str:
+    """Ask the LLM to formalise a hypothesis as a Mathlib Lean file (theorem + ``sorry``)."""
+    return (
+        "You are a Lean 4 formalizer. Formalize the hypothesis below as a complete Mathlib Lean 4 "
+        "file: imports plus a theorem statement with a `sorry` for the proof. Output ONLY Lean code, "
+        "no prose, no fences.\n\nHypothesis: " + statement
+    )
+
+
+def prove_and_record(candidate: Candidate, evidence: str) -> dict:
+    """A survivor of falsification: persist it, then attempt an automated Lean proof.
+
+    Records the survivor to the discoveries store, formalises it as a Lean statement via the LLM, and
+    runs the prove loop (propose -> kernel-check -> repair). A proof is a bonus; an unproven survivor
+    is still a recorded discovery (a candidate for the human or a later, stronger pass).
+    """
+    fact = {"id": candidate.id, "statement": candidate.statement, "falsifier": evidence,
+            "source": f"discovery-engine {candidate.strategy}", "category": "discovered"}
+    DISCOVERIES.parent.mkdir(parents=True, exist_ok=True)
+    with DISCOVERIES.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(fact) + "\n")
+
+    endpoint, key, model = _llm_config()
+    if not model:
+        return {"ok": False, "recorded": True, "proof": "deferred — no LLM configured"}
+    try:
+        lean = _ask_llm(_formalize_prompt(candidate.statement), endpoint, key, model)
+    except Exception as e:  # noqa: BLE001
+        return {"ok": False, "recorded": True, "proof": f"formalise failed: {type(e).__name__}"}
+    proof = prove(lean, attempts=3)
+    return {"ok": proof.get("ok", False), "recorded": True, "proof": proof}
+
+
+def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
+    """One autonomous pass of the frontier machine: propose -> falsify -> prove -> acquire.
+
+    For each round it runs the LLM search strategy, falsifies every proposal, records and tries to
+    prove every survivor, and — for every OPEN proposal — searches arXiv / the proof tree / the
+    codebase (and synthesises a candidate) for a falsifier. Returns the whole round's evidence.
+    """
+    from pacland import falsifier_acquisition as fa
+
+    endpoint, key, model = _llm_config()
+    out = {"problem": problem, "rounds": []}
+    for _ in range(rounds):
+        cands = LlmSearch().generate(problem, budget)
+        round_out = {"proposals": [], "survivors": [], "open": []}
+        for c in cands:
+            ran, survived, evidence = _falsify(c)
+            if ran and survived:
+                proof = prove_and_record(c, evidence)
+                round_out["survivors"].append({"statement": c.statement, "proof": proof})
+            elif ran and not survived:
+                round_out["proposals"].append({"statement": c.statement, "verdict": "falsified",
+                                               "evidence": evidence})
+            else:
+                acq = fa.acquire(c.statement, endpoint=endpoint, key=key, model=model)
+                round_out["open"].append({"statement": c.statement, "verdict": "open",
+                                          "evidence": evidence, "acquisition": acq})
+        out["rounds"].append(round_out)
+    return out
+
+
 def _main() -> int:
     ap = argparse.ArgumentParser(description="SEXTANT runner — the hypothesis loop")
     ap.add_argument("--list-facts", action="store_true")
@@ -925,6 +1045,7 @@ def _main() -> int:
     ap.add_argument("--engine-self-test", action="store_true",
                     help="run all six search strategies, falsify, and score discoveries per effort")
     ap.add_argument("--engine", metavar="PROBLEM", help="run the search engine on a problem")
+    ap.add_argument("--autonomous", metavar="PROBLEM", help="one autonomous propose -> falsify -> prove -> acquire pass")
     args = ap.parse_args()
 
     if args.list_facts:
@@ -1000,6 +1121,10 @@ def _main() -> int:
             for c in e["candidates"]:
                 print(f"    - {c['statement'][:70]}")
         print(json.dumps(r["score"], indent=2))
+        return 0
+    if args.autonomous:
+        r = run_autonomous(args.autonomous)
+        print(json.dumps(r, indent=2))
         return 0
     if args.fact and args.strategy:
         v = advance(args.fact, args.strategy)

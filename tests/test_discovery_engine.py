@@ -148,5 +148,67 @@ class TestLlmSearch(unittest.TestCase):
         self.assertEqual(out[0].falsifier, "a falsifier")
 
 
+class TestNonVacuousSurvivor(unittest.TestCase):
+    def test_a_toy_theorem_is_not_a_survivor(self):
+        c = runner._mk("mass-gap", "s", "t", "the effective Hessian is bounded below", "f", 1.0, 0.5)
+        self.assertFalse(runner.is_non_vacuous_survivor(c, "some evidence"))
+
+    def test_a_real_object_that_ran_a_falsifier_is_a_survivor(self):
+        c = runner._mk("mass-gap", "s", "t", "the mass gap is positive for Yang-Mills", "f", 1.0, 0.5)
+        self.assertTrue(runner.is_non_vacuous_survivor(c, "keyword-routed falsifier evidence"))
+
+    def test_an_open_candidate_is_not_a_survivor(self):
+        c = runner._mk("mass-gap", "s", "t", "the mass gap is positive", "f", 1.0, 0.5)
+        self.assertFalse(runner.is_non_vacuous_survivor(c, "needs a falsifier (proposed: x)"))
+
+
+class TestFalsifierRouting(unittest.TestCase):
+    def test_routes_a_mass_gap_lower_bound_to_the_ratio_falsifier(self):
+        self.assertEqual(runner._falsifier_for_statement("m_gap ≥ c·√σ with c > 0"),
+                         runner.verify_glueball_mass_ratio)
+
+    def test_routes_a_perturbative_claim_to_the_scaling_referee(self):
+        self.assertEqual(runner._falsifier_for_statement("the mass gap is non-perturbative"),
+                         runner.verify_mass_gap_scaling)
+
+    def test_leaves_theta_d5_and_polyakov_open(self):
+        self.assertIsNone(runner._falsifier_for_statement("the mass gap is robust against a θ-term"))
+        self.assertIsNone(runner._falsifier_for_statement("the d=5 mass gap survives the continuum limit"))
+        self.assertIsNone(runner._falsifier_for_statement("Polyakov-loop correlators cluster exponentially"))
+
+    def test_unresolved_measurement_is_open_not_falsified(self):
+        c = runner.Candidate(id="x", statement="s", falsifier="f", strategy="st",
+                             source_facts=(), test="glueball-mass-ratio")
+        def _noise():
+            return False, "noise-dominated at beta=2.4: the signal is unresolved"
+        with mock.patch.dict(runner.FALSIFIERS, {"glueball-mass-ratio": _noise}):
+            ran, survived, evidence = runner._falsify(c)
+        self.assertFalse(ran)
+        self.assertIsNone(survived)
+        self.assertIn("unresolved", evidence)
+
+
+class TestAutonomousLoop(unittest.TestCase):
+    def _candidate(self, statement="a hypothesis", test=""):
+        return runner.Candidate(id="x", statement=statement, falsifier="f", strategy="llm-search",
+                                source_facts=(), test=test)
+
+    def test_prove_and_record_defers_without_an_llm(self):
+        with mock.patch.object(runner, "_llm_config", return_value=("", "", "")):
+            with mock.patch.object(runner, "DISCOVERIES", runner.REPO_ROOT / "runs" / "test.jsonl"):
+                r = runner.prove_and_record(self._candidate(), "evidence")
+        self.assertTrue(r["recorded"])
+        self.assertIn("deferred", r["proof"])
+
+    def test_run_autonomous_collects_a_survivor(self):
+        cand = self._candidate("a surviving hypothesis")
+        with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
+            with mock.patch.object(runner, "_falsify", return_value=(True, True, "survived evidence")):
+                with mock.patch.object(runner, "prove_and_record",
+                                       return_value={"ok": False, "recorded": True, "proof": "deferred"}):
+                    out = runner.run_autonomous("mass-gap")
+        self.assertEqual(len(out["rounds"][0]["survivors"]), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

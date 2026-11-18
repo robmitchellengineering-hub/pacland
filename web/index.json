@@ -2818,6 +2818,13 @@
    "title": "run-tests.sh"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/run_frontier_massgap.py",
+   "kind": "script",
+   "path": "scripts/run_frontier_massgap.py",
+   "summary": "One frontier run: the mass gap (Campaign C). The LLM proposes, SEXTANT falsifies, report survivors.",
+   "title": "run_frontier_massgap.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_ds_test.py",
    "kind": "script",
    "path": "scripts/sample_ds_test.py",

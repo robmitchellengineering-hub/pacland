@@ -72,13 +72,32 @@ def _lean_check(theorem: str) -> tuple[str, str]:
     if not theorem:
         return "NOT_APPLICABLE", "no formalisation target named"
     root = Path(__file__).resolve().parent.parent.parent / "pacland-proof"
-    hits = list(root.rglob("*.lean")) if root.exists() else []
-    for p in hits:
-        if theorem in p.read_text(errors="ignore"):
-            if "sorry" in p.read_text(errors="ignore"):
-                return "INCONCLUSIVE", f"{theorem} found in {p.name} but carries sorry"
+    if not root.exists():
+        return "INCONCLUSIVE", "Lean tower not present"
+    import re
+    import subprocess
+    short = theorem.split(".")[-1]
+    for p in root.rglob("*.lean"):
+        txt = p.read_text(errors="ignore")
+        # require the DECLARATION, not a substring in a comment or docstring
+        if not re.search(rf"\b(?:theorem|lemma)\s+{re.escape(short)}\b", txt):
+            continue
+        if re.search(r"\b(?:sorry|admit)\b", txt):
+            return "FAIL", f"{theorem} declared in {p.name} but carries sorry/admit"
+        elan = str(Path.home() / ".elan" / "bin")
+        env = dict(__import__("os").environ)
+        env["PATH"] = elan + __import__("os").pathsep + env.get("PATH", "")
+        try:
+            r = subprocess.run(["lake", "env", "lean", str(p)], cwd=str(root),
+                               capture_output=True, text=True, timeout=300, env=env)
+        except FileNotFoundError:
+            return "INCONCLUSIVE", f"{theorem} declared in {p.name}; kernel unavailable (no lake)"
+        except subprocess.TimeoutExpired:
+            return "INCONCLUSIVE", f"{theorem} declared in {p.name}; kernel timed out"
+        if r.returncode == 0:
             return "PASS", f"{theorem} kernel-checked in {p.name}"
-    return "INCONCLUSIVE", f"{theorem} not found in the Lean tower"
+        return "FAIL", f"{theorem} declared in {p.name} but does not compile: {(r.stdout + r.stderr).strip()[-200:]}"
+    return "INCONCLUSIVE", f"{theorem} not declared in the Lean tower"
 
 
 def run_sequence(c: Candidate) -> list[ChallengeResult]:
@@ -97,11 +116,15 @@ def run_sequence(c: Candidate) -> list[ChallengeResult]:
     # 3: known-results — mechanical (does it name a FORCED claim and try to invert it?)
     if sextant is not None:
         hit = next((n for n, e in sextant.CATALOG.items() if n in c.hypothesis), None)
-        if hit and sextant.CATALOG[hit].get("verdict") == "FORCED":
+        if hit is None:
+            add("known-results", "mechanical", "NOT_APPLICABLE",
+                "names no catalog claim — nothing to check (not a PASS)")
+        elif sextant.CATALOG[hit].get("verdict") == "FORCED":
             add("known-results", "mechanical", "FAIL",
                 f"contradicts the FORCED claim {hit}: {sextant.CATALOG[hit]['claim']}")
         else:
-            add("known-results", "mechanical", "PASS", "no contradiction with a FORCED catalog claim")
+            add("known-results", "mechanical", "PASS",
+                f"names {hit}, which is not FORCED — no established result contradicted")
     else:
         add("known-results", "mechanical", "NOT_APPLICABLE", "SEXTANT not importable")
 

@@ -33,9 +33,9 @@ DATASET = {
     "atomic-spectra": {"pre": "atomic spectra are discrete, not continuous", "jump": "electron orbits are quantised (Bohr)"},
     "beta-decay":     {"pre": "beta decay appears to violate energy conservation", "jump": "a missing neutral particle (the neutrino)"},
     "zeeman":         {"pre": "the anomalous Zeeman effect shows half-integer splittings", "jump": "the electron has intrinsic spin"},
-    "isospin":        {"pre": "strong interactions preserve isospin but not locality", "jump": "non-abelian gauge symmetry (Yang-Mills)"},
+    "isospin":        {"pre": "the proton and neutron interact almost identically under the strong force, as if symmetric under exchange", "jump": "non-abelian gauge symmetry (Yang-Mills)"},
     "weak-em":        {"pre": "weak and electromagnetic couplings look unrelated at low energy", "jump": "electroweak unification"},
-    "mercury-lines":  {"pre": "the discrete spectrum cannot be explained by classical orbits", "jump": "matrix mechanics / quantum jumps"},
+    "ampere-maxwell": {"pre": "an electric current deflects a nearby compass needle", "jump": "moving charges generate magnetic fields (electromagnetism)"},
 }
 
 # Campaign B — known-solution problems across other disciplines (validate, not just physics).
@@ -56,6 +56,21 @@ B_DATASET = {
 # SEXTANT falsifies. This is the YM mass gap, the Clay problem.
 FRONTIER = ("does non-Abelian lattice Yang-Mills have a mass gap (exponential clustering) in the "
             "continuum limit at weak coupling in d >= 4")
+
+# Campaign A problems, disguised: isomorphic pre-states in different vocabulary, so an LLM that has
+# memorised the canonical wording cannot just recall the answer. The jumps are unchanged.
+DISGUISED_DATASET = {
+    "blackbody":      {"pre": "a closed oven's radiation output climbs without limit as the light tends to the blue end", "jump": "energy is quantised, E = h nu"},
+    "photoelectric":  {"pre": "a lit metal plate ejects electrons only past a certain colour of light, never below it however bright", "jump": "light is made of quanta (photons)"},
+    "perihelion":     {"pre": "a planet's closest approach to its star drifts by a fixed amount each orbit beyond the old account", "jump": "gravity is spacetime curvature (GR)"},
+    "michelson":      {"pre": "no experiment detects any difference in light's speed however the Earth moves", "jump": "Lorentz invariance (special relativity)"},
+    "atomic-spectra": {"pre": "a heated gas glows only at specific colours, never a continuous rainbow", "jump": "electron orbits are quantised (Bohr)"},
+    "beta-decay":     {"pre": "a radioactive decay ends with less energy than it began, seemingly destroying energy", "jump": "a missing neutral particle (the neutrino)"},
+    "zeeman":         {"pre": "a spectral line splits into an even number of close components in a magnetic field", "jump": "the electron has intrinsic spin"},
+    "isospin":        {"pre": "the proton and neutron are interchangeable under the strong force, two faces of one particle", "jump": "non-abelian gauge symmetry (Yang-Mills)"},
+    "weak-em":        {"pre": "the force behind radioactivity and the force behind charge look unrelated at everyday energy", "jump": "electroweak unification"},
+    "ampere-maxwell": {"pre": "a wire carrying current swings a nearby compass though nothing visibly moves between them", "jump": "moving charges generate magnetic fields (electromagnetism)"},
+}
 
 # A generator maps the PRE-STATE (only) to a list of candidate hypotheses. It never sees the jump.
 Generator = Callable[[str], list[str]]
@@ -171,6 +186,49 @@ _TOY_JUMP = {d["pre"]: d["jump"] for d in DATASET.values()}
 
 def five_jump_generator(pre: str) -> list[str]:
     return [_TOY_JUMP[pre], f"an alternative reading of: {pre[:30]}"]
+
+
+def diversity_matched_generator(pre: str) -> list[str]:
+    """A control arm with the SAME output breadth as the LLM (five candidates) but no discovery.
+
+    It is the fair baseline for 'is the LLM's gain just more varied candidates?' — five generic
+    distractors, never the jump, so a real engine must beat it by recall, not by volume.
+    """
+    return ["a new long-range force", "an undiscovered particle", "a measurement error in the apparatus",
+            "an unmodelled systematic effect", "a coincidental correlation"]
+
+
+# ----------------------------------------------------------------------------
+# Planted-law synthetic suites — real induction statistics, free of training-data contamination.
+# ----------------------------------------------------------------------------
+
+def synthetic_suite(n: int = 100, seed: int = 0) -> dict:
+    """Generate ``n`` planted-law problems: find the hidden function from input->output pairs.
+
+    These are synthetic, so an LLM cannot have memorised the specific (seed, law, offset) tuple — the
+    recall here is induction, not memorisation. Each entry is ``{pre, jump}``.
+    """
+    import math
+    import random
+
+    laws = [
+        ("f(n) = n^2", lambda n: n * n),
+        ("f(n) = 2n + 1", lambda n: 2 * n + 1),
+        ("f(n) = n^3", lambda n: n * n * n),
+        ("f(n) = n(n+1)/2", lambda n: n * (n + 1) // 2),
+        ("f(n) = 2^n", lambda n: 2 ** n),
+        ("f(n) = n!", lambda n: math.factorial(n)),
+    ]
+    rng = random.Random(seed)
+    out = {}
+    for i in range(n):
+        label, fn = rng.choice(laws)
+        start = rng.randint(1, 3)
+        xs = list(range(start, start + 4))
+        ys = [fn(x) for x in xs]
+        pre = f"for inputs {', '.join(str(x) for x in xs)} the outputs are {', '.join(str(y) for y in ys)}"
+        out[f"planted-{i:03d}"] = {"pre": pre, "jump": label}
+    return out
 
 
 # ----------------------------------------------------------------------------
