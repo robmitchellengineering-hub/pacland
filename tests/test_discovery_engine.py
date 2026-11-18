@@ -162,6 +162,39 @@ class TestFalsifierRouting(unittest.TestCase):
         self.assertIsNone(runner._falsifier_for_statement("the d=5 mass gap survives the continuum limit"))
         self.assertIsNone(runner._falsifier_for_statement("Polyakov-loop correlators cluster exponentially"))
 
+    def test_unresolved_measurement_is_open_not_falsified(self):
+        c = runner.Candidate(id="x", statement="s", falsifier="f", strategy="st",
+                             source_facts=(), test="glueball-mass-ratio")
+        def _noise():
+            return False, "noise-dominated at beta=2.4: the signal is unresolved"
+        with mock.patch.dict(runner.FALSIFIERS, {"glueball-mass-ratio": _noise}):
+            ran, survived, evidence = runner._falsify(c)
+        self.assertFalse(ran)
+        self.assertIsNone(survived)
+        self.assertIn("unresolved", evidence)
+
+
+class TestAutonomousLoop(unittest.TestCase):
+    def _candidate(self, statement="a hypothesis", test=""):
+        return runner.Candidate(id="x", statement=statement, falsifier="f", strategy="llm-search",
+                                source_facts=(), test=test)
+
+    def test_prove_and_record_defers_without_an_llm(self):
+        with mock.patch.object(runner, "_llm_config", return_value=("", "", "")):
+            with mock.patch.object(runner, "DISCOVERIES", runner.REPO_ROOT / "runs" / "test.jsonl"):
+                r = runner.prove_and_record(self._candidate(), "evidence")
+        self.assertTrue(r["recorded"])
+        self.assertIn("deferred", r["proof"])
+
+    def test_run_autonomous_collects_a_survivor(self):
+        cand = self._candidate("a surviving hypothesis")
+        with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
+            with mock.patch.object(runner, "_falsify", return_value=(True, True, "survived evidence")):
+                with mock.patch.object(runner, "prove_and_record",
+                                       return_value={"ok": False, "recorded": True, "proof": "deferred"}):
+                    out = runner.run_autonomous("mass-gap")
+        self.assertEqual(len(out["rounds"][0]["survivors"]), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
