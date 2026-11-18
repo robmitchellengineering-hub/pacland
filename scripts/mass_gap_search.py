@@ -14,6 +14,17 @@ Run: python3 scripts/mass_gap_search.py
 import math
 
 # The lattice referee — the known-answer bench.
+def exact_su2_plaquette(beta):   # EXACT 1-plaquette SU(2) Wilson loop = I₂(2β)/I₁(2β) (Weyl integral)
+    from scipy.special import ive
+    z = 2.0 * beta
+    return ive(2, z) / ive(1, z)
+
+def exact_su2_plaquette_mass(beta):  # the single-plaquette mass proxy = -log ⟨χ₁/₂⟩
+    return -math.log(max(1e-12, exact_su2_plaquette(beta)))
+
+def u1_mass(_beta):                 # the U(1) NEGATIVE CONTROL — 4D U(1) at weak coupling has NO gap
+    return 0.0
+
 def referee_m(beta):
     return 25.28 * math.exp(-1.182 * beta)
 
@@ -35,9 +46,10 @@ def casimir_mass(_beta):          # the ghost Casimir gap 2 — constant, DECONF
 def chessboard_surface_tension(beta):  # σ = (m/3.2)² — imports the referee's ratio (circular)
     return (referee_m(beta) / M_OVER_SQRT_SIGMA) ** 2
 
-def gribov_ir_suppression(beta):  # the Gribov horizon's IR suppression — the confining mechanism
-    # G(0) = 0 → the 1/p⁴ singularity → the linear potential. Its β-dependence is the AF scale e^{−cβ}.
-    return referee_m(beta)         # reaches the exponential (the target scale)
+def target_mass_gap(beta):       # the TARGET (referee's mass gap) — NOT a candidate (circular if used as one)
+    # Reaches the exponential by construction. The honest comparison is against the one-loop AF exponent
+    # 3π²/11 ≈ 2.69 (weak coupling), NOT the referee's 1.182 (moderate-β fit).
+    return referee_m(beta)
 
 def seiler_bound(beta):            # the reflection-positivity (Seiler) bound — power-law
     return 0.2 / (beta ** 0.5)
@@ -70,8 +82,8 @@ CANDIDATES = [
      "constant — the ghost/Yukawa mass is DECONFINING, not the mass gap"),
     ("chessboard surface tension σ=(m/3.2)²", chessboard_surface_tension,
      "CIRCULAR — imports the referee's m/√σ ≈ 3.2"),
-    ("Gribov IR suppression G(0)=0 → 1/p⁴", gribov_ir_suppression,
-     "the confining mechanism — reaches the AF scale (the target)"),
+    ("[TARGET, not a candidate] mass gap m(β)", target_mass_gap,
+     "circular — equals the referee; the honest independent input is the one-loop AF exponent 3π²/11 ≈ 2.69"),
     ("Seiler reflection-positivity bound", seiler_bound,
      "power-law — the reflection-positivity lower bound does not reach the AF scale"),
     ("polymer/cluster expansion (refined)", polymer_expansion,
@@ -117,7 +129,7 @@ def main():
     for name, c, note in survivors:
         print(f"  • {name} — {note}")
     print()
-    print("the survivors are the mechanisms worth kernel-checking next. the open rung remains:")
+    print("the U(1) gate: any candidate claiming a mass gap must provably FAIL for abelian U(1) (no gap).\n    the survivors are the mechanisms worth kernel-checking next. the open rung remains:")
     print("  the infinite-volume + continuum limit existence of the gap (the thermodynamic limit).")
 
 

@@ -12,8 +12,9 @@ is positive). This is clause A's first library: the machinery that assembles the
 
 noncomputable section
 
-open scoped BigOperators Matrix Topology
+open scoped BigOperators Matrix Topology intervalIntegral
 open Filter
+open MeasureTheory
 
 namespace QM
 
@@ -379,6 +380,9 @@ theorem clustering_implies_cluster_expansion (φ corr : ℕ → ℝ) (lam1 : ℝ
 
 
 
+/-- **The physical hypotheses for the finite lattice.** CAVEAT: `T` is a finite `Fin m × Fin m` matrix —
+a DISCRETISATION of the transfer operator, NOT the infinite-dimensional `SU(2)^E` operator. The mixing is
+the positive entries (the finite Boltzmann weights). -/
 structure YMHypotheses {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) : Prop where
   os : OSAxioms T
   mixing : ∀ i j, 0 < T i j
@@ -389,8 +393,9 @@ structure YMHypotheses {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) : Prop where
 /-- **The finite-β mass gap from the physical hypotheses.** The OS axioms + the mixing (all entries
 positive — the Boltzmann weights `e^{−S} > 0` for the finite Wilson action) give the finite minimum
 `δ > 0`, and `mass_gap_from_mixing` turns it into the positive gap on non-constant vectors. This is the
-finite-volume, finite-β mass gap, PROVEN from the physical input. The remaining open rung is the
-continuum limit — that the mixing stays positive and the theory clusters UNIFORMLY in `β → ∞`. -/
+finite-volume, finite-β mass gap, PROVEN from the physical input. CAVEAT: `T` is a finite `Fin m × Fin m`
+matrix (a discretisation), NOT the infinite-dimensional `SU(2)^E` transfer operator. The remaining open
+rung is the continuum limit — that the mixing stays positive and the theory clusters UNIFORMLY in `β → ∞`. -/
 theorem mass_gap_from_hypotheses {m : ℕ} [NeZero m] (T : Matrix (Fin m) (Fin m) ℝ)
     (h : YMHypotheses T) (x : Fin m → ℝ) (hnonconst : ∃ i j : Fin m, x i ≠ x j) :
     0 < ∑ i : Fin m, x i * ((x i) - ∑ j : Fin m, T i j * x j) := by
@@ -420,5 +425,284 @@ theorem physical_mass_gap_constant_pos (C c β : ℝ) (hC : 0 < C) :
     0 < physicalMassGap (C * Real.exp (-c * β)) (Real.exp (-c * β)) := by
   rw [physical_mass_gap_constant C c β]
   exact hC
+
+/-- **The Gribov–Zwanziger gap equation (the horizon condition).** The Gribov parameter `γ` is the
+FIXED POINT `γ⁴ = μ⁴·e^{−1/(b₀·g²)}` (the self-consistency). Its solution is the AF scale — the
+NON-PERTURBATIVE mechanism: the gap equation DETERMINES the scale from the coupling. -/
+def gapEquation (γ μ b₀ g : ℝ) : Prop := γ^4 = μ^4 * Real.exp (-1 / (b₀ * g^2))
+
+-- The gap equation is WELL-POSED: the solution γ = μ·e^{−1/(4b₀·g²)} satisfies it (the self-consistency
+-- holds). The exponent −1/(4b₀g²) is the dimensional transmutation — the scale is generated.
+/-- **The gap equation is well-posed:** `γ = μ·e^{−1/(4b₀·g²)}` satisfies it — the dimensional
+transmutation generates the scale. -/
+theorem gap_equation_well_posed (μ b₀ g : ℝ) (hb₀ : b₀ ≠ 0) (hg : g ≠ 0) :
+    gapEquation (μ * Real.exp (-1 / (4 * b₀ * g^2))) μ b₀ g := by
+  unfold gapEquation
+  rw [mul_pow]
+  have hpow : (Real.exp (-1 / (4 * b₀ * g^2)))^4 = Real.exp (-1 / (b₀ * g^2)) := by
+    have harg : 4 * (-1 / (4 * b₀ * g^2)) = -1 / (b₀ * g^2) := by field_simp [hb₀, hg]
+    rw [← Real.exp_nat_mul]
+    simpa [harg]
+  rw [hpow]
+
+-- The solution's scale: γ = μ·e^{−1/(4b₀·g²)} is the AF scale (Λ), and γ > 0 — the Gribov parameter is
+-- a genuine positive mass scale (the mass gap's square root, σ_Coul ~ γ² > 0).
+theorem gribov_parameter_positive (μ b₀ g : ℝ) (hμ : 0 < μ) :
+    0 < μ * Real.exp (-1 / (4 * b₀ * g^2)) :=
+  mul_pos hμ (Real.exp_pos _)
+
+
+
+/-- **The horizon condition's "log → exp" (the NON-TAUTOLOGICAL dimensional transmutation).** The
+log-form `1 = b₀·g²·log(μ/γ)` (the logarithmic UV divergence of the one-loop integral) has the solution
+`γ = μ·e^{−1/(b₀·g²)}`. The logarithmic divergence, solved self-consistently, GENERATES the exponential
+scale — the AF exponent comes out of the equation, not assumed. The log-form itself is the one-loop
+integral's result (the deeper step); what is DERIVED here is that the log ⟹ the exponential. -/
+theorem log_gap_to_exp (μ b₀ g γ : ℝ) (hb₀ : 0 < b₀) (hg : 0 < g) (hμ : 0 < μ) (hγ : 0 < γ) :
+    (1 = b₀ * g^2 * Real.log (μ / γ)) → γ = μ * Real.exp (-1 / (b₀ * g^2)) := by
+  intro h
+  have hb0g2 : 0 < b₀ * g^2 := mul_pos hb₀ (pow_pos hg 2)
+  have hlog : Real.log (μ / γ) = 1 / (b₀ * g^2) := by
+    have h' : b₀ * g^2 * Real.log (μ / γ) = 1 := h.symm
+    have h'' : Real.log (μ / γ) * (b₀ * g^2) = 1 := by simpa [mul_comm] using h'
+    exact (eq_div_iff hb0g2.ne').mpr h'' 
+  have hexp : μ / γ = Real.exp (1 / (b₀ * g^2)) := by
+    rw [← hlog]
+    exact (Real.exp_log (div_pos hμ hγ)).symm
+  calc
+    γ = μ / (μ / γ) := by field_simp [hγ.ne', hμ.ne']
+    _ = μ / Real.exp (1 / (b₀ * g^2)) := by rw [hexp]
+    _ = μ * Real.exp (-1 / (b₀ * g^2)) := by
+      rw [div_eq_mul_inv]
+      rw [← Real.exp_neg]
+      ring
+
+
+
+/-- **The one-loop integral (the NON-TAUTOLOGICAL logarithmic UV divergence).** `∫₀^μ p³/(p⁴+γ⁴) dp =
+(1/4)·log((μ⁴+γ⁴)/γ⁴)` — the exact antiderivative, computed via the fundamental theorem. This is the
+integral that feeds the horizon condition: its LOGARITHMIC divergence, via `log_gap_to_exp`, generates
+the exponential scale. Together with `log_gap_to_exp` this closes the 'integral ⟹ log ⟹ exp' chain: the
+one-loop divergence produces the log, and the log produces the AF exponent. -/
+theorem one_loop_integral_log (μ γ : ℝ) (hμ : 0 < μ) (hγ : 0 < γ) :
+    ∫ p in (0)..μ, p^3 / (p^4 + γ^4) = (4 : ℝ)⁻¹ * Real.log ((μ^4 + γ^4) / γ^4) := by
+  let F := fun p : ℝ => (4 : ℝ)⁻¹ * Real.log (p^4 + γ^4)
+  have hne : ∀ p, p^4 + γ^4 ≠ 0 := by
+    intro p
+    have : 0 < γ^4 := pow_pos hγ 4
+    have : 0 ≤ p^4 := by positivity
+    nlinarith
+  have hF' : ∀ p, HasDerivAt F (p^3 / (p^4 + γ^4)) p := by
+    intro p
+    have hinner : HasDerivAt (fun q : ℝ => q^4 + γ^4) (4 * p^3) p := by
+      simpa using ((hasDerivAt_pow 4 p).add_const (γ^4))
+    have houter : HasDerivAt Real.log ((p^4 + γ^4)⁻¹) (p^4 + γ^4) := Real.hasDerivAt_log (hne p)
+    have hcomp := HasDerivAt.comp p houter hinner
+    have hF := HasDerivAt.const_mul (4 : ℝ)⁻¹ hcomp
+    have hval : (4 : ℝ)⁻¹ * ((p^4 + γ^4)⁻¹ * (4 * p^3)) = p^3 / (p^4 + γ^4) := by
+      field_simp [hne p]
+    simpa [F, hval] using hF
+  have hdiff : ∀ p ∈ Set.uIcc 0 μ, DifferentiableAt ℝ F p := by
+    intro p _
+    exact (hF' p).differentiableAt
+  have hderiv_eq : ∀ p, deriv F p = p^3 / (p^4 + γ^4) := by
+    intro p
+    exact (hF' p).deriv
+  have hcont : ContinuousOn (deriv F) (Set.uIcc 0 μ) := by
+    have hcont' : ContinuousOn (fun p : ℝ => p^3 / (p^4 + γ^4)) (Set.uIcc 0 μ) := by
+      refine Continuous.continuousOn ?_
+      exact (continuous_id.pow 3).div (continuous_id.pow 4 |>.add continuous_const) (fun p => hne p)
+    have hderiv_fun : deriv F = fun p : ℝ => p^3 / (p^4 + γ^4) := by
+      funext p
+      exact hderiv_eq p
+    simpa [hderiv_fun] using hcont'
+  have hinteg : IntervalIntegrable (deriv F) volume 0 μ := hcont.intervalIntegrable
+  have hcong : ∫ p in (0)..μ, p^3 / (p^4 + γ^4) = ∫ p in (0)..μ, deriv F p := by
+    apply intervalIntegral.integral_congr
+    intro p _
+    exact (hderiv_eq p).symm
+  rw [hcong]
+  rw [intervalIntegral.integral_deriv_eq_sub hdiff hinteg]
+  simp only [F]
+  have hz : (0 : ℝ)^4 + γ^4 = γ^4 := by norm_num
+  rw [hz]
+  rw [← mul_sub]
+  congr 1
+  rw [Real.log_div]
+  · have : 0 < γ^4 := pow_pos hγ 4
+    have : 0 ≤ μ^4 := by positivity
+    nlinarith
+  · exact pow_ne_zero 4 (ne_of_gt hγ)
+
+
+
+/-- **The Wilson action** `S(θ) = β·(1 − cos θ)` and its Hessian (second derivative) `β·cos θ`. -/
+def wilsonAction (β θ : ℝ) : ℝ := β * (1 - Real.cos θ)
+def wilsonHessian (β θ : ℝ) : ℝ := β * Real.cos θ
+
+-- The Wilson Hessian is β-dependent and NEGATIVE at the antipode θ = π (cos π = −1).
+/-- **The Wilson Hessian is β-dependent and negative at the antipode** (cos π = −1). -/
+theorem wilsonHessian_negative_at_pi (β : ℝ) (hβ : 0 < β) :
+    wilsonHessian β Real.pi = -β := by
+  unfold wilsonHessian
+  rw [Real.cos_pi]
+  ring
+
+-- The Bochner decomposition: the Bakry-Émery curvature of the generator L = Δ − ∇S·∇ is κ = Ric + Hess(S).
+def bakryEmeryCurvature (Ric hessS : ℝ) : ℝ := Ric + hessS
+
+-- TOY (relabelled, per Claude's review): this is arithmetic on the DEFINITIONS of wilsonHessian
+-- (β·cos θ) and bakryEmeryCurvature (Ric + hess), so it is not a real falsification. It is about the
+-- FULL space (not the orbit space), and negative pointwise BE curvature only means the SUFFICIENT
+-- condition fails — it does NOT show there is no gap. The real statement is orbitBE_fails_for_large_beta.
+/-- **TOY, relabelled — full-space pointwise BE failure, not a gap statement.** Arithmetic on the
+definitions of `wilsonHessian` and `bakryEmeryCurvature`; it only shows the FULL-space (not orbit-space)
+pointwise Bakry–Émery curvature is negative at the antipode for `β > κ_orbit`. Negative pointwise BE
+curvature means the SUFFICIENT condition fails, NOT that there is no gap. -/
+theorem full_curvature_not_beta_independent (κ_orbit β : ℝ) (hκ : 0 < κ_orbit) (hβ : κ_orbit < β) :
+    bakryEmeryCurvature κ_orbit (wilsonHessian β Real.pi) < 0 := by
+  unfold bakryEmeryCurvature
+  rw [wilsonHessian_negative_at_pi β (lt_trans hκ hβ)]
+  nlinarith
+
+-- RELABELLED: this only shows ∃θ with negative FULL-space pointwise BE curvature. It does NOT prove the
+-- mass gap is β-dependent (that is a separate, open statement about the transfer-matrix gap).
+/-- **Relabelled — ∃θ where the full-space pointwise BE curvature is negative.** NOT a proof that the
+mass gap is β-dependent; only the existence of a point where the (sufficient, not necessary) BE condition
+fails on the full space. -/
+theorem gap_is_beta_dependent (κ_orbit β : ℝ) (hκ : 0 < κ_orbit) (hβ : κ_orbit < β) :
+    ∃ θ : ℝ, bakryEmeryCurvature κ_orbit (wilsonHessian β θ) < 0 :=
+  ⟨Real.pi, full_curvature_not_beta_independent κ_orbit β hκ hβ⟩
+
+
+
+/-- **The 1-D orbit-space density** (one plaquette modulo conjugation): `ρ(θ) = sin²θ·e^{β cos θ}`. -/
+def orbitQuotientDensity (β θ : ℝ) : ℝ := Real.sin θ ^ 2 * Real.exp (β * Real.cos θ)
+
+-- The orbit-space Bakry-Émery curvature (the weighted Laplacian's curvature): the Weyl/density term
+-- 2/sin²θ (from the orbit-volume density sin²θ) plus the Wilson-potential Hessian β·cos θ.
+/-- **The orbit-space Bakry–Émery curvature** (the weighted Laplacian's curvature): the Weyl/density term
+`2/sin²θ` (from the orbit-volume density `sin²θ`) plus the Wilson-potential Hessian `β·cos θ`. This equals
+`−(d²/dθ²) log ρ` for `ρ = sin²θ·e^{β cos θ}`: `log ρ = 2 log(sin θ) + β cos θ`, differentiated twice. -/
+def orbitBE_curvature (β θ : ℝ) : ℝ := 2 / Real.sin θ ^ 2 + β * Real.cos θ
+
+/-- **The log-density decomposition** (the Bochner step): `log ρ = 2 log(sin θ) + β cos θ`. Differentiating
+twice gives `−2/sin²θ − β cos θ`, so `−(d²/dθ²)log ρ = 2/sin²θ + β cos θ = orbitBE_curvature`. -/
+theorem orbitQuotientDensity_log_decomp (β θ : ℝ) (hsin : 0 < Real.sin θ) :
+    Real.log (orbitQuotientDensity β θ) = 2 * Real.log (Real.sin θ) + β * Real.cos θ := by
+  unfold orbitQuotientDensity
+  rw [Real.log_mul]
+  · rw [Real.log_pow, Real.log_exp]
+    ring
+  · exact ne_of_gt (sq_pos_of_ne_zero (ne_of_gt hsin))
+  · exact Real.exp_ne_zero _
+
+-- The REAL falsification (Claude's corrected statement): at θ = 2π/3 the orbit-space curvature is
+-- K = 8/3 − β/2, which is NEGATIVE for β > 16/3. So the β-dependence does NOT drop in the quotient —
+-- the pointwise Bakry-Émery condition fails on the orbit space too. (This is "the uniform pointwise BE
+-- condition fails", NOT "no gap".)
+/-- **The REAL falsification (Claude's corrected statement).** At `θ = 2π/3` the orbit-space curvature is
+`K = 8/3 − β/2`, NEGATIVE for `β > 16/3`. So the β-dependence does NOT drop in the quotient — the
+pointwise Bakry–Émery condition fails on the orbit space too. Label: the UNIFORM POINTWISE BE condition
+fails (not 'no gap'). -/
+theorem orbitBE_curvature_at_2pi_over_3 (β : ℝ) :
+    orbitBE_curvature β (2 * Real.pi / 3) = 8 / 3 - β / 2 := by
+  unfold orbitBE_curvature
+  have hsin : Real.sin (2 * Real.pi / 3) ^ 2 = 3 / 4 := by
+    rw [show 2 * Real.pi / 3 = Real.pi - Real.pi / 3 by ring]
+    rw [Real.sin_pi_sub]
+    rw [Real.sin_pi_div_three]
+    have hsq : (Real.sqrt 3)^2 = 3 := Real.sq_sqrt (by norm_num)
+    nlinarith [hsq]
+  have hcos : Real.cos (2 * Real.pi / 3) = -1 / 2 := by
+    rw [show 2 * Real.pi / 3 = Real.pi - Real.pi / 3 by ring]
+    rw [Real.cos_pi_sub]
+    rw [Real.cos_pi_div_three]
+    norm_num
+  rw [hsin, hcos]
+  field_simp
+  ring
+
+-- The pointwise BE condition fails for β > 16/3: K(2π/3) < 0.
+theorem orbitBE_fails_for_large_beta (β : ℝ) (hβ : 16 / 3 < β) :
+    orbitBE_curvature β (2 * Real.pi / 3) < 0 := by
+  rw [orbitBE_curvature_at_2pi_over_3 β]
+  nlinarith
+
+
+
+/-- **The Doeblin minorization ⟹ L∞ contraction (M1).** A stochastic matrix `T` minorized by `δ·μ`
+(`T_ij ≥ δ·μ_j`, the Doeblin condition with the invariant measure `μ`) contracts mean-zero functions: if
+`μ(f) = 0` and `|f| ≤ M`, then `|(Tf)_i| ≤ (1−δ)·M`. This is the TRUE finite-volume statement — the
+Doeblin condition (minorization by the invariant measure) replaces the entrywise mixing, and it survives
+the volume limit because `δ` is the minorization constant, not the minimum entry. -/
+theorem doeblin_contraction {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (μ : Fin m → ℝ) (δ : ℝ)
+    (hrow : ∀ i, ∑ j, T i j = 1) (hμnn : ∀ j, 0 ≤ μ j) (hμsum : ∑ j, μ j = 1)
+    (hminor : ∀ i j, δ * μ j ≤ T i j) (hδnn : 0 ≤ δ) (f : Fin m → ℝ) (hf : ∑ j, μ j * f j = 0)
+    (M : ℝ) (hfM : ∀ j, |f j| ≤ M) (i : Fin m) :
+    |(T.mulVec f) i| ≤ (1 - δ) * M := by
+  have hdecomp : (T.mulVec f) i = ∑ j, (T i j - δ * μ j) * f j := by
+    calc
+      (T.mulVec f) i = ∑ j, T i j * f j := rfl
+      _ = ∑ j, ((T i j - δ * μ j) * f j + δ * μ j * f j) := by
+        apply Finset.sum_congr rfl; intro j hj; ring
+      _ = ∑ j, (T i j - δ * μ j) * f j + ∑ j, (δ * μ j * f j) := Finset.sum_add_distrib
+      _ = ∑ j, (T i j - δ * μ j) * f j + δ * ∑ j, (μ j * f j) := by
+        simp [Finset.mul_sum, mul_assoc, mul_left_comm, mul_comm]
+      _ = ∑ j, (T i j - δ * μ j) * f j := by simp [hf]
+  rw [hdecomp]
+  have hnn : ∀ j, 0 ≤ T i j - δ * μ j := by
+    intro j; exact sub_nonneg.mpr (hminor i j)
+  calc
+    |∑ j, (T i j - δ * μ j) * f j| ≤ ∑ j, (T i j - δ * μ j) * |f j| := by
+      calc
+        |∑ j, (T i j - δ * μ j) * f j| ≤ ∑ j, |(T i j - δ * μ j) * f j| :=
+          Finset.abs_sum_le_sum_abs (fun j => (T i j - δ * μ j) * f j) Finset.univ
+        _ = ∑ j, (T i j - δ * μ j) * |f j| := by
+          apply Finset.sum_congr rfl; intro j hj; rw [abs_mul, abs_of_nonneg (hnn j)]
+    _ ≤ ∑ j, (T i j - δ * μ j) * M := by
+      apply Finset.sum_le_sum; intro j hj
+      exact mul_le_mul_of_nonneg_left (hfM j) (hnn j)
+    _ = (∑ j, (T i j - δ * μ j)) * M := by rw [← Finset.sum_mul]
+    _ = (1 - δ) * M := by
+      congr 1
+      have hsum : ∑ j, (T i j - δ * μ j) = 1 - δ := by
+        rw [Finset.sum_sub_distrib, hrow i]
+        rw [← Finset.mul_sum]
+        simp [hμsum]
+      exact hsum
+
+
+
+/-- **The bare Wilson potential** `V(θ) = β(1 − cos θ)` and its Hessian `β·cos θ` — the single-scale
+route we FALSIFIED (the Hessian is β-dependent and negative at the antipode θ = π). -/
+def barePotential (β θ : ℝ) : ℝ := β * (1 - Real.cos θ)
+def bareHessian (β θ : ℝ) : ℝ := β * Real.cos θ
+
+-- The RG-softened effective potential: the flow adds a convex mass term Λ·θ² (the toy Polchinski
+-- softening), so the effective Hessian is β·cos θ + Λ, bounded below by Λ - β (positive for Λ > β).
+def effectiveHessian (β Λ θ : ℝ) : ℝ := β * Real.cos θ + Λ
+
+-- THE MULTISCALE FIX (toy): the effective Hessian is bounded below by Λ - β, uniformly in θ.
+-- Unlike the bare Hessian (which is -β at θ = π, unbounded below in β), the effective Hessian is
+-- POSITIVE for Λ > β. This is the mechanism that fixes the falsified single-scale route.
+/-- **The multiscale Bakry–Émery fix (toy).** The RG flow softens the potential (adds a convex mass term
+`Λ·θ²`), so the EFFECTIVE Hessian `β·cos θ + Λ` is bounded below by `Λ − β` — POSITIVE for `Λ > β`, unlike
+the bare `β·cos θ` (unbounded below in β). This is the mechanism that fixes the falsified single-scale
+route: the Polchinski flow controls the curvature scale-by-scale (the Bauerschmidt–Bodineau multiscale BE
+criterion, proven for sine-Gordon β < 6π, NOT yet for gauge theory — the `Λ·θ²` here is a stand-in). -/
+theorem effectiveHessian_bounded_below (β Λ : ℝ) (hβ : 0 ≤ β) :
+    ∀ θ : ℝ, Λ - β ≤ effectiveHessian β Λ θ := by
+  intro θ
+  unfold effectiveHessian
+  have hcos : -1 ≤ Real.cos θ := Real.neg_one_le_cos θ
+  nlinarith
+
+-- The honest gap: this toy captures the MECHANISM (the flow softens the curvature), but the REAL
+-- multiscale BE criterion needs the actual Polchinski equation + the curvature's differential inequality
+-- along the flow (Bauerschmidt-Bodineau). The toy's "Λ·θ²" is a stand-in for the flow's true convex
+-- contribution, which for gauge theory is the open content (the literature has sine-Gordon, not gauge).
+
+
 
 end QM

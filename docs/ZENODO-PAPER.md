@@ -10,7 +10,7 @@ mass gap.
 
 | field | value |
 |---|---|
-| **Title** | A falsifier-first, kernel-checked reduction of the Yang–Mills mass gap to the Gribov–Zwanziger horizon condition |
+| **Title** | A verified map of the Yang–Mills mass-gap problem: strong coupling (LGT), existence (audited), and the two open rungs |
 | **Upload type** | Publication → Preprint |
 | **Authors** | Rob Mitchell |
 | **Publication date** | (date of upload) |
@@ -22,28 +22,35 @@ mass gap.
 
 ## 2. Abstract (the honest one)
 
-We present a machine-checked (Lean/Mathlib) reduction of the 4D SU(2) Yang–Mills mass-gap problem to
-a single named statement: the positivity of the dimensionless ratio `m/Λ` (equivalently `m/√σ ≈ 3.2`),
-uniformly in the volume. The exponential `e^{−cβ}` is identified as the known one-loop beta function
-(Gross–Wilczek–Politzer), not as the open content of the problem.
+A verified MAP of the 4D Yang–Mills mass-gap problem, not a solution. Three anchors.
 
-Against a lattice referee (`m(β) = 25.28·e^{−1.182β}`, `m/√σ ≈ 3.2`), we falsify the candidate
-mechanisms that fail — the plaquette concentration (power law `1/β`), the cluster expansion (`log β`),
-the Dobrushin coupling (dies at the ceiling), and the chessboard surface-tension bound (circular) —
-and we prove, kernel-checked with no `sorry`, the finite-dimensional Gribov–Zwanziger confinement
-mechanism: non-commutativity of the gauge group → the Cartan zero mode → the IR suppression
-`G(0) = 0` → the `1/p⁴` singularity → the linear Coulomb potential. We correct an earlier step by
-showing the Casimir *mass* is deconfining (Yukawa), while the *IR suppression* is the confining
-mechanism.
+**(1) Strong coupling is done — and it is not ours.** Douglas–Rajasekaran's LGT library
+(`mrdouglasny/lgt`) proves the d ≥ 2 strong-coupling mass gap via the Dobrushin method:
+`ym_mass_gap_exponential_decay` + `ym_mass_gap_rate_exists`, zero sorries, zero project axioms
+(`#print axioms` = `{propext, Classical.choice, Quot.sound}`), independently FRO-kernel-verified. We
+cite it; our earlier strong-coupling pieces are redundant.
 
-**We do not prove the mass gap.** The remaining rung — the infinite-dimensional horizon condition
-(`γ > 0` for the full Faddeev–Popov operator) — is stated precisely and left open.
+**(2) Existence is claimed — and we audited it.** `yang-mills-group/OpenAI-YM-20261028` is an AI-made
+Lean existence proof (the Gross committee reports it checks in Lean but is not fully understood; the mass
+gap is out of scope). Our fidelity audit finds two weakenings vs. Clay's existence clause: the public
+running slope is unpinned (the proof's internal `slopeConstant = 11·casimir/(24π²)` is not surfaced in
+`WilsonRegularity`), and the continuum limit is subsequence-only and non-unique.
+
+**(3) Our kernel-checked contributions.** The Casimir → Faddeev–Popov constant-mode gap →
+positive-semidefinite transport chain (checked, no `sorry`); the Gribov IR suppression *modelled*
+(`M(p) = p²` chosen, not derived); the single-scale geometric route *falsified* (the bare Wilson Hessian
+`β·cos θ` is negative at the antipode) with its multiscale Bakry–Émery toy fix; and the mass-gap statement
+plus its sanity controls against the committee's Wightman API.
+
+**We do not prove the mass gap.** The open content is the TWO located rungs: (A) the Polchinski-equation
+multiscale Bakry–Émery criterion for gauge theory (the crossover — proven in the literature only for
+sine-Gordon), and (B) the mass gap itself (spectral support away from 0).
 
 ## 3. The explicit non-contribution (put this in the paper, not only in chat)
 
-> This paper proves no new bound and no new theorem about the mass gap. It contributes a verified
-> map of the problem — what is assumed, what is proven, what is falsified, and exactly what remains —
-> not a solution.
+> This record proves no new mass-gap theorem. It contributes a verified map: what is proven (LGT's
+> strong-coupling gap), what is claimed (the committee's existence, with its two weakenings), what is
+> falsified (the single-scale geometric route), and exactly what remains (the two located rungs).
 
 ## 4. Contribution bullets (honest)
 
@@ -70,8 +77,8 @@ mechanism.
 6. **The reduction** — dimensional transmutation `m = C·Λ`; `refereeScalingLaw ⟺ C > 0`
    volume-uniformly; the exponential is known, the ratio is the open content.
 7. **The Coulomb route, corrected** — the Casimir mass deconfines (Yukawa `1/p²`); the Gribov horizon's
-   IR suppression confines (`G(0) = 0` → `1/p⁴` → linear potential); the finite-dimensional chain
-   kernel-checked.
+   IR suppression confines (`G(0) = 0` → `1/p⁴` → linear potential). Checked: Casimir → FP gap → PSD
+   transport. Modelled: IR suppression → 1/p⁴. Open: the horizon condition.
 8. **The falsifications** — the table of eliminated candidates and why.
 9. **The open rung** — the infinite-dimensional horizon condition, stated precisely.
 10. **The honest boundary** — proven vs assumed vs open.

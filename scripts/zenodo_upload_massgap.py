@@ -16,24 +16,24 @@ BASE = "https://zenodo.org/api"
 METADATA = {
     "upload_type": "publication",
     "publication_type": "preprint",
-    "title": "A falsifier-first, kernel-checked reduction of the Yang-Mills mass gap to the Gribov-Zwanziger horizon condition",
+    "title": "A verified map of the Yang-Mills mass-gap problem: strong coupling (LGT), existence (audited), and the two open rungs",
     "creators": [{"name": "Mitchell, Rob"}],
     "description": (
-        "We present a machine-checked (Lean 4 / Mathlib) reduction of the 4D SU(2) Yang-Mills mass-gap "
-        "problem to a single named statement: the positivity of the dimensionless ratio m/Lambda "
-        "(equivalently m/sqrt(sigma) ~ 3.2), uniformly in the volume. The exponential e^{-c beta} is "
-        "identified as the known one-loop beta function (Gross-Wilczek-Politzer), not the open content. "
-        "Against a lattice referee (m(beta) = 25.28 e^{-1.182 beta}, m/sqrt(sigma) ~ 3.2) we falsify the "
-        "candidate mechanisms that fail - the plaquette concentration (power law 1/beta), the cluster "
-        "expansion (log beta), the Dobrushin coupling (dies), and the chessboard surface-tension bound "
-        "(circular) - and we prove, kernel-checked with no sorry, the finite-dimensional Gribov-Zwanziger "
-        "confinement mechanism: non-commutativity -> Cartan zero mode -> IR suppression G(0)=0 -> the "
-        "1/p^4 singularity -> the linear Coulomb potential. We correct an earlier step by showing the "
-        "Casimir mass is deconfining (Yukawa) while the IR suppression is the confining mechanism. "
-        "We do NOT prove the mass gap. The remaining rung - the infinite-dimensional horizon condition "
-        "(gamma > 0 for the full Faddeev-Popov operator) - is stated precisely and left open. This paper "
-        "proves no new bound and no new theorem about the mass gap; it contributes a verified map of the "
-        "problem, not a solution."
+        "A verified MAP of the 4D Yang-Mills mass-gap problem, not a solution. Three anchors. "
+        "(1) The strong-coupling mass gap (d >= 2) is PROVEN by Douglas-Rajasekaran's LGT library: "
+        "ym_mass_gap_exponential_decay and ym_mass_gap_rate_exists, zero sorries, #print axioms = "
+        "{propext, Classical.choice, Quot.sound}, independently FRO-kernel-verified - cited, not our "
+        "result. (2) The existence half is CLAIMED by the yang-mills-group/OpenAI-YM-20261028 Lean "
+        "construction (an AI-made proof the Gross committee reports checks in Lean but does not fully "
+        "understand); our fidelity audit finds two weakenings: the public running slope is unpinned "
+        "(the proof's internal slopeConstant = 11 casimir / 24 pi^2 is not surfaced), and the continuum "
+        "limit is subsequence-only and non-unique. (3) We kernel-check the Casimir -> Faddeev-Popov "
+        "constant-mode gap -> positive-semidefinite transport chain, MODEL the Gribov IR suppression "
+        "(M(p) = p^2 chosen, not derived), and FALSIFY the single-scale geometric route (the bare Wilson "
+        "Hessian beta cos theta is negative at the antipode) with its multiscale toy fix. The open "
+        "content is the TWO located rungs: the Polchinski-equation multiscale Bakry-Emery criterion for "
+        "gauge theory (the crossover) and the mass gap itself (spectral support away from 0). No "
+        "mass-gap theorem is claimed."
     ),
     "keywords": ["Yang-Mills", "mass gap", "asymptotic freedom", "Gribov-Zwanziger",
                  "Coulomb confinement", "formal proof", "Lean", "Mathlib", "transfer matrix",
