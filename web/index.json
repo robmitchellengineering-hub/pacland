@@ -3483,6 +3483,13 @@
    "title": "Find anything \u2014 every doc, script and explainer"
   },
   {
+   "href": "./chemistry.html",
+   "kind": "page",
+   "path": "web/chemistry.html",
+   "summary": "page on this site",
+   "title": "chemistry"
+  },
+  {
    "href": "./climate-3d.html",
    "kind": "page",
    "path": "web/climate-3d.html",
@@ -3530,6 +3537,13 @@
    "path": "web/node.html",
    "summary": "page on this site",
    "title": "node"
+  },
+  {
+   "href": "./quantum-verification.html",
+   "kind": "page",
+   "path": "web/quantum-verification.html",
+   "summary": "page on this site",
+   "title": "quantum-verification"
   },
   {
    "href": "./sextant.html",
