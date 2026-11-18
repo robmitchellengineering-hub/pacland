@@ -47,5 +47,21 @@ class TestCampaigns(unittest.TestCase):
             b.run_campaign("Z", b.untyped_generator)
 
 
+class TestSemanticMatch(unittest.TestCase):
+    def test_accepts_a_paraphrase(self):
+        # "photons" is shared, so a paraphrase matches even though the string differs
+        self.assertTrue(b.semantic_match("photons have discrete energy packets",
+                                          "light is made of quanta (photons)"))
+
+    def test_accepts_a_stem_variant(self):
+        # quantised vs quantization share the stem "quant"
+        self.assertTrue(b.semantic_match("the spectrum is caused by quantization of fields",
+                                          "energy is quantised, E = h nu"))
+
+    def test_rejects_an_unrelated_candidate(self):
+        self.assertFalse(b.semantic_match("a new long-range force",
+                                          "energy is quantised, E = h nu"))
+
+
 if __name__ == "__main__":
     unittest.main()
