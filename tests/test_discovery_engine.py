@@ -148,5 +148,20 @@ class TestLlmSearch(unittest.TestCase):
         self.assertEqual(out[0].falsifier, "a falsifier")
 
 
+class TestFalsifierRouting(unittest.TestCase):
+    def test_routes_a_mass_gap_lower_bound_to_the_ratio_falsifier(self):
+        self.assertEqual(runner._falsifier_for_statement("m_gap ≥ c·√σ with c > 0"),
+                         runner.verify_glueball_mass_ratio)
+
+    def test_routes_a_perturbative_claim_to_the_scaling_referee(self):
+        self.assertEqual(runner._falsifier_for_statement("the mass gap is non-perturbative"),
+                         runner.verify_mass_gap_scaling)
+
+    def test_leaves_theta_d5_and_polyakov_open(self):
+        self.assertIsNone(runner._falsifier_for_statement("the mass gap is robust against a θ-term"))
+        self.assertIsNone(runner._falsifier_for_statement("the d=5 mass gap survives the continuum limit"))
+        self.assertIsNone(runner._falsifier_for_statement("Polyakov-loop correlators cluster exponentially"))
+
+
 if __name__ == "__main__":
     unittest.main()

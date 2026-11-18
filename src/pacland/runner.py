@@ -616,10 +616,31 @@ def _import_sextant():
         return None, None
 
 
+def _falsifier_for_statement(statement: str):
+    """Map a natural-language mass-gap hypothesis to the closest runnable lattice falsifier.
+
+    The LLM proposes in prose ('m_gap ≥ c·√σ', 'mass gap ∝ Λ_QCD', 'robust against θ'). This routes
+    the claims we can already test to the existing lattice falsifiers; returns ``None`` when no
+    falsifier exists yet (the hypothesis stays OPEN — a falsifier for it has not been built).
+    """
+    low = statement.lower()
+    if any(k in low for k in ("theta", "θ", "d=5", "five-dim", "polyakov",
+                              "n-independ", "su(3)", "su(4)", "su(5)")):
+        return None  # no lattice tool for θ, d=5, Polyakov, or multi-N claims
+    if any(k in low for k in ("string tension", "sqrt", "glueball", "sigma", "σ")):
+        return verify_glueball_mass_ratio
+    if "mass gap" in low and any(k in low for k in ("bound", "perturbative", "scales", "lower")):
+        return verify_mass_gap_scaling
+    if "mass gap" in low and "weak coupling" in low:
+        return verify_su2_weak_coupling
+    return None
+
+
 def _falsify(candidate: Candidate) -> tuple[bool, bool | None, str]:
     """Run a candidate's falsifier. Tries ``FALSIFIERS`` first (by ``candidate.test``), then a
-    SEXTANT catalog claim named in the statement. Returns ``(ran, survived, evidence)``; ``ran`` is
-    False when there is no runnable falsifier (the frontier — named, not pretended)."""
+    SEXTANT catalog claim named in the statement, then a keyword-routed mass-gap falsifier. Returns
+    ``(ran, survived, evidence)``; ``ran`` is False when there is no runnable falsifier (the frontier
+    — named, not pretended)."""
     if candidate.test in FALSIFIERS:
         try:
             survived, evidence = FALSIFIERS[candidate.test]()
@@ -635,6 +656,13 @@ def _falsify(candidate: Candidate) -> tuple[bool, bool | None, str]:
                     return True, bool(ok), ev
                 except Exception as e:  # noqa: BLE001 — same: missing dep => OPEN, not a crash
                     return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
+    fn = _falsifier_for_statement(candidate.statement)
+    if fn is not None:
+        try:
+            survived, evidence = fn()
+            return True, bool(survived), evidence + "  [keyword-routed falsifier]"
+        except Exception as e:  # noqa: BLE001
+            return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
     return False, None, f"needs a falsifier (proposed: {candidate.falsifier})"
 
 
