@@ -64,8 +64,10 @@ def main() -> int:
         num_train_epochs=args.epochs, learning_rate=2e-4, fp16=True, logging_steps=10,
         save_strategy="epoch", report_to="none",
     )
+    # Newer TRL: max_seq_length is not a SFTTrainer kwarg — it is dropped (the prompt+output fit the
+    # default window); set it via SFTConfig if a longer sequence is ever needed.
     trainer = SFTTrainer(model=model, train_dataset=data, args=train_args,
-                         processing_class=tokenizer, max_seq_length=512)
+                         processing_class=tokenizer)
     trainer.train()
     model.save_pretrained(args.out)
     tokenizer.save_pretrained(args.out)
