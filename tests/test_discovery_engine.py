@@ -173,8 +173,15 @@ class TestFalsifierRouting(unittest.TestCase):
 
     def test_leaves_theta_d5_and_polyakov_open(self):
         self.assertIsNone(runner._falsifier_for_statement("the mass gap is robust against a θ-term"))
-        self.assertIsNone(runner._falsifier_for_statement("the d=5 mass gap survives the continuum limit"))
         self.assertIsNone(runner._falsifier_for_statement("Polyakov-loop correlators cluster exponentially"))
+
+    def test_routes_to_the_new_candidate_specific_falsifiers(self):
+        self.assertEqual(runner._falsifier_for_statement("the d=5 mass gap survives the continuum limit"),
+                         runner.FALSIFIERS["d5-mass-gap"])
+        self.assertEqual(runner._falsifier_for_statement("a first-order bulk transition persists"),
+                         runner.FALSIFIERS["bulk-transition"])
+        self.assertEqual(runner._falsifier_for_statement("the mass gap is universal under irrelevant operators"),
+                         runner.FALSIFIERS["universality"])
 
     def test_unresolved_measurement_is_open_not_falsified(self):
         c = runner.Candidate(id="x", statement="s", falsifier="f", strategy="st",

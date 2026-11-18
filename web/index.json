@@ -2541,7 +2541,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_distinct.py",
    "kind": "script",
    "path": "scripts/measure_distinct.py",
-   "summary": "Honest measurement: DeepSeek generates, the ROG's qwen2.5:7b judges (a distinct model).",
+   "summary": "Honest measurement: a DISTINCT judge (deepseek-reasoner) grades deepseek-chat's proposals.",
    "title": "measure_distinct.py"
   },
   {

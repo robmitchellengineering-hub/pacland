@@ -153,11 +153,24 @@ def verify_mass_gap_scaling() -> tuple[bool, str]:
                              + " — no independent mechanism survives; the asymptotic-freedom scale is the referee itself")
 
 
+def _lazy(module: str, attr: str):
+    """Import a falsifier lazily (avoids importing numpy at module import time)."""
+    import importlib
+
+    def _f():
+        return getattr(importlib.import_module(f"pacland.{module}"), attr)()
+    return _f
+
+
 FALSIFIERS: dict[str, object] = {
     "ou-gap": verify_ou_gap,
     "su2-weak-coupling": verify_su2_weak_coupling,
     "glueball-mass-ratio": verify_glueball_mass_ratio,
     "mass-gap-scaling": verify_mass_gap_scaling,
+    # candidate-specific mass-gap falsifiers (built from the SU(2) lattice tools)
+    "d5-mass-gap": _lazy("mass_gap_falsifiers", "verify_d5_mass_gap"),
+    "bulk-transition": _lazy("mass_gap_falsifiers", "verify_bulk_transition"),
+    "universality": _lazy("mass_gap_falsifiers", "verify_universality"),
 }
 
 
@@ -697,9 +710,15 @@ def _falsifier_for_statement(statement: str):
     falsifier exists yet (the hypothesis stays OPEN — a falsifier for it has not been built).
     """
     low = statement.lower()
-    if any(k in low for k in ("theta", "θ", "d=5", "five-dim", "polyakov",
-                              "n-independ", "su(3)", "su(4)", "su(5)")):
-        return None  # no lattice tool for θ, d=5, Polyakov, or multi-N claims
+    # the candidate-specific falsifiers now exist — route to them BEFORE the generic "return None"
+    if "d=5" in low or "five-dim" in low or "d = 5" in low:
+        return FALSIFIERS["d5-mass-gap"]
+    if "bulk transition" in low or "first-order" in low or "first order" in low:
+        return FALSIFIERS["bulk-transition"]
+    if any(k in low for k in ("universal", "irrelevant", "improved action")):
+        return FALSIFIERS["universality"]
+    if any(k in low for k in ("theta", "θ", "polyakov", "n-independ", "su(3)", "su(4)", "su(5)")):
+        return None  # no lattice tool for θ, Polyakov, or multi-N claims yet
     if any(k in low for k in ("string tension", "sqrt", "glueball", "sigma", "σ")):
         return verify_glueball_mass_ratio
     if "mass gap" in low and any(k in low for k in ("bound", "perturbative", "scales", "lower")):
