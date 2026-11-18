@@ -171,6 +171,7 @@ FALSIFIERS: dict[str, object] = {
     "d5-mass-gap": _lazy("mass_gap_falsifiers", "verify_d5_mass_gap"),
     "bulk-transition": _lazy("mass_gap_falsifiers", "verify_bulk_transition"),
     "universality": _lazy("mass_gap_falsifiers", "verify_universality"),
+    "large-n-ratio": _lazy("mass_gap_falsifiers", "verify_large_n_ratio"),
 }
 
 
@@ -717,6 +718,8 @@ def _falsifier_for_statement(statement: str):
         return FALSIFIERS["bulk-transition"]
     if any(k in low for k in ("universal", "irrelevant", "improved action")):
         return FALSIFIERS["universality"]
+    if any(k in low for k in ("large-n", "large n", "all n", "universal ratio", "n=3", "n=4", "n=5")):
+        return FALSIFIERS["large-n-ratio"]
     if any(k in low for k in ("theta", "θ", "polyakov", "n-independ", "su(3)", "su(4)", "su(5)")):
         return None  # no lattice tool for θ, Polyakov, or multi-N claims yet
     if any(k in low for k in ("string tension", "sqrt", "glueball", "sigma", "σ")):

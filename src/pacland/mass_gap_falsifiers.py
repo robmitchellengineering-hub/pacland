@@ -100,3 +100,23 @@ def verify_universality(betas=(2.4, 2.6), d=4, Ns=(4, 6)) -> tuple[bool, str]:
     else:
         verdict = "smearing changes the tension materially — universality is refuted"
     return survived, f"SU(2) smear-vs-plain: {detail} → {verdict}"
+
+
+def verify_large_n_ratio(beta: float = 2.5, N: int = 4, n_sweeps: int = 8,
+                         n_meas: int = 6) -> tuple[bool, str]:
+    """'The mass gap is nonzero for all N with a universal ratio to the string tension': compare the
+    SU(2) vs SU(3) string tension. Both nonzero => the mass gap exists for N=2,3 (consistent with the
+    claim). The universal RATIO itself still needs an SU(3) glueball mass (only SU(2) exists), so this
+    is a first probe of the 'nonzero for all N' part, not the ratio part.
+    """
+    from pacland import lattice_ym_su2 as su2
+    from pacland import lattice_ym_su3 as su3
+
+    sig2 = su2.measure_string_tension(beta, d=4, N=N, n_sweeps=n_sweeps, seed=0)
+    sig3 = su3.measure_string_tension(beta, d=4, N=N, n_sweeps=n_sweeps, n_meas=n_meas, seed=0)
+    both = sig2 > 1e-6 and sig3 > 1e-6
+    verdict = ("both SU(2) and SU(3) have a nonzero string tension — consistent with 'nonzero for all N'"
+               if both else "one gauge group shows a vanishing tension — the 'nonzero for all N' claim is refuted")
+    return both, (f"SU(2) σ={sig2:.4f}, SU(3) σ={sig3:.4f} → {verdict}; "
+                  "the universal RATIO still needs an SU(3) glueball mass (not built)")
+
