@@ -104,5 +104,18 @@ class TestGate(unittest.TestCase):
         self.assertFalse(b.gate([engine, baseline])["passed"])
 
 
+class TestJudgeCalibration(unittest.TestCase):
+    def test_judge_report_counts_the_confusion_matrix(self):
+        # an always-YES judge: every YES is a tp, every NO is a fp
+        with mock.patch.object(b, "judge_matches", return_value=[True]):
+            r = b.judge_report()
+        self.assertEqual(r["tp"], 10)
+        self.assertEqual(r["fp"], 10)
+        self.assertEqual(r["tn"], 0)
+        self.assertEqual(r["fn"], 0)
+        self.assertEqual(r["precision"], 0.5)
+        self.assertEqual(r["recall"], 1.0)
+
+
 if __name__ == "__main__":
     unittest.main()
