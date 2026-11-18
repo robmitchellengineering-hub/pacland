@@ -20,6 +20,7 @@ from pacland.belief import (
     rank_by_eig,
     require_convergence,
     select_discriminating_experiment,
+    shrink_prior,
     update,
 )
 
@@ -245,6 +246,19 @@ class TestDiscriminatingExperiment(unittest.TestCase):
         ]
         name, _score = select_discriminating_experiment(hypotheses, experiments)
         self.assertEqual(name, "cheap")
+
+
+class TestShrinkPrior(unittest.TestCase):
+    def test_strength_one_is_unchanged(self):
+        self.assertAlmostEqual(shrink_prior(0.9, 1.0), 0.9)
+
+    def test_strength_zero_is_uninformative(self):
+        self.assertAlmostEqual(shrink_prior(0.9, 0.0), 0.5)
+        self.assertAlmostEqual(shrink_prior(0.1, 0.0), 0.5)
+
+    def test_half_shrink_pulls_toward_half(self):
+        self.assertAlmostEqual(shrink_prior(0.9, 0.5), 0.7)
+        self.assertAlmostEqual(shrink_prior(0.1, 0.5), 0.3)
 
 
 if __name__ == "__main__":
