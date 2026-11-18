@@ -28,6 +28,7 @@ import PaclandProof.QM.Stabilizer
 import PaclandProof.QM.MERA
 import PaclandProof.QM.PerfectTensor
 import PaclandProof.QM.RyuTakayanagi
+import PaclandProof.QM.LogicalOperators
 import PaclandProof.QM.Mermin
 import PaclandProof.QM.Matchgate
 import PaclandProof.QM.PfaffianRec
