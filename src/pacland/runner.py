@@ -25,6 +25,7 @@ import re
 import subprocess
 import sys
 import urllib.request
+import uuid
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -212,6 +213,9 @@ class Candidate:
     strategy: str
     source_facts: tuple[str, ...]
     test: str
+    cost: float = 1.0       # research effort, for discoveries-per-effort scoring
+    prior: float = 0.5      # operator's prior, for EIG ranking
+    ancestry: tuple[str, ...] = ()   # lineage, root first: A -> A1 -> A2 (the parent ids)
 
 
 STRATEGIES: dict[str, str] = {
@@ -594,6 +598,278 @@ def rank_open_by_eig() -> list[tuple[str, float]]:
     return belief.rank_by_eig(beliefs)
 
 
+# ------------------------------------------------------------------------------------------ #
+# Search strategies — pluggable problem-level generators (folded from the discovery engine).
+#
+# The fact-based STRATEGIES above (combine/generalize/specialize/conjecture-value/decompose)
+# generate a candidate from validated facts. These generate from a *problem*, the SEXTANT
+# catalog, the live simulators, and the proof tree. The five "jump types" are ONE strategy
+# (conceptual-jump), not the engine: a discovery can come from anywhere.
+# ------------------------------------------------------------------------------------------ #
+
+def _import_sextant():
+    try:
+        from pacland import phantom, sextant
+
+        return sextant, phantom
+    except Exception:
+        return None, None
+
+
+def _falsify(candidate: Candidate) -> tuple[bool, bool | None, str]:
+    """Run a candidate's falsifier. Tries ``FALSIFIERS`` first (by ``candidate.test``), then a
+    SEXTANT catalog claim named in the statement. Returns ``(ran, survived, evidence)``; ``ran`` is
+    False when there is no runnable falsifier (the frontier — named, not pretended)."""
+    if candidate.test in FALSIFIERS:
+        try:
+            survived, evidence = FALSIFIERS[candidate.test]()
+            return True, bool(survived), evidence
+        except Exception as e:  # noqa: BLE001 — a missing dependency (e.g. stim) means OPEN, not a crash
+            return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
+    sextant, phantom = _import_sextant()
+    if sextant is not None and phantom is not None:
+        for name in sextant.CATALOG:
+            if name in candidate.statement and name in phantom.FALSIFIERS:
+                try:
+                    ok, ev = phantom.FALSIFIERS[name]()
+                    return True, bool(ok), ev
+                except Exception as e:  # noqa: BLE001 — same: missing dep => OPEN, not a crash
+                    return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
+    return False, None, f"needs a falsifier (proposed: {candidate.falsifier})"
+
+
+def slug(s: str) -> str:
+    return "".join(ch if ch.isalnum() else "-" for ch in s.lower()).strip("-")
+
+
+def lineage(candidate: Candidate) -> str:
+    """Render a candidate's discovery lineage, root first: ``A → A1 → A2`` (G4)."""
+    return " → ".join(candidate.ancestry + (candidate.id,))
+
+
+def _mk(problem: str, strategy: str, tag: str, statement: str, falsifier: str,
+        cost: float, prior: float, ancestry: tuple[str, ...] = ()) -> Candidate:
+    return Candidate(
+        id=f"{slug(problem)}-{tag}-{uuid.uuid4().hex[:6]}",
+        statement=statement, falsifier=falsifier, strategy=strategy,
+        source_facts=(), test="", cost=cost, prior=prior, ancestry=ancestry,
+    )
+
+
+class SearchStrategy:
+    name = "search-strategy"
+
+    def generate(self, problem: str, budget: int) -> list[Candidate]:
+        raise NotImplementedError
+
+
+class ConceptualJump(SearchStrategy):
+    """ONE strategy: the five typed questions over the SEXTANT catalog (anomaly, inversion,
+    unification, analogy, principle). They help generate ideas; they do not bound discovery."""
+
+    name = "conceptual-jump"
+
+    def generate(self, problem: str, budget: int) -> list[Candidate]:
+        sextant, _ = _import_sextant()
+        out: list[Candidate] = []
+        per_q = max(1, budget // 5)
+        questions = list(hypotheses.JUMP_QUESTIONS.items())
+        for i, (jt, _q) in enumerate(questions):
+            if sextant is None:
+                continue
+            for name, e in list(sextant.CATALOG.items())[:per_q]:
+                verdict = e.get("verdict")
+                if jt == "anomaly" and verdict == "FREE":
+                    h = f"{name}: {e['claim']} is FREE (unforced) — the gap to close"
+                elif jt == "inversion" and verdict == "FREE":
+                    h = f"invert {name}: assume {e['claim']} is FORCED, not free"
+                elif jt == "unification":
+                    h = f"unify {name} with {problem}: {e.get('why', '')[:50]}"
+                elif jt == "principle" and verdict == "FORCED":
+                    h = f"principle {name}: {e['claim']} as a postulate"
+                else:
+                    continue
+                out.append(_mk(problem, self.name, jt, h, e.get("falsifier", "a falsifier"),
+                               2.0 + i * 0.5, 0.3))
+        return out[:budget]
+
+
+class MathematicalSearch(SearchStrategy):
+    """Surface the invariants we have already proven and propose testing them in a new setting."""
+
+    name = "mathematical-search"
+
+    def generate(self, problem: str, budget: int) -> list[Candidate]:
+        sextant, _ = _import_sextant()
+        out: list[Candidate] = []
+        if sextant is not None:
+            for name, e in list(sextant.CATALOG.items())[:budget]:
+                if e.get("verdict") == "FORCED":
+                    out.append(_mk(problem, self.name, "invariant",
+                                   f"the invariant behind {name} ({e['theorem']}) transfers to {problem}",
+                                   "does the invariant survive in the new setting?", 3.0, 0.2))
+        return out[:budget]
+
+
+class ComputationalSearch(SearchStrategy):
+    """Run the live simulators/falsifiers and surface anything that fires as a counterexample."""
+
+    name = "computational-search"
+
+    def generate(self, problem: str, budget: int) -> list[Candidate]:
+        _, phantom = _import_sextant()
+        out: list[Candidate] = []
+        if phantom is not None:
+            for name in list(phantom.FALSIFIERS)[:budget]:
+                out.append(_mk(problem, self.name, "counterexample",
+                               f"search for a counterexample to {name} (live falsifier)",
+                               name, 1.0, 0.4))
+        return out[:budget]
+
+
+class DatasetMining(SearchStrategy):
+    """Expose an unrecognised relationship in the ledger/data."""
+
+    name = "dataset-mining"
+
+    def generate(self, problem: str, budget: int) -> list[Candidate]:
+        return [_mk(problem, self.name, "relationship",
+                    f"correlate the {problem} candidates in the ledger by shared falsifier",
+                    "does the shared falsifier reveal a common structure?", 2.0, 0.25)][:budget]
+
+
+class TheoryCombination(SearchStrategy):
+    """Combine existing theories (the catalog's theorems) pairwise and propose the junction."""
+
+    name = "theory-combination"
+
+    def generate(self, problem: str, budget: int) -> list[Candidate]:
+        sextant, _ = _import_sextant()
+        out: list[Candidate] = []
+        if sextant is not None:
+            names = list(sextant.CATALOG)[: budget + 1]
+            for i in range(len(names) - 1):
+                out.append(_mk(problem, self.name, "combination",
+                               f"combine {names[i]} with {names[i + 1]} toward {problem}",
+                               "does the combined structure close?", 4.0, 0.2))
+        return out[:budget]
+
+
+class ProofGap(SearchStrategy):
+    """Spot a missing assumption: scan the proof tree for sorry/admit/open lemmas."""
+
+    name = "proof-gap"
+
+    def generate(self, problem: str, budget: int) -> list[Candidate]:
+        gaps: list[str] = []
+        if PROOF_DIR.exists():
+            for p in list(PROOF_DIR.rglob("*.lean"))[:200]:
+                txt = p.read_text(errors="ignore")
+                if "sorry" in txt or "admit" in txt:
+                    gaps.append(p.name)
+        return [_mk(problem, self.name, "missing-assumption",
+                    f"the gap in {g} may be a missing assumption toward {problem}",
+                    "is the assumption load-bearing?", 1.5, 0.35) for g in gaps[:budget]]
+
+
+SEARCH_STRATEGIES: list[SearchStrategy] = [
+    ConceptualJump(), MathematicalSearch(), ComputationalSearch(),
+    DatasetMining(), TheoryCombination(), ProofGap(),
+]
+
+
+@dataclass
+class Discovery:
+    """A VERIFIED discovery: a candidate that survived falsification."""
+    candidate: Candidate
+    effort: float
+
+
+@dataclass
+class Experiment:
+    id: str
+    problem: str
+    strategy: str
+    budget: int
+    candidates: list[Candidate] = field(default_factory=list)
+    discoveries: list[Discovery] = field(default_factory=list)
+    effort: float = 0.0
+    stopped: bool = False
+    reason: str = ""
+
+
+@dataclass
+class KillState:
+    budget: int = 10
+    tried: int = 0
+    survivors: int = 0
+    stopped: bool = False
+    reason: str = ""
+
+
+def apply_kill_criteria(ks: KillState) -> KillState:
+    """After candidates resolve, decide whether the run is exhausted: budget spent with no survivor
+    means the framing is dead — reframe, do not re-run the same strategy."""
+    if ks.tried >= ks.budget and ks.survivors == 0:
+        ks.stopped = True
+        ks.reason = "budget exhausted with no verified discovery — reframe, do not re-run the same strategy"
+    return ks
+
+
+class DiscoveryEngine:
+    """Run strategies, falsify candidates, and score verified discoveries per unit of effort."""
+
+    def __init__(self, strategies: list[SearchStrategy] | None = None):
+        self.strategies = strategies or SEARCH_STRATEGIES
+
+    def run_experiment(self, problem: str, strategy: SearchStrategy, budget: int = 10) -> Experiment:
+        exp = Experiment(id=uuid.uuid4().hex[:8], problem=problem,
+                         strategy=strategy.name, budget=budget)
+        ks = KillState(budget=budget)
+        for c in strategy.generate(problem, budget):
+            exp.candidates.append(c)
+            ran, survived, _evidence = _falsify(c)
+            exp.effort += c.cost
+            ks.tried += 1
+            if ran and survived:
+                exp.discoveries.append(Discovery(candidate=c, effort=c.cost))
+                ks.survivors += 1
+            apply_kill_criteria(ks)
+            if ks.stopped:
+                break
+        exp.stopped = ks.stopped
+        exp.reason = ks.reason
+        return exp
+
+    def score(self, exps: list[Experiment]) -> dict:
+        per: dict[str, list[float]] = {}
+        total_d, total_e = 0, 0.0
+        for e in exps:
+            d = len(e.discoveries)
+            per.setdefault(e.strategy, [0, 0.0])
+            per[e.strategy][0] += d
+            per[e.strategy][1] += e.effort
+            total_d += d
+            total_e += e.effort
+        return {
+            "per_strategy": {s: {"discoveries": int(v[0]), "effort": v[1],
+                                 "discoveries_per_effort": v[0] / max(v[1], 1e-9)}
+                             for s, v in per.items()},
+            "global": {"discoveries": total_d, "effort": total_e,
+                       "discoveries_per_effort": total_d / max(total_e, 1e-9)},
+        }
+
+    def lifecycle(self, problem: str, budget: int = 10) -> dict:
+        exps = [self.run_experiment(problem, s, budget) for s in self.strategies]
+        return {"problem": problem, "experiments": [asdict(e) for e in exps],
+                "score": self.score(exps)}
+
+
+def engine_self_test() -> dict:
+    """Run all six strategies on 'mass-gap', falsify, and score — the engine's self-test."""
+    return DiscoveryEngine().lifecycle("mass-gap", budget=6)
+
+
 def _main() -> int:
     ap = argparse.ArgumentParser(description="SEXTANT runner — the hypothesis loop")
     ap.add_argument("--list-facts", action="store_true")
@@ -611,6 +887,9 @@ def _main() -> int:
     ap.add_argument("--statement", help="inline Lean code to prove (implies --prove)")
     ap.add_argument("--prove-attempts", type=int, default=5, help="max LLM repair attempts (default 5)")
     ap.add_argument("--prove-save", metavar="PATH", help="save the proven .lean file to PATH (relative to the proof tree)")
+    ap.add_argument("--engine-self-test", action="store_true",
+                    help="run all six search strategies, falsify, and score discoveries per effort")
+    ap.add_argument("--engine", metavar="PROBLEM", help="run the search engine on a problem")
     args = ap.parse_args()
 
     if args.list_facts:
@@ -669,6 +948,24 @@ def _main() -> int:
         result = prove(statement, attempts=args.prove_attempts, save=save)
         print(json.dumps(result, indent=2))
         return 0 if result.get("ok") else 1
+    if args.engine_self_test:
+        r = engine_self_test()
+        print("strategies run:", len(r["experiments"]))
+        for s, m in r["score"]["per_strategy"].items():
+            print(f"  {s:20s} discoveries={m['discoveries']} effort={m['effort']:.1f} "
+                  f"d/e={m['discoveries_per_effort']:.3f}")
+        print(f"  global: {r['score']['global']['discoveries']} verified discoveries per "
+              f"{r['score']['global']['effort']:.1f} effort")
+        return 0
+    if args.engine:
+        r = DiscoveryEngine().lifecycle(args.engine, budget=6)
+        for e in r["experiments"]:
+            print(f"[{e['strategy']:18s}] candidates={len(e['candidates'])} "
+                  f"discoveries={len(e['discoveries'])} stopped={e['stopped']}")
+            for c in e["candidates"]:
+                print(f"    - {c['statement'][:70]}")
+        print(json.dumps(r["score"], indent=2))
+        return 0
     if args.fact and args.strategy:
         v = advance(args.fact, args.strategy)
         print(_fmt(v))

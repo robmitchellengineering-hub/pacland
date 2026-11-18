@@ -272,6 +272,15 @@ def beliefs_for_all() -> list[dict]:
     return out
 
 
+JUMP_QUESTIONS = {
+    "anomaly": "What contradiction is the field quietly ignoring?",
+    "inversion": "Which assumption, if flipped, changes the problem?",
+    "unification": "Which two 'different' objects are secretly one?",
+    "analogy": "What structure from another domain maps here?",
+    "principle": "What single postulate would reorganize everything?",
+}
+
+
 def list_hypotheses() -> str:
     return "\n".join(f"◇ {n:<18} {HYPOTHESES[n]['question'][:70]}…" for n in HYPOTHESES)
 
