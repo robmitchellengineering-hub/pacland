@@ -53,10 +53,10 @@ class TestSemanticMatch(unittest.TestCase):
         self.assertTrue(b.semantic_match("photons have discrete energy packets",
                                           "light is made of quanta (photons)"))
 
-    def test_accepts_a_stem_variant(self):
-        # quantised vs quantization share the stem "quant"
-        self.assertTrue(b.semantic_match("the spectrum is caused by quantization of fields",
-                                          "energy is quantised, E = h nu"))
+    def test_prefix_does_not_match_a_different_word(self):
+        # "photoelectric" and "photons" share a prefix but are not the same term — no match
+        self.assertFalse(b.semantic_match("a granular explanation of the photoelectric threshold",
+                                           "light is made of quanta (photons)"))
 
     def test_rejects_an_unrelated_candidate(self):
         self.assertFalse(b.semantic_match("a new long-range force",

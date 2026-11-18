@@ -57,12 +57,17 @@ def run_arm(arm: str, generator: Generator, suite: str, dataset: dict) -> ArmRes
     for name, d in dataset.items():
         r.problems += 1
         cands = generator(d["pre"])          # blind: only the pre-state
+        first_rank = None
+        matches = 0
         for i, c in enumerate(cands):
             if semantic_match(c, d["jump"]):
-                r.found += 1
-                r.total_rank += i + 1
-            else:
-                r.false_positives += 1
+                matches += 1
+                if first_rank is None:
+                    first_rank = i + 1
+        if first_rank is not None:           # recall counts a PROBLEM once, at its first hit
+            r.found += 1
+            r.total_rank += first_rank
+        r.false_positives += len(cands) - matches
     return r
 
 
@@ -77,17 +82,17 @@ def _tokens(s: str) -> set[str]:
 
 
 def semantic_match(candidate: str, jump: str) -> bool:
-    """Does the candidate express the jump? Share at least one distinctive stem.
+    """Does the candidate recall the jump's key term? A shared FULL content word.
 
-    Exact string equality under-measures a real generator, which paraphrases ("quantization of
-    electromagnetic fields" vs "energy is quantised"). A match is one shared 5-character stem
-    (tolerates quantised/quantization and photon/photons), which is enough to say the candidate
-    recalled the jump's key term; false positives are still counted by the harness.
+    A real generator paraphrases, so exact string equality under-measures it. But prefix stemming
+    over-matches ("photoelectric" vs "photons"). A shared full word (>= 4 chars, not a stopword) is
+    the honest middle: it credits the recall of a key term without the false positives of stemming.
+    This is a LOWER bound on discovery; paraphrases that share no word still under-count.
     """
     jt, ct = _tokens(jump), _tokens(candidate)
     if not jt or not ct:
         return candidate.strip().lower() == jump.strip().lower()
-    return any(j[:5] == c[:5] for j in jt for c in ct if len(j) >= 5 and len(c) >= 5)
+    return any(j in ct for j in jt)
 
 
 def compare(arms: dict[str, Generator], suite: str, dataset: dict) -> list[ArmResult]:
