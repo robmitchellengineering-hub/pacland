@@ -196,6 +196,16 @@ def mean_brier(forecasts: list[tuple[float, bool]]) -> float:
     return sum(brier_score(p, t) for p, t in forecasts) / len(forecasts)
 
 
+def shrink_prior(prior: float, strength: float = 0.5) -> float:
+    """Shrink a prior toward 0.5 by ``strength`` (0 = uninformative, 1 = unchanged).
+
+    The belief layer's priors were measured overconfident (mean Brier 0.41 against the 0.25 skill
+    floor), so EIG ranking over-trusts them. Shrink before trusting a prior: ``p' = 0.5 + s*(p - 0.5)``.
+    Re-calibrate ``strength`` from a real (probability, truth) record once one exists.
+    """
+    return 0.5 + strength * (prior - 0.5)
+
+
 def rank_by_eig(beliefs: list[Belief]) -> list[tuple[str, float]]:
     """Rank hypotheses by ``EIG / cost`` (descending), refusing outside Mode C."""
     require_convergence(detect_mode(beliefs).mode)
