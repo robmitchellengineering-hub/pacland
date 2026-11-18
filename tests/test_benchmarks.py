@@ -78,6 +78,18 @@ class TestCampaignBC(unittest.TestCase):
         self.assertEqual(proposals, ["proposal one", "proposal two"])
 
 
+class TestDatasetSanity(unittest.TestCase):
+    def test_isospin_prestate_does_not_leak_the_answer(self):
+        pre = b.DATASET["isospin"]["pre"].lower()
+        self.assertNotIn("isospin", pre)
+        self.assertNotIn("yang", pre)
+        self.assertNotIn("gauge", pre)
+
+    def test_no_near_duplicate_spectra_problem(self):
+        self.assertNotIn("mercury-lines", b.DATASET)
+        self.assertIn("ampere-maxwell", b.DATASET)
+
+
 class TestJudge(unittest.TestCase):
     def test_judge_credits_a_paraphrase(self):
         cands = ["photons carry energy in discrete packets", "a new long-range force"]

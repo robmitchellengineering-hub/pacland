@@ -33,9 +33,9 @@ DATASET = {
     "atomic-spectra": {"pre": "atomic spectra are discrete, not continuous", "jump": "electron orbits are quantised (Bohr)"},
     "beta-decay":     {"pre": "beta decay appears to violate energy conservation", "jump": "a missing neutral particle (the neutrino)"},
     "zeeman":         {"pre": "the anomalous Zeeman effect shows half-integer splittings", "jump": "the electron has intrinsic spin"},
-    "isospin":        {"pre": "strong interactions preserve isospin but not locality", "jump": "non-abelian gauge symmetry (Yang-Mills)"},
+    "isospin":        {"pre": "the proton and neutron interact almost identically under the strong force, as if symmetric under exchange", "jump": "non-abelian gauge symmetry (Yang-Mills)"},
     "weak-em":        {"pre": "weak and electromagnetic couplings look unrelated at low energy", "jump": "electroweak unification"},
-    "mercury-lines":  {"pre": "the discrete spectrum cannot be explained by classical orbits", "jump": "matrix mechanics / quantum jumps"},
+    "ampere-maxwell": {"pre": "an electric current deflects a nearby compass needle", "jump": "moving charges generate magnetic fields (electromagnetism)"},
 }
 
 # Campaign B — known-solution problems across other disciplines (validate, not just physics).

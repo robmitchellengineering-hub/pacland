@@ -9,6 +9,7 @@ from pacland.belief import (
     ModeRefusal,
     bayes_factor,
     brier_score,
+    brier_skill,
     detect_mode,
     discriminating_eig,
     eig,
@@ -259,6 +260,19 @@ class TestShrinkPrior(unittest.TestCase):
     def test_half_shrink_pulls_toward_half(self):
         self.assertAlmostEqual(shrink_prior(0.9, 0.5), 0.7)
         self.assertAlmostEqual(shrink_prior(0.1, 0.5), 0.3)
+
+
+class TestBrierSkill(unittest.TestCase):
+    def test_constant_half_is_no_skill(self):
+        # always forecasting 0.5 scores 0.25 Brier, so skill is 0 — not 1
+        self.assertAlmostEqual(brier_skill([(0.5, True), (0.5, False)]), 0.0)
+
+    def test_perfect_is_skill_one(self):
+        self.assertAlmostEqual(brier_skill([(1.0, True), (0.0, False)]), 1.0)
+
+    def test_overconfidence_is_negative_skill(self):
+        # forecast 0.9, truth False -> (0.9)^2 = 0.81 per miss; mean 0.405 -> negative skill
+        self.assertLess(brier_skill([(0.9, False), (0.9, False)]), 0.0)
 
 
 if __name__ == "__main__":
