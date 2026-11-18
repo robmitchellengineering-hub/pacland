@@ -1075,11 +1075,11 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
             seq = challenges.run_sequence(challenges.Candidate(
                 name=c.id, hypothesis=c.statement, falsifier=c.falsifier))
             stage_verdicts = {r.name: r.verdict for r in seq}
-            if ran and survived:
+            if ran and survived is True:
                 proof = prove_and_record(c, evidence)
                 round_out["survivors"].append({"statement": c.statement, "proof": proof,
                                                "challenges": stage_verdicts})
-            elif ran and not survived:
+            elif ran and survived is False:
                 round_out["proposals"].append({"statement": c.statement, "verdict": "falsified",
                                                "evidence": evidence, "challenges": stage_verdicts})
             else:

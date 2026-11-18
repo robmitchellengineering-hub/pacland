@@ -226,6 +226,17 @@ class TestAutonomousLoop(unittest.TestCase):
         self.assertEqual(len(out["rounds"][0]["survivors"]), 1)
         self.assertIn("run_id", out)
 
+    def test_an_approximate_verdict_is_open_not_falsified(self):
+        # survived=None means "approximate test, not a definitive survive/falsify" — it must not be
+        # counted as falsified.
+        cand = self._candidate("a hypothesis")
+        with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
+            with mock.patch.object(runner, "_falsify", return_value=(True, None, "APPROXIMATE")):
+                out = runner.run_autonomous("mass-gap")
+        r = out["rounds"][0]
+        self.assertEqual(len(r["proposals"]), 0)  # not counted as falsified
+        self.assertEqual(len(r["open"]), 1)
+
     def test_lean_bridge_rejects_a_different_proposition(self):
         with mock.patch.object(runner, "_ask_llm", return_value="NO"):
             ok = runner._lean_matches_hypothesis("theorem wrong : 1 = 2", "the mass gap is positive",
