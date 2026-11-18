@@ -306,6 +306,30 @@ CATALOG: dict[str, dict] = {
         "verdict": "FORCED",
         "why": "the trivial connection's gauge orbit is a flat direction that is gauge, not physics — quotient by it before running the spectral machinery. Use when a 'ceiling' sits on the gauge orbit: remove the flat directions first.",
     },
+    "perfect-code-distance": {
+        "claim": "the 5-qubit [[5,1,3]] code has distance ≥ 3 — no single- or two-qubit subsystem carries a stabilizer",
+        "theorem": "QM.PerfectTensor.code_min_weight",
+        "falsifier": "a weight ≤ 2 element of the code stabilizer group",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "every non-identity product of the 4 code stabilizers (X Z Z X I, I X Z Z X, X I X Z Z, Z X I X Z) has weight 4 — the algebraic core of the code's 2-erasure-correcting property.",
+    },
+    "code-ame52": {
+        "claim": "the [[5,1,3]] code state (logical Z fixed) is AME(5,2) — every 2-qubit reduction is maximally mixed",
+        "theorem": "QM.PerfectTensor.code_state_ame52",
+        "falsifier": "a weight ≤ 2 element of the fixed-state stabilizer group (code stabilizers + Z_L)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "every non-identity element of the 5-generator fixed-state group has weight ≥ 3, so no 2-qubit subsystem carries a stabilizer — the stabilizer form of AME(5,2): the 5 code qubits are maximally entangled across any 2 | 3 split.",
+    },
+    "happ-perfect-tensor": {
+        "claim": "the 5-qubit [[5,1,3]] code coupled to a reference qubit is a perfect tensor (AME(6,3)) — every 3-qubit subsystem is maximally mixed",
+        "theorem": "QM.PerfectTensor.happy_is_perfect_tensor",
+        "falsifier": "a 3-qubit subsystem of the HaPPY hexagon carrying a stabilizer (a weight ≤ 3 group element)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "every non-identity element of the 6-generator group (code stabilizers + Z_L⊗Z + X_L⊗X) has weight ≥ 4, so no 3-leg subsystem carries a stabilizer — the stabilizer form of 'every 3-party reduction is maximally mixed', i.e. the smallest perfect tensor / HaPPY building block (discrete Ryu–Takayanagi: the cut of min(|A|,6−|A|) legs is saturated).",
+    },
 
 }
 
