@@ -352,9 +352,12 @@ def llm_generator(pre: str) -> list[str]:
 
 def _judge_config() -> tuple[str, str, str]:
     """The judge's endpoint/key/model. A model DISTINCT from the generator is the honest choice
-    (otherwise the judge grades its own homework); fall back to the generator's model if unset."""
-    endpoint, key, gen_model = _llm_config()
-    model = os.environ.get("SEXTANT_JUDGE_MODEL", "") or gen_model
+    (otherwise the judge grades its own homework); the endpoint and key can also differ (e.g. the
+    judge lives on the ROG's Ollama while the generator is DeepSeek). Falls back to the generator's
+    endpoint/model only when unset."""
+    endpoint = os.environ.get("SEXTANT_JUDGE_ENDPOINT", "") or _llm_config()[0]
+    key = os.environ.get("SEXTANT_JUDGE_KEY", "") or _llm_config()[1]
+    model = os.environ.get("SEXTANT_JUDGE_MODEL", "") or _llm_config()[2]
     return endpoint, key, model
 
 
@@ -372,17 +375,15 @@ def judge_matches(cands: list[str], jump: str) -> list[bool]:
     """Semantic equivalence judge: one LLM call per problem, returning a bool per candidate.
 
     Credits paraphrases that share no word (which full-word match under-counts). Falls back to the
-    full-word matcher when no judge model is configured or the call fails.
+    full-word matcher ONLY when no judge model is configured; if a judge IS configured and the call
+    fails, it raises — a silently weaker judge would be a dishonest measurement.
     """
     endpoint, key, model = _judge_config()
     if not model:
         return _full_word_matcher(cands, jump)
     prompt = _JUDGE_PROMPT.format(
         jump=jump, candidates="\n".join(f"{i}. {c}" for i, c in enumerate(cands)))
-    try:
-        text = _ask_llm(prompt, endpoint, key, model)
-    except Exception:
-        return _full_word_matcher(cands, jump)
+    text = _ask_llm(prompt, endpoint, key, model)  # raises on failure — no silent fallback
     idxs = {int(x) for x in __import__("re").findall(r"\d+", text)}
     return [i in idxs for i in range(len(cands))]
 
@@ -450,7 +451,17 @@ def judge_report() -> dict:
 
 def judged_compare(arms: dict[str, Generator], suite: str, dataset: dict) -> list[ArmResult]:
     """Compare arms with LLM-judged recall (semantic equivalence) instead of full-word match."""
+    _require_distinct_judge()
     return [run_arm(name, gen, suite, dataset, matcher=judge_matches) for name, gen in arms.items()]
+
+
+def _require_distinct_judge() -> None:
+    """A judged measurement must use a judge model DISTINCT from the generator, or it is the model
+    grading its own homework. Refuse, rather than silently measure with the same model."""
+    if not judge_is_distinct():
+        raise RuntimeError(
+            "the judge model is not distinct from the generator — set SEXTANT_JUDGE_MODEL "
+            "(and SEXTANT_JUDGE_ENDPOINT if it lives elsewhere) to a different model")
 
 
 # ----------------------------------------------------------------------------
@@ -483,7 +494,11 @@ def run_campaign(name: str, generator: Generator, dataset: dict | None = None,
     camp = CAMPAIGNS[name]
     data = dataset or camp["dataset"]
     arms = {"untyped-baseline": untyped_generator, "llm": generator}
-    matcher = judge_matches if judged else _full_word_matcher
+    if judged:
+        _require_distinct_judge()
+        matcher = judge_matches
+    else:
+        matcher = _full_word_matcher
     return [run_arm(n, g, camp["suite"], data, matcher=matcher) for n, g in arms.items()]
 
 

@@ -37,7 +37,7 @@ class TestCampaigns(unittest.TestCase):
         self.assertIn("frontier", b.CAMPAIGNS["C"]["purpose"].lower())
 
     def test_run_campaign_compares_against_the_baseline(self):
-        results = b.run_campaign("A", b.five_jump_generator)
+        results = b.run_campaign("A", b.five_jump_generator, judged=False)
         arms = {r.arm for r in results}
         self.assertIn("untyped-baseline", arms)
         self.assertIn("llm", arms)
@@ -66,7 +66,7 @@ class TestSemanticMatch(unittest.TestCase):
 class TestCampaignBC(unittest.TestCase):
     def test_campaign_b_has_a_cross_discipline_dataset(self):
         self.assertGreaterEqual(len(b.B_DATASET), 5)
-        results = b.run_campaign("B", b.untyped_generator)
+        results = b.run_campaign("B", b.untyped_generator, judged=False)
         self.assertEqual({r.arm for r in results}, {"untyped-baseline", "llm"})
 
     def test_campaign_c_is_the_open_frontier(self):
@@ -133,6 +133,12 @@ class TestPairedSeedsAndCutoff(unittest.TestCase):
                 self.assertTrue(b.judge_is_distinct())
             with mock.patch.object(b, "_judge_config", return_value=("http://x/v1", "", "gen")):
                 self.assertFalse(b.judge_is_distinct())
+
+    def test_judged_run_refuses_a_non_distinct_judge(self):
+        with mock.patch.object(b, "_llm_config", return_value=("http://x/v1", "", "gen")):
+            with mock.patch.object(b, "_judge_config", return_value=("http://x/v1", "", "gen")):
+                with self.assertRaises(RuntimeError):
+                    b.run_campaign("A", b.untyped_generator, judged=True)
 
     def test_measure_independent_reports_all_three_suites(self):
         with mock.patch.object(b, "run_campaign") as rc:

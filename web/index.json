@@ -2538,6 +2538,13 @@
    "title": "measure_covariance_table.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_distinct.py",
+   "kind": "script",
+   "path": "scripts/measure_distinct.py",
+   "summary": "Honest measurement: DeepSeek generates, the ROG's qwen2.5:7b judges (a distinct model).",
+   "title": "measure_distinct.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_elimination_curve.py",
    "kind": "script",
    "path": "scripts/measure_elimination_curve.py",
@@ -2844,6 +2851,13 @@
    "path": "scripts/run_frontier_massgap.py",
    "summary": "One frontier run: the mass gap (Campaign C). The LLM proposes, SEXTANT falsifies, report survivors.",
    "title": "run_frontier_massgap.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/run_massgap.py",
+   "kind": "script",
+   "path": "scripts/run_massgap.py",
+   "summary": "One full frontier pass of the automated machine on the Yang-Mills mass gap.",
+   "title": "run_massgap.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_ds_test.py",

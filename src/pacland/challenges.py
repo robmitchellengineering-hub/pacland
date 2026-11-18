@@ -67,6 +67,64 @@ def _import_sextant():
         return None, None
 
 
+def _judge_config() -> tuple[str, str, str]:
+    """The model-judge's endpoint/key/model (same env as the LLM generator)."""
+    import os
+
+    return (os.environ.get("SEXTANT_LLM_ENDPOINT", "http://localhost:11434/v1"),
+            os.environ.get("SEXTANT_LLM_KEY", ""),
+            os.environ.get("SEXTANT_LLM_MODEL", ""))
+
+
+def _ask_judge(prompt: str) -> str | None:
+    """One LLM call for a model-judged challenge; None when no model is configured."""
+    import json
+    import urllib.request
+
+    endpoint, key, model = _judge_config()
+    if not model:
+        return None
+    body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}]}).encode()
+    headers = {"Content-Type": "application/json"}
+    if key:
+        headers["Authorization"] = f"Bearer {key}"
+    req = urllib.request.Request(endpoint.rstrip("/") + "/chat/completions", data=body, headers=headers)
+    with urllib.request.urlopen(req, timeout=120) as resp:
+        return json.loads(resp.read())["choices"][0]["message"]["content"].strip()
+
+
+def _model_judge(stage: str, hypothesis: str, assumptions: list[str] | None = None) -> tuple[str, str]:
+    """Run one model-judged challenge. Returns ``(verdict, evidence)``; INCONCLUSIVE when no judge."""
+    prompts = {
+        "logical-consistency": (
+            "Does this hypothesis contradict itself? Answer exactly INTERNALLY CONSISTENT or "
+            "CONTRADICTORY.\n\nHypothesis: " + hypothesis),
+        "assumption-audit": (
+            "Are the assumptions of this hypothesis justified, hidden, or circular? Answer exactly "
+            "JUSTIFIED, HIDDEN, or CIRCULAR.\n\nHypothesis: " + hypothesis
+            + "\nAssumptions: " + (", ".join(assumptions) if assumptions else "not recorded")),
+        "alternative-explanation": (
+            "Could an existing, established theory explain this more simply than the hypothesis does? "
+            "Answer exactly YES or NO.\n\nHypothesis: " + hypothesis),
+    }
+    if stage not in prompts:
+        return "INCONCLUSIVE", "unknown stage"
+    answer = _ask_judge(prompts[stage])
+    if answer is None:
+        return "INCONCLUSIVE", "no judge model configured (set SEXTANT_LLM_MODEL)"
+    up = answer.upper()
+    if stage == "logical-consistency":
+        verdict = ("PASS" if "CONSISTENT" in up and "CONTRA" not in up else
+                   "FAIL" if "CONTRA" in up else "INCONCLUSIVE")
+    elif stage == "assumption-audit":
+        verdict = ("PASS" if "JUSTIFIED" in up else
+                   "FAIL" if "HIDDEN" in up or "CIRCULAR" in up else "INCONCLUSIVE")
+    else:  # alternative-explanation
+        verdict = ("FAIL" if up.startswith("YES") else
+                   "PASS" if up.startswith("NO") else "INCONCLUSIVE")
+    return verdict, f"judge: {answer[:120]}"
+
+
 def _lean_check(theorem: str) -> tuple[str, str]:
     """Mechanical formal-verification check: is the theorem present + free of sorry in the tower?"""
     if not theorem:
@@ -108,10 +166,11 @@ def run_sequence(c: Candidate) -> list[ChallengeResult]:
     def add(name, kind, verdict, evidence):
         results.append(ChallengeResult(name, kind, verdict, evidence))
 
-    # 1-2: model-judged — honest stubs
-    add("logical-consistency", "model-judged", "INCONCLUSIVE", "needs a judge (model) — not mechanical")
-    add("assumption-audit", "model-judged", "INCONCLUSIVE",
-        "needs a judge; assumptions " + (", ".join(c.assumptions) if c.assumptions else "not recorded"))
+    # 1-2: model-judged — a real LLM judge (INCONCLUSIVE only when no judge is configured)
+    v, ev = _model_judge("logical-consistency", c.hypothesis)
+    add("logical-consistency", "model-judged", v, ev)
+    v, ev = _model_judge("assumption-audit", c.hypothesis, c.assumptions)
+    add("assumption-audit", "model-judged", v, ev)
 
     # 3: known-results — mechanical (does it name a FORCED claim and try to invert it?)
     if sextant is not None:
@@ -148,8 +207,9 @@ def run_sequence(c: Candidate) -> list[ChallengeResult]:
     else:
         add("counterexample-search", "mechanical", "NOT_APPLICABLE", "no registered falsifier")
 
-    # 6: model-judged — honest stub
-    add("alternative-explanation", "model-judged", "INCONCLUSIVE", "needs a judge (model)")
+    # 6: model-judged — a real LLM judge
+    v, ev = _model_judge("alternative-explanation", c.hypothesis)
+    add("alternative-explanation", "model-judged", v, ev)
 
     # 7: reproducibility — mechanical (run the falsifier twice, require determinism)
     if phantom is not None and c.name in getattr(phantom, "FALSIFIERS", {}):

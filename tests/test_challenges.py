@@ -38,5 +38,32 @@ class TestLeanCheck(unittest.TestCase):
         self.assertIn("not declared", ev)
 
 
+class TestModelJudge(unittest.TestCase):
+    def test_logical_consistency_passes_when_consistent(self):
+        with mock.patch.object(ch, "_ask_judge", return_value="INTERNALLY CONSISTENT"):
+            v, ev = ch._model_judge("logical-consistency", "a hypothesis")
+        self.assertEqual(v, "PASS")
+
+    def test_logical_consistency_fails_when_contradictory(self):
+        with mock.patch.object(ch, "_ask_judge", return_value="CONTRADICTORY"):
+            v, ev = ch._model_judge("logical-consistency", "a hypothesis")
+        self.assertEqual(v, "FAIL")
+
+    def test_is_inconclusive_without_a_judge(self):
+        with mock.patch.object(ch, "_ask_judge", return_value=None):
+            v, ev = ch._model_judge("alternative-explanation", "a hypothesis")
+        self.assertEqual(v, "INCONCLUSIVE")
+
+    def test_run_sequence_uses_the_judge_for_model_stages(self):
+        with mock.patch.object(ch, "_import_sextant", return_value=(None, None)):
+            with mock.patch.object(ch, "_ask_judge",
+                                   side_effect=["INTERNALLY CONSISTENT", "JUSTIFIED", "NO"]):
+                results = ch.run_sequence(ch.Candidate("bare", "some hypothesis"))
+        verdicts = {r.name: r.verdict for r in results}
+        self.assertEqual(verdicts["logical-consistency"], "PASS")
+        self.assertEqual(verdicts["assumption-audit"], "PASS")
+        self.assertEqual(verdicts["alternative-explanation"], "PASS")  # NO -> no simpler theory
+
+
 if __name__ == "__main__":
     unittest.main()
