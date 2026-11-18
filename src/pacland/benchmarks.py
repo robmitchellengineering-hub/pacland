@@ -227,10 +227,11 @@ def _judge_config() -> tuple[str, str, str]:
 
 _JUDGE_PROMPT = (
     "Withheld answer: {jump}\n\nCandidates:\n{candidates}\n\n"
-    "Which candidates state the SAME specific claim as the withheld answer? The answer is a NOVEL "
-    "discovery; a candidate that merely restates the premise or describes the observation does NOT "
-    "match. Only mark a candidate that expresses the same new idea. Answer ONLY as a comma-separated "
-    "list of the indices that match, or NONE."
+    "For each candidate, decide whether it asserts the SAME discovery as the withheld answer. "
+    "Two statements are the same discovery if one is a paraphrase of the other — the same idea, "
+    "possibly in different words, with or without the same terms. It does NOT match if it merely "
+    "restates the premise/observation, or if it asserts a DIFFERENT hypothesis. Answer ONLY as a "
+    "comma-separated list of the indices that match, or NONE."
 )
 
 
@@ -251,6 +252,64 @@ def judge_matches(cands: list[str], jump: str) -> list[bool]:
         return _full_word_matcher(cands, jump)
     idxs = {int(x) for x in __import__("re").findall(r"\d+", text)}
     return [i in idxs for i in range(len(cands))]
+
+
+# ----------------------------------------------------------------------------
+# Judge calibration: a labeled equivalence set, so the judge's strictness is MEASURED, not a dial.
+# ----------------------------------------------------------------------------
+
+# (candidate, jump, expected) — expected True means "same specific claim" (a paraphrase), False means
+# a premise restatement or a different hypothesis. This is the ground truth the judge is scored against.
+JUDGE_CALIBRATION = [
+    # paraphrases of the jump (expected YES)
+    ("radiant energy is emitted in discrete packets", "energy is quantised, E = h nu", True),
+    ("light consists of individual quanta", "light is made of quanta (photons)", True),
+    ("mass curves spacetime, changing planetary trajectories", "gravity is spacetime curvature (GR)", True),
+    ("the speed of light is identical in every inertial frame", "Lorentz invariance (special relativity)", True),
+    ("electrons can occupy only discrete orbits", "electron orbits are quantised (Bohr)", True),
+    ("an unseen neutral particle carries away the missing energy", "a missing neutral particle (the neutrino)", True),
+    ("the electron carries an intrinsic angular momentum", "the electron has intrinsic spin", True),
+    ("the strong force is a non-commutative gauge field", "non-abelian gauge symmetry (Yang-Mills)", True),
+    ("electromagnetism and the weak force merge at high energy", "electroweak unification", True),
+    ("observables are represented by non-commuting operators", "matrix mechanics / quantum jumps", True),
+    # premise restatements and different hypotheses (expected NO)
+    ("the blackbody spectrum diverges at short wavelength", "energy is quantised, E = h nu", False),
+    ("the photoelectric threshold depends on frequency", "light is made of quanta (photons)", False),
+    ("a hidden planet named Vulcan perturbs Mercury's orbit", "gravity is spacetime curvature (GR)", False),
+    ("the aether drag slows light near the Earth", "Lorentz invariance (special relativity)", False),
+    ("atoms are solid indivisible spheres", "electron orbits are quantised (Bohr)", False),
+    ("the beta decay spectrum is continuous", "a missing neutral particle (the neutrino)", False),
+    ("magnetic fields split spectral lines", "the electron has intrinsic spin", False),
+    ("particles interact by exchanging virtual photons", "non-abelian gauge symmetry (Yang-Mills)", False),
+    ("gravity and electromagnetism unify into one force", "electroweak unification", False),
+    ("the atom is a miniature solar system", "matrix mechanics / quantum jumps", False),
+]
+
+
+def judge_report() -> dict:
+    """Score the judge on the labeled equivalence set: precision, recall, accuracy, and the matrix.
+
+    A calibrated judge has high precision (its YES calls are right) AND high recall (it catches the
+    true paraphrases). This is the measurement that replaces the judge's free strictness dial.
+    """
+    tp = fp = tn = fn = 0
+    for cand, jump, expected in JUDGE_CALIBRATION:
+        got = judge_matches([cand], jump)[0]
+        if got and expected:
+            tp += 1
+        elif got and not expected:
+            fp += 1
+        elif not got and not expected:
+            tn += 1
+        else:
+            fn += 1
+    n = tp + fp + tn + fn
+    return {
+        "tp": tp, "fp": fp, "tn": tn, "fn": fn,
+        "precision": tp / max(tp + fp, 1),
+        "recall": tp / max(tp + fn, 1),
+        "accuracy": (tp + tn) / max(n, 1),
+    }
 
 
 def judged_compare(arms: dict[str, Generator], suite: str, dataset: dict) -> list[ArmResult]:
