@@ -1,6 +1,6 @@
 # The discovery engine — architecture (first-class component)
 
-The engine is `src/pacland/discovery_engine.py`. It is NOT the five jump types; those are ONE search
+The engine is `src/pacland/runner.py` (the `DiscoveryEngine` class, folded from the former standalone file). It is NOT the five jump types; those are ONE search
 strategy inside it.
 
 ## Design principles
