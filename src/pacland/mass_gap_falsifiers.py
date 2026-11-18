@@ -113,22 +113,35 @@ def verify_universality(betas=(2.4, 2.6), d=4, Ns=(4, 6)) -> tuple[bool, str]:
 
 
 def verify_large_n_ratio(beta: float = 2.5, N: int = 4, n_sweeps: int = 8,
-                         n_meas: int = 6) -> tuple[bool, str]:
-    """'The mass gap is nonzero for all N with a universal ratio to the string tension': compare the
-    SU(2) vs SU(3) string tension. Both nonzero => the mass gap exists for N=2,3 (consistent with the
-    claim). The universal RATIO itself still needs an SU(3) glueball mass (only SU(2) exists), so this
-    is a first probe of the 'nonzero for all N' part, not the ratio part.
+                         n_meas: int = 30) -> tuple[bool, str]:
+    """'The mass gap is nonzero for all N with a universal ratio to the string tension': compute the
+    RG-invariant ratio m/sqrt(sigma) for SU(2) and SU(3) and check they agree (universality in N).
+
+    Both ratios being close is consistent with a universal ratio; a large gap between them refutes the
+    'universal ratio' part. A first probe at one coupling; a real test needs the weak-coupling plateau.
     """
+    import math
+
+    from pacland import glueball as g2
+    from pacland import glueball_su3 as g3
     from pacland import lattice_ym_su2 as su2
     from pacland import lattice_ym_su3 as su3
 
     sig2 = su2.measure_string_tension(beta, d=4, N=N, n_sweeps=n_sweeps, seed=0)
     sig3 = su3.measure_string_tension(beta, d=4, N=N, n_sweeps=n_sweeps, n_meas=n_meas, seed=0)
-    both = sig2 > 1e-6 and sig3 > 1e-6
-    verdict = ("both SU(2) and SU(3) have a nonzero string tension — consistent with 'nonzero for all N'"
-               if both else "one gauge group shows a vanishing tension — the 'nonzero for all N' claim is refuted")
-    return both, (f"SU(2) σ={sig2:.4f}, SU(3) σ={sig3:.4f} → {verdict}; "
-                  "the universal RATIO still needs an SU(3) glueball mass (not built)")
+    m2 = g2.glueball_mass(beta, N=N, n_sweeps=n_sweeps, n_meas=n_meas, seed=0)
+    m3 = g3.glueball_mass_su3(beta, N=N, n_sweeps=n_sweeps, n_meas=n_meas, seed=0)
+    ratio2 = m2 / math.sqrt(max(sig2, 1e-9))
+    ratio3 = m3 / math.sqrt(max(sig3, 1e-9))
+    both_positive = m2 > 0 and m3 > 0 and sig2 > 0 and sig3 > 0
+    universal = _converged(ratio2, ratio3, tol=0.4)
+    survived = both_positive and universal
+    verdict = ("SU(2) and SU(3) ratios m/sqrt(sigma) agree — consistent with a universal ratio"
+               if universal else "the ratios differ materially — the 'universal ratio' claim is refuted")
+    if not both_positive:
+        verdict = "one group's mass/tension is non-positive — the ratio cannot be formed (unresolved)"
+    return survived, (f"SU(2) m/√σ={ratio2:.3f} (m={m2:.3f}, σ={sig2:.3f}), "
+                      f"SU(3) m/√σ={ratio3:.3f} (m={m3:.3f}, σ={sig3:.3f}) → {verdict}")
 
 
 def verify_polyakov_clustering(beta: float = 5.0, Nt: int = 2, Ns: int = 6, n_sweeps: int = 10,
