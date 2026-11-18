@@ -40,7 +40,7 @@ def main() -> int:
         return 1
 
     bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
-                             bnb_4bit_compute_dtype=torch.bfloat16)
+                             bnb_4bit_compute_dtype=torch.float16)
     model = AutoModelForCausalLM.from_pretrained(args.model, quantization_config=bnb,
                                                  device_map="auto")
     model = prepare_model_for_kbit_training(model)
