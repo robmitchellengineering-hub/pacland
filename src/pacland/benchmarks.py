@@ -38,6 +38,20 @@ DATASET = {
     "mercury-lines":  {"pre": "the discrete spectrum cannot be explained by classical orbits", "jump": "matrix mechanics / quantum jumps"},
 }
 
+# Campaign B — known-solution problems across other disciplines (validate, not just physics).
+B_DATASET = {
+    "continental-drift":  {"pre": "matching coastlines, fossils, and rock strata span now-separated continents", "jump": "plate tectonics: continents drift on moving plates"},
+    "stomach-ulcers":     {"pre": "peptic ulcers recur after acid suppression, and the stomach was thought sterile", "jump": "H. pylori bacteria cause most ulcers"},
+    "k-pg-extinction":    {"pre": "a global iridium spike marks the Cretaceous-Paleogene boundary", "jump": "an asteroid impact caused the mass extinction"},
+    "childbed-fever":     {"pre": "childbed fever deaths are far higher in the doctor clinic than home births", "jump": "hand disinfection prevents sepsis (germ theory)"},
+    "ozone-hole":         {"pre": "stratospheric ozone collapses over Antarctica every austral spring", "jump": "CFC chlorine catalytically destroys ozone"},
+}
+
+# Campaign C — the open frontier: no withheld answer, so no recall is possible. The engine proposes;
+# SEXTANT falsifies. This is the YM mass gap, the Clay problem.
+FRONTIER = ("does non-Abelian lattice Yang-Mills have a mass gap (exponential clustering) in the "
+            "continuum limit at weak coupling in d >= 4")
+
 # A generator maps the PRE-STATE (only) to a list of candidate hypotheses. It never sees the jump.
 Generator = Callable[[str], list[str]]
 
@@ -52,22 +66,25 @@ class ArmResult:
     false_positives: int = 0      # candidates that are not the jump
 
 
-def run_arm(arm: str, generator: Generator, suite: str, dataset: dict) -> ArmResult:
+Matcher = Callable[[list[str], str], list[bool]]
+
+
+def _full_word_matcher(cands: list[str], jump: str) -> list[bool]:
+    return [semantic_match(c, jump) for c in cands]
+
+
+def run_arm(arm: str, generator: Generator, suite: str, dataset: dict,
+            matcher: Matcher = _full_word_matcher) -> ArmResult:
     r = ArmResult(arm=arm, suite=suite)
     for name, d in dataset.items():
         r.problems += 1
         cands = generator(d["pre"])          # blind: only the pre-state
-        first_rank = None
-        matches = 0
-        for i, c in enumerate(cands):
-            if semantic_match(c, d["jump"]):
-                matches += 1
-                if first_rank is None:
-                    first_rank = i + 1
+        matched = matcher(cands, d["jump"])
+        first_rank = next((i + 1 for i, m in enumerate(matched) if m), None)
         if first_rank is not None:           # recall counts a PROBLEM once, at its first hit
             r.found += 1
             r.total_rank += first_rank
-        r.false_positives += len(cands) - matches
+        r.false_positives += len(cands) - sum(matched)
     return r
 
 
@@ -175,26 +192,83 @@ def llm_generator(pre: str) -> list[str]:
 
 
 # ----------------------------------------------------------------------------
+# The semantic judge — LLM-judged recall, so paraphrases are credited, not only shared words.
+# ----------------------------------------------------------------------------
+
+def _judge_config() -> tuple[str, str, str]:
+    """The judge's endpoint/key/model. A model DISTINCT from the generator is the honest choice
+    (otherwise the judge grades its own homework); fall back to the generator's model if unset."""
+    endpoint, key, gen_model = _llm_config()
+    model = os.environ.get("SEXTANT_JUDGE_MODEL", "") or gen_model
+    return endpoint, key, model
+
+
+_JUDGE_PROMPT = (
+    "Withheld answer: {jump}\n\nCandidates:\n{candidates}\n\n"
+    "Which candidates express the SAME hypothesis as the withheld answer (semantic equivalence, not "
+    "exact wording)? Answer ONLY as a comma-separated list of the indices that match, or NONE."
+)
+
+
+def judge_matches(cands: list[str], jump: str) -> list[bool]:
+    """Semantic equivalence judge: one LLM call per problem, returning a bool per candidate.
+
+    Credits paraphrases that share no word (which full-word match under-counts). Falls back to the
+    full-word matcher when no judge model is configured or the call fails.
+    """
+    endpoint, key, model = _judge_config()
+    if not model:
+        return _full_word_matcher(cands, jump)
+    prompt = _JUDGE_PROMPT.format(
+        jump=jump, candidates="\n".join(f"{i}. {c}" for i, c in enumerate(cands)))
+    try:
+        text = _ask_llm(prompt, endpoint, key, model)
+    except Exception:
+        return _full_word_matcher(cands, jump)
+    idxs = {int(x) for x in __import__("re").findall(r"\d+", text)}
+    return [i in idxs for i in range(len(cands))]
+
+
+def judged_compare(arms: dict[str, Generator], suite: str, dataset: dict) -> list[ArmResult]:
+    """Compare arms with LLM-judged recall (semantic equivalence) instead of full-word match."""
+    return [run_arm(name, gen, suite, dataset, matcher=judge_matches) for name, gen in arms.items()]
+
+
+# ----------------------------------------------------------------------------
 # G5 — campaigns: A (calibrate on known answers) -> B (validate on a dataset) -> C (frontier).
 # ----------------------------------------------------------------------------
 
 CAMPAIGNS = {
-    "A": {"suite": "historical-rediscovery",
+    "A": {"suite": "historical-rediscovery", "dataset": DATASET,
           "purpose": "calibrate on known answers, hidden — do this FIRST, never the YM mass gap"},
-    "B": {"suite": "known-solution",
-          "purpose": "validate on an established dataset with competing explanations (dataset TODO)"},
-    "C": {"suite": "open",
-          "purpose": "the frontier (YM mass gap) — only after A and B"},
+    "B": {"suite": "known-solution", "dataset": B_DATASET,
+          "purpose": "validate on an established cross-discipline dataset"},
+    "C": {"suite": "open", "dataset": None,
+          "purpose": "the frontier (YM mass gap) — proposals only, no withheld answer to recall"},
 }
 
 
-def run_campaign(name: str, generator: Generator, dataset: dict | None = None) -> list[ArmResult]:
-    """Run one campaign: the given generator against the untyped baseline, on that campaign's suite."""
+def run_campaign(name: str, generator: Generator, dataset: dict | None = None,
+                 judged: bool = False) -> list[ArmResult]:
+    """Run one campaign: the given generator against the untyped baseline, on that campaign's suite.
+
+    ``judged=True`` uses the LLM semantic judge for recall; the default is the deterministic full-word
+    match (a lower bound). Campaign C has no withheld answer, so use ``run_frontier`` instead.
+    """
     if name not in CAMPAIGNS:
         raise ValueError(f"unknown campaign {name!r}; known: {', '.join(CAMPAIGNS)}")
-    data = dataset or DATASET
+    if name == "C":
+        raise ValueError("campaign C is the open frontier — use run_frontier (no recall)")
+    camp = CAMPAIGNS[name]
+    data = dataset or camp["dataset"]
     arms = {"untyped-baseline": untyped_generator, "llm": generator}
-    return compare(arms, CAMPAIGNS[name]["suite"], data)
+    matcher = judge_matches if judged else _full_word_matcher
+    return [run_arm(n, g, camp["suite"], data, matcher=matcher) for n, g in arms.items()]
+
+
+def run_frontier(generator: Generator) -> list[str]:
+    """Campaign C: the open frontier. No withheld answer, so no recall — return the proposals."""
+    return generator(FRONTIER)
 
 
 if __name__ == "__main__":

@@ -772,9 +772,44 @@ class ProofGap(SearchStrategy):
                     "is the assumption load-bearing?", 1.5, 0.35) for g in gaps[:budget]]
 
 
+class LlmSearch(SearchStrategy):
+    """Propose hypotheses from an LLM (the real generator), then let SEXTANT falsify them.
+
+    The other strategies recombine what the catalog already holds; this one proposes NEW ideas from
+    the LLM. Each line is ``HYPOTHESIS | FALSIFIER``, which becomes a candidate the engine's falsifier
+    then runs. With no model configured it returns nothing (it must be able to refuse, not crash).
+    """
+
+    name = "llm-search"
+
+    def generate(self, problem: str, budget: int) -> list[Candidate]:
+        endpoint, key, model = _llm_config()
+        if not model:
+            return []
+        prompt = (
+            "You are a scientific hypothesis generator. Given the open problem below, propose up to "
+            f"{budget} falsifiable hypotheses, each with a falsifier. Output ONE per line as "
+            "'HYPOTHESIS | FALSIFIER' (a falsifier is the sentence that would make it wrong). "
+            "No numbering, no prose.\n\nProblem: " + problem
+        )
+        try:
+            text = _ask_llm(prompt, endpoint, key, model)
+        except Exception as e:  # noqa: BLE001 — an unreachable LLM must not crash the engine
+            return [_mk(problem, self.name, "llm",
+                        f"the LLM could not be reached ({type(e).__name__}) — no hypotheses proposed",
+                        "n/a", 0.0, 0.5)]
+        out: list[Candidate] = []
+        for line in text.splitlines():
+            if "|" in line:
+                hyp, fal = line.split("|", 1)
+                if hyp.strip():
+                    out.append(_mk(problem, self.name, "llm", hyp.strip(), fal.strip(), 2.0, 0.3))
+        return out[:budget]
+
+
 SEARCH_STRATEGIES: list[SearchStrategy] = [
     ConceptualJump(), MathematicalSearch(), ComputationalSearch(),
-    DatasetMining(), TheoryCombination(), ProofGap(),
+    DatasetMining(), TheoryCombination(), ProofGap(), LlmSearch(),
 ]
 
 
