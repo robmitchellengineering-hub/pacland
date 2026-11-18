@@ -621,14 +621,20 @@ def _falsify(candidate: Candidate) -> tuple[bool, bool | None, str]:
     SEXTANT catalog claim named in the statement. Returns ``(ran, survived, evidence)``; ``ran`` is
     False when there is no runnable falsifier (the frontier — named, not pretended)."""
     if candidate.test in FALSIFIERS:
-        survived, evidence = FALSIFIERS[candidate.test]()
-        return True, bool(survived), evidence
+        try:
+            survived, evidence = FALSIFIERS[candidate.test]()
+            return True, bool(survived), evidence
+        except Exception as e:  # noqa: BLE001 — a missing dependency (e.g. stim) means OPEN, not a crash
+            return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
     sextant, phantom = _import_sextant()
     if sextant is not None and phantom is not None:
         for name in sextant.CATALOG:
             if name in candidate.statement and name in phantom.FALSIFIERS:
-                ok, ev = phantom.FALSIFIERS[name]()
-                return True, bool(ok), ev
+                try:
+                    ok, ev = phantom.FALSIFIERS[name]()
+                    return True, bool(ok), ev
+                except Exception as e:  # noqa: BLE001 — same: missing dep => OPEN, not a crash
+                    return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
     return False, None, f"needs a falsifier (proposed: {candidate.falsifier})"
 
 

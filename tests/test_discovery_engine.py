@@ -31,6 +31,22 @@ class TestDiscoveryEngine(unittest.TestCase):
         runner.apply_kill_criteria(ks)
         self.assertFalse(ks.stopped)
 
+    def test_unavailable_falsifier_is_open_not_a_crash(self):
+        # a falsifier that needs a missing dependency (e.g. stim in CI) returns OPEN, not a raise
+        def _raises():
+            raise ImportError("No module named 'stim'")
+
+        runner.FALSIFIERS["__raises__"] = _raises
+        try:
+            c = runner.Candidate(id="x", statement="s", falsifier="f", strategy="st",
+                                 source_facts=(), test="__raises__")
+            ran, survived, evidence = runner._falsify(c)
+            self.assertFalse(ran)
+            self.assertIsNone(survived)
+            self.assertIn("unavailable", evidence)
+        finally:
+            runner.FALSIFIERS.pop("__raises__", None)
+
 
 # ----------------------------------------------------------------------------
 # Retrodiction: the typed five-question framework generates the true historical jump;
