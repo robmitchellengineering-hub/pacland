@@ -38,3 +38,38 @@ adoption are not separate products. They are one methodology applied to three su
 molecules, and beliefs. The world-changing part is not any single result. It is that the method —
 measure what a claim knows, refuse what it only asserts, and rank what to discover next — transfers
 from one field to the next unchanged.
+
+## The north star — an autonomous research system
+
+The full proposition is an autonomous system that:
+
+1. identifies unresolved questions,
+2. searches existing literature and datasets,
+3. identifies contradictions,
+4. generates alternative theories,
+5. transfers mathematical structures between disciplines,
+6. formalises promising hypotheses,
+7. attempts to disprove them,
+8. produces reproducible evidence,
+9. learns from failed experiments.
+
+That is a different proposition from an ordinary AI research assistant: an assistant *answers*;
+this would *discover*.
+
+**Where each stands (honest, 2026-11):**
+
+| capability | status | what exists |
+|---|---|---|
+| 1 identify unresolved questions | built (manual) | the hypothesis registry, decomposed into forced / open / candidates |
+| 2 search literature and datasets | not built | — |
+| 3 identify contradictions | partial | the falsifier/referee; the convergence-vs-pluralism detector |
+| 4 generate alternative theories | partial | the runner's generate (facts + strategy → candidate) |
+| 5 transfer structures across disciplines | partial | `what-transfers.md`; one methodology across three surfaces |
+| 6 formalise promising hypotheses | built | the Lean proof arm (361 theorems, no `sorry`) |
+| 7 attempt to disprove them | built | SEXTANT falsifiers + the certificate's refusal |
+| 8 produce reproducible evidence | built | the certificate + the deterministic ledger |
+| 9 learn from failed experiments | partial | the ratchet SOP; the belief ledger moves posteriors on evidence |
+
+The through-line is already visible: capabilities 6–8 are the **verification spine** (built); 1, 3,
+4, 9 are the **discovery loop** (partial); 2 and 5 are the **breadth frontier** (not built). The
+north star is to close the gap, in that order.
