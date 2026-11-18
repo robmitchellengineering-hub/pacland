@@ -47,5 +47,50 @@ class TestCampaigns(unittest.TestCase):
             b.run_campaign("Z", b.untyped_generator)
 
 
+class TestSemanticMatch(unittest.TestCase):
+    def test_accepts_a_paraphrase(self):
+        # "photons" is shared, so a paraphrase matches even though the string differs
+        self.assertTrue(b.semantic_match("photons have discrete energy packets",
+                                          "light is made of quanta (photons)"))
+
+    def test_prefix_does_not_match_a_different_word(self):
+        # "photoelectric" and "photons" share a prefix but are not the same term — no match
+        self.assertFalse(b.semantic_match("a granular explanation of the photoelectric threshold",
+                                           "light is made of quanta (photons)"))
+
+    def test_rejects_an_unrelated_candidate(self):
+        self.assertFalse(b.semantic_match("a new long-range force",
+                                          "energy is quantised, E = h nu"))
+
+
+class TestCampaignBC(unittest.TestCase):
+    def test_campaign_b_has_a_cross_discipline_dataset(self):
+        self.assertGreaterEqual(len(b.B_DATASET), 5)
+        results = b.run_campaign("B", b.untyped_generator)
+        self.assertEqual({r.arm for r in results}, {"untyped-baseline", "llm"})
+
+    def test_campaign_c_is_the_open_frontier(self):
+        with self.assertRaises(ValueError):
+            b.run_campaign("C", b.untyped_generator)
+
+    def test_run_frontier_returns_proposals(self):
+        proposals = b.run_frontier(lambda pre: ["proposal one", "proposal two"])
+        self.assertEqual(proposals, ["proposal one", "proposal two"])
+
+
+class TestJudge(unittest.TestCase):
+    def test_judge_credits_a_paraphrase(self):
+        cands = ["photons carry energy in discrete packets", "a new long-range force"]
+        with mock.patch.object(b, "_judge_config", return_value=("http://x/v1", "", "judge")):
+            with mock.patch.object(b, "_ask_llm", return_value="0"):
+                matched = b.judge_matches(cands, "light is made of quanta (photons)")
+        self.assertEqual(matched, [True, False])
+
+    def test_judge_falls_back_to_full_word_without_a_model(self):
+        with mock.patch.object(b, "_judge_config", return_value=("http://x/v1", "", "")):
+            matched = b.judge_matches(["photons and quanta"], "light is made of quanta (photons)")
+        self.assertEqual(matched, [True])
+
+
 if __name__ == "__main__":
     unittest.main()
