@@ -42,8 +42,8 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-ENGINE.md",
    "kind": "doc",
    "path": "docs/DISCOVERY-ENGINE.md",
-   "summary": "The engine is src/pacland/runner.py (the DiscoveryEngine class, folded from the former standalone file). It is NOT the five jump types; those are ONE search strategy inside it.",
-   "title": "The discovery engine \u2014 architecture (first-class component)"
+   "summary": "The engine is src/pacland/runner.py (the DiscoveryEngine class). It is an automated frontier discovery-and-proof machine: propose \u2192 falsify \u2192 challenge \u2192 prove \u2192 record \u2192 acquire, runnable\u2026",
+   "title": "The discovery engine \u2014 architecture and state"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-PROCESS.md",
@@ -1677,6 +1677,13 @@
    "title": "build_climate_charts.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_peft_dataset.py",
+   "kind": "script",
+   "path": "scripts/build_peft_dataset.py",
+   "summary": "Build the PEFT instruction dataset from the benchmark's (pre-state -> jump) pairs.",
+   "title": "build_peft_dataset.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_site_index.py",
    "kind": "script",
    "path": "scripts/build_site_index.py",
@@ -2300,6 +2307,13 @@
    "title": "find_flux_vacua.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fine_tune_peft.py",
+   "kind": "script",
+   "path": "scripts/fine_tune_peft.py",
+   "summary": "Fine-tune a local LLM on the discovery skill with QLoRA (HuggingFace PEFT + TRL).",
+   "title": "fine_tune_peft.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/glueball_mass.py",
    "kind": "script",
    "path": "scripts/glueball_mass.py",
@@ -2445,6 +2459,13 @@
    "path": "scripts/layout_check.py",
    "summary": "Check a room layout before a coverage map is drawn on it.",
    "title": "layout_check.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/live_measurement.py",
+   "kind": "script",
+   "path": "scripts/live_measurement.py",
+   "summary": "One live end-to-end measurement: independent decontaminated baselines + a frontier pass.",
+   "title": "live_measurement.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_explainer_pdf.py",

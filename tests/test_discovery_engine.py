@@ -187,6 +187,22 @@ class TestFalsifierRouting(unittest.TestCase):
         self.assertIsNone(survived)
         self.assertIn("unresolved", evidence)
 
+    def test_keyword_routed_falsifier_is_approximate_not_survived(self):
+        c = runner.Candidate(id="x", statement="the mass gap scales as sqrt(sigma)", falsifier="f",
+                             strategy="st", source_facts=(), test="")
+        def _fake_falsifier():
+            return True, "some related test passed"
+        with mock.patch.object(runner, "_falsifier_for_statement", return_value=_fake_falsifier):
+            ran, survived, evidence = runner._falsify(c)
+        self.assertTrue(ran)
+        self.assertIsNone(survived)  # approximate, not a definitive survive
+        self.assertIn("APPROXIMATE", evidence)
+
+    def test_mass_gap_scaling_referee_identity_is_not_a_survivor(self):
+        survived, evidence = runner.verify_mass_gap_scaling()
+        self.assertFalse(survived)  # no INDEPENDENT mechanism survives; AF is the referee itself
+        self.assertIn("REFEREE IDENTITY", evidence)
+
 
 class TestAutonomousLoop(unittest.TestCase):
     def _candidate(self, statement="a hypothesis", test=""):
@@ -208,6 +224,25 @@ class TestAutonomousLoop(unittest.TestCase):
                                        return_value={"ok": False, "recorded": True, "proof": "deferred"}):
                     out = runner.run_autonomous("mass-gap")
         self.assertEqual(len(out["rounds"][0]["survivors"]), 1)
+        self.assertIn("run_id", out)
+
+    def test_lean_bridge_rejects_a_different_proposition(self):
+        with mock.patch.object(runner, "_ask_llm", return_value="NO"):
+            ok = runner._lean_matches_hypothesis("theorem wrong : 1 = 2", "the mass gap is positive",
+                                                 "http://x", "", "m")
+        self.assertFalse(ok)
+
+    def test_lean_bridge_accepts_the_same_proposition(self):
+        with mock.patch.object(runner, "_ask_llm", return_value="YES"):
+            ok = runner._lean_matches_hypothesis("theorem", "the mass gap is positive",
+                                                 "http://x", "", "m")
+        self.assertTrue(ok)
+
+    def test_register_experiment_writes_a_run_id(self):
+        with mock.patch.object(runner, "EXPERIMENTS", runner.REPO_ROOT / "runs" / "test-exp.jsonl"):
+            run_id = runner.register_experiment("test", {"seed": 1}, {"recall": 0.5})
+        self.assertTrue(run_id)
+        self.assertEqual(len(run_id), 12)
 
 
 if __name__ == "__main__":

@@ -117,13 +117,33 @@ def acquire(statement: str, proof_dir: str | Path = "pacland-proof",
     }
 
 
+def validate_falsifier(code: str, statement: str) -> list[str]:
+    """A synthesized falsifier must ACTUALLY test the candidate, or it is rejected as vacuous.
+
+    Three independent checks: it must branch (be able to reject — a constant ``return True`` is
+    vacuous), it must reference the claim's key terms (test THAT claim, not something unrelated), and
+    it must not be a bare constant return. Returns a list of violations (empty = acceptable).
+    """
+    low = code.lower()
+    issues = []
+    if "return true" in low and not any(k in low for k in ("if", "else", "elif", ">", "<", "==")):
+        issues.append("returns True unconditionally (no branch)")
+    if not any(k in low for k in ("if", "else", "elif", ">", "<", "==", "assert", "abs", "diff",
+                                  "min", "max", "where", "all", "any", "compare", "tolerance")):
+        issues.append("no comparison or branch — it cannot reject anything")
+    terms = key_terms(statement, n=3)
+    if terms and not any(t in low for t in terms):
+        issues.append(f"does not reference the claim's key terms {terms}")
+    return issues
+
+
 def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str) -> dict:
-    """Turn a synthesized falsifier into an EXECUTABLE test, run it, and retry the hypothesis.
+    """Turn a synthesized falsifier into an EXECUTABLE test, validate it, run it, and retry.
 
     This closes the acquisition loop: acquire -> build (the LLM writes a Python ``falsifier()``
-    returning ``(bool, str)``) -> run it in a subprocess -> get a verdict. The verdict is honest —
-    it is from a SYNTHESIZED falsifier (LLM-written, not a vetted lattice/Lean computation), so it is
-    a candidate verdict, not a definitive one.
+    returning ``(bool, str)``) -> VALIDATE it actually tests the candidate -> run it in a subprocess ->
+    get a verdict. The verdict is honest — it is from a SYNTHESIZED falsifier (LLM-written, not a
+    vetted lattice/Lean computation), so it is a candidate verdict, not a definitive one.
     """
     from pacland import runner
 
@@ -140,6 +160,10 @@ def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str)
     except Exception as e:  # noqa: BLE001
         return {"ran": False, "reason": f"LLM failed: {type(e).__name__}"}
     code = code.strip().strip("`").replace("```python", "").replace("```", "").strip()
+
+    issues = validate_falsifier(code, statement)
+    if issues:
+        return {"ran": False, "reason": "vacuous falsifier rejected: " + "; ".join(issues)}
 
     import json
     import subprocess

@@ -134,6 +134,29 @@ class TestPairedSeedsAndCutoff(unittest.TestCase):
             with mock.patch.object(b, "_judge_config", return_value=("http://x/v1", "", "gen")):
                 self.assertFalse(b.judge_is_distinct())
 
+    def test_measure_independent_reports_all_three_suites(self):
+        with mock.patch.object(b, "run_campaign") as rc:
+            rc.return_value = [b.ArmResult("llm", "s", problems=10, found=5),
+                               b.ArmResult("untyped-baseline", "s", problems=10, found=0)]
+            out = b.measure_independent(lambda p: [], n_synthetic=5)
+        self.assertEqual(set(out), {"synthetic", "disguised", "post-cutoff"})
+        self.assertEqual(out["synthetic"]["recall"], 0.5)
+        self.assertEqual(out["synthetic"]["problems"], 10)
+
+    def test_peft_dataset_builder_writes_the_expected_count(self):
+        import os
+        import subprocess
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as d:
+            out = os.path.join(d, "d.jsonl")
+            subprocess.run(["python3", "scripts/build_peft_dataset.py", "--out", out,
+                            "--n-synthetic", "10", "--seed", "0"], check=True,
+                           env={**os.environ, "PYTHONPATH": "src"})
+            with open(out) as fh:
+                lines = fh.read().splitlines()
+        self.assertEqual(len(lines), 10 + 10 + 3 + 10)  # historical + disguised + post-cutoff + synthetic
+
 
 class TestJudge(unittest.TestCase):
     def test_judge_credits_a_paraphrase(self):
