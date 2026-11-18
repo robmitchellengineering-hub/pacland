@@ -77,7 +77,10 @@ def _judge_config() -> tuple[str, str, str]:
 
 
 def _ask_judge(prompt: str) -> str | None:
-    """One LLM call for a model-judged challenge; None when no model is configured."""
+    """One LLM call for a model-judged challenge; None when no model is configured or the call fails.
+
+    A slow or unreachable judge must NOT crash the challenge sequence — it degrades to INCONCLUSIVE.
+    """
     import json
     import urllib.request
 
@@ -89,8 +92,11 @@ def _ask_judge(prompt: str) -> str | None:
     if key:
         headers["Authorization"] = f"Bearer {key}"
     req = urllib.request.Request(endpoint.rstrip("/") + "/chat/completions", data=body, headers=headers)
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        return json.loads(resp.read())["choices"][0]["message"]["content"].strip()
+    try:
+        with urllib.request.urlopen(req, timeout=300) as resp:
+            return json.loads(resp.read())["choices"][0]["message"]["content"].strip()
+    except Exception:  # noqa: BLE001 — timeout/unreachable => INCONCLUSIVE, not a crash
+        return None
 
 
 def _model_judge(stage: str, hypothesis: str, assumptions: list[str] | None = None) -> tuple[str, str]:

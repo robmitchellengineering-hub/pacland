@@ -54,6 +54,12 @@ class TestModelJudge(unittest.TestCase):
             v, ev = ch._model_judge("alternative-explanation", "a hypothesis")
         self.assertEqual(v, "INCONCLUSIVE")
 
+    def test_judge_failure_degrades_to_inconclusive_not_a_crash(self):
+        # a slow/unreachable judge must not crash the sequence — _ask_judge returns None on failure
+        with mock.patch.object(ch, "_judge_config", return_value=("http://x", "", "m")):
+            with mock.patch("urllib.request.urlopen", side_effect=TimeoutError("timed out")):
+                self.assertIsNone(ch._ask_judge("prompt"))
+
     def test_run_sequence_uses_the_judge_for_model_stages(self):
         with mock.patch.object(ch, "_import_sextant", return_value=(None, None)):
             with mock.patch.object(ch, "_ask_judge",
