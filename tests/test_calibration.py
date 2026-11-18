@@ -35,5 +35,22 @@ class TestGateQuantumCertificate(unittest.TestCase):
         self.assertGreater(r["ece"], 0.0)
 
 
+class TestProperScoringHonesty(unittest.TestCase):
+    def test_honesty_minimizes_the_brier_score(self):
+        h = cal.honesty_theorem(q=0.7)
+        self.assertTrue(h["honest_minimizes"])
+        self.assertEqual(h["minimizer"], 0.7)
+        # the overconfident report (1.0) and the underconfident report (0.0) score worse
+        self.assertLess(h["expected_brier"][0.7], h["expected_brier"][1.0])
+        self.assertLess(h["expected_brier"][0.7], h["expected_brier"][0.0])
+
+    def test_calibrated_forecaster_scores_better_than_overconfident(self):
+        # truth 0.7, repeated; a forecaster reporting 0.7 beats one reporting 1.0
+        conf_cal = [0.7] * 100
+        conf_over = [1.0] * 100
+        out = [True] * 70 + [False] * 30
+        self.assertLess(cal.mean_brier_score(conf_cal, out), cal.mean_brier_score(conf_over, out))
+
+
 if __name__ == "__main__":
     unittest.main()

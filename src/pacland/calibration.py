@@ -28,6 +28,7 @@ from pathlib import Path
 import numpy as np
 
 from pacland import quantum_certify as qc
+from pacland.belief import brier_score, log_score
 
 
 def expected_calibration_error(confidences, outcomes, n_bins: int = 10) -> tuple[float, list[dict]]:
@@ -51,6 +52,39 @@ def expected_calibration_error(confidences, outcomes, n_bins: int = 10) -> tuple
         rows.append({"lo": round(lo, 2), "hi": round(hi, 2), "n": int(mask.sum()),
                      "mean_confidence": round(mean_conf, 3), "accuracy": round(acc, 3)})
     return float(ece), rows
+
+
+def mean_brier_score(confidences, outcomes) -> float:
+    """Mean Brier (proper) score over a (reported probability, truth) record. Lower is better."""
+    conf = list(confidences)
+    out = list(outcomes)
+    if not conf:
+        raise ValueError("no forecasts to score")
+    return sum(brier_score(p, t) for p, t in zip(conf, out)) / len(conf)
+
+
+def mean_log_score(confidences, outcomes) -> float:
+    """Mean logarithmic (proper) score. Lower is better."""
+    conf = list(confidences)
+    out = list(outcomes)
+    if not conf:
+        raise ValueError("no forecasts to score")
+    return sum(log_score(p, t) for p, t in zip(conf, out)) / len(conf)
+
+
+def honesty_theorem(q: float = 0.7) -> dict:
+    """The proper-scoring honesty theorem, as a number.
+
+    For a binary event with true probability ``q``, the expected Brier score of a forecaster
+    reporting ``p`` is ``(p - q)^2 + q(1 - q)``, which is minimized at ``p = q``. A proper score
+    therefore pays a forecaster to report their honest belief, not to exaggerate. Returns the
+    expected Brier for several reported probabilities, with the minimizer flagged.
+    """
+    candidates = [0.0, 0.3, q, 1.0]
+    scores = {p: (p - q) ** 2 + q * (1.0 - q) for p in candidates}
+    best = min(scores, key=scores.get)
+    return {"true_probability": q, "expected_brier": scores, "minimizer": best,
+            "honest_minimizes": abs(best - q) < 1e-12}
 
 
 def gate_quantum_certificate(program: str = "ghz", n_qubits: int = 16, tol: float = 1e-9,
@@ -100,6 +134,8 @@ def gate_quantum_certificate(program: str = "ghz", n_qubits: int = 16, tol: floa
         "false_refuse": false_ref,
         "decision_accuracy": (true_acc + true_ref) / batch,
         "ece": ece,
+        "mean_brier": mean_brier_score(confidences, outcomes),
+        "mean_log": mean_log_score(confidences, outcomes),
         "reliability": rows,
         "decision_calibrated": false_acc == 0 and false_ref == 0,
     }
@@ -120,13 +156,23 @@ def main(argv: list[str]) -> int:
     print(f"  decision calibration: {'CALIBRATED' if r['decision_calibrated'] else 'MISCALIBRATED'} "
           f"(decision accuracy {r['decision_accuracy']:.3f})")
     print(f"  graded ECE: {r['ece']:.4f}")
+    print(f"  proper scores: Brier {r['mean_brier']:.4f}, log {r['mean_log']:.4f} (lower is better)")
     print("  reliability (confidence bin -> accuracy):")
     for row in r["reliability"]:
         print(f"    [{row['lo']:.2f},{row['hi']:.2f}] n={row['n']:>3} "
               f"conf={row['mean_confidence']:.3f} acc={row['accuracy']:.3f}")
+
+    h = honesty_theorem()
+    print(f"\n  honesty theorem: for true probability {h['true_probability']}, expected Brier is minimized")
+    print(f"  by reporting {h['minimizer']} (honest) — {h['honest_minimizes']}. Expected Brier by report:")
+    for p in sorted(h["expected_brier"]):
+        mark = "  <- honest" if p == h["minimizer"] else ""
+        print(f"    report {p:.2f} -> {h['expected_brier'][p]:.4f}{mark}")
+
     print("\n  Reading: a clean confusion matrix means the pass/fail referee is calibrated. A")
     print("  nonzero ECE means the referee's distance is a hard threshold, not a calibrated")
-    print("  probabilistic confidence — that gap is the proper-scoring layer to build next.")
+    print("  probabilistic confidence. The honesty theorem shows a proper score pays for honest")
+    print("  reporting — that is the layer that turns the threshold into a calibrated probability.")
     return 0
 
 
