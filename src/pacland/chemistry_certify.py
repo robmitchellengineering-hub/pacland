@@ -103,7 +103,10 @@ def verify(cert_path: str, tol: float | None = None) -> dict:
         if not ok:
             failures.append(msg)
 
-    recomputed = heisenberg_dmrg(n, bond_dims, seed=cert["method"]["seed"])
+    # The falsifier checks the certified claim — the converged energy and the convergence delta —
+    # which needs only the last two bond dimensions, not the whole sweep. (Each D is an
+    # independent DMRG run in heisenberg_dmrg, so the last two reproduce exactly.)
+    recomputed = heisenberg_dmrg(n, bond_dims[-2:], seed=cert["method"]["seed"])
     recorded = {row["bond_dim"]: row["energy"] for row in cert["sweep"]}
 
     # The certified value is the converged energy (highest bond dimension); the rest of the
