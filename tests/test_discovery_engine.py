@@ -1,6 +1,7 @@
 """The discovery engine runs all strategies, falsifies, scores, and the typed jump framework
 generates the true historical jump (retrodiction)."""
 import unittest
+from unittest import mock
 
 from pacland import hypotheses, runner
 
@@ -126,6 +127,25 @@ class TestLineage(unittest.TestCase):
                            "a falsifier", 1.0, 0.4, ancestry=(dead.id,))
         self.assertEqual(child.ancestry, (dead.id,))
         self.assertIn(dead.id, runner.lineage(child))
+
+
+class TestLlmSearch(unittest.TestCase):
+    def test_llm_search_is_a_registered_strategy(self):
+        self.assertIn("llm-search", {s.name for s in runner.SEARCH_STRATEGIES})
+
+    def test_returns_nothing_without_a_model(self):
+        s = runner.LlmSearch()
+        self.assertEqual(s.generate("mass-gap", 4), [])
+
+    def test_parses_hypothesis_falsifier_lines(self):
+        s = runner.LlmSearch()
+        with mock.patch.object(runner, "_llm_config", return_value=("http://x/v1", "", "m")):
+            with mock.patch.object(runner, "_ask_llm",
+                                   return_value="a hypothesis | a falsifier\nanother | its falsifier"):
+                out = s.generate("mass-gap", 4)
+        self.assertEqual(len(out), 2)
+        self.assertEqual(out[0].statement, "a hypothesis")
+        self.assertEqual(out[0].falsifier, "a falsifier")
 
 
 if __name__ == "__main__":
