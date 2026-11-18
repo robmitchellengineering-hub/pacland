@@ -115,6 +115,12 @@ class TestFindFirst(unittest.TestCase):
         self.assertTrue(rec["found"])
         self.assertEqual(rec["mathlib"][0]["name"], "add_comm")
 
+    def test_search_code_scans_the_full_inventory_not_just_the_map(self):
+        hits = fa.search_code("the string tension is nonzero at weak coupling")
+        names = {h["falsifier"] for h in hits}
+        self.assertIn("lattice_ym_su2.measure_string_tension", names)
+        self.assertIn("su2-weak-coupling", names)
+
 
 if __name__ == "__main__":
     unittest.main()

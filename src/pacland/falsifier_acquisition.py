@@ -119,11 +119,43 @@ def search_proof_tree(statement: str, proof_dir: str | Path = "pacland-proof",
 
 
 def search_code(statement: str) -> list[dict]:
-    """An existing falsifier in the codebase that matches the claim (runnable today)."""
+    """Find an existing falsifier across the FULL inventory — not just a keyword map.
+
+    Scans the runner's falsifiers, the SEXTANT/Phantom falsifiers, and the lattice tools
+    (``lattice_ym_su2``, ``glueball``) — matching the claim's key terms against each function's name
+    and docstring. This is 'get the code that it needs' from the library that already exists; fetching
+    code from external repos (GitHub/PyPI) is a further step, not wired here.
+    """
     from pacland import runner
 
-    fn = runner._falsifier_for_statement(statement)
-    return [{"falsifier": fn.__name__}] if fn is not None else []
+    hits: list[dict] = []
+    for name, fn in runner.FALSIFIERS.items():
+        if _matches(statement, name + " " + (fn.__doc__ or "")):
+            hits.append({"falsifier": name, "source": "runner.FALSIFIERS"})
+    _, phantom = runner._import_sextant()
+    if phantom is not None:
+        for name, fn in getattr(phantom, "FALSIFIERS", {}).items():
+            if _matches(statement, name + " " + (fn.__doc__ or "")):
+                hits.append({"falsifier": name, "source": "phantom.FALSIFIERS"})
+    for modname in ("lattice_ym_su2", "glueball"):
+        try:
+            mod = __import__(f"pacland.{modname}", fromlist=[modname])
+        except Exception:  # noqa: BLE001 — a missing optional dep is not a hit, not a crash
+            continue
+        for name in dir(mod):
+            if not name.startswith(("measure", "verify", "compute", "glueball", "creutz", "wilson")):
+                continue
+            fn = getattr(mod, name)
+            if callable(fn) and _matches(statement, name + " " + (fn.__doc__ or "")):
+                hits.append({"falsifier": f"{modname}.{name}", "source": modname})
+    return hits
+
+
+def _matches(statement: str, text: str) -> bool:
+    """True when any of the claim's key terms appears in the falsifier's name/docstring."""
+    terms = key_terms(statement, n=4)
+    low = text.lower()
+    return any(t in low for t in terms)
 
 
 def synthesize(statement: str, endpoint: str, key: str, model: str) -> str | None:

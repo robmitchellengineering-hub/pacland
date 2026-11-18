@@ -234,10 +234,14 @@ def synthetic_suite(n: int = 100, seed: int = 0) -> dict:
 # Problems whose resolution is recent enough that a pre-cutoff model is unlikely to have memorised
 # it. HONEST NOTE: the exact training cutoff is unverifiable from here, so this is a SECONDARY probe —
 # the planted-law synthetic_suite is the hard decontamination guarantee.
+# Recent resolutions, each with its publication date. HONEST NOTE: "post-cutoff" is NOT verified —
+# deepseek-chat's training cutoff is unknown from here, and LK-99/JWST (2022-2023) may well be in its
+# training data. These are a SECONDARY probe; the planted-law synthetic_suite is the hard
+# decontamination guarantee. Each `pre` must not spell the answer.
 POST_CUTOFF_DATASET = {
-    "lk99":  {"pre": "a 2023 material was claimed to superconduct at room temperature and ambient pressure, but the claim did not reproduce", "jump": "LK-99 is not a superconductor; the diamagnetism is from an impurity phase"},
-    "jwst-early-galaxies": {"pre": "the earliest galaxies seen by JWST are brighter and more massive than the standard timeline predicts", "jump": "early star formation is more efficient than standard models assumed"},
-    "desi-dark-energy": {"pre": "a 2024 survey of millions of galaxies suggests dark energy may not be a constant over cosmic time", "jump": "dark energy may be a dynamical field, weakening at late times"},
+    "lk99":  {"published": "2023-08", "pre": "a material was claimed to superconduct at room temperature and ambient pressure, but independent groups could not reproduce it", "jump": "LK-99 is not a superconductor; the diamagnetism is from an impurity phase"},
+    "jwst-early-galaxies": {"published": "2022-12", "pre": "the earliest galaxies seen by JWST are brighter and more massive than the standard timeline predicts", "jump": "early star formation is more efficient than standard models assumed"},
+    "desi-dark-energy": {"published": "2024-04", "pre": "a survey of millions of galaxies finds the expansion's acceleration may have weakened recently", "jump": "dark energy may be a dynamical field, weakening at late times"},
 }
 
 
