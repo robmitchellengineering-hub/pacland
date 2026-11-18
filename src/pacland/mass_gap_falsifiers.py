@@ -16,27 +16,37 @@ def _converged(a: float, b: float, tol: float = 0.3) -> bool:
     return abs(a - b) / scale < tol
 
 
-def verify_d5_mass_gap(betas=(2.0, 2.4, 2.8), d=5, Ns=(4, 6)) -> tuple[bool, str]:
-    """'d=5 SU(N) YM has a mass gap in the continuum': measure the d=5 string tension at weak coupling
-    at two lattice sizes, and check whether the weak-coupling value converges."""
+def verify_d5_mass_gap(betas=(2.0, 2.4, 2.8, 3.2), d=5, Ns=(4, 6)) -> tuple[bool, str]:
+    """'d=5 SU(N) YM has a mass gap in the continuum': measure the d=5 string tension at increasing β
+    (finer lattice) and require a DECREASING, converging tension — a fixed-lattice nonzero value is
+    NOT a mass gap; only a tension that survives the continuum trend is. A flat/noisy trend means the
+    continuum limit cannot be assessed (unresolved), not 'survives'.
+    """
     from pacland import lattice_ym_su2 as lm
 
-    per_n = []
+    curves = {}
     for N in Ns:
-        pts = [(b, lm.measure_string_tension(b, d=d, N=N, n_sweeps=10, seed=0)) for b in betas]
-        per_n.append((N, pts[-1][1]))
-    last = per_n[-1][1]
-    conv = _converged(per_n[0][1], per_n[-1][1])
-    survived = last > 1e-6 and conv  # a mass gap survives only if the weak-coupling tension is
-    # nonzero AND stable across lattice sizes
-    curve = ", ".join(f"N={N}: σ(β={betas[-1]})={s:.4f}" for N, s in per_n)
+        curves[N] = [lm.measure_string_tension(b, d=d, N=N, n_sweeps=10, seed=0) for b in betas]
+    last_N = Ns[-1]
+    sigma_first = curves[last_N][0]
+    sigma_last = curves[last_N][-1]
+    conv = _converged(curves[Ns[0]][-1], sigma_last)
+    decreasing = sigma_last < 0.8 * sigma_first  # the tension falls toward the continuum
+    survived = conv and decreasing and sigma_last > 1e-6
+    curve = ", ".join(f"σ(β={b})={s:.3f}" for b, s in zip(betas, curves[last_N]))
     if not conv:
-        verdict = "does NOT converge between lattice sizes — a demonstration, not a measurement"
+        verdict = "does NOT converge between lattice sizes — unresolved (demonstration, not a measurement)"
+    elif not decreasing:
+        verdict = ("tension does NOT decrease toward the continuum (flat/noisy) — the mass gap cannot "
+                   "be assessed from this data (unresolved)")
     elif survived:
-        verdict = "nonzero and converging at weak coupling — the mass gap survives this probe"
+        verdict = "tension is nonzero and decreasing toward the continuum — consistent with a mass gap"
     else:
-        verdict = "vanishing at weak coupling — the mass gap is refuted"
-    return survived, f"d=5 SU(2) string tension at weak coupling: {curve} → {verdict}"
+        verdict = "tension vanishes at weak coupling — the mass gap is refuted"
+    # 'unresolved' when the trend is not assessable; otherwise a definitive bool
+    if (not conv) or (not decreasing):
+        return False, f"d=5 SU(2) string tension: {curve} → {verdict}  [unresolved — not a refutation]"
+    return survived, f"d=5 SU(2) string tension: {curve} → {verdict}"
 
 
 def verify_bulk_transition(betas=(1.8, 2.0, 2.2, 2.4, 2.6), d=4, Ns=(4, 6)) -> tuple[bool, str]:

@@ -165,26 +165,26 @@ class TestNonVacuousSurvivor(unittest.TestCase):
 class TestFalsifierRouting(unittest.TestCase):
     def test_routes_a_mass_gap_lower_bound_to_the_ratio_falsifier(self):
         self.assertEqual(runner._falsifier_for_statement("m_gap ≥ c·√σ with c > 0"),
-                         runner.verify_glueball_mass_ratio)
+                         "glueball-mass-ratio")
 
     def test_routes_a_perturbative_claim_to_the_scaling_referee(self):
         self.assertEqual(runner._falsifier_for_statement("the mass gap is non-perturbative"),
-                         runner.verify_mass_gap_scaling)
+                         "mass-gap-scaling")
 
     def test_leaves_theta_open(self):
         self.assertIsNone(runner._falsifier_for_statement("the mass gap is robust against a θ-term"))
 
     def test_polyakov_routes_to_the_clustering_falsifier(self):
         self.assertEqual(runner._falsifier_for_statement("Polyakov-loop correlators cluster exponentially"),
-                         runner.FALSIFIERS["polyakov-clustering"])
+                         "polyakov-clustering")
 
     def test_routes_to_the_new_candidate_specific_falsifiers(self):
         self.assertEqual(runner._falsifier_for_statement("the d=5 mass gap survives the continuum limit"),
-                         runner.FALSIFIERS["d5-mass-gap"])
+                         "d5-mass-gap")
         self.assertEqual(runner._falsifier_for_statement("a first-order bulk transition persists"),
-                         runner.FALSIFIERS["bulk-transition"])
+                         "bulk-transition")
         self.assertEqual(runner._falsifier_for_statement("the mass gap is universal under irrelevant operators"),
-                         runner.FALSIFIERS["universality"])
+                         "universality")
 
     def test_unresolved_measurement_is_open_not_falsified(self):
         c = runner.Candidate(id="x", statement="s", falsifier="f", strategy="st",
@@ -200,13 +200,23 @@ class TestFalsifierRouting(unittest.TestCase):
     def test_keyword_routed_falsifier_is_approximate_not_survived(self):
         c = runner.Candidate(id="x", statement="the mass gap scales as sqrt(sigma)", falsifier="f",
                              strategy="st", source_facts=(), test="")
-        def _fake_falsifier():
-            return True, "some related test passed"
-        with mock.patch.object(runner, "_falsifier_for_statement", return_value=_fake_falsifier):
-            ran, survived, evidence = runner._falsify(c)
+        with mock.patch.object(runner, "_falsifier_for_statement", return_value="glueball-mass-ratio"):
+            with mock.patch.dict(runner.FALSIFIERS,
+                                 {"glueball-mass-ratio": lambda: (True, "related test passed")}):
+                ran, survived, evidence = runner._falsify(c)
         self.assertTrue(ran)
-        self.assertIsNone(survived)  # approximate, not a definitive survive
+        self.assertIsNone(survived)  # generic falsifier -> approximate
         self.assertIn("APPROXIMATE", evidence)
+
+    def test_candidate_specific_falsifier_gives_a_definitive_verdict(self):
+        c = runner.Candidate(id="x", statement="the d=5 mass gap survives", falsifier="f",
+                             strategy="st", source_facts=(), test="")
+        with mock.patch.object(runner, "_falsifier_for_statement", return_value="d5-mass-gap"):
+            with mock.patch.dict(runner.FALSIFIERS, {"d5-mass-gap": lambda: (True, "nonzero")}):
+                ran, survived, evidence = runner._falsify(c)
+        self.assertTrue(ran)
+        self.assertTrue(survived)  # candidate-specific -> definitive survive
+        self.assertIn("candidate-specific", evidence)
 
     def test_mass_gap_scaling_referee_identity_is_not_a_survivor(self):
         survived, evidence = runner.verify_mass_gap_scaling()

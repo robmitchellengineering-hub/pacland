@@ -714,24 +714,30 @@ def _falsifier_for_statement(statement: str):
     low = statement.lower()
     # the candidate-specific falsifiers now exist — route to them BEFORE the generic "return None"
     if "d=5" in low or "five-dim" in low or "d = 5" in low:
-        return FALSIFIERS["d5-mass-gap"]
+        return "d5-mass-gap"
     if "bulk transition" in low or "first-order" in low or "first order" in low:
-        return FALSIFIERS["bulk-transition"]
+        return "bulk-transition"
     if any(k in low for k in ("universal", "irrelevant", "improved action")):
-        return FALSIFIERS["universality"]
+        return "universality"
     if any(k in low for k in ("large-n", "large n", "all n", "universal ratio", "n=3", "n=4", "n=5")):
-        return FALSIFIERS["large-n-ratio"]
+        return "large-n-ratio"
     if "polyakov" in low or "finite-t" in low or "finite temperature" in low or "deconfin" in low:
-        return FALSIFIERS["polyakov-clustering"]
+        return "polyakov-clustering"
     if any(k in low for k in ("theta", "θ", "n-independ", "su(3)", "su(4)", "su(5)")):
         return None  # no lattice tool for θ or multi-N claims yet
     if any(k in low for k in ("string tension", "sqrt", "glueball", "sigma", "σ")):
-        return verify_glueball_mass_ratio
+        return "glueball-mass-ratio"
     if "mass gap" in low and any(k in low for k in ("bound", "perturbative", "scales", "lower")):
-        return verify_mass_gap_scaling
+        return "mass-gap-scaling"
     if "mass gap" in low and "weak coupling" in low:
-        return verify_su2_weak_coupling
+        return "su2-weak-coupling"
     return None
+
+
+# The falsifiers BUILT for a specific mass-gap claim give a DEFINITIVE verdict; the generic lattice
+# falsifiers test a RELATED (not the exact) claim, so their verdict is only APPROXIMATE.
+_CANDIDATE_SPECIFIC = frozenset({"d5-mass-gap", "bulk-transition", "universality",
+                                 "large-n-ratio", "polyakov-clustering"})
 
 
 _UNRESOLVED_MARKERS = ("noise-dominated", "unresolved", "signal is unresolved", "cannot measure")
@@ -764,16 +770,18 @@ def _falsify(candidate: Candidate) -> tuple[bool, bool | None, str]:
                     return True, bool(ok), ev
                 except Exception as e:  # noqa: BLE001 — same: missing dep => OPEN, not a crash
                     return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
-    fn = _falsifier_for_statement(candidate.statement)
-    if fn is not None:
+    key = _falsifier_for_statement(candidate.statement)
+    if key is not None and key in FALSIFIERS:
         try:
-            survived, evidence = fn()
-            # A keyword-routed falsifier tests a RELATED claim, not the hypothesis's specific claim —
-            # so its verdict is APPROXIMATE, never a definitive survive/falsify. The hypothesis stays
-            # OPEN (unresolved) until a candidate-specific falsifier is built.
+            survived, evidence = FALSIFIERS[key]()
+            if not survived and _is_unresolved(evidence):
+                return False, None, evidence + "  [unresolved — not a refutation]"
+            if key in _CANDIDATE_SPECIFIC:
+                # built for this exact claim => a DEFINITIVE verdict
+                return True, bool(survived), evidence + "  [candidate-specific falsifier]"
+            # a generic lattice falsifier tests a RELATED claim, not the exact one => APPROXIMATE
             return True, None, (evidence
-                                + "  [APPROXIMATE: keyword-routed to a related falsifier, not a "
-                                  "candidate-specific test — the specific claim was not tested]")
+                                + "  [APPROXIMATE: routed to a related falsifier, not the exact claim]")
         except Exception as e:  # noqa: BLE001
             return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
     return False, None, f"needs a falsifier (proposed: {candidate.falsifier})"
