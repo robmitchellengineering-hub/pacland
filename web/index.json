@@ -32,6 +32,34 @@
  "generated_from": "scripts/build_site_index.py",
  "items": [
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/CANDIDATE-LEDGER.md",
+   "kind": "doc",
+   "path": "docs/CANDIDATE-LEDGER.md",
+   "summary": "Every hypothesis is logged with its jump type, falsifier, cost and status, and fed into the belief layer so the system allocates its falsifier budget to the highest\u2026",
+   "title": "Candidate ledger \u2014 the falsifier-before-believe belief layer"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-ENGINE.md",
+   "kind": "doc",
+   "path": "docs/DISCOVERY-ENGINE.md",
+   "summary": "The engine is src/pacland/runner.py (the DiscoveryEngine class, folded from the former standalone file). It is NOT the five jump types; those are ONE search strategy inside it.",
+   "title": "The discovery engine \u2014 architecture (first-class component)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-PROCESS.md",
+   "kind": "doc",
+   "path": "docs/DISCOVERY-PROCESS.md",
+   "summary": "shows that naming the types produces better hypotheses than an untyped baseline. That is exactly what RETRODICTION-TEST.md is for. Read this doc as a proposal to be tested, not an\u2026",
+   "title": "The discovery process \u2014 jump taxonomy + jump-seeking loop"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/KILL-CRITERIA.md",
+   "kind": "doc",
+   "path": "docs/KILL-CRITERIA.md",
+   "summary": "Without a stop rule, the discovery loop is an open-ended grind that burns budget on a dead framing. These are the rules that force a re-frame instead.",
+   "title": "Kill criteria \u2014 budget and stop rules per rung"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-METHODS.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-METHODS.md",
@@ -44,6 +72,20 @@
    "path": "docs/MITCHELLS-LAWS.md",
    "summary": "The duality covariance table of the flux landscape: five laws specifying how the observables of a flux vacuum transform under the duality group Sp(b\u2083,\u2124) \u00d7 SL(2,\u2124) and under flux rescaling\u2026",
    "title": "MITCHELL'S LAWS OF DUALITY COVARIANCE"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/OPEN-RUNGS.md",
+   "kind": "doc",
+   "path": "docs/OPEN-RUNGS.md",
+   "summary": "Everything formalizable up to the Clay content is now kernel-checked. These two are the open content \u2014 stated precisely here so the boundary is unambiguous. Both are research programs, not\u2026",
+   "title": "The two open rungs, stated precisely"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RETRODICTION-TEST.md",
+   "kind": "doc",
+   "path": "docs/RETRODICTION-TEST.md",
+   "summary": "The five-type taxonomy is retrospective until this passes. The test: run the loop blind on historical problems with the jump withheld, and compare it against the same pipeline without the\u2026",
+   "title": "Retrodiction test \u2014 does the jump-seeking loop beat a baseline?"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOLVING-STRING-THEORY.md",
