@@ -10,13 +10,23 @@ synthesising a candidate:
 
 The result is an acquisition record, never a fake verdict: a found falsifier is named; a missing one
 is recorded as "to build" with the evidence of where to look.
+
+When a falsifier cannot be BUILT in the current pass (the synthesized code crashes, or no LLM is
+present), it is recorded as a JOB in ``runs/falsifier-jobs.jsonl`` — a concrete task another process
+or session can pick up and complete, so the frontier progresses across runs instead of stalling.
 """
 from __future__ import annotations
 
+import json
 import re
+import time
+import uuid
 from pathlib import Path
 
 from pacland import literature
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # .../pacland
+FALSIFIER_JOBS = REPO_ROOT / "runs" / "falsifier-jobs.jsonl"
 
 _STOP = {"that", "with", "this", "from", "these", "their", "they", "have", "than", "will",
          "would", "been", "were", "such", "more", "also", "only", "very", "into", "over",
@@ -189,3 +199,63 @@ def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str)
         return {"ran": False, "reason": f"falsifier returned unparseable output: {r.stdout[:120]}"}
     return {"ran": True, "survived": bool(survived), "evidence": str(evidence), "code": code,
             "note": "synthesized falsifier (LLM-written, not a vetted lattice/Lean computation)"}
+
+
+def record_falsifier_job(statement: str, proposed_falsifier: str, reason: str) -> str:
+    """Record a "build this falsifier" job so another process or session can complete it.
+
+    The frontier does not stall on an un-buildable falsifier: it writes the claim, the proposed test,
+    and the reason it could not be built now, as a queued job. Returns the job id.
+    """
+    job = {"job_id": uuid.uuid4().hex[:12], "statement": statement,
+           "proposed_falsifier": proposed_falsifier or "(none proposed)",
+           "reason": reason or "unknown", "status": "queued", "created_at": time.time()}
+    FALSIFIER_JOBS.parent.mkdir(parents=True, exist_ok=True)
+    with FALSIFIER_JOBS.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(job) + "\n")
+    return job["job_id"]
+
+
+def list_falsifier_jobs(status: str | None = None) -> list[dict]:
+    """The falsifier job queue, newest first, optionally filtered by ``status``."""
+    if not FALSIFIER_JOBS.exists():
+        return []
+    jobs = [json.loads(line) for line in FALSIFIER_JOBS.read_text(encoding="utf-8").splitlines()
+            if line.strip()]
+    if status:
+        jobs = [j for j in jobs if j.get("status") == status]
+    return list(reversed(jobs))
+
+
+def claim_falsifier_job(job_id: str) -> bool:
+    """Mark a job in-progress so one session owns it (a mutex for the shared queue)."""
+    jobs = list_falsifier_jobs()
+    changed = False
+    for j in jobs:
+        if j["job_id"] == job_id and j.get("status") == "queued":
+            j["status"] = "in-progress"
+            changed = True
+    if changed:
+        _rewrite_jobs(jobs)
+    return changed
+
+
+def mark_falsifier_built(job_id: str, falsifier: str) -> bool:
+    """Mark a job as built (a falsifier now exists), so the queue reflects progress."""
+    jobs = list_falsifier_jobs()
+    changed = False
+    for j in jobs:
+        if j["job_id"] == job_id:
+            j["status"] = "built"
+            j["falsifier"] = falsifier
+            changed = True
+    if changed:
+        _rewrite_jobs(jobs)
+    return changed
+
+
+def _rewrite_jobs(jobs: list[dict]) -> None:
+    FALSIFIER_JOBS.parent.mkdir(parents=True, exist_ok=True)
+    with FALSIFIER_JOBS.open("w", encoding="utf-8") as fh:
+        for j in jobs:
+            fh.write(json.dumps(j) + "\n")

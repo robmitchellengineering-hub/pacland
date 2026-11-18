@@ -1091,6 +1091,13 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
                 # a synthesized falsifier that ran gives a CANDIDATE verdict (not definitive)
                 if built.get("ran"):
                     entry["candidate_verdict"] = ("survived" if built["survived"] else "refuted")
+                else:
+                    # the falsifier could not be built in this pass — record it as a JOB so another
+                    # process or session can build it, keeping the frontier moving.
+                    entry["falsifier_job"] = fa.record_falsifier_job(
+                        c.statement,
+                        acq.get("synthesized_falsifier") or c.falsifier,
+                        built.get("reason", "unknown"))
                 round_out["open"].append(entry)
         out["rounds"].append(round_out)
     metrics = {"rounds": rounds,
@@ -1123,6 +1130,8 @@ def _main() -> int:
                     help="run all six search strategies, falsify, and score discoveries per effort")
     ap.add_argument("--engine", metavar="PROBLEM", help="run the search engine on a problem")
     ap.add_argument("--autonomous", metavar="PROBLEM", help="one autonomous propose -> falsify -> prove -> acquire pass")
+    ap.add_argument("--list-falsifier-jobs", action="store_true",
+                    help="list the queued falsifier-build jobs (work for another session/process")
     args = ap.parse_args()
 
     if args.list_facts:
@@ -1202,6 +1211,15 @@ def _main() -> int:
     if args.autonomous:
         r = run_autonomous(args.autonomous)
         print(json.dumps(r, indent=2))
+        return 0
+    if args.list_falsifier_jobs:
+        from pacland import falsifier_acquisition as fa
+        jobs = fa.list_falsifier_jobs()
+        print(f"{len(jobs)} falsifier-build job(s):")
+        for j in jobs:
+            print(f"  [{j['status']:11s}] {j['job_id']}  {j['statement'][:70]}")
+            print(f"    proposed: {j['proposed_falsifier'][:70]}")
+            print(f"    reason:   {j['reason'][:70]}")
         return 0
     if args.fact and args.strategy:
         v = advance(args.fact, args.strategy)
