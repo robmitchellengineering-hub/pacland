@@ -42,8 +42,8 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-ENGINE.md",
    "kind": "doc",
    "path": "docs/DISCOVERY-ENGINE.md",
-   "summary": "The engine is src/pacland/runner.py (the DiscoveryEngine class, folded from the former standalone file). It is NOT the five jump types; those are ONE search strategy inside it.",
-   "title": "The discovery engine \u2014 architecture (first-class component)"
+   "summary": "The engine is src/pacland/runner.py (the DiscoveryEngine class). It is an automated frontier discovery-and-proof machine: propose \u2192 falsify \u2192 challenge \u2192 prove \u2192 record \u2192 acquire, runnable\u2026",
+   "title": "The discovery engine \u2014 architecture and state"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-PROCESS.md",
