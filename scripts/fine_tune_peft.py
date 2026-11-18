@@ -65,7 +65,7 @@ def main() -> int:
         save_strategy="epoch", report_to="none",
     )
     trainer = SFTTrainer(model=model, train_dataset=data, args=train_args,
-                         tokenizer=tokenizer, max_seq_length=512)
+                         processing_class=tokenizer, max_seq_length=512)
     trainer.train()
     model.save_pretrained(args.out)
     tokenizer.save_pretrained(args.out)
