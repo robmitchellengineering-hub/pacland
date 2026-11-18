@@ -386,6 +386,15 @@ def _llm_config() -> tuple[str, str, str]:
     )
 
 
+def _judge_config() -> tuple[str, str, str]:
+    """The independent judge's endpoint/key/model (distinct from the generator for honest checks)."""
+    return (
+        os.environ.get("SEXTANT_JUDGE_ENDPOINT", "") or _llm_config()[0],
+        os.environ.get("SEXTANT_JUDGE_KEY", "") or _llm_config()[1],
+        os.environ.get("SEXTANT_JUDGE_MODEL", "") or _llm_config()[2],
+    )
+
+
 def _ask_llm(prompt: str, endpoint: str, key: str, model: str) -> str:
     """One OpenAI-compatible ``/chat/completions`` call, returning the assistant text."""
     body = json.dumps({
@@ -427,6 +436,11 @@ def _check_lean(code: str) -> tuple[bool, str]:
     except subprocess.TimeoutExpired:
         return False, "kernel timed out (600s)"
     if r.returncode == 0:
+        out = r.stdout + r.stderr
+        # `sorry`/`admit` COMPILE with a warning, so a green kernel alone is not a proof. Refuse any
+        # file that still carries a placeholder or an axiom — the whole point of the proof loop.
+        if re.search(r"declaration uses ['`]?(sorry|admit)", out) or re.search(r"\baxiom\b", out):
+            return False, f"compiles but is not a proof: {out.strip()[-500:]}"
         return True, ""
     return False, (r.stdout + r.stderr).strip()[-4000:]
 
@@ -562,7 +576,7 @@ def register_experiment(kind: str, config: dict, metrics: dict) -> str:
 
     Every run — a campaign, an autonomous pass, a benchmark — is registered with its config (model,
     seed, dataset) and its measured metrics, so any result can be traced back to exactly how it was
-    produced and re-run with the same inputs.
+    produced and re-run with the same inputs (``reproduce``).
     """
     import time
     import uuid
@@ -574,6 +588,33 @@ def register_experiment(kind: str, config: dict, metrics: dict) -> str:
     with EXPERIMENTS.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(record) + "\n")
     return run_id
+
+
+def reproduce(run_id: str) -> dict:
+    """Re-run a recorded experiment from its stored config (real reproducibility, not just a log).
+
+    Reads the run's ``kind`` and ``config`` and re-executes it, returning the new run. The LLM's
+    sampling is non-deterministic, so "reproduce" means the same inputs and config — not bit-identical
+    output; a seed (where the kind supports one) makes the synthetic suite deterministic.
+    """
+    if not EXPERIMENTS.exists():
+        raise KeyError(f"no experiment registry at {EXPERIMENTS}")
+    record = None
+    for line in EXPERIMENTS.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            r = json.loads(line)
+            if r.get("run_id") == run_id:
+                record = r
+                break
+    if record is None:
+        raise KeyError(f"unknown run_id {run_id}")
+    kind = record["kind"]
+    cfg = record["config"]
+    if kind == "autonomous":
+        result = run_autonomous(cfg["problem"], rounds=cfg.get("rounds", 1),
+                                budget=cfg.get("budget", 8))
+        return {"reproduced_from": run_id, "new_run_id": result["run_id"], "result": result}
+    raise ValueError(f"cannot reproduce kind {kind!r} (only 'autonomous' is re-runnable today)")
 
 
 def all_facts() -> dict[str, Fact]:
@@ -1005,13 +1046,17 @@ def _formalize_prompt(statement: str) -> str:
     )
 
 
-def _lean_matches_hypothesis(lean: str, statement: str, endpoint: str, key: str, model: str) -> bool:
+def _lean_matches_hypothesis(lean: str, statement: str) -> bool:
     """Protect the Lean bridge: the formalized theorem must state the SAME proposition as the claim.
 
     The formalizer can silently weaken or change the claim (prove an easier, unrelated theorem). This
-    asks a fresh check whether the Lean statement is logically equivalent to the hypothesis, so a
-    "proof" of a different proposition is rejected rather than recorded.
+    checks, with an INDEPENDENT judge (SEXTANT_JUDGE_* — a different model than the formalizer), that
+    the Lean statement is logically equivalent to the hypothesis, so a proof of a different
+    proposition is rejected rather than recorded. The judge must not be the formalizer grading itself.
     """
+    endpoint, key, model = _judge_config()
+    if not model:
+        return False
     prompt = (
         "Does the Lean theorem below state the SAME proposition as the hypothesis (logically "
         "equivalent — not weaker, not stronger, not unrelated)? Answer YES or NO.\n\n"
@@ -1045,7 +1090,7 @@ def prove_and_record(candidate: Candidate, evidence: str) -> dict:
         lean = _ask_llm(_formalize_prompt(candidate.statement), endpoint, key, model)
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "recorded": True, "proof": f"formalise failed: {type(e).__name__}"}
-    if not _lean_matches_hypothesis(lean, candidate.statement, endpoint, key, model):
+    if not _lean_matches_hypothesis(lean, candidate.statement):
         return {"ok": False, "recorded": True,
                 "proof": "rejected — the formalized theorem does not state the original claim"}
     proof = prove(lean, attempts=3)

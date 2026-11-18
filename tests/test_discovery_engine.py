@@ -238,15 +238,15 @@ class TestAutonomousLoop(unittest.TestCase):
         self.assertEqual(len(r["open"]), 1)
 
     def test_lean_bridge_rejects_a_different_proposition(self):
-        with mock.patch.object(runner, "_ask_llm", return_value="NO"):
-            ok = runner._lean_matches_hypothesis("theorem wrong : 1 = 2", "the mass gap is positive",
-                                                 "http://x", "", "m")
+        with mock.patch.object(runner, "_judge_config", return_value=("http://x", "", "judge")):
+            with mock.patch.object(runner, "_ask_llm", return_value="NO"):
+                ok = runner._lean_matches_hypothesis("theorem wrong : 1 = 2", "the mass gap is positive")
         self.assertFalse(ok)
 
     def test_lean_bridge_accepts_the_same_proposition(self):
-        with mock.patch.object(runner, "_ask_llm", return_value="YES"):
-            ok = runner._lean_matches_hypothesis("theorem", "the mass gap is positive",
-                                                 "http://x", "", "m")
+        with mock.patch.object(runner, "_judge_config", return_value=("http://x", "", "judge")):
+            with mock.patch.object(runner, "_ask_llm", return_value="YES"):
+                ok = runner._lean_matches_hypothesis("theorem", "the mass gap is positive")
         self.assertTrue(ok)
 
     def test_register_experiment_writes_a_run_id(self):
@@ -254,6 +254,23 @@ class TestAutonomousLoop(unittest.TestCase):
             run_id = runner.register_experiment("test", {"seed": 1}, {"recall": 0.5})
         self.assertTrue(run_id)
         self.assertEqual(len(run_id), 12)
+
+    def test_reproduce_reruns_an_autonomous_run(self):
+        with mock.patch.object(runner, "EXPERIMENTS", runner.REPO_ROOT / "runs" / "test-exp.jsonl"):
+            runner.EXPERIMENTS.write_text('{"run_id": "abc123", "kind": "autonomous", '
+                                          '"config": {"problem": "p", "rounds": 1, "budget": 4}, '
+                                          '"metrics": {}}\n')
+            with mock.patch.object(runner, "run_autonomous",
+                                   return_value={"run_id": "new", "rounds": []}):
+                out = runner.reproduce("abc123")
+        self.assertEqual(out["reproduced_from"], "abc123")
+        self.assertEqual(out["new_run_id"], "new")
+
+    def test_check_lean_refuses_a_sorry_placeholder(self):
+        # a file that compiles with `sorry` is NOT a proof
+        ok, err = runner._check_lean("theorem t : (1 : Nat) + 1 = 2 := by sorry\n")
+        self.assertFalse(ok)
+        self.assertIn("not a proof", err)
 
 
 if __name__ == "__main__":
