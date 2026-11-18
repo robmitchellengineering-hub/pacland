@@ -575,6 +575,25 @@ def advance(fact_ids: list[str], strategy: str) -> Verdict:
 # CLI
 # ------------------------------------------------------------------------------------------ #
 
+def rank_open_by_eig() -> list[tuple[str, float]]:
+    """Rank the open hypotheses by expected information gain per unit cost.
+
+    Bridges the hypothesis registry to the belief layer: each hypothesis's stated prior and
+    falsifier power (``hypotheses.stated_beliefs``) become a ``Belief``, the C/P detector gates it
+    (refuses outside convergence), and ``belief.rank_by_eig`` orders them so the first item is the
+    test that shrinks our uncertainty the most per unit cost.
+    """
+    from pacland import belief
+
+    beliefs = [
+        belief.Belief(name=s["name"], prior=s["prior"],
+                      likelihood=belief.Likelihood(s["tp"], s["fp"]),
+                      cost=s["cost"])
+        for s in hypotheses.stated_beliefs()
+    ]
+    return belief.rank_by_eig(beliefs)
+
+
 def _main() -> int:
     ap = argparse.ArgumentParser(description="SEXTANT runner — the hypothesis loop")
     ap.add_argument("--list-facts", action="store_true")
@@ -583,6 +602,8 @@ def _main() -> int:
     ap.add_argument("--fact", action="append", default=[], help="fact id (repeatable)")
     ap.add_argument("--strategy", choices=list(STRATEGIES))
     ap.add_argument("--list-open", action="store_true", help="list the OPEN hypotheses and their next sub-lemma")
+    ap.add_argument("--rank-by-eig", action="store_true",
+                    help="rank the OPEN hypotheses by expected information gain (what to test next)")
     ap.add_argument("--decompose", metavar="HYPOTHESIS", help="decompose one OPEN hypothesis into its next sub-lemma")
     ap.add_argument("--advance-all", action="store_true")
     ap.add_argument("--prove", nargs="?", const="", metavar="FILE",
@@ -616,6 +637,11 @@ def _main() -> int:
                       f"  [{ 'runnable' if _runnable_test(first['hypothesis']) else 'manual — needs a thinking agent' }]")
             else:
                 print("    next : (no candidates)")
+        return 0
+    if args.rank_by_eig:
+        print("open hypotheses ranked by expected information gain per unit cost (what to test next):")
+        for i, (name, score) in enumerate(rank_open_by_eig(), 1):
+            print(f"  {i}. {name:<24s} EIG/cost = {score:.4f} nats")
         return 0
     if args.decompose:
         v = advance([args.decompose], "decompose")
