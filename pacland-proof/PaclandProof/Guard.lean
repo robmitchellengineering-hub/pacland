@@ -50,6 +50,10 @@ def count (s find : String) : Nat := countOccurrences find.data s.data
     reflection (`native_decide`) against the embedded subject content, inside Lean's kernel. -/
 def find_once (g : Guard) (subject : String) : Prop := count subject g.find = 1
 
+/-- The List-Char form: both the find pattern and the subject are embedded as List Char, so `native_decide`
+    can evaluate the count in the kernel — `String.data` is opaque to reflection, a List Char is not. -/
+def find_once_list (find : List Char) (subject : List Char) : Prop := countOccurrences find subject = 1
+
 /-- BLACK-BOX CONFORMANCE: the check rejects the sabotaged subject. OBSERVED by mutation, not provable. -/
 opaque rejects_sabotage (g : Guard) : Prop
 
@@ -87,5 +91,9 @@ theorem caught_not_unstable (b : CheckBehaviour) (h : caught b) : ¬ unstable b 
     catches its declared fault. -/
 def catches (g : Guard) (subject : String) (b : CheckBehaviour) : Prop :=
   find_once g subject ∧ rejects_sabotage g ∧ caught b
+
+/-- The List-Char form of the conditional guarantee (used by the reflected proof). -/
+def catches_list (g : Guard) (find : List Char) (subject : List Char) (b : CheckBehaviour) : Prop :=
+  find_once_list find subject ∧ rejects_sabotage g ∧ caught b
 
 end Guard
