@@ -51,6 +51,21 @@ class TestExtractClaim(unittest.TestCase):
         self.assertIsNone(lit.extract_claim(""))
 
 
+class TestExtractMethod(unittest.TestCase):
+    def test_pulls_constraint_and_exclusion_sentences(self):
+        methods = lit.extract_method(
+            "We show the bound m >= c sqrt(sigma). We rule out a vanishing gap. "
+            "We find no evidence for a massless mode. We also review the history.")
+        self.assertEqual(methods[:3], [
+            "We show the bound m >= c sqrt(sigma).",
+            "We rule out a vanishing gap.",
+            "We find no evidence for a massless mode.",
+        ])
+
+    def test_returns_empty_when_no_constraint(self):
+        self.assertEqual(lit.extract_method("We introduce a new notation for operators."), [])
+
+
 class TestStructure(unittest.TestCase):
     def test_adds_claim_and_empty_falsifier_slot(self):
         records = lit.parse_atom(SAMPLE_FEED.encode())

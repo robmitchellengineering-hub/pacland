@@ -22,6 +22,13 @@ _CLAIM_VERBS = ("we show", "we prove", "we establish", "we demonstrate", "we fin
                 "we derive", "we obtain", "we present", "we construct", "we provide",
                 "we introduce", "we give")
 
+# Sentences that state a TEST or CONSTRAINT — the material a falsifier is built from.
+_CONSTRAINT_VERBS = ("we rule out", "we exclude", "we find no evidence", "we bound", "we constrain",
+                     "we place", "we measure", "we observe", "we search for")
+_CONSTRAINT_WORDS = ("bound", "exclude", "excluded", "constrain", "rule out", "ruled out",
+                     "tension with", "no evidence", "upper", "lower", "consistent with",
+                     "limits", "limit on", "disfavors", "disfavoured")
+
 
 def parse_atom(xml_bytes: bytes) -> list[dict]:
     """Parse an arXiv Atom response into structured records."""
@@ -58,6 +65,23 @@ def extract_claim(abstract: str) -> str | None:
         if low.startswith(_CLAIM_VERBS):
             return sentence.strip()
     return None
+
+
+def extract_method(abstract: str) -> list[str]:
+    """Pull the sentences that state a TEST or CONSTRAINT — the falsifier material.
+
+    These are the parts of an abstract that say what was measured/bounded/excluded, i.e. the
+    evidence a falsifier can be built from, as opposed to the headline claim.
+    """
+    text = " ".join((abstract or "").split())
+    if not text:
+        return []
+    out: list[str] = []
+    for sentence in re.split(r"(?<=[.!?])\s+", text):
+        low = sentence.lower()
+        if low.startswith(_CONSTRAINT_VERBS) or any(k in low for k in _CONSTRAINT_WORDS):
+            out.append(sentence.strip())
+    return out
 
 
 def structure(records: list[dict]) -> list[dict]:

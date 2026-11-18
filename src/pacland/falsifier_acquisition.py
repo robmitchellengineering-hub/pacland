@@ -41,17 +41,55 @@ def key_terms(statement: str, n: int = 6) -> list[str]:
 
 
 def search_arxiv(statement: str, max_results: int = 5) -> list[dict]:
-    """Prior art: arXiv papers that test the claim, with their headline claim as a candidate falsifier."""
+    """Prior art: arXiv papers that test the claim, with BOTH the headline claim and the falsifier
+    METHOD (the measurement/bound/exclusion sentences the paper states)."""
     try:
         records = literature.search_arxiv(statement, max_results)
     except Exception as e:  # noqa: BLE001 — arXiv unreachable is not fatal, it is reported
         return [{"error": f"arXiv unreachable: {type(e).__name__}"}]
     out = []
     for r in records:
-        if r.get("claim"):
-            out.append({"arxiv_id": r.get("arxiv_id", ""), "title": r.get("title", ""),
-                        "claim": r["claim"]})
+        method = literature.extract_method(r.get("abstract", ""))
+        out.append({"arxiv_id": r.get("arxiv_id", ""), "title": r.get("title", ""),
+                    "claim": r.get("claim"), "method": method})
     return out
+
+
+def search_mathlib(statement: str, max_hits: int = 10) -> list[dict]:
+    """Search Mathlib (via Loogle) for theorems whose statement mentions the claim's key terms.
+
+    This is the real 'search the Lean library' step: each hit carries the theorem's FULL TYPE (its
+    statement), so whether it refutes the claim can be checked against the claim's negation — not
+    guessed from a shared word.
+    """
+    import urllib.parse
+    import urllib.request
+
+    hits: list[dict] = []
+    for frag in _loogle_fragments(statement)[:6]:
+        url = "https://loogle.lean-lang.org/json?q=" + urllib.parse.quote(frag)
+        try:
+            with urllib.request.urlopen(url, timeout=15) as resp:
+                data = json.loads(resp.read().decode())
+        except Exception:  # noqa: BLE001 — Loogle unreachable => no hits, not a crash
+            continue
+        for h in data.get("hits", [])[:5]:
+            hits.append({"module": h.get("module", ""), "name": h.get("name", ""),
+                         "type": h.get("type", "")})
+        if len(hits) >= max_hits:
+            break
+    return hits[:max_hits]
+
+
+def _loogle_fragments(statement: str) -> list[str]:
+    """Identifier fragments for a Loogle (identifier-name) query, from the claim's key terms."""
+    frags: list[str] = []
+    for t in key_terms(statement, n=6):
+        frags.append(t)
+        parts = t.split(" ")
+        if len(parts) > 1:
+            frags.append(parts[0] + "".join(p.title() for p in parts[1:]))  # camelCase
+    return [f for f in frags if f]
 
 
 def search_proof_tree(statement: str, proof_dir: str | Path = "pacland-proof",
@@ -107,19 +145,31 @@ def synthesize(statement: str, endpoint: str, key: str, model: str) -> str | Non
 
 def acquire(statement: str, proof_dir: str | Path = "pacland-proof",
             endpoint: str = "", key: str = "", model: str = "") -> dict:
-    """Find or note a falsifier for an OPEN hypothesis. Returns the acquisition record."""
+    """FIND a falsifier first, BUILD only if none is found — in that order.
+
+    1. code       — an existing falsifier in the codebase (runnable today),
+    2. proof tree — a theorem in the local Lean tower that refutes the claim,
+    3. Mathlib    — search Loogle for theorems whose STATEMENT matches (real library search),
+    4. arXiv      — prior art that tests the claim, with its method (measurement/bound/exclusion),
+    5. synthesize — only if none of the above found a falsifier, propose a candidate to build.
+
+    ``found`` is True only when a falsifier was actually located; a bare key-term overlap is NOT
+    counted as found — it is surfaced as a candidate with its statement for the kernel to decide.
+    """
     code = search_code(statement)
     proof = search_proof_tree(statement, proof_dir)
+    mathlib = search_mathlib(statement)
     arxiv = search_arxiv(statement)
+    found = bool(code or proof or mathlib or any(r.get("method") for r in arxiv))
     synthesized = None
-    if not (code or proof):
+    if not found:
         synthesized = synthesize(statement, endpoint, key, model)
-    found = bool(code or proof)
     return {
         "statement": statement,
         "found": found,
         "code": code,
         "proof_tree": proof,
+        "mathlib": mathlib,
         "arxiv": arxiv,
         "synthesized_falsifier": synthesized,
         "verdict": ("falsifier found" if found else

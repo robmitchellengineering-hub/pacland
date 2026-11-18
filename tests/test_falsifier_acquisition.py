@@ -1,5 +1,6 @@
 """Falsifier acquisition closes the loop: a synthesized falsifier becomes an executable test that
 retries the hypothesis."""
+import json
 import unittest
 from unittest import mock
 
@@ -80,6 +81,39 @@ class TestFalsifierJobs(unittest.TestCase):
             self.assertTrue(fa.mark_falsifier_built(job_id, "verify_x"))
             self.assertEqual(len(fa.list_falsifier_jobs("built")), 1)
             fa.FALSIFIER_JOBS.unlink(missing_ok=True)
+
+
+class TestFindFirst(unittest.TestCase):
+    def test_search_mathlib_returns_theorem_statements(self):
+        fake = {"count": 2, "hits": [
+            {"module": "Mathlib.Algebra.Group.Semigroup", "name": "add_comm",
+             "type": "a + b = b + a"},
+        ]}
+
+        class _Resp:
+            def read(self):
+                return json.dumps(fake).encode()
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+        with mock.patch("urllib.request.urlopen", return_value=_Resp()):
+            hits = fa.search_mathlib("the addition operation is commutative", max_hits=3)
+        self.assertEqual(hits[0]["name"], "add_comm")
+        self.assertIn("b + a", hits[0]["type"])
+
+    def test_acquire_finds_prior_art_and_sets_found(self):
+        with mock.patch.object(fa, "search_code", return_value=[]):
+            with mock.patch.object(fa, "search_proof_tree", return_value=[]):
+                with mock.patch.object(fa, "search_mathlib", return_value=[{"name": "add_comm"}]):
+                    with mock.patch.object(fa, "search_arxiv",
+                                           return_value=[{"claim": "c", "method": ["a bound"]}]):
+                        rec = fa.acquire("a + b = b + a")
+        self.assertTrue(rec["found"])
+        self.assertEqual(rec["mathlib"][0]["name"], "add_comm")
 
 
 if __name__ == "__main__":
