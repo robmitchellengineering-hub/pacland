@@ -54,6 +54,21 @@ SEXTANT_LLM_ENDPOINT=http://100.73.60.26:11434/v1 SEXTANT_LLM_MODEL=qwen2.5-disc
 ## Honest status
 
 - `build_peft_dataset.py` — **verified** (runs, 223 examples).
-- `fine_tune_peft.py` — **guards verified** (refuses without CUDA); the training itself has **not** been
-  run on a GPU.
-- `merge_lora.py` + `publish_ollama.sh` — **written, not yet run** (need the GPU + llama.cpp).
+- `fine_tune_peft.py` — **verified on a rented 3090** (trains, saves, merges); the five API/version bugs found live are fixed.
+- `merge_lora.py` + `publish_ollama.sh` — **verified** (full run produced `qwen2.5-discovery`, recall 1/1 on blackbody).
+
+## Later — expand Mathlib with our physics Lean proofs (deferred)
+
+Mathlib has only a thin `Physics/` dir (relativity + basic QM). Our `pacland-proof/` tree already formalises
+real QM results (Born rule, Tsirelson, Gaussian-LSI) that Mathlib lacks. Two later steps, deliberately not
+done now:
+
+1. **Contribute our physics Lean proofs upstream to Mathlib** (or a physics sub-project), so the formalised
+   physics corpus grows for everyone.
+2. **Use them + Mathlib.Physics + ProofNet as physics-specific formalizer training data** — today the
+   formalizer skill is only 25 generated examples; this is the real source for a serious formalizer tune.
+
+For now the training stays **physics-specific**: discovery data is ours, the falsifier skill is generated
+(there is no public physics-falsifier corpus), and the Lean skill is the small generated set until the
+Mathlib-expansion step above.
+
