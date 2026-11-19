@@ -57,6 +57,14 @@ SEXTANT_LLM_ENDPOINT=http://100.73.60.26:11434/v1 SEXTANT_LLM_MODEL=qwen2.5-disc
 - `fine_tune_peft.py` — **verified on a rented 3090** (trains, saves, merges); the five API/version bugs found live are fixed.
 - `merge_lora.py` + `publish_ollama.sh` — **verified** (full run produced `qwen2.5-discovery`, recall 1/1 on blackbody).
 
+## Sweep finding (2026-11-19) — train_loss is the WRONG objective
+
+A 5-config sweep (lr ∈ {1e-4,2e-4,5e-4} × r ∈ {16,32} × epochs ∈ {3,5}) found lr=5e-4 gives the lowest
+train_loss (0.554 vs 0.876 for lr=2e-4). **But lower loss overfits**: judged recall on blackbody was
+**0/1** for lr=5e-4 vs **1/1** for the original lr=2e-4. The model memorised the format and lost the
+discovery mapping. Lesson: **optimise on JUDGED RECALL (the actual task), not train_loss** — a real
+optimization must evaluate each config against the benchmark on the GPU, not pick the lowest loss.
+
 ## Later — expand Mathlib with our physics Lean proofs (deferred)
 
 Mathlib has only a thin `Physics/` dir (relativity + basic QM). Our `pacland-proof/` tree already formalises
