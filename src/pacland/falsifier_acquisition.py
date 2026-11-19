@@ -258,63 +258,77 @@ print(_json.dumps(list(_result)))
 '''
 
 
-def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str) -> dict:
-    """Turn a synthesized falsifier into an EXECUTABLE test, validate it, run it, and retry.
+def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str,
+                            attempts: int = 3) -> dict:
+    """Turn a synthesized falsifier into an EXECUTABLE test, validate it, run it, and REPAIR it.
 
     This closes the acquisition loop: acquire -> build (the LLM writes a Python ``falsifier()``
     returning ``(bool, str)``) -> VALIDATE it actually tests the candidate -> run it in a subprocess ->
-    get a verdict. The code runs in a RESTRICTED namespace (whitelisted builtins + math/numpy/sympy —
-    no ``__import__``/``open``/``os``/``subprocess``/``socket``/``eval``) inside a subprocess with a
-    timeout, so the "no files/network" instruction is enforced, not merely requested. The verdict is
-    honest — it is from a SYNTHESIZED falsifier (LLM-written, not a vetted lattice/Lean computation),
-    so it is a candidate verdict, not a definitive one.
+    get a verdict. On a crash or unparseable output the error is fed back to the LLM and it retries
+    (up to ``attempts``), the same repair loop the Lean prover uses. The code runs in a RESTRICTED
+    namespace (whitelisted builtins + math/numpy/sympy — no ``__import__``/``open``/``os``/
+    ``subprocess``/``socket``/``eval``) inside a subprocess with a timeout, so the "no files/network"
+    instruction is enforced, not merely requested. The verdict is honest — it is from a SYNTHESIZED
+    falsifier (LLM-written, not a vetted lattice/Lean computation), so it is a candidate verdict.
     """
     from pacland import runner
 
     if not model:
         return {"ran": False, "reason": "no LLM to write the falsifier"}
-    prompt = (
-        "Write a Python function `falsifier()` that tests the hypothesis below and returns "
-        "(bool, str): True if the hypothesis SURVIVES (the test could not refute it), False if it is "
-        "REFUTED, plus a one-line evidence string. Use only numpy / math / sympy — no files, no "
-        "network, no prints except the return. Output ONLY the code.\n\nHypothesis: " + statement
-    )
-    try:
-        code = runner._ask_llm(prompt, endpoint, key, model)
-    except Exception as e:  # noqa: BLE001
-        return {"ran": False, "reason": f"LLM failed: {type(e).__name__}"}
-    code = code.strip().strip("`").replace("```python", "").replace("```", "").strip()
-
-    issues = validate_falsifier(code, statement)
-    if issues:
-        return {"ran": False, "reason": "vacuous falsifier rejected: " + "; ".join(issues)}
 
     import json
     import subprocess
     import tempfile
     from pathlib import Path
 
-    # The LLM code runs in a RESTRICTED namespace: only a whitelist of builtins plus math/numpy/sympy.
-    # No __import__, open, os, subprocess, socket, eval, exec, globals, locals — the instruction not to
-    # touch files/network is ENFORCED, not requested. The subprocess still isolates time (timeout).
-    harness = _RESTRICTED_PRELUDE + "\n_code = " + repr(code) + "\n" + _RESTRICTED_POSTLUDE
-    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
-        f.write(harness)
-        path = f.name
-    try:
-        r = subprocess.run(["python3", path], capture_output=True, text=True, timeout=60)
-    except subprocess.TimeoutExpired:
-        return {"ran": False, "reason": "synthesized falsifier timed out"}
-    finally:
+    base_prompt = (
+        "Write a Python function `falsifier()` that tests the hypothesis below and returns "
+        "(bool, str): True if the hypothesis SURVIVES (the test could not refute it), False if it is "
+        "REFUTED, plus a one-line evidence string. Use only numpy / math / sympy — no files, no "
+        "network, no prints except the return. Output ONLY the code.\n\nHypothesis: " + statement
+    )
+    last_reason = ""
+    for attempt in range(attempts):
+        prompt = base_prompt
+        if last_reason:
+            prompt += "\n\nYour previous attempt failed with: " + last_reason + \
+                      "\nFix the bug and output ONLY the corrected code."
+        try:
+            code = runner._ask_llm(prompt, endpoint, key, model)
+        except Exception as e:  # noqa: BLE001
+            return {"ran": False, "reason": f"LLM failed: {type(e).__name__}"}
+        code = code.strip().strip("`").replace("```python", "").replace("```", "").strip()
+
+        issues = validate_falsifier(code, statement)
+        if issues:
+            last_reason = "vacuous falsifier rejected: " + "; ".join(issues)
+            continue
+
+        # The LLM code runs in a RESTRICTED namespace: only a whitelist of builtins plus math/numpy/sympy.
+        harness = _RESTRICTED_PRELUDE + "\n_code = " + repr(code) + "\n" + _RESTRICTED_POSTLUDE
+        with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
+            f.write(harness)
+            path = f.name
+        try:
+            r = subprocess.run(["python3", path], capture_output=True, text=True, timeout=60)
+        except subprocess.TimeoutExpired:
+            Path(path).unlink(missing_ok=True)
+            last_reason = "synthesized falsifier timed out"
+            continue
         Path(path).unlink(missing_ok=True)
-    if r.returncode != 0:
-        return {"ran": False, "reason": f"falsifier code failed: {(r.stderr or r.stdout)[:200]}"}
-    try:
-        survived, evidence = json.loads(r.stdout.strip())
-    except Exception:  # noqa: BLE001
-        return {"ran": False, "reason": f"falsifier returned unparseable output: {r.stdout[:120]}"}
-    return {"ran": True, "survived": bool(survived), "evidence": str(evidence), "code": code,
-            "note": "synthesized falsifier (LLM-written, not a vetted lattice/Lean computation)"}
+        if r.returncode != 0:
+            last_reason = f"falsifier code failed: {(r.stderr or r.stdout)[:200]}"
+            continue
+        try:
+            survived, evidence = json.loads(r.stdout.strip())
+        except Exception:  # noqa: BLE001
+            last_reason = f"falsifier returned unparseable output: {r.stdout[:120]}"
+            continue
+        return {"ran": True, "survived": bool(survived), "evidence": str(evidence), "code": code,
+                "attempts": attempt + 1,
+                "note": "synthesized falsifier (LLM-written, not a vetted lattice/Lean computation)"}
+
+    return {"ran": False, "reason": last_reason or "could not build a runnable falsifier"}
 
 
 def record_falsifier_job(statement: str, proposed_falsifier: str, reason: str) -> str:
