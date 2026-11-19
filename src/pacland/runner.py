@@ -37,6 +37,57 @@ PROOF_DIR = REPO_ROOT / "pacland-proof"
 RECORD = REPO_ROOT / "runs" / "runner.jsonl"
 DISCOVERIES = REPO_ROOT / "runs" / "discoveries.jsonl"
 EXPERIMENTS = REPO_ROOT / "runs" / "experiments.jsonl"
+MEMORY = REPO_ROOT / "runs" / "discovery-memory.jsonl"
+
+
+def _load_memory() -> list[dict]:
+    """The verified-discovery memory: one JSON object per line (problem, statement, falsifier, proof)."""
+    if not MEMORY.exists():
+        return []
+    out: list[dict] = []
+    for line in MEMORY.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            out.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    return out
+
+
+def _append_memory(problem: str, statement: str, falsifier: str, proof: dict | None) -> None:
+    """Record a VERIFIED discovery into the in-context memory (the learn-as-it-goes store)."""
+    MEMORY.parent.mkdir(parents=True, exist_ok=True)
+    with MEMORY.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps({
+            "problem": problem, "statement": statement, "falsifier": falsifier,
+            "proof": (proof or {}).get("lean", "") if proof else "",
+            "ts": datetime.now(timezone.utc).isoformat(),
+        }) + "\n")
+
+
+def _memory_prefix(problem: str, n: int = 4) -> str:
+    """Few-shot prefix from the most relevant verified discoveries (keyword overlap on the problem).
+
+    Injecting past VERIFIED discoveries as examples is the in-context-learning leg of "better with
+    use" — the model sees real pre-state -> discovery -> falsifier pairs before proposing, with no
+    weight update (which the ROG cannot do).
+    """
+    entries = _load_memory()
+    if not entries:
+        return ""
+    q = set(re.findall(r"[a-z]{3,}", problem.lower()))
+
+    def score(e: dict) -> int:
+        hay = (e.get("problem", "") + " " + e.get("statement", "")).lower()
+        return len(q & set(re.findall(r"[a-z]{3,}", hay)))
+
+    ranked = sorted(entries, key=score, reverse=True)[:n]
+    lines = ["Verified discoveries from past runs (use as a template, do not repeat them):"]
+    for e in ranked:
+        lines.append(f"- {e['statement']} (falsifier: {e['falsifier']})")
+    return "\n".join(lines) + "\n\n"
 
 
 # ------------------------------------------------------------------------------------------ #
@@ -940,7 +991,7 @@ class LlmSearch(SearchStrategy):
         endpoint, key, model = _llm_config()
         if not model:
             return []
-        prompt = (
+        prompt = _memory_prefix(problem) + (
             "You are a scientific hypothesis generator. Given the open problem below, propose up to "
             f"{budget} falsifiable hypotheses, each with a falsifier. Output ONE per line as "
             "'HYPOTHESIS | FALSIFIER' (a falsifier is the sentence that would make it wrong). "
@@ -1169,6 +1220,7 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
                 continue
             if ran and survived is True:
                 proof = prove_and_record(c, evidence)
+                _append_memory(problem, c.statement, c.falsifier, proof)
                 round_out["survivors"].append({"statement": c.statement, "proof": proof,
                                                "challenges": stage_verdicts, "gate": gate})
             elif ran and survived is False:
