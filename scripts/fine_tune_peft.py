@@ -22,6 +22,7 @@ def main() -> int:
     ap.add_argument("--out", default="runs/peft-adapter")
     ap.add_argument("--epochs", type=float, default=3.0)
     ap.add_argument("--lora-r", type=int, default=16)
+    ap.add_argument("--lr", type=float, default=2e-4)
     args = ap.parse_args()
 
     try:
@@ -61,7 +62,7 @@ def main() -> int:
 
     train_args = TrainingArguments(
         output_dir=args.out, per_device_train_batch_size=2, gradient_accumulation_steps=8,
-        num_train_epochs=args.epochs, learning_rate=2e-4, bf16=True, logging_steps=10,
+        num_train_epochs=args.epochs, learning_rate=args.lr, bf16=True, logging_steps=10,
         save_strategy="epoch", report_to="none",
     )
     # Newer TRL: max_seq_length is not a SFTTrainer kwarg — it is dropped (the prompt+output fit the
