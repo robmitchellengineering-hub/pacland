@@ -57,6 +57,12 @@ SEXTANT_LLM_ENDPOINT=http://100.73.60.26:11434/v1 SEXTANT_LLM_MODEL=qwen2.5-disc
 - `fine_tune_peft.py` — **verified on a rented 3090** (trains, saves, merges); the five API/version bugs found live are fixed.
 - `merge_lora.py` + `publish_ollama.sh` — **verified** (full run produced `qwen2.5-discovery`, recall 1/1 on blackbody).
 
+## Full LoRA + Instruct base (2026-11-19) — 8/10
+
+Full-precision LoRA (bf16 base, `--full-lora`) on `Qwen2.5-7B-Instruct` (instead of QLoRA on the base)
+reached **8/10 judged recall** (was 7/10). Needed `gradient_checkpointing_enable()` + batch 1 to fit a
+7B bf16 in 24 GB (it OOM'd otherwise). Best config: lr=1e-4, epochs=3, r=16.
+
 ## Recall-based tune (2026-11-19) — the model now scores 7/10
 
 The first tune scored ~1/3 and hallucinated (Chinese on perihelion). Two fixes got it to **7/10 judged
