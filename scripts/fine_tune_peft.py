@@ -54,6 +54,10 @@ def main() -> int:
     peft_cfg = LoraConfig(r=args.lora_r, lora_alpha=32, lora_dropout=0.05, bias="none",
                           task_type="CAUSAL_LM")
     model = get_peft_model(model, peft_cfg)
+    if args.full_lora:
+        # bf16 base needs gradient checkpointing + input grads to fit a 7B in 24GB.
+        model.enable_input_require_grads()
+        model.gradient_checkpointing_enable()
     tokenizer = AutoTokenizer.from_pretrained(args.model)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
@@ -67,7 +71,8 @@ def main() -> int:
     data = data.map(fmt)
 
     train_args = TrainingArguments(
-        output_dir=args.out, per_device_train_batch_size=2, gradient_accumulation_steps=8,
+        output_dir=args.out, per_device_train_batch_size=(1 if args.full_lora else 2),
+        gradient_accumulation_steps=8,
         num_train_epochs=args.epochs, learning_rate=args.lr, bf16=True, logging_steps=10,
         save_strategy="epoch", report_to="none",
     )
