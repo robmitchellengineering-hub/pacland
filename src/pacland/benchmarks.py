@@ -312,14 +312,14 @@ import urllib.request
 def _llm_config() -> tuple[str, str, str]:
     """The OpenAI-compatible endpoint, key and model (Ollama on the ROG, or any compatible API).
 
-    Default model is qwen2.5-discovery (our fine-tune). deepseek-r1:7b is more accurate (2/3 vs 1/3)
-    but emits chain-of-thought, so on the ROG's CPU it takes >5 min per answer and times the engine
-    out — too slow to be usable in the loop.
+    The model is read from the environment with NO hardcoded default, so "no model configured" stays
+    a detectable, gracefully-refused state (the runner/benchmark tests rely on it). Set
+    SEXTANT_LLM_MODEL=qwen2.5-discovery (and SEXTANT_LLM_ENDPOINT) to use the tuned local model.
     """
     return (
         os.environ.get("SEXTANT_LLM_ENDPOINT", "http://localhost:11434/v1"),
         os.environ.get("SEXTANT_LLM_KEY", ""),
-        os.environ.get("SEXTANT_LLM_MODEL", "qwen2.5-discovery"),
+        os.environ.get("SEXTANT_LLM_MODEL", ""),
     )
 
 

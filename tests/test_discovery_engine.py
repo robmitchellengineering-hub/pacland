@@ -303,8 +303,14 @@ class TestAutonomousLoop(unittest.TestCase):
         self.assertEqual(out["new_run_id"], "new")
 
     def test_check_lean_refuses_a_sorry_placeholder(self):
-        # a file that compiles with `sorry` is NOT a proof
-        ok, err = runner._check_lean("theorem t : (1 : Nat) + 1 = 2 := by sorry\n")
+        # a file that compiles with `sorry` is NOT a proof — the refusal logic must fire regardless
+        # of whether the Lean toolchain (`lake`) is installed, so mock the kernel run.
+        class _R:
+            returncode = 0
+            stdout = "declaration uses 'sorry'\n"
+            stderr = ""
+        with mock.patch.object(runner.subprocess, "run", return_value=_R()):
+            ok, err = runner._check_lean("theorem t : (1 : Nat) + 1 = 2 := by sorry\n")
         self.assertFalse(ok)
         self.assertIn("not a proof", err)
 
