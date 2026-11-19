@@ -68,24 +68,24 @@ def _append_memory(problem: str, statement: str, falsifier: str, proof: dict | N
         }) + "\n")
 
 
-def _load_rejected() -> list[str]:
-    """Statements already FALSIFIED or gated-out, so the proposer does not re-tread them."""
+def _load_rejected() -> list[dict]:
+    """Past proposals with their disposition: 'falsified' (dead) or 'gated-out: <stage>' (not dead)."""
     if not REJECTED.exists():
         return []
-    out: list[str] = []
+    out: list[dict] = []
     for line in REJECTED.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
             continue
         try:
-            out.append(json.loads(line)["statement"])
-        except (json.JSONDecodeError, KeyError):
+            out.append(json.loads(line))
+        except json.JSONDecodeError:
             continue
     return out
 
 
 def _append_rejected(problem: str, statement: str, reason: str) -> None:
-    """Record a refuted/gated-out proposal so it is not proposed again."""
+    """Record a proposal's disposition. 'falsified' means dead; 'gated-out' means unjustified, not dead."""
     REJECTED.parent.mkdir(parents=True, exist_ok=True)
     with REJECTED.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps({"problem": problem, "statement": statement, "reason": reason,
@@ -116,10 +116,15 @@ def _memory_prefix(problem: str, n: int = 4) -> str:
         parts += [f"- {e['statement']} (falsifier: {e['falsifier']})" for e in ranked]
 
     if rejected:
-        # list the most recent refuted proposals (not keyword-filtered — the rejected statements use
-        # the ANSWER's vocabulary, not the problem's, so overlap would wrongly drop them)
-        parts.append("Already proposed and REFUTED or gated out — do NOT re-propose these:")
-        parts += [f"- {s}" for s in rejected[-8:]]
+        # split by disposition: FALSIFIED is dead; gated-out is unjustified, not dead.
+        dead = [e for e in rejected if e.get("reason") == "falsified"]
+        gated = [e for e in rejected if str(e.get("reason", "")).startswith("gated-out")]
+        if dead:
+            parts.append("Already FALSIFIED — do NOT re-propose these:")
+            parts += [f"- {e['statement']}" for e in dead[-6:]]
+        if gated:
+            parts.append("Already proposed but gated (not falsified — needs better justification):")
+            parts += [f"- {e['statement']} ({e['reason']})" for e in gated[-6:]]
 
     if not parts:
         return ""
@@ -1250,7 +1255,10 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
             # proved/recorded/acquired. (formal-verification is NOT_APPLICABLE here because the LLM
             # proposal has no theorem yet; the real kernel-check runs in prove_and_record.)
             if gate == "FAIL":
-                _append_rejected(problem, c.statement, "gated-out")
+                # the gate FAILs for a REASON (unjustified assumptions, untested boundary, ...) —
+                # that is NOT the same as falsified, so record which stage dropped it.
+                failed_stage = next((n for n, v in stage_verdicts.items() if v == "FAIL"), "unknown")
+                _append_rejected(problem, c.statement, f"gated-out: {failed_stage}")
                 round_out["proposals"].append({"statement": c.statement, "verdict": "gated-out",
                                                "evidence": evidence, "challenges": stage_verdicts,
                                                "gate": gate})
