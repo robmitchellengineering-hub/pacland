@@ -23,6 +23,8 @@ def main() -> int:
     ap.add_argument("--epochs", type=float, default=3.0)
     ap.add_argument("--lora-r", type=int, default=16)
     ap.add_argument("--lr", type=float, default=2e-4)
+    ap.add_argument("--full-lora", action="store_true",
+                    help="load the base in bf16 (no 4-bit quant) for full-precision LoRA")
     args = ap.parse_args()
 
     try:
@@ -40,11 +42,15 @@ def main() -> int:
         print("no CUDA GPU — this fine-tune needs a CUDA GPU (>= 8GB VRAM); see the header note")
         return 1
 
-    bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
-                             bnb_4bit_compute_dtype=torch.bfloat16)
-    model = AutoModelForCausalLM.from_pretrained(args.model, quantization_config=bnb,
-                                                 device_map="auto")
-    model = prepare_model_for_kbit_training(model)
+    if args.full_lora:
+        model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.bfloat16,
+                                                     device_map="auto")
+    else:
+        bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
+                                 bnb_4bit_compute_dtype=torch.bfloat16)
+        model = AutoModelForCausalLM.from_pretrained(args.model, quantization_config=bnb,
+                                                     device_map="auto")
+        model = prepare_model_for_kbit_training(model)
     peft_cfg = LoraConfig(r=args.lora_r, lora_alpha=32, lora_dropout=0.05, bias="none",
                           task_type="CAUSAL_LM")
     model = get_peft_model(model, peft_cfg)
