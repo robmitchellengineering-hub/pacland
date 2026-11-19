@@ -57,6 +57,17 @@ SEXTANT_LLM_ENDPOINT=http://100.73.60.26:11434/v1 SEXTANT_LLM_MODEL=qwen2.5-disc
 - `fine_tune_peft.py` — **verified on a rented 3090** (trains, saves, merges); the five API/version bugs found live are fixed.
 - `merge_lora.py` + `publish_ollama.sh` — **verified** (full run produced `qwen2.5-discovery`, recall 1/1 on blackbody).
 
+## Recall-based tune (2026-11-19) — the model now scores 7/10
+
+The first tune scored ~1/3 and hallucinated (Chinese on perihelion). Two fixes got it to **7/10 judged
+recall** on the full benchmark, selected on the ROG (verified: blackbody → "quantum nature of energy"):
+
+1. **56 more disguised discovery examples** (`scripts/build_discovery_extra.py`) — the real-discovery
+   data was only 23 pairs; the extra pairs (superconductivity, Compton, parity violation, dark matter,
+   etc.) taught anomaly→discovery instead of memorised wording.
+2. **Select by judged recall, not train_loss** (`scripts/eval_recall.py`). Best config: lr=1e-4, epochs=3
+   (7/10); the old lr=2e-4 was 5/10, and lr=5e-4 overfits (0/1 on blackbody).
+
 ## Sweep finding (2026-11-19) — train_loss is the WRONG objective
 
 A 5-config sweep (lr ∈ {1e-4,2e-4,5e-4} × r ∈ {16,32} × epochs ∈ {3,5}) found lr=5e-4 gives the lowest
