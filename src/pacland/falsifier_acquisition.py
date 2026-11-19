@@ -365,6 +365,56 @@ def is_lattice_claim(statement: str) -> bool:
     return any(t in low for t in _PHYSICS_TERMS)
 
 
+def apply_acquired(acq: dict, statement: str) -> dict | None:
+    """USE an existing falsifier that ``acquire`` found, instead of building a new one.
+
+    Priority (the honest order): a runnable code falsifier is RUN (a definitive verdict); otherwise
+    an existing proof-tree theorem, a Mathlib theorem, or an arXiv paper that already tests the claim
+    is cited as the falsifier — the candidate is already falsifiable by existing work, so building a
+    new falsifier would be worse, not better. Returns ``None`` only when acquire found nothing usable.
+    """
+    from pacland import runner
+
+    # 1. a runnable code falsifier -> run it (definitive)
+    for hit in acq.get("code", []):
+        name = hit.get("falsifier", "")
+        fn = runner.FALSIFIERS.get(name)
+        if fn is None and "." in name:
+            modname, attr = name.split(".", 1)
+            try:
+                mod = __import__(f"pacland.{modname}", fromlist=[modname])
+                fn = getattr(mod, attr, None)
+            except Exception:  # noqa: BLE001
+                fn = None
+        if callable(fn):
+            try:
+                survived, evidence = fn()
+                return {"ran": True, "survived": bool(survived), "evidence": str(evidence),
+                        "existing": name,
+                        "note": f"existing code falsifier {name} (run, definitive)"}
+            except Exception:  # noqa: BLE001 — a crashing found falsifier is skipped, next one tried
+                continue
+    # 2. an existing Lean proof-tree theorem addresses the claim
+    if acq.get("proof_tree"):
+        t = acq["proof_tree"][0]
+        return {"ran": False, "found_existing": True, "existing": t.get("theorem"),
+                "evidence": (f"already falsifiable by an existing proof-tree theorem "
+                             f"({t.get('theorem')} in {t.get('file')}) — no new falsifier needed")}
+    # 3. a Mathlib theorem (via Loogle) addresses the claim
+    if acq.get("mathlib"):
+        m = acq["mathlib"][0]
+        return {"ran": False, "found_existing": True, "existing": m.get("name"),
+                "evidence": (f"already falsifiable by a Mathlib theorem "
+                             f"({m.get('module')}.{m.get('name')}: {m.get('type', '')[:120]})")}
+    # 4. arXiv prior art already tests the claim, with its method
+    for r in acq.get("arxiv", []):
+        if r.get("method"):
+            return {"ran": False, "found_existing": True, "existing": r.get("arxiv_id"),
+                    "evidence": (f"already tested in the literature: arXiv:{r.get('arxiv_id')} — "
+                                 f"{r.get('method', '')[:160]}")}
+    return None
+
+
 def build_lattice_falsifier(statement: str, endpoint: str, key: str, model: str,
                             turns: int = 5) -> dict:
     """Multi-turn build of a lattice falsifier: the LLM writes a falsifier against the lattice
