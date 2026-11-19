@@ -1246,6 +1246,18 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
         round_out = {"proposals": [], "survivors": [], "open": []}
         for c in cands:
             ran, survived, evidence = _falsify(c)
+            # If no existing falsifier exists, ACQUIRE/BUILD one autonomously BEFORE the gate: the
+            # gate's boundary-testing needs a falsifier to test with, and gating first would drop the
+            # candidate before a falsifier could ever be generated.
+            acq = None
+            built = None
+            if not ran:
+                acq = fa.acquire(c.statement, endpoint=endpoint, key=key, model=model)
+                built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
+                if built.get("ran"):
+                    # a synthesized (LLM-written) falsifier gives a CANDIDATE verdict, not definitive
+                    ran, survived, evidence = (True, built["survived"],
+                                               f"{built['evidence']} [synthesized falsifier]")
             # the eight-stage graded challenge, on every proposal (not just the single falsifier)
             seq = challenges.run_sequence(challenges.Candidate(
                 name=c.id, hypothesis=c.statement, falsifier=c.falsifier))
@@ -1259,9 +1271,11 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
                 # that is NOT the same as falsified, so record which stage dropped it.
                 failed_stage = next((n for n, v in stage_verdicts.items() if v == "FAIL"), "unknown")
                 _append_rejected(problem, c.statement, f"gated-out: {failed_stage}")
-                round_out["proposals"].append({"statement": c.statement, "verdict": "gated-out",
-                                               "evidence": evidence, "challenges": stage_verdicts,
-                                               "gate": gate})
+                entry = {"statement": c.statement, "verdict": "gated-out",
+                         "evidence": evidence, "challenges": stage_verdicts, "gate": gate}
+                if built is not None:
+                    entry["acquired_falsifier"] = built
+                round_out["proposals"].append(entry)
                 continue
             if ran and survived is True:
                 proof = prove_and_record(c, evidence)
@@ -1274,21 +1288,19 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
                                                "evidence": evidence, "challenges": stage_verdicts,
                                                "gate": gate})
             else:
-                acq = fa.acquire(c.statement, endpoint=endpoint, key=key, model=model)
-                built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
                 entry = {"statement": c.statement, "verdict": "open", "evidence": evidence,
                          "acquisition": acq, "synthesized_test": built,
                          "challenges": stage_verdicts, "gate": gate}
                 # a synthesized falsifier that ran gives a CANDIDATE verdict (not definitive)
-                if built.get("ran"):
+                if built is not None and built.get("ran"):
                     entry["candidate_verdict"] = ("survived" if built["survived"] else "refuted")
                 else:
                     # the falsifier could not be built in this pass — record it as a JOB so another
                     # process or session can build it, keeping the frontier moving.
                     entry["falsifier_job"] = fa.record_falsifier_job(
                         c.statement,
-                        acq.get("synthesized_falsifier") or c.falsifier,
-                        built.get("reason", "unknown"))
+                        (acq or {}).get("synthesized_falsifier") or c.falsifier,
+                        (built or {}).get("reason", "unknown"))
                 round_out["open"].append(entry)
         out["rounds"].append(round_out)
     metrics = {"rounds": rounds,
