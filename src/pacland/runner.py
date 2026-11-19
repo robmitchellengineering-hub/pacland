@@ -393,11 +393,14 @@ def next_sublemma(hypothesis_id: str) -> Candidate:
 # ------------------------------------------------------------------------------------------ #
 
 def _llm_config() -> tuple[str, str, str]:
-    """The OpenAI-compatible endpoint, key and model from the environment."""
+    """The OpenAI-compatible endpoint, key and model from the environment.
+
+    Default model is deepseek-r1:7b (the reasoning model that beats the fine-tune on judged recall).
+    """
     return (
         os.environ.get("SEXTANT_LLM_ENDPOINT", "http://localhost:11434/v1"),
         os.environ.get("SEXTANT_LLM_KEY", ""),
-        os.environ.get("SEXTANT_LLM_MODEL", ""),
+        os.environ.get("SEXTANT_LLM_MODEL", "deepseek-r1:7b"),
     )
 
 

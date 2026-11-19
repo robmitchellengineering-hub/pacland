@@ -310,11 +310,14 @@ import urllib.request
 
 
 def _llm_config() -> tuple[str, str, str]:
-    """The OpenAI-compatible endpoint, key and model (Ollama on the ROG, or any compatible API)."""
+    """The OpenAI-compatible endpoint, key and model (Ollama on the ROG, or any compatible API).
+
+    Default model is deepseek-r1:7b (the reasoning model that beats the fine-tune on judged recall).
+    """
     return (
         os.environ.get("SEXTANT_LLM_ENDPOINT", "http://localhost:11434/v1"),
         os.environ.get("SEXTANT_LLM_KEY", ""),
-        os.environ.get("SEXTANT_LLM_MODEL", ""),
+        os.environ.get("SEXTANT_LLM_MODEL", "deepseek-r1:7b"),
     )
 
 
@@ -517,5 +520,5 @@ if __name__ == "__main__":
     print(report(compare(arms, "historical-rediscovery", DATASET)))
     print("\nNOTE: the five-jump arm carries the jump (straw-man) — recall 1.0 is an upper bound, not")
     print("evidence. Run with the real generator via:")
-    print("  SEXTANT_LLM_ENDPOINT=http://<rog-ip>:11434/v1 SEXTANT_LLM_MODEL=qwen2.5:7b \\")
+    print("  SEXTANT_LLM_ENDPOINT=http://<rog-ip>:11434/v1 SEXTANT_LLM_MODEL=deepseek-r1:7b \\")
     print("  python3 -c \"from pacland import benchmarks as b; print(b.report(b.run_campaign('A', b.llm_generator)))\"")
