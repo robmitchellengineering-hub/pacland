@@ -22,6 +22,19 @@
 2. **Once the LLM is trained**, add the WHOLE system (not just the 33-claim catalog) to the sextant node
    on the site — `web/sextant.html` + `web/node.html` — and make it **downloadable**.
 
+## Delivery forms — the answer is BOTH (they already exist, split)
+
+- **Installable on a computer (runnable):** `pip install pacland` → `sextant-node` (`pacland.sextant_node`)
+  serves the whole system locally at `http://127.0.0.1:8090` — the GUI, the yes/no engine, the global
+  quest, the falsifier button, the "contribute a discovery" flow, and a "point at your own AI" hook.
+  Entry points in `pyproject.toml`: `pacland`, `sextant`, `sextant-node`.
+- **As the computer (the OS):** the Rust ports `morph-verify` (SEXTANT registry) and `rob-quantum`
+  (quantum compute) compile into MorpheOS, booted via `images/x86-qemu/build.sh`.
+
+**Consolidation needed:** the Rust ports currently live in THREE worktrees with duplicate `morph-verify`
+copies (`MorpheOS-sextant-cli`, `MorpheOS-Secure-quantum`, `MorpheOS-morphverify-fix`). Unify them under
+Tool Sextant so there is ONE `morph-verify`, ONE `rob-quantum`, and ONE node — not three.
+
 ## Current honest gap
 
 The site node today shows only the yes/no engine (the catalog). The discovery loop, belief layer,
