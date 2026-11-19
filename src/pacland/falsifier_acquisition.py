@@ -297,7 +297,7 @@ def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str,
             code = runner._ask_llm(prompt, endpoint, key, model)
         except Exception as e:  # noqa: BLE001
             return {"ran": False, "reason": f"LLM failed: {type(e).__name__}"}
-        code = code.strip().strip("`").replace("```python", "").replace("```", "").strip()
+        code = _clean_code(code)
 
         issues = validate_falsifier(code, statement)
         if issues:
@@ -329,6 +329,108 @@ def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str,
                 "note": "synthesized falsifier (LLM-written, not a vetted lattice/Lean computation)"}
 
     return {"ran": False, "reason": last_reason or "could not build a runnable falsifier"}
+
+
+# The lattice falsifier builder: the numpy sandbox cannot express a lattice measurement, so a
+# physics claim (monopole removal, θ-dependence, glueball, ...) needs a falsifier written against
+# the lattice modules. This is a MULTI-TURN build: write -> run -> feed the crash/noise back ->
+# retry, up to ``turns``, the same repair loop the Lean prover uses. It is NOT a one-shot.
+_LATTICE_API = """\
+Available lattice functions (write `from pacland.<mod> import <fn>` and CALL them — do not reimplement):
+  from pacland.lattice_ym_su3 import measure_string_tension   # (tension, evidence)
+  from pacland.glueball_su3 import glueball_mass_su3          # (mass, evidence)
+  from pacland.polyakov import measure_correlation_mass       # (mass, evidence)
+  from pacland.mass_gap_falsifiers import (verify_bulk_transition, verify_universality,
+                                           verify_large_n_ratio, verify_polyakov_clustering)
+  # each verify_* returns (survived: bool, evidence: str)
+"""
+
+_PHYSICS_TERMS = ("monopole", "vortex", "condensat", "glueball", "lattice", "gauge", "confinement",
+                  "deconfinement", "instanton", "dyon", "mass gap", "mass-gap", "gluon", "theta",
+                  "θ", "vacuum angle", "chiral", "polyakov", "large-n", "large n", "string tension")
+
+
+def _clean_code(code: str) -> str:
+    """Strip markdown fences, a language tag, and any stray leading 'python' token from an LLM reply."""
+    code = code.strip().strip("`")
+    code = re.sub(r"^```[a-zA-Z0-9]*\s*", "", code)
+    code = re.sub(r"\s*```$", "", code)
+    code = re.sub(r"^(python|py|code)\s*\n", "", code, flags=re.IGNORECASE)
+    return code.strip()
+
+
+def is_lattice_claim(statement: str) -> bool:
+    """True when the claim needs a lattice measurement (a numpy-only falsifier cannot express it)."""
+    low = statement.lower()
+    return any(t in low for t in _PHYSICS_TERMS)
+
+
+def build_lattice_falsifier(statement: str, endpoint: str, key: str, model: str,
+                            turns: int = 5) -> dict:
+    """Multi-turn build of a lattice falsifier: the LLM writes a falsifier against the lattice
+    modules, we run it with the pacland source importable, and on a crash or a noise/unresolved
+    result we feed the output back and retry — never one-shot.
+    """
+    from pacland import runner
+
+    if not model:
+        return {"ran": False, "reason": "no LLM to write the falsifier"}
+
+    import os
+    import subprocess
+    import tempfile
+
+    src = str(Path(__file__).resolve().parent.parent)  # .../pacland/src
+    base_prompt = (
+        "Write a Python function `falsifier()` that tests the hypothesis below using the lattice "
+        "modules and returns (bool, str): True if the hypothesis SURVIVES (not refuted), False if it "
+        "is REFUTED, plus a one-line evidence string. Keep it SMALL (N<=6, n_sweeps<=10) so it runs "
+        "in seconds. Output ONLY the code, no prose.\n" + _LATTICE_API + "\nHypothesis: " + statement
+    )
+    last_err = ""
+    for turn in range(turns):
+        prompt = base_prompt
+        if last_err:
+            prompt += ("\n\nYour previous attempt failed:\n" + last_err +
+                       "\nFix the bug and output ONLY the corrected code.")
+        try:
+            code = runner._ask_llm(prompt, endpoint, key, model)
+        except Exception as e:  # noqa: BLE001
+            return {"ran": False, "reason": f"LLM failed: {type(e).__name__}"}
+        code = _clean_code(code)
+
+        harness = "import json\n" + code + "\nprint(json.dumps(list(falsifier())))\n"
+        with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
+            f.write(harness)
+            path = f.name
+        env = dict(os.environ)
+        env["PYTHONPATH"] = src + os.pathsep + env.get("PYTHONPATH", "")
+        try:
+            r = subprocess.run(["python3", path], capture_output=True, text=True, timeout=180,
+                               env=env, cwd=str(src))
+        except subprocess.TimeoutExpired:
+            Path(path).unlink(missing_ok=True)
+            last_err = "falsifier timed out — keep N<=6 and n_sweeps<=10"
+            continue
+        Path(path).unlink(missing_ok=True)
+        if r.returncode != 0:
+            last_err = "crashed:\n" + (r.stderr or r.stdout)[:400]
+            continue
+        try:
+            survived, evidence = json.loads(r.stdout.strip())
+        except Exception:  # noqa: BLE001
+            last_err = "unparseable output: " + r.stdout[:160]
+            continue
+        # a falsifier that returns 'unresolved/noise' evidence is not yet a verdict — retry with that
+        # signal fed back, so it does not one-shot a noise measurement as a refutation.
+        if not isinstance(survived, bool):
+            last_err = f"falsifier returned a non-boolean verdict ({survived!r})"
+            continue
+        return {"ran": True, "survived": bool(survived), "evidence": str(evidence), "code": code,
+                "turns": turn + 1,
+                "note": "lattice falsifier (LLM-written against the lattice modules, not definitive)"}
+
+    return {"ran": False, "reason": last_err or "could not build a runnable lattice falsifier"}
 
 
 def record_falsifier_job(statement: str, proposed_falsifier: str, reason: str) -> str:

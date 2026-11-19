@@ -1253,11 +1253,16 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
             built = None
             if not ran:
                 acq = fa.acquire(c.statement, endpoint=endpoint, key=key, model=model)
-                built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
+                # a lattice/physics claim needs a MULTI-TURN lattice falsifier (the numpy sandbox
+                # cannot express a lattice measurement); a simple claim gets the numpy falsifier.
+                if fa.is_lattice_claim(c.statement):
+                    built = fa.build_lattice_falsifier(c.statement, endpoint, key, model)
+                else:
+                    built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
                 if built.get("ran"):
                     # a synthesized (LLM-written) falsifier gives a CANDIDATE verdict, not definitive
                     ran, survived, evidence = (True, built["survived"],
-                                               f"{built['evidence']} [synthesized falsifier]")
+                                               f"{built['evidence']} [{built.get('note','synthesized falsifier')}]")
             # the eight-stage graded challenge, on every proposal (not just the single falsifier)
             seq = challenges.run_sequence(challenges.Candidate(
                 name=c.id, hypothesis=c.statement, falsifier=c.falsifier))
