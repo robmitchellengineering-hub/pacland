@@ -159,6 +159,20 @@ FIELDS: list[dict] = [
      "reproduces": "mixing time ≤ (1/gap) log(1/ε) for a reversible chain", "tier": 1,
      "limitations": ["non-reversible chains need a different bound"],
      "maps": ["markov-chain-monte-carlo", "ou-process"]},
+    # ---- gauge-theory across fields (the gauge ↔ connection link, made a real cross-field type) ----
+    {"id": "connection-curvature", "type": "gauge-theory", "domain": "mathematics",
+     "definition": "a connection on a principal bundle whose curvature is a Lie-algebra-valued 2-form",
+     "assumptions": ["smooth manifold", "principal G-bundle"],
+     "reproduces": "the field strength F = dA + A∧A is the curvature — the Yang-Mills action is |F|²", "tier": 1,
+     "limitations": ["global obstructions (characteristic classes)"],
+     "maps": ["gauge-symmetry"]},
+    # ---- quantum-correlation across fields (the Bell/CHSH link) ----
+    {"id": "bell-inequality", "type": "quantum-correlation", "domain": "mathematics",
+     "definition": "the CHSH bound ⟨AB⟩+⟨AB'⟩+⟨A'B⟩−⟨A'B'⟩ ≤ 2 for local realism",
+     "assumptions": ["local hidden variables"],
+     "reproduces": "quantum mechanics reaches 2√2 > 2 (Tsirelson bound)", "tier": 1,
+     "limitations": ["loopholes (detection, locality)"],
+     "maps": []},
 ]
 
 

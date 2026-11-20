@@ -186,6 +186,18 @@ does not yet propose GENUINE cross-field links. Fix to apply: constrain the prop
 the target's domain) + require a concrete transferred property; otherwise the deterministic type-match is the
 search, and the LLM only phrases the mapping.
 
+### R1.13 — the engine run on the REAL open problems (correct cross-field links)
+**Verdict: verified — the engine finds the correct connections.**
+
+Added the cross-field counterparts (connection-curvature, bell-inequality) so gauge-theory and
+quantum-correlation span two fields. Then ran the engine on the real physics open problems:
+- ym-mass-gap (spectral-gap) → the 54-theorem spectral-gap structure (mathematics) — the CORRECT deep bridge
+  (the mass gap IS a spectral gap of the transfer operator);
+- confinement-frontier (gauge-theory) → connection-curvature (mathematics) — the known gauge↔connection link;
+- mera-lung (quantum-correlation) → bell-inequality (mathematics).
+All are KNOWN connections (recognitions, not discoveries) — but the engine found them correctly + ranked the
+54-theorem bridge top. The plumbing is proven on real problems; the novelty test is the next milestone.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
