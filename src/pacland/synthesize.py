@@ -37,6 +37,32 @@ def _linked_theorems(struct_id: str) -> int:
     return sum(1 for l in s.get("links", []) if l.startswith("lean-"))
 
 
+def search_novel() -> list[dict]:
+    """Systematic novelty search: every same-TYPE cross-field pair, classified known vs candidate-novel.
+
+    A candidate-novel pair is a type match between two different fields that is NOT in the known-unifications
+    library. This is a CANDIDATE list, not a discovery: the novelty verdict needs outside experts (phase 5).
+    Honest: most type matches are established links the thin library simply does not list yet."""
+    from itertools import combinations
+    structs = [s for s in registry.query("structure", lambda d: True)
+               if not s["id"].startswith("structure-")]
+    known = {k["payload"].get("from"): k["payload"].get("to")
+             for k in registry.query("mapping", lambda d: True)}
+    known.update({v: k for k, v in list(known.items())})
+
+    out = []
+    for a, b in combinations(structs, 2):
+        pa, pb = a["payload"], b["payload"]
+        if pa.get("domain") == pb.get("domain") or pa.get("type") != pb.get("type"):
+            continue
+        pair = (a["id"], b["id"])
+        is_known = any(p in known for p in pair)
+        out.append({"pair": pair, "type": pa["type"],
+                    "domains": (pa["domain"], pb["domain"]), "novel": not is_known})
+    out.sort(key=lambda e: (not e["novel"], e["type"]))
+    return out
+
+
 def synthesize(target_domain: str, target_type: str) -> list[dict]:
     """The cross-field discovery pipeline. Returns one entry per candidate transfer."""
     out = []

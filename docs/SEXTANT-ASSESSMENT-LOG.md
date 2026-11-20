@@ -198,6 +198,15 @@ quantum-correlation span two fields. Then ran the engine on the real physics ope
 All are KNOWN connections (recognitions, not discoveries) — but the engine found them correctly + ranked the
 54-theorem bridge top. The plumbing is proven on real problems; the novelty test is the next milestone.
 
+### R1.14 — the systematic novelty search (13 candidates)
+**Verdict: built — candidates found, novelty needs expert rating.**
+
+`search_novel()` enumerates every same-TYPE cross-field pair and flags the ones NOT in the known library:
+13 candidates. Honest assessment: most are actually known (the thin 3-entry library inflates the flag); the
+genuinely interesting candidates are the relaxation-oscillator cluster (integrate-and-fire ↔ business-cycle,
+harmonic ↔ integrate-and-fire) and energy-budget ↔ noether-conservation. These are CANDIDATES — the novelty
+verdict is phase 5 (outside experts rate non-trivial + correct), which the machine cannot do itself.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
