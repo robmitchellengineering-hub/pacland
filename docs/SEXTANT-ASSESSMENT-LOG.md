@@ -141,6 +141,15 @@ invariant. First verified link: diffusion ↔ random-walk. The random walk's MSD
 mapping. Honest tier: this is NUMERICAL (tier 4), not a Lean proof (tier 1) — the continuum-limit proof is
 a separate, harder step.
 
+### R1.8 — the holistic tool (self-populating registry + one CLI)
+**Verdict: built.**
+
+`ingest.py` + `tool.py`. The registry now self-populates from the REAL assets instead of hand-written
+one-liners: 675 machine-checked Lean theorems → tier-1 Properties, 15 open hypotheses → tier-3 Properties
+(with falsifiers), the climate module → the Domain + Evidence (tier 4), plus the 22-structure field catalog.
+`python -m pacland.tool` is one entry point: `ingest` / `cross` / `verify` / `search` / `run`. Verified live:
+690 properties ingested, cross-reference + transfer-verification both run on the ingested knowledge.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
