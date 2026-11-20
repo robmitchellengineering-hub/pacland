@@ -417,6 +417,16 @@ search on each returns KNOWN (the steady-state deteriorating inventory, the Tayl
 the exponential are all standard). The loop is now the right shape — derive → search → verdict → repeat —
 and is ready to keep generating intersections until one comes back novel.
 
+### R1.38 — chemistry↔institutions (catalysis): known, not novel
+**Verdict: the 'institutions = catalysts' framing is KNOWN.**
+
+`chem_institutions.py` derives the Arrhenius analog (transaction rate ∝ e^{−C/T}, not power-law elasticity).
+The web search found 'Chemistry of Social Interactions' (Technovation 1998) — the social=chemistry framing is
+25+ years old — plus the mature transaction-cost-economics field (Coase/Williamson/North). So even the
+'under-used' chemistry source has prior work. The deeper lesson: nearly every source↔soft-field
+correspondence has at least one prior paper; the genuinely-unmined space is the truly UNBORN subfields
+(humor↔info-theory, ethics↔thermodynamics), not the less-fashionable hard sciences.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
