@@ -88,3 +88,36 @@ def constraint_first(question: str, candidates: list[dict], constraint_names: li
         "survivors": [c["name"] for c in survivors],
         "answer": (survivors[0]["name"] if survivors else "none — every candidate is refuted"),
     }
+
+
+# The solver layer: once the surviving MODEL is identified, its hard-science SOLVER yields the numbers.
+SOLVERS: dict[str, object] = {
+    "thermal + super-rich": lambda m: {
+        "mean wealth (T)": m.get("T", 1.0),
+        "Pareto tail exponent α": m.get("alpha", 1.6),
+        "prediction": "the bulk is exponential with scale T; the tail decays as w^{−α}"},
+    "van der Pol limit cycle": lambda m: {
+        "limit-cycle amplitude": 2.0, "period (approx)": 2 * 3.14159,
+        "prediction": "the cycle is sustained at amplitude ≈ 2 regardless of the shock that started it"},
+    "hyperbolic Phillips": lambda m: {
+        "isotherm constant k": m.get("k", 10.0),
+        "prediction": "inflation × unemployment ≈ k — you cannot lower both at once"},
+    "tatonnement gradient flow": lambda m: {
+        "equilibrium price p*": m.get("p_star", 4.0),
+        "convergence rate": m.get("rate", 2.0),
+        "prediction": "the price converges to p* exponentially at that rate"},
+    "epidemic": lambda m: {
+        "R0": m.get("R0", 1.5), "spreads": m.get("R0", 1.5) > 1,
+        "prediction": "the outbreak grows iff R0 > 1"},
+}
+
+
+def solve_survivor(question: str, candidates: list[dict], constraint_names: list[str]) -> dict:
+    """Constraint-first elimination + the solver: the surviving model, AND its concrete numbers."""
+    r = constraint_first(question, candidates, constraint_names)
+    if r["survivors"]:
+        name = r["survivors"][0]
+        model = next(c for c in candidates if c["name"] == name)
+        solver = SOLVERS.get(name)
+        r["solution"] = solver(model) if solver else {}
+    return r

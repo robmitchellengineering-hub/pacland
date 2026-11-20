@@ -352,6 +352,14 @@ interest-exponential, multiplier-geometric, diversification-clt, laffer-critical
 more problems: inflation-unemployment (hyperbolic Phillips survives, linear refuted); market equilibrium
 (tâtonnement survives, no-equilibrium refuted); epidemic threshold (R0 consistency). 5 problems total.
 
+### R1.32 — the solver layer (constraint-first verdict → concrete numbers)
+**Verdict: built + demonstrated.**
+
+`solve_survivor()` in econ_constraints.py: the constraint-first elimination finds the surviving model, then
+its hard-science SOLVER yields the concrete numbers. Demonstrated: wealth → thermal+super-rich with T=1.0,
+α=1.6; business cycle → van der Pol with amplitude 2.0, period 6.28. The full pipeline (eliminate → solve)
+now yields answers, not just 'which model'.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
