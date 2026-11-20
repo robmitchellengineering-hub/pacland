@@ -318,6 +318,15 @@ game theory, psychology, sociology, linguistics, urban, politics, anthropology, 
 epidemiology/health, climate/ecology, AI/ML) returned ~220 new sourced unifications. Deduped + ingested into
 the known-unifications library. 282 mappings total — a far richer recognition baseline than the earlier 117.
 
+### R1.28 — the payoff: Lean-proved unifications become SOLVERS (complex-system analysis on soft fields)
+**Verdict: mechanism demonstrated.**
+
+`solver.py`: once a unification is Lean-proved, the hard science's proven formula/guarantee SOLVES the
+soft-field problem. Demonstrated: the leaky-integrator period formula solves BOTH the neuron firing period
+AND the inventory reorder period (6.9315 = τ·ln2); the SIR R0=β/γ solves 'will it spread?' (1.5 → spreads);
+the gradient-flow theorem guarantees market convergence (rate 2.0). The formulas are PROVEN in the math
+literature; the remaining step is the Lean kernel-check (tier-4 → tier-1).
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
