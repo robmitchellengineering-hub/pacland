@@ -113,6 +113,15 @@ can measure the mass gap yet) — the loop honestly reported "open" instead of f
 discipline working. To exercise the "survivor" branch the loop must be pointed at a problem with a runnable
 falsifier (e.g. `ou-gap`), which is the next smoke-test step, not a loop defect.
 
+### R1.5 — built-out field catalog (cross-reference material)
+**Verdict: built.**
+
+`fields.py` — 22 structures across 7 cross-field types, each with the full typed-knowledge-model shape
+(definition, type, domain, assumptions, reproduced property, 5-tier status, limitations, permitted
+mappings). The type is the cross-field match key, and 6 of 7 types span ≥2 fields:
+parabolic-pde→5 fields, markov→4, conservation/symmetry/oscillator→3, logistic→2. Every entry is
+established science (tier 1–4), so the cross-reference search has honest, real material.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
