@@ -54,9 +54,42 @@ def fp_operator(links: np.ndarray) -> np.ndarray:
     return (M + M.T) / 2  # symmetrise
 
 
+def fp_operator_sparse(links: np.ndarray):
+    """The FP operator as a `scipy.sparse` matrix — sparse Lanczos then reaches N=8..16, which the
+    dense `eigvalsh` (`O((3Nᵈ)³)`) cannot."""
+    import scipy.sparse as sp
+
+    d, N = links.shape[0], links.shape[1]
+    nsites = N ** d
+    dim = 3 * nsites
+    rows, cols, vals = [], [], []
+    for flat in range(nsites):
+        idx = np.unravel_index(flat, (N,) * d)
+        row = 3 * flat
+        for a in range(3):
+            rows.append(row + a); cols.append(row + a); vals.append(2.0 * d)
+        for mu in range(d):
+            R = adjoint_matrix(links[mu][tuple(idx)])
+            fwd = list(idx); fwd[mu] = (fwd[mu] + 1) % N
+            colf = 3 * int(np.ravel_multi_index(fwd, (N,) * d))
+            for a in range(3):
+                for b in range(3):
+                    rows.append(row + a); cols.append(colf + b); vals.append(-R[a, b])
+            bwd = list(idx); bwd[mu] = (bwd[mu] - 1) % N
+            Rb = adjoint_matrix(links[mu][tuple(bwd)])
+            colb = 3 * int(np.ravel_multi_index(bwd, (N,) * d))
+            for a in range(3):
+                for b in range(3):
+                    rows.append(row + a); cols.append(colb + b); vals.append(-Rb.T[a, b])
+    return sp.coo_matrix((vals, (rows, cols)), shape=(dim, dim)).tocsr()
+
+
 def lowest_fp_eigenvalue(links: np.ndarray) -> float:
-    """The lowest eigenvalue of the FP operator (the Gribov-horizon observable)."""
-    w = np.linalg.eigvalsh(fp_operator(links))
+    """The lowest eigenvalue of the FP operator, via sparse Lanczos (the Gribov-horizon observable)."""
+    from scipy.sparse.linalg import eigsh
+
+    M = fp_operator_sparse(links)
+    w = eigsh(M, k=1, which="SA", return_eigenvectors=False)
     return float(w[0])
 
 
