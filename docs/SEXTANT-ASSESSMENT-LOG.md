@@ -88,6 +88,13 @@ by EIG and surfaces the top one (currently `ym-mass-gap`), and `run_autonomous(p
 it, so the loop is self-starting. The full cross-field radar (querying the five registries) remains gated on
 the registries being built.
 
+### R1.2 — the memory / learn stage
+**Verdict: built (minimal).**
+
+Added `memory.py` — an append-only search history (problem → strategy → candidate → verdict) + `strategy_success()`
+(which strategies produce survivors vs falsified), wired into `run_autonomous` so every candidate's verdict is
+remembered. The full cross-field memory (learning across the five registries) remains gated on the registries.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.

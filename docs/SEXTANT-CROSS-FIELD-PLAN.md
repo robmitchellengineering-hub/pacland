@@ -150,7 +150,7 @@ LLM generator as missing. This is the reconciled, audited status against the act
 | prove (Lean, `prove()`) | built |
 | the loop driver (`run_autonomous`) | built |
 | radar (problem finder) | **built — minimal** (`radar()` surfaces the top-EIG open problem; `run_autonomous()` is self-starting) |
-| memory / learn | **missing** |
+| memory / learn | **built — minimal** (`memory.py`: append-only search history + per-strategy success, wired into the loop) |
 | budget control | partial — a `budget` argument, no dedicated module |
 | the five registries | **not built** — planned (§10) |
 | cross-field transfer layer | **not built** — planned (§3) |

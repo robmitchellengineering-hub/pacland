@@ -1325,6 +1325,7 @@ def run_autonomous(problem: str | None = None, rounds: int = 1, budget: int = 8)
     """
     from pacland import challenges
     from pacland import falsifier_acquisition as fa
+    from pacland import memory
 
     endpoint, key, model = _llm_config()
     problem = problem or radar()
