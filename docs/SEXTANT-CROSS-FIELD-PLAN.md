@@ -30,9 +30,19 @@ Category theory is the **verification substrate**, not the discovery engine:
 - a **structure** = an object in a category, with its **encoding** stated explicitly;
 - "the same structure" = an **isomorphism** (`Mathlib.Iso` / `IsEquivalence`) — checkable;
 - a **transfer** = a **functor** — *naming it is a modeling decision we must make, and the encoding of that functor is the step we check*;
-- the adjoints `Σ ⊣ Δ ⊣ Π` are **free** for any functor — so their existence is **not** evidence of anything. They are plumbing, not a discovery.
+- the adjoint triple `Σ ⊣ Δ ⊣ Π` is **not automatic** for every arbitrary functor: it belongs to the specific **data-migration construction** (Kan extensions over presheaf categories), and it requires suitable conditions (limits/colimits). It is neither free-for-everything nor a discovery criterion — it is one *mechanism*, applicable only where the conditions hold.
 
-**The thing we check is the encoding, not the adjunction.** Each library entry ships as: `(field A, structure X, encoding E_X, property P_A(X) that E_X must reproduce)` and `(field B, structure Y, encoding E_Y, property P_B(Y))`, plus the functor `F` claiming `X ≅ Y`. The gate is: *does `F` actually carry `P_A` to `P_B`, kernel-checked?* If the encoding is invented and `F` is vacuous, the check fails — that is the point.
+**The registry is NOT a bare category.** A bare category of structures permits *mathematically valid but scientifically meaningless* correspondences (a formally correct functor between vacuous encodings). To block that, the registry is a **typed scientific knowledge model, representable categorically** — every registered structure carries, in full:
+
+1. its **formal mathematical definition**;
+2. its **assumptions and constraints**;
+3. its **domain and interpretation** (what it is a model *of*, in which field);
+4. its **proven properties** (tier 1–2 of the classification);
+5. its **empirical evidence** (tier 4), where applicable;
+6. its **known limitations**;
+7. its **permitted mappings** to other structures (which correspondences are allowed).
+
+Category theory then operates on *that* carefully defined information — the functor/isomorphism is checked against the structure's **domain, assumptions, and permitted mappings**, so a correspondence must be both mathematically valid **and** scientifically meaningful. The gate is: *does `F` actually carry the structure's proven property, within its stated domain and permitted mappings, kernel-checked?*
 
 ## 4. The epistemic classification — every claim carries exactly one tier
 
