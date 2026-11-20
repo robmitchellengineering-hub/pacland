@@ -217,6 +217,15 @@ for the constant-depletion inventory) — the transfer is the MECHANISM, not a s
 a candidate-novel mapping (novel=True, novelty_pending_expert=True) + structure + evidence. The machine
 proposes + verifies; the novelty verdict is still the experts' call.
 
+### R1.16 — the EXACT unification (neuron ↔ inventory), not 'same kinda thing'
+**Verdict: proven + verified.**
+
+`relaxation_unify.py`. Both are ONE object — the leaky integrate-and-fire oscillator ẋ = a − bx with
+threshold x_th + reset x_r, period T = (1/b)·ln((a−bx_r)/(a−bx_th)), continuous in b. Neuron: a=I/τ, b=1/τ.
+Inventory: a=D, b=0 (x=−inventory). The inventory cycle is the NO-LEAK LIMIT of the neuron. Verified:
+closed-form = simulation at b=1/τ (6.9315), b=0.05 (2.1072), b=0 (15.0). Tier-1 evidence. The yield: any b
+between 0 and 1/τ interpolates a new cycle model.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
