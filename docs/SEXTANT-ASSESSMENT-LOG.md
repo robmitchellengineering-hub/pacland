@@ -252,6 +252,15 @@ trade = Newton's gravitation (inverse-square interaction); utility maximisation 
 (FOC = Euler-Lagrange); Solow growth = relaxation to steady state (exponential convergence). All four
 verified. 11 economics↔hard-science unifications recorded in total.
 
+### R1.20 — five more economics unifications (batch 2)
+**Verdict: built + verified (after two honest fixes).**
+
+`economics_batch2.py`: Nash equilibrium = fixed point (Brouwer, Cournot converges); business cycle = van
+der Pol limit cycle (amplitude 2.02 from any start); supply-demand = Hooke's law (damped spring);
+Pareto tail = power law (log-log slope ≈ −2); market risk = diffusive fluctuation (variance ∝ time). Two
+initial failures were BUGS (Euler instability + measuring the transient + the wrong variance) — fixed with
+RK4 + post-transient amplitude + endpoint variance. 16 economics↔hard-science unifications total.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
