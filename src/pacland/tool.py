@@ -48,6 +48,13 @@ def _cmd_synthesize(a: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_prove_lean(a: argparse.Namespace) -> int:
+    from pacland import lean_churn
+    r = lean_churn.churn(a.theorem, max_local=a.max_local)
+    print(json.dumps(r, indent=2))
+    return 0
+
+
 def _cmd_search(a: argparse.Namespace) -> int:
     from pacland import registry
     kw = a.keyword.lower()
@@ -90,6 +97,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("domain")
     p.add_argument("type")
     p.set_defaults(fn=_cmd_synthesize)
+
+    p = sub.add_parser("prove-lean", help="churn a Lean proof: local model + kernel check, frontier fallback")
+    p.add_argument("theorem")
+    p.add_argument("--max-local", type=int, default=5)
+    p.set_defaults(fn=_cmd_prove_lean)
 
     p = sub.add_parser("search", help="search every registry for a keyword")
     p.add_argument("keyword")

@@ -327,6 +327,15 @@ AND the inventory reorder period (6.9315 = τ·ln2); the SIR R0=β/γ solves 'wi
 the gradient-flow theorem guarantees market convergence (rate 2.0). The formulas are PROVEN in the math
 literature; the remaining step is the Lean kernel-check (tier-4 → tier-1).
 
+### R1.29 — the Lean-proof churn loop + the two-model setup (DeepSeek-Prover V1.5 local + V2 frontier)
+**Verdict: built + wired; the local model download is the remaining step.**
+
+`proof_models.py` (two tiers: local DeepSeek-Prover-V1.5 on the ROG's Ollama, free; frontier
+DeepSeek-Prover-V2 via the API, paid on-demand) + `lean_churn.py` (generate → `lake env lean` kernel-check →
+iterate on the error → frontier fallback after N local stalls). Wired as `prove-lean` in the tool. The two
+tiers never run at the same time. The loop is built; it needs the V1.5 model pulled on the ROG before it
+generates real proofs.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
