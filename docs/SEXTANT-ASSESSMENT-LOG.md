@@ -150,6 +150,14 @@ one-liners: 675 machine-checked Lean theorems → tier-1 Properties, 15 open hyp
 `python -m pacland.tool` is one entry point: `ingest` / `cross` / `verify` / `search` / `run`. Verified live:
 690 properties ingested, cross-reference + transfer-verification both run on the ingested knowledge.
 
+### R1.9 — grow the knowledge across fields (disciplines + tests ingested)
+**Verdict: built.**
+
+The registry now ingests the canonical 9 disciplines (energy/edna/landscape/climate/drugs/economics/epi/
+ai/animal) as Domains + all 193 test files as Evidence (linked to their domain). Totals: 9 domains, 690
+properties (675 Lean + 15 hypotheses), 193 evidence, 22 structures, 3 mappings. This is real growth from
+the actual in-tree assets, not hand-written one-liners.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.

@@ -85,6 +85,44 @@ def ingest_climate() -> int:
     return n
 
 
+def ingest_disciplines() -> int:
+    """Every discipline in disciplines.py → a Domain entry (the canonical field list)."""
+    from pacland.disciplines import DISCIPLINES
+    n = 0
+    for d in DISCIPLINES:
+        registry.add(registry.Entry(
+            id=f"domain-{d.slug}",
+            kind="domain",
+            payload={"name": d.slug, "title": d.name, "interpretation": d.blurb,
+                     "status": d.status, "package": d.package, "docs": d.docs},
+            provenance={"produced_by": "ingest", "method": "discipline-registry", "ts": time.time()}))
+        n += 1
+    return n
+
+
+_SLUG_ALIASES = {"econ": "economics", "epi": "epidemiology", "rf": "drugs", "site": "energy"}
+
+
+def ingest_tests() -> int:
+    """Every test file → an Evidence entry (a verified claim in its domain), linked to the domain."""
+    tests_dir = REPO_ROOT / "tests"
+    if not tests_dir.exists():
+        return 0
+    n = 0
+    for t in sorted(tests_dir.glob("test_*.py")):
+        prefix = t.name.replace("test_", "").split("_")[0]
+        domain = _SLUG_ALIASES.get(prefix, prefix)
+        registry.add(registry.Entry(
+            id=f"evidence-{t.stem}",
+            kind="evidence",
+            payload={"name": t.stem, "domain": domain, "test": str(t.relative_to(REPO_ROOT)),
+                     "tier": 4},
+            provenance={"produced_by": "ingest", "method": "test-scan", "ts": time.time()},
+            links=[f"domain-{domain}"]))
+        n += 1
+    return n
+
+
 def ingest_all() -> dict[str, int]:
     """Wipe + repopulate the whole registry from the real assets. Returns per-kind counts."""
     registry.clear()
@@ -95,5 +133,6 @@ def ingest_all() -> dict[str, int]:
         "structures": n_fields,
         "lean_proofs": ingest_lean_proofs(),
         "hypotheses": ingest_hypotheses(),
-        "climate": ingest_climate(),
+        "disciplines": ingest_disciplines(),
+        "tests": ingest_tests(),
     }
