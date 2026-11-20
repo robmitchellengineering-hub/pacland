@@ -127,3 +127,28 @@ registries — *"a structure in domain A whose type matches an open problem in d
 transfer through a permitted mapping, and whose evidence holds"* — assembled from linked entries, each
 carrying its real scientific body. Breadth is then a side-effect of adding fields to the registries, and
 the honesty is the encoding-check + the blind-proposal rating.
+
+## 11. Honest status — what is built vs missing (reconciled, 2026-11-19)
+
+The earlier plan (TOOL-SEXTANT-PLAN.md, Nov 19) listed the problem finder, memory, budget control and the
+LLM generator as missing. This is the reconciled, audited status against the actual code:
+
+| component | status |
+|---|---|
+| generate (6 strategies) | built — deterministic + `generate_llm` (P1) |
+| falsify (SEXTANT + `run()`) | built |
+| record (ledger + `record()`) | built |
+| rank / promote (EIG) | built |
+| prove (Lean, `prove()`) | built |
+| the loop driver (`run_autonomous`) | built |
+| radar (problem finder) | **missing** |
+| memory / learn | **missing** |
+| budget control | partial — a `budget` argument, no dedicated module |
+| the five registries | **not built** — planned (§10) |
+| cross-field transfer layer | **not built** — planned (§3) |
+| empirical tier + partner | **not built** — needs a partner (§6) |
+
+So "the universal core is built" was **over-stated**: the *loop* (generate→falsify→record→rank→prove) is
+built and runs, but the **radar** (finding its own problems) and the **memory/learn** layer are missing,
+and the cross-field layer is entirely unbuilt. The honest first field is the existing climate/economics
+modules (real data, real falsifiers already in-tree).

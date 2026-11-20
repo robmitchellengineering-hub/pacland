@@ -64,7 +64,7 @@ before making further changes. Dated; newest last.
 ## Current open items (to assess together)
 
 1. ~~**Finish `generate_llm`**~~ — **done** (`generate_llm` + `generate_candidates`; both paths verified).
-2. **Reconcile the status table** — one honest "built vs missing" table across the plan docs (R1 #7).
+2. ~~**Reconcile the status table**~~ — **done** (plan §11: loop built, radar/memory missing, cross-field layer unbuilt).
 3. **Name the first empirical partner/dataset** before Phase 4–6 (R1 #6) — the climate/economics modules are the candidate.
 4. **Decide whether the R1 corrections + R2 refinements are all the right way to go** — this log is the record to assess.
 
