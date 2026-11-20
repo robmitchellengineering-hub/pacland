@@ -64,8 +64,8 @@ before making further changes. Dated; newest last.
 ## Current open items (to assess together)
 
 1. ~~**Finish `generate_llm`**~~ — **done** (`generate_llm` + `generate_candidates`; both paths verified).
-2. ~~**Reconcile the status table**~~ — **done** (plan §11: loop built, radar/memory missing, cross-field layer unbuilt).
-3. **Name the first empirical partner/dataset** before Phase 4–6 (R1 #6) — the climate/economics modules are the candidate.
+2. ~~**Reconcile the status table**~~ — **done** (plan §11). Note: the radar is now built (minimal) — see the new item below.
+3. ~~**Name the first empirical partner/dataset**~~ — **done**: climate (CMIP6 drift, Irving et al. 2021 data + reference model, already in-tree with passing gates).
 4. **Decide whether the R1 corrections + R2 refinements are all the right way to go** — this log is the record to assess.
 
 ## The meta-lesson (why the scrutiny happened, and the fix)
@@ -79,6 +79,14 @@ an undefined metric, packaging before validation, and churn (3 strategy docs in 
 tier not an assertion, every citation fetched, the metric defined, the test able to fail, the status
 reconciled, one plan with dated amendments, validation before delivery. The discipline built for other
 people's claims now applies to my own plans first.
+
+### R1.1 — the minimal radar (self-starting loop)
+**Verdict: built.**
+
+The radar (problem finder) was the last missing core component. Added `radar()` — ranks the open hypotheses
+by EIG and surfaces the top one (currently `ym-mass-gap`), and `run_autonomous(problem=None)` now defaults to
+it, so the loop is self-starting. The full cross-field radar (querying the five registries) remains gated on
+the registries being built.
 
 ## Disposition convention
 

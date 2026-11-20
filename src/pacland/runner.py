@@ -849,6 +849,25 @@ def rank_open_by_eig() -> list[tuple[str, float]]:
     return belief.rank_by_eig(beliefs)
 
 
+def radar() -> str:
+    """Surface the next problem to work on — the minimal problem-finder.
+
+    Ranks the open hypotheses by expected information gain per unit cost and returns the top one's
+    name; if nothing is ranked, returns the standing frontier problem. This is the *minimal* radar:
+    the full cross-field version (querying the five registries for an open problem in a target field
+    whose type matches a structure elsewhere) is gated on the registries, which are unbuilt (§10 of
+    the plan). This version already makes the loop self-starting: ``run_autonomous()`` picks its own
+    problem instead of requiring one.
+    """
+    try:
+        ranked = rank_open_by_eig()
+    except Exception:  # noqa: BLE001 — a missing dep must not stop the loop from starting
+        ranked = []
+    if ranked:
+        return ranked[0][0]
+    return "confinement-frontier"  # the standing open problem (the frontier)
+
+
 # ------------------------------------------------------------------------------------------ #
 # Search strategies — pluggable problem-level generators (folded from the discovery engine).
 #
@@ -1293,7 +1312,7 @@ def prove_and_record(candidate: Candidate, evidence: str) -> dict:
     return {"ok": proof.get("ok", False), "recorded": True, "proof": proof}
 
 
-def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
+def run_autonomous(problem: str | None = None, rounds: int = 1, budget: int = 8) -> dict:
     """One autonomous pass of the frontier machine: propose -> falsify -> challenge -> prove -> build.
 
     For each round it runs the LLM search strategy, falsifies every proposal, runs the EIGHT-STAGE
@@ -1301,11 +1320,14 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
     for every OPEN proposal — searches arXiv / the proof tree / the codebase for a falsifier,
     synthesises one, BUILDS it into an executable test, and retries the hypothesis against it.
     Returns the whole round's evidence.
+
+    ``problem=None`` → the radar surfaces the top-EIG open problem (self-starting).
     """
     from pacland import challenges
     from pacland import falsifier_acquisition as fa
 
     endpoint, key, model = _llm_config()
+    problem = problem or radar()
     out = {"problem": problem, "rounds": []}
     for _ in range(rounds):
         cands = LlmSearch().generate(problem, budget)

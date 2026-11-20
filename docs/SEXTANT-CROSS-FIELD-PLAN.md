@@ -77,6 +77,14 @@ plumbing; the *yield* is the discovery.
 
 ## 6. The one honest dependency: an empirical partner
 
+**Resolved for the first field: climate.** The climate module already carries the empirical tier in-tree —
+the CMIP6 conservation-drift falsifier (Irving et al. 2021 data), a reference model, the ECS/energy-budget
+models, and 19 test files with passing gates. So the first field needs no new partner to start: the dataset
+and falsifiers already exist. The cross-field pair for the first real test is then **climate ↔ physics**
+(e.g. a statistical-mechanics structure matched to a climate model), which is exactly the §4a yield test.
+
+## 6. The one honest dependency: an empirical partner
+
 The empirical tier cannot run in a container. Before Phases 4–6, the plan must **name one real dataset or
 partner** for the first field (the existing climate and economics modules already have real datasets —
 those are the natural first field). Without that, most outputs stall at the Lean tier, and we must say so
@@ -141,7 +149,7 @@ LLM generator as missing. This is the reconciled, audited status against the act
 | rank / promote (EIG) | built |
 | prove (Lean, `prove()`) | built |
 | the loop driver (`run_autonomous`) | built |
-| radar (problem finder) | **missing** |
+| radar (problem finder) | **built — minimal** (`radar()` surfaces the top-EIG open problem; `run_autonomous()` is self-starting) |
 | memory / learn | **missing** |
 | budget control | partial — a `budget` argument, no dedicated module |
 | the five registries | **not built** — planned (§10) |
