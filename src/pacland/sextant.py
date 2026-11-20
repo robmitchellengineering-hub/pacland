@@ -339,6 +339,22 @@ CATALOG: dict[str, dict] = {
         "verdict": "IRREDUCIBLE",
         "why": "the lattice keeps returning a positive screening mass (m = 0.227) across sizes, so the claim survives every falsifier tried — but there is no sorry-free Lean certificate, so it is computable, not FORCED. Per docs/wolfram-mass-gap.md this is recorded as convergence evidence, not discarded.",
     },
+    "ym-mass-gap-bulk-transition": {
+        "claim": "the SU(3) bulk transition (a jump in the lattice plaquette/order parameter) persists to larger lattices, so the confined phase is a genuine phase, not a small-volume artifact",
+        "theorem": "none — computational, not closed-form (the IRREDUCIBLE class)",
+        "falsifier": "the transition jump vanishing as the lattice grows (a finite-volume artifact)",
+        "oracle": ["lattice (SU(3) bulk-transition falsifier, β=1.8–2.6, N=4,6)"],
+        "verdict": "IRREDUCIBLE",
+        "why": "the jump persists across N (0.232 → 0.189) instead of vanishing, so the transition is a genuine bulk phase — but there is no sorry-free Lean certificate, so it is computable, not FORCED.",
+    },
+    "ym-d5-confinement": {
+        "claim": "five-dimensional SU(2) Yang-Mills is confining (the string tension stays nonzero and does not run to zero as β grows), so d=5 has NO mass gap",
+        "theorem": "none — computational, not closed-form (the IRREDUCIBLE class)",
+        "falsifier": "the d=5 string tension decreasing toward zero across β (deconfinement)",
+        "oracle": ["lattice (d=5 SU(2) string tension, β=2.0–3.2)"],
+        "verdict": "IRREDUCIBLE",
+        "why": "the d=5 tension stays flat (0.952, 0.936, 0.958, 1.034) rather than decreasing, so d=5 stays confining — the claim survives, but computationally, not with a closed-form certificate.",
+    },
 
 }
 
