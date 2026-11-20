@@ -39,6 +39,15 @@ def _cmd_verify(a: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_synthesize(a: argparse.Namespace) -> int:
+    from pacland import ingest, synthesize
+    ingest.ingest_all()
+    for s in synthesize.synthesize(a.domain, a.type):
+        print(f"{s['from_structure']:24s} ({s['from_domain']:12s}) | {s['linked_theorems']:3d} thms "
+              f"| {s['candidate_yield']}")
+    return 0
+
+
 def _cmd_search(a: argparse.Namespace) -> int:
     from pacland import registry
     kw = a.keyword.lower()
@@ -76,6 +85,11 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("verify", help="run the transfer encoding-check")
     p.add_argument("mapping", nargs="?", default="heat-diffusion-walk")
     p.set_defaults(fn=_cmd_verify)
+
+    p = sub.add_parser("synthesize", help="cross-field discovery: match a type + rank by linked knowledge")
+    p.add_argument("domain")
+    p.add_argument("type")
+    p.set_defaults(fn=_cmd_synthesize)
 
     p = sub.add_parser("search", help="search every registry for a keyword")
     p.add_argument("keyword")

@@ -167,6 +167,15 @@ hyperbolic (30), tree (26), spectral-gap (54), gauge-theory (37). 158 theorems l
 structures. The method: group theorems by topic → each group is a structure with a type + domain + links
 to its theorems → the cross-field model proposes the type + mappings, transfer_verify checks the carry.
 
+### R1.11 — the cross-field synthesis pipeline
+**Verdict: built.**
+
+`synthesize.py` + the `synthesize` CLI command. The full discovery chain: target field+type → cross-reference
+→ rank each match by its linked-theorem count → candidate yield (prediction/proof-technique/experiment).
+Verified: an open economics problem (markov) matches epidemiology/biology/physics; an open neuroscience
+problem (spectral-gap) ranks the 54-theorem linked structure top. The yield is a HEURISTIC here — the real
+yield is decided at transfer_verify.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
