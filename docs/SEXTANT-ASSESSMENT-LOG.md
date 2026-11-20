@@ -427,6 +427,16 @@ The web search found 'Chemistry of Social Interactions' (Technovation 1998) — 
 correspondence has at least one prior paper; the genuinely-unmined space is the truly UNBORN subfields
 (humor↔info-theory, ethics↔thermodynamics), not the less-fashionable hard sciences.
 
+### R1.39 — humor↔info-theory (funniness = inverted-U of Shannon surprise): likely known
+**Verdict: the conceptual claim is likely known/tested.**
+
+`humor_info.py` derives funniness as an inverted-U of the punchline's Shannon surprise (−log₂ p), peaking at
+an optimal surprise. The search found the 'surprisal' literature (surprise = information content, used in
+psychology/neuroscience) AND a study testing 'whether a positive or inverted-U relation described the
+function' — so the inverted-U surprise relation has been tested before. The specific Gaussian form might be a
+narrow claim, but the concept is not new. The deeper conclusion: even the 'unborn' subfields (humor) have
+prior 'surprisal' work, because information-theory framing has been applied very broadly.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
