@@ -408,6 +408,15 @@ predictions that match the empirical record.
 Meta-lesson (from Rob): the novelty check ENDS in a web search done by US, not a handoff to experts. The
 pipeline is now: derive → simulate → web-search → verdict (known/novel).
 
+### R1.37 — the automated novelty-search loop (generate → web-search → verdict → repeat)
+**Verdict: loop built; first 4 candidates all known.**
+
+`novelty_search.py` generates candidate predictions from constraint intersections (inventory-temperature
+D/θ, Gini-of-Boltzmann=1/2, central-bank=inventory stability, Phillips×quantity-theory velocity). The web
+search on each returns KNOWN (the steady-state deteriorating inventory, the Taylor principle, the Gini of
+the exponential are all standard). The loop is now the right shape — derive → search → verdict → repeat —
+and is ready to keep generating intersections until one comes back novel.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
