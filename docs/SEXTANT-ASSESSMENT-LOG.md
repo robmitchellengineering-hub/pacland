@@ -207,6 +207,16 @@ genuinely interesting candidates are the relaxation-oscillator cluster (integrat
 harmonic ↔ integrate-and-fire) and energy-budget ↔ noether-conservation. These are CANDIDATES — the novelty
 verdict is phase 5 (outside experts rate non-trivial + correct), which the machine cannot do itself.
 
+### R1.15 — explored + built out the first candidate-novel link (relaxation oscillator)
+**Verdict: verified honestly — real structure, qualified transfer.**
+
+`relaxation.py` explores integrate-and-fire ↔ business-cycle. Both are relaxation oscillators
+(threshold + reset), and both cycle rates increase with input (verified numerically: I&F 0.056→0.247,
+inventory 0.067→0.198). The HONEST nuance: the period formula DIFFERS (log for the leaky neuron, linear
+for the constant-depletion inventory) — the transfer is the MECHANISM, not a single formula. Recorded as
+a candidate-novel mapping (novel=True, novelty_pending_expert=True) + structure + evidence. The machine
+proposes + verifies; the novelty verdict is still the experts' call.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
