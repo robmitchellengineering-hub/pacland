@@ -34,13 +34,31 @@ Category theory is the **verification substrate**, not the discovery engine:
 
 **The thing we check is the encoding, not the adjunction.** Each library entry ships as: `(field A, structure X, encoding E_X, property P_A(X) that E_X must reproduce)` and `(field B, structure Y, encoding E_Y, property P_B(Y))`, plus the functor `F` claiming `X ≅ Y`. The gate is: *does `F` actually carry `P_A` to `P_B`, kernel-checked?* If the encoding is invented and `F` is vacuous, the check fails — that is the point.
 
-## 4. Verification — three tiers, no fake bar
+## 4. The epistemic classification — every claim carries exactly one tier
 
-1. **Lean (the encoding + the isomorphism).** The encoding and the functor kernel-check; the claimed property is actually carried. (This is the only tier an autonomous machine can fully discharge on its own.)
-2. **Empirical (the reality-match).** The transferred prediction survives a pre-registered experiment / held-out data / null model. **This tier is only claimable where a dataset or partner exists** — see §6; without one, an output stops at the Lean tier and is *not* called "verified."
-3. **Expert rating.** Blind-proposed transfers are rated by outside specialists for *non-triviality and correctness*. A transfer that reproduces a known result is rated trivial; the rating is part of the record.
+The discipline the mass-gap work forced, now the standing classification for every field. Every structure,
+result, and correspondence carries ONE tag, and is promoted up a tier only by a *check*, never by assertion:
 
-**Removed:** the "computational irreducibility / emergence bar" (revision 1). It added wording, not a test — "verify by replay" is already what Lean and simulation do. Dropped.
+1. **Mathematically established** — kernel-checked (Lean).
+2. **Follows from established** — derived from tier-1 results by a carried, checked derivation.
+3. **Conjecture** — proposed, neither established nor refuted.
+4. **Tested numerically** — supported by simulation/data, not proven.
+5. **Genuinely unknown** — no evidence either way.
+
+The falsifier-before-believe loop is the machine that moves claims *between* these tiers: a Lean proof
+promotes 3→1, a passing experiment promotes 4→2, a refutation drops any tier to 5 or below. No claim is
+*reported* above its tier.
+
+## 4a. What a cross-field correspondence must yield
+
+A correspondence between two fields is valuable **only by what it yields** — and exactly one of three things:
+
+1. a **new prediction** — a testable consequence in the target field that was not known;
+2. a **new proof technique** — a method that discharges an open target-field claim;
+3. a **more efficient experiment** — a cheaper/faster way to test a target-field claim.
+
+A correspondence that yields none of the three is a curiosity, not a discovery. The isomorphism itself is
+plumbing; the *yield* is the discovery.
 
 ## 5. The models (corrected)
 
@@ -56,10 +74,7 @@ rather than relabel them "verified."
 
 ## 7. Success metric (defined)
 
-**A verified discovery** = a transfer that (a) was proposed blind, (b) is absent from the known-unifications
-library, (c) kernel-checks its encoding/iso, (d) reproduces a non-trivial property, and (e) is rated
-non-trivial+correct by an outside expert. **Metric = verified discoveries per unit of total cost** (compute
-+ model + human expert time). Recognitions from the library count as *0 discoveries* (they are plumbing).
+**A verified discovery** = a correspondence that (a) was proposed blind, (b) is absent from the known-unifications library, (c) kernel-checks its encoding/iso, (d) **yields at least one of {new prediction, new proof technique, more efficient experiment}**, and (e) is rated non-trivial+correct by an outside expert. **Metric = verified discoveries per unit of total cost** (compute + model + human expert time). Recognitions from the library count as 0 (plumbing); a correspondence that yields none of the three counts as 0 too.
 
 ## 8. Build order (packaging moved last)
 
