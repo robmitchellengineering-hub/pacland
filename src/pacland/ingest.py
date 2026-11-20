@@ -142,6 +142,9 @@ def ingest_all() -> dict[str, int]:
     # the harvested soft-field unifications (psychology/sociology/linguistics/urban/politics/…)
     from pacland import soft_unifications
     soft_unifications.record()
+    # the comprehensive full catalog (220+ sourced unifications across every sub-field)
+    from pacland import full_unifications
+    full_unifications.record()
     return {
         "structures": n_fields,
         "lean_proofs": ingest_lean_proofs(),

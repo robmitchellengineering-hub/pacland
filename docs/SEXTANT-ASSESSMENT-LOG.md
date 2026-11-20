@@ -310,6 +310,14 @@ filter); liquidity↔viscosity (the Kyle/Almgren-Chriss price-impact literature)
 library' ≠ 'novel to the field' — genuine novelty needs a literature sweep, and it is far rarer than a
 type match. All three re-flagged known.
 
+### R1.27 — the comprehensive harvest (282 sourced unifications)
+**Verdict: harvested + ingested.**
+
+A 16-agent fan-out across every major sub-field (econophysics market/distribution, finance, macro, micro/
+game theory, psychology, sociology, linguistics, urban, politics, anthropology, history, neuroscience,
+epidemiology/health, climate/ecology, AI/ML) returned ~220 new sourced unifications. Deduped + ingested into
+the known-unifications library. 282 mappings total — a far richer recognition baseline than the earlier 117.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
