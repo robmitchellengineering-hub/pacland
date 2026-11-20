@@ -24,9 +24,10 @@ def glueball_op_su3(links: np.ndarray, t: int) -> float:
 
 
 def glueball_mass_su3(beta: float, N: int = 6, n_sweeps: int = 20, n_meas: int = 100,
-                      seed: int = 0) -> float:
+                      seed: int = 0, smear: bool = True) -> float:
     """The SU(3) glueball mass in lattice units: the median of the MIDDLE effective-mass bins (where
-    the backward-propagating state is negligible)."""
+    the backward-propagating state is negligible). Spatial APE smearing is ON by default — it is the
+    standard fix for the connected-correlator signal-to-noise collapse that made the raw mass noise."""
     rng = np.random.default_rng(seed)
     links = np.array([su3.random_su3(rng) for _ in range(4 * N ** 4)])
     links = links.reshape((4,) + (N,) * 4 + (3, 3))
@@ -36,7 +37,8 @@ def glueball_mass_su3(beta: float, N: int = 6, n_sweeps: int = 20, n_meas: int =
     cross = np.zeros(N)
     for _ in range(n_meas):
         links = su3.metropolis(links, beta, rng, 3)
-        g = np.array([glueball_op_su3(links, t) for t in range(N)])
+        smeared = su3.ape_smear(links) if smear else links
+        g = np.array([glueball_op_su3(smeared, t) for t in range(N)])
         g_sum += g
         for dt in range(N):
             cross[dt] += np.sum(g * np.roll(g, -dt))
