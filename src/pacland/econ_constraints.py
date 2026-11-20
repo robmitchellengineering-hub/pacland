@@ -34,6 +34,33 @@ CONSTRAINTS: dict[str, dict] = {
     "capm-linear": {
         "law": "expected return is linear in beta (the security market line)",
         "check": lambda m: m.get("capm") == "linear"},
+    "phillips-isotherm": {
+        "law": "inflation × unemployment is bounded (the hyperbolic trade-off)",
+        "check": lambda m: m.get("phillips") == "hyperbolic"},
+    "supply-demand-restoring": {
+        "law": "price is pulled back to equilibrium by excess demand (Hooke's law)",
+        "check": lambda m: m.get("price_dynamics") == "restoring"},
+    "nash-fixed-point": {
+        "law": "the equilibrium is a fixed point of the best-response map",
+        "check": lambda m: m.get("equilibrium") == "fixed-point"},
+    "solow-relaxation": {
+        "law": "capital converges to its steady state (relaxation)",
+        "check": lambda m: m.get("growth") == "converges"},
+    "interest-exponential": {
+        "law": "value compounds/decays exponentially (dx/dt = λx)",
+        "check": lambda m: m.get("value_dynamics") == "exponential"},
+    "multiplier-geometric": {
+        "law": "the spending rounds sum to 1/(1−c) (a geometric series)",
+        "check": lambda m: m.get("multiplier") == "geometric"},
+    "diversification-clt": {
+        "law": "portfolio variance falls as 1/N (the central limit)",
+        "check": lambda m: m.get("diversification") == "1/N"},
+    "laffer-critical": {
+        "law": "revenue has a single maximum (a critical point)",
+        "check": lambda m: m.get("laffer") == "single-peak"},
+    "epidemic-threshold": {
+        "law": "an outbreak grows iff R0 = β/γ > 1 (the percolation threshold)",
+        "check": lambda m: m.get("spread") == ("yes" if m.get("R0", 0) > 1 else "no")},
 }
 
 

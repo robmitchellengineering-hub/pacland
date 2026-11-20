@@ -344,6 +344,14 @@ constraint; a model violating any is refuted. Demonstrated: wealth (thermal+supe
 and Pareto refuted) and business cycle (van der Pol survives, damped oscillator and pure Lotka-Volterra
 refuted). The intersection of multiple constraints narrows the model space — the constraint-first power.
 
+### R1.31 — extend the constraint library + solve 3 more real problems
+**Verdict: built + demonstrated (5 problems total).**
+
+Added 10 more constraints (phillips-isotherm, supply-demand-restoring, nash-fixed-point, solow-relaxation,
+interest-exponential, multiplier-geometric, diversification-clt, laffer-critical, epidemic-threshold). Ran 3
+more problems: inflation-unemployment (hyperbolic Phillips survives, linear refuted); market equilibrium
+(tâtonnement survives, no-equilibrium refuted); epidemic threshold (R0 consistency). 5 problems total.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
