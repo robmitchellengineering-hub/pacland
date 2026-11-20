@@ -396,6 +396,18 @@ in perishable supply chains' literature, so the topic is touched, but the specif
 filter = damps the bullwhip' direction is a genuine candidate. The final novelty verdict needs a deeper read
 of the specific papers — the expert step.
 
+### R1.36 — the novelty check ENDS in a web search (the correction) + the verdict
+**Verdict: the spoilage-damps-bullwhip prediction is CORRECT but KNOWN (Minner & Transchel 2017, EJOR).**
+
+The web search (not a handoff) settled it: Minner & Transchel (2017) found 'the perishable nature results in
+lower order variability' — exactly our prediction, including the LIFO+high-service reversal. So it is NOT
+novel, BUT the machine INDEPENDENTLY re-derived a published 2017 result from first principles (leaky
+integrator = low-pass filter → spoilage damps the bullwhip). That validates the method: it produces
+predictions that match the empirical record.
+
+Meta-lesson (from Rob): the novelty check ENDS in a web search done by US, not a handoff to experts. The
+pipeline is now: derive → simulate → web-search → verdict (known/novel).
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
