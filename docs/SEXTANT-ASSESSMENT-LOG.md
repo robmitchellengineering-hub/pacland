@@ -360,6 +360,14 @@ its hard-science SOLVER yields the concrete numbers. Demonstrated: wealth → th
 α=1.6; business cycle → van der Pol with amplitude 2.0, period 6.28. The full pipeline (eliminate → solve)
 now yields answers, not just 'which model'.
 
+### R1.32 — bridge the two constraint layers (accounting + hard-science)
+**Verdict: connected, not duplicated.**
+
+The in-tree `economics/constraint_set.py` already holds 11 accounting identities (by construction) with a
+measured independent rank + slack — more honest than a hand list. `unified_constraints.py` bridges it with
+the hard-science laws (`econ_constraints.py`) into one `combined_report`: a candidate must satisfy BOTH.
+Demonstrated: the correct wealth model passes 11 identities + the hard-science laws → VALID.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
