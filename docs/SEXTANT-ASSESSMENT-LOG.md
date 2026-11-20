@@ -122,6 +122,16 @@ mappings). The type is the cross-field match key, and 6 of 7 types span ≥2 fie
 parabolic-pde→5 fields, markov→4, conservation/symmetry/oscillator→3, logistic→2. Every entry is
 established science (tier 1–4), so the cross-reference search has honest, real material.
 
+### R1.6 — the cross-field search (seed)
+**Verdict: built.**
+
+`cross_reference.py` — `by_type` / `cross_field` / `propose_transfers` / `type_index`. Given an open
+problem {type, domain}, it returns the structures in OTHER fields of the same type, each with its
+reproduced property + tier. Verified live: an open neuroscience problem (parabolic-pde) matches
+heat-equation/fick-diffusion/brownian-motion/black-scholes; an open climate problem (conservation) matches
+stoichiometry/noether-conservation. Type-level matching only — the transfer VERIFICATION (functor/
+encoding-check) is still the separate phase-3 step.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.

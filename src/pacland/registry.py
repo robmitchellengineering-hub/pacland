@@ -75,6 +75,17 @@ def query(kind: str, predicate) -> list[dict]:
     return out
 
 
+def clear() -> None:
+    """Wipe every store — the registry is a seed, and reseeding should start clean."""
+    for kind in KINDS:
+        p = _store(kind)
+        if p.exists():
+            p.unlink()
+    lp = REGISTRY_DIR / "links.jsonl"
+    if lp.exists():
+        lp.unlink()
+
+
 def link(id_a: str, id_b: str, kind: str = "structure") -> None:
     """Add a cross-link between two entries (claim ↔ evidence). In-place, by re-writing the store line."""
     # minimal: record the link in a dedicated links store (claim↔evidence, reversible)
@@ -88,31 +99,21 @@ def _seed_entry(kind: str, pid: str, payload: dict, **kw) -> Entry:
 
 
 def seed_known_unifications() -> None:
-    """Seed the known-unifications library: established cross-field links, each with its encoding and the
-    non-trivial property it reproduces. These are RECOGNITIONS, not discoveries (§2 of the plan)."""
-    # heat ↔ diffusion ↔ random-walk (physics ↔ chemistry ↔ probability), known since the 1800s.
-    add(_seed_entry("structure", "diffusion-eq",
-        {"definition": "∂_t u = D ∇² u", "type": "parabolic-pde",
-         "domains": ["physics", "chemistry"],
-         "reproduces": "linear-in-time mean-squared displacement ⟨x²⟩ = 2D t"}))
+    """Seed the known-unifications library: established cross-field MAPPINGS (links). The structures
+    themselves are seeded by ``fields.seed_fields`` — this only adds the known links between them.
+    These are RECOGNITIONS, not discoveries (§2 of the plan)."""
     add(_seed_entry("mapping", "heat-diffusion-walk",
-        {"from": "diffusion-eq", "to": "random-walk",
+        {"from": "heat-equation", "to": "brownian-motion",
          "mapping": "the diffusion equation is the continuum limit of the symmetric random walk",
          "kind_of_yield": "proof-technique"}))
-    # gauge ↔ connection (physics ↔ geometry)
-    add(_seed_entry("structure", "gauge-symmetry",
-        {"definition": "a local symmetry group acting on a fiber bundle",
-         "type": "local-symmetry", "domains": ["physics"],
-         "reproduces": "the Yang-Mills field strength F = dA + A∧A (curvature)"}))
     add(_seed_entry("mapping", "gauge-connection",
-        {"from": "gauge-symmetry", "to": "connection-curvature",
-         "mapping": "a gauge field is a connection on a principal bundle; its field strength is curvature",
+        {"from": "gauge-symmetry", "to": "crystal-space-group",
+         "mapping": "a gauge field is a connection on a principal bundle; its field strength is curvature — the same local-symmetry structure as a crystal space group",
          "kind_of_yield": "proof-technique"}))
-    # Markov ↔ population ↔ mean-reversion (probability ↔ biology ↔ economics)
-    add(_seed_entry("structure", "markov-operator",
-        {"definition": "a stochastic transition operator with a dominant eigenvalue",
-         "type": "markov", "domains": ["biology", "economics"],
-         "reproduces": "convergence to the stationary distribution at rate set by the spectral gap"}))
+    add(_seed_entry("mapping", "markov-population",
+        {"from": "markov-chain-monte-carlo", "to": "wright-fisher",
+         "mapping": "a reversible Markov chain's spectral gap bounds mixing time — the same operator as population-genetic drift",
+         "kind_of_yield": "proof-technique"}))
 
 
 def new_id() -> str:
