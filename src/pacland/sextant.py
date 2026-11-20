@@ -1,8 +1,9 @@
 """SEXTANT — the yes/no engine on the simulated quantum computer.
 
 A sextant doesn't create the stars, it reads your position from them. SEXTANT doesn't create
-quantum physics, it reads where each claim sits: FORCED (kernel-checked), FREE (delimited), or
-IMPOSSIBLE (a no-go). This is the theorem registry + classifier — the first rung. The quantum
+quantum physics, it reads where each claim sits: FORCED (kernel-checked), FREE (delimited),
+IMPOSSIBLE (a no-go), or IRREDUCIBLE (computable — the lattice keeps forcing it — but with no
+closed-form certificate). This is the theorem registry + classifier — the first rung. The quantum
 facts come from Phantom (Stim/Quimb) and the certificates from the Lean proof tower (pacland-proof/).
 
 Usage:
@@ -330,10 +331,18 @@ CATALOG: dict[str, dict] = {
         "verdict": "FORCED",
         "why": "every non-identity element of the 6-generator group (code stabilizers + Z_L⊗Z + X_L⊗X) has weight ≥ 4, so no 3-leg subsystem carries a stabilizer — the stabilizer form of 'every 3-party reduction is maximally mixed', i.e. the smallest perfect tensor / HaPPY building block (discrete Ryu–Takayanagi: the cut of min(|A|,6−|A|) legs is saturated).",
     },
+    "ym-mass-gap-polyakov": {
+        "claim": "SU(3) Yang-Mills at finite temperature has a positive screening mass (the Polyakov correlator clusters exponentially, so the mass gap does not collapse at finite T)",
+        "theorem": "none — computational, not closed-form (the IRREDUCIBLE class)",
+        "falsifier": "a Polyakov screening mass ≤ 0 (a divergent correlation length)",
+        "oracle": ["lattice (SU(3) Polyakov correlator, N_t=2, N_s=6)"],
+        "verdict": "IRREDUCIBLE",
+        "why": "the lattice keeps returning a positive screening mass (m = 0.227) across sizes, so the claim survives every falsifier tried — but there is no sorry-free Lean certificate, so it is computable, not FORCED. Per docs/wolfram-mass-gap.md this is recorded as convergence evidence, not discarded.",
+    },
 
 }
 
-VERDICT_GLYPH = {"FORCED": "●", "FREE": "○", "IMPOSSIBLE": "✕"}
+VERDICT_GLYPH = {"FORCED": "●", "FREE": "○", "IMPOSSIBLE": "✕", "IRREDUCIBLE": "◐"}
 
 
 def classify(name: str) -> str:

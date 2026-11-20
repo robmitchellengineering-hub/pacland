@@ -13,7 +13,7 @@ for name, e in sextant.CATALOG.items():
     missing = required - set(e)
     if missing:
         problems.append(f"{name}: missing {sorted(missing)}")
-    if e["verdict"] not in {"FORCED", "FREE", "IMPOSSIBLE"}:
+    if e["verdict"] not in {"FORCED", "FREE", "IMPOSSIBLE", "IRREDUCIBLE"}:
         problems.append(f"{name}: bad verdict {e['verdict']!r}")
 
 # known-truth control: the Phantom-computed CHSH value must be exactly 2√2
