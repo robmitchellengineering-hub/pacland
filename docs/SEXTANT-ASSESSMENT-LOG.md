@@ -437,6 +437,16 @@ function' — so the inverted-U surprise relation has been tested before. The sp
 narrow claim, but the concept is not new. The deeper conclusion: even the 'unborn' subfields (humor) have
 prior 'surprisal' work, because information-theory framing has been applied very broadly.
 
+### R1.40 — the RH frontier: downloaded, tiered, and staged as a Lean target
+**Verdict: staged (not proved).**
+
+Downloaded the Goldston–Suriajaya note (TeX) + cloned the honest KXKXKXK/riemann-hypothesis-lean repo.
+Extracted the precise frontier: the whole 'remove RH from Montgomery' question reduces to the horizontal
+multiplicity bound Σ H(γ) ≤ C·(T/2π)log T with C<2, unconditionally (tier 3 open). Ingested 9 tiered
+claims. Staged `pacland-proof/PaclandProof/RHReduction.lean` with the reduction (Theorem 2) + the open
+bound as `sorry` targets for the churn loop. The reduction is elementary counting and UNCLAIMED — the first
+real Lean target.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
