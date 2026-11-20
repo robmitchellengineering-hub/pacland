@@ -368,6 +368,15 @@ measured independent rank + slack — more honest than a hand list. `unified_con
 the hard-science laws (`econ_constraints.py`) into one `combined_report`: a candidate must satisfy BOTH.
 Demonstrated: the correct wealth model passes 11 identities + the hard-science laws → VALID.
 
+### R1.33 — the empirical test: 6/6 survivor predictions match the measured facts
+**Verdict: passed (with the honest caveat).**
+
+`data_test.py`: the survivors' predictions (exponential wealth bulk, Pareto tail α≈1.6, sustained cycle,
+conserved Goodwin, hyperbolic Phillips, tâtonnement convergence) are compared against the published
+measurements — 6/6 match. This validates the constraint-first method (correct predictions), but it is a
+CONSISTENCY check, not a novel-prediction test: the facts are the same ones that motivated the
+unifications. A novel prediction + its confirmation by new data is the remaining bar.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
