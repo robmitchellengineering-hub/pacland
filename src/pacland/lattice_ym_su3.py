@@ -47,6 +47,36 @@ def _proj_su3(m: np.ndarray) -> np.ndarray:
     return q @ np.diag(lam)
 
 
+def ape_smear(links: np.ndarray, alpha: float = 0.5, n_iter: int = 3) -> np.ndarray:
+    """Spatial APE smearing: U_mu → P_SU(3)[(1-α)U_mu + α/4 Σ_staples], spatial directions only.
+
+    Suppresses UV/vacuum contamination and boosts the 0++ glueball overlap (the standard fix for the
+    connected-correlator signal-to-noise collapse). The time direction (0) is left untouched."""
+    d, N = links.shape[0], links.shape[1]
+    links = links.copy()
+    for _ in range(n_iter):
+        new_links = links.copy()
+        for mu in range(1, d):
+            for flat in range(N ** d):
+                idx = np.unravel_index(flat, (N,) * d)
+                staple = np.zeros((3, 3), dtype=complex)
+                for nu in range(1, d):
+                    if nu == mu:
+                        continue
+                    xn = list(idx); xn[nu] = (xn[nu] + 1) % N
+                    xm = list(idx); xm[mu] = (xm[mu] + 1) % N
+                    fwd = links[nu][tuple(idx)] @ links[mu][tuple(xn)] @ links[nu][tuple(xm)].conj().T
+                    staple += fwd
+                    xnm = list(idx); xnm[nu] = (xnm[nu] - 1) % N
+                    xnm2 = list(xnm); xnm2[mu] = (xnm2[mu] + 1) % N
+                    bwd = links[nu][tuple(xnm)].conj().T @ links[mu][tuple(xnm)] @ links[nu][tuple(xnm2)]
+                    staple += bwd
+                smeared = (1.0 - alpha) * links[mu][tuple(idx)] + (alpha / 4.0) * staple
+                new_links[mu][tuple(idx)] = _proj_su3(smeared)
+        links = new_links
+    return links
+
+
 def metropolis(links: np.ndarray, beta: float, rng: np.random.Generator, n_sweeps: int,
                eps: float = 0.25) -> np.ndarray:
     """Wilson Metropolis: propose U' = exp(i eps H) U (H traceless Hermitian), accept by exp(-beta dS)."""
@@ -132,4 +162,4 @@ def measure_string_tension(beta: float, d: int = 4, N: int = 6, n_sweeps: int = 
 
 
 __all__ = ["random_su3", "staple", "metropolis", "plaquette_trace", "wilson_loop",
-           "creutz_ratio", "measure_string_tension"]
+           "creutz_ratio", "measure_string_tension", "ape_smear"]

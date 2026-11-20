@@ -80,9 +80,10 @@ def verify_bulk_transition(betas=(1.8, 2.0, 2.2, 2.4, 2.6), d=4, Ns=(4, 6)) -> t
     return survived, f"SU(2) tension scan: {detail} → {verdict}"
 
 
-def verify_universality(betas=(2.4, 2.6), d=4, Ns=(4, 6)) -> tuple[bool, str]:
+def verify_universality(betas=(2.4, 2.6), d=4, Ns=(4, 6, 8)) -> tuple[bool, str]:
     """'The mass gap is robust against irrelevant operators': compare string tension with and without
-    APE smearing (a UV modification = an irrelevant operator) at two lattice sizes."""
+    APE smearing (a UV modification = an irrelevant operator) at THREE lattice sizes, so the smearing
+    difference must converge toward zero as N grows — a real continuum check, not a two-point demo."""
     import numpy as np
 
     from pacland import lattice_ym_su2 as lm
@@ -112,8 +113,8 @@ def verify_universality(betas=(2.4, 2.6), d=4, Ns=(4, 6)) -> tuple[bool, str]:
     return survived, f"SU(2) smear-vs-plain: {detail} → {verdict}"
 
 
-def verify_large_n_ratio(beta: float = 2.5, N: int = 4, n_sweeps: int = 8,
-                         n_meas: int = 30) -> tuple[bool, str]:
+def verify_large_n_ratio(beta: float = 2.5, N: int = 6, n_sweeps: int = 12,
+                         n_meas: int = 40) -> tuple[bool, str]:
     """'The mass gap is nonzero for all N with a universal ratio to the string tension': compute the
     RG-invariant ratio m/sqrt(sigma) for SU(2) and SU(3) and check they agree (universality in N).
 
