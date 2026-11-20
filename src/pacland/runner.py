@@ -1250,22 +1250,22 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
             # gate's boundary-testing needs a falsifier to test with, and gating first would drop the
             # candidate before a falsifier could ever be generated.
             acq = None
+            existing = None
             built = None
             if not ran:
                 acq = fa.acquire(c.statement, endpoint=endpoint, key=key, model=model)
-                # USE an existing falsifier (code / proof tree / Mathlib / arXiv) if acquire found one
-                # — building a new one when one already exists is worse, not better.
-                built = fa.apply_acquired(acq, c.statement)
-                if built is None:
-                    # nothing existing — build a new one (multi-turn)
+                # USE an existing falsifier (code / proof tree / Mathlib / arXiv) if acquire found one.
+                existing = fa.apply_acquired(acq, c.statement)
+                if existing is not None and existing.get("ran"):
+                    # a DEFINITIVE existing falsifier ran — promote (it is vetted, not synthesized)
+                    ran, survived, evidence = (True, existing["survived"],
+                                               f"{existing['evidence']} [{existing.get('note','existing falsifier')}]")
+                elif existing is None:
+                    # nothing existing — build a new one (synthesized, CANDIDATE — does NOT promote)
                     if fa.is_lattice_claim(c.statement):
                         built = fa.build_lattice_falsifier(c.statement, endpoint, key, model)
                     else:
                         built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
-                if built.get("ran"):
-                    # a synthesized (LLM-written) falsifier gives a CANDIDATE verdict, not definitive
-                    ran, survived, evidence = (True, built["survived"],
-                                               f"{built['evidence']} [{built.get('note','synthesized falsifier')}]")
             # the eight-stage graded challenge, on every proposal (not just the single falsifier)
             seq = challenges.run_sequence(challenges.Candidate(
                 name=c.id, hypothesis=c.statement, falsifier=c.falsifier))
@@ -1281,8 +1281,10 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
                 _append_rejected(problem, c.statement, f"gated-out: {failed_stage}")
                 entry = {"statement": c.statement, "verdict": "gated-out",
                          "evidence": evidence, "challenges": stage_verdicts, "gate": gate}
+                if existing is not None:
+                    entry["existing_falsifier"] = existing
                 if built is not None:
-                    entry["acquired_falsifier"] = built
+                    entry["synthesized_test"] = built
                 round_out["proposals"].append(entry)
                 continue
             if ran and survived is True:
@@ -1297,20 +1299,21 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
                                                "gate": gate})
             else:
                 entry = {"statement": c.statement, "verdict": "open", "evidence": evidence,
-                         "acquisition": acq, "synthesized_test": built,
-                         "challenges": stage_verdicts, "gate": gate}
-                # a synthesized falsifier that ran gives a CANDIDATE verdict (not definitive)
-                if built is not None and built.get("ran"):
-                    entry["candidate_verdict"] = ("survived" if built["survived"] else "refuted")
-                elif built is not None and built.get("found_existing"):
+                         "acquisition": acq, "challenges": stage_verdicts, "gate": gate}
+                if existing is not None and existing.get("found_existing"):
                     # an existing falsifier (paper / Lean proof / Mathlib) already addresses the
                     # claim — use it, do not build a new one.
                     entry["verdict"] = "already-falsifiable"
-                    entry["existing_falsifier"] = built.get("existing")
-                    entry["evidence"] = built.get("evidence")
+                    entry["existing_falsifier"] = existing.get("existing")
+                    entry["evidence"] = existing.get("evidence")
+                elif built is not None and built.get("ran"):
+                    # a synthesized falsifier that ran gives a CANDIDATE verdict (not definitive)
+                    entry["synthesized_test"] = built
+                    entry["candidate_verdict"] = ("survived" if built["survived"] else "refuted")
                 else:
                     # no existing falsifier and none could be built in this pass — record it as a JOB
                     # so another process or session can build it, keeping the frontier moving.
+                    entry["synthesized_test"] = built
                     entry["falsifier_job"] = fa.record_falsifier_job(
                         c.statement,
                         (acq or {}).get("synthesized_falsifier") or c.falsifier,
