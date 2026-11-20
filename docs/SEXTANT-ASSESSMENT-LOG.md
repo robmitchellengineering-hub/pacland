@@ -176,6 +176,16 @@ Verified: an open economics problem (markov) matches epidemiology/biology/physic
 problem (spectral-gap) ranks the 54-theorem linked structure top. The yield is a HEURISTIC here — the real
 yield is decided at transfer_verify.
 
+### R1.12 — the blind transfer proposal (first run) + the honest finding
+**Verdict: built, and the first run found the real gap.**
+
+`propose()` — the model proposes a cross-field mapping for a target problem, with a novelty flag. First
+run (a climate carbon-feedback problem) proposed the carbon-cycle structure — a SAME-FIELD (climate→climate)
+match with a vague transferred property. This is the expected + valuable result: the small trained model
+does not yet propose GENUINE cross-field links. Fix to apply: constrain the proposal to OTHER fields (exclude
+the target's domain) + require a concrete transferred property; otherwise the deterministic type-match is the
+search, and the LLM only phrases the mapping.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.

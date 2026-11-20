@@ -53,3 +53,46 @@ def synthesize(target_domain: str, target_type: str) -> list[dict]:
     # rank: prefer the match with the most linked theorems (the richest transfer source)
     out.sort(key=lambda e: -e["linked_theorems"])
     return out
+
+
+def propose(target_problem: dict) -> dict:
+    """The blind transfer proposal: ask the model to propose a cross-field mapping for a target problem,
+    NOT taken from the known library. Returns the proposal + a novelty flag. The model proposes; the
+    verification (transfer_verify) decides. Honest: this is where the LLM is the weak link — it may
+    propose a known link or a vague one, and that is the signal that matters."""
+    import json as _json
+    import re as _re
+    from pacland.runner import _ask_llm, _llm_config
+    from pacland import registry
+
+    structs = registry.query("structure", lambda d: True)
+    catalog = ", ".join(
+        f"{s['id']}({s['payload'].get('type')}, {s['payload'].get('domain')})" for s in structs[:40])
+
+    endpoint, key, model = _llm_config()
+    if not model:
+        return {"error": "no model configured"}
+    prompt = (
+        "You are a cross-field discovery engine. Given an open problem and a catalog of verified "
+        "structures, propose ONE cross-field correspondence: a structure in ANOTHER field whose type "
+        "matches the problem, with the specific mapping and the non-trivial property it would transfer.\n\n"
+        f"Open problem: {target_problem.get('name', '')} ({target_problem.get('domain', '')})\n"
+        f"Structures: {catalog}\n\n"
+        'Return JSON: {"from_structure": str, "to_problem": str, "mapping": str, '
+        '"transferred_property": str}. Output ONLY the JSON.'
+    )
+    try:
+        raw = _ask_llm(prompt, endpoint, key, model)
+    except Exception as e:  # noqa: BLE001
+        return {"error": f"model call failed: {e}"}
+    m = _re.search(r"\{.*\}", raw, _re.DOTALL)
+    if not m:
+        return {"error": "no JSON in model output", "raw": raw[:120]}
+    try:
+        prop = _json.loads(m.group(0))
+    except Exception:  # noqa: BLE001
+        return {"error": "unparseable JSON", "raw": raw[:120]}
+    # novelty: is this mapping already in the known-unifications library?
+    known = {k["payload"].get("from") for k in registry.query("mapping", lambda d: True)}
+    prop["novel"] = prop.get("from_structure") not in known
+    return prop
