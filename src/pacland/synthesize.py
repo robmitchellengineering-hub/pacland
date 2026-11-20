@@ -65,7 +65,8 @@ def propose(target_problem: dict) -> dict:
     from pacland.runner import _ask_llm, _llm_config
     from pacland import registry
 
-    structs = registry.query("structure", lambda d: True)
+    structs = [s for s in registry.query("structure", lambda d: True)
+               if s["payload"].get("domain") != target_problem.get("domain", "")]
     catalog = ", ".join(
         f"{s['id']}({s['payload'].get('type')}, {s['payload'].get('domain')})" for s in structs[:40])
 
@@ -74,10 +75,11 @@ def propose(target_problem: dict) -> dict:
         return {"error": "no model configured"}
     prompt = (
         "You are a cross-field discovery engine. Given an open problem and a catalog of verified "
-        "structures, propose ONE cross-field correspondence: a structure in ANOTHER field whose type "
-        "matches the problem, with the specific mapping and the non-trivial property it would transfer.\n\n"
+        "structures from OTHER fields, propose ONE cross-field correspondence: a structure whose type "
+        "matches the problem, with the specific mapping and a CONCRETE, checkable transferred property "
+        "(an equation, a bound, or a rate — not a vague phrase).\n\n"
         f"Open problem: {target_problem.get('name', '')} ({target_problem.get('domain', '')})\n"
-        f"Structures: {catalog}\n\n"
+        f"Structures from other fields: {catalog}\n\n"
         'Return JSON: {"from_structure": str, "to_problem": str, "mapping": str, '
         '"transferred_property": str}. Output ONLY the JSON.'
     )
