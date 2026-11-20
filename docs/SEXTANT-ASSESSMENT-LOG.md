@@ -48,8 +48,8 @@ before making further changes. Dated; newest last.
 | # | point | disposition |
 |---|---|---|
 | 1 | the main `generate()` in runner.py is still hard-coded Python branches; the LLM is only in `prove()` and the standalone benchmark | **accepted** — confirmed true |
-| 2 | next integration: an explicit LLM-backed candidate generator returning structured hypotheses with **source references, assumptions, proposed mappings, falsifiers** | **accepted — in progress** (the `Candidate` fields added; the `generate_llm` function is next) |
-| 3 | keep the deterministic generator as the baseline + fallback | **accepted — planned** |
+| 2 | next integration: an explicit LLM-backed candidate generator returning structured hypotheses with **source references, assumptions, proposed mappings, falsifiers** | **accepted — fixed** (`generate_llm` + `generate_candidates`; verified live against `qwen2.5-discovery`) |
+| 3 | keep the deterministic generator as the baseline + fallback | **accepted — fixed** (`generate()` unchanged; `generate_candidates` falls back to it) |
 
 ### R2.3 — the five-registry search engine (from Rob)
 **Verdict: accepted, incorporated into §10.**
@@ -63,7 +63,7 @@ before making further changes. Dated; newest last.
 
 ## Current open items (to assess together)
 
-1. **Finish `generate_llm`** — the LLM-backed candidate generator (structured hypotheses), with the deterministic `generate()` as fallback. Partially built (the `Candidate.assumptions` + `Candidate.proposed_mappings` fields are added and committed).
+1. ~~**Finish `generate_llm`**~~ — **done** (`generate_llm` + `generate_candidates`; both paths verified).
 2. **Reconcile the status table** — one honest "built vs missing" table across the plan docs (R1 #7).
 3. **Name the first empirical partner/dataset** before Phase 4–6 (R1 #6) — the climate/economics modules are the candidate.
 4. **Decide whether the R1 corrections + R2 refinements are all the right way to go** — this log is the record to assess.

@@ -407,6 +407,70 @@ def generate(fact_ids: list[str], strategy: str) -> Candidate:
     raise ValueError(f"no candidate for facts {fact_ids} under strategy {strategy!r}")
 
 
+def generate_llm(fact_ids: list[str], strategy: str) -> list[Candidate]:
+    """The LLM-backed candidate generator (P1). The model proposes STRUCTURED hypotheses — each with a
+    statement, the source facts it cites, explicit assumptions, proposed cross-field mappings, and a
+    falsifier. Returns a list; empty on any failure (the deterministic generator is the fallback)."""
+    if strategy not in STRATEGIES:
+        return []
+    endpoint, key, model = _llm_config()
+    if not model:
+        return []  # no model configured — deterministic is the fallback
+    fact_list = ", ".join(fact_ids) or "(none)"
+    prompt = (
+        "You are a discovery generator in a verified-research system. Given validated facts and a "
+        "strategy, propose up to 3 candidate hypotheses as JSON.\n\n"
+        f"Facts available: {fact_list}\n"
+        f"Strategy: {STRATEGIES[strategy]}\n\n"
+        'Return a JSON object {"candidates": [{"statement": str, "source_facts": [str], '
+        '"assumptions": [str], "proposed_mappings": [str], "falsifier": str}]}.\n'
+        "Every candidate must: cite source_facts (the facts it is built from), state its explicit "
+        "assumptions, name any proposed cross-field mapping (\"structure X in field A corresponds to "
+        "structure Y in field B\"), and give a concrete falsifier that would refute it. No free-floating "
+        "conjectures. Output ONLY the JSON."
+    )
+    try:
+        raw = _ask_llm(prompt, endpoint, key, model)
+    except Exception:
+        return []
+    m = re.search(r"\{.*\}", raw, re.DOTALL)
+    if not m:
+        return []
+    try:
+        data = json.loads(m.group(0))
+    except Exception:
+        return []
+    out: list[Candidate] = []
+    for i, c in enumerate(data.get("candidates", [])):
+        try:
+            stmt = str(c.get("statement", "")).strip()
+            if not stmt:
+                continue
+            out.append(Candidate(
+                id=(_slug(stmt)[:40] or f"llm-{strategy}-{i}"),
+                statement=stmt,
+                falsifier=str(c.get("falsifier", "")).strip(),
+                strategy=strategy,
+                source_facts=tuple(str(x) for x in (c.get("source_facts") or [])),
+                test="",  # a test id is assigned by the falsifier layer, not the generator
+                assumptions=tuple(str(x) for x in (c.get("assumptions") or [])),
+                proposed_mappings=tuple(str(x) for x in (c.get("proposed_mappings") or [])),
+            ))
+        except Exception:
+            continue
+    return out
+
+
+def generate_candidates(fact_ids: list[str], strategy: str, use_llm: bool = True) -> list[Candidate]:
+    """The model-driven generation entry point: LLM-backed structured candidates when available,
+    the deterministic grounded generator as the baseline + fallback (wrapped in a list)."""
+    if use_llm:
+        cands = generate_llm(fact_ids, strategy)
+        if cands:
+            return cands
+    return [generate(fact_ids, strategy)]
+
+
 # ------------------------------------------------------------------------------------------ #
 # The frontier generator: decompose an OPEN hypothesis into its next falsifiable sub-lemma.
 # This is the move the recombination strategies cannot make — it points at the *unproven* step
