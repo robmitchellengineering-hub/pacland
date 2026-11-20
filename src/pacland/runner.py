@@ -335,6 +335,8 @@ class Candidate:
     cost: float = 1.0       # research effort, for discoveries-per-effort scoring
     prior: float = 0.5      # operator's prior, for EIG ranking
     ancestry: tuple[str, ...] = ()   # lineage, root first: A -> A1 -> A2 (the parent ids)
+    assumptions: tuple[str, ...] = ()        # explicit assumptions the hypothesis rests on
+    proposed_mappings: tuple[str, ...] = ()  # cross-field mappings (field A structure -> field B), for transfer strategies
 
 
 STRATEGIES: dict[str, str] = {
