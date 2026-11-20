@@ -95,6 +95,15 @@ Added `memory.py` — an append-only search history (problem → strategy → ca
 (which strategies produce survivors vs falsified), wired into `run_autonomous` so every candidate's verdict is
 remembered. The full cross-field memory (learning across the five registries) remains gated on the registries.
 
+### R1.3 — the five registries (seed)
+**Verdict: started (minimal seed).**
+
+`registry.py` — the five stores (Structures/Domains/Properties/Evidence/Mappings) with a shared `Entry` shape
+(id, kind, version, provenance, links), append-only JSONL persistence, `add/get/query/link`, and a
+`seed_known_unifications()` with three established links (diffusion↔walk, gauge↔connection, Markov↔population),
+each carrying its type + the non-trivial property it reproduces. The full cross-field search + evidence
+retrieval is the next step.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.

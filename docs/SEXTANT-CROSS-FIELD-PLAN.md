@@ -152,7 +152,7 @@ LLM generator as missing. This is the reconciled, audited status against the act
 | radar (problem finder) | **built — minimal** (`radar()` surfaces the top-EIG open problem; `run_autonomous()` is self-starting) |
 | memory / learn | **built — minimal** (`memory.py`: append-only search history + per-strategy success, wired into the loop) |
 | budget control | partial — a `budget` argument, no dedicated module |
-| the five registries | **not built** — planned (§10) |
+| the five registries | **seeded — minimal** (`registry.py`: Entry shape with id/kind/version/provenance/links + the known-unifications seed) |
 | cross-field transfer layer | **not built** — planned (§3) |
 | empirical tier + partner | **not built** — needs a partner (§6) |
 
