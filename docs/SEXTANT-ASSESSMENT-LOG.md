@@ -285,6 +285,13 @@ returned 38 sourced economics↔hard-science (and soft↔hard) unifications from
 (econophysics, econ↔biology, econ↔math, econ↔thermo, plus sociology/psychology/linguistics/epidemiology).
 Ingested as the known-unifications library (known=True, each with its source). 63 mappings total.
 
+### R1.24 — harvest ALL soft fields (psychology/sociology/linguistics/urban/politics/anthropology/history/education-law-health)
+**Verdict: harvested + ingested.**
+
+Fan-out across 8 soft fields returned ~54 sourced unifications (psychophysics↔info theory, opinion↔Ising,
+Zipf↔power law, city↔allometric scaling, voting↔Potts, kinship↔group theory, empire↔logistic,
+crime↔SIR, healthcare↔queueing, …). Ingested as the known-unifications library. 117 mappings total.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
