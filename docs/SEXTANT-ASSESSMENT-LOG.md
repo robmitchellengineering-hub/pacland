@@ -269,6 +269,14 @@ Keynesian multiplier = geometric series (1/(1−c)); diversification = central l
 Phillips curve = isotherm (π·u = constant); bullwhip = wave amplification. All verified. 21
 economics↔hard-science unifications total.
 
+### R1.22 — five more economics unifications (batch 4)
+**Verdict: built + verified.**
+
+`economics_batch4.py`: Gini coefficient = entropy (both measure concentration); Laffer curve = critical
+point (the revenue peak); central-bank targeting = thermostat (proportional feedback); CAPM = linear
+projection (security market line); efficient frontier = Pareto frontier. All verified. 22
+economics↔hard-science unifications total.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.

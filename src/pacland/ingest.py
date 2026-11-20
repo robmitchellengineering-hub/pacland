@@ -129,12 +129,13 @@ def ingest_all() -> dict[str, int]:
     from pacland import fields, structure_build
     n_fields = fields.seed_fields()
     registry.seed_known_unifications()
-    # the economics↔hard-science unifications (all four batches)
-    from pacland import economics_unify, economics_more, economics_batch2, economics_batch3
+    # the economics↔hard-science unifications (all five batches)
+    from pacland import economics_unify, economics_more, economics_batch2, economics_batch3, economics_batch4
     economics_unify.record()
     economics_more.record()
     economics_batch2.record()
     economics_batch3.record()
+    economics_batch4.record()
     return {
         "structures": n_fields,
         "lean_proofs": ingest_lean_proofs(),
