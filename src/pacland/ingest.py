@@ -136,6 +136,9 @@ def ingest_all() -> dict[str, int]:
     economics_batch2.record()
     economics_batch3.record()
     economics_batch4.record()
+    # the harvested known-unifications library (38 sourced recognitions)
+    from pacland import known_unifications
+    known_unifications.record()
     return {
         "structures": n_fields,
         "lean_proofs": ingest_lean_proofs(),

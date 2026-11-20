@@ -277,6 +277,14 @@ point (the revenue peak); central-bank targeting = thermostat (proportional feed
 projection (security market line); efficient frontier = Pareto frontier. All verified. 22
 economics↔hard-science unifications total.
 
+### R1.23 — the fan-out harvest (38 sourced known unifications, ingested in bulk)
+**Verdict: harvested + ingested.**
+
+Rob's correction: these are KNOWN unifications, so don't hand-grind them — fan out. The web-search harvest
+returned 38 sourced economics↔hard-science (and soft↔hard) unifications from the literature
+(econophysics, econ↔biology, econ↔math, econ↔thermo, plus sociology/psychology/linguistics/epidemiology).
+Ingested as the known-unifications library (known=True, each with its source). 63 mappings total.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
