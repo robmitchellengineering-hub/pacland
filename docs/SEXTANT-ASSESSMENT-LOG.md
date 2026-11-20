@@ -386,6 +386,16 @@ the linear at 5% spoilage, θ→0 limit verified continuous). The literature che
 correspondence space is extremely mature; every CLEAN prediction from a known law is already published.
 Genuine novelty needs a novel INTERSECTION of constraints, or a specific number derived but never tested.
 
+### R1.35 — the novel INTERSECTION: spoilage damps the bullwhip (best candidate yet)
+**Verdict: correct + specific + non-obvious; novelty unconfirmed (needs a deeper read).**
+
+`novel_intersection.py`: the intersection of 'inventory = leaky integrator (low-pass filter)' + 'bullwhip =
+wave amplification' forces: the spoilage rate θ is a DAMPING term, so HIGHER spoilage → LESS bullwhip
+amplification. Simulated: amplification 18.09 (θ=0) → 13.13 (θ=0.3), a 27% reduction. There IS a 'variability
+in perishable supply chains' literature, so the topic is touched, but the specific 'spoilage = low-pass
+filter = damps the bullwhip' direction is a genuine candidate. The final novelty verdict needs a deeper read
+of the specific papers — the expert step.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
