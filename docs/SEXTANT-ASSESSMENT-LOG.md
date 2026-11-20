@@ -244,6 +244,14 @@ three more verified economics unifications: Goodwin growth cycle = Lotka-Volterr
 drift 0.0); tâtonnement = gradient flow (price converges exactly to equilibrium 4.0); wealth = Boltzmann
 (tail ratio 1.039). Each gives economics a checkable law inherited from a hard science.
 
+### R1.19 — four more economics unifications (batch)
+**Verdict: built + verified.**
+
+`economics_more.py`: compound interest = radioactive decay (both dx/dt=λx, ln2/λ); the gravity model of
+trade = Newton's gravitation (inverse-square interaction); utility maximisation = the variational principle
+(FOC = Euler-Lagrange); Solow growth = relaxation to steady state (exponential convergence). All four
+verified. 11 economics↔hard-science unifications recorded in total.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
