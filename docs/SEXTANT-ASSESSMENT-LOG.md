@@ -68,6 +68,18 @@ before making further changes. Dated; newest last.
 3. **Name the first empirical partner/dataset** before Phase 4–6 (R1 #6) — the climate/economics modules are the candidate.
 4. **Decide whether the R1 corrections + R2 refinements are all the right way to go** — this log is the record to assess.
 
+## The meta-lesson (why the scrutiny happened, and the fix)
+
+The corrections were earned, not unfair. Almost every one traces to the SAME discipline violations the
+system is built to stop: over-asserting conjecture as established, glossing from memory instead of reading
+sources, unverified citations, a known-since-1800s link as a test, contradicting the prior status table,
+an undefined metric, packaging before validation, and churn (3 strategy docs in 2 days).
+
+**The fix, going forward:** run my own plans through the falsifier before releasing them — every claim a
+tier not an assertion, every citation fetched, the metric defined, the test able to fail, the status
+reconciled, one plan with dated amendments, validation before delivery. The discipline built for other
+people's claims now applies to my own plans first.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
