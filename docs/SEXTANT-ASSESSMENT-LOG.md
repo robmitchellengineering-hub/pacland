@@ -261,6 +261,14 @@ Pareto tail = power law (log-log slope ≈ −2); market risk = diffusive fluctu
 initial failures were BUGS (Euler instability + measuring the transient + the wrong variance) — fixed with
 RK4 + post-transient amplitude + endpoint variance. 16 economics↔hard-science unifications total.
 
+### R1.21 — five more economics unifications (batch 3)
+**Verdict: built + verified.**
+
+`economics_batch3.py`: quantity theory of money = ideal gas law (MV=PY ⟺ PV=nRT, structural isomorphism);
+Keynesian multiplier = geometric series (1/(1−c)); diversification = central limit (variance ∝ 1/N);
+Phillips curve = isotherm (π·u = constant); bullwhip = wave amplification. All verified. 21
+economics↔hard-science unifications total.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
