@@ -235,6 +235,15 @@ Boltzmann stationary distribution P(w)=(1/T)e^{−w/T} — verified (empirical t
 (2) mean-reversion = the OU process N(μ,σ²/2θ) (borderline, 5% discretisation bias). Economics now has a
 checkable law (the exponential wealth tail) it would otherwise not have.
 
+### R1.18 — build out the economics unification + the hard-science source library
+**Verdict: built + verified (3 more economics↔hard-science isomorphisms).**
+
+Added the Newtonian/statistical source library to fields.py (damped-oscillator, lotka-volterra,
+boltzmann-gas, langevin, lagrangian-action, exponential-decay, gradient-flow — 37 structures total). Then
+three more verified economics unifications: Goodwin growth cycle = Lotka-Volterra (first integral conserved,
+drift 0.0); tâtonnement = gradient flow (price converges exactly to equilibrium 4.0); wealth = Boltzmann
+(tail ratio 1.039). Each gives economics a checkable law inherited from a hard science.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
