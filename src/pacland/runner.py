@@ -335,6 +335,8 @@ class Candidate:
     cost: float = 1.0       # research effort, for discoveries-per-effort scoring
     prior: float = 0.5      # operator's prior, for EIG ranking
     ancestry: tuple[str, ...] = ()   # lineage, root first: A -> A1 -> A2 (the parent ids)
+    assumptions: tuple[str, ...] = ()        # explicit assumptions the hypothesis rests on
+    proposed_mappings: tuple[str, ...] = ()  # cross-field mappings (field A structure -> field B), for transfer strategies
 
 
 STRATEGIES: dict[str, str] = {
@@ -403,6 +405,70 @@ def generate(fact_ids: list[str], strategy: str) -> Candidate:
         return next_sublemma(fact_ids[0])
 
     raise ValueError(f"no candidate for facts {fact_ids} under strategy {strategy!r}")
+
+
+def generate_llm(fact_ids: list[str], strategy: str) -> list[Candidate]:
+    """The LLM-backed candidate generator (P1). The model proposes STRUCTURED hypotheses — each with a
+    statement, the source facts it cites, explicit assumptions, proposed cross-field mappings, and a
+    falsifier. Returns a list; empty on any failure (the deterministic generator is the fallback)."""
+    if strategy not in STRATEGIES:
+        return []
+    endpoint, key, model = _llm_config()
+    if not model:
+        return []  # no model configured — deterministic is the fallback
+    fact_list = ", ".join(fact_ids) or "(none)"
+    prompt = (
+        "You are a discovery generator in a verified-research system. Given validated facts and a "
+        "strategy, propose up to 3 candidate hypotheses as JSON.\n\n"
+        f"Facts available: {fact_list}\n"
+        f"Strategy: {STRATEGIES[strategy]}\n\n"
+        'Return a JSON object {"candidates": [{"statement": str, "source_facts": [str], '
+        '"assumptions": [str], "proposed_mappings": [str], "falsifier": str}]}.\n'
+        "Every candidate must: cite source_facts (the facts it is built from), state its explicit "
+        "assumptions, name any proposed cross-field mapping (\"structure X in field A corresponds to "
+        "structure Y in field B\"), and give a concrete falsifier that would refute it. No free-floating "
+        "conjectures. Output ONLY the JSON."
+    )
+    try:
+        raw = _ask_llm(prompt, endpoint, key, model)
+    except Exception:
+        return []
+    m = re.search(r"\{.*\}", raw, re.DOTALL)
+    if not m:
+        return []
+    try:
+        data = json.loads(m.group(0))
+    except Exception:
+        return []
+    out: list[Candidate] = []
+    for i, c in enumerate(data.get("candidates", [])):
+        try:
+            stmt = str(c.get("statement", "")).strip()
+            if not stmt:
+                continue
+            out.append(Candidate(
+                id=(_slug(stmt)[:40] or f"llm-{strategy}-{i}"),
+                statement=stmt,
+                falsifier=str(c.get("falsifier", "")).strip(),
+                strategy=strategy,
+                source_facts=tuple(str(x) for x in (c.get("source_facts") or [])),
+                test="",  # a test id is assigned by the falsifier layer, not the generator
+                assumptions=tuple(str(x) for x in (c.get("assumptions") or [])),
+                proposed_mappings=tuple(str(x) for x in (c.get("proposed_mappings") or [])),
+            ))
+        except Exception:
+            continue
+    return out
+
+
+def generate_candidates(fact_ids: list[str], strategy: str, use_llm: bool = True) -> list[Candidate]:
+    """The model-driven generation entry point: LLM-backed structured candidates when available,
+    the deterministic grounded generator as the baseline + fallback (wrapped in a list)."""
+    if use_llm:
+        cands = generate_llm(fact_ids, strategy)
+        if cands:
+            return cands
+    return [generate(fact_ids, strategy)]
 
 
 # ------------------------------------------------------------------------------------------ #
@@ -781,6 +847,25 @@ def rank_open_by_eig() -> list[tuple[str, float]]:
         for s in hypotheses.beliefs_for_all()
     ]
     return belief.rank_by_eig(beliefs)
+
+
+def radar() -> str:
+    """Surface the next problem to work on — the minimal problem-finder.
+
+    Ranks the open hypotheses by expected information gain per unit cost and returns the top one's
+    name; if nothing is ranked, returns the standing frontier problem. This is the *minimal* radar:
+    the full cross-field version (querying the five registries for an open problem in a target field
+    whose type matches a structure elsewhere) is gated on the registries, which are unbuilt (§10 of
+    the plan). This version already makes the loop self-starting: ``run_autonomous()`` picks its own
+    problem instead of requiring one.
+    """
+    try:
+        ranked = rank_open_by_eig()
+    except Exception:  # noqa: BLE001 — a missing dep must not stop the loop from starting
+        ranked = []
+    if ranked:
+        return ranked[0][0]
+    return "confinement-frontier"  # the standing open problem (the frontier)
 
 
 # ------------------------------------------------------------------------------------------ #
@@ -1227,7 +1312,7 @@ def prove_and_record(candidate: Candidate, evidence: str) -> dict:
     return {"ok": proof.get("ok", False), "recorded": True, "proof": proof}
 
 
-def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
+def run_autonomous(problem: str | None = None, rounds: int = 1, budget: int = 8) -> dict:
     """One autonomous pass of the frontier machine: propose -> falsify -> challenge -> prove -> build.
 
     For each round it runs the LLM search strategy, falsifies every proposal, runs the EIGHT-STAGE
@@ -1235,11 +1320,15 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
     for every OPEN proposal — searches arXiv / the proof tree / the codebase for a falsifier,
     synthesises one, BUILDS it into an executable test, and retries the hypothesis against it.
     Returns the whole round's evidence.
+
+    ``problem=None`` → the radar surfaces the top-EIG open problem (self-starting).
     """
     from pacland import challenges
     from pacland import falsifier_acquisition as fa
+    from pacland import memory
 
     endpoint, key, model = _llm_config()
+    problem = problem or radar()
     out = {"problem": problem, "rounds": []}
     for _ in range(rounds):
         cands = LlmSearch().generate(problem, budget)

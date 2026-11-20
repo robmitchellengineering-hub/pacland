@@ -39,6 +39,13 @@
    "title": "Candidate ledger \u2014 the falsifier-before-believe belief layer"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/CONSTRAINT-FIRST-ECONOMICS.md",
+   "kind": "doc",
+   "path": "docs/CONSTRAINT-FIRST-ECONOMICS.md",
+   "summary": "Use the proven hard-science unifications as constraints to do economic analysis better and find solutions \u2014 the SEXTANT constraint-first methodology applied to the soft field.",
+   "title": "Constraint-first economics \u2014 the plan"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-ENGINE.md",
    "kind": "doc",
    "path": "docs/DISCOVERY-ENGINE.md",
@@ -88,6 +95,20 @@
    "title": "Retrodiction test \u2014 does the jump-seeking loop beat a baseline?"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-ASSESSMENT-LOG.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-ASSESSMENT-LOG.md",
+   "summary": "Every external assessment and correction, with its disposition. This is the record we assess together before making further changes. Dated; newest last.",
+   "title": "SEXTANT \u2014 assessment & correction log"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-CROSS-FIELD-PLAN.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-CROSS-FIELD-PLAN.md",
+   "summary": "this revision corrects them: (1) it treated \"an adjunction\" as a discovery, when the adjoints come free for every functor; (2) it implied FDM migration is \"lossless\", when \u03a3 fills gaps and\u2026",
+   "title": "SEXTANT \u2014 the cross-field verified-discovery system (revision 2)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOLVING-STRING-THEORY.md",
    "kind": "doc",
    "path": "docs/SOLVING-STRING-THEORY.md",
@@ -107,6 +128,13 @@
    "path": "docs/TOE.md",
    "summary": "That is the whole of it. It is not a conjecture \u2014 it is kernel-checked: 308 theorems and 123 definitions across 44 Lean files, lake build green, no sorry/axiom/admit anywhere.",
    "title": "THE TOE \u2014 Mitchell's Constraint-First Theory of Everything"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/TOOL-SEXTANT-DELIVERY.md",
+   "kind": "doc",
+   "path": "docs/TOOL-SEXTANT-DELIVERY.md",
+   "summary": "The thing being shipped is the discovery engine \u2014 the whole autonomous loop \u2014 as one self-contained tool, in two delivery forms. This is the plan Rob confirmed (\"both is the answer\").",
+   "title": "Tool Sextant \u2014 the delivery plan (both forms)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/UNIFICATION-METHOD-v2.md",
@@ -1668,6 +1696,13 @@
    "path": "scripts/band_sweep.py",
    "summary": "How much does bandwidth buy? The information-versus-frequency curve, on a room whose answer is known.",
    "title": "band_sweep.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/benchmark_llm.py",
+   "kind": "script",
+   "path": "scripts/benchmark_llm.py",
+   "summary": "Phase 2 \u2014 run the discovery benchmark against the real LLM (DeepSeek).",
+   "title": "benchmark_llm.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/bmv_sim.py",
