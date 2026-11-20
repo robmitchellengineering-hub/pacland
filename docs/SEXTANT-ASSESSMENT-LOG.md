@@ -226,6 +226,15 @@ Inventory: a=D, b=0 (x=−inventory). The inventory cycle is the NO-LEAK LIMIT o
 closed-form = simulation at b=1/τ (6.9315), b=0.05 (2.1072), b=0 (15.0). Tier-1 evidence. The yield: any b
 between 0 and 1/τ interpolates a new cycle model.
 
+### R1.17 — the principle: unification IS the verification path for soft fields
+**Verdict: articulated + demonstrated.**
+
+Rob's insight: formalise economics as exact hard-science objects, and economics inherits hard-science
+verifiability. `economics_unify.py` demonstrates two: (1) the kinetic-exchange wealth process has the
+Boltzmann stationary distribution P(w)=(1/T)e^{−w/T} — verified (empirical tail vs e^{−x/T}, ratio 1.039);
+(2) mean-reversion = the OU process N(μ,σ²/2θ) (borderline, 5% discretisation bias). Economics now has a
+checkable law (the exponential wealth tail) it would otherwise not have.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
