@@ -51,6 +51,16 @@ before making further changes. Dated; newest last.
 | 2 | next integration: an explicit LLM-backed candidate generator returning structured hypotheses with **source references, assumptions, proposed mappings, falsifiers** | **accepted — in progress** (the `Candidate` fields added; the `generate_llm` function is next) |
 | 3 | keep the deterministic generator as the baseline + fallback | **accepted — planned** |
 
+### R2.3 — the five-registry search engine (from Rob)
+**Verdict: accepted, incorporated into §10.**
+
+| # | point | disposition |
+|---|---|---|
+| 1 | the registry must be proper infrastructure (5 connected registries), not Lean theorem names | **accepted** |
+| 2 | Evidence must capture: reproducible computation, experimental protocols, outcomes, null results, replication history | **accepted** — §10 |
+| 3 | all five share stable IDs, versioning, provenance, claim↔evidence links | **accepted** — §10 |
+| 4 | the model must QUERY the structured body + retrieve evidence ON DEMAND (not read thousands of papers per search) — the scalable architecture | **accepted** — §10 |
+
 ## Current open items (to assess together)
 
 1. **Finish `generate_llm`** — the LLM-backed candidate generator (structured hypotheses), with the deterministic `generate()` as fallback. Partially built (the `Candidate.assumptions` + `Candidate.proposed_mappings` fields are added and committed).

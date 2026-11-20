@@ -104,9 +104,26 @@ rather than relabel them "verified."
 - **Literature-based discovery** — Swanson-style hidden-link mining.
 - **Functorial data migration** — Spivak / Wisnesky; `CQL.jl` proves **Σ ⊣ Δ** (not the full triple), and FDM migration is **lossy** (Σ fills gaps, Δ truncates) — stated correctly here.
 
-## 10. The keystone (unchanged, but honest)
+## 10. The keystone — the five-registry search engine
 
-The two libraries are the keystone: once a field's structures are encoded with their reproduced properties,
-every other field's open problems can search them — and the library of *known* links is what stops the
-system from mistaking "reinventing heat diffusion" for a discovery. Breadth is a side-effect of adding
-fields; the honesty is the encoding-check + the blind-proposal rating.
+The registry is **proper scientific infrastructure**, not a list of Lean theorem names. It is **five connected
+registries**, each a distinct queryable store, all sharing **stable IDs, versioning, provenance, and
+claim↔evidence links**:
+
+1. **Structures** — formal definitions, encodings, types (isomorphism classes), assumptions/constraints.
+2. **Domains** — fields, interpretations, terminology (the "meaningful in a field" layer).
+3. **Properties** — proven facts + conjectures, each with its **five-tier epistemic status**.
+4. **Evidence** — **reproducible computation** (the code), **experimental protocols**, **outcomes**,
+   **null results**, and **replication history** (the under-recorded half of science, captured deliberately).
+5. **Mappings** — permitted transfers + the **known-unifications library**, separate from the open frontier.
+
+**The architecture that makes it scalable:** the cross-field search engine **queries this structured body**,
+and the model **retrieves the underlying evidence on demand** when it investigates a candidate — it does not
+read thousands of papers every time it searches for a connection. Search is over a *verified, typed* index;
+the evidence is a pointer the model follows only when a candidate needs it.
+
+This is the foundation the whole system turns on: a cross-field discovery is a query across all five
+registries — *"a structure in domain A whose type matches an open problem in domain B, whose properties
+transfer through a permitted mapping, and whose evidence holds"* — assembled from linked entries, each
+carrying its real scientific body. Breadth is then a side-effect of adding fields to the registries, and
+the honesty is the encoding-check + the blind-proposal rating.
