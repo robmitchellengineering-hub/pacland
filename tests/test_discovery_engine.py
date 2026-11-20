@@ -165,16 +165,26 @@ class TestNonVacuousSurvivor(unittest.TestCase):
 class TestFalsifierRouting(unittest.TestCase):
     def test_routes_a_mass_gap_lower_bound_to_the_ratio_falsifier(self):
         self.assertEqual(runner._falsifier_for_statement("m_gap ≥ c·√σ with c > 0"),
-                         runner.verify_glueball_mass_ratio)
+                         "glueball-mass-ratio")
 
     def test_routes_a_perturbative_claim_to_the_scaling_referee(self):
         self.assertEqual(runner._falsifier_for_statement("the mass gap is non-perturbative"),
-                         runner.verify_mass_gap_scaling)
+                         "mass-gap-scaling")
 
-    def test_leaves_theta_d5_and_polyakov_open(self):
+    def test_leaves_theta_open(self):
         self.assertIsNone(runner._falsifier_for_statement("the mass gap is robust against a θ-term"))
-        self.assertIsNone(runner._falsifier_for_statement("the d=5 mass gap survives the continuum limit"))
-        self.assertIsNone(runner._falsifier_for_statement("Polyakov-loop correlators cluster exponentially"))
+
+    def test_polyakov_routes_to_the_clustering_falsifier(self):
+        self.assertEqual(runner._falsifier_for_statement("Polyakov-loop correlators cluster exponentially"),
+                         "polyakov-clustering")
+
+    def test_routes_to_the_new_candidate_specific_falsifiers(self):
+        self.assertEqual(runner._falsifier_for_statement("the d=5 mass gap survives the continuum limit"),
+                         "d5-mass-gap")
+        self.assertEqual(runner._falsifier_for_statement("a first-order bulk transition persists"),
+                         "bulk-transition")
+        self.assertEqual(runner._falsifier_for_statement("the mass gap is universal under irrelevant operators"),
+                         "universality")
 
     def test_unresolved_measurement_is_open_not_falsified(self):
         c = runner.Candidate(id="x", statement="s", falsifier="f", strategy="st",
@@ -190,13 +200,23 @@ class TestFalsifierRouting(unittest.TestCase):
     def test_keyword_routed_falsifier_is_approximate_not_survived(self):
         c = runner.Candidate(id="x", statement="the mass gap scales as sqrt(sigma)", falsifier="f",
                              strategy="st", source_facts=(), test="")
-        def _fake_falsifier():
-            return True, "some related test passed"
-        with mock.patch.object(runner, "_falsifier_for_statement", return_value=_fake_falsifier):
-            ran, survived, evidence = runner._falsify(c)
+        with mock.patch.object(runner, "_falsifier_for_statement", return_value="glueball-mass-ratio"):
+            with mock.patch.dict(runner.FALSIFIERS,
+                                 {"glueball-mass-ratio": lambda: (True, "related test passed")}):
+                ran, survived, evidence = runner._falsify(c)
         self.assertTrue(ran)
-        self.assertIsNone(survived)  # approximate, not a definitive survive
+        self.assertIsNone(survived)  # generic falsifier -> approximate
         self.assertIn("APPROXIMATE", evidence)
+
+    def test_candidate_specific_falsifier_gives_a_definitive_verdict(self):
+        c = runner.Candidate(id="x", statement="the d=5 mass gap survives", falsifier="f",
+                             strategy="st", source_facts=(), test="")
+        with mock.patch.object(runner, "_falsifier_for_statement", return_value="d5-mass-gap"):
+            with mock.patch.dict(runner.FALSIFIERS, {"d5-mass-gap": lambda: (True, "nonzero")}):
+                ran, survived, evidence = runner._falsify(c)
+        self.assertTrue(ran)
+        self.assertTrue(survived)  # candidate-specific -> definitive survive
+        self.assertIn("candidate-specific", evidence)
 
     def test_mass_gap_scaling_referee_identity_is_not_a_survivor(self):
         survived, evidence = runner.verify_mass_gap_scaling()
@@ -220,22 +240,49 @@ class TestAutonomousLoop(unittest.TestCase):
         cand = self._candidate("a surviving hypothesis")
         with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
             with mock.patch.object(runner, "_falsify", return_value=(True, True, "survived evidence")):
-                with mock.patch.object(runner, "prove_and_record",
-                                       return_value={"ok": False, "recorded": True, "proof": "deferred"}):
-                    out = runner.run_autonomous("mass-gap")
+                with mock.patch("pacland.challenges.run_sequence", return_value=[]):
+                    with mock.patch("pacland.challenges.gate", return_value="PASS"):
+                        with mock.patch.object(runner, "prove_and_record",
+                                               return_value={"ok": False, "recorded": True,
+                                                             "proof": "deferred"}):
+                            out = runner.run_autonomous("mass-gap")
         self.assertEqual(len(out["rounds"][0]["survivors"]), 1)
         self.assertIn("run_id", out)
 
+    def test_an_approximate_verdict_is_open_not_falsified(self):
+        # survived=None means "approximate test, not a definitive survive/falsify" — it must not be
+        # counted as falsified.
+        cand = self._candidate("a hypothesis")
+        with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
+            with mock.patch.object(runner, "_falsify", return_value=(True, None, "APPROXIMATE")):
+                with mock.patch("pacland.challenges.run_sequence", return_value=[]):
+                    with mock.patch("pacland.challenges.gate", return_value="PASS"):
+                        out = runner.run_autonomous("mass-gap")
+        r = out["rounds"][0]
+        self.assertEqual(len(r["proposals"]), 0)  # not counted as falsified
+        self.assertEqual(len(r["open"]), 1)
+
+    def test_a_challenge_failure_gates_out_the_candidate(self):
+        cand = self._candidate("a hypothesis")
+        with mock.patch.object(runner.LlmSearch, "generate", return_value=[cand]):
+            with mock.patch.object(runner, "_falsify", return_value=(True, True, "survived")):
+                with mock.patch("pacland.challenges.run_sequence", return_value=[]):
+                    with mock.patch("pacland.challenges.gate", return_value="FAIL"):
+                        out = runner.run_autonomous("mass-gap")
+        r = out["rounds"][0]
+        self.assertEqual(len(r["survivors"]), 0)  # gated out, not proved
+        self.assertEqual(r["proposals"][0]["verdict"], "gated-out")
+
     def test_lean_bridge_rejects_a_different_proposition(self):
-        with mock.patch.object(runner, "_ask_llm", return_value="NO"):
-            ok = runner._lean_matches_hypothesis("theorem wrong : 1 = 2", "the mass gap is positive",
-                                                 "http://x", "", "m")
+        with mock.patch.object(runner, "_judge_config", return_value=("http://x", "", "judge")):
+            with mock.patch.object(runner, "_ask_llm", return_value="NO"):
+                ok = runner._lean_matches_hypothesis("theorem wrong : 1 = 2", "the mass gap is positive")
         self.assertFalse(ok)
 
     def test_lean_bridge_accepts_the_same_proposition(self):
-        with mock.patch.object(runner, "_ask_llm", return_value="YES"):
-            ok = runner._lean_matches_hypothesis("theorem", "the mass gap is positive",
-                                                 "http://x", "", "m")
+        with mock.patch.object(runner, "_judge_config", return_value=("http://x", "", "judge")):
+            with mock.patch.object(runner, "_ask_llm", return_value="YES"):
+                ok = runner._lean_matches_hypothesis("theorem", "the mass gap is positive")
         self.assertTrue(ok)
 
     def test_register_experiment_writes_a_run_id(self):
@@ -243,6 +290,29 @@ class TestAutonomousLoop(unittest.TestCase):
             run_id = runner.register_experiment("test", {"seed": 1}, {"recall": 0.5})
         self.assertTrue(run_id)
         self.assertEqual(len(run_id), 12)
+
+    def test_reproduce_reruns_an_autonomous_run(self):
+        with mock.patch.object(runner, "EXPERIMENTS", runner.REPO_ROOT / "runs" / "test-exp.jsonl"):
+            runner.EXPERIMENTS.write_text('{"run_id": "abc123", "kind": "autonomous", '
+                                          '"config": {"problem": "p", "rounds": 1, "budget": 4}, '
+                                          '"metrics": {}}\n')
+            with mock.patch.object(runner, "run_autonomous",
+                                   return_value={"run_id": "new", "rounds": []}):
+                out = runner.reproduce("abc123")
+        self.assertEqual(out["reproduced_from"], "abc123")
+        self.assertEqual(out["new_run_id"], "new")
+
+    def test_check_lean_refuses_a_sorry_placeholder(self):
+        # a file that compiles with `sorry` is NOT a proof — the refusal logic must fire regardless
+        # of whether the Lean toolchain (`lake`) is installed, so mock the kernel run.
+        class _R:
+            returncode = 0
+            stdout = "declaration uses 'sorry'\n"
+            stderr = ""
+        with mock.patch.object(runner.subprocess, "run", return_value=_R()):
+            ok, err = runner._check_lean("theorem t : (1 : Nat) + 1 = 2 := by sorry\n")
+        self.assertFalse(ok)
+        self.assertIn("not a proof", err)
 
 
 if __name__ == "__main__":

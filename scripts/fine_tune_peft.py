@@ -22,6 +22,9 @@ def main() -> int:
     ap.add_argument("--out", default="runs/peft-adapter")
     ap.add_argument("--epochs", type=float, default=3.0)
     ap.add_argument("--lora-r", type=int, default=16)
+    ap.add_argument("--lr", type=float, default=2e-4)
+    ap.add_argument("--full-lora", action="store_true",
+                    help="load the base in bf16 (no 4-bit quant) for full-precision LoRA")
     args = ap.parse_args()
 
     try:
@@ -39,14 +42,22 @@ def main() -> int:
         print("no CUDA GPU — this fine-tune needs a CUDA GPU (>= 8GB VRAM); see the header note")
         return 1
 
-    bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
-                             bnb_4bit_compute_dtype=torch.bfloat16)
-    model = AutoModelForCausalLM.from_pretrained(args.model, quantization_config=bnb,
-                                                 device_map="auto")
-    model = prepare_model_for_kbit_training(model)
+    if args.full_lora:
+        model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.bfloat16,
+                                                     device_map="auto")
+    else:
+        bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
+                                 bnb_4bit_compute_dtype=torch.bfloat16)
+        model = AutoModelForCausalLM.from_pretrained(args.model, quantization_config=bnb,
+                                                     device_map="auto")
+        model = prepare_model_for_kbit_training(model)
     peft_cfg = LoraConfig(r=args.lora_r, lora_alpha=32, lora_dropout=0.05, bias="none",
                           task_type="CAUSAL_LM")
     model = get_peft_model(model, peft_cfg)
+    if args.full_lora:
+        # bf16 base needs gradient checkpointing + input grads to fit a 7B in 24GB.
+        model.enable_input_require_grads()
+        model.gradient_checkpointing_enable()
     tokenizer = AutoTokenizer.from_pretrained(args.model)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
@@ -60,12 +71,15 @@ def main() -> int:
     data = data.map(fmt)
 
     train_args = TrainingArguments(
-        output_dir=args.out, per_device_train_batch_size=2, gradient_accumulation_steps=8,
-        num_train_epochs=args.epochs, learning_rate=2e-4, fp16=True, logging_steps=10,
+        output_dir=args.out, per_device_train_batch_size=(1 if args.full_lora else 2),
+        gradient_accumulation_steps=8,
+        num_train_epochs=args.epochs, learning_rate=args.lr, bf16=True, logging_steps=10,
         save_strategy="epoch", report_to="none",
     )
+    # Newer TRL: max_seq_length is not a SFTTrainer kwarg — it is dropped (the prompt+output fit the
+    # default window); set it via SFTConfig if a longer sequence is ever needed.
     trainer = SFTTrainer(model=model, train_dataset=data, args=train_args,
-                         tokenizer=tokenizer, max_seq_length=512)
+                         processing_class=tokenizer)
     trainer.train()
     model.save_pretrained(args.out)
     tokenizer.save_pretrained(args.out)

@@ -38,5 +38,53 @@ class TestLeanCheck(unittest.TestCase):
         self.assertIn("not declared", ev)
 
 
+class TestGate(unittest.TestCase):
+    def _r(self, name, verdict):
+        return ch.ChallengeResult(name, "mechanical", verdict, "")
+
+    def test_fails_on_any_fail(self):
+        self.assertEqual(ch.gate([self._r("a", "PASS"), self._r("b", "FAIL")]), "FAIL")
+
+    def test_passes_when_something_passed_and_nothing_failed(self):
+        self.assertEqual(ch.gate([self._r("a", "PASS"), self._r("b", "INCONCLUSIVE")]), "PASS")
+
+    def test_inconclusive_when_nothing_decisive(self):
+        self.assertEqual(ch.gate([self._r("a", "INCONCLUSIVE"), self._r("b", "NOT_APPLICABLE")]),
+                         "INCONCLUSIVE")
+
+
+class TestModelJudge(unittest.TestCase):
+    def test_logical_consistency_passes_when_consistent(self):
+        with mock.patch.object(ch, "_ask_judge", return_value="INTERNALLY CONSISTENT"):
+            v, ev = ch._model_judge("logical-consistency", "a hypothesis")
+        self.assertEqual(v, "PASS")
+
+    def test_logical_consistency_fails_when_contradictory(self):
+        with mock.patch.object(ch, "_ask_judge", return_value="CONTRADICTORY"):
+            v, ev = ch._model_judge("logical-consistency", "a hypothesis")
+        self.assertEqual(v, "FAIL")
+
+    def test_is_inconclusive_without_a_judge(self):
+        with mock.patch.object(ch, "_ask_judge", return_value=None):
+            v, ev = ch._model_judge("alternative-explanation", "a hypothesis")
+        self.assertEqual(v, "INCONCLUSIVE")
+
+    def test_judge_failure_degrades_to_inconclusive_not_a_crash(self):
+        # a slow/unreachable judge must not crash the sequence — _ask_judge returns None on failure
+        with mock.patch.object(ch, "_judge_config", return_value=("http://x", "", "m")):
+            with mock.patch("urllib.request.urlopen", side_effect=TimeoutError("timed out")):
+                self.assertIsNone(ch._ask_judge("prompt"))
+
+    def test_run_sequence_uses_the_judge_for_model_stages(self):
+        with mock.patch.object(ch, "_import_sextant", return_value=(None, None)):
+            with mock.patch.object(ch, "_ask_judge",
+                                   side_effect=["INTERNALLY CONSISTENT", "JUSTIFIED", "NO"]):
+                results = ch.run_sequence(ch.Candidate("bare", "some hypothesis"))
+        verdicts = {r.name: r.verdict for r in results}
+        self.assertEqual(verdicts["logical-consistency"], "PASS")
+        self.assertEqual(verdicts["assumption-audit"], "PASS")
+        self.assertEqual(verdicts["alternative-explanation"], "PASS")  # NO -> no simpler theory
+
+
 if __name__ == "__main__":
     unittest.main()

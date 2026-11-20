@@ -234,10 +234,14 @@ def synthetic_suite(n: int = 100, seed: int = 0) -> dict:
 # Problems whose resolution is recent enough that a pre-cutoff model is unlikely to have memorised
 # it. HONEST NOTE: the exact training cutoff is unverifiable from here, so this is a SECONDARY probe —
 # the planted-law synthetic_suite is the hard decontamination guarantee.
+# Recent resolutions, each with its publication date. HONEST NOTE: "post-cutoff" is NOT verified —
+# deepseek-chat's training cutoff is unknown from here, and LK-99/JWST (2022-2023) may well be in its
+# training data. These are a SECONDARY probe; the planted-law synthetic_suite is the hard
+# decontamination guarantee. Each `pre` must not spell the answer.
 POST_CUTOFF_DATASET = {
-    "lk99":  {"pre": "a 2023 material was claimed to superconduct at room temperature and ambient pressure, but the claim did not reproduce", "jump": "LK-99 is not a superconductor; the diamagnetism is from an impurity phase"},
-    "jwst-early-galaxies": {"pre": "the earliest galaxies seen by JWST are brighter and more massive than the standard timeline predicts", "jump": "early star formation is more efficient than standard models assumed"},
-    "desi-dark-energy": {"pre": "a 2024 survey of millions of galaxies suggests dark energy may not be a constant over cosmic time", "jump": "dark energy may be a dynamical field, weakening at late times"},
+    "lk99":  {"published": "2023-08", "pre": "a material was claimed to superconduct at room temperature and ambient pressure, but independent groups could not reproduce it", "jump": "LK-99 is not a superconductor; the diamagnetism is from an impurity phase"},
+    "jwst-early-galaxies": {"published": "2022-12", "pre": "the earliest galaxies seen by JWST are brighter and more massive than the standard timeline predicts", "jump": "early star formation is more efficient than standard models assumed"},
+    "desi-dark-energy": {"published": "2024-04", "pre": "a survey of millions of galaxies finds the expansion's acceleration may have weakened recently", "jump": "dark energy may be a dynamical field, weakening at late times"},
 }
 
 
@@ -306,7 +310,12 @@ import urllib.request
 
 
 def _llm_config() -> tuple[str, str, str]:
-    """The OpenAI-compatible endpoint, key and model (Ollama on the ROG, or any compatible API)."""
+    """The OpenAI-compatible endpoint, key and model (Ollama on the ROG, or any compatible API).
+
+    The model is read from the environment with NO hardcoded default, so "no model configured" stays
+    a detectable, gracefully-refused state (the runner/benchmark tests rely on it). Set
+    SEXTANT_LLM_MODEL=qwen2.5-discovery (and SEXTANT_LLM_ENDPOINT) to use the tuned local model.
+    """
     return (
         os.environ.get("SEXTANT_LLM_ENDPOINT", "http://localhost:11434/v1"),
         os.environ.get("SEXTANT_LLM_KEY", ""),
@@ -352,9 +361,12 @@ def llm_generator(pre: str) -> list[str]:
 
 def _judge_config() -> tuple[str, str, str]:
     """The judge's endpoint/key/model. A model DISTINCT from the generator is the honest choice
-    (otherwise the judge grades its own homework); fall back to the generator's model if unset."""
-    endpoint, key, gen_model = _llm_config()
-    model = os.environ.get("SEXTANT_JUDGE_MODEL", "") or gen_model
+    (otherwise the judge grades its own homework); the endpoint and key can also differ (e.g. the
+    judge lives on the ROG's Ollama while the generator is DeepSeek). Falls back to the generator's
+    endpoint/model only when unset."""
+    endpoint = os.environ.get("SEXTANT_JUDGE_ENDPOINT", "") or _llm_config()[0]
+    key = os.environ.get("SEXTANT_JUDGE_KEY", "") or _llm_config()[1]
+    model = os.environ.get("SEXTANT_JUDGE_MODEL", "") or _llm_config()[2]
     return endpoint, key, model
 
 
@@ -372,17 +384,15 @@ def judge_matches(cands: list[str], jump: str) -> list[bool]:
     """Semantic equivalence judge: one LLM call per problem, returning a bool per candidate.
 
     Credits paraphrases that share no word (which full-word match under-counts). Falls back to the
-    full-word matcher when no judge model is configured or the call fails.
+    full-word matcher ONLY when no judge model is configured; if a judge IS configured and the call
+    fails, it raises — a silently weaker judge would be a dishonest measurement.
     """
     endpoint, key, model = _judge_config()
     if not model:
         return _full_word_matcher(cands, jump)
     prompt = _JUDGE_PROMPT.format(
         jump=jump, candidates="\n".join(f"{i}. {c}" for i, c in enumerate(cands)))
-    try:
-        text = _ask_llm(prompt, endpoint, key, model)
-    except Exception:
-        return _full_word_matcher(cands, jump)
+    text = _ask_llm(prompt, endpoint, key, model)  # raises on failure — no silent fallback
     idxs = {int(x) for x in __import__("re").findall(r"\d+", text)}
     return [i in idxs for i in range(len(cands))]
 
@@ -450,7 +460,17 @@ def judge_report() -> dict:
 
 def judged_compare(arms: dict[str, Generator], suite: str, dataset: dict) -> list[ArmResult]:
     """Compare arms with LLM-judged recall (semantic equivalence) instead of full-word match."""
+    _require_distinct_judge()
     return [run_arm(name, gen, suite, dataset, matcher=judge_matches) for name, gen in arms.items()]
+
+
+def _require_distinct_judge() -> None:
+    """A judged measurement must use a judge model DISTINCT from the generator, or it is the model
+    grading its own homework. Refuse, rather than silently measure with the same model."""
+    if not judge_is_distinct():
+        raise RuntimeError(
+            "the judge model is not distinct from the generator — set SEXTANT_JUDGE_MODEL "
+            "(and SEXTANT_JUDGE_ENDPOINT if it lives elsewhere) to a different model")
 
 
 # ----------------------------------------------------------------------------
@@ -483,7 +503,11 @@ def run_campaign(name: str, generator: Generator, dataset: dict | None = None,
     camp = CAMPAIGNS[name]
     data = dataset or camp["dataset"]
     arms = {"untyped-baseline": untyped_generator, "llm": generator}
-    matcher = judge_matches if judged else _full_word_matcher
+    if judged:
+        _require_distinct_judge()
+        matcher = judge_matches
+    else:
+        matcher = _full_word_matcher
     return [run_arm(n, g, camp["suite"], data, matcher=matcher) for n, g in arms.items()]
 
 
@@ -498,5 +522,5 @@ if __name__ == "__main__":
     print(report(compare(arms, "historical-rediscovery", DATASET)))
     print("\nNOTE: the five-jump arm carries the jump (straw-man) — recall 1.0 is an upper bound, not")
     print("evidence. Run with the real generator via:")
-    print("  SEXTANT_LLM_ENDPOINT=http://<rog-ip>:11434/v1 SEXTANT_LLM_MODEL=qwen2.5:7b \\")
+    print("  SEXTANT_LLM_ENDPOINT=http://<rog-ip>:11434/v1 SEXTANT_LLM_MODEL=deepseek-r1:7b \\")
     print("  python3 -c \"from pacland import benchmarks as b; print(b.report(b.run_campaign('A', b.llm_generator)))\"")

@@ -1026,6 +1026,13 @@
    "title": "Partner appeals \u2014 the open problems, framed as collaborations"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/peft-finetune.md",
+   "kind": "doc",
+   "path": "docs/peft-finetune.md",
+   "summary": "The plan is to fine-tune the self-hosted LLM (qwen2.5:7b on pacland-rog) on the discovery skill, so it runs the discovery loop unattended without DeepSeek. The front half (data \u2192 fine-tune)\u2026",
+   "title": "Fine-tuning the local discovery model \u2014 the full path"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/phenotype-network.md",
    "kind": "doc",
    "path": "docs/phenotype-network.md",
@@ -1677,6 +1684,13 @@
    "title": "build_climate_charts.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_discovery_extra.py",
+   "kind": "script",
+   "path": "scripts/build_discovery_extra.py",
+   "summary": "Generate more DISGUISED real-physics discovery examples to thicken the discovery skill.",
+   "title": "build_discovery_extra.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_peft_dataset.py",
    "kind": "script",
    "path": "scripts/build_peft_dataset.py",
@@ -1689,6 +1703,13 @@
    "path": "scripts/build_site_index.py",
    "summary": "Build the site's searchable index \u2014 one place to find everything.",
    "title": "build_site_index.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_skill_dataset.py",
+   "kind": "script",
+   "path": "scripts/build_skill_dataset.py",
+   "summary": "Generate the falsifier-skill and Lean-skill training examples with DeepSeek.",
+   "title": "build_skill_dataset.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_trust_summary.py",
@@ -1843,6 +1864,13 @@
    "path": "scripts/climb_deficit.py",
    "summary": "The autonomous deficit climber \u2014 run the oracle over a corpus and hone m.",
    "title": "climb_deficit.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/compare_models.py",
+   "kind": "script",
+   "path": "scripts/compare_models.py",
+   "summary": "Compare two self-hosted models (ROG Ollama) on judged recall, judged by deepseek-reasoner.",
+   "title": "compare_models.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/compression.py",
@@ -2202,6 +2230,13 @@
    "title": "epidemiology_identifiability.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/eval_recall.py",
+   "kind": "script",
+   "path": "scripts/eval_recall.py",
+   "summary": "Evaluate a merged HF model's JUDGED recall on the full benchmark (the metric that matters).",
+   "title": "eval_recall.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/exact_series.py",
    "kind": "script",
    "path": "scripts/exact_series.py",
@@ -2538,6 +2573,13 @@
    "title": "measure_covariance_table.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_distinct.py",
+   "kind": "script",
+   "path": "scripts/measure_distinct.py",
+   "summary": "Honest measurement: a DISTINCT judge (deepseek-reasoner) grades deepseek-chat's proposals.",
+   "title": "measure_distinct.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_elimination_curve.py",
    "kind": "script",
    "path": "scripts/measure_elimination_curve.py",
@@ -2585,6 +2627,13 @@
    "path": "scripts/measure_w0_tuning.py",
    "summary": "Turn the measured log-uniform |W0| prior into the KKLT tuning probability.",
    "title": "measure_w0_tuning.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/merge_lora.py",
+   "kind": "script",
+   "path": "scripts/merge_lora.py",
+   "summary": "Merge a LoRA/QLoRA adapter back into its base model (full fine-tuned checkpoint).",
+   "title": "merge_lora.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/mine_structure.py",
@@ -2776,6 +2825,13 @@
    "title": "preconditions.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/publish_ollama.sh",
+   "kind": "script",
+   "path": "scripts/publish_ollama.sh",
+   "summary": "Publish a merged HF model to Ollama: convert to GGUF, quantize to Q4_K_M, import.",
+   "title": "publish_ollama.sh"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/qg-proof-beliefs.py",
    "kind": "script",
    "path": "scripts/qg-proof-beliefs.py",
@@ -2844,6 +2900,13 @@
    "path": "scripts/run_frontier_massgap.py",
    "summary": "One frontier run: the mass gap (Campaign C). The LLM proposes, SEXTANT falsifies, report survivors.",
    "title": "run_frontier_massgap.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/run_massgap.py",
+   "kind": "script",
+   "path": "scripts/run_massgap.py",
+   "summary": "One full frontier pass of the automated machine on the Yang-Mills mass gap.",
+   "title": "run_massgap.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_ds_test.py",
@@ -2949,6 +3012,13 @@
    "path": "scripts/sign_manifest.py",
    "summary": "Sign the certificate manifest with an OpenSSH (ed25519) key, and publish the public key.",
    "title": "sign_manifest.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/smoke_finetune.sh",
+   "kind": "script",
+   "path": "scripts/smoke_finetune.sh",
+   "summary": "One-shot smoke run on the rented GPU: prove the whole path trains and merges before the full run.",
+   "title": "smoke_finetune.sh"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_explicit.py",

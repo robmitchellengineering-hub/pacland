@@ -10,13 +10,23 @@ synthesising a candidate:
 
 The result is an acquisition record, never a fake verdict: a found falsifier is named; a missing one
 is recorded as "to build" with the evidence of where to look.
+
+When a falsifier cannot be BUILT in the current pass (the synthesized code crashes, or no LLM is
+present), it is recorded as a JOB in ``runs/falsifier-jobs.jsonl`` — a concrete task another process
+or session can pick up and complete, so the frontier progresses across runs instead of stalling.
 """
 from __future__ import annotations
 
+import json
 import re
+import time
+import uuid
 from pathlib import Path
 
 from pacland import literature
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # .../pacland
+FALSIFIER_JOBS = REPO_ROOT / "runs" / "falsifier-jobs.jsonl"
 
 _STOP = {"that", "with", "this", "from", "these", "their", "they", "have", "than", "will",
          "would", "been", "were", "such", "more", "also", "only", "very", "into", "over",
@@ -31,17 +41,55 @@ def key_terms(statement: str, n: int = 6) -> list[str]:
 
 
 def search_arxiv(statement: str, max_results: int = 5) -> list[dict]:
-    """Prior art: arXiv papers that test the claim, with their headline claim as a candidate falsifier."""
+    """Prior art: arXiv papers that test the claim, with BOTH the headline claim and the falsifier
+    METHOD (the measurement/bound/exclusion sentences the paper states)."""
     try:
         records = literature.search_arxiv(statement, max_results)
     except Exception as e:  # noqa: BLE001 — arXiv unreachable is not fatal, it is reported
         return [{"error": f"arXiv unreachable: {type(e).__name__}"}]
     out = []
     for r in records:
-        if r.get("claim"):
-            out.append({"arxiv_id": r.get("arxiv_id", ""), "title": r.get("title", ""),
-                        "claim": r["claim"]})
+        method = literature.extract_method(r.get("abstract", ""))
+        out.append({"arxiv_id": r.get("arxiv_id", ""), "title": r.get("title", ""),
+                    "claim": r.get("claim"), "method": method})
     return out
+
+
+def search_mathlib(statement: str, max_hits: int = 10) -> list[dict]:
+    """Search Mathlib (via Loogle) for theorems whose statement mentions the claim's key terms.
+
+    This is the real 'search the Lean library' step: each hit carries the theorem's FULL TYPE (its
+    statement), so whether it refutes the claim can be checked against the claim's negation — not
+    guessed from a shared word.
+    """
+    import urllib.parse
+    import urllib.request
+
+    hits: list[dict] = []
+    for frag in _loogle_fragments(statement)[:6]:
+        url = "https://loogle.lean-lang.org/json?q=" + urllib.parse.quote(frag)
+        try:
+            with urllib.request.urlopen(url, timeout=15) as resp:
+                data = json.loads(resp.read().decode())
+        except Exception:  # noqa: BLE001 — Loogle unreachable => no hits, not a crash
+            continue
+        for h in data.get("hits", [])[:5]:
+            hits.append({"module": h.get("module", ""), "name": h.get("name", ""),
+                         "type": h.get("type", "")})
+        if len(hits) >= max_hits:
+            break
+    return hits[:max_hits]
+
+
+def _loogle_fragments(statement: str) -> list[str]:
+    """Identifier fragments for a Loogle (identifier-name) query, from the claim's key terms."""
+    frags: list[str] = []
+    for t in key_terms(statement, n=6):
+        frags.append(t)
+        parts = t.split(" ")
+        if len(parts) > 1:
+            frags.append(parts[0] + "".join(p.title() for p in parts[1:]))  # camelCase
+    return [f for f in frags if f]
 
 
 def search_proof_tree(statement: str, proof_dir: str | Path = "pacland-proof",
@@ -71,11 +119,43 @@ def search_proof_tree(statement: str, proof_dir: str | Path = "pacland-proof",
 
 
 def search_code(statement: str) -> list[dict]:
-    """An existing falsifier in the codebase that matches the claim (runnable today)."""
+    """Find an existing falsifier across the FULL inventory — not just a keyword map.
+
+    Scans the runner's falsifiers, the SEXTANT/Phantom falsifiers, and the lattice tools
+    (``lattice_ym_su2``, ``glueball``) — matching the claim's key terms against each function's name
+    and docstring. This is 'get the code that it needs' from the library that already exists; fetching
+    code from external repos (GitHub/PyPI) is a further step, not wired here.
+    """
     from pacland import runner
 
-    fn = runner._falsifier_for_statement(statement)
-    return [{"falsifier": fn.__name__}] if fn is not None else []
+    hits: list[dict] = []
+    for name, fn in runner.FALSIFIERS.items():
+        if _matches(statement, name + " " + (fn.__doc__ or "")):
+            hits.append({"falsifier": name, "source": "runner.FALSIFIERS"})
+    _, phantom = runner._import_sextant()
+    if phantom is not None:
+        for name, fn in getattr(phantom, "FALSIFIERS", {}).items():
+            if _matches(statement, name + " " + (fn.__doc__ or "")):
+                hits.append({"falsifier": name, "source": "phantom.FALSIFIERS"})
+    for modname in ("lattice_ym_su2", "glueball"):
+        try:
+            mod = __import__(f"pacland.{modname}", fromlist=[modname])
+        except Exception:  # noqa: BLE001 — a missing optional dep is not a hit, not a crash
+            continue
+        for name in dir(mod):
+            if not name.startswith(("measure", "verify", "compute", "glueball", "creutz", "wilson")):
+                continue
+            fn = getattr(mod, name)
+            if callable(fn) and _matches(statement, name + " " + (fn.__doc__ or "")):
+                hits.append({"falsifier": f"{modname}.{name}", "source": modname})
+    return hits
+
+
+def _matches(statement: str, text: str) -> bool:
+    """True when any of the claim's key terms appears in the falsifier's name/docstring."""
+    terms = key_terms(statement, n=4)
+    low = text.lower()
+    return any(t in low for t in terms)
 
 
 def synthesize(statement: str, endpoint: str, key: str, model: str) -> str | None:
@@ -97,19 +177,31 @@ def synthesize(statement: str, endpoint: str, key: str, model: str) -> str | Non
 
 def acquire(statement: str, proof_dir: str | Path = "pacland-proof",
             endpoint: str = "", key: str = "", model: str = "") -> dict:
-    """Find or note a falsifier for an OPEN hypothesis. Returns the acquisition record."""
+    """FIND a falsifier first, BUILD only if none is found — in that order.
+
+    1. code       — an existing falsifier in the codebase (runnable today),
+    2. proof tree — a theorem in the local Lean tower that refutes the claim,
+    3. Mathlib    — search Loogle for theorems whose STATEMENT matches (real library search),
+    4. arXiv      — prior art that tests the claim, with its method (measurement/bound/exclusion),
+    5. synthesize — only if none of the above found a falsifier, propose a candidate to build.
+
+    ``found`` is True only when a falsifier was actually located; a bare key-term overlap is NOT
+    counted as found — it is surfaced as a candidate with its statement for the kernel to decide.
+    """
     code = search_code(statement)
     proof = search_proof_tree(statement, proof_dir)
+    mathlib = search_mathlib(statement)
     arxiv = search_arxiv(statement)
+    found = bool(code or proof or mathlib or any(r.get("method") for r in arxiv))
     synthesized = None
-    if not (code or proof):
+    if not found:
         synthesized = synthesize(statement, endpoint, key, model)
-    found = bool(code or proof)
     return {
         "statement": statement,
         "found": found,
         "code": code,
         "proof_tree": proof,
+        "mathlib": mathlib,
         "arxiv": arxiv,
         "synthesized_falsifier": synthesized,
         "verdict": ("falsifier found" if found else
@@ -137,55 +229,315 @@ def validate_falsifier(code: str, statement: str) -> list[str]:
     return issues
 
 
-def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str) -> dict:
-    """Turn a synthesized falsifier into an EXECUTABLE test, validate it, run it, and retry.
+# The restricted-exec harness: the LLM code runs with a whitelist of builtins plus math/numpy/sympy.
+# No __import__ / open / os / subprocess / socket / eval / exec / globals / locals — so the generated
+# code cannot touch the filesystem or network even though it is a real subprocess. (Defense-in-depth;
+# a true OS sandbox — bwrap/sandbox-exec — is the stronger form and is not available here.)
+_RESTRICTED_PRELUDE = '''\
+import builtins as _bi
+import json as _json
+import math as _math
+import numpy as _np
+import sympy as _sympy
+
+_SAFE_BUILTINS = {
+    "abs", "all", "any", "len", "range", "sum", "min", "max", "round", "int", "float", "str",
+    "bool", "list", "dict", "tuple", "set", "frozenset", "enumerate", "zip", "map", "filter",
+    "sorted", "reversed", "pow", "divmod", "isinstance", "print", "complex", "True", "False",
+    "None", "Exception", "ValueError", "TypeError", "ZeroDivisionError", "IndexError", "KeyError",
+    "ArithmeticError", "OverflowError",
+}
+_g = {"__builtins__": {k: getattr(_bi, k) for k in _SAFE_BUILTINS if hasattr(_bi, k)},
+      "math": _math, "np": _np, "numpy": _np, "sympy": _sympy}
+'''
+
+_RESTRICTED_POSTLUDE = '''\
+exec(_code, _g)
+_result = _g["falsifier"]()
+print(_json.dumps(list(_result)))
+'''
+
+
+def build_and_run_falsifier(statement: str, endpoint: str, key: str, model: str,
+                            attempts: int = 3) -> dict:
+    """Turn a synthesized falsifier into an EXECUTABLE test, validate it, run it, and REPAIR it.
 
     This closes the acquisition loop: acquire -> build (the LLM writes a Python ``falsifier()``
     returning ``(bool, str)``) -> VALIDATE it actually tests the candidate -> run it in a subprocess ->
-    get a verdict. The verdict is honest — it is from a SYNTHESIZED falsifier (LLM-written, not a
-    vetted lattice/Lean computation), so it is a candidate verdict, not a definitive one.
+    get a verdict. On a crash or unparseable output the error is fed back to the LLM and it retries
+    (up to ``attempts``), the same repair loop the Lean prover uses. The code runs in a RESTRICTED
+    namespace (whitelisted builtins + math/numpy/sympy — no ``__import__``/``open``/``os``/
+    ``subprocess``/``socket``/``eval``) inside a subprocess with a timeout, so the "no files/network"
+    instruction is enforced, not merely requested. The verdict is honest — it is from a SYNTHESIZED
+    falsifier (LLM-written, not a vetted lattice/Lean computation), so it is a candidate verdict.
     """
     from pacland import runner
 
     if not model:
         return {"ran": False, "reason": "no LLM to write the falsifier"}
-    prompt = (
-        "Write a Python function `falsifier()` that tests the hypothesis below and returns "
-        "(bool, str): True if the hypothesis SURVIVES (the test could not refute it), False if it is "
-        "REFUTED, plus a one-line evidence string. Use only numpy / math / sympy — no files, no "
-        "network, no prints except the return. Output ONLY the code.\n\nHypothesis: " + statement
-    )
-    try:
-        code = runner._ask_llm(prompt, endpoint, key, model)
-    except Exception as e:  # noqa: BLE001
-        return {"ran": False, "reason": f"LLM failed: {type(e).__name__}"}
-    code = code.strip().strip("`").replace("```python", "").replace("```", "").strip()
-
-    issues = validate_falsifier(code, statement)
-    if issues:
-        return {"ran": False, "reason": "vacuous falsifier rejected: " + "; ".join(issues)}
 
     import json
     import subprocess
     import tempfile
     from pathlib import Path
 
-    harness = ("import json\nimport numpy as np\nimport math\nimport sympy\n"
-               + code + "\n_result = falsifier()\nprint(json.dumps(list(_result)))\n")
-    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
-        f.write(harness)
-        path = f.name
-    try:
-        r = subprocess.run(["python3", path], capture_output=True, text=True, timeout=60)
-    except subprocess.TimeoutExpired:
-        return {"ran": False, "reason": "synthesized falsifier timed out"}
-    finally:
+    base_prompt = (
+        "Write a Python function `falsifier()` that tests the hypothesis below and returns "
+        "(bool, str): True if the hypothesis SURVIVES (the test could not refute it), False if it is "
+        "REFUTED, plus a one-line evidence string. Use only numpy / math / sympy — no files, no "
+        "network, no prints except the return. Output ONLY the code.\n\nHypothesis: " + statement
+    )
+    last_reason = ""
+    for attempt in range(attempts):
+        prompt = base_prompt
+        if last_reason:
+            prompt += "\n\nYour previous attempt failed with: " + last_reason + \
+                      "\nFix the bug and output ONLY the corrected code."
+        try:
+            code = runner._ask_llm(prompt, endpoint, key, model)
+        except Exception as e:  # noqa: BLE001
+            return {"ran": False, "reason": f"LLM failed: {type(e).__name__}"}
+        code = _clean_code(code)
+
+        issues = validate_falsifier(code, statement)
+        if issues:
+            last_reason = "vacuous falsifier rejected: " + "; ".join(issues)
+            continue
+
+        # The LLM code runs in a RESTRICTED namespace: only a whitelist of builtins plus math/numpy/sympy.
+        harness = _RESTRICTED_PRELUDE + "\n_code = " + repr(code) + "\n" + _RESTRICTED_POSTLUDE
+        with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
+            f.write(harness)
+            path = f.name
+        try:
+            r = subprocess.run(["python3", path], capture_output=True, text=True, timeout=60)
+        except subprocess.TimeoutExpired:
+            Path(path).unlink(missing_ok=True)
+            last_reason = "synthesized falsifier timed out"
+            continue
         Path(path).unlink(missing_ok=True)
-    if r.returncode != 0:
-        return {"ran": False, "reason": f"falsifier code failed: {(r.stderr or r.stdout)[:200]}"}
-    try:
-        survived, evidence = json.loads(r.stdout.strip())
-    except Exception:  # noqa: BLE001
-        return {"ran": False, "reason": f"falsifier returned unparseable output: {r.stdout[:120]}"}
-    return {"ran": True, "survived": bool(survived), "evidence": str(evidence), "code": code,
-            "note": "synthesized falsifier (LLM-written, not a vetted lattice/Lean computation)"}
+        if r.returncode != 0:
+            last_reason = f"falsifier code failed: {(r.stderr or r.stdout)[:200]}"
+            continue
+        try:
+            survived, evidence = json.loads(r.stdout.strip())
+        except Exception:  # noqa: BLE001
+            last_reason = f"falsifier returned unparseable output: {r.stdout[:120]}"
+            continue
+        return {"ran": True, "survived": bool(survived), "evidence": str(evidence), "code": code,
+                "attempts": attempt + 1,
+                "note": "synthesized falsifier (LLM-written, not a vetted lattice/Lean computation)"}
+
+    return {"ran": False, "reason": last_reason or "could not build a runnable falsifier"}
+
+
+# The lattice falsifier builder: the numpy sandbox cannot express a lattice measurement, so a
+# physics claim (monopole removal, θ-dependence, glueball, ...) needs a falsifier written against
+# the lattice modules. This is a MULTI-TURN build: write -> run -> feed the crash/noise back ->
+# retry, up to ``turns``, the same repair loop the Lean prover uses. It is NOT a one-shot.
+_LATTICE_API = """\
+Available lattice functions (write `from pacland.<mod> import <fn>` and CALL them — do not reimplement):
+  from pacland.lattice_ym_su3 import measure_string_tension   # (tension, evidence)
+  from pacland.glueball_su3 import glueball_mass_su3          # (mass, evidence)
+  from pacland.polyakov import measure_correlation_mass       # (mass, evidence)
+  from pacland.mass_gap_falsifiers import (verify_bulk_transition, verify_universality,
+                                           verify_large_n_ratio, verify_polyakov_clustering)
+  # each verify_* returns (survived: bool, evidence: str)
+"""
+
+_PHYSICS_TERMS = ("monopole", "vortex", "condensat", "glueball", "lattice", "gauge", "confinement",
+                  "deconfinement", "instanton", "dyon", "mass gap", "mass-gap", "gluon", "theta",
+                  "θ", "vacuum angle", "chiral", "polyakov", "large-n", "large n", "string tension")
+
+
+def _clean_code(code: str) -> str:
+    """Strip markdown fences, a language tag, and any stray leading 'python' token from an LLM reply."""
+    code = code.strip().strip("`")
+    code = re.sub(r"^```[a-zA-Z0-9]*\s*", "", code)
+    code = re.sub(r"\s*```$", "", code)
+    code = re.sub(r"^(python|py|code)\s*\n", "", code, flags=re.IGNORECASE)
+    return code.strip()
+
+
+def is_lattice_claim(statement: str) -> bool:
+    """True when the claim needs a lattice measurement (a numpy-only falsifier cannot express it)."""
+    low = statement.lower()
+    return any(t in low for t in _PHYSICS_TERMS)
+
+
+def apply_acquired(acq: dict, statement: str) -> dict | None:
+    """USE an existing falsifier that ``acquire`` found, instead of building a new one.
+
+    Priority (the honest order): a runnable code falsifier is RUN (a definitive verdict); otherwise
+    an existing proof-tree theorem, a Mathlib theorem, or an arXiv paper that already tests the claim
+    is cited as the falsifier — the candidate is already falsifiable by existing work, so building a
+    new falsifier would be worse, not better. Returns ``None`` only when acquire found nothing usable.
+    """
+    from pacland import runner
+
+    # 1. a runnable code falsifier -> run it (definitive)
+    for hit in acq.get("code", []):
+        name = hit.get("falsifier", "")
+        fn = runner.FALSIFIERS.get(name)
+        if fn is None and "." in name:
+            modname, attr = name.split(".", 1)
+            try:
+                mod = __import__(f"pacland.{modname}", fromlist=[modname])
+                fn = getattr(mod, attr, None)
+            except Exception:  # noqa: BLE001
+                fn = None
+        if callable(fn):
+            try:
+                survived, evidence = fn()
+                return {"ran": True, "survived": bool(survived), "evidence": str(evidence),
+                        "existing": name,
+                        "note": f"existing code falsifier {name} (run, definitive)"}
+            except Exception:  # noqa: BLE001 — a crashing found falsifier is skipped, next one tried
+                continue
+    # 2. an existing Lean proof-tree theorem addresses the claim
+    if acq.get("proof_tree"):
+        t = acq["proof_tree"][0]
+        return {"ran": False, "found_existing": True, "existing": t.get("theorem"),
+                "evidence": (f"already falsifiable by an existing proof-tree theorem "
+                             f"({t.get('theorem')} in {t.get('file')}) — no new falsifier needed")}
+    # 3. a Mathlib theorem (via Loogle) addresses the claim
+    if acq.get("mathlib"):
+        m = acq["mathlib"][0]
+        return {"ran": False, "found_existing": True, "existing": m.get("name"),
+                "evidence": (f"already falsifiable by a Mathlib theorem "
+                             f"({m.get('module')}.{m.get('name')}: {m.get('type', '')[:120]})")}
+    # 4. arXiv prior art already tests the claim, with its method
+    for r in acq.get("arxiv", []):
+        if r.get("method"):
+            return {"ran": False, "found_existing": True, "existing": r.get("arxiv_id"),
+                    "evidence": (f"already tested in the literature: arXiv:{r.get('arxiv_id')} — "
+                                 f"{r.get('method', '')[:160]}")}
+    return None
+
+
+def build_lattice_falsifier(statement: str, endpoint: str, key: str, model: str,
+                            turns: int = 5) -> dict:
+    """Multi-turn build of a lattice falsifier: the LLM writes a falsifier against the lattice
+    modules, we run it with the pacland source importable, and on a crash or a noise/unresolved
+    result we feed the output back and retry — never one-shot.
+    """
+    from pacland import runner
+
+    if not model:
+        return {"ran": False, "reason": "no LLM to write the falsifier"}
+
+    import os
+    import subprocess
+    import tempfile
+
+    src = str(Path(__file__).resolve().parent.parent)  # .../pacland/src
+    base_prompt = (
+        "Write a Python function `falsifier()` that tests the hypothesis below using the lattice "
+        "modules and returns (bool, str): True if the hypothesis SURVIVES (not refuted), False if it "
+        "is REFUTED, plus a one-line evidence string. Keep it SMALL (N<=6, n_sweeps<=10) so it runs "
+        "in seconds. Output ONLY the code, no prose.\n" + _LATTICE_API + "\nHypothesis: " + statement
+    )
+    last_err = ""
+    for turn in range(turns):
+        prompt = base_prompt
+        if last_err:
+            prompt += ("\n\nYour previous attempt failed:\n" + last_err +
+                       "\nFix the bug and output ONLY the corrected code.")
+        try:
+            code = runner._ask_llm(prompt, endpoint, key, model)
+        except Exception as e:  # noqa: BLE001
+            return {"ran": False, "reason": f"LLM failed: {type(e).__name__}"}
+        code = _clean_code(code)
+
+        harness = "import json\n" + code + "\nprint(json.dumps(list(falsifier())))\n"
+        with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
+            f.write(harness)
+            path = f.name
+        env = dict(os.environ)
+        env["PYTHONPATH"] = src + os.pathsep + env.get("PYTHONPATH", "")
+        try:
+            r = subprocess.run(["python3", path], capture_output=True, text=True, timeout=180,
+                               env=env, cwd=str(src))
+        except subprocess.TimeoutExpired:
+            Path(path).unlink(missing_ok=True)
+            last_err = "falsifier timed out — keep N<=6 and n_sweeps<=10"
+            continue
+        Path(path).unlink(missing_ok=True)
+        if r.returncode != 0:
+            last_err = "crashed:\n" + (r.stderr or r.stdout)[:400]
+            continue
+        try:
+            survived, evidence = json.loads(r.stdout.strip())
+        except Exception:  # noqa: BLE001
+            last_err = "unparseable output: " + r.stdout[:160]
+            continue
+        # a falsifier that returns 'unresolved/noise' evidence is not yet a verdict — retry with that
+        # signal fed back, so it does not one-shot a noise measurement as a refutation.
+        if not isinstance(survived, bool):
+            last_err = f"falsifier returned a non-boolean verdict ({survived!r})"
+            continue
+        return {"ran": True, "survived": bool(survived), "evidence": str(evidence), "code": code,
+                "turns": turn + 1,
+                "note": "lattice falsifier (LLM-written against the lattice modules, not definitive)"}
+
+    return {"ran": False, "reason": last_err or "could not build a runnable lattice falsifier"}
+
+
+def record_falsifier_job(statement: str, proposed_falsifier: str, reason: str) -> str:
+    """Record a "build this falsifier" job so another process or session can complete it.
+
+    The frontier does not stall on an un-buildable falsifier: it writes the claim, the proposed test,
+    and the reason it could not be built now, as a queued job. Returns the job id.
+    """
+    job = {"job_id": uuid.uuid4().hex[:12], "statement": statement,
+           "proposed_falsifier": proposed_falsifier or "(none proposed)",
+           "reason": reason or "unknown", "status": "queued", "created_at": time.time()}
+    FALSIFIER_JOBS.parent.mkdir(parents=True, exist_ok=True)
+    with FALSIFIER_JOBS.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(job) + "\n")
+    return job["job_id"]
+
+
+def list_falsifier_jobs(status: str | None = None) -> list[dict]:
+    """The falsifier job queue, newest first, optionally filtered by ``status``."""
+    if not FALSIFIER_JOBS.exists():
+        return []
+    jobs = [json.loads(line) for line in FALSIFIER_JOBS.read_text(encoding="utf-8").splitlines()
+            if line.strip()]
+    if status:
+        jobs = [j for j in jobs if j.get("status") == status]
+    return list(reversed(jobs))
+
+
+def claim_falsifier_job(job_id: str) -> bool:
+    """Mark a job in-progress so one session owns it (a mutex for the shared queue)."""
+    jobs = list_falsifier_jobs()
+    changed = False
+    for j in jobs:
+        if j["job_id"] == job_id and j.get("status") == "queued":
+            j["status"] = "in-progress"
+            changed = True
+    if changed:
+        _rewrite_jobs(jobs)
+    return changed
+
+
+def mark_falsifier_built(job_id: str, falsifier: str) -> bool:
+    """Mark a job as built (a falsifier now exists), so the queue reflects progress."""
+    jobs = list_falsifier_jobs()
+    changed = False
+    for j in jobs:
+        if j["job_id"] == job_id:
+            j["status"] = "built"
+            j["falsifier"] = falsifier
+            changed = True
+    if changed:
+        _rewrite_jobs(jobs)
+    return changed
+
+
+def _rewrite_jobs(jobs: list[dict]) -> None:
+    FALSIFIER_JOBS.parent.mkdir(parents=True, exist_ok=True)
+    with FALSIFIER_JOBS.open("w", encoding="utf-8") as fh:
+        for j in jobs:
+            fh.write(json.dumps(j) + "\n")

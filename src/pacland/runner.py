@@ -37,6 +37,98 @@ PROOF_DIR = REPO_ROOT / "pacland-proof"
 RECORD = REPO_ROOT / "runs" / "runner.jsonl"
 DISCOVERIES = REPO_ROOT / "runs" / "discoveries.jsonl"
 EXPERIMENTS = REPO_ROOT / "runs" / "experiments.jsonl"
+MEMORY = REPO_ROOT / "runs" / "discovery-memory.jsonl"
+REJECTED = REPO_ROOT / "runs" / "rejected.jsonl"
+
+
+def _load_memory() -> list[dict]:
+    """The verified-discovery memory: one JSON object per line (problem, statement, falsifier, proof)."""
+    if not MEMORY.exists():
+        return []
+    out: list[dict] = []
+    for line in MEMORY.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            out.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    return out
+
+
+def _append_memory(problem: str, statement: str, falsifier: str, proof: dict | None) -> None:
+    """Record a VERIFIED discovery into the in-context memory (the learn-as-it-goes store)."""
+    MEMORY.parent.mkdir(parents=True, exist_ok=True)
+    with MEMORY.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps({
+            "problem": problem, "statement": statement, "falsifier": falsifier,
+            "proof": (proof or {}).get("lean", "") if proof else "",
+            "ts": datetime.now(timezone.utc).isoformat(),
+        }) + "\n")
+
+
+def _load_rejected() -> list[dict]:
+    """Past proposals with their disposition: 'falsified' (dead) or 'gated-out: <stage>' (not dead)."""
+    if not REJECTED.exists():
+        return []
+    out: list[dict] = []
+    for line in REJECTED.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            out.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    return out
+
+
+def _append_rejected(problem: str, statement: str, reason: str) -> None:
+    """Record a proposal's disposition. 'falsified' means dead; 'gated-out' means unjustified, not dead."""
+    REJECTED.parent.mkdir(parents=True, exist_ok=True)
+    with REJECTED.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps({"problem": problem, "statement": statement, "reason": reason,
+                             "ts": datetime.now(timezone.utc).isoformat()}) + "\n")
+
+
+def _memory_prefix(problem: str, n: int = 4) -> str:
+    """Few-shot prefix from the most relevant verified discoveries + a 'do NOT re-propose' block.
+
+    Injecting past VERIFIED discoveries as examples is the in-context-learning leg of "better with
+    use" — the model sees real pre-state -> discovery -> falsifier pairs before proposing, with no
+    weight update (which the ROG cannot do). It also lists already-refuted proposals so the model
+    does not waste a round re-proposing a dead idea.
+    """
+    entries = _load_memory()
+    rejected = _load_rejected()
+    parts: list[str] = []
+
+    if entries:
+        q = set(re.findall(r"[a-z]{3,}", problem.lower()))
+
+        def score(e: dict) -> int:
+            hay = (e.get("problem", "") + " " + e.get("statement", "")).lower()
+            return len(q & set(re.findall(r"[a-z]{3,}", hay)))
+
+        ranked = sorted(entries, key=score, reverse=True)[:n]
+        parts.append("Verified discoveries from past runs (use as a template, do not repeat them):")
+        parts += [f"- {e['statement']} (falsifier: {e['falsifier']})" for e in ranked]
+
+    if rejected:
+        # split by disposition: FALSIFIED is dead; gated-out is unjustified, not dead.
+        dead = [e for e in rejected if e.get("reason") == "falsified"]
+        gated = [e for e in rejected if str(e.get("reason", "")).startswith("gated-out")]
+        if dead:
+            parts.append("Already FALSIFIED — do NOT re-propose these:")
+            parts += [f"- {e['statement']}" for e in dead[-6:]]
+        if gated:
+            parts.append("Already proposed but gated (not falsified — needs better justification):")
+            parts += [f"- {e['statement']} ({e['reason']})" for e in gated[-6:]]
+
+    if not parts:
+        return ""
+    return "\n".join(parts) + "\n\n"
 
 
 # ------------------------------------------------------------------------------------------ #
@@ -153,11 +245,26 @@ def verify_mass_gap_scaling() -> tuple[bool, str]:
                              + " — no independent mechanism survives; the asymptotic-freedom scale is the referee itself")
 
 
+def _lazy(module: str, attr: str):
+    """Import a falsifier lazily (avoids importing numpy at module import time)."""
+    import importlib
+
+    def _f():
+        return getattr(importlib.import_module(f"pacland.{module}"), attr)()
+    return _f
+
+
 FALSIFIERS: dict[str, object] = {
     "ou-gap": verify_ou_gap,
     "su2-weak-coupling": verify_su2_weak_coupling,
     "glueball-mass-ratio": verify_glueball_mass_ratio,
     "mass-gap-scaling": verify_mass_gap_scaling,
+    # candidate-specific mass-gap falsifiers (built from the SU(2) lattice tools)
+    "d5-mass-gap": _lazy("mass_gap_falsifiers", "verify_d5_mass_gap"),
+    "bulk-transition": _lazy("mass_gap_falsifiers", "verify_bulk_transition"),
+    "universality": _lazy("mass_gap_falsifiers", "verify_universality"),
+    "large-n-ratio": _lazy("mass_gap_falsifiers", "verify_large_n_ratio"),
+    "polyakov-clustering": _lazy("mass_gap_falsifiers", "verify_polyakov_clustering"),
 }
 
 
@@ -378,11 +485,25 @@ def next_sublemma(hypothesis_id: str) -> Candidate:
 # ------------------------------------------------------------------------------------------ #
 
 def _llm_config() -> tuple[str, str, str]:
-    """The OpenAI-compatible endpoint, key and model from the environment."""
+    """The OpenAI-compatible endpoint, key and model from the environment.
+
+    The model is read from the environment with NO hardcoded default, so "no model configured" stays
+    a detectable, gracefully-refused state (the runner/benchmark tests rely on it). Set
+    SEXTANT_LLM_MODEL=qwen2.5-discovery (and SEXTANT_LLM_ENDPOINT) to use the tuned local model.
+    """
     return (
         os.environ.get("SEXTANT_LLM_ENDPOINT", "http://localhost:11434/v1"),
         os.environ.get("SEXTANT_LLM_KEY", ""),
         os.environ.get("SEXTANT_LLM_MODEL", ""),
+    )
+
+
+def _judge_config() -> tuple[str, str, str]:
+    """The independent judge's endpoint/key/model (distinct from the generator for honest checks)."""
+    return (
+        os.environ.get("SEXTANT_JUDGE_ENDPOINT", "") or _llm_config()[0],
+        os.environ.get("SEXTANT_JUDGE_KEY", "") or _llm_config()[1],
+        os.environ.get("SEXTANT_JUDGE_MODEL", "") or _llm_config()[2],
     )
 
 
@@ -427,6 +548,11 @@ def _check_lean(code: str) -> tuple[bool, str]:
     except subprocess.TimeoutExpired:
         return False, "kernel timed out (600s)"
     if r.returncode == 0:
+        out = r.stdout + r.stderr
+        # `sorry`/`admit` COMPILE with a warning, so a green kernel alone is not a proof. Refuse any
+        # file that still carries a placeholder or an axiom — the whole point of the proof loop.
+        if re.search(r"declaration uses ['`]?(sorry|admit)", out) or re.search(r"\baxiom\b", out):
+            return False, f"compiles but is not a proof: {out.strip()[-500:]}"
         return True, ""
     return False, (r.stdout + r.stderr).strip()[-4000:]
 
@@ -562,7 +688,7 @@ def register_experiment(kind: str, config: dict, metrics: dict) -> str:
 
     Every run — a campaign, an autonomous pass, a benchmark — is registered with its config (model,
     seed, dataset) and its measured metrics, so any result can be traced back to exactly how it was
-    produced and re-run with the same inputs.
+    produced and re-run with the same inputs (``reproduce``).
     """
     import time
     import uuid
@@ -574,6 +700,33 @@ def register_experiment(kind: str, config: dict, metrics: dict) -> str:
     with EXPERIMENTS.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(record) + "\n")
     return run_id
+
+
+def reproduce(run_id: str) -> dict:
+    """Re-run a recorded experiment from its stored config (real reproducibility, not just a log).
+
+    Reads the run's ``kind`` and ``config`` and re-executes it, returning the new run. The LLM's
+    sampling is non-deterministic, so "reproduce" means the same inputs and config — not bit-identical
+    output; a seed (where the kind supports one) makes the synthetic suite deterministic.
+    """
+    if not EXPERIMENTS.exists():
+        raise KeyError(f"no experiment registry at {EXPERIMENTS}")
+    record = None
+    for line in EXPERIMENTS.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            r = json.loads(line)
+            if r.get("run_id") == run_id:
+                record = r
+                break
+    if record is None:
+        raise KeyError(f"unknown run_id {run_id}")
+    kind = record["kind"]
+    cfg = record["config"]
+    if kind == "autonomous":
+        result = run_autonomous(cfg["problem"], rounds=cfg.get("rounds", 1),
+                                budget=cfg.get("budget", 8))
+        return {"reproduced_from": run_id, "new_run_id": result["run_id"], "result": result}
+    raise ValueError(f"cannot reproduce kind {kind!r} (only 'autonomous' is re-runnable today)")
 
 
 def all_facts() -> dict[str, Fact]:
@@ -656,16 +809,32 @@ def _falsifier_for_statement(statement: str):
     falsifier exists yet (the hypothesis stays OPEN — a falsifier for it has not been built).
     """
     low = statement.lower()
-    if any(k in low for k in ("theta", "θ", "d=5", "five-dim", "polyakov",
-                              "n-independ", "su(3)", "su(4)", "su(5)")):
-        return None  # no lattice tool for θ, d=5, Polyakov, or multi-N claims
+    # the candidate-specific falsifiers now exist — route to them BEFORE the generic "return None"
+    if "d=5" in low or "five-dim" in low or "d = 5" in low:
+        return "d5-mass-gap"
+    if "bulk transition" in low or "first-order" in low or "first order" in low:
+        return "bulk-transition"
+    if any(k in low for k in ("universal", "irrelevant", "improved action")):
+        return "universality"
+    if any(k in low for k in ("large-n", "large n", "all n", "universal ratio", "n=3", "n=4", "n=5")):
+        return "large-n-ratio"
+    if "polyakov" in low or "finite-t" in low or "finite temperature" in low or "deconfin" in low:
+        return "polyakov-clustering"
+    if any(k in low for k in ("theta", "θ", "n-independ", "su(3)", "su(4)", "su(5)")):
+        return None  # no lattice tool for θ or multi-N claims yet
     if any(k in low for k in ("string tension", "sqrt", "glueball", "sigma", "σ")):
-        return verify_glueball_mass_ratio
+        return "glueball-mass-ratio"
     if "mass gap" in low and any(k in low for k in ("bound", "perturbative", "scales", "lower")):
-        return verify_mass_gap_scaling
+        return "mass-gap-scaling"
     if "mass gap" in low and "weak coupling" in low:
-        return verify_su2_weak_coupling
+        return "su2-weak-coupling"
     return None
+
+
+# The falsifiers BUILT for a specific mass-gap claim give a DEFINITIVE verdict; the generic lattice
+# falsifiers test a RELATED (not the exact) claim, so their verdict is only APPROXIMATE.
+_CANDIDATE_SPECIFIC = frozenset({"d5-mass-gap", "bulk-transition", "universality",
+                                 "large-n-ratio", "polyakov-clustering"})
 
 
 _UNRESOLVED_MARKERS = ("noise-dominated", "unresolved", "signal is unresolved", "cannot measure")
@@ -698,16 +867,18 @@ def _falsify(candidate: Candidate) -> tuple[bool, bool | None, str]:
                     return True, bool(ok), ev
                 except Exception as e:  # noqa: BLE001 — same: missing dep => OPEN, not a crash
                     return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
-    fn = _falsifier_for_statement(candidate.statement)
-    if fn is not None:
+    key = _falsifier_for_statement(candidate.statement)
+    if key is not None and key in FALSIFIERS:
         try:
-            survived, evidence = fn()
-            # A keyword-routed falsifier tests a RELATED claim, not the hypothesis's specific claim —
-            # so its verdict is APPROXIMATE, never a definitive survive/falsify. The hypothesis stays
-            # OPEN (unresolved) until a candidate-specific falsifier is built.
+            survived, evidence = FALSIFIERS[key]()
+            if not survived and _is_unresolved(evidence):
+                return False, None, evidence + "  [unresolved — not a refutation]"
+            if key in _CANDIDATE_SPECIFIC:
+                # built for this exact claim => a DEFINITIVE verdict
+                return True, bool(survived), evidence + "  [candidate-specific falsifier]"
+            # a generic lattice falsifier tests a RELATED claim, not the exact one => APPROXIMATE
             return True, None, (evidence
-                                + "  [APPROXIMATE: keyword-routed to a related falsifier, not a "
-                                  "candidate-specific test — the specific claim was not tested]")
+                                + "  [APPROXIMATE: routed to a related falsifier, not the exact claim]")
         except Exception as e:  # noqa: BLE001
             return False, None, f"falsifier unavailable ({type(e).__name__}: {e})"
     return False, None, f"needs a falsifier (proposed: {candidate.falsifier})"
@@ -861,7 +1032,7 @@ class LlmSearch(SearchStrategy):
         endpoint, key, model = _llm_config()
         if not model:
             return []
-        prompt = (
+        prompt = _memory_prefix(problem) + (
             "You are a scientific hypothesis generator. Given the open problem below, propose up to "
             f"{budget} falsifiable hypotheses, each with a falsifier. Output ONE per line as "
             "'HYPOTHESIS | FALSIFIER' (a falsifier is the sentence that would make it wrong). "
@@ -1005,13 +1176,17 @@ def _formalize_prompt(statement: str) -> str:
     )
 
 
-def _lean_matches_hypothesis(lean: str, statement: str, endpoint: str, key: str, model: str) -> bool:
+def _lean_matches_hypothesis(lean: str, statement: str) -> bool:
     """Protect the Lean bridge: the formalized theorem must state the SAME proposition as the claim.
 
     The formalizer can silently weaken or change the claim (prove an easier, unrelated theorem). This
-    asks a fresh check whether the Lean statement is logically equivalent to the hypothesis, so a
-    "proof" of a different proposition is rejected rather than recorded.
+    checks, with an INDEPENDENT judge (SEXTANT_JUDGE_* — a different model than the formalizer), that
+    the Lean statement is logically equivalent to the hypothesis, so a proof of a different
+    proposition is rejected rather than recorded. The judge must not be the formalizer grading itself.
     """
+    endpoint, key, model = _judge_config()
+    if not model:
+        return False
     prompt = (
         "Does the Lean theorem below state the SAME proposition as the hypothesis (logically "
         "equivalent — not weaker, not stronger, not unrelated)? Answer YES or NO.\n\n"
@@ -1045,7 +1220,7 @@ def prove_and_record(candidate: Candidate, evidence: str) -> dict:
         lean = _ask_llm(_formalize_prompt(candidate.statement), endpoint, key, model)
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "recorded": True, "proof": f"formalise failed: {type(e).__name__}"}
-    if not _lean_matches_hypothesis(lean, candidate.statement, endpoint, key, model):
+    if not _lean_matches_hypothesis(lean, candidate.statement):
         return {"ok": False, "recorded": True,
                 "proof": "rejected — the formalized theorem does not state the original claim"}
     proof = prove(lean, attempts=3)
@@ -1071,26 +1246,78 @@ def run_autonomous(problem: str, rounds: int = 1, budget: int = 8) -> dict:
         round_out = {"proposals": [], "survivors": [], "open": []}
         for c in cands:
             ran, survived, evidence = _falsify(c)
+            # If no existing falsifier exists, ACQUIRE/BUILD one autonomously BEFORE the gate: the
+            # gate's boundary-testing needs a falsifier to test with, and gating first would drop the
+            # candidate before a falsifier could ever be generated.
+            acq = None
+            existing = None
+            built = None
+            if not ran:
+                acq = fa.acquire(c.statement, endpoint=endpoint, key=key, model=model)
+                # USE an existing falsifier (code / proof tree / Mathlib / arXiv) if acquire found one.
+                existing = fa.apply_acquired(acq, c.statement)
+                if existing is not None and existing.get("ran"):
+                    # a DEFINITIVE existing falsifier ran — promote (it is vetted, not synthesized)
+                    ran, survived, evidence = (True, existing["survived"],
+                                               f"{existing['evidence']} [{existing.get('note','existing falsifier')}]")
+                elif existing is None:
+                    # nothing existing — build a new one (synthesized, CANDIDATE — does NOT promote)
+                    if fa.is_lattice_claim(c.statement):
+                        built = fa.build_lattice_falsifier(c.statement, endpoint, key, model)
+                    else:
+                        built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
             # the eight-stage graded challenge, on every proposal (not just the single falsifier)
             seq = challenges.run_sequence(challenges.Candidate(
                 name=c.id, hypothesis=c.statement, falsifier=c.falsifier))
             stage_verdicts = {r.name: r.verdict for r in seq}
-            if ran and survived:
+            gate = challenges.gate(seq)
+            # SEXTANT is a DECISION GATE: a candidate that FAILED a challenge is dead — dropped, not
+            # proved/recorded/acquired. (formal-verification is NOT_APPLICABLE here because the LLM
+            # proposal has no theorem yet; the real kernel-check runs in prove_and_record.)
+            if gate == "FAIL":
+                # the gate FAILs for a REASON (unjustified assumptions, untested boundary, ...) —
+                # that is NOT the same as falsified, so record which stage dropped it.
+                failed_stage = next((n for n, v in stage_verdicts.items() if v == "FAIL"), "unknown")
+                _append_rejected(problem, c.statement, f"gated-out: {failed_stage}")
+                entry = {"statement": c.statement, "verdict": "gated-out",
+                         "evidence": evidence, "challenges": stage_verdicts, "gate": gate}
+                if existing is not None:
+                    entry["existing_falsifier"] = existing
+                if built is not None:
+                    entry["synthesized_test"] = built
+                round_out["proposals"].append(entry)
+                continue
+            if ran and survived is True:
                 proof = prove_and_record(c, evidence)
+                _append_memory(problem, c.statement, c.falsifier, proof)
                 round_out["survivors"].append({"statement": c.statement, "proof": proof,
-                                               "challenges": stage_verdicts})
-            elif ran and not survived:
+                                               "challenges": stage_verdicts, "gate": gate})
+            elif ran and survived is False:
+                _append_rejected(problem, c.statement, "falsified")
                 round_out["proposals"].append({"statement": c.statement, "verdict": "falsified",
-                                               "evidence": evidence, "challenges": stage_verdicts})
+                                               "evidence": evidence, "challenges": stage_verdicts,
+                                               "gate": gate})
             else:
-                acq = fa.acquire(c.statement, endpoint=endpoint, key=key, model=model)
-                built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
                 entry = {"statement": c.statement, "verdict": "open", "evidence": evidence,
-                         "acquisition": acq, "synthesized_test": built,
-                         "challenges": stage_verdicts}
-                # a synthesized falsifier that ran gives a CANDIDATE verdict (not definitive)
-                if built.get("ran"):
+                         "acquisition": acq, "challenges": stage_verdicts, "gate": gate}
+                if existing is not None and existing.get("found_existing"):
+                    # an existing falsifier (paper / Lean proof / Mathlib) already addresses the
+                    # claim — use it, do not build a new one.
+                    entry["verdict"] = "already-falsifiable"
+                    entry["existing_falsifier"] = existing.get("existing")
+                    entry["evidence"] = existing.get("evidence")
+                elif built is not None and built.get("ran"):
+                    # a synthesized falsifier that ran gives a CANDIDATE verdict (not definitive)
+                    entry["synthesized_test"] = built
                     entry["candidate_verdict"] = ("survived" if built["survived"] else "refuted")
+                else:
+                    # no existing falsifier and none could be built in this pass — record it as a JOB
+                    # so another process or session can build it, keeping the frontier moving.
+                    entry["synthesized_test"] = built
+                    entry["falsifier_job"] = fa.record_falsifier_job(
+                        c.statement,
+                        (acq or {}).get("synthesized_falsifier") or c.falsifier,
+                        (built or {}).get("reason", "unknown"))
                 round_out["open"].append(entry)
         out["rounds"].append(round_out)
     metrics = {"rounds": rounds,
@@ -1123,6 +1350,8 @@ def _main() -> int:
                     help="run all six search strategies, falsify, and score discoveries per effort")
     ap.add_argument("--engine", metavar="PROBLEM", help="run the search engine on a problem")
     ap.add_argument("--autonomous", metavar="PROBLEM", help="one autonomous propose -> falsify -> prove -> acquire pass")
+    ap.add_argument("--list-falsifier-jobs", action="store_true",
+                    help="list the queued falsifier-build jobs (work for another session/process")
     args = ap.parse_args()
 
     if args.list_facts:
@@ -1202,6 +1431,15 @@ def _main() -> int:
     if args.autonomous:
         r = run_autonomous(args.autonomous)
         print(json.dumps(r, indent=2))
+        return 0
+    if args.list_falsifier_jobs:
+        from pacland import falsifier_acquisition as fa
+        jobs = fa.list_falsifier_jobs()
+        print(f"{len(jobs)} falsifier-build job(s):")
+        for j in jobs:
+            print(f"  [{j['status']:11s}] {j['job_id']}  {j['statement'][:70]}")
+            print(f"    proposed: {j['proposed_falsifier'][:70]}")
+            print(f"    reason:   {j['reason'][:70]}")
         return 0
     if args.fact and args.strategy:
         v = advance(args.fact, args.strategy)
