@@ -301,6 +301,15 @@ low-pass filter (exponential approach); market liquidity = viscosity (Kyle lambd
 novel=True + novelty_pending_expert=True — novel to OUR library, but a literature check is required before
 claiming genuine novelty.
 
+### R1.26 — literature check: all three 'novel' candidates are KNOWN
+**Verdict: known, not novel.**
+
+The search check found all three published: matching↔mass-action (SSRN 5189452, 'CSTR analog of the US
+labor market'); expectations↔filter (ScienceDirect 2021 + Muth's rational expectations = the Kalman
+filter); liquidity↔viscosity (the Kyle/Almgren-Chriss price-impact literature). Lesson: 'novel to our
+library' ≠ 'novel to the field' — genuine novelty needs a literature sweep, and it is far rarer than a
+type match. All three re-flagged known.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.

@@ -83,8 +83,8 @@ def record() -> int:
         registry.add(registry.Entry(
             id=mid, kind="mapping",
             payload={"from": frm, "to": to, "mapping": r["verdict"], "kind_of_yield": "proof-technique",
-                     "novel": True, "novelty_pending_expert": True,
-                     "note": "novel to OUR library; a literature/expert check is still required"},
+                     "novel": False, "novelty_pending_expert": False,
+                     "note": "literature check: KNOWN — see the cited sources below"},
             provenance={"produced_by": "novel-search", "method": "candidate-novel", "ts": time.time()}))
         registry.add(registry.Entry(
             id=f"evidence-{mid}", kind="evidence",
