@@ -132,6 +132,15 @@ heat-equation/fick-diffusion/brownian-motion/black-scholes; an open climate prob
 stoichiometry/noether-conservation. Type-level matching only — the transfer VERIFICATION (functor/
 encoding-check) is still the separate phase-3 step.
 
+### R1.7 — phase-3 encoding-check (first verified transfer)
+**Verdict: built + verified live (tier 4).**
+
+`transfer_verify.py` — the encoding-check: a transfer is credited only when BOTH ends reproduce the SAME
+invariant. First verified link: diffusion ↔ random-walk. The random walk's MSD measured 1017 vs the expected
+2Dt = 1000 (ratio 1.017, within 5%) → verified. The evidence is recorded in the registry + linked to the
+mapping. Honest tier: this is NUMERICAL (tier 4), not a Lean proof (tier 1) — the continuum-limit proof is
+a separate, harder step.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
