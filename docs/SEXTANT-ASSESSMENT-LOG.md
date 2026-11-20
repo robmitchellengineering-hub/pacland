@@ -377,6 +377,15 @@ measurements — 6/6 match. This validates the constraint-first method (correct 
 CONSISTENCY check, not a novel-prediction test: the facts are the same ones that motivated the
 unifications. A novel prediction + its confirmation by new data is the remaining bar.
 
+### R1.34 — the novel-prediction attempt: correct, but already known (the honest lesson)
+**Verdict: correct derivation, NOT novel.**
+
+`novel_prediction.py` derives the leaky-inventory log period T=(1/θ)ln((D+θR)/(D+θS)) (22.5% shorter than
+the linear at 5% spoilage, θ→0 limit verified continuous). The literature check shows it is the
+'deteriorating inventory' model (Ghare & Schrader 1963) — 60 years old. The lesson: the soft↔hard
+correspondence space is extremely mature; every CLEAN prediction from a known law is already published.
+Genuine novelty needs a novel INTERSECTION of constraints, or a specific number derived but never tested.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
