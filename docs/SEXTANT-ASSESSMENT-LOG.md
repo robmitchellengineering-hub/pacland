@@ -158,6 +158,15 @@ ai/animal) as Domains + all 193 test files as Evidence (linked to their domain).
 properties (675 Lean + 15 hypotheses), 193 evidence, 22 structures, 3 mappings. This is real growth from
 the actual in-tree assets, not hand-written one-liners.
 
+### R1.10 — the structure layer built by LINKING (not writing)
+**Verdict: built — the method, demonstrated.**
+
+`structure_build.py` — the structure layer is an INDEX, not hand-written content. It groups the 675
+machine-checked theorems into typed structures, each linking to its theorems: quantum-correlation (11),
+hyperbolic (30), tree (26), spectral-gap (54), gauge-theory (37). 158 theorems linked into 5 typed
+structures. The method: group theorems by topic → each group is a structure with a type + domain + links
+to its theorems → the cross-field model proposes the type + mappings, transfer_verify checks the carry.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.

@@ -126,7 +126,7 @@ def ingest_tests() -> int:
 def ingest_all() -> dict[str, int]:
     """Wipe + repopulate the whole registry from the real assets. Returns per-kind counts."""
     registry.clear()
-    from pacland import fields
+    from pacland import fields, structure_build
     n_fields = fields.seed_fields()
     registry.seed_known_unifications()
     return {
@@ -135,4 +135,5 @@ def ingest_all() -> dict[str, int]:
         "hypotheses": ingest_hypotheses(),
         "disciplines": ingest_disciplines(),
         "tests": ingest_tests(),
+        "structure_groups": structure_build.build_structures(),
     }
