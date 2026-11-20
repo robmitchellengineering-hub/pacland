@@ -336,6 +336,14 @@ iterate on the error → frontier fallback after N local stalls). Wired as `prov
 tiers never run at the same time. The loop is built; it needs the V1.5 model pulled on the ROG before it
 generates real proofs.
 
+### R1.30 — constraint-first economics (the plan + a working checker)
+**Verdict: built + demonstrated.**
+
+`econ_constraints.py` + `docs/CONSTRAINT-FIRST-ECONOMICS.md`. Each verified unification is a checkable
+constraint; a model violating any is refuted. Demonstrated: wealth (thermal+super-rich survives, lognormal
+and Pareto refuted) and business cycle (van der Pol survives, damped oscillator and pure Lotka-Volterra
+refuted). The intersection of multiple constraints narrows the model space — the constraint-first power.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
