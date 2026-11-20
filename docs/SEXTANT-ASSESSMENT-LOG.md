@@ -292,6 +292,15 @@ Fan-out across 8 soft fields returned ~54 sourced unifications (psychophysics↔
 Zipf↔power law, city↔allometric scaling, voting↔Potts, kinship↔group theory, empire↔logistic,
 crime↔SIR, healthcare↔queueing, …). Ingested as the known-unifications library. 117 mappings total.
 
+### R1.25 — three candidate-novel economics unifications (novel to OUR library)
+**Verdict: built + verified; the literature check is still open.**
+
+`novel_search.py`: three economics concepts NOT in the 117 known mappings, each unified with hard science
+and verified: labour matching function = law of mass action (log-linear form); adaptive expectations = RC
+low-pass filter (exponential approach); market liquidity = viscosity (Kyle lambda = viscous drag). Flagged
+novel=True + novelty_pending_expert=True — novel to OUR library, but a literature check is required before
+claiming genuine novelty.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
