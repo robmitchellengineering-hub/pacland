@@ -104,6 +104,15 @@ remembered. The full cross-field memory (learning across the five registries) re
 each carrying its type + the non-trivial property it reproduces. The full cross-field search + evidence
 retrieval is the next step.
 
+### R1.4 — phase-1 gate verified (the loop closes end-to-end)
+**Verdict: verified live.**
+
+`run_autonomous(rounds=1, budget=2)` ran the full loop: radar surfaced `ym-mass-gap`, the LLM generated
+2 candidates, the falsifiers + 8-stage challenges ran, and both candidates came back **open** (no falsifier
+can measure the mass gap yet) — the loop honestly reported "open" instead of faking a survivor. That is the
+discipline working. To exercise the "survivor" branch the loop must be pointed at a problem with a runnable
+falsifier (e.g. `ou-gap`), which is the next smoke-test step, not a loop defect.
+
 ## Disposition convention
 
 - **accepted — fixed** = the change is made + committed.
