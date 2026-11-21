@@ -46,6 +46,19 @@ class TestBoundSearch(unittest.TestCase):
         failed = registry.failed_directions()
         self.assertTrue(any("mass-gap bound search" in f["payload"]["statement"] for f in failed))
 
+    def test_log_corrected_family_also_has_no_new_bound(self):
+        res = bs.search_log_corrected([10.0, 25.28], [1.0, 1.182], [0.0, 0.5, 1.0])
+        self.assertEqual(res["n_survivors"], 0)
+        self.assertIn("log-corrected", res["family"])
+        self.assertIn("no new", res["conclusion"])
+
+    def test_two_families_record_two_failed_directions(self):
+        bs.search_exponential([5.0, 25.28], [1.0, 1.182])
+        bs.search_log_corrected([10.0, 25.28], [1.0, 1.182], [0.5])
+        failed = [f["payload"]["statement"] for f in registry.failed_directions()]
+        self.assertTrue(any("exponential" in s for s in failed))
+        self.assertTrue(any("log-corrected" in s for s in failed))
+
 
 if __name__ == "__main__":
     unittest.main()

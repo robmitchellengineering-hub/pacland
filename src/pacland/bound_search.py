@@ -23,7 +23,8 @@ def referee(beta: float) -> float:
     return 25.28 * math.exp(-1.182 * beta)
 
 
-def check_bound(c, *, beta_pos=(2.0, 2.5, 3.0, 4.0, 6.0), beta_val=(2.0, 2.5, 3.0, 4.0, 6.0),
+def check_bound(c, *, beta_pos=(2.0, 2.5, 3.0, 4.0, 6.0, 10.0, 20.0),
+                beta_val=(2.0, 2.5, 3.0, 4.0, 6.0, 10.0, 20.0),
                 beta_sharp=(2.5, 3.0), beta_scale=4.0, scale_floor=0.5) -> dict:
     """Test a candidate bound c(β) against the referee. Returns the criteria + the verdict.
 
@@ -52,31 +53,66 @@ def _is_referee(a: float, k: float, tol: float = 1e-6) -> bool:
     return abs(a - 25.28) < tol and abs(k - 1.182) < tol
 
 
-def search_exponential(a_values: list[float], k_values: list[float]) -> dict:
-    """Search the family c(β)=a·e^(−kβ) for a bound that survives the referee AND is not the referee
-    itself. Records every candidate as a claim (survivors and failures) and returns the honest result."""
+def search_family(name: str, make_bound, param_grids: dict[str, list[float]],
+                  *, is_referee=None) -> dict:
+    """Search ANY parameterized family of bounds against the referee; record the honest result.
+
+    ``make_bound`` takes keyword params and returns a callable c(β); ``param_grids`` maps each param
+    name to its values; ``is_referee`` (optional) marks a parameter combination as the referee itself
+    so it is never counted as a new discovery. The negative result — "no new independent bound in this
+    family" — is recorded as a queryable failed claim, so the search narrows the frontier, not silently.
+    """
+    from itertools import product
+
     survivors: list[dict] = []
     failures: list[dict] = []
-    for a in a_values:
-        for k in k_values:
-            c = exponential(a, k)
-            r = check_bound(c)
-            is_ref = _is_referee(a, k)
-            entry = {"a": a, "k": k, **r, "is_referee": is_ref}
-            if r["survived"] and not is_ref:
-                survivors.append(entry)
-            else:
-                failures.append(entry)
-    # record the search itself as a claim — including the honest negative result
-    conclusion = ("no new independent bound in the exponential family" if not survivors
-                  else f"{len(survivors)} independent survivor(s) found")
+    names = list(param_grids)
+    for combo in product(*param_grids.values()):
+        params = dict(zip(names, combo))
+        c = make_bound(**params)
+        r = check_bound(c)
+        is_ref = is_referee(**params) if is_referee else False
+        entry = {**params, **r, "is_referee": is_ref}
+        if r["survived"] and not is_ref:
+            survivors.append(entry)
+        else:
+            failures.append(entry)
+    conclusion = (f"no new independent bound in the {name} family" if not survivors
+                  else f"{len(survivors)} independent survivor(s) found in the {name} family")
     registry.record_claim(
-        "claim-mass-gap-exponential-search",
-        f"mass-gap bound search over c(β)=a·e^(−kβ) against m(β)=25.28·e^(−1.182β)",
+        f"claim-mass-gap-{name}-search",
+        f"mass-gap bound search over the {name} family against m(β)=25.28·e^(−1.182β)",
         "failed" if not survivors else "survived",
         problem="ym-mass-gap",
         reason=conclusion,
         produced_by="bound-search",
     )
-    return {"survivors": survivors, "failures": failures, "conclusion": conclusion,
+    return {"family": name, "survivors": survivors, "failures": failures, "conclusion": conclusion,
             "n_survivors": len(survivors), "n_failures": len(failures)}
+
+
+def search_exponential(a_values: list[float], k_values: list[float]) -> dict:
+    """Search c(β)=a·e^(−kβ). The referee (a,k)=(25.28,1.182) is excluded as not-new."""
+    return search_family(
+        "exponential", lambda a, k: exponential(a, k),
+        {"a": a_values, "k": k_values},
+        is_referee=lambda a, k: _is_referee(a, k),
+    )
+
+
+def search_log_corrected(a_values: list[float], k_values: list[float], p_values: list[float]) -> dict:
+    """Search c(β)=a·e^(−kβ)·(log β)^p — a second family: a log correction to the exponential.
+
+    The honest result is again "no new bound" (a log factor with p≠0 either grows past m or collapses
+    below it), which narrows the search: the mass-gap scale is not reachable by a single log correction.
+    """
+    import math as _math
+
+    def make(a: float, k: float, p: float):
+        return lambda b: a * _math.exp(-k * b) * (_math.log(b) ** p)
+
+    return search_family(
+        "log-corrected", make,
+        {"a": a_values, "k": k_values, "p": p_values},
+        is_referee=lambda a, k, p: _is_referee(a, k) and p == 0,
+    )
