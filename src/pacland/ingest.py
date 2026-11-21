@@ -124,8 +124,13 @@ def ingest_tests() -> int:
 
 
 def ingest_all() -> dict[str, int]:
-    """Wipe + repopulate the whole registry from the real assets. Returns per-kind counts."""
-    registry.clear()
+    """Refresh the registry from the real assets WITHOUT wiping accumulated evidence.
+
+    Seeding is idempotent (``registry.add`` upserts by id and bumps the version), so this updates the
+    static seed entries in place and leaves every entry a campaign added — discoveries, negative
+    results, provenance — untouched. A full destructive reset is ``registry.clear()``, which is
+    deliberately NOT called here: re-ingesting must never throw away the evidence a campaign earned.
+    """
     from pacland import fields, structure_build
     n_fields = fields.seed_fields()
     registry.seed_known_unifications()

@@ -1355,9 +1355,17 @@ def run_autonomous(problem: str | None = None, rounds: int = 1, budget: int = 8)
                         built = fa.build_lattice_falsifier(c.statement, endpoint, key, model)
                     else:
                         built = fa.build_and_run_falsifier(c.statement, endpoint, key, model)
-            # the eight-stage graded challenge, on every proposal (not just the single falsifier)
+            # the eight-stage graded challenge, on every proposal (not just the single falsifier).
+            # Thread the runner's ALREADY-COMPUTED falsifier result + the recorded assumptions, and
+            # pass the falsifier KEY (c.test), not the generated id or the prose description — so a
+            # candidate that a falsifier actually tested is not FAILed on a bad name→key lookup.
             seq = challenges.run_sequence(challenges.Candidate(
-                name=c.id, hypothesis=c.statement, falsifier=c.falsifier))
+                name=c.id,
+                hypothesis=c.statement,
+                falsifier=c.test or "",
+                assumptions=list(c.assumptions),
+                falsifier_result=(survived, evidence) if ran else None,
+            ))
             stage_verdicts = {r.name: r.verdict for r in seq}
             gate = challenges.gate(seq)
             # SEXTANT is a DECISION GATE: a candidate that FAILED a challenge is dead — dropped, not

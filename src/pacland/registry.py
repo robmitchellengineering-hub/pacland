@@ -37,12 +37,36 @@ def _store(kind: str) -> Path:
 
 
 def add(entry: Entry) -> Entry:
-    """Append an entry to its store. Returns the entry (with id + provenance defaults applied)."""
+    """Upsert an entry into its store.
+
+    Re-seeding the same id REPLACES it in place (bumping its version) instead of appending a
+    duplicate, so re-ingestion is idempotent; an unknown id is appended. This is what makes the
+    store safe for long-running campaigns: a seed refresh updates the static entries and leaves every
+    accumulated (dynamic) entry — discoveries, negative results, provenance — untouched.
+    """
     entry.provenance.setdefault("ts", time.time())
     p = _store(entry.kind)
     p.parent.mkdir(parents=True, exist_ok=True)
-    with p.open("a") as f:
-        f.write(json.dumps(asdict(entry)) + "\n")
+    lines: list[str] = []
+    replaced = False
+    if p.exists():
+        for ln in p.read_text(encoding="utf-8").splitlines():
+            if not ln.strip():
+                continue
+            try:
+                d = json.loads(ln)
+            except json.JSONDecodeError:
+                lines.append(ln)  # preserve an unparseable line verbatim — never silently drop it
+                continue
+            if d.get("id") == entry.id:
+                entry.version = int(d.get("version", 1)) + 1
+                lines.append(json.dumps(asdict(entry)))
+                replaced = True
+            else:
+                lines.append(ln)
+    if not replaced:
+        lines.append(json.dumps(asdict(entry)))
+    p.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
     return entry
 
 
