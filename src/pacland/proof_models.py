@@ -8,11 +8,12 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-# LOCAL: the self-hosted Lean prover on the ROG's Ollama (free). Pull it with:
-#   ssh pacland-rog "ollama pull deepseek-prover-v1.5"   (or the GGUF model name)
+# LOCAL: the self-hosted Lean prover on the ROG's Ollama (free). The GGUF is the only distributable
+# form — the raw HF repo is safetensors, not a GGUF. Pulled via:
+#   curl http://100.73.60.26:11434/api/pull -d '{"name":"hf.co/neopolita/deepseek-prover-v1.5-rl-gguf"}'
 LOCAL = {
     "endpoint": os.environ.get("LEAN_LOCAL_ENDPOINT", "http://100.73.60.26:11434/v1"),
-    "model": os.environ.get("LEAN_LOCAL_MODEL", "deepseek-prover-v1.5"),
+    "model": os.environ.get("LEAN_LOCAL_MODEL", "hf.co/neopolita/deepseek-prover-v1.5-rl-gguf"),
     "key": "",
 }
 
