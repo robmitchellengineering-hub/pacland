@@ -216,6 +216,54 @@ def horizon_density(beta: float, N: int, n_configs: int = 10, k: int = 40,
             "N": N, "beta": beta}
 
 
+def gauge_functional(links: np.ndarray) -> float:
+    """The lattice Landau-gauge functional `Σ Re(Tr U)/2 = Σ a0` — *maximised* by Landau gauge.
+
+    The FMR is the set of global maxima of this functional over each gauge orbit; the Gribov
+    horizon is its boundary, where the FP operator's lowest eigenvalue touches zero.
+    """
+    return float(np.sum(links[..., 0]))
+
+
+def random_gauge_transform(links: np.ndarray, rng) -> np.ndarray:
+    """Apply an independent random SU(2) gauge transformation `g(x)` at every site.
+
+    Same convention as `landau_gauge_fix`: `U_μ(x) → g(x) U_μ(x)` and
+    `U_μ(x−μ) → U_μ(x−μ) g(x)†`.
+    """
+    d, N = links.shape[0], links.shape[1]
+    out = links.copy()
+    for flat in range(N ** d):
+        x = tuple(np.unravel_index(flat, (N,) * d))
+        g = tuple(su2.random_su2(rng))
+        for mu in range(d):
+            out[mu][x] = su2.qmul(g, out[mu][x])
+            xm = list(x); xm[mu] = (xm[mu] - 1) % N
+            xm = tuple(xm)
+            out[mu][xm] = su2.qmul(out[mu][xm], su2.qconj(g))
+    return out
+
+
+def fmr_gauge_fix(links: np.ndarray, n_copies: int = 5, n_gf: int = 20, seed=None) -> np.ndarray:
+    """Gribov-copy search toward the FMR: `n_copies` random transforms, Landau-fix each, keep the
+    copy with the *highest* gauge functional (closest to the global maximum / fundamental modular
+    region).
+
+    This is Phase 1 of `docs/MASS-GAP-HORIZON-PLAN.md` — the horizon is at the FMR boundary, so an
+    arbitrary Landau copy (first Gribov region) is not enough.
+    """
+    rng = np.random.default_rng(seed)
+    best = landau_gauge_fix(links, n_gf)
+    best_F = gauge_functional(best)
+    for _ in range(max(0, n_copies - 1)):
+        cand = landau_gauge_fix(random_gauge_transform(links, rng), n_gf)
+        F = gauge_functional(cand)
+        if F > best_F:
+            best, best_F = cand, F
+    return best
+
+
 __all__ = ["adjoint_matrix", "fp_operator", "fp_operator_sparse", "lowest_fp_eigenvalue",
-           "fp_spectrum", "landau_gauge_fix", "horizon_concentration",
-           "horizon_concentration_landau", "horizon_density"]
+           "fp_spectrum", "landau_gauge_fix", "gauge_functional", "random_gauge_transform",
+           "fmr_gauge_fix", "horizon_concentration", "horizon_concentration_landau",
+           "horizon_density"]
