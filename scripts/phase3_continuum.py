@@ -41,7 +41,7 @@ def main():
     sigma_ref = None
     for beta in betas:
         t0 = time.time()
-        st = su2.string_tension_from_polyakov(beta, N=N, n_configs=10, n_sweeps=12, R_max=3, seed=1)
+        st = su2.string_tension_from_polyakov(beta, N=N, n_configs=40, n_sweeps=12, R_max=3, seed=1)
         sigma = st["sigma"]
         if sigma_ref is None:
             sigma_ref = sigma
