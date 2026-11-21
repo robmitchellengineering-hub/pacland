@@ -133,5 +133,70 @@ def measure_string_tension(beta, d=4, N=8, n_sweeps=6, seed=0):
     return creutz_ratio(links, 2, 2)
 
 
+def polyakov_loops(links):
+    """The Polyakov loops P(x) = prod_t U_0(t, x), one 4-quaternion per spatial site."""
+    d, N = links.shape[0], links.shape[1]
+    P = np.ones((N,) * (d - 1) + (4,))
+    for flat in range(N ** (d - 1)):
+        xs = tuple(np.unravel_index(flat, (N,) * (d - 1)))
+        u = np.array([1.0, 0.0, 0.0, 0.0])
+        for t in range(N):
+            u = qmul(u, links[0][(t,) + xs])
+        P[xs] = u
+    return P
+
+
+def polyakov_correlator(links, R_max):
+    """Connected Polyakov-loop correlator C(R) = <TrP(0) TrP(R)> - <TrP>^2, spatial separation R."""
+    d, N = links.shape[0], links.shape[1]
+    trP = 2.0 * polyakov_loops(links)[..., 0]  # Tr P = 2*a0, shape (N,)*(d-1)
+    meanP = float(np.mean(trP))
+    C = []
+    for R in range(1, R_max + 1):
+        acc = 0.0
+        cnt = 0
+        for mu in range(1, d):
+            for flat in range(N ** (d - 1)):
+                x = np.unravel_index(flat, (N,) * (d - 1))
+                y = list(x); y[mu - 1] = (y[mu - 1] + R) % N; y = tuple(y)
+                acc += trP[tuple(x)] * trP[y]
+                cnt += 1
+        C.append(acc / cnt - meanP * meanP)
+    return np.array(C)
+
+
+def string_tension_from_polyakov(beta, N=8, n_configs=20, n_sweeps=12, R_max=3, seed=0):
+    """The string tension sigma from the Polyakov-loop potential V(R) = -ln C(R) ~ sigma R + c.
+
+    Averaged over configs (the connected correlator is noise-dominated per config); a linear fit of
+    V(R) over R = 1..R_max gives sigma. This is the Phase-2 scale-setting observable for SU(2)."""
+    rng = np.random.default_rng(seed)
+    d = 4
+    C_sum = np.zeros(R_max)
+    for _ in range(n_configs):
+        links = np.array([random_su2(rng) for _ in range(d * N ** d)])
+        links = links.reshape((d,) + (N,) * d + (4,))
+        links = metropolis(links, beta, rng, n_sweeps)
+        C = polyakov_correlator(links, R_max)
+        C_sum += np.maximum(C, 1e-12)
+    C_avg = C_sum / n_configs
+    V = -np.log(C_avg)
+    R = np.arange(1, R_max + 1)
+    # linear fit V = sigma * R + c
+    A = np.vstack([R, np.ones_like(R)]).T
+    sigma, c = np.linalg.lstsq(A, V, rcond=None)[0]
+    return {"sigma": float(sigma), "V": V.tolist(), "R": R.tolist(),
+            "beta": beta, "N": N, "n_configs": n_configs}
+
+
+def scale_a(sigma: float, sigma_ref: float, a_ref: float = 1.0) -> float:
+    """The lattice spacing a = a_ref * sqrt(sigma_ref / sigma) — the Phase-2 renormalisation.
+
+    `lambda_phys = lambda / a^2`; this converts a lattice-unit FP eigenvalue to physical units once
+    sigma(beta) is measured."""
+    return float(a_ref * np.sqrt(sigma_ref / sigma))
+
+
 __all__ = ["qmul", "qconj", "random_su2", "plaquette_trace", "metropolis",
-           "wilson_loop", "creutz_ratio", "measure_string_tension"]
+           "wilson_loop", "creutz_ratio", "measure_string_tension",
+           "polyakov_loops", "polyakov_correlator", "string_tension_from_polyakov", "scale_a"]
