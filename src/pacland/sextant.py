@@ -355,6 +355,30 @@ CATALOG: dict[str, dict] = {
         "verdict": "IRREDUCIBLE",
         "why": "the d=5 tension stays flat (0.952, 0.936, 0.958, 1.034) rather than decreasing, so d=5 stays confining — the claim survives, but computationally, not with a closed-form certificate.",
     },
+    "ym-orbifold-curvature": {
+        "claim": "the Yang-Mills measure on the gauge-orbit quotient has Bakry-Émery curvature K ≥ λ_min(FP), so it has a spectral gap iff λ_min(FP) stays uniformly positive (no Gribov-horizon collapse)",
+        "theorem": "none — candidate structure for transfer, not yet proven",
+        "falsifier": "λ_min(FP) → 0 in the continuum / at the FMR boundary (the Gribov horizon), which would refute uniform positive curvature",
+        "oracle": ["lattice (FP operator spectrum, lattice_ghost.py)"],
+        "verdict": "FREE",
+        "why": "open candidate in docs/RG-DISCOVERY-PLAN.md: positive orbifold curvature is exactly the property that yields a spectral gap, and the FP spectrum is its direct falsifier. Finite-N runs give λ_min ≈ 2.4 (the UV cutoff), not yet the horizon — so neither forced nor refuted.",
+    },
+    "ym-log-sobolev": {
+        "claim": "the FMR-gauge-fixed Yang-Mills measure satisfies a log-Sobolev inequality with constant C ~ 1/λ_min(FP), so the spectral gap is positive iff λ_min stays bounded away from zero",
+        "theorem": "none — candidate structure, not yet proven",
+        "falsifier": "the log-Sobolev constant blowing up as λ_min(FP) → 0 (the horizon)",
+        "oracle": ["lattice (FP spectrum → log-Sobolev constant, lattice_ghost.py)"],
+        "verdict": "FREE",
+        "why": "the functional-inequality route: log-Sobolev on the gauge slice yields the spectral gap, and the constant is controlled by λ_min(FP). Open until the FMR/continuum λ_min is measured.",
+    },
+    "ym-rg-contraction": {
+        "claim": "one block-spin renormalisation-group step contracts the Yang-Mills measure (a positive RG contraction coefficient), so the mass gap is the RG contraction rate",
+        "theorem": "none — candidate structure, not yet proven",
+        "falsifier": "the RG contraction coefficient → 1 (no contraction) at the horizon or in the continuum",
+        "oracle": ["lattice (block-spin RG flow, to be built)"],
+        "verdict": "FREE",
+        "why": "the RG route: a positive contraction is the mass gap in RG language. The block-spin falsifier is not yet built, so this is the least-tested of the three — filed to make the gap (no RG falsifier exists) visible.",
+    },
 
 }
 
