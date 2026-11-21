@@ -163,3 +163,36 @@ def verify_polyakov_clustering(beta: float = 5.0, Nt: int = 2, Ns: int = 6, n_sw
     return survived, f"SU(3) Polyakov screening mass (N_t={Nt}, N_s={Ns}, β={beta}) = {m:.4f} → {verdict}"
 
 
+def verify_orbifold_curvature(beta: float = 2.5, Ns=(6, 8, 10), n_sweeps: int = 10) -> tuple[bool, str]:
+    """'YM on the gauge-orbit quotient has Bakry–Émery curvature K ≥ λ_min(FP)': measure the lowest FP
+    eigenvalue at increasing N and require it to stay POSITIVE (not collapse toward zero).
+
+    λ_min → 0 is the Gribov horizon — the point where the orbifold curvature vanishes — so a collapse
+    refutes uniform positive curvature (and with it the spectral-gap estimate). A flat positive λ_min is
+    the UV cutoff, so the bound K ≥ λ_min holds at finite N but the continuum (λ_phys = λ/a²) is the
+    separate, harder test — this falsifier flags the finite-N horizon collapse, not the continuum limit.
+    """
+    import numpy as np
+    from pacland import lattice_ghost as lg
+    from pacland import lattice_ym_su2 as lm
+
+    lam = {}
+    for N in Ns:
+        rng = np.random.default_rng(N)
+        links = np.array([lm.random_su2(rng) for _ in range(4 * N ** 4)])
+        links = links.reshape((4,) + (N,) * 4 + (4,))
+        links = lm.metropolis(links, beta, rng, n_sweeps)
+        lam[N] = lg.lowest_fp_eigenvalue(links)
+    curve = ", ".join(f"λ_min(N={N})={v:.3f}" for N, v in lam.items())
+    first, last = lam[Ns[0]], lam[Ns[-1]]
+    collapsing = last < 0.5 * first          # a genuine collapse toward zero (the horizon)
+    positive = last > 1e-6
+    if collapsing:
+        return False, (f"orbifold curvature: {curve} → λ_min COLLAPSES toward zero (the Gribov horizon) "
+                       f"— uniform positive curvature is refuted")
+    if not positive:
+        return False, f"orbifold curvature: {curve} → λ_min ≤ 0 — positive curvature refuted"
+    return True, (f"orbifold curvature: {curve} → λ_min stays positive (~the UV cutoff); "
+                  f"K ≥ λ_min holds at finite N — the continuum (λ_phys = λ/a²) is the separate open test")
+
+

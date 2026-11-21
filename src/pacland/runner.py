@@ -306,6 +306,7 @@ FALSIFIERS: dict[str, object] = {
     "universality": _lazy("mass_gap_falsifiers", "verify_universality"),
     "large-n-ratio": _lazy("mass_gap_falsifiers", "verify_large_n_ratio"),
     "polyakov-clustering": _lazy("mass_gap_falsifiers", "verify_polyakov_clustering"),
+    "orbifold-curvature": _lazy("mass_gap_falsifiers", "verify_orbifold_curvature"),
 }
 
 
