@@ -85,25 +85,67 @@ def _load_rejected() -> list[dict]:
 
 
 def _append_rejected(problem: str, statement: str, reason: str) -> None:
-    """Record a proposal's disposition. 'falsified' means dead; 'gated-out' means unjustified, not dead."""
+    """Record a proposal's disposition. 'falsified' means dead; 'gated-out' means unjustified, not dead.
+
+    Also writes a registry CLAIM so the failed direction enters the unified scientific record — SEXTANT
+    can say a direction did not work out, and the record is queryable, not a dropped log line.
+    """
     REJECTED.parent.mkdir(parents=True, exist_ok=True)
     with REJECTED.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps({"problem": problem, "statement": statement, "reason": reason,
                              "ts": datetime.now(timezone.utc).isoformat()}) + "\n")
+    from pacland import registry
+    registry.record_claim(
+        f"claim-{slug(statement)[:64]}",
+        statement,
+        "failed" if reason == "falsified" else "gated-out",
+        problem=problem,
+        reason=reason,
+        produced_by="runner",
+    )
 
 
 def _memory_prefix(problem: str, n: int = 4) -> str:
     """Few-shot prefix from the most relevant verified discoveries + a 'do NOT re-propose' block.
 
-    Injecting past VERIFIED discoveries as examples is the in-context-learning leg of "better with
-    use" — the model sees real pre-state -> discovery -> falsifier pairs before proposing, with no
-    weight update (which the ROG cannot do). It also lists already-refuted proposals so the model
-    does not waste a round re-proposing a dead idea.
+    Drawn from the UNIFIED registry (``registry.claims``) — the same substrate the cross-field search
+    and the knowledge engine read — so knowledge compounds across campaigns. The legacy JSONL stores
+    remain the fallback while the transition to the single claim architecture completes.
     """
-    entries = _load_memory()
-    rejected = _load_rejected()
+    from pacland import registry
+
+    survivors = registry.claims("survived")
+    failed = registry.claims("failed")
+    gated = registry.claims("gated-out")
     parts: list[str] = []
 
+    def _stmt(c: dict) -> str:
+        return c.get("payload", {}).get("statement", "")
+
+    if survivors:
+        q = set(re.findall(r"[a-z]{3,}", problem.lower()))
+
+        def score(c: dict) -> int:
+            hay = (c.get("payload", {}).get("problem", "") + " " + _stmt(c)).lower()
+            return len(q & set(re.findall(r"[a-z]{3,}", hay)))
+
+        ranked = sorted(survivors, key=score, reverse=True)[:n]
+        parts.append("Verified discoveries from past runs (use as a template, do not repeat them):")
+        parts += [f"- {_stmt(c)}" for c in ranked]
+
+    if failed:
+        parts.append("Already FALSIFIED — do NOT re-propose these:")
+        parts += [f"- {_stmt(c)}" for c in failed[-6:]]
+    if gated:
+        parts.append("Already proposed but gated (not falsified — needs better justification):")
+        parts += [f"- {_stmt(c)} ({c['payload'].get('reason', '')})" for c in gated[-6:]]
+
+    if parts:
+        return "\n".join(parts) + "\n\n"
+
+    # fallback: the legacy JSONL stores (pre-unification data) — retire once the registry is the only store
+    entries = _load_memory()
+    rejected = _load_rejected()
     if entries:
         q = set(re.findall(r"[a-z]{3,}", problem.lower()))
 
@@ -116,7 +158,6 @@ def _memory_prefix(problem: str, n: int = 4) -> str:
         parts += [f"- {e['statement']} (falsifier: {e['falsifier']})" for e in ranked]
 
     if rejected:
-        # split by disposition: FALSIFIED is dead; gated-out is unjustified, not dead.
         dead = [e for e in rejected if e.get("reason") == "falsified"]
         gated = [e for e in rejected if str(e.get("reason", "")).startswith("gated-out")]
         if dead:
@@ -1287,11 +1328,22 @@ def _lean_matches_hypothesis(lean: str, statement: str) -> bool:
 def prove_and_record(candidate: Candidate, evidence: str) -> dict:
     """A survivor of falsification: persist it, then attempt an automated Lean proof.
 
-    Records the survivor to the discoveries store, formalises it as a Lean statement via the LLM,
-    checks the formalization states the SAME proposition (not a weaker one), and runs the prove loop
-    (propose -> kernel-check -> repair). A proof is a bonus; an unproven survivor is still a recorded
-    discovery (a candidate for the human or a later, stronger pass).
+    Records the survivor to the discoveries store AND to the unified registry as a 'survived' claim
+    (the full checklist: statement, assumptions, test, source facts, and — if the proof succeeds — the
+    Lean certificate). A proof is a bonus; an unproven survivor is still a recorded discovery.
     """
+    from pacland import registry
+    claim_id = f"claim-{slug(candidate.id)[:64]}"
+    registry.record_claim(
+        claim_id, candidate.statement, "survived",
+        problem=candidate.strategy,
+        assumptions=list(candidate.assumptions),
+        test=candidate.test,
+        reason=evidence,
+        links=[f"property-{f}" for f in candidate.source_facts],
+        produced_by=f"runner/{candidate.strategy}",
+    )
+
     fact = {"id": candidate.id, "statement": candidate.statement, "falsifier": evidence,
             "source": f"discovery-engine {candidate.strategy}", "category": "discovered"}
     DISCOVERIES.parent.mkdir(parents=True, exist_ok=True)
@@ -1309,6 +1361,18 @@ def prove_and_record(candidate: Candidate, evidence: str) -> dict:
         return {"ok": False, "recorded": True,
                 "proof": "rejected — the formalized theorem does not state the original claim"}
     proof = prove(lean, attempts=3)
+    if proof.get("ok"):
+        # attach the Lean certificate to the claim (upsert updates the existing entry in place)
+        registry.record_claim(
+            claim_id, candidate.statement, "survived",
+            problem=candidate.strategy,
+            assumptions=list(candidate.assumptions),
+            test=candidate.test,
+            reason=evidence,
+            lean_cert=proof.get("code", "")[:500],
+            links=[f"property-{f}" for f in candidate.source_facts],
+            produced_by=f"runner/{candidate.strategy}",
+        )
     return {"ok": proof.get("ok", False), "recorded": True, "proof": proof}
 
 

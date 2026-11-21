@@ -17,7 +17,10 @@ from dataclasses import dataclass, field, asdict
 from pathlib import Path
 
 REGISTRY_DIR = Path.home() / ".dsh" / "sextant-registry"
-KINDS = ("structure", "domain", "property", "evidence", "mapping")
+KINDS = ("structure", "domain", "property", "evidence", "mapping", "claim")
+
+# The dispositions a research claim can carry. SEXTANT must be able to say a direction FAILED.
+CLAIM_STATUSES = ("survived", "failed", "gated-out", "open", "manual")
 
 
 @dataclass
@@ -142,3 +145,74 @@ def seed_known_unifications() -> None:
 
 def new_id() -> str:
     return uuid.uuid4().hex[:12]
+
+
+# ------------------------------------------------------------------------------------------ #
+# The unified research CLAIM — the one evidence-and-claim substrate the five engines share.
+# ------------------------------------------------------------------------------------------ #
+
+def record_claim(
+    claim_id: str,
+    statement: str,
+    status: str,
+    *,
+    problem: str = "",
+    assumptions: list[str] | None = None,
+    proposed_proof: str = "",
+    test: str = "",
+    counterexample: str = "",
+    lean_cert: str = "",
+    unproved: str = "",
+    reason: str = "",
+    links: list[str] | None = None,
+    produced_by: str = "runner",
+) -> Entry:
+    """Record a research claim into the unified registry.
+
+    ``status`` is one of CLAIM_STATUSES: 'survived' (verified discovery), 'failed' (a direction that
+    did not work out), 'gated-out' (unjustified, not dead), 'open' (the frontier), 'manual' (needs a
+    thinking agent). The payload carries the full claim checklist — statement, assumptions, proposed
+    proof, computational test, counterexample, Lean certificate, and what remains unproved — so a
+    claim is auditable end-to-end, and a FAILED direction is never silently lost.
+    """
+    if status not in CLAIM_STATUSES:
+        raise ValueError(f"unknown claim status {status!r}; expected one of {CLAIM_STATUSES}")
+    return add(Entry(
+        id=claim_id,
+        kind="claim",
+        payload={
+            "statement": statement,
+            "status": status,
+            "problem": problem,
+            "assumptions": list(assumptions or []),
+            "proposed_proof": proposed_proof,
+            "test": test,
+            "counterexample": counterexample,
+            "lean_cert": lean_cert,
+            "unproved": unproved,
+            "reason": reason,
+        },
+        provenance={"produced_by": produced_by, "method": "research-claim", "ts": time.time()},
+        links=list(links or []),
+    ))
+
+
+def claims(status: str | None = None) -> list[dict]:
+    """All research claims, optionally filtered by disposition — the auditable record of what is
+    known, unknown, and disproven (the knowledge engine's substrate)."""
+    if status is not None and status not in CLAIM_STATUSES:
+        raise ValueError(f"unknown claim status {status!r}; expected one of {CLAIM_STATUSES}")
+    return query("claim", (lambda d: True) if status is None
+                 else (lambda d: d.get("payload", {}).get("status") == status))
+
+
+def failed_directions() -> list[dict]:
+    """Every research direction that FAILED — SEXTANT can say a direction did not work out, and why."""
+    return claims("failed")
+
+
+def known_unknown_disproven() -> dict[str, int]:
+    """A one-line tally of the scientific record: known vs unknown vs disproven."""
+    tally = {s: len(claims(s)) for s in CLAIM_STATUSES}
+    tally["total"] = sum(tally.values())
+    return tally
