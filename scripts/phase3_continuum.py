@@ -27,7 +27,11 @@ def one_fmr_config(args):
     rng = np.random.default_rng(seed)
     links = np.array([su2.random_su2(rng) for _ in range(4 * N ** 4)])
     links = links.reshape((4,) + (N,) * 4 + (4,))
-    links = su2.metropolis(links, beta, rng, n_sweeps)
+    try:
+        from pacland.lattice_ym_su2_fast import metropolis_fast
+        links = metropolis_fast(links, beta, n_sweeps, seed)
+    except ImportError:
+        links = su2.metropolis(links, beta, rng, n_sweeps)
     links = lg.fmr_gauge_fix(links, n_copies=n_copies, n_gf=n_gf, seed=seed)
     return lg.lowest_fp_eigenvalue(links)
 

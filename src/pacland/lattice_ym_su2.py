@@ -171,7 +171,11 @@ def _polyakov_config(args):
     rng = np.random.default_rng(seed)
     links = np.array([random_su2(rng) for _ in range(4 * N ** 4)])
     links = links.reshape((4,) + (N,) * 4 + (4,))
-    links = metropolis(links, beta, rng, n_sweeps)
+    try:
+        from pacland.lattice_ym_su2_fast import metropolis_fast
+        links = metropolis_fast(links, beta, n_sweeps, seed)
+    except ImportError:
+        links = metropolis(links, beta, rng, n_sweeps)
     return np.maximum(polyakov_correlator(links, R_max), 1e-12)
 
 
@@ -277,7 +281,11 @@ def wilson_flow_scale(beta, N=8, n_flow_steps=200, epsilon=0.05, target=0.08,
     rng = np.random.default_rng(seed)
     links = np.array([random_su2(rng) for _ in range(d * N ** d)])
     links = links.reshape((d,) + (N,) * d + (4,))
-    links = metropolis(links, beta, rng, n_sweeps)
+    try:
+        from pacland.lattice_ym_su2_fast import metropolis_fast
+        links = metropolis_fast(links, beta, n_sweeps, seed)
+    except ImportError:
+        links = metropolis(links, beta, rng, n_sweeps)
     t = 0.0
     E_prev = energy_density(links)
     t2E_prev = 0.0
