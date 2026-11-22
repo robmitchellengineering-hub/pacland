@@ -131,6 +131,13 @@ def _cmd_scrape_lean(a: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_scrape_github(a: argparse.Namespace) -> int:
+    from pacland import lean_scrape
+    r = lean_scrape.scrape_github_search(a.query, limit=a.limit)
+    print(json.dumps(r, indent=2))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="sextant", description="the Sextant discovery engine")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -198,6 +205,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--source", default="", help="the contributor slug")
     p.add_argument("--limit", type=int, default=20)
     p.set_defaults(fn=_cmd_scrape_lean)
+
+    p = sub.add_parser("scrape-github", help="search GitHub for Lean repos and scrape their theorems")
+    p.add_argument("query", help="the GitHub search query (e.g. 'quantum' or 'yang-mills')")
+    p.add_argument("--limit", type=int, default=3)
+    p.set_defaults(fn=_cmd_scrape_github)
 
     a = ap.parse_args(argv)
     return a.fn(a)

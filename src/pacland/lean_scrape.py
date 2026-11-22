@@ -130,3 +130,48 @@ def ingest_mathlib_hits(keyword: str, limit: int = 10, source: str = "mathlib") 
             provenance={"produced_by": "external", "source": source, "method": "mathlib-search",
                         "ts": __import__("time").time()}))
     return {"ingested": len(hits), "names": [h["name"] for h in hits]}
+
+
+def search_github_lean_repos(query: str, limit: int = 5) -> list[dict]:
+    """Search GitHub for Lean repos — other researchers' formalization work — by topic/keyword.
+
+    Returns ``(full_name, clone_url, stars, description)`` for the top matches (sorted by stars).
+    No auth required (the public search API), so it works out of the box.
+    """
+    import json
+    import urllib.parse
+    import urllib.request
+
+    q = urllib.parse.quote(f"{query} language:Lean")
+    url = f"https://api.github.com/search/repositories?q={q}&per_page={limit}&sort=stars"
+    req = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json",
+                                               "User-Agent": "sextant"})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            data = json.loads(r.read())
+    except Exception:  # noqa: BLE001 — network failure means no results, not a crash
+        return []
+    return [{"full_name": it["full_name"], "url": it["clone_url"],
+             "stars": it.get("stargazers_count", 0),
+             "description": (it.get("description") or "")[:100]}
+            for it in data.get("items", [])]
+
+
+def scrape_github_search(query: str, limit: int = 3, tmp: str = "/tmp", _search=None) -> dict:
+    """Search GitHub for Lean repos and scrape each one's theorems — the internet-facing harvest.
+
+    ``_search`` is injectable (defaults to the live GitHub search) so the pipeline is testable offline
+    by supplying a list of (url, source) pairs. Returns the repos scraped + the total theorem count.
+    """
+    searcher = _search or (lambda q, n: [(r["url"], r["full_name"].replace("/", "-"))
+                                         for r in search_github_lean_repos(q, n)])
+    repos = searcher(query, limit)
+    results: list[dict] = []
+    total = 0
+    for url, source in repos:
+        s = scrape_github_lean(url, source=source, tmp=tmp)
+        n_theorems = s.get("lean_theorems", 0)
+        total += n_theorems
+        results.append({"source": source, "url": url, "lean_theorems": n_theorems,
+                        "error": s.get("error")})
+    return {"query": query, "repos": results, "total_theorems": total}

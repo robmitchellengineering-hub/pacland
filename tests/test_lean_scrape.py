@@ -60,6 +60,24 @@ class TestLeanScrape(unittest.TestCase):
             self.assertEqual(r["lean_theorems"], 2)
             self.assertEqual(r["source"], "local-test")
 
+    def test_scrape_github_search_harvests_multiple_repos(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repos = []
+            for i, name in enumerate(("researcher-a", "researcher-b")):
+                repo = Path(tmp) / name
+                repo.mkdir()
+                (repo / f"T{i}.lean").write_text(f"theorem t_{name}_{i} : True := by trivial\n")
+                for cmd in (["git", "init", "-q"], ["git", "config", "user.email", "t@t"],
+                            ["git", "config", "user.name", "t"], ["git", "add", "-A"],
+                            ["git", "commit", "-q", "-m", "x"]):
+                    subprocess.run(cmd, cwd=str(repo), check=True)
+                repos.append((f"file://{repo}", name))
+            # inject the search so the test runs offline
+            r = lean_scrape.scrape_github_search("test", limit=2, tmp=tmp,
+                                                 _search=lambda q, n: repos)
+            self.assertEqual(r["total_theorems"], 2)
+            self.assertEqual(len(r["repos"]), 2)
+
 
 if __name__ == "__main__":
     unittest.main()
