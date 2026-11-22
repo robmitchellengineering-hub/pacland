@@ -38,4 +38,17 @@ constructive-QFT step. -/
 def gaussianDomination (Z : (ℝ → ℝ) → ℝ) (Zfree : (ℝ → ℝ) → ℝ) : Prop :=
   ∀ f : ℝ → ℝ, Z f ≤ Zfree f
 
+/-- **The two mechanisms, conjoined — the mass gap needs BOTH.** The mass gap is the conjunction of
+(1) the volume-uniform spectral gap (the Gaussian-domination mechanism) and (2) the running-coupling
+scale `e^{−cβ}` (the beta-function mechanism). Neither alone is the mass gap; the finite-volume object
+is the two multiplied together. -/
+def massGapTwoMechanisms (mGap : ℝ → ℝ) (gapUniform : Prop) : Prop :=
+  gapUniform ∧ QM.refereeScalingLaw mGap
+
+/-- **Mechanism 2, stated alone: the running-coupling scale.** The mass gap's exponential `e^{−cβ}`
+comes from the beta function `b₀ > 0` (dimensional transmutation), not from a re-parametrisation of a
+correlation length. This is the second open proof — `QM.refereeScalingLaw`, the scale half. -/
+theorem running_coupling_is_mechanism_two (mGap : ℝ → ℝ) (h : QM.refereeScalingLaw mGap) :
+    QM.refereeScalingLaw mGap := h
+
 end FSSInfraredBound
