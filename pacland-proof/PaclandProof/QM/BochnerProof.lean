@@ -93,6 +93,41 @@ theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
     Gamma2 (diffusion_generator a) f θ
       = (deriv (deriv f) θ) ^ 2 - deriv a θ * (deriv f θ) ^ 2 := by
   dsimp [Gamma2, diffusion_generator, carreDuChamp]
-  sorry
+  have hf1 : Differentiable ℝ f := hf.differentiable (by norm_num)
+  have hf1' : Differentiable ℝ (deriv f) := ContDiff.differentiable_deriv_two (hf.of_le (by norm_num))
+  have hf1'' : Differentiable ℝ (deriv (deriv f)) :=
+    ContDiff.differentiable_deriv_two (ContDiff.deriv' (hf.of_le (by norm_num)))
+  have ha1 : Differentiable ℝ a := ha.differentiable (by norm_num)
+  -- (1) ((f')²)' = 2·f'·f''
+  have hderiv_sq : deriv (fun y => (deriv f y) ^ 2) θ = 2 * deriv f θ * deriv (deriv f) θ := by
+    change deriv ((deriv f) * (deriv f)) θ = _
+    rw [deriv_mul (hf1' θ) (hf1' θ)]
+    ring
+  -- (2) ((f')²)'' = 2·(f'')² + 2·f'·f'''
+  have hderiv_sq2 : deriv (deriv (fun y => (deriv f y) ^ 2)) θ
+      = 2 * (deriv (deriv f) θ) ^ 2 + 2 * deriv f θ * deriv (deriv (deriv f)) θ := by
+    change deriv (deriv ((deriv f) * (deriv f))) θ = _
+    have hfun : deriv ((deriv f) * (deriv f)) = fun y => 2 * deriv f y * deriv (deriv f) y := by
+      funext y
+      rw [deriv_mul (hf1' y) (hf1' y)]
+      ring
+    rw [hfun]
+    change deriv ((fun y => 2 * deriv f y) * deriv (deriv f)) θ = _
+    rw [deriv_mul ((hf1'.const_smul (2 : ℝ)) θ) (hf1'' θ)]
+    rw [deriv_const_mul (2 : ℝ) (hf1' θ)]
+    ring
+  -- (3) (Lf)' = f''' + a'·f' + a·f''
+  have hLf' : deriv (diffusion_generator a f) θ
+      = deriv (deriv (deriv f)) θ + deriv a θ * deriv f θ + a θ * deriv (deriv f) θ := by
+    dsimp [diffusion_generator]
+    change deriv ((deriv (deriv f)) + a * deriv f) θ = _
+    rw [deriv_add (hf1'' θ) ((ha1.mul hf1') θ)]
+    rw [deriv_mul (ha1 θ) (hf1' θ)]
+    ring
+  -- (4) assemble: Γ₂ = (L((f')²) − 2·f'·(Lf)') / 2
+  rw [carre_du_champ_is_squared_deriv a f θ (hf.of_le (by norm_num))]
+  rw [cross_carre_du_champ a f θ hf ha]
+  rw [hderiv_sq, hderiv_sq2, hLf']
+  ring
 
 end QM
