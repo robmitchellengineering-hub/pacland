@@ -63,6 +63,7 @@ theorem carre_du_champ_eq_mul (a f g : ℝ → ℝ) (θ : ℝ) (hf : ContDiff �
     funext y
     rw [deriv_mul (hf1 y) (hg1 y)]
   have hfg : deriv (fun t => f t * g t) θ = deriv f θ * g θ + f θ * deriv g θ := by
+    change deriv (f * g) θ = _
     rw [hderiv_fg]
   have hfg2 : deriv (deriv (fun t => f t * g t)) θ
       = deriv (deriv f) θ * g θ + 2 * (deriv f θ * deriv g θ) + f θ * deriv (deriv g) θ := by
