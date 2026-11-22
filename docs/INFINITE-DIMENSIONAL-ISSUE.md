@@ -70,4 +70,31 @@ constructive-QFT / spectral-gap-in-the-limit rung, not the compact-operator rung
 statement yet of where the mass-gap problem lives: **the finite-volume gap is Jentzsch; the infinite-
 volume gap is the failure of compactness, and replacing it is the open mathematics.**
 
+## The infrared bound (the target rung) — its exact structure and where it stands
+
+The Fröhlich–Spencer–Simon / Fröhlich–Israel–Lieb–Simon infrared bound is a three-step mechanism, all
+three of which are already partially in hand:
+
+1. **Gaussian domination** — for a reflection-positive model, the partition function in an external
+   field is dominated by the Gaussian (free-field) partition function: `⟨e^{Σ f·φ}⟩ ≤ e^{½ Σ f J⁻¹ f}`.
+2. **The infrared bound** — the momentum-space two-point function is bounded by the free propagator:
+   `Ŝ(p) ≤ 1/(2 J(p))`, `J(p) = Σ_δ (1 − cos(p·δ))`.
+3. **The mass gap** — the infrared bound plus the sum rule forces the correlation's exponential decay,
+   the spectral gap, with a rate **uniform in the volume** (the thermodynamic-limit survival).
+
+**The honest status for 4D YM:** the mechanism is the right one, but it was proved for reflection-positive
+*scalar* models and *Abelian* gauge theories. The non-Abelian case is blocked on two specific inputs that
+are exactly the open part:
+
+- **YM reflection positivity (OS3)** — the gauge-invariant sector is reflection-positive, but the
+  gauge-fixed measure is not, so the reflection positivity must be established on the physical (gauge-
+  invariant) Hilbert space, not the gauge-fixed one.
+- **Gaussian domination for the gauge-invariant observables** — the infrared bound's seed, not yet
+  established for the non-Abelian plaquette/Wilson-loop observables.
+
+So the rung `fssInfraredBound` decomposes into **two concrete, falsifiable inputs** — YM reflection
+positivity on the physical space, and the Gaussian domination — each of which is a named, testable
+sub-lemma, and both of which are the precise place the non-Abelian infrared bound has not been closed.
+
+
 
