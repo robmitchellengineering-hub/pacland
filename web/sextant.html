@@ -105,6 +105,7 @@ h3 { font-size: 1.12rem; }
 .verdict-FORCED { color: var(--sx-green); }
 .verdict-FREE { color: var(--sx-amber); }
 .verdict-IMPOSSIBLE { color: var(--sx-red); }
+.verdict-IRREDUCIBLE { color: var(--sx-amber); }
 code { color: #bceef4; background: rgba(98,215,232,.08); border-radius: 5px; padding: .12em .38em; }
 pre { background: #050a11 !important; border: 1px solid var(--sx-line); border-radius: 14px; padding: 18px !important; }
 .actions { gap: 10px; }
@@ -269,7 +270,7 @@ sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
 
 </div>
 <script>
-const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕' };
+const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕', IRREDUCIBLE:'◐' };
 const CLAIMS = [
  { id:'chsh', v:'FORCED', th:'QM.Tsirelson', claim:'no quantum state violates the CHSH inequality beyond 2√2', falsifier:'a state exceeding 2√2', oracle:'quantum-simulated + kernel-checked', ev:'simulated CHSH = 2.828427 = 2√2 — nothing exceeds it',
    plain:"The quantum world can beat classical physics by a hair — 2√2, and not a hair more. That ceiling is not a measurement, it's a theorem we machine-checked: the universe has a hard limit on how much quantum beats classical. The gap between the classical wall (2) and the quantum maximum (2√2) is the 'quantum advantage', quantified exactly." },
@@ -338,6 +339,16 @@ const CLAIMS = [
     plain:"An exponent that looks like it needs 'one more tunneling event' may instead be a MODE SUM. The weak-coupling mass-gap exponent is the sum over all the low-momentum gluon modes, and that sum is the beta-function coefficient. Use this whenever an exponent seems to need one more mechanism: count the modes first." },
   { id:'gauge-orbit-quotient', v:'FORCED', th:'QM.GaugeOrbit + QM.AxialGauge', claim:'running the spectral machinery on the gauge-invariant quotient removes the unphysical flat directions', falsifier:'a quotient that fails to remove the gauge flat directions (a residual Gribov copy)', oracle:'kernel-checked', ev:'the trivial connection\'s gauge orbit is a flat direction that is gauge, not physics — quotient removes it',
     plain:"A 'ceiling' can sit on the gauge orbit — the flat direction of the trivial connection, which is pure gauge, not physics. Remove it: run the spectral machinery on the gauge-invariant quotient, not the full space. Use this whenever a flat direction is actually gauge redundancy." },
+  { id:'matchgate-seed', v:'FORCED', th:'QM.Matchgate + QM.PfaffianRec', claim:'matchgate amplitudes are Pfaffians — the full even/odd split is kernel-checked', falsifier:'a matchgate whose amplitude is not its Pfaffian, or a nonzero odd-dim antisymmetric determinant', oracle:'kernel-checked', ev:'2×2 and 4×4 Pf² = det; every odd-dim antisymmetric determinant = 0',
+    plain:"The 'easy' quantum circuits — matchgates — have amplitudes that are Pfaffians, a determinant-like quantity a laptop can compute. The split is exact and kernel-checked: even dimensions square to the determinant, odd dimensions vanish. It is the mathematical seed of why some quantum systems are classically simulable." },
+  { id:'perfect-code-distance', v:'FORCED', th:'QM.PerfectTensor.code_min_weight', claim:'the 5-qubit [[5,1,3]] code has distance ≥ 3 — no single- or two-qubit subsystem carries a stabilizer', falsifier:'a weight ≤ 2 element of the code stabilizer group', oracle:'kernel-checked', ev:'every non-identity product of the 4 code stabilizers has weight 4',
+    plain:"The smallest useful quantum error-correcting code — 5 qubits protecting 1 — can correct any single-qubit error. The distance-3 property is kernel-checked: no one- or two-qubit subsystem carries a stabilizer, which is the algebraic core of the code." },
+  { id:'code-ame52', v:'FORCED', th:'QM.PerfectTensor.code_state_ame52', claim:'the [[5,1,3]] code state (logical Z fixed) is AME(5,2) — every 2-qubit reduction is maximally mixed', falsifier:'a weight ≤ 2 element of the fixed-state stabilizer group', oracle:'kernel-checked', ev:'every non-identity element of the 5-generator fixed-state group has weight ≥ 3',
+    plain:"The 5-qubit code state is 'absolutely maximally entangled' across any 2|3 split — every pair of qubits is maximally mixed. It is the stabilizer form of AME(5,2), the entanglement pattern that makes the code work." },
+  { id:'happ-perfect-tensor', v:'FORCED', th:'QM.PerfectTensor.happy_is_perfect_tensor', claim:'the [[5,1,3]] code coupled to a reference qubit is a perfect tensor (AME(6,3))', falsifier:'a 3-qubit subsystem of the HaPPY hexagon carrying a stabilizer', oracle:'kernel-checked', ev:'every non-identity element of the 6-generator group has weight ≥ 4',
+    plain:"Couple the 5-qubit code to a reference qubit and you get a perfect tensor — the HaPPY hexagon, the smallest building block of holographic error-correcting codes. Every 3-qubit subsystem is maximally mixed; that is the discrete Ryu–Takayanagi statement." },
+  { id:'ym-mass-gap-polyakov', v:'IRREDUCIBLE', th:'none — computational, not closed-form', claim:'SU(3) Yang–Mills at finite temperature has a positive screening mass (the Polyakov correlator clusters exponentially)', falsifier:'a Polyakov screening mass ≤ 0', oracle:'lattice (SU(3) Polyakov correlator)', ev:'m = 0.227 across sizes — survives every falsifier tried',
+    plain:"The SU(3) lattice keeps returning a positive screening mass, so the claim survives every falsifier tried — but there is no sorry-free Lean certificate, so it is computational, not FORCED. It is recorded as convergence evidence, not a proof." },
 ];
 
 const CAT = {
@@ -346,7 +357,8 @@ const CAT = {
   'mera-hyperbolic':'gravity','coupling-free':'gravity','gravity-quantum':'gravity','lovelock':'gravity','bianchi':'gravity','wdw':'gravity','dirac':'gravity','adm':'gravity','black-hole-entropy':'gravity','black-hole-unitarity':'gravity',
   'hypercharge-uniqueness':'sm','anomaly-cancellation':'sm','generation-free':'sm','the-19':'sm','sm-index':'sm',
   'mitchell-uniqueness':'landscape','constraint-first':'landscape','completeness':'landscape',
-  'pr-box':'foundations'
+  'pr-box':'foundations',
+  'matchgate-seed':'computing','perfect-code-distance':'computing','code-ame52':'computing','happ-perfect-tensor':'gravity','ym-mass-gap-polyakov':'gravity'
 };
 const CATS = {
   'foundations': { label:'Quantum foundations', desc:"The provable walls of quantum mechanics — what is impossible to do (clone, broadcast, entangle classically), what is forced (the Born rule, the state is real, Mermin's non-contextuality). If your field asks 'is the quantum state real?' or 'what does the math forbid?', this is it." },
