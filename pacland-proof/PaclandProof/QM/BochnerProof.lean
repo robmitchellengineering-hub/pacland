@@ -50,16 +50,31 @@ theorem carre_du_champ_is_squared_deriv (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
   rw [h1, h2]
   ring
 
-/-- **The cross carré du champ is the product of derivatives**: `Γ(f, Lf) = f'·(Lf)'` for a diffusion. -/
-theorem cross_carre_du_champ (a f : ℝ → ℝ) (θ : ℝ) :
+/-- **The general carré du champ**: `Γ(f, g) = f'·g'` for a diffusion generator. -/
+theorem carre_du_champ_eq_mul (a f g : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g) :
+    carreDuChamp (diffusion_generator a) f g θ = deriv f θ * deriv g θ := by
+  dsimp [carreDuChamp, diffusion_generator]
+  have hf1 : Differentiable ℝ f := hf.differentiable (by norm_num)
+  have hg1 : Differentiable ℝ g := hg.differentiable (by norm_num)
+  -- L(fg) − f·Lg − g·Lf = 2·f'·g'  (the diffusion identity)
+  have hfg : deriv (fun t => f t * g t) θ = deriv f θ * g θ + f θ * deriv g θ := by
+    rw [deriv_mul (hf1 θ) (hg1 θ)]
+  have hfg2 : deriv (deriv (fun t => f t * g t)) θ
+      = deriv (deriv f) θ * g θ + 2 * (deriv f θ * deriv g θ) + f θ * deriv (deriv g) θ := by
+    rw [deriv_mul (hf1 θ) (hg1 θ)]
+    simp [deriv_mul, deriv_add, deriv_const_mul]
+    ring
+  rw [hfg, hfg2]
+  ring
+
+/-- **The cross carré du champ is the product of derivatives**: `Γ(f, Lf) = f'·(Lf)'`. -/
+theorem cross_carre_du_champ (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 3 f) :
     carreDuChamp (diffusion_generator a) f (diffusion_generator a f) θ
       = deriv f θ * deriv (diffusion_generator a f) θ := by
-  dsimp [carreDuChamp, diffusion_generator]
-  -- Γ(f, Lf) = (L(f·Lf) − f·L(Lf) − Lf·Lf)/2 = f'·(Lf)' for a diffusion
   sorry
 
 /-- **The 1D Bochner formula**: `Γ₂(f) = (f'')² − a'(θ)·(f')²`. -/
-theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) :
+theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 3 f) :
     Gamma2 (diffusion_generator a) f θ
       = (deriv (deriv f) θ) ^ 2 - deriv a θ * (deriv f θ) ^ 2 := by
   dsimp [Gamma2, diffusion_generator]
