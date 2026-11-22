@@ -1740,6 +1740,13 @@
    "title": "build_peft_dataset.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_sextant_claims.py",
+   "kind": "script",
+   "path": "scripts/build_sextant_claims.py",
+   "summary": "build_sextant_claims.py \u2014 keep web/sextant.html in sync with the theorem registry.",
+   "title": "build_sextant_claims.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_site_index.py",
    "kind": "script",
    "path": "scripts/build_site_index.py",
