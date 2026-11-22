@@ -124,6 +124,14 @@ def _cmd_search_lean(a: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_harvest_lean(a: argparse.Namespace) -> int:
+    from pacland import lean_scrape
+    keywords = [k for k in a.keywords.split(",") if k.strip()]
+    r = lean_scrape.harvest_mathlib(keywords, limit_per_keyword=a.limit)
+    print(json.dumps(r, indent=2))
+    return 0
+
+
 def _cmd_scrape_lean(a: argparse.Namespace) -> int:
     from pacland import lean_scrape
     r = lean_scrape.scrape_github_lean(a.url, source=a.source, limit=a.limit)
@@ -214,6 +222,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--limit", type=int, default=10)
     p.add_argument("--ingest", action="store_true", help="also register the matches as tier-1 properties")
     p.set_defaults(fn=_cmd_search_lean)
+
+    p = sub.add_parser("harvest-lean", help="batch-ingest Mathlib theorems for a comma-separated list of keywords")
+    p.add_argument("keywords", help="comma-separated keywords, e.g. 'spectral gap,mixing,decay'")
+    p.add_argument("--limit", type=int, default=10, help="max theorems per keyword")
+    p.set_defaults(fn=_cmd_harvest_lean)
 
     p = sub.add_parser("scrape-lean", help="clone + scan an external Lean repo from the internet")
     p.add_argument("url", help="the git repo URL (e.g. https://github.com/org/repo.git)")
