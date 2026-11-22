@@ -30,7 +30,7 @@ theorem carre_du_champ_is_squared_deriv (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
     carreDuChamp (diffusion_generator a) f f θ = (deriv f θ) ^ 2 := by
   dsimp [carreDuChamp, diffusion_generator]
   have hf1 : Differentiable ℝ f := hf.differentiable (by norm_num)
-  have hf1' : Differentiable ℝ (deriv f) := (contDiff_succ_iff_deriv.mp hf).differentiable (by norm_num)
+  have hf1' : Differentiable ℝ (deriv f) := ContDiff.differentiable_deriv_two hf
   have hfun : deriv (f * f) = fun y => 2 * f y * deriv f y := by
     funext y
     rw [deriv_mul (hf1 y) (hf1 y)]
