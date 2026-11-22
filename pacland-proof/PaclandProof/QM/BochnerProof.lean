@@ -133,7 +133,8 @@ theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
     funext x
     exact cross_carre_du_champ a f x hf ha
   rw [hΓ_fun, hcross_fun]
-  rw [hderiv_sq, hderiv_sq2, hLf']
+  rw [hderiv_sq, hderiv_sq2]
+  simp [hLf']
   ring
 
 end QM
