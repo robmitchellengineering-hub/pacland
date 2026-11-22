@@ -64,11 +64,21 @@ class TestTrackWiring(unittest.TestCase):
         self.assertTrue(any("legitimacy-coulomb" in c["id"] for c in claims))
 
     def test_run_race_reports_the_leader(self):
-        r = tw.run_race()
+        # mock the Monte-Carlo so the race is fast + deterministic
+        from unittest import mock
+        with mock.patch("pacland.lattice_ym_su2.measure_string_tension", return_value=1.0):
+            r = tw.run_race()
         self.assertIn("leader", r)
         self.assertIn("leaderboard", r)
         # no track has cleared A1 + A3 (the missing uniformity) yet — that is the honest state
         self.assertFalse(r["any_full"])
+
+    def test_coulomb_falsifier_survives_a_positive_string_tension(self):
+        from unittest import mock
+        with mock.patch("pacland.lattice_ym_su2.measure_string_tension", return_value=1.0):
+            survived, evidence = tw._verify_string_tension_positive()
+        self.assertTrue(survived)
+        self.assertIn("positive", evidence)
 
 
 if __name__ == "__main__":

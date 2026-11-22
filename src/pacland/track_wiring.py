@@ -67,12 +67,15 @@ def register_tracks() -> int:
 # ------------------------------------------------------------------------------------------ #
 
 def _verify_string_tension_positive() -> tuple[bool, str]:
-    """Coulomb track: is the lattice string tension positive at every probed β (an area law)?"""
+    """Coulomb track: is the lattice string tension positive at every probed β (an area law)?
+
+    Uses a real lattice (N=8) + enough sweeps that the Creutz ratio is a measurement, not noise.
+    """
     from pacland import lattice_ym_su2 as su2
     betas = (1.5, 2.0, 2.5, 3.0)
     values = []
     for b in betas:
-        sig = su2.measure_string_tension(b, d=4, N=2, n_sweeps=6, seed=0)
+        sig = su2.measure_string_tension(b, d=4, N=8, n_sweeps=20, seed=0)
         values.append(sig)
     if all(sig > 0.0 for sig in values):
         return True, f"SU(2) string tension σ = {values} — positive at every β (area law)"
