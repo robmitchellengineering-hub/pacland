@@ -165,20 +165,30 @@ def polyakov_correlator(links, R_max):
     return np.array(C)
 
 
+def _polyakov_config(args):
+    """One config's Polyakov correlator (module-level, for ProcessPoolExecutor)."""
+    beta, N, n_sweeps, R_max, seed = args
+    rng = np.random.default_rng(seed)
+    links = np.array([random_su2(rng) for _ in range(4 * N ** 4)])
+    links = links.reshape((4,) + (N,) * 4 + (4,))
+    links = metropolis(links, beta, rng, n_sweeps)
+    return np.maximum(polyakov_correlator(links, R_max), 1e-12)
+
+
 def string_tension_from_polyakov(beta, N=8, n_configs=20, n_sweeps=12, R_max=3, seed=0):
     """The string tension sigma from the Polyakov-loop potential V(R) = -ln C(R) ~ sigma R + c.
 
-    Averaged over configs (the connected correlator is noise-dominated per config); a linear fit of
-    V(R) over R = 1..R_max gives sigma. This is the Phase-2 scale-setting observable for SU(2)."""
-    rng = np.random.default_rng(seed)
+    Configs run in parallel (ProcessPoolExecutor) — the pure-Python Metropolis is the bottleneck, and
+    the configs are independent, so this is ~ncores faster. Averaged over configs; a linear fit of V(R)
+    over R = 1..R_max gives sigma. This is the Phase-2 scale-setting observable for SU(2)."""
+    import os
+    from concurrent.futures import ProcessPoolExecutor
+
     d = 4
-    C_sum = np.zeros(R_max)
-    for _ in range(n_configs):
-        links = np.array([random_su2(rng) for _ in range(d * N ** d)])
-        links = links.reshape((d,) + (N,) * d + (4,))
-        links = metropolis(links, beta, rng, n_sweeps)
-        C = polyakov_correlator(links, R_max)
-        C_sum += np.maximum(C, 1e-12)
+    workers = min(6, os.cpu_count() or 1)
+    args = [(beta, N, n_sweeps, R_max, seed + i) for i in range(n_configs)]
+    with ProcessPoolExecutor(max_workers=workers) as ex:
+        C_sum = np.sum(np.array(list(ex.map(_polyakov_config, args))), axis=0)
     C_avg = C_sum / n_configs
     V = -np.log(C_avg)
     R = np.arange(1, R_max + 1)
