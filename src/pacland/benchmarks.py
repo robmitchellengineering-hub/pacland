@@ -196,6 +196,31 @@ def engine_with_filter(inner: Generator) -> Generator:
     return filtered
 
 
+def run_paired(generator: Generator, dataset: dict, matcher: Matcher = _full_word_matcher) -> list[ArmResult]:
+    """PAIRED comparison: generate ONCE per problem, then score the raw candidates AND their filtered
+    version from the SAME draw.
+
+    This isolates the filter's effect from LLM non-determinism — the "llm" and "full-engine" arms see
+    identical underlying candidates, so any recall/precision change is the filter's, not the model's.
+    """
+    raw = ArmResult(arm="llm", suite="paired")
+    filt = ArmResult(arm="full-engine", suite="paired")
+    for d in dataset.values():
+        cands = generator(d["pre"])                    # ONE generation per problem
+        kept = [c for c in cands
+                if not _is_generic_distractor(c) and not premise_restates(c, d["pre"])]
+        for r, cs in ((raw, cands), (filt, kept)):
+            r.problems += 1
+            r.cost += len(cs)
+            matched = matcher(cs, d["jump"])
+            first_rank = next((i + 1 for i, m in enumerate(matched) if m), None)
+            if first_rank is not None:
+                r.found += 1
+                r.total_rank += first_rank
+            r.false_positives += len(cs) - sum(matched)
+    return [raw, filt]
+
+
 def compare(arms: dict[str, Generator], suite: str, dataset: dict) -> list[ArmResult]:
     return [run_arm(name, gen, suite, dataset) for name, gen in arms.items()]
 

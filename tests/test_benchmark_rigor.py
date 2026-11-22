@@ -77,6 +77,20 @@ class TestPipelineFilter(unittest.TestCase):
         # the filter must not INCREASE false positives, and the untyped distractors are all filtered
         self.assertLessEqual(filtered.false_positives, raw.false_positives)
 
+    def test_paired_uses_the_same_underlying_draw(self):
+        # a deterministic generator with one right answer + one generic distractor
+        calls = {"n": 0}
+
+        def gen(pre):
+            calls["n"] += 1
+            return ["energy is quantised", "a new long-range force"]
+
+        raw, filt = b.run_paired(gen, {"blackbody": b.DATASET["blackbody"]})
+        # one generation, not two — the paired design removes the non-determinism confound
+        self.assertEqual(calls["n"], 1)
+        self.assertEqual(raw.found, filt.found)          # the filter kept the right answer
+        self.assertLess(filt.false_positives, raw.false_positives)  # and dropped the distractor
+
 
 if __name__ == "__main__":
     unittest.main()
