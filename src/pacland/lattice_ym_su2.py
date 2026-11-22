@@ -207,6 +207,95 @@ def scale_a(sigma: float, sigma_ref: float, a_ref: float = 1.0) -> float:
     return float(a_ref * np.sqrt(sigma_ref / sigma))
 
 
+def staple_sum(links, mu, x):
+    """The sum of the 2(d-1) staples around the link U_mu(x) — a 4-quaternion (the force direction
+    of the Wilson flow)."""
+    d, N = links.shape[0], links.shape[1]
+    Z = np.zeros(4)
+    for nu in range(d):
+        if nu == mu:
+            continue
+        xn = list(x); xn[nu] = (xn[nu] + 1) % N; xn = tuple(xn)
+        xm = list(x); xm[mu] = (xm[mu] + 1) % N; xm = tuple(xm)
+        fwd = qmul(links[nu][tuple(x)], links[mu][xn])
+        fwd = qmul(fwd, qconj(links[nu][xm]))
+        Z += np.array(fwd)
+        xnm = list(x); xnm[nu] = (xnm[nu] - 1) % N; xnm = tuple(xnm)
+        xnm2 = list(xnm); xnm2[mu] = (xnm2[mu] + 1) % N; xnm2 = tuple(xnm2)
+        bwd = qmul(qconj(links[nu][xnm]), links[mu][xnm])
+        bwd = qmul(bwd, links[nu][xnm2])
+        Z += np.array(bwd)
+    return Z
+
+
+def wilson_flow_step(links, epsilon=0.05):
+    """One Euler step of the Wilson (gradient) flow: V_mu -> exp(-epsilon * F) V_mu, where F is the
+    traceless anti-hermitian part of (staple * V^dag). Minimises the action, so the energy density
+    decreases with flow time."""
+    d, N = links.shape[0], links.shape[1]
+    out = links.copy()
+    for mu in range(d):
+        for flat in range(N ** d):
+            x = tuple(np.unravel_index(flat, (N,) * d))
+            V = links[mu][x]
+            Z = staple_sum(links, mu, x)
+            w = qmul(Z, qconj(V))          # Z V^dag = (w0, w1, w2, w3)
+            f = np.array([w[1], w[2], w[3]])  # the anti-hermitian part
+            norm = float(np.linalg.norm(f))
+            if norm < 1e-12:
+                continue
+            theta = epsilon * norm
+            c, s = np.cos(theta), np.sin(theta) / norm   # rotate TOWARD the staple (descent)
+            r = (c, s * f[0], s * f[1], s * f[2])
+            out[mu][x] = qmul(r, V)
+    return out
+
+
+def energy_density(links):
+    """The Wilson-flow energy density E(t) = <1 - 1/2 Re Tr U_plaq> — decreases with flow time."""
+    d, N = links.shape[0], links.shape[1]
+    total = 0.0
+    count = 0
+    for mu in range(d):
+        for nu in range(mu + 1, d):
+            for flat in range(N ** d):
+                x = tuple(np.unravel_index(flat, (N,) * d))
+                total += 1.0 - 0.5 * plaquette_trace(links, mu, nu, x)
+                count += 1
+    return total / count
+
+
+def wilson_flow_scale(beta, N=8, n_flow_steps=200, epsilon=0.05, target=0.3,
+                      n_sweeps=10, seed=0):
+    """The Luscher scale t0 where t^2 E(t) = target (0.3), in lattice units.
+
+    t0 is the robust scale-setting observable (far more stable than the Polyakov string tension at
+    small N). Returns t0, or None if the target is not reached within n_flow_steps."""
+    d = 4
+    rng = np.random.default_rng(seed)
+    links = np.array([random_su2(rng) for _ in range(d * N ** d)])
+    links = links.reshape((d,) + (N,) * d + (4,))
+    links = metropolis(links, beta, rng, n_sweeps)
+    t = 0.0
+    E_prev = energy_density(links)
+    t2E_prev = 0.0
+    for _ in range(n_flow_steps):
+        links = wilson_flow_step(links, epsilon)
+        t += epsilon
+        E = energy_density(links)
+        t2E = t * t * E
+        if t2E >= target:
+            # linear interpolation in t2E between the previous and current step
+            if t2E > t2E_prev:
+                frac = (target - t2E_prev) / (t2E - t2E_prev)
+                return t - epsilon + epsilon * frac
+            return t
+        E_prev = E
+        t2E_prev = t2E
+    return None
+
+
 __all__ = ["qmul", "qconj", "random_su2", "plaquette_trace", "metropolis",
            "wilson_loop", "creutz_ratio", "measure_string_tension",
-           "polyakov_loops", "polyakov_correlator", "string_tension_from_polyakov", "scale_a"]
+           "polyakov_loops", "polyakov_correlator", "string_tension_from_polyakov", "scale_a",
+           "staple_sum", "wilson_flow_step", "energy_density", "wilson_flow_scale"]
