@@ -41,8 +41,9 @@ theorem carre_du_champ_is_squared_deriv (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
   have h2 : deriv (deriv (fun t => f t * f t)) θ = 2 * (deriv f θ) ^ 2 + 2 * f θ * deriv (deriv f) θ := by
     change deriv (deriv (f * f)) θ = 2 * (deriv f θ) ^ 2 + 2 * f θ * deriv (deriv f) θ
     rw [hfun]
+    change deriv ((fun y => 2 * f y) * deriv f) θ = 2 * (deriv f θ) ^ 2 + 2 * f θ * deriv (deriv f) θ
+    rw [deriv_mul ((hf1.const_mul (2 : ℝ)) θ) (hf1' θ)]
     rw [deriv_const_mul]
-    rw [deriv_mul (hf1 θ) (hf1' θ)]
     ring
   rw [h1, h2]
   ring
