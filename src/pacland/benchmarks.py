@@ -221,6 +221,115 @@ def run_paired(generator: Generator, dataset: dict, matcher: Matcher = _full_wor
     return [raw, filt]
 
 
+# ----------------------------------------------------------------------------
+# The REAL-falsifier benchmark: a candidate law must reproduce the DATA, including a held-out point.
+# This is "discovery beyond recall" — the answer is not recalled, it is INDUCED and then falsified.
+# ----------------------------------------------------------------------------
+
+import ast
+import operator
+
+_LAW_OPS = {
+    ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul,
+    ast.Div: operator.truediv, ast.Pow: operator.pow, ast.Mod: operator.mod,
+    ast.USub: operator.neg, ast.UAdd: operator.pos,
+}
+
+
+def _safe_eval(expr: str, n: int) -> float | None:
+    """Evaluate a Python arithmetic expression in n, restricted to + - * / ** % and literals.
+
+    Returns None for anything that does not parse, or any disallowed node — so a malformed or
+    non-arithmetic LLM output is a FAILED induction, not a crash.
+    """
+    try:
+        tree = ast.parse(expr, mode="eval")
+    except Exception:  # noqa: BLE001
+        return None
+
+    def ev(node):
+        if isinstance(node, ast.Expression):
+            return ev(node.body)
+        if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+            return node.value
+        if isinstance(node, ast.Name) and node.id == "n":
+            return n
+        if isinstance(node, ast.BinOp) and type(node.op) in _LAW_OPS:
+            return _LAW_OPS[type(node.op)](ev(node.left), ev(node.right))
+        if isinstance(node, ast.UnaryOp) and type(node.op) in _LAW_OPS:
+            return _LAW_OPS[type(node.op)](ev(node.operand))
+        raise ValueError("disallowed node")
+
+    try:
+        return float(ev(tree))
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def falsify_law(expr: str, points: list[tuple[int, int]]) -> tuple[bool, str]:
+    """The real falsifier: the candidate law must reproduce EVERY data point (training + held-out).
+
+    Returns (survived, evidence) — survived iff the expression evaluates to each y at each x.
+    """
+    for x, y in points:
+        v = _safe_eval(expr, x)
+        if v is None:
+            return False, f"the candidate law {expr!r} does not evaluate"
+        if abs(v - y) > 1e-9:
+            return False, f"{expr!r} gives f({x})={v}, not {y}"
+    return True, f"the law {expr!r} reproduces all {len(points)} points"
+
+
+def synthetic_induction_suite(n: int = 10, seed: int = 0) -> list[dict]:
+    """Planted-law problems with a HELD-OUT point: {points, held_out, jump}. The generator sees the
+    training points only; the falsifier checks the held-out point, so a correct answer is INDUCED and
+    falsified, never recalled."""
+    import math
+    import random
+
+    laws = [
+        ("n**2", lambda n: n * n),
+        ("2*n + 1", lambda n: 2 * n + 1),
+        ("n**3", lambda n: n * n * n),
+        ("n*(n+1)//2", lambda n: n * (n + 1) // 2),
+        ("2**n", lambda n: 2 ** n),
+        ("math.factorial(n)", lambda n: math.factorial(n)),
+    ]
+    rng = random.Random(seed)
+    out = []
+    for _ in range(n):
+        expr, fn = rng.choice(laws)
+        start = rng.randint(1, 3)
+        xs = list(range(start, start + 4))
+        held_x = start + 4
+        out.append({"points": [(x, fn(x)) for x in xs],
+                    "held_out": (held_x, fn(held_x)),
+                    "jump": expr})
+    return out
+
+
+def run_induction(generator: Generator, n: int = 10, seed: int = 0) -> dict:
+    """The discovery-beyond-recall benchmark: induce each law, falsify it, count survivors.
+
+    Recall = the generator named the right law; survived = the law REPRODUCED every point (including
+    the held-out one). A generator that recalls a law but cannot evaluate it fails here.
+    """
+    suite = synthetic_induction_suite(n, seed)
+    induced = 0
+    survived = 0
+    for d in suite:
+        pre = "points: " + ", ".join(f"({x},{y})" for x, y in d["points"])
+        cands = generator(pre)
+        if not cands:
+            continue
+        if d["jump"] in cands[0] or cands[0] == d["jump"]:
+            induced += 1
+        ok, _ = falsify_law(cands[0], d["points"] + [d["held_out"]])
+        if ok:
+            survived += 1
+    return {"problems": n, "induced": induced, "survived_falsifier": survived}
+
+
 def compare(arms: dict[str, Generator], suite: str, dataset: dict) -> list[ArmResult]:
     return [run_arm(name, gen, suite, dataset) for name, gen in arms.items()]
 

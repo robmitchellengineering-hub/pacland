@@ -92,5 +92,31 @@ class TestPipelineFilter(unittest.TestCase):
         self.assertLess(filt.false_positives, raw.false_positives)  # and dropped the distractor
 
 
+class TestRealFalsifier(unittest.TestCase):
+    def test_safe_eval_arithmetic(self):
+        self.assertEqual(b._safe_eval("n**2", 3), 9.0)
+        self.assertEqual(b._safe_eval("2*n + 1", 4), 9.0)
+
+    def test_safe_eval_rejects_non_arithmetic(self):
+        self.assertIsNone(b._safe_eval("__import__('os')", 3))
+        self.assertIsNone(b._safe_eval("not a law", 3))
+
+    def test_falsify_law_survives_the_correct_law(self):
+        ok, _ = b.falsify_law("n**2", [(1, 1), (2, 4), (3, 9)])
+        self.assertTrue(ok)
+
+    def test_falsify_law_refutes_the_wrong_law(self):
+        ok, ev = b.falsify_law("n**3", [(1, 1), (2, 4)])
+        self.assertFalse(ok)
+        self.assertIn("f(2)", ev)
+
+    def test_run_induction_measures_induction_and_survival(self):
+        # a fake generator that always proposes n**2 — it induces only the n**2 laws and survives them
+        out = b.run_induction(lambda pre: ["n**2"], n=12, seed=0)
+        self.assertEqual(out["problems"], 12)
+        self.assertGreater(out["survived_falsifier"], 0)
+        self.assertLessEqual(out["survived_falsifier"], out["induced"])
+
+
 if __name__ == "__main__":
     unittest.main()
