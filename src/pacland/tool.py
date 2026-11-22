@@ -98,6 +98,20 @@ def _cmd_ingest_library(a: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_ingest_lean(a: argparse.Namespace) -> int:
+    from pacland import ingest
+    out = ingest.ingest_lean_repo(a.path, source=a.source)
+    print(json.dumps(out, indent=2))
+    return 0
+
+
+def _cmd_ingest_csv(a: argparse.Namespace) -> int:
+    from pacland import ingest
+    out = ingest.ingest_csv(a.path, source=a.source, kind=a.kind)
+    print(json.dumps(out, indent=2))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="sextant", description="the Sextant discovery engine")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -142,6 +156,17 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("ingest-library", help="register an external Python library (its CONTRIBUTION data + FALSIFIERS)")
     p.add_argument("path", help="path to the .py library module")
     p.set_defaults(fn=_cmd_ingest_library)
+
+    p = sub.add_parser("ingest-lean", help="ingest an external Lean repo's theorems as tier-1 properties")
+    p.add_argument("path", help="path to the Lean repo / directory of .lean files")
+    p.add_argument("--source", default="", help="the contributor slug (defaults to the directory name)")
+    p.set_defaults(fn=_cmd_ingest_lean)
+
+    p = sub.add_parser("ingest-csv", help="ingest a CSV — each row becomes an entry (default evidence)")
+    p.add_argument("path", help="path to the .csv file")
+    p.add_argument("--source", default="", help="the contributor slug (defaults to the filename)")
+    p.add_argument("--kind", default="evidence", help="the registry kind for each row (default evidence)")
+    p.set_defaults(fn=_cmd_ingest_csv)
 
     a = ap.parse_args(argv)
     return a.fn(a)

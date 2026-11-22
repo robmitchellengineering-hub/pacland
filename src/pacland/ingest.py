@@ -301,3 +301,55 @@ def load_module_from_path(path: str):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)  # type: ignore[union-attr]
     return mod
+
+
+def ingest_lean_repo(path: str, source: str = "") -> dict:
+    """Ingest an EXTERNAL Lean repo's theorems as tier-1 properties (established + machine-checkable).
+
+    Scans every ``.lean`` file under ``path`` for ``theorem``/``lemma`` declarations and registers each
+    as a namespaced tier-1 property. This is the external form of ``ingest_lean_proofs`` — another
+    project's proven lemmas enter the property store the synthesis and bound-derivation draw on.
+    """
+    from pathlib import Path
+    p = Path(path)
+    if not p.exists():
+        return {"lean_theorems": 0}
+    source = source or p.name
+    n = 0
+    for lean in sorted(p.rglob("*.lean")):
+        text = lean.read_text(errors="ignore")
+        for m in re.finditer(r"^\s*(?:theorem|lemma)\s+([a-zA-Z0-9_']+)", text, re.M):
+            name = m.group(1)
+            registry.add(registry.Entry(
+                id=f"ext:{source}:lean-{name}", kind="property",
+                payload={"name": name, "statement": f"theorem {name} (machine-checked)",
+                         "tier": 1, "domain": "mathematics", "source": str(lean)},
+                provenance={"produced_by": "external", "source": source, "method": "lean-repo",
+                            "ts": time.time()}))
+            n += 1
+    return {"lean_theorems": n}
+
+
+def ingest_csv(path: str, source: str = "", kind: str = "evidence") -> dict:
+    """Ingest a CSV: each row becomes a registry entry of ``kind`` (default evidence), columns → payload.
+
+    A project's tabular data (measurements, catalog rows, benchmark results) lands as queryable
+    evidence, namespaced + provenance-tracked like every other external contribution.
+    """
+    import csv
+    from pathlib import Path
+    p = Path(path)
+    if not p.exists():
+        return {"rows": 0}
+    source = source or p.stem
+    n = 0
+    with p.open(newline="", encoding="utf-8") as fh:
+        for i, row in enumerate(csv.DictReader(fh)):
+            payload = {k: v for k, v in row.items() if v not in ("", None)}
+            registry.add(registry.Entry(
+                id=f"ext:{source}:{kind}-{i}", kind=kind,
+                payload=payload,
+                provenance={"produced_by": "external", "source": source, "method": "csv",
+                            "ts": time.time()}))
+            n += 1
+    return {"rows": n}
