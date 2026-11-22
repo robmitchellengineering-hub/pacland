@@ -251,6 +251,21 @@ HYPOTHESES: dict[str, dict] = {
         "attack": "harvest the specific norm-resolvent convergence theorem (or its failure) and the infinite-dimensional Perron-Frobenius / Krein-Rutman theorem, each as a falsifiable bridge.",
         "progress": "the harvest surfaced the lattice FP spectrum (hep-lat/0511053), a Jentzsch spectral gap, and the continuum Gribov horizon; the finite→infinite step is the spectral convergence, the exact place λ_min ≈ 2.4 fails to be a horizon.",
     },
+    "mass-gap-infinite-volume": {
+        "question": "what structure proves the FINITE-VOLUME spectral gap survives the infinite-volume (thermodynamic) limit — i.e. the gap is volume-uniform — now that compactness is known to die in the limit?",
+        "forced": "the finite-volume gap is Jentzsch/Krein-Rutman (positive + compact + irreducible transfer operator, kernel-checked); positivity + irreducibility survive the limit, compactness does not.",
+        "open": "a volume-uniform lower bound on the spectral gap — the finite-volume gap Δ(L) ≥ Δ₀ > 0 uniformly in L.",
+        "candidates": [
+            {"hypothesis": "Fröhlich-Spencer-Simon infrared bound: reflection positivity bounds the two-point function by the partition-function ratio, which carries the gap through the thermodynamic limit",
+             "falsifier": "the infrared bound's rate vanishes as L → ∞ (no uniform gap)"},
+            {"hypothesis": "constructive QFT (multi-scale cluster expansion / Balaban): the scale-by-scale expansion is uniform in the volume",
+             "falsifier": "the scale sum is not uniform in L (blows up at a finite volume)"},
+            {"hypothesis": "FKG / monotonicity: the finite-volume gap is monotone in L and bounded below uniformly",
+             "falsifier": "the gap is not monotone / its lower bound → 0 as L → ∞"},
+        ],
+        "attack": "harvest the FSS infrared bound (the reflection-positivity continuation of the already-kernel-checked chessboard estimate) and the constructive-QFT volume-uniformity, each as a falsifiable bridge.",
+        "progress": "the harvest located the FSS infrared bound (1976, reflection positivity → infrared bound → gap in the thermodynamic limit) as the real method; the chessboard estimate already in MassGapDiamond.lean is its finite-volume seed, so the rung is the volume-uniform extension.",
+    },
 }
 
 
