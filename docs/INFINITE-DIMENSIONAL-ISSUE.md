@@ -109,6 +109,23 @@ sub-lemma, and both of which are the precise place the non-Abelian infrared boun
 So the frontier sharpens again: of the two inputs, **one is already a named theorem (Osterwalder–Seiler),
 and the other — Gaussian domination — is the single open sub-lemma** the mass-gap reduction now rests on.
 
+## The Gaussian domination (the final rung) — its chain and the non-Abelian obstacle
+
+The Gaussian domination is itself a known chain — **reflection positivity → chessboard estimate →
+Gaussian bound** on the partition function in an external field. That chain is proved for scalar and
+Abelian models (the FSS/FILS result). The non-Abelian case is blocked on one specific obstacle:
+
+- **The non-linear gauge symmetry makes Gaussianity rigid.** For a non-Abelian symmetry, the Gaussian
+  domination of the *gauge-invariant* observables (traces of plaquettes, Wilson loops) is constrained —
+  the observable is a trace of a group element, not a linear field, so the reflection-positivity →
+  Gaussian chain does not lift directly from the Abelian (linear) case.
+
+So the single remaining rung decomposes one final time: **prove the reflection-positivity → chessboard →
+Gaussian chain for the non-Abelian trace observables.** That is the exact, named statement the mass-gap
+reduction now rests on — and it is the genuine constructive-QFT frontier, not a compactness or
+renormalisation artefact.
+
+
 
 
 
