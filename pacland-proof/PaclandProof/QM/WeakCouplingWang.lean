@@ -34,7 +34,7 @@ the curvature is negative on a measure-small `bad` set, provided:
 The conclusion (to be proven) is the integrated Bochner bound with a β-uniform constant — the Gaussian
 comparison surviving the non-linearity of the trace. -/
 def WeakCouplingWangCriterion
-    {α : Type*} [Fintype α] [DecidableEq α]
+    {α : Type*}
     (μ : α → ℝ) (L Γ Γ₂ : (α → ℝ) → α → ℝ) (κ c : ℝ) (W : α → ℝ) (bad : α → Prop) : Prop :=
   (∀ x, 0 ≤ μ x) ∧
   (∀ f x, ¬ bad x → κ * Γ f x ≤ Γ₂ f x) ∧
