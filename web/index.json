@@ -74,6 +74,13 @@
    "title": "The Yang\u2013Mills mass gap: a falsifier-first reduction to one open rung"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASTER-RESEARCH.md",
+   "kind": "doc",
+   "path": "docs/MASTER-RESEARCH.md",
+   "summary": "The single source of truth for the mass-gap program. It states the one metric, names the exact assumptions still doing the heavy lifting, separates the four competing tracks, gives each an\u2026",
+   "title": "SEXTANT \u2014 Master Research Document"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MITCHELLS-LAWS.md",
    "kind": "doc",
    "path": "docs/MITCHELLS-LAWS.md",
@@ -81,11 +88,25 @@
    "title": "MITCHELL'S LAWS OF DUALITY COVARIANCE"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/NON-PERTURBATIVE-PLAN.md",
+   "kind": "doc",
+   "path": "docs/NON-PERTURBATIVE-PLAN.md",
+   "summary": "The perturbative side is complete (the scale, the controlled flow, the consistent routes). What remains is the single non-perturbative inequality that turns \"controlled flow\" into \"positive\u2026",
+   "title": "SEXTANT \u2014 Plan for the Non-Perturbative Inequality"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/OPEN-RUNGS.md",
    "kind": "doc",
    "path": "docs/OPEN-RUNGS.md",
    "summary": "Everything formalizable up to the Clay content is now kernel-checked. These two are the open content \u2014 stated precisely here so the boundary is unambiguous. Both are research programs, not\u2026",
    "title": "The two open rungs, stated precisely"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RESEARCH-PLAN.md",
+   "kind": "doc",
+   "path": "docs/RESEARCH-PLAN.md",
+   "summary": "The master document (MASTER-RESEARCH.md) is the why and what. This is the how, in order. Each action is a concrete build with a test and a PR; nothing is prose-only.",
+   "title": "SEXTANT \u2014 Research Plan (ordered actions)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RETRODICTION-TEST.md",
@@ -107,6 +128,13 @@
    "path": "docs/SEXTANT-CROSS-FIELD-PLAN.md",
    "summary": "this revision corrects them: (1) it treated \"an adjunction\" as a discovery, when the adjoints come free for every functor; (2) it implied FDM migration is \"lossless\", when \u03a3 fills gaps and\u2026",
    "title": "SEXTANT \u2014 the cross-field verified-discovery system (revision 2)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-MANUAL.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-MANUAL.md",
+   "summary": "This manual is written so any session (human or harness) can operate SEXTANT correctly. Read it before driving the engine; it is self-contained and gives the exact commands, function\u2026",
+   "title": "SEXTANT \u2014 User Manual"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-ROADMAP.md",

@@ -61,5 +61,62 @@ class TestCapableBaseline(unittest.TestCase):
         self.assertIn("engine_cost_per_found", out)
 
 
+class TestPipelineFilter(unittest.TestCase):
+    def test_filter_rejects_generic_distractors(self):
+        f = b.engine_with_filter(lambda pre: ["a new long-range force", "energy is quantised"])
+        self.assertEqual(f("the blackbody spectrum diverges"), ["energy is quantised"])
+
+    def test_filter_rejects_premise_restatements(self):
+        f = b.engine_with_filter(lambda pre: [pre, "energy is quantised"])
+        self.assertEqual(f("the blackbody spectrum diverges at short wavelength"),
+                         ["energy is quantised"])
+
+    def test_filtered_arm_has_lower_false_positives(self):
+        raw = b.run_arm("llm", b.untyped_generator, "A", b.DATASET)
+        filtered = b.run_arm("full-engine", b.engine_with_filter(b.untyped_generator), "A", b.DATASET)
+        # the filter must not INCREASE false positives, and the untyped distractors are all filtered
+        self.assertLessEqual(filtered.false_positives, raw.false_positives)
+
+    def test_paired_uses_the_same_underlying_draw(self):
+        # a deterministic generator with one right answer + one generic distractor
+        calls = {"n": 0}
+
+        def gen(pre):
+            calls["n"] += 1
+            return ["energy is quantised", "a new long-range force"]
+
+        raw, filt = b.run_paired(gen, {"blackbody": b.DATASET["blackbody"]})
+        # one generation, not two — the paired design removes the non-determinism confound
+        self.assertEqual(calls["n"], 1)
+        self.assertEqual(raw.found, filt.found)          # the filter kept the right answer
+        self.assertLess(filt.false_positives, raw.false_positives)  # and dropped the distractor
+
+
+class TestRealFalsifier(unittest.TestCase):
+    def test_safe_eval_arithmetic(self):
+        self.assertEqual(b._safe_eval("n**2", 3), 9.0)
+        self.assertEqual(b._safe_eval("2*n + 1", 4), 9.0)
+
+    def test_safe_eval_rejects_non_arithmetic(self):
+        self.assertIsNone(b._safe_eval("__import__('os')", 3))
+        self.assertIsNone(b._safe_eval("not a law", 3))
+
+    def test_falsify_law_survives_the_correct_law(self):
+        ok, _ = b.falsify_law("n**2", [(1, 1), (2, 4), (3, 9)])
+        self.assertTrue(ok)
+
+    def test_falsify_law_refutes_the_wrong_law(self):
+        ok, ev = b.falsify_law("n**3", [(1, 1), (2, 4)])
+        self.assertFalse(ok)
+        self.assertIn("f(2)", ev)
+
+    def test_run_induction_measures_induction_and_survival(self):
+        # a fake generator that always proposes n**2 — it induces only the n**2 laws and survives them
+        out = b.run_induction(lambda pre: ["n**2"], n=12, seed=0)
+        self.assertEqual(out["problems"], 12)
+        self.assertGreater(out["survived_falsifier"], 0)
+        self.assertLessEqual(out["survived_falsifier"], out["induced"])
+
+
 if __name__ == "__main__":
     unittest.main()
