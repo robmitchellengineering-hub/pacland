@@ -92,6 +92,12 @@ def main() -> int:
     }
     out_path = ROOT / "web" / "sextant-claims.json"
     out_path.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    # also mirror the PASS-1/PASS-2/withdrawn measurement registry so the page can render it live
+    import shutil
+    reg_src = ROOT / "docs" / "claims.json"
+    if reg_src.exists():
+        shutil.copyfile(reg_src, ROOT / "web" / "sextant-registry.json")
+        print(f"build_sextant_claims: mirrored docs/claims.json -> web/sextant-registry.json")
     print(f"build_sextant_claims: wrote web/sextant-claims.json — {len(claims)} claims, {len(out['cats'])} categories, {len(out['fields'])} fields (from the live CATALOG + prose)")
     return 0
 
