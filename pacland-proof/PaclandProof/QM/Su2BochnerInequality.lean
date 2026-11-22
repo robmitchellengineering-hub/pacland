@@ -32,7 +32,7 @@ def su2_drift (β : ℝ) (θ : ℝ) : ℝ :=
 /-- The derivative of the SU(2) drift: `a'(θ) = −2/sin²θ − 2β·cos θ`. -/
 theorem su2_drift_deriv (β : ℝ) (θ : ℝ) (hθ : Real.sin θ ≠ 0) :
     deriv (su2_drift β) θ = -2 / (Real.sin θ) ^ 2 - 2 * β * Real.cos θ := by
-  dsimp [su2_drift]
+  change deriv (fun x => 2 * (Real.cos x / Real.sin x) - 2 * β * Real.sin x) θ = _
   have hcos : HasDerivAt Real.cos (-Real.sin θ) θ := hasDerivAt_cos θ
   have hsin : HasDerivAt Real.sin (Real.cos θ) θ := hasDerivAt_sin θ
   have hdiv : HasDerivAt (fun x => Real.cos x / Real.sin x)
