@@ -120,7 +120,7 @@ theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
   -- (3) (Lf)' = f''' + a'·f' + a·f''
   have hLf' : deriv (diffusion_generator a f) θ
       = deriv (deriv (deriv f)) θ + deriv a θ * deriv f θ + a θ * deriv (deriv f) θ := by
-    change deriv (fun x => deriv (deriv f) x + a x * deriv f x) θ = _
+    change deriv ((deriv (deriv f)) + a * deriv f) θ = _
     rw [deriv_add (hf1'' θ) ((ha1.mul hf1') θ)]
     rw [deriv_mul (ha1 θ) (hf1' θ)]
     ring
