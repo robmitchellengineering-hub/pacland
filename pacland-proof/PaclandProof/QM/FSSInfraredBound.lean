@@ -109,5 +109,8 @@ theorem contraction_iterate_decay {T : ℝ → ℝ} {Δ : ℝ}
           rw [← Real.exp_add]
           congr 1
           ring
+        _ = Real.exp (-Δ * ((n + 1 : ℕ) : ℝ)) * |x - y| := by
+          congr 2
+          norm_num [Nat.cast_add, Nat.cast_one]
 
 end FSSInfraredBound
