@@ -78,13 +78,16 @@ theorem carre_du_champ_eq_mul (a f g : ℝ → ℝ) (θ : ℝ) (hf : ContDiff �
   ring
 
 /-- **The cross carré du champ is the product of derivatives**: `Γ(f, Lf) = f'·(Lf)'`. -/
-theorem cross_carre_du_champ (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 3 f) :
+theorem cross_carre_du_champ (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 4 f) (ha : ContDiff ℝ 3 a) :
     carreDuChamp (diffusion_generator a) f (diffusion_generator a f) θ
       = deriv f θ * deriv (diffusion_generator a f) θ := by
-  sorry
+  have hg : ContDiff ℝ 2 (diffusion_generator a f) := by
+    dsimp [diffusion_generator]
+    fun_prop
+  exact carre_du_champ_eq_mul a f (diffusion_generator a f) θ (hf.of_le (by norm_num)) hg
 
 /-- **The 1D Bochner formula**: `Γ₂(f) = (f'')² − a'(θ)·(f')²`. -/
-theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 3 f) :
+theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 3 f) (ha : ContDiff ℝ 1 a) :
     Gamma2 (diffusion_generator a) f θ
       = (deriv (deriv f) θ) ^ 2 - deriv a θ * (deriv f θ) ^ 2 := by
   dsimp [Gamma2, diffusion_generator]
