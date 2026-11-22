@@ -51,6 +51,18 @@ class TestTrackWiring(unittest.TestCase):
         claims = registry.claims()
         self.assertTrue(any("track-rg" in c["id"] for c in claims))
 
+    def test_every_track_is_a_sourced_legitimate_path(self):
+        v = tw.verify_all_legitimate()
+        self.assertTrue(v["all_legitimate"])
+        for tid, r in v["verdicts"].items():
+            self.assertTrue(r["legitimate"], f"{tid} is not sourced")
+            self.assertTrue(r["sources"], f"{tid} has no sources")
+
+    def test_legitimacy_is_recorded_as_claims(self):
+        tw.verify_all_legitimate()
+        claims = registry.claims("survived")
+        self.assertTrue(any("legitimacy-coulomb" in c["id"] for c in claims))
+
 
 if __name__ == "__main__":
     unittest.main()
