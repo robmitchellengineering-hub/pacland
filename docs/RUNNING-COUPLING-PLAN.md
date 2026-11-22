@@ -75,6 +75,23 @@ propagator, show `a₂` gives `c`, and bound the spectral gap by the determinant
 a `sorry`-target; the heat-kernel coefficient is the transferable structure (differential geometry →
 running coupling → mass gap).
 
+## The two halves of 3b — and where each stands (2026-11-22)
+
+3b splits into the **scale** and the **gap**, and they are different mechanisms:
+
+| half | mechanism | status |
+|---|---|---|
+| **scale** — the exponent `c` | heat-kernel determinant: `det P = e^{−Tr log P}`, `Tr log P ~ ∫ a₂ log(Λ²/μ²)`, `a₂ ∝ b₀` | **DONE** (`HeatKernel.lean`: `determinant_scale`, `determinant_gives_exponent`, kernel-checked) |
+| **gap** — the minimum eigenvalue `m = inf spec P` | FSS/FILS infrared bound: reflection positivity → **Gaussian domination** → infrared bound `Ŝ(p) ≤ 1/(2J(p))` → spectral gap | **OPEN** — the Gaussian domination for the non-Abelian trace |
+
+The scale half is now proven: the exponent `c` is derived from the beta function through the heat-kernel
+determinant. The gap half is the FSS/FILS chain, and its only unproven link is the **Gaussian domination
+for the non-Abelian trace observable** — the same single rung the whole reduction has been pointing at.
+So the spectral-gap mechanism has been located precisely: reflection positivity (known) → Gaussian
+domination (the rung) → infrared bound → minimum eigenvalue. The two halves of 3b meet at that one
+estimate: it bounds the minimum eigenvalue (the gap) the same place the heat-kernel gave the scale.
+
+
 
 ## The honest boundary
 
