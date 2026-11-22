@@ -1,0 +1,210 @@
+{
+  "format": "claims-registry@1",
+  "note": "Every published number, its status, the script that reproduces it, and the check that could make it wrong. PASS-1 = one run, provisional, never quoted as settled. PASS-2 = reproduced with a different parameterisation. withdrawn = it was published and then failed; kept so the record shows the retraction. | registered = falsifier and script on record, no run yet",
+  "claims": [
+    {
+      "id": "weyl-mode-count",
+      "claim": "mode count = 8 pi V f^3 / 3 c^3 minus a surface term, fitted against exact enumeration",
+      "status": "PASS-2",
+      "script": "scripts/em_capacity.py",
+      "doc": "docs/em-mode-capacity.md",
+      "evidence": [
+        "room 0.004%",
+        "chamber -0.08%",
+        "acoustic 0.02%"
+      ],
+      "falsifier": "an independent mode count disagreeing by more than 1%"
+    },
+    {
+      "id": "degeneracy-fraction",
+      "claim": "a rectangular space has 77-92% exact mode degeneracies",
+      "status": "PASS-2",
+      "script": "scripts/em_capacity.py",
+      "doc": "docs/em-mode-capacity.md",
+      "evidence": [
+        "room 77.6%",
+        "cube 92.1%",
+        "chamber 46.6%"
+      ],
+      "falsifier": "a space whose measured spacing statistic survives without degeneracy collapse"
+    },
+    {
+      "id": "scalar-streams",
+      "claim": "a 3x4x2.5 m room supports 3-4 of 4 streams at 20 dB (perfect-polarisation ceiling)",
+      "status": "PASS-2",
+      "script": "scripts/wifi_5ghz.py",
+      "doc": "docs/wifi-5ghz.md",
+      "evidence": [
+        "Q 100/200/400 identical",
+        "layout sweep 3-4"
+      ],
+      "falsifier": "a measured 4x4 link giving fewer than 2 or more than 4 streams"
+    },
+    {
+      "id": "polarised-streams",
+      "claim": "with polarisation the count is 3-4 of 4 at 20 dB, spread one stream across Q=100..400 and three heights",
+      "status": "PASS-2",
+      "script": "scripts/node_polarisation_converge.py",
+      "doc": "docs/polarisation.md",
+      "evidence": [
+        "27 matrices: Q 100/200/400 x 3 seeds x 3 heights, spread exactly 1 stream",
+        "converged in cap to the full 38,985-mode resonance window"
+      ],
+      "falsifier": "more than one stream of movement across a factor of four in Q or across height"
+    },
+    {
+      "id": "chamber-luf-closed-form",
+      "claim": "LUF = (Q c^3 / 8 pi V)^(1/3)",
+      "status": "PASS-2",
+      "script": "scripts/chamber.py",
+      "doc": "docs/chamber-analysis.md",
+      "evidence": [
+        "matches bisection to 0.00% over 12 V/Q combinations",
+        "Q x4 -> cube root of 4"
+      ],
+      "falsifier": "a chamber whose measured uniformity onset disagrees with the formula"
+    },
+    {
+      "id": "chamber-luf-vs-rule-of-thumb",
+      "claim": "the 3 x fundamental rule of thumb is optimistic by 1.2-2.0x depending on Q",
+      "status": "PASS-1",
+      "script": "scripts/chamber.py",
+      "doc": "docs/chamber-analysis.md",
+      "evidence": [
+        "computed, never measured in a chamber"
+      ],
+      "falsifier": "a measured chamber whose field becomes uniform at or below the rule of thumb"
+    },
+    {
+      "id": "thermal-ceiling",
+      "claim": "a two-state ambient link needs eta^2 m = 4[Q^-1(eps)]^2 samples (constant corrected from 2)",
+      "status": "PASS-2",
+      "script": "scripts/thermal_ceiling_check.py",
+      "doc": "docs/thermal-noise-bound.md",
+      "evidence": [
+        "Monte Carlo of the stated receiver lands within 1.11x of target on four cases",
+        "derivation, with the binary error as Q(sqrt(I)/2)"
+      ],
+      "falsifier": "a receiver achieving the target BER with fewer than 4[Q^-1]^2/eta^2 samples"
+    },
+    {
+      "id": "identifiability-modes",
+      "claim": "16-17 of 40 modes are usable at -60 dB with three probes, independent of Q, and the count saturates while the mode count grows 245x",
+      "status": "PASS-2",
+      "script": "scripts/em_capacity.py",
+      "doc": "docs/em-mode-capacity.md",
+      "evidence": [
+        "Q 25/50/100 give exactly the same count in four spaces",
+        "modes 147->36096 while usable 11->17"
+      ],
+      "falsifier": "a probe count or noise floor that moves the usable count by more than a factor of two"
+    },
+    {
+      "id": "wifi-streams-3-of-4",
+      "claim": "a 4x4 5 GHz link carries 3 of 4 streams at 20 dB, matching practice",
+      "status": "withdrawn",
+      "script": "scripts/wifi_5ghz.py",
+      "doc": "docs/wifi-5ghz.md",
+      "reason": "the number was a property of the receive layout, not the room; superseded by the 3-4 range in scalar-streams"
+    },
+    {
+      "id": "h12-degree2-yield",
+      "claim": "degree 2 instanton truncation fixes the h12>=5 sampler yield",
+      "status": "withdrawn",
+      "script": "scripts/node_b2_applied.py",
+      "doc": "docs/plan-exact-terms.md",
+      "reason": "confounded: maximum_degree=0 silently disables mirror instanton corrections, so the comparison was corrections off vs on"
+    },
+    {
+      "id": "h12-solve-fails",
+      "claim": "the ISD solve, not the sampler, is the h12>=5 wall",
+      "status": "withdrawn",
+      "script": "scripts/node_yield.py",
+      "doc": "docs/plan-exact-terms.md",
+      "reason": "measured by a criterion whose two residual fields disagree by 75 orders of magnitude at the same point"
+    },
+    {
+      "id": "execution-gate",
+      "claim": "a command reaches the operator only if local, ssh and mesh were tried and none worked",
+      "status": "PASS-2",
+      "script": "tests/test_execution_gate.py",
+      "doc": "docs/execution-gate.md",
+      "evidence": [
+        "the 2026-10-31 incident raises",
+        "claiming a run with no attempt raises",
+        "a working mesh path + asked_operator raises"
+      ],
+      "falsifier": "a session that asks the operator to run something while a path exists"
+    },
+    {
+      "id": "lithium-mass-ceiling",
+      "claim": "lithium mass balance, not cost, caps Li-ion deployment near 3.2 TWh/yr (0.41 kg LCE/kWh at 1.3 Mt LCE world supply)",
+      "status": "PASS-1",
+      "script": "scripts/energy_lithium_ceiling.py",
+      "doc": "docs/energy-conjectures.md",
+      "evidence": [
+        "computed from USGS 2025 (1.3 Mt LCE) and 5.32 kg LCE per kg Li \u2014 one derivation, not two independent lines"
+      ],
+      "falsifier": "> 5 TWh/yr of Li-ion from < 1.5 Mt LCE primary supply, with no more than a 2x lithium price rise"
+    },
+    {
+      "id": "li-s-electrolyte-ceiling",
+      "claim": "Li-S specific energy is set by the electrolyte/sulfur ratio: 680 Wh/kg is the asymptote at r=3 uL/mg, and <= 542 Wh/kg is reachable at q <= 12",
+      "status": "PASS-1",
+      "script": "scripts/energy_li_s_ceiling.py",
+      "doc": "docs/energy-conjectures.md",
+      "evidence": [
+        "computed from published Li2S constants (2.15 V, 1672 mAh/g) and a materials budget \u2014 one derivation",
+        "the draft claim said 680 was reachable; this run showed it is the q->infinity asymptote and the finite ceiling is 542"
+      ],
+      "falsifier": "any full cell (>= 1 Ah, >= 50 cycles, total mass) measured above 680 Wh/kg at r >= 3 uL/mg"
+    },
+    {
+      "id": "fusion-confinement-exponent",
+      "claim": "the 0.93 current exponent of IPB98(y,2) is between-machine collinearity; the within-machine exponent is 0.55 +/- 0.12, so ITER needs H98 ~ 1.15",
+      "status": "registered",
+      "script": "scripts/energy_fusion_exponent.py",
+      "doc": "docs/energy-conjectures.md",
+      "falsifier": "a within-machine exponent >= 0.85 (95% CI), or SPARC's first H-mode tau_E within +/-10% of the IPB98 line at 8.7 MA / 12.2 T"
+    },
+    {
+      "id": "climate-drift-ecs-transfer",
+      "claim": "conservation drift transfers linearly into ECS (slope 1.0 +/- 0.2; 0.76 K per W/m2), so abrupt-4xCO2 ECS needs a one-line correction",
+      "status": "registered",
+      "script": "scripts/energy_drift_ecs.py",
+      "doc": "docs/energy-conjectures.md",
+      "falsifier": "a per-model abrupt-4xCO2 fit showing the induced dECS is not linear in the drift residual eps, or a transfer coefficient outside [0.4, 1.2] K per W/m2"
+    },
+    {
+      "id": "verification-joule-floor",
+      "claim": "verification has a 1-3 uJ floor per check and a crossover at 10^4-10^6 ops per item, above which witness checking beats re-execution",
+      "status": "registered",
+      "script": "scripts/energy_verify_joules.py",
+      "doc": "docs/energy-conjectures.md",
+      "falsifier": "a measured floor outside 0.3-10 uJ per check, or a crossover outside 10^3-10^7 ops per item"
+    },
+    {
+      "id": "tadpole-count-b3-8",
+      "claim": "the tadpole closed form count(N) = [x^N] P(x)^(b3/2) holds at b3 = 8: 43,046,720 primitive orbits, every class matching full enumeration",
+      "status": "PASS-2",
+      "script": "scripts/tadpole_distribution.py",
+      "doc": "docs/deterministic-in-use.md",
+      "evidence": [
+        "full enumeration at b3 = 8 through the numpy pipeline (tadpole_distribution.verify): matches true, 43,046,720 orbits = total_predicted, 194.2 s (job 2026-11-03T1037Z-pacland-rog-b3-8-exact-count)",
+        "independent pure-Python nested-loop implementation (no numpy, no polynomial): 43,046,720 orbits, 17 classes, exact match on every class, 69 s (job 2026-11-03T1102Z-pacland-rog-independent-count-b3-8)"
+      ],
+      "falsifier": "a third implementation disagreeing at any rung, or a re-run on different hardware producing a different total; the b3 <= 6 agreement is guarded by tests/test_tadpole_independent.py"
+    },
+    {
+      "id": "ecs-per-forcing-slope",
+      "claim": "across 53 CMIP6 models the ECS-per-forcing slope is -0.547 K per W/m2 (95% CI [-1.274, +0.326], R2 0.04) \u2014 forcing does not predict ECS across models, so the 0.76 K per W/m2 of the draft energy claim is a ratio of assessed values, not a slope",
+      "status": "PASS-1",
+      "script": "scripts/energy_drift_ecs.py",
+      "doc": "docs/energy-conjectures.md",
+      "evidence": [
+        "OLS + 2000-draw bootstrap on the Zelinka et al. 2020 table (53 models, ECS and ERF2x), computed 2026-11-03 \u2014 one dataset, one method"
+      ],
+      "falsifier": "a different ECS/ERF2x compilation, or a weighting of the same one, giving a slope above +0.3 with a CI excluding zero"
+    }
+  ]
+}

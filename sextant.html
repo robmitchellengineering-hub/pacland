@@ -277,15 +277,18 @@ pre code { background: none; padding: 0; }
     </div>
   </section>
 
+  <section id="evidence">
+    <p class="eyebrow">The evidence</p>
+    <h2>What the falsifiers have actually returned</h2>
+    <p>Alongside the theorem catalogue, the machine runs empirical falsifiers and records the outcome. <strong>PASS-2</strong> means reproduced with a different parameterisation; <strong>PASS-1</strong> means one run, provisional and never a result.</p>
+    <div class="callout" id="evidence-list"></div>
+  </section>
+
   <section id="retractions">
     <p class="eyebrow">Honesty</p>
     <h2>What it got wrong — and retracted</h2>
     <p>A scientific instrument is only as trustworthy as its retractions. Three claims were published, then failed, and are kept in the registry with the reason:</p>
-    <div class="callout does-not">
-      <p><strong>Retracted:</strong> "a 4×4 5 GHz link carries 3 of 4 streams at 20 dB, matching practice" — the number was a property of the receive layout, not the room.</p>
-      <p><strong>Retracted:</strong> "degree-2 instanton truncation fixes the h12≥5 sampler yield" — confounded: <code>maximum_degree=0</code> silently disabled the mirror-instanton corrections.</p>
-      <p><strong>Retracted:</strong> "the ISD solve is the h12≥5 wall" — the criterion's two residual fields disagreed by 75 orders of magnitude at the same point.</p>
-    </div>
+    <div class="callout does-not" id="retractions-list"></div>
     <p class="small">These remain in the registry as evidence of the retraction, not of the claim. That is the point: a machine that cannot admit a wrong result cannot be trusted with a right one.</p>
   </section>
 
@@ -494,6 +497,26 @@ async function loadRegistry() {
   renderFields();
 }
 loadRegistry();
+
+async function loadMeasurementRegistry() {
+  try {
+    const r = await fetch('sextant-registry.json', { cache: 'no-store' });
+    if (!r.ok) return;
+    const d = await r.json();
+    const claims = d.claims || [];
+    const withdrawn = claims.filter(function (c) { return c.status === 'withdrawn'; });
+    const live = claims.filter(function (c) { return c.status !== 'withdrawn'; });
+    const ret = document.getElementById('retractions-list');
+    if (ret) ret.innerHTML = withdrawn.map(function (c) { return '<p><strong>Retracted:</strong> \"' + c.claim + '\" — ' + (c.reason || 'no reason recorded') + '.</p>'; }).join('');
+    const ev = document.getElementById('evidence-list');
+    if (ev) ev.innerHTML = live.map(function (c) {
+      const cls = c.status === 'PASS-2' ? 'chip-kernel' : 'chip-num';
+      const evi = Array.isArray(c.evidence) ? c.evidence.join(' · ') : (c.evidence || '');
+      return '<p><span class="chip ' + cls + '">' + c.status + '</span> <strong>' + c.claim + '</strong>' + (evi ? ' — ' + evi : '') + '.</p>';
+    }).join('');
+  } catch (e) {}
+}
+loadMeasurementRegistry();
 </script>
 <script>
 // honest, dynamic counts — never a hard-coded stale number in the page copy
