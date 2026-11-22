@@ -31,7 +31,7 @@ theorem carre_du_champ_is_squared_deriv (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
   dsimp [carreDuChamp, diffusion_generator]
   have hfun : deriv (f * f) = fun y => 2 * f y * deriv f y := by
     funext y
-    rw [deriv_mul (hf.differentiable.differentiableAt y) (hf.differentiable.differentiableAt y)]
+    rw [deriv_mul (hf.differentiableAt y) (hf.differentiableAt y)]
     ring
   have h1 : deriv (fun t => f t * f t) θ = 2 * f θ * deriv f θ := by
     change deriv (f * f) θ = 2 * f θ * deriv f θ
