@@ -109,6 +109,13 @@
    "title": "SEXTANT \u2014 the cross-field verified-discovery system (revision 2)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-MANUAL.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-MANUAL.md",
+   "summary": "This manual is written so any session (human or harness) can operate SEXTANT correctly. Read it before driving the engine; it is self-contained and gives the exact commands, function\u2026",
+   "title": "SEXTANT \u2014 User Manual"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-ROADMAP.md",
    "kind": "doc",
    "path": "docs/SEXTANT-ROADMAP.md",
