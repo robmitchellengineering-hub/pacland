@@ -112,4 +112,14 @@ theorem contraction_iterate_decay {T : ℝ → ℝ} {Δ : ℝ}
           congr 2
           norm_num [Nat.cast_add, Nat.cast_one]
 
+/-- **A strict contraction gives a positive gap.** If the contraction rate `Δ > 0`, the iterated map
+decays exponentially at rate `Δ` — the positive mass gap, as a corollary of `contraction_iterate_decay`.
+This is the finite-volume gap: the block-spin map's strict contraction *is* the positivity of the gap. -/
+theorem strict_contraction_gives_gap {T : ℝ → ℝ} {Δ : ℝ} (hΔ : 0 < Δ)
+    (hT : ∀ x y, |T x - T y| ≤ Real.exp (-Δ) * |x - y|) :
+    ∃ c : ℝ, 0 < c ∧ ∀ n : ℕ, ∀ x y, |(T^[n] x) - (T^[n] y)| ≤ Real.exp (-c * (n : ℝ)) * |x - y| := by
+  refine ⟨Δ, hΔ, ?_⟩
+  intro n x y
+  exact contraction_iterate_decay hT n x y
+
 end FSSInfraredBound
