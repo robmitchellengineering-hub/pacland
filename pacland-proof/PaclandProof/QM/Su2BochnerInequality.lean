@@ -33,8 +33,8 @@ def su2_drift (β : ℝ) (θ : ℝ) : ℝ :=
 theorem su2_drift_deriv (β : ℝ) (θ : ℝ) (hθ : Real.sin θ ≠ 0) :
     deriv (su2_drift β) θ = -2 / (Real.sin θ) ^ 2 - 2 * β * Real.cos θ := by
   change deriv (fun x => 2 * (Real.cos x / Real.sin x) - 2 * β * Real.sin x) θ = _
-  have hcos : HasDerivAt Real.cos (-Real.sin θ) θ := hasDerivAt_cos θ
-  have hsin : HasDerivAt Real.sin (Real.cos θ) θ := hasDerivAt_sin θ
+  have hcos : HasDerivAt Real.cos (-Real.sin θ) θ := Real.hasDerivAt_cos θ
+  have hsin : HasDerivAt Real.sin (Real.cos θ) θ := Real.hasDerivAt_sin θ
   have hdiv : HasDerivAt (fun x => Real.cos x / Real.sin x)
       ((-Real.sin θ * Real.sin θ - Real.cos θ * Real.cos θ) / (Real.sin θ) ^ 2) θ :=
     hcos.div hsin hθ
@@ -48,6 +48,7 @@ theorem su2_drift_deriv (β : ℝ) (θ : ℝ) (hθ : Real.sin θ ≠ 0) :
     hconst.sub hsin2
   rw [hsub.deriv]
   field_simp [hθ]
+  rw [Real.sin_sq_add_cos_sq]
   ring
 
 /-- **The SU(2) Bochner inequality**: `Γ₂(f) ≥ (1/4 + 2β·cos θ)·Γ(f)` on the S³ coordinate chart. -/
