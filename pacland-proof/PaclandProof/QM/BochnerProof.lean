@@ -101,6 +101,7 @@ theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
   -- (1) ((f')²)' = 2·f'·f''
   have hderiv_sq : deriv (fun y => (deriv f y) ^ 2) θ = 2 * deriv f θ * deriv (deriv f) θ := by
     rw [show (fun y => (deriv f y) ^ 2) = (fun y => (deriv f y) * (deriv f y)) by funext y; ring]
+    change deriv ((deriv f) * (deriv f)) θ = _
     rw [deriv_mul (hf1' θ) (hf1' θ)]
     ring
   -- (2) ((f')²)'' = 2·(f'')² + 2·f'·f'''
