@@ -1,0 +1,44 @@
+{
+  "source": "hydrogeology-project",
+  "description": "groundwater flow structures + the Darcy law, for cross-field synthesis against the heat equation",
+  "domain": "geology",
+  "structures": [
+    {
+      "id": "aquifer",
+      "type": "conservation",
+      "definition": "a porous reservoir whose water mass is conserved (recharge = discharge + storage change)",
+      "domain": "geology"
+    },
+    {
+      "id": "darcy-flow",
+      "type": "parabolic-pde",
+      "definition": "groundwater head h obeys S ∂h/∂t = ∇·(K ∇h) (the confined-aquifer flow equation)",
+      "domain": "geology"
+    }
+  ],
+  "properties": [
+    {
+      "id": "darcy-law",
+      "statement": "specific discharge q is proportional to the hydraulic gradient: q = −K ∇h",
+      "tier": 1,
+      "domain": "geology"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "pumping-test",
+      "test": "tests/test_darcy_transient.py",
+      "dataset": "Theis 1935 pumping-test solution",
+      "what": "drawdown follows the Theis curve (diffusive scaling of head in time)",
+      "domain": "geology"
+    }
+  ],
+  "mappings": [
+    {
+      "from": "darcy-flow",
+      "to": "heat-equation",
+      "mapping": "the confined-aquifer flow equation S ∂h/∂t = ∇·(K ∇h) is the heat equation with diffusivity K/S",
+      "kind_of_yield": "proof-technique"
+    }
+  ]
+}

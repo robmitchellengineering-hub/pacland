@@ -159,3 +159,97 @@ def ingest_all() -> dict[str, int]:
         "structure_groups": structure_build.build_structures(),
         "economics_unifications": len(registry.query("mapping", lambda d: True)),
     }
+
+
+# ------------------------------------------------------------------------------------------ #
+# External data integration — other people's data and libraries land in the SAME registry.
+# ------------------------------------------------------------------------------------------ #
+
+def ingest_external(contribution: dict) -> dict[str, int]:
+    """Ingest an EXTERNAL contribution (another person's domain data) into the registry.
+
+    The contribution is a plain dict in the documented shape::
+
+        {
+          "source": "a-slug-identifying-the-project-or-person",
+          "description": "one line on what this is",
+          "domain": "geology",
+          "structures": [{"id": "aquifer", "type": "conservation", "definition": "…",
+                          "domain": "geology"}],
+          "properties": [{"id": "darcy-law", "statement": "…", "tier": 1, "domain": "geology"}],
+          "evidence":   [{"id": "well-log", "test": "…", "dataset": "…", "domain": "geology"}],
+          "mappings":   [{"from": "aquifer", "to": "heat-equation", "mapping": "…",
+                          "kind_of_yield": "proof-technique"}],
+        }
+
+    Every entry is namespaced ``ext:<source>:<id>`` so an external contribution can never collide with
+    or overwrite the internal catalog, and each is tagged ``produced_by: "external"`` + its source, so
+    the scientific record stays auditable. A mapping's ``from``/``to`` may point at the contribution's
+    own structures (auto-namespaced) or at an existing internal structure id (left as-is), so external
+    data can be linked to the library the engine already knows. Returns per-kind counts.
+    """
+    source = str(contribution.get("source", "")).strip() or "external"
+    description = str(contribution.get("description", ""))
+    domain = str(contribution.get("domain", ""))
+    prov = {"produced_by": "external", "source": source, "method": "contribution",
+            "description": description, "ts": time.time()}
+
+    n = {"structures": 0, "properties": 0, "evidence": 0, "mappings": 0}
+
+    def _ext(entry_id: str) -> str:
+        return f"ext:{source}:{entry_id}"
+
+    own_ids: set[str] = set()
+    for s in contribution.get("structures", []):
+        sid = str(s.get("id", ""))
+        if not sid:
+            continue
+        own_ids.add(sid)
+        registry.add(registry.Entry(
+            id=_ext(sid), kind="structure",
+            payload={"definition": s.get("definition", ""), "type": s.get("type", ""),
+                     "domain": s.get("domain", domain), "tier": s.get("tier", 3),
+                     "assumptions": s.get("assumptions", []), "reproduces": s.get("reproduces", "")},
+            provenance=prov))
+        n["structures"] += 1
+
+    for p in contribution.get("properties", []):
+        pid = str(p.get("id", ""))
+        if not pid:
+            continue
+        registry.add(registry.Entry(
+            id=_ext(pid), kind="property",
+            payload={"name": pid, "statement": p.get("statement", ""), "tier": p.get("tier", 3),
+                     "domain": p.get("domain", domain), "falsifier": p.get("falsifier", "")},
+            provenance=prov))
+        n["properties"] += 1
+
+    for e in contribution.get("evidence", []):
+        eid = str(e.get("id", ""))
+        if not eid:
+            continue
+        registry.add(registry.Entry(
+            id=_ext(eid), kind="evidence",
+            payload={"name": eid, "test": e.get("test", ""), "dataset": e.get("dataset", ""),
+                     "what": e.get("what", ""), "tier": 4, "domain": e.get("domain", domain)},
+            provenance=prov))
+        n["evidence"] += 1
+
+    def _resolve(ref: str) -> str:
+        """Namespace a mapping endpoint if it is one of the contribution's OWN structures."""
+        return _ext(ref) if ref in own_ids else ref
+
+    for m in contribution.get("mappings", []):
+        frm = str(m.get("from", ""))
+        to = str(m.get("to", ""))
+        if not frm or not to:
+            continue
+        registry.add(registry.Entry(
+            id=_ext(f"mapping-{frm}-{to}"), kind="mapping",
+            payload={"from": _resolve(frm), "to": _resolve(to),
+                     "mapping": m.get("mapping", ""),
+                     "kind_of_yield": m.get("kind_of_yield", "connection")},
+            provenance=prov))
+        n["mappings"] += 1
+
+    return n

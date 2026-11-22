@@ -77,6 +77,19 @@ def _cmd_run(a: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_ingest_external(a: argparse.Namespace) -> int:
+    from pacland import ingest
+    from pathlib import Path
+    p = Path(a.file)
+    if not p.exists():
+        print(f"file not found: {p}", file=sys.stderr)
+        return 1
+    data = json.loads(p.read_text(encoding="utf-8"))
+    counts = ingest.ingest_external(data)
+    print(json.dumps({"source": data.get("source"), **counts}, indent=2))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="sextant", description="the Sextant discovery engine")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -113,6 +126,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--rounds", type=int, default=1)
     p.add_argument("--budget", type=int, default=4)
     p.set_defaults(fn=_cmd_run)
+
+    p = sub.add_parser("ingest-external", help="ingest another project's data (structures/properties/evidence/mappings) from a JSON file")
+    p.add_argument("file", help="path to the contribution JSON (see examples/external-contribution.json)")
+    p.set_defaults(fn=_cmd_ingest_external)
 
     a = ap.parse_args(argv)
     return a.fn(a)
