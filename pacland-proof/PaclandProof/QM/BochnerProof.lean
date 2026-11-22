@@ -68,12 +68,11 @@ theorem carre_du_champ_eq_mul (a f g : ℝ → ℝ) (θ : ℝ) (hf : ContDiff �
       = deriv (deriv f) θ * g θ + 2 * (deriv f θ * deriv g θ) + f θ * deriv (deriv g) θ := by
     change deriv (deriv (f * g)) θ = _
     rw [hderiv_fg]
-    rw [deriv_add]
-    · rw [deriv_mul (hf1' θ) (hg1 θ)]
-      rw [deriv_mul (hf1 θ) (hg1' θ)]
-      ring
-    · exact (hf1'.mul hg1) θ
-    · exact (hf1.mul hg1') θ
+    change deriv ((deriv f) * g + f * deriv g) θ = _
+    rw [deriv_add ((hf1'.mul hg1) θ) ((hf1.mul hg1') θ)]
+    rw [deriv_mul (hf1' θ) (hg1 θ)]
+    rw [deriv_mul (hf1 θ) (hg1' θ)]
+    ring
   rw [hfg, hfg2]
   ring
 
