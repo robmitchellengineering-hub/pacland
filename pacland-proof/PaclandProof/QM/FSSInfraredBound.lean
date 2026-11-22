@@ -97,15 +97,13 @@ theorem contraction_iterate_decay {T : ℝ → ℝ} {Δ : ℝ}
       simp
   | succ n ih =>
       intro x y
-      have hstep : |(T ∘ (T^[n])) x - (T ∘ (T^[n])) y| ≤ Real.exp (-Δ) * |(T^[n]) x - (T^[n]) y| :=
-        hT ((T^[n]) x) ((T^[n]) y)
-      have hind : |(T^[n]) x - (T^[n]) y| ≤ Real.exp (-Δ * (n : ℝ)) * |x - y| := ih x y
+      rw [Function.iterate_succ]
+      have hstep : |T x - T y| ≤ Real.exp (-Δ) * |x - y| := hT x y
+      have hind : |(T^[n]) (T x) - (T^[n]) (T y)| ≤ Real.exp (-Δ * (n : ℝ)) * |T x - T y| := ih (T x) (T y)
       calc
-        |(T^[n+1]) x - (T^[n+1]) y| = |(T ∘ (T^[n])) x - (T ∘ (T^[n])) y| := by
-          rw [Function.iterate_succ]
-        _ ≤ Real.exp (-Δ) * |(T^[n]) x - (T^[n]) y| := hstep
-        _ ≤ Real.exp (-Δ) * (Real.exp (-Δ * (n : ℝ)) * |x - y|) := by
-          exact mul_le_mul_of_nonneg_left hind (le_of_lt (Real.exp_pos (-Δ)))
+        |(T^[n]) (T x) - (T^[n]) (T y)| ≤ Real.exp (-Δ * (n : ℝ)) * |T x - T y| := hind
+        _ ≤ Real.exp (-Δ * (n : ℝ)) * (Real.exp (-Δ) * |x - y|) := by
+          exact mul_le_mul_of_nonneg_left hstep (le_of_lt (Real.exp_pos (-Δ * (n : ℝ))))
         _ = Real.exp (-Δ * ((n : ℝ) + 1)) * |x - y| := by
           rw [← mul_assoc, ← Real.exp_add]
           congr 1
