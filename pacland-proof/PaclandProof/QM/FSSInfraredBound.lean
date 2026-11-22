@@ -101,7 +101,8 @@ theorem contraction_iterate_decay {T : ℝ → ℝ} {Δ : ℝ}
         hT ((T^[n]) x) ((T^[n]) y)
       have hind : |(T^[n]) x - (T^[n]) y| ≤ Real.exp (-Δ * (n : ℝ)) * |x - y| := ih x y
       calc
-        |(T^[n+1]) x - (T^[n+1]) y| = |(T ∘ (T^[n])) x - (T ∘ (T^[n])) y| := by rfl
+        |(T^[n+1]) x - (T^[n+1]) y| = |(T ∘ (T^[n])) x - (T ∘ (T^[n])) y| := by
+          rw [Function.iterate_succ]
         _ ≤ Real.exp (-Δ) * |(T^[n]) x - (T^[n]) y| := hstep
         _ ≤ Real.exp (-Δ) * (Real.exp (-Δ * (n : ℝ)) * |x - y|) := by
           exact mul_le_mul_of_nonneg_left hind (le_of_lt (Real.exp_pos (-Δ)))
