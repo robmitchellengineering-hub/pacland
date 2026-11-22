@@ -32,3 +32,19 @@ Harvest the specific **norm-resolvent convergence** theorem (or its failure) for
 and the transfer operator, and the **infinite-dimensional Perron–Frobenius/Krein–Rutman** theorem that
 would replace the finite matrix inequality. Each is a falsifiable hypothesis: if the operator's
 `a → 0` limit diverges or fails positivity/compactness, that is the honest refutation of that bridge.
+
+## Status of the two falsifiable questions (2026-11-22)
+
+1. **FP operator — norm-resolvent convergence: REFUTED.** The lattice data is decisive: `λ_min(a) ≈ 2.4`
+   is flat while `λ_min/a² → ∞` as `a → 0` (the UV cutoff). So the FP spectrum has **no finite continuum
+   limit** — the norm-resolvent bridge fails for the FP operator, exactly as the finite-N run showed.
+2. **Transfer operator — compactness + positivity (Jentzsch/Krein–Rutman): OPEN.** The temporal transfer
+   operator is the compact, positivity-improving candidate, so the gap could come from Jentzsch. The
+   falsifiable question is whether the *continuum* transfer operator is compact and positivity-improving
+   — this is the actual infinite-dimensional object, and it is not yet established (the finite matrix
+   does not answer it).
+
+So the frontier has moved from "the FP horizon" (refuted as a lattice artifact) to **"is the continuum
+transfer operator a positive compact irreducible operator"** — the one question whose yes would deliver
+the gap via Jentzsch/Krein–Rutman.
+
