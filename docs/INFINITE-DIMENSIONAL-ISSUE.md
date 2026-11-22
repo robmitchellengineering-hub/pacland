@@ -125,6 +125,25 @@ Gaussian chain for the non-Abelian trace observables.** That is the exact, named
 reduction now rests on — and it is the genuine constructive-QFT frontier, not a compactness or
 renormalisation artefact.
 
+## The three candidate structures that could close the final rung (2026-11-22)
+
+The harvest found no established closing result — the non-Abelian Gaussian domination is genuinely
+open. The three structures that *could* carry the Gaussian comparison past the non-linearity of the
+trace are:
+
+1. **Heat-kernel / Gaussian approximation of the group** — at weak coupling the SU(N) Haar measure
+   becomes Gaussian on the Lie algebra, so the domination might hold via the heat-kernel action. The
+   hard part is keeping it **volume-uniform** (all volumes), not just weak-coupling.
+2. **Character expansion (Peter–Weyl)** — `Tr U_p = Σ_r χ_r(U_p)`; the trace is a sum of characters,
+   and a Gaussian domination per character might compose. The hard part is the infinite character sum.
+3. **Non-linear sigma-model analogy** — YM as a sigma model on the group manifold, where the sigma-model
+   Gaussian domination is the closer-known case.
+
+Each is a falsifiable direction; none is established. This is the honest bottom: the final rung is open,
+and these three are the specific structures a proof must engage — not the compactness or renormalisation
+artefacts already refuted.
+
+
 
 
 
