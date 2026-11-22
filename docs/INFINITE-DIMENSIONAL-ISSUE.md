@@ -48,3 +48,26 @@ So the frontier has moved from "the FP horizon" (refuted as a lattice artifact) 
 transfer operator a positive compact irreducible operator"** — the one question whose yes would deliver
 the gap via Jentzsch/Krein–Rutman.
 
+## Answer to question 2 (2026-11-22) — the compactness is the exact obstruction
+
+The temporal transfer operator is `T = e^{-aH}` (the exponential of the lattice Hamiltonian). Its three
+Krein–Rutman hypotheses split:
+
+| hypothesis | finite volume | infinite volume (the continuum) |
+|---|---|---|
+| **positivity** (`T = T* ≥ 0`) | YES — `H` self-adjoint, bounded below, reflection positivity | YES — unchanged |
+| **irreducibility** (no invariant subspace, unique vacuum) | YES — gauge-invariant sector, ergodicity | YES — unchanged |
+| **compactness** (`e^{-aH}` compact ⟺ `H` has compact resolvent / discrete spectrum) | **YES** — finite-volume `H` has discrete spectrum `E_n → ∞` | **NO** — the infinite-volume `H` has a **continuous** spectrum (multi-particle states) |
+
+So Jentzsch/Krein–Rutman **delivers the gap on finite volume** (that is the kernel-checked finite
+matrix result) — but the **compactness is the exact hypothesis that dies in the infinite-volume
+limit**. The continuum transfer operator is positive and irreducible but **not compact**, so the
+Jentzsch bridge does not extend to it directly.
+
+**The honest consequence:** the infinite-dimensional gap is *not* a Jentzsch corollary. It requires a
+separate argument that the finite-volume gap survives the thermodynamic limit — which is precisely the
+constructive-QFT / spectral-gap-in-the-limit rung, not the compact-operator rung. This is the sharpest
+statement yet of where the mass-gap problem lives: **the finite-volume gap is Jentzsch; the infinite-
+volume gap is the failure of compactness, and replacing it is the open mathematics.**
+
+
