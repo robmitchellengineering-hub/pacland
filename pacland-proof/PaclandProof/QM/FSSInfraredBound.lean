@@ -84,4 +84,30 @@ theorem running_coupling_radius_positive {A c β : ℝ} (hA : 0 < A) :
     0 < A * Real.exp (-c * β) := by
   exact mul_pos hA (Real.exp_pos _)
 
+/-- **The contraction rate is the gap.** Iterating a map that contracts at rate `e^{−Δ}` gives
+exponential decay at rate `Δ·n` — the contraction coefficient and the mass gap are the same number.
+This is the non-trivial transport that makes `rgContractionMassGap` about a *gap*, not a metaphor. -/
+theorem contraction_iterate_decay {T : ℝ → ℝ} {Δ : ℝ}
+    (hT : ∀ x y, |T x - T y| ≤ Real.exp (-Δ) * |x - y|) :
+    ∀ n : ℕ, ∀ x y, |(T^[n] x) - (T^[n] y)| ≤ Real.exp (-Δ * (n : ℝ)) * |x - y| := by
+  intro n
+  induction n with
+  | zero =>
+      intro x y
+      simp
+  | succ n ih =>
+      intro x y
+      have hstep : |(T ∘ (T^[n])) x - (T ∘ (T^[n])) y| ≤ Real.exp (-Δ) * |(T^[n]) x - (T^[n]) y| :=
+        hT ((T^[n]) x) ((T^[n]) y)
+      have hind : |(T^[n]) x - (T^[n]) y| ≤ Real.exp (-Δ * (n : ℝ)) * |x - y| := ih x y
+      calc
+        |(T^[n+1]) x - (T^[n+1]) y| = |(T ∘ (T^[n])) x - (T ∘ (T^[n])) y| := by rfl
+        _ ≤ Real.exp (-Δ) * |(T^[n]) x - (T^[n]) y| := hstep
+        _ ≤ Real.exp (-Δ) * (Real.exp (-Δ * (n : ℝ)) * |x - y|) := by
+          exact mul_le_mul_of_nonneg_left hind (le_of_lt (Real.exp_pos (-Δ)))
+        _ = Real.exp (-Δ * ((n : ℝ) + 1)) * |x - y| := by
+          rw [← Real.exp_add]
+          congr 1
+          ring
+
 end FSSInfraredBound
