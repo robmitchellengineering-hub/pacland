@@ -3,139 +3,274 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SEXTANT — the proof engine (ask it what's provable)</title>
+<title>SEXTANT — research &amp; verification environment</title>
 <style>
-  :root { --ink:#1a1f2e; --muted:#5a6072; --accent:#142a5e; --line:#e3e6ee; --bg:#fbfbfd; --teal:#1a9d8f; --gold:#b7791f; }
-  * { box-sizing:border-box; }
-  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; }
-  .wrap { max-width:860px; margin:0 auto; padding:2rem 1.5rem 4rem; }
-  .kicker { margin:0; font:600 .72rem monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
-  h1 { font-size:2.2rem; margin:.2rem 0 .5rem; color:var(--accent); letter-spacing:-.02em; }
-  .lede { font-size:1.08rem; max-width:46rem; margin:.3rem 0 1rem; }
-  .callout { border-left:4px solid var(--accent); background:#eef1f8; padding:.9rem 1.1rem; border-radius:0 8px 8px 0; margin:1.2rem 0; }
-  .callout p { margin:.3rem 0; }
-  .does-not { border-left:4px solid var(--gold); background:#fdf6e9; }
-  .grid { display:grid; grid-template-columns:1fr 2fr; gap:1.2rem; margin:1.2rem 0; }
-  @media (max-width:720px){ .grid { grid-template-columns:1fr; } }
-  .side { display:flex; flex-direction:column; gap:.4rem; }
-  .searchbox { width:100%; padding:.7rem .9rem; border:1px solid var(--line); border-radius:8px; font:inherit; }
-  .claimlist { list-style:none; padding:0; margin:.4rem 0; max-height:60vh; overflow-y:auto; border:1px solid var(--line); border-radius:8px; background:#fff; }
-  .claimlist li { padding:.55rem .8rem; border-bottom:1px solid var(--line); cursor:pointer; font-size:.92rem; display:flex; gap:.5rem; align-items:baseline; }
-  .claimlist li:hover, .claimlist li.active { background:#eef1f8; }
-  .claimlist li:last-child { border-bottom:none; }
-  .cats { display:flex; flex-wrap:wrap; gap:.4rem; margin:.2rem 0 .6rem; }
-  .cats button { border:1px solid var(--line); background:#fff; color:var(--ink); padding:.4rem .75rem; border-radius:999px; cursor:pointer; font-size:.85rem; }
-  .cats button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
-  .catdesc { font-size:.82rem; color:var(--muted); margin:.2rem 0 .6rem; }
-  .fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; margin:.8rem 0; }
-  .field { border:1px solid var(--line); border-radius:10px; background:#fff; padding:.9rem 1rem; }
-  .field h3 { margin:0 0 .3rem; font-size:1rem; color:var(--accent); }
-  .field p { margin:.2rem 0 .5rem; font-size:.86rem; color:var(--muted); }
-  .field .tag { display:inline-block; font-size:.75rem; padding:.15rem .5rem; border-radius:999px; background:#eef1f8; color:var(--accent); margin:.15rem .25rem 0 0; cursor:pointer; }
-  .glyph { width:1.1rem; text-align:center; font-weight:700; }
-  .verdict-FORCED { color:var(--accent); } .verdict-FREE { color:var(--gold); } .verdict-IMPOSSIBLE { color:#c0392b; }
-  .out { border:1px solid var(--line); border-radius:10px; background:#fff; padding:1.1rem 1.2rem; }
-  .out h2 { margin:.1rem 0 .6rem; font-size:1.3rem; color:var(--accent); }
-  .big { font-size:1.6rem; font-weight:700; }
-  .proof { border:1px solid var(--line); border-radius:8px; background:#f8fafd; padding:.8rem 1rem; margin:.6rem 0; }
-  .proof dt { font-weight:600; color:var(--accent); font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; margin-top:.5rem; }
-  .proof dd { margin:0 0 .3rem; font-size:.95rem; }
-  .plain { font-size:1rem; margin:.8rem 0 0; }
-  .plain h3 { margin:.2rem 0 .3rem; color:var(--teal); font-size:.85rem; text-transform:uppercase; letter-spacing:.04em; }
-  .small { font-size:.82rem; color:var(--muted); }
-  code { background:#f0f2f7; padding:.1rem .4rem; border-radius:4px; font-size:.9em; }
-  .actions { margin-top:1rem; display:flex; gap:.6rem; flex-wrap:wrap; }
-  .btn { display:inline-block; padding:.55rem .95rem; border-radius:8px; background:var(--accent); color:#fff; text-decoration:none; font-weight:600; font-size:.92rem; }
-  .btn.ghost { background:#fff; color:var(--ink); border:1px solid var(--line); }
+/* SEXTANT redesign — visual layer
+   Integration: link this file after the existing inline stylesheet in web/sextant.html.
+   Add the semantic classes documented in IMPLEMENTATION-NOTES.md. */
+:root {
+  color-scheme: dark;
+  --sx-bg: #080d16;
+  --sx-panel: #101a29;
+  --sx-panel-2: #142235;
+  --sx-line: rgba(151, 181, 211, .16);
+  --sx-text: #edf4fb;
+  --sx-muted: #9aadc1;
+  --sx-cyan: #62d7e8;
+  --sx-amber: #f2b95f;
+  --sx-green: #73d6a0;
+  --sx-red: #ff8585;
+  --sx-radius: 18px;
+  --sx-shadow: 0 18px 60px rgba(0,0,0,.28);
+}
+html { scroll-behavior: smooth; }
+body {
+  color: var(--sx-text);
+  background:
+    radial-gradient(ellipse at 78% 4%, rgba(39,125,154,.18), transparent 34rem),
+    radial-gradient(ellipse at 8% 22%, rgba(37,76,131,.15), transparent 36rem),
+    var(--sx-bg);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.65;
+}
+a { color: var(--sx-cyan); text-underline-offset: 3px; }
+a:hover { color: #b5f3fa; }
+.wrap { width: min(1180px, calc(100% - 40px)); max-width: none; padding: 26px 0 80px; }
+.kicker, .eyebrow {
+  color: var(--sx-cyan); font: 700 .72rem/1.4 ui-monospace, SFMono-Regular, monospace;
+  letter-spacing: .16em; text-transform: uppercase;
+}
+h1, h2, h3 { color: var(--sx-text); line-height: 1.12; letter-spacing: -.035em; }
+h1 { font-size: clamp(3rem, 8vw, 6.2rem); margin: .15em 0 .12em; }
+h2 { font-size: clamp(1.65rem, 3vw, 2.5rem); margin: 2.8rem 0 .8rem; }
+h3 { font-size: 1.12rem; }
+.lede { max-width: 760px; color: #c4d2e0; font-size: clamp(1.05rem, 2vw, 1.3rem); }
+.headline {
+  position: relative; overflow: hidden; isolation: isolate;
+  margin: 28px 0 30px !important; padding: clamp(28px, 5vw, 64px) !important;
+  border: 1px solid rgba(98,215,232,.25); border-radius: 26px !important;
+  background:
+    linear-gradient(115deg, rgba(12,27,46,.97), rgba(14,48,65,.88) 62%, rgba(48,39,28,.76)) !important;
+  box-shadow: var(--sx-shadow);
+}
+.headline:after {
+  content: ""; position: absolute; z-index: -1; width: 520px; height: 520px;
+  right: -100px; top: -210px; border-radius: 50%;
+  border: 1px solid rgba(98,215,232,.2);
+  box-shadow: 0 0 0 32px rgba(98,215,232,.025), 0 0 0 72px rgba(98,215,232,.02),
+              0 0 0 118px rgba(98,215,232,.015);
+}
+.headline h2 { max-width: 850px; font-size: clamp(2.1rem, 5.3vw, 4.6rem) !important; }
+.headline p { max-width: 780px; }
+.callout, .out, .field, .proof, .claimlist {
+  color: var(--sx-text); background: rgba(16,26,41,.82); border: 1px solid var(--sx-line);
+  border-radius: var(--sx-radius); box-shadow: 0 8px 28px rgba(0,0,0,.12);
+}
+.callout { border-left: 3px solid var(--sx-cyan); padding: 18px 22px; }
+.callout.does-not { border-left-color: var(--sx-amber); }
+.callout p { color: #c7d5e3; }
+.grid { grid-template-columns: minmax(240px, .78fr) minmax(0, 1.6fr); gap: 20px; }
+.searchbox, input, textarea, select {
+  color: var(--sx-text); background: #0a1320; border: 1px solid var(--sx-line);
+  border-radius: 11px; padding: 12px 14px; font: inherit;
+}
+.searchbox:focus, input:focus, textarea:focus, select:focus {
+  outline: 2px solid rgba(98,215,232,.65); outline-offset: 2px;
+}
+.claimlist { overflow: auto; max-height: 65vh; }
+.claimlist li { color: #dce8f3; border-bottom: 1px solid var(--sx-line); padding: 12px 14px; }
+.claimlist li:hover, .claimlist li.active { background: rgba(98,215,232,.09); }
+.cats button, .btn, button {
+  border-radius: 999px; font: 650 .9rem/1.2 inherit; cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease;
+}
+.cats button { color: #c8d8e7; background: #101b2a; border: 1px solid var(--sx-line); padding: 9px 13px; }
+.cats button.active { color: #06121b; background: var(--sx-cyan); border-color: var(--sx-cyan); }
+.btn, button.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 11px 18px; color: #07141d; background: var(--sx-cyan);
+  border: 1px solid var(--sx-cyan); border-radius: 999px; text-decoration: none;
+  font-weight: 750;
+}
+.btn:hover, button:hover { transform: translateY(-1px); }
+.btn.ghost { color: var(--sx-text); background: rgba(255,255,255,.035); border-color: var(--sx-line); }
+.proof { padding: 18px 20px; }
+.proof dt { margin-top: 13px; color: var(--sx-cyan); font: 700 .7rem ui-monospace, monospace; letter-spacing: .12em; }
+.proof dd { color: #cbd8e5; margin: 4px 0 8px; }
+.field { padding: 18px; }
+.field h3 { color: var(--sx-text); }
+.field p, .small, .catdesc { color: var(--sx-muted); }
+.field .tag { color: var(--sx-cyan); background: rgba(98,215,232,.08); border: 1px solid rgba(98,215,232,.18); padding: 5px 9px; border-radius: 999px; }
+.out { padding: clamp(18px, 3vw, 30px); }
+.verdict-FORCED { color: var(--sx-green); }
+.verdict-FREE { color: var(--sx-amber); }
+.verdict-IMPOSSIBLE { color: var(--sx-red); }
+.verdict-IRREDUCIBLE { color: var(--sx-amber); }
+code { color: #bceef4; background: rgba(98,215,232,.08); border-radius: 5px; padding: .12em .38em; }
+pre { background: #050a11 !important; border: 1px solid var(--sx-line); border-radius: 14px; padding: 18px !important; }
+.actions { gap: 10px; }
+.small { font-size: .84rem; }
+section, .field, .out, .callout { scroll-margin-top: 24px; }
+.chips { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 4px; }
+.chip { font:700 .66rem/1.5 ui-monospace,SFMono-Regular,monospace; letter-spacing:.09em; text-transform:uppercase; padding:3px 9px; border-radius:999px; border:1px solid; white-space:nowrap; }
+.chip-kernel { color:var(--sx-green); border-color:rgba(115,214,160,.4); background:rgba(115,214,160,.08); }
+.chip-num { color:var(--sx-cyan); border-color:rgba(98,215,232,.4); background:rgba(98,215,232,.08); }
+.claimlist li .mini { margin-left:auto; font:600 .66rem ui-monospace,monospace; color:var(--sx-green); }
+@media (max-width: 760px) {
+  .wrap { width: min(100% - 28px, 680px); padding-top: 18px; }
+  .grid { grid-template-columns: 1fr; }
+  .claimlist { max-height: 42vh; }
+  .headline { border-radius: 20px !important; }
+  .actions .btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *:before, *:after { transition: none !important; animation: none !important; }
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <p class="kicker">a proof engine, not a calculator</p>
-  <h1>SEXTANT</h1>
-  <div class="headline" style="margin:1.2rem 0;padding:1.4rem 1.5rem;background:linear-gradient(120deg,#142a5e,#1a9d8f);color:#fff;border-radius:12px">
-    <p style="margin:0 0 .4rem;font:600 .72rem monospace;letter-spacing:.14em;text-transform:uppercase;opacity:.85">the constraint-first theory of everything</p>
-    <h2 style="margin:0 0 .5rem;font-size:1.9rem;letter-spacing:-.02em;color:#fff">A Theory of Everything, 80% complete.</h2>
-    <p style="margin:0 0 1rem;font-size:1.02rem;opacity:.96">Relations, never values — kernel-checked in Lean: 361 theorems, the exact structure nailed down as <strong>FORCED / FREE / IMPOSSIBLE</strong>, and the last frontier named and open.</p>
-    <p style="margin:0">
-      <a class="btn" href="#download" style="background:#fff;color:#142a5e">Join the hunt — download SEXTANT</a>
-      <a class="btn ghost" href="./node.html" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6)">the node — the global quest</a>
-      <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/issues" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6)">let's unravel the universe together →</a>
+
+  <!-- A · HERO -->
+  <header class="headline">
+    <p class="kicker">SEXTANT — research &amp; verification</p>
+    <h1>Navigate the space of what can be known</h1>
+    <p class="lede">SEXTANT is a research and verification environment for exploring what follows from stated mathematical structures, what remains free, and what evidence could rule a claim out.</p>
+    <p class="actions">
+      <a class="btn" href="#claims">Explore verified claims</a>
+      <a class="btn ghost" href="./node.html">Open the SEXTANT node</a>
+      <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland">Code &amp; contribute</a>
     </p>
-  </div>
-  <p class="lede">The universe has been answering <strong>yes or no</strong> all along — SEXTANT is how you finally hear it. A <strong>quantum-enabled yes/no hypothesis engine</strong>: bare-metal algebraic proofs from first principles, for <strong>discovery and synthesis</strong>. It makes quantum physics <strong>deterministic in use</strong> — the methodical, step-by-step unravelling of the universe's deepest mysteries. Ask it a claim, and it doesn't guess — it runs the simulation, checks the machine-checked theorem, and hands you the verdict:</p>
-  <div class="callout">
-    <p><strong>FORCED</strong> — the universe had <em>no choice</em>. A theorem, machine-checked in Lean. This is what <strong>must</strong> be true.</p>
-    <p><strong>FREE</strong> — the universe <em>shrugged</em>. A dial it never explained — the free parameter you get to turn.</p>
-    <p><strong>IMPOSSIBLE</strong> — the universe <em>said no</em>. Linearity itself forbids it. Stop chasing it — the door was never there.</p>
-  </div>
-  <div class="callout">
-    <p><strong>Why this is discovery, not measurement:</strong> finding what's FORCED is the discovery — the theorems the universe cannot escape. Building on them is the synthesis — because once you know what <em>must</em> be true, what <em>can't</em> be true, and exactly where the free dials sit, you stop guessing and start constructing.</p>
-  </div>
-  <div class="callout does-not">
-    <p><strong>What it does <em>not</em> do, said plainly:</strong> it does not compute <em>values</em> — it classifies them (relations, never values). It is not a faster quantum computer — it rides the same simulators everyone uses. It does not invent physics — it certifies what is already provable, and says honestly where the proof stops.</p>
-  </div>
+  </header>
 
-  <h2 id="download">Download — run it on your machine</h2>
-  <p>SEXTANT is a headless command that runs on your own hardware — no cloud, no account, no trust required. One command installs it on Linux, macOS, or a Raspberry Pi:</p>
-  <pre style="background:#0d1b3d;color:#e8ecf7;padding:.8rem 1rem;border-radius:8px;overflow-x:auto"><code>curl -fsSL https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/scripts/install-sextant.sh | bash</code></pre>
-  <p class="small">That puts <code>sextant</code> and <code>sextant-node</code> on your PATH. Then run the whole engine:</p>
-  <pre style="background:#0d1b3d;color:#e8ecf7;padding:.8rem 1rem;border-radius:8px;overflow-x:auto"><code>sextant --verify    # all 34 claims — every falsifier runs
+  <section id="how">
+    <p class="eyebrow">How it works</p>
+    <h2>Five steps, and not every claim clears them</h2>
+    <ol class="steps">
+      <li><strong>Frame</strong> — state a claim, its assumptions and its domain.</li>
+      <li><strong>Generate</strong> — propose candidate consequences or connections.</li>
+      <li><strong>Falsify</strong> — attempt to break the claim with a concrete test.</li>
+      <li><strong>Verify</strong> — use formal proof or reproducible evidence appropriate to the claim.</li>
+      <li><strong>Record</strong> — preserve provenance, limitations and current epistemic status.</li>
+    </ol>
+    <p class="small">A simulation is not a formal proof, and a claim that survives one stage may still fail the next. Each claim below says which stage it has reached and which it has not.</p>
+  </section>
+
+  <section id="verdicts">
+    <p class="eyebrow">Verdict vocabulary</p>
+    <h2>Three verdicts, scoped to their assumptions</h2>
+    <div class="callout">
+      <p><strong class="verdict-FORCED">FORCED</strong> — follows from the stated assumptions/structure. The formal proof and its exact scope are shown.</p>
+      <p><strong class="verdict-FREE">FREE</strong> — not determined by the stated constraints. This does <em>not</em> mean no deeper theory could ever explain it.</p>
+      <p><strong class="verdict-IMPOSSIBLE">IMPOSSIBLE</strong> — ruled out under the stated assumptions. The no-go argument and its domain are shown.</p>
+    </div>
+    <p class="small">These labels describe the relationship between a claim and its stated assumptions — not unrestricted statements about the whole universe.</p>
+  </section>
+
+  <section id="claims">
+    <p class="eyebrow">Claim explorer</p>
+    <h2>Inspect a claim, proof and limitation together</h2>
+    <p>Every claim carries a theorem, a falsifier, an oracle, the evidence, a plain-language explanation, and what it does <em>not</em> say. Distinguish a formal result checked by the Lean kernel from a numerical test: a falsifier is evidence, not by itself a proof.</p>
+    <div class="grid">
+      <div class="side">
+        <div id="cats" class="cats"></div>
+        <div id="catdesc" class="catdesc"></div>
+        <input id="q" class="searchbox" type="search" placeholder="search… e.g. 'entanglement', 'clone', 'gravity'">
+        <ul id="list" class="claimlist"></ul>
+        <div class="small" id="claimcount"></div>
+      </div>
+      <div id="out" class="out">
+        <p class="small">Pick a claim to see its proof and a one-page plain-speak explainer.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="mass-gap">
+    <p class="eyebrow">Case study</p>
+    <h2>The Yang–Mills mass gap — a research programme</h2>
+    <p>The mass-gap work is presented here as a <strong>research programme</strong>, not a finished result. The question under investigation is whether a non-abelian gauge theory develops a positive spectral gap above its vacuum. The programme proposes a chain of lemmas and assumptions — spectral-gap, Lyapunov-drift and mode-sum arguments — and separates them honestly:</p>
+    <div class="callout">
+      <p><strong>Formally checked:</strong> the individual lemmas that carry a Lean proof, and only those.</p>
+      <p><strong>Computationally tested:</strong> the numerical and empirical evidence that supports (or stresses) the conjectured chain.</p>
+      <p><strong>Conjectural / open:</strong> the full existence-and-mass-gap theorem, and any step that has not yet been reduced to a checked lemma.</p>
+    </div>
+    <div class="callout does-not">
+      <p><strong>Status, said plainly:</strong> the Yang–Mills mass gap has <em>not</em> been solved. Internal proof-checking is not proof of the full target theorem, the complete proof has not been independently validated, and the mathematical community has not accepted it. Claims here are bounded to exactly what has been checked or tested.</p>
+    </div>
+  </section>
+
+  <section id="cross-field">
+    <p class="eyebrow">Cross-field discovery</p>
+    <h2>The intended methodology, and its honest status</h2>
+    <ul class="steps">
+      <li>A <strong>known-unifications library</strong> that recognises established connections.</li>
+      <li>An <strong>open-transfer frontier</strong> for genuinely new candidate links.</li>
+      <li><strong>Typed scientific structures</strong> — definitions, assumptions, domains, properties, evidence, limitations and permitted mappings.</li>
+      <li>An <strong>encoding-check gate</strong>, so a formally valid but scientifically empty mapping is not called a discovery.</li>
+      <li>A candidate must yield a <strong>new prediction, proof technique or more efficient experiment</strong>.</li>
+      <li><strong>Blind proposal and external expert assessment</strong> are part of the success criterion.</li>
+    </ul>
+    <p class="small">Status (per the assessment log): the core loop and the cross-field machinery are <strong>built</strong> — cross-reference, transfer verification, the known-unifications library (282+ known links), the constraint-first economics work, the novelty-search loop, and the solvers. What remains a dependency is <strong>empirical validation and partner work</strong>, and genuine novelty stays rare by design.</p>
+  </section>
+
+  <section id="economics">
+    <p class="eyebrow">Working example</p>
+    <h2>Constraint-first economics — soft fields, hard checks</h2>
+    <p>The same method that labels a physics claim FORCED / FREE / IMPOSSIBLE is applied to economics: state the structure, derive what follows from it, and record what remains free. Precise unifications let a soft field inherit the same verifiability as hard science — every claim carries its assumptions, its falsifier and its epistemic tier, and the <strong>encoding-check gate</strong> refuses a mapping that is formally valid but scientifically empty.</p>
+    <p class="small">This is the clearest “product in action” outside pure physics: the known-unifications library recognises established connections, and a candidate is only counted when it yields a new prediction, a proof technique, or a more efficient experiment. See the plan and the assessment log for the current state.</p>
+  </section>
+
+  <section id="roadmap">
+    <p class="eyebrow">Roadmap</p>
+    <h2>What works now, what is partial, what is open</h2>
+    <div class="callout">
+      <p><strong>Working now:</strong> the claim registry, falsifiers, oracles, evidence and per-claim downloads on this page; the headless <code>sextant</code> CLI and <code>sextant-node</code>.</p>
+      <p><strong>Partial / experimental:</strong> the formal proof arm — some lemmas are kernel-checked, others are derived or conjectural; treat each claim's own column as the authority.</p>
+      <p><strong>Planned:</strong> empirical validation and partner work; wiring the live claim registry into this page.</p>
+      <p><strong>Open research questions:</strong> the Yang–Mills mass gap, and every claim whose verdict is not yet backed by a checked proof.</p>
+    </div>
+    <p>Contribute by inspecting a claim, reproducing a falsifier, challenging an assumption, improving a formalization, or helping with empirical validation.</p>
+    <p class="actions">
+      <a class="btn" href="https://github.com/robmitchellengineering-hub/pacland/issues">Contribute</a>
+      <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md">Read the CLI docs</a>
+    </p>
+  </section>
+
+  <section id="install">
+    <p class="eyebrow">Install</p>
+    <h2>Run it on your own hardware</h2>
+    <p>SEXTANT is a headless command — no cloud, no account, no trust required.</p>
+    <pre><code>curl -fsSL https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/scripts/install-sextant.sh | bash</code></pre>
+    <pre><code>sextant --verify    # every claim — every falsifier runs
 sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
-  <p class="small" style="margin-top:.6rem">
-    <strong>x86_64</strong> (Linux / macOS): <code>stim</code> installs as a pre-built wheel — instant, full 28/28.<br>
-    <strong>Raspberry Pi</strong> (aarch64): the same one-liner; <code>stim</code> compiles from source on the first run (~10–30 min, native) and everything else is instant — 27/28 now, 28/28 once that one compile finishes.<br>
-    Manual install instead: <code>git clone https://github.com/robmitchellengineering-hub/pacland &amp;&amp; cd pacland &amp;&amp; pip install -e . stim quimb numpy</code>.
-  </p>
+    <p class="small">Manual install: <code>git clone https://github.com/robmitchellengineering-hub/pacland &amp;&amp; cd pacland &amp;&amp; pip install -e . stim quimb numpy</code>.</p>
+  </section>
 
-  <h2 id="what-it-does">What it does</h2>
-  <p>Every claim below gets one of the three verdicts, and every verdict is earned twice over: a <strong>falsifier</strong> that actually runs (a simulator tries to break the claim, and the claim has to survive it), and a <strong>Lean theorem</strong> that the kernel checked (the proof, not just the number). Tap any claim to read both — the academic proof and a one-page plain-speak explainer. Then download the node and run the falsifiers yourself: <code>python -m pacland.sextant_node</code> — no cloud, no account, no trust required.</p>
+  <section id="fields-section">
+    <p class="eyebrow">Fields</p>
+    <h2>Who relies on these fundamentals</h2>
+    <p class="small">Each proof is a load-bearing constraint. Pick a field to see which proofs it stands on — tap a proof to open it.</p>
+    <div id="fields" class="fields"></div>
+  </section>
 
-  <h2 id="whats-possible">What it makes possible</h2>
-  <p>Once you know what is <strong>FORCED</strong> (the theorems the universe cannot escape), what is <strong>IMPOSSIBLE</strong> (the doors that were never there), and exactly where the <strong>FREE</strong> dials sit, the job of physics changes shape. You stop guessing at values and start <em>constructing from constraints</em> — the difference between fitting a curve and knowing the curve is forced. That is the constraint-first Theory of Everything, made executable: <strong>relations, never values</strong>. The three open frontiers — Švarc–Milnor, the even-n Cayley, the Gromov–Hausdorff convergence — are where the community extends it.</p>
-
-  <p class="hero-actions" style="margin-bottom:1.2rem">
-    <a class="btn" href="./node.html">run the node — the global quest</a>
-    <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/blob/foundations/qf0-hinge-ledger/pacland-proof/README.md">the 361-theorem proof arm</a>
-    <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/issues">contribute</a>
-  </p>
-
-  <div class="grid">
-    <div class="side">
-      <div id="cats" class="cats"></div>
-      <div id="catdesc" class="catdesc"></div>
-      <input id="q" class="searchbox" type="search" placeholder="search… e.g. 'entanglement', 'clone', 'gravity'">
-      <ul id="list" class="claimlist"></ul>
-      <div class="small" style="margin-top:.4rem">34 claims · 8 live oracles · 26 kernel-checked theorems</div>
-    </div>
-    <div id="out" class="out">
-      <p class="small">Pick a claim to see its academic proof and a one-page plain-speak explainer.</p>
-    </div>
-  </div>
-
-  <h2 style="margin-top:2rem">Who relies on these fundamentals</h2>
-  <p class="small">Each proof is a load-bearing constraint. Pick a field to see which proofs it stands on — tap a proof to open it.</p>
-  <div id="fields" class="fields"></div>
-
-  <div class="actions">
-    <a class="btn" href="./mera.html">See the geometry in 3D</a>
-    <a class="btn ghost" href="./index.html">← back to PACLAND</a>
-    <a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md">run it yourself (CLI)</a>
-  </div>
-  <p class="small" style="margin-top:1rem">Every verdict below is the same thing the CLI prints — the falsifier ran, and the claim survived it. <a href="#download">Download</a> and run it yourself: <code>sextant verify chsh</code>.</p>
-<h2 style="margin-top:2rem">The geometry, in 3D</h2>
-  <p class="small">Every theorem has a shape. Open the 3D views — the constraint, the MERA cone, the climate verification, the Kähler cones.</p>
-  <div class="actions" style="margin-bottom:.5rem">
-    <a class="btn" href="./viz.html">the constraint, visualized</a>
-    <a class="btn" href="./mera.html">MERA — the hyperbolic ball</a>
-    <a class="btn ghost" href="./climate-3d.html">climate in 3D</a>
-    <a class="btn ghost" href="./cones-3d.html">Kähler cones in 3D</a>
-  </div>
+  <section id="geometry">
+    <p class="eyebrow">Geometry</p>
+    <h2>The geometry, in 3D</h2>
+    <p class="actions">
+      <a class="btn" href="./viz.html">The constraint, visualized</a>
+      <a class="btn ghost" href="./mera.html">MERA — the hyperbolic ball</a>
+      <a class="btn ghost" href="./climate-3d.html">Climate in 3D</a>
+      <a class="btn ghost" href="./cones-3d.html">Kähler cones in 3D</a>
+    </p>
+    <p class="actions">
+      <a class="btn ghost" href="./index.html">← back to PACLAND</a>
+    </p>
+  </section>
 
 </div>
-
 <script>
-const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕' };
+const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕', IRREDUCIBLE:'◐' };
 const CLAIMS = [
  { id:'chsh', v:'FORCED', th:'QM.Tsirelson', claim:'no quantum state violates the CHSH inequality beyond 2√2', falsifier:'a state exceeding 2√2', oracle:'quantum-simulated + kernel-checked', ev:'simulated CHSH = 2.828427 = 2√2 — nothing exceeds it',
    plain:"The quantum world can beat classical physics by a hair — 2√2, and not a hair more. That ceiling is not a measurement, it's a theorem we machine-checked: the universe has a hard limit on how much quantum beats classical. The gap between the classical wall (2) and the quantum maximum (2√2) is the 'quantum advantage', quantified exactly." },
@@ -202,8 +337,18 @@ const CLAIMS = [
     plain:"The gap is not a curvature bound — it is a concentration rate. The Wilson measure concentrates on the trivial connection, and the spectral gap is exactly how fast it does. When a 'curvature' picture stalls, reframe: the gap is the leak rate from the dominant state to everything else." },
   { id:'mode-sum-exponent', v:'FORCED', th:'QM.AsymptoticFreedom + QM.FullLatticeLyapunov', claim:'a non-perturbative exponent that is a sum over soft modes equals the beta-function coefficient (c = 1/(2b₀))', falsifier:'a mode-sum exponent that does not match the beta-function coefficient', oracle:'kernel-checked', ev:'the weak-coupling exponent c = 12π²/11 is the SUM over the low-momentum gluon modes = the beta-function',
     plain:"An exponent that looks like it needs 'one more tunneling event' may instead be a MODE SUM. The weak-coupling mass-gap exponent is the sum over all the low-momentum gluon modes, and that sum is the beta-function coefficient. Use this whenever an exponent seems to need one more mechanism: count the modes first." },
-  { id:'gauge-orbit-quotient', v:'FORCED', th:'QM.GaugeOrbit + QM.AxialGauge', claim:'running the spectral machinery on the gauge-invariant quotient removes the unphysical flat directions', falsifier:'a quotient that fails to remove the gauge flat directions (a residual Gribov copy)', oracle:'kernel-checked', ev:'the trivial connection's gauge orbit is a flat direction that is gauge, not physics — quotient removes it',
+  { id:'gauge-orbit-quotient', v:'FORCED', th:'QM.GaugeOrbit + QM.AxialGauge', claim:'running the spectral machinery on the gauge-invariant quotient removes the unphysical flat directions', falsifier:'a quotient that fails to remove the gauge flat directions (a residual Gribov copy)', oracle:'kernel-checked', ev:'the trivial connection\'s gauge orbit is a flat direction that is gauge, not physics — quotient removes it',
     plain:"A 'ceiling' can sit on the gauge orbit — the flat direction of the trivial connection, which is pure gauge, not physics. Remove it: run the spectral machinery on the gauge-invariant quotient, not the full space. Use this whenever a flat direction is actually gauge redundancy." },
+  { id:'matchgate-seed', v:'FORCED', th:'QM.Matchgate + QM.PfaffianRec', claim:'matchgate amplitudes are Pfaffians — the full even/odd split is kernel-checked', falsifier:'a matchgate whose amplitude is not its Pfaffian, or a nonzero odd-dim antisymmetric determinant', oracle:'kernel-checked', ev:'2×2 and 4×4 Pf² = det; every odd-dim antisymmetric determinant = 0',
+    plain:"The 'easy' quantum circuits — matchgates — have amplitudes that are Pfaffians, a determinant-like quantity a laptop can compute. The split is exact and kernel-checked: even dimensions square to the determinant, odd dimensions vanish. It is the mathematical seed of why some quantum systems are classically simulable." },
+  { id:'perfect-code-distance', v:'FORCED', th:'QM.PerfectTensor.code_min_weight', claim:'the 5-qubit [[5,1,3]] code has distance ≥ 3 — no single- or two-qubit subsystem carries a stabilizer', falsifier:'a weight ≤ 2 element of the code stabilizer group', oracle:'kernel-checked', ev:'every non-identity product of the 4 code stabilizers has weight 4',
+    plain:"The smallest useful quantum error-correcting code — 5 qubits protecting 1 — can correct any single-qubit error. The distance-3 property is kernel-checked: no one- or two-qubit subsystem carries a stabilizer, which is the algebraic core of the code." },
+  { id:'code-ame52', v:'FORCED', th:'QM.PerfectTensor.code_state_ame52', claim:'the [[5,1,3]] code state (logical Z fixed) is AME(5,2) — every 2-qubit reduction is maximally mixed', falsifier:'a weight ≤ 2 element of the fixed-state stabilizer group', oracle:'kernel-checked', ev:'every non-identity element of the 5-generator fixed-state group has weight ≥ 3',
+    plain:"The 5-qubit code state is 'absolutely maximally entangled' across any 2|3 split — every pair of qubits is maximally mixed. It is the stabilizer form of AME(5,2), the entanglement pattern that makes the code work." },
+  { id:'happ-perfect-tensor', v:'FORCED', th:'QM.PerfectTensor.happy_is_perfect_tensor', claim:'the [[5,1,3]] code coupled to a reference qubit is a perfect tensor (AME(6,3))', falsifier:'a 3-qubit subsystem of the HaPPY hexagon carrying a stabilizer', oracle:'kernel-checked', ev:'every non-identity element of the 6-generator group has weight ≥ 4',
+    plain:"Couple the 5-qubit code to a reference qubit and you get a perfect tensor — the HaPPY hexagon, the smallest building block of holographic error-correcting codes. Every 3-qubit subsystem is maximally mixed; that is the discrete Ryu–Takayanagi statement." },
+  { id:'ym-mass-gap-polyakov', v:'IRREDUCIBLE', th:'none — computational, not closed-form', claim:'SU(3) Yang–Mills at finite temperature has a positive screening mass (the Polyakov correlator clusters exponentially)', falsifier:'a Polyakov screening mass ≤ 0', oracle:'lattice (SU(3) Polyakov correlator)', ev:'m = 0.227 across sizes — survives every falsifier tried',
+    plain:"The SU(3) lattice keeps returning a positive screening mass, so the claim survives every falsifier tried — but there is no sorry-free Lean certificate, so it is computational, not FORCED. It is recorded as convergence evidence, not a proof." },
 ];
 
 const CAT = {
@@ -212,7 +357,8 @@ const CAT = {
   'mera-hyperbolic':'gravity','coupling-free':'gravity','gravity-quantum':'gravity','lovelock':'gravity','bianchi':'gravity','wdw':'gravity','dirac':'gravity','adm':'gravity','black-hole-entropy':'gravity','black-hole-unitarity':'gravity',
   'hypercharge-uniqueness':'sm','anomaly-cancellation':'sm','generation-free':'sm','the-19':'sm','sm-index':'sm',
   'mitchell-uniqueness':'landscape','constraint-first':'landscape','completeness':'landscape',
-  'pr-box':'foundations'
+  'pr-box':'foundations',
+  'matchgate-seed':'computing','perfect-code-distance':'computing','code-ame52':'computing','happ-perfect-tensor':'gravity','ym-mass-gap-polyakov':'gravity'
 };
 const CATS = {
   'foundations': { label:'Quantum foundations', desc:"The provable walls of quantum mechanics — what is impossible to do (clone, broadcast, entangle classically), what is forced (the Born rule, the state is real, Mermin's non-contextuality). If your field asks 'is the quantum state real?' or 'what does the math forbid?', this is it." },
@@ -284,8 +430,8 @@ function renderList(filter) {
   hits.forEach(c => {
     const li = document.createElement('li');
     li.className = 'claim';
-    li.innerHTML = `<span class="glyph verdict-${c.v}">${G[c.v]}</span><span>${c.id.replace(/-/g,' ')}</span>`;
-    li.onclick = () => { document.querySelectorAll('.claim').forEach(x=>x.classList.remove('active')); li.classList.add('active'); renderClaim(c); };
+    li.innerHTML = `<span class="glyph verdict-${c.v}">${G[c.v]}</span><span>${c.id.replace(/-/g,' ')}</span>${/kernel-checked/.test(c.oracle) ? '<span class="mini">kernel</span>' : ''}`;
+    li.onclick = () => { document.querySelectorAll('.claim').forEach(x=>x.classList.remove('active')); li.classList.add('active'); renderClaim(c); if (window.innerWidth < 760) { document.getElementById('out').scrollIntoView({ behavior: 'smooth', block: 'start' }); } };
     list.appendChild(li);
   });
 }
@@ -294,6 +440,7 @@ function renderClaim(c) {
   const x = EXTRA[c.id] || {};
   out.innerHTML = `
     <h2><span class="big verdict-${c.v}">${G[c.v]} ${c.v}</span></h2>
+    <div class="chips">${/kernel-checked/.test(c.oracle) ? '<span class="chip chip-kernel">kernel-checked</span>' : ''}${/quantum-simulated/.test(c.oracle) ? '<span class="chip chip-num">numerically verified</span>' : ''}</div>
     <p><strong>${c.id.replace(/-/g,' ')}</strong></p>
     <dl class="proof">
       <dt>Theorem</dt><dd>${c.claim}.</dd>
@@ -306,9 +453,9 @@ function renderClaim(c) {
       <h3>Plain speak — what it says</h3>
       <p>${c.plain}</p>
       <h3>What it does <em>not</em> say</h3>
-      <p class="muted">${x.dont || ''}</p>
+      <p class="muted">${(typeof x === 'string' ? x : '')}</p>
     </div>
-    <button class="btn ghost" onclick="downloadClaim('${c.id}')">Download this proof (.txt)</button>
+    <p class="actions"><button class="btn ghost" onclick="downloadClaim('${c.id}')">Download this proof (.txt)</button><a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md">Reproduce — run the falsifier</a></p>
   `;
 }
 
@@ -326,7 +473,7 @@ function downloadClaim(id) {
     '',
     'Plain speak. ' + c.plain,
     '',
-    'What it does NOT say. ' + (x.dont || ''),
+    'What it does NOT say. ' + ((typeof x === 'string' ? x : '')),
   ].join('\n');
   const blob = new Blob([txt], { type: 'text/plain' });
   const a = document.createElement('a');
@@ -366,6 +513,16 @@ renderCats();
 catdesc.textContent = 'Every claim, across all four fields. Pick a field, or search.';
 renderList('');
 renderFields();
+</script>
+<script>
+// honest, dynamic counts — never a hard-coded stale number in the page copy
+(function () {
+  var el = document.getElementById('claimcount');
+  if (el) {
+    var sim = CLAIMS.filter(function (c) { return /quantum-simulated/.test(c.oracle); }).length;
+    el.textContent = CLAIMS.length + ' claims in the live registry (snapshot ' + new Date().toISOString().slice(0,10) + ') · ' + sim + ' carry a live simulated oracle — each claim\'s own proof/evidence column says what is checked vs tested';
+  }
+})();
 </script>
 </body>
 </html>
