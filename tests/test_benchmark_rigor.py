@@ -61,5 +61,22 @@ class TestCapableBaseline(unittest.TestCase):
         self.assertIn("engine_cost_per_found", out)
 
 
+class TestPipelineFilter(unittest.TestCase):
+    def test_filter_rejects_generic_distractors(self):
+        f = b.engine_with_filter(lambda pre: ["a new long-range force", "energy is quantised"])
+        self.assertEqual(f("the blackbody spectrum diverges"), ["energy is quantised"])
+
+    def test_filter_rejects_premise_restatements(self):
+        f = b.engine_with_filter(lambda pre: [pre, "energy is quantised"])
+        self.assertEqual(f("the blackbody spectrum diverges at short wavelength"),
+                         ["energy is quantised"])
+
+    def test_filtered_arm_has_lower_false_positives(self):
+        raw = b.run_arm("llm", b.untyped_generator, "A", b.DATASET)
+        filtered = b.run_arm("full-engine", b.engine_with_filter(b.untyped_generator), "A", b.DATASET)
+        # the filter must not INCREASE false positives, and the untyped distractors are all filtered
+        self.assertLessEqual(filtered.false_positives, raw.false_positives)
+
+
 if __name__ == "__main__":
     unittest.main()

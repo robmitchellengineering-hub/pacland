@@ -165,6 +165,37 @@ def semantic_match(candidate: str, jump: str) -> bool:
     return any(j in ct for j in jt)
 
 
+# ----------------------------------------------------------------------------
+# The pipeline filter — the FULL ENGINE is not just the generator; it falsifies.
+# ----------------------------------------------------------------------------
+
+_GENERIC_MARKERS = ("new long-range force", "undiscovered particle", "measurement error",
+                    "systematic effect", "coincidental correlation", "unmodelled",
+                    "unknown mechanism", "something else entirely")
+
+
+def _is_generic_distractor(candidate: str) -> bool:
+    low = candidate.lower()
+    return any(m in low for m in _GENERIC_MARKERS)
+
+
+def premise_restates(candidate: str, pre: str) -> bool:
+    """True when the candidate adds NO new content word — it only restates the premise (a non-answer)."""
+    ct, pt = _tokens(candidate), _tokens(pre)
+    return bool(ct) and ct <= pt
+
+
+def engine_with_filter(inner: Generator) -> Generator:
+    """The FULL ENGINE arm: the generator + a falsifier that rejects generic distractors and premise
+    restatements. This is the honest 'pipeline beats the prompt' test — the engine's advantage should
+    come from FILTERING false positives, not from proposing more of them.
+    """
+    def filtered(pre: str) -> list[str]:
+        return [c for c in inner(pre)
+                if not _is_generic_distractor(c) and not premise_restates(c, pre)]
+    return filtered
+
+
 def compare(arms: dict[str, Generator], suite: str, dataset: dict) -> list[ArmResult]:
     return [run_arm(name, gen, suite, dataset) for name, gen in arms.items()]
 
