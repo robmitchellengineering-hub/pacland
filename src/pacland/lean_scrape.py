@@ -186,6 +186,22 @@ def ingest_mathlib_hits(keyword: str, limit: int = 10, source: str = "mathlib") 
     return {"ingested": len(hits), "names": [h["name"] for h in hits]}
 
 
+def harvest_mathlib(keywords: list[str], limit_per_keyword: int = 10, source: str = "mathlib") -> dict:
+    """Populate the library from Mathlib: batch-ingest the theorems matching a list of keywords.
+
+    This is the "bigger library of empirical truths" step — for each keyword, the matching Mathlib
+    theorems become tier-1 properties the engine can cite, so a campaign has a real substrate of
+    proven lemmas to synthesise over (not just the hand-seeded facts).
+    """
+    total = 0
+    per: dict[str, int] = {}
+    for kw in keywords:
+        r = ingest_mathlib_hits(kw, limit=limit_per_keyword, source=source)
+        per[kw] = r["ingested"]
+        total += r["ingested"]
+    return {"harvested": total, "per_keyword": per}
+
+
 def search_github_lean_repos(query: str, limit: int = 5) -> list[dict]:
     """Search GitHub for Lean repos — other researchers' formalization work — by topic/keyword.
 
