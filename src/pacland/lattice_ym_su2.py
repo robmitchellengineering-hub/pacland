@@ -265,12 +265,14 @@ def energy_density(links):
     return total / count
 
 
-def wilson_flow_scale(beta, N=8, n_flow_steps=200, epsilon=0.05, target=0.3,
+def wilson_flow_scale(beta, N=8, n_flow_steps=200, epsilon=0.05, target=0.08,
                       n_sweeps=10, seed=0):
-    """The Luscher scale t0 where t^2 E(t) = target (0.3), in lattice units.
+    """The Wilson-flow scale t0 where t^2 E(t) = target, in lattice units.
 
-    t0 is the robust scale-setting observable (far more stable than the Polyakov string tension at
-    small N). Returns t0, or None if the target is not reached within n_flow_steps."""
+    NOTE: this uses the SIMPLE plaquette energy density, whose t^2 E plateaus at ~0.11 (the clover
+    definition reaches the standard 0.3). So the target here is 0.08 — a fixed convention; the
+    renormalisation only uses the RATIO t0(beta) across beta, so the absolute target cancels.
+    Returns t0, or None if the target is not reached within n_flow_steps."""
     d = 4
     rng = np.random.default_rng(seed)
     links = np.array([random_su2(rng) for _ in range(d * N ** d)])
