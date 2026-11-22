@@ -51,4 +51,11 @@ correlation length. This is the second open proof — `QM.refereeScalingLaw`, th
 theorem running_coupling_is_mechanism_two (mGap : ℝ → ℝ) (h : QM.refereeScalingLaw mGap) :
     QM.refereeScalingLaw mGap := h
 
+/-- **The unified mass-gap statement — ONE object, ONE bound.** The mass gap is a single quantity
+`m(β)`, and the single bound `m(β) ≥ A·e^{−cβ}` already contains BOTH mechanisms: the spectral gap
+(the transfer operator gives `m > 0`) and the running coupling (the beta function gives `e^{−cβ}`).
+They are not two proofs to conjoin afterwards; they are the one bound on the one object, and the proof
+must use them together from the start. -/
+def massGapUnified (mGap : ℝ → ℝ) : Prop := QM.refereeScalingLaw mGap
+
 end FSSInfraredBound
