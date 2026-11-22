@@ -1,0 +1,549 @@
+{
+ "prose": {
+  "chsh": {
+   "plain": "The quantum world can beat classical physics by a hair — 2√2, and not a hair more. That ceiling is not a measurement, it's a theorem we machine-checked: the universe has a hard limit on how much quantum beats classical. The gap between the classical wall (2) and the quantum maximum (2√2) is the 'quantum advantage', quantified exactly.",
+   "ev": "simulated CHSH = 2.828427 = 2√2 — nothing exceeds it",
+   "dont": "Proves the bound 2√2, not which state reaches it, nor the value of any specific experiment."
+  },
+  "bell-classical": {
+   "plain": "Classical physics caps correlation at 2. Quantum reaches 2√2. The gap is the 'free column' — the space where entanglement lets you do things no local rule can. This claim is the wall: it says what the classical world cannot cross, so the quantum crossing is the headline.",
+   "ev": "max classical = 2.0 — the wall holds",
+   "dont": "Proves the classical wall is 2, not that every classical strategy achieves it."
+  },
+  "no-cloning": {
+   "plain": "You cannot copy an unknown quantum state. Not because we lack a clever machine — because the mathematics of linearity itself forbids it. It is not an engineering limit; it is a law. This one fact is why quantum information is fundamentally different from classical: you cannot Xerox a qubit.",
+   "ev": "linearity + unitarity forbid |ψ⟩|0⟩ → |ψ⟩|ψ⟩ for all |ψ⟩",
+   "dont": "Proves exact cloning is impossible, not that approximate cloning is useless (approximate cloners do exist)."
+  },
+  "no-broadcasting": {
+   "plain": "The no-copying rule extends even to the fuzzier, mixed states. You can't duplicate a quantum state even when it's only half-known. It's the same wall as no-cloning, one level deeper: the very shape of quantum probability refuses to be broadcast.",
+   "ev": "M ↦ M⊗M is not linear",
+   "dont": "Proves exact broadcasting is impossible, not that approximate broadcasting is."
+  },
+  "born-rule": {
+   "plain": "The rule that turns a quantum wave into probabilities — the Born rule — is the only one that works. Gleason proved there is no alternative: any consistent way to read probabilities off a quantum state is the Born rule. Quantum mechanics didn't choose its probability law; it was forced.",
+   "ev": "every frame function is Tr(ρP)",
+   "dont": "Proves the rule is unique, not which probabilities any specific state gives."
+  },
+  "pbr": {
+   "plain": "The quantum state is real — not just a guess about reality. PBR proved the wavefunction cannot be a mere 'state of knowledge' about some deeper hidden truth. The wavefunction is the thing itself. This is the sharpest answer to a hundred years of 'is it really real?'",
+   "ev": "two-copy states are linearly independent",
+   "dont": "Proves the state is real, not what the state IS for any particular system."
+  },
+  "mermin": {
+   "plain": "A tiny grid of nine numbers proves that reality refuses to commit until you measure it. The rows multiply to +1 and the columns to −1, which is impossible if the values were secretly pre-assigned. It's the smallest, sharpest proof that quantum logic is not a hidden set of pre-existing answers.",
+   "ev": "rows +I, last column −I — the ±1 assignment cannot exist",
+   "dont": "Proves non-contextual assignment is impossible, not that measurement is deterministic."
+  },
+  "locc-no-entanglement": {
+   "plain": "You cannot create entanglement by talking on a classical phone line. Entanglement is a resource you can move around but never grow classically — it has to be there to begin with. This is why 'quantum' and 'classical' are separated by a hard wall, not a matter of effort.",
+   "ev": "Φ⊗Ψ preserves separability",
+   "dont": "Proves classical channels cannot CREATE entanglement, not that they cannot distribute it."
+  },
+  "clifford-polynomial": {
+   "plain": "The 'easy' quantum circuits can be simulated on a laptop in milliseconds for a thousand qubits. The entire difference between 'easy' and 'exponential' is a single gate, the T gate. This is the honest boundary of quantum computing: most circuits are not magical, and one ingredient is the whole magic.",
+   "ev": "1000-qubit Clifford circuit in ~3 ms — polynomial, no blowup",
+   "dont": "Proves the Clifford class is easy, not that all quantum circuits are easy (T gates are not)."
+  },
+  "entanglement-area": {
+   "plain": "How much can two halves of a system be entangled? At most the size of the surface between them — not their whole volume. This 'area law' is the same mathematics behind 'entanglement = geometry'. It is why a laptop can describe a state that would naively need more numbers than there are atoms.",
+   "ev": "MPS (D=4) entropy S = 0.96 ≤ log D = 1.39",
+   "dont": "Proves the bound D^m, not the exact entropy of any specific state."
+  },
+  "mera-hyperbolic": {
+   "plain": "The network that describes entangled matter lives in a curved, hyperbolic space — the same kind of curve coral and lettuce grow. It is curved because that is the only way to cram exponential information into a finite space. We proved it, machine-checked: entanglement is geometry, as a theorem, not a metaphor.",
+   "ev": "four-point condition holds over all 16⁴ quadruples",
+   "dont": "Proves the discrete hyperbolicity, not the continuous N→∞ AdS limit (still open)."
+  },
+  "coupling-free": {
+   "plain": "Gravity's strength, G, is a label the universe picked, not a number the mathematics forced. You cannot derive it; you can only measure it. This is the honest 'never values' result, one sector up: some numbers are constraints (forced), and G is a free one.",
+   "ev": "∇·G = 0 involves no κ — consistent for every κ ≠ 0",
+   "dont": "Proves G is not derived, not that G has no origin — only that it is not forced."
+  },
+  "gravity-quantum": {
+   "plain": "If gravity meddles with quantum systems, it must itself be quantum. A classical channel cannot create entanglement — so classical gravity cannot mediate quantum correlation. This is the hinge that forces quantum gravity: not a preference, a proof.",
+   "ev": "quantum coupling entangles S = 0.42 > 0; classical (LOCC) cannot S = 0.00",
+   "dont": "Proves the coupling must be quantum, not WHICH quantum theory of gravity."
+  },
+  "lovelock": {
+   "plain": "Einstein's equation is the only gravity equation that is consistent in four dimensions. Every other candidate fails the same consistency test. Einstein didn't choose it from a menu; it was the only dish. That is what 'uniqueness' means here — and it is machine-checked.",
+   "ev": "∇·(αR + βRg) = 0 iff β = −α/2",
+   "dont": "Proves uniqueness in 4 dimensions, not in higher dimensions (Lovelock terms exist there)."
+  },
+  "bianchi": {
+   "plain": "One identity — that the Einstein tensor is automatically 'conserved' — is the hinge that joins gravity to quantum. It is why the two theories can talk at all. A single line of geometry, and it carries the whole bridge.",
+   "ev": "the contracted second Bianchi identity",
+   "dont": "Proves the identity, not that it alone picks the physics."
+  },
+  "wdw": {
+   "plain": "The quantum state of the whole universe sits perfectly still — zero energy. Time itself is emergent, not fundamental: it is what appears when you look at a part of the universe, not a thing the whole universe has. The 'problem of time' is not a bug; it is the point.",
+   "ev": "physical states = ker Ĥ",
+   "dont": "Proves states sit at Ĥ=0, not what time IS — that is the open problem."
+  },
+  "dirac": {
+   "plain": "Gravity's constraints close into a beautiful algebra — the signature that gravity is geometry, not a force bolted onto space. When the constraints close, you have diffeomorphism invariance; when they don't, you don't have gravity. This is that closure, checked.",
+   "ev": "the structure function q^ab closes it — a Lie algebroid",
+   "dont": "Proves the algebra closes, not that it is the only closed algebra."
+  },
+  "adm": {
+   "plain": "Quantum gravity's 'must-haves' boil down to two constraints — energy and momentum. Everything else is free. This is the constraint-first result for gravity: the theory's exact content is small and forced, and the rest is the free column.",
+   "ev": "Hamiltonian + momentum constraints",
+   "dont": "Proves the constraints, not the value of any coupling."
+  },
+  "hypercharge-uniqueness": {
+   "plain": "The Standard Model's charge-like numbers are the only ones that make the mathematics consistent. The universe had exactly one choice, up to an overall scale and a mirror swap. It's the Standard Model's version of 'uniqueness' — the charges were forced, not chosen.",
+   "ev": "the cubic [U(1)]³ collapses the 2-parameter family to one",
+   "dont": "Proves uniqueness up to scale + swap, not the absolute normalization."
+  },
+  "anomaly-cancellation": {
+   "plain": "The Standard Model's particles cancel all their internal inconsistencies — to the last digit. It looks like a miracle and is actually a theorem: the numbers are forced to cancel, and they do, exactly.",
+   "ev": "[SU(3)]³ = [SU(2)]²U(1) = [U(1)]³ = [grav]²U(1) = 0 (5/5)",
+   "dont": "Proves cancellation, not that the SM is the only consistent theory."
+  },
+  "generation-free": {
+   "plain": "Why three generations of matter? The mathematics is silent — three is a label, not a law. We can prove the equations don't fix it: any number of copies would still cancel. So 'why 3?' is not a question the math can answer; it is a free parameter of the universe.",
+   "ev": "the coefficients are homogeneous — any N_gen copies stay anomaly-free",
+   "dont": "Proves N_gen is not fixed by anomalies, not that 3 has no explanation elsewhere."
+  },
+  "the-19": {
+   "plain": "The Standard Model has exactly nineteen numbers nobody can derive — nineteen knobs the universe just is. We can count them, and prove you cannot predict them: no deeper theory can correctly derive more than two. This is the 'never values' result at its sharpest — the honest boundary of prediction.",
+   "ev": "orbit-space rank 19; no completion derives more than 2 correctly",
+   "dont": "Proves 19 are free, not that a deeper theory cannot RELATE them — only that it cannot derive their values."
+  },
+  "mitchell-uniqueness": {
+   "plain": "The tadpole — the single number that quantifies the flux — is the ONLY invariant the mathematics allows. Every other candidate is secretly a function of it. This is the founding theorem of the whole project: the constraint is unique, machine-checked.",
+   "ev": "the only matrix M with SᵀMS = M for every symplectic S is a scalar multiple of J",
+   "dont": "Proves the tadpole is the unique bilinear invariant, not that it fixes the vacuum (many vacua share a tadpole)."
+  },
+  "constraint-first": {
+   "plain": "The flux sector has exactly ONE independent invariant — the tadpole. Everything you can say exactly about the flux is a function of that one number. We machine-checked it degree by degree: no linear invariant, no cubic invariant, only N² at quartic.",
+   "ev": "no linear invariant, no cubic, only N² at quartic",
+   "dont": "Proves the invariant ring has one generator, not that no statistical or moduli-dependent selector exists (those are not ruled out)."
+  },
+  "completeness": {
+   "plain": "No exact formula can pick one vacuum out from another. The tadpole is 'complete' — which means the mathematics is blind to the differences. It is a no-go: searching for an exact selector is provably fruitless.",
+   "ev": "SᵀJS = det S · J, symplectic ⟺ det 1, one SL(2) orbit",
+   "dont": "Proves no EXACT invariant selector exists, not that statistical selection is impossible (it is not)."
+  },
+  "pr-box": {
+   "plain": "The PR box is the wildest thing the universe allows without signalling faster than light — it hits CHSH = 4, above the quantum 2√2. It is the ceiling: quantum sits between the classical wall (2) and the PR box (4).",
+   "ev": "chsh(prbox) = 4 — the ceiling",
+   "dont": "Proves the PR box saturates no-signaling at 4, not that the PR box is physically realizable (it is not in quantum theory)."
+  },
+  "sm-index": {
+   "plain": "The number of matter generations is a protected topological index — like the number of holes in a doughnut. It is 'free' (not fixed by the equations) but 'protected' (robust to small change). It cannot be drifted away.",
+   "ev": "the index is free but robust — Atiyah–Singer N_gen = |χ|/2",
+   "dont": "Proves N_gen is a protected index, not that 3 is derived from the index (it is still a free label)."
+  },
+  "black-hole-entropy": {
+   "plain": "The Bekenstein–Hawking entropy — S = A/4G — is not a dial the universe turns. It is the entanglement-area law with the cut drawn at the horizon: a black hole is the state that saturates the bound, and nothing exceeds it. Entropy is area, not volume.",
+   "ev": "random-state (black hole) entropy S = 3.68 ≤ A/4G = 4.16 — the bound holds",
+   "dont": ""
+  },
+  "black-hole-unitarity": {
+   "plain": "Past the horizon, the information is not lost — it is re-encoded. A pure state stays pure under any unitary map, so the interior's information cannot vanish: it comes back out in the Hawking radiation's entanglement. The fact of unitarity is forced; the exact mechanism of the recovery is the open question.",
+   "ev": "unitary evaporation preserves purity = 1.00000000 — pure stays pure",
+   "dont": ""
+  },
+  "wang-criterion": {
+   "plain": "A spectral-gap argument can fail at a pointwise curvature ceiling — a spot where the local curvature is negative. The move: ask how much MEASURE that spot has, not how negative its curvature is. If the bad set is measure-negligible (like the antipode, weight e^{-2β}), the Lyapunov drift returns the measure to the dominant state, and the gap survives. Use this whenever a gap argument dies at a pointwise ceiling: check the failing set's measure.",
+   "ev": "the SU(2) antipode (weight e^{-2β}) is measure-suppressed — the Lyapunov drift returns the measure to the trivial connection",
+   "dont": ""
+  },
+  "concentration-gap": {
+   "plain": "The gap is not a curvature bound — it is a concentration rate. The Wilson measure concentrates on the trivial connection, and the spectral gap is exactly how fast it does. When a 'curvature' picture stalls, reframe: the gap is the leak rate from the dominant state to everything else.",
+   "ev": "log-Sobolev ⟹ Poincaré: the concentration rate IS the spectral gap",
+   "dont": ""
+  },
+  "mode-sum-exponent": {
+   "plain": "An exponent that looks like it needs 'one more tunneling event' may instead be a MODE SUM. The weak-coupling mass-gap exponent is the sum over all the low-momentum gluon modes, and that sum is the beta-function coefficient. Use this whenever an exponent seems to need one more mechanism: count the modes first.",
+   "ev": "the weak-coupling exponent c = 12π²/11 is the SUM over the low-momentum gluon modes = the beta-function",
+   "dont": ""
+  },
+  "gauge-orbit-quotient": {
+   "plain": "A 'ceiling' can sit on the gauge orbit — the flat direction of the trivial connection, which is pure gauge, not physics. Remove it: run the spectral machinery on the gauge-invariant quotient, not the full space. Use this whenever a flat direction is actually gauge redundancy.",
+   "ev": "the trivial connection's gauge orbit is a flat direction that is gauge, not physics — quotient removes it",
+   "dont": ""
+  },
+  "matchgate-seed": {
+   "plain": "The 'easy' quantum circuits — matchgates — have amplitudes that are Pfaffians, a determinant-like quantity a laptop can compute. The split is exact and kernel-checked: even dimensions square to the determinant, odd dimensions vanish. It is the mathematical seed of why some quantum systems are classically simulable.",
+   "ev": "2×2 and 4×4 Pf² = det; every odd-dim antisymmetric determinant = 0",
+   "dont": ""
+  },
+  "perfect-code-distance": {
+   "plain": "The smallest useful quantum error-correcting code — 5 qubits protecting 1 — can correct any single-qubit error. The distance-3 property is kernel-checked: no one- or two-qubit subsystem carries a stabilizer, which is the algebraic core of the code.",
+   "ev": "every non-identity product of the 4 code stabilizers has weight 4",
+   "dont": ""
+  },
+  "code-ame52": {
+   "plain": "The 5-qubit code state is 'absolutely maximally entangled' across any 2|3 split — every pair of qubits is maximally mixed. It is the stabilizer form of AME(5,2), the entanglement pattern that makes the code work.",
+   "ev": "every non-identity element of the 5-generator fixed-state group has weight ≥ 3",
+   "dont": ""
+  },
+  "happ-perfect-tensor": {
+   "plain": "Couple the 5-qubit code to a reference qubit and you get a perfect tensor — the HaPPY hexagon, the smallest building block of holographic error-correcting codes. Every 3-qubit subsystem is maximally mixed; that is the discrete Ryu–Takayanagi statement.",
+   "ev": "every non-identity element of the 6-generator group has weight ≥ 4",
+   "dont": ""
+  },
+  "ym-mass-gap-polyakov": {
+   "plain": "The SU(3) lattice keeps returning a positive screening mass, so the claim survives every falsifier tried — but there is no sorry-free Lean certificate, so it is computational, not FORCED. It is recorded as convergence evidence, not a proof.",
+   "ev": "m = 0.227 across sizes — survives every falsifier tried",
+   "dont": ""
+  }
+ },
+ "cat": {
+  "no-cloning": "foundations",
+  "no-broadcasting": "foundations",
+  "born-rule": "foundations",
+  "pbr": "foundations",
+  "mermin": "foundations",
+  "locc-no-entanglement": "foundations",
+  "chsh": "computing",
+  "bell-classical": "computing",
+  "clifford-polynomial": "computing",
+  "entanglement-area": "computing",
+  "mera-hyperbolic": "gravity",
+  "coupling-free": "gravity",
+  "gravity-quantum": "gravity",
+  "lovelock": "gravity",
+  "bianchi": "gravity",
+  "wdw": "gravity",
+  "dirac": "gravity",
+  "adm": "gravity",
+  "black-hole-entropy": "gravity",
+  "black-hole-unitarity": "gravity",
+  "hypercharge-uniqueness": "sm",
+  "anomaly-cancellation": "sm",
+  "generation-free": "sm",
+  "the-19": "sm",
+  "sm-index": "sm",
+  "mitchell-uniqueness": "landscape",
+  "constraint-first": "landscape",
+  "completeness": "landscape",
+  "pr-box": "foundations",
+  "matchgate-seed": "computing",
+  "perfect-code-distance": "computing",
+  "code-ame52": "computing",
+  "happ-perfect-tensor": "gravity",
+  "ym-mass-gap-polyakov": "gravity"
+ },
+ "cats": {
+  "foundations": {
+   "label": "Quantum foundations",
+   "desc": "The provable walls of quantum mechanics — what is impossible to do (clone, broadcast, entangle classically), what is forced (the Born rule, the state is real, Mermin's non-contextuality). If your field asks 'is the quantum state real?' or 'what does the math forbid?', this is it."
+  },
+  "computing": {
+   "label": "Quantum computing",
+   "desc": "The provable bounds — the classical wall 2 vs the quantum 2√2, which circuits are classically easy (Clifford) and which are not (the T gate), and the area-law bound on entanglement. If you benchmark or claim quantum advantage, these are the falsifiers."
+  },
+  "gravity": {
+   "label": "Quantum gravity & geometry",
+   "desc": "The kernel-checked MERA↔AdS ladder — entanglement = geometry, the discrete hyperbolicity (0-hyperbolicity), the area law — and the gravity constraints (Lovelock uniqueness, Bianchi, Wheeler–DeWitt, Dirac, ADM). If you work on AdS/CFT, tensor networks, or quantum gravity, this is your field."
+  },
+  "sm": {
+   "label": "Standard Model & prediction",
+   "desc": "What the Standard Model forces (anomaly cancellation, the unique hypercharge) and what it leaves free (the generation count, the 19 parameters). If you ask what physics can predict versus measure, this is the honest boundary."
+  },
+  "landscape": {
+   "label": "String landscape",
+   "desc": "The founding spine — the theorem tower: the tadpole is the unique invariant (Mitchell's Uniqueness), the invariant ring has one generator (Constraint-First), and no exact selector can single out a vacuum (Completeness). The machine-checked core behind 'relations, never values'."
+  }
+ },
+ "fields": [
+  {
+   "g": "Quantum information & cryptography",
+   "f": "Quantum key distribution (QKD)",
+   "p": [
+    "no-cloning",
+    "bell-classical",
+    "chsh"
+   ],
+   "w": "Interception is detectable because a qubit can't be copied without disturbance."
+  },
+  {
+   "g": "Quantum information & cryptography",
+   "f": "Device-independent QKD & randomness",
+   "p": [
+    "chsh",
+    "bell-classical",
+    "pr-box"
+   ],
+   "w": "A Bell violation above 2 is the only evidence of non-classicality with untrusted devices."
+  },
+  {
+   "g": "Quantum information & cryptography",
+   "f": "Quantum money & unforgeable tokens",
+   "p": [
+    "no-cloning"
+   ],
+   "w": "Unforgeability IS the no-cloning theorem."
+  },
+  {
+   "g": "Quantum information & cryptography",
+   "f": "Entanglement theory & networks",
+   "p": [
+    "locc-no-entanglement"
+   ],
+   "w": "Entanglement is a resource only because LOCC can't create it."
+  },
+  {
+   "g": "Quantum information & cryptography",
+   "f": "Quantum error correction",
+   "p": [
+    "no-cloning",
+    "no-broadcasting",
+    "clifford-polynomial"
+   ],
+   "w": "No copying forces entangled encoding; stabilizer codes are Clifford-tractable."
+  },
+  {
+   "g": "Quantum information & cryptography",
+   "f": "Quantum foundations (ψ-realism)",
+   "p": [
+    "pbr",
+    "mermin",
+    "born-rule"
+   ],
+   "w": "PBR/Mermin are the load-bearing theorems of the ψ-ontic debate."
+  },
+  {
+   "g": "Quantum information & cryptography",
+   "f": "Reconstructions of QM (\"why quantum\")",
+   "p": [
+    "pr-box",
+    "chsh",
+    "born-rule"
+   ],
+   "w": "These fix which non-signaling theory and probability rule are 'quantum'."
+  },
+  {
+   "g": "Quantum computing & benchmarking",
+   "f": "Randomized benchmarking",
+   "p": [
+    "clifford-polynomial"
+   ],
+   "w": "Cliffords are simulable and form a 2-design."
+  },
+  {
+   "g": "Quantum computing & benchmarking",
+   "f": "Loophole-free Bell tests",
+   "p": [
+    "bell-classical",
+    "chsh"
+   ],
+   "w": "2 is the threshold; 2√2 the quantum maximum."
+  },
+  {
+   "g": "Quantum computing & benchmarking",
+   "f": "Device-independent randomness & self-testing",
+   "p": [
+    "chsh",
+    "bell-classical"
+   ],
+   "w": "A Bell violation certifies un-predetermined outcomes."
+  },
+  {
+   "g": "Quantum computing & benchmarking",
+   "f": "Tensor-network simulation (DMRG/MPS/PEPS)",
+   "p": [
+    "entanglement-area"
+   ],
+   "w": "The area law is why low bond dimension is exact, not heuristic."
+  },
+  {
+   "g": "Geometry & holography",
+   "f": "Holographic duality (AdS/CFT)",
+   "p": [
+    "mera-hyperbolic",
+    "entanglement-area"
+   ],
+   "w": "The hyperbolic causal cone is the discrete bulk; the area law the discrete Ryu–Takayanagi."
+  },
+  {
+   "g": "Geometry & holography",
+   "f": "Holographic quantum error correction",
+   "p": [
+    "mera-hyperbolic",
+    "entanglement-area"
+   ],
+   "w": "HaPPY codes' distance follows from the RT-style area bound."
+  },
+  {
+   "g": "Geometry & holography",
+   "f": "Tensor networks for critical systems",
+   "p": [
+    "mera-hyperbolic",
+    "entanglement-area"
+   ],
+   "w": "MPS fails where the area law breaks; MERA works because its cone is hyperbolic."
+  },
+  {
+   "g": "Geometry & holography",
+   "f": "Spacetime emergence from entanglement",
+   "p": [
+    "mera-hyperbolic",
+    "entanglement-area"
+   ],
+   "w": "MERA is the model where cutting entanglement removes the radial direction."
+  },
+  {
+   "g": "Gravity & quantum gravity",
+   "f": "Numerical relativity",
+   "p": [
+    "adm",
+    "bianchi"
+   ],
+   "w": "The ADM constraints are the evolution equations; ∇·G=0 keeps them satisfied."
+  },
+  {
+   "g": "Gravity & quantum gravity",
+   "f": "Quantum cosmology",
+   "p": [
+    "wdw",
+    "dirac"
+   ],
+   "w": "Ĥ|ψ⟩=0 is the defining equation (Hartle–Hawking/Vilenkin)."
+  },
+  {
+   "g": "Gravity & quantum gravity",
+   "f": "Loop quantum gravity",
+   "p": [
+    "adm",
+    "dirac",
+    "wdw"
+   ],
+   "w": "LQG quantizes the ADM constraints; must recover WDW."
+  },
+  {
+   "g": "Gravity & quantum gravity",
+   "f": "Modified gravity / Horndeski",
+   "p": [
+    "lovelock"
+   ],
+   "w": "Every modified theory is defined by which Lovelock assumption it breaks."
+  },
+  {
+   "g": "Gravity & quantum gravity",
+   "f": "Higher-dimensional gravity",
+   "p": [
+    "lovelock"
+   ],
+   "w": "Gauss–Bonnet/Lovelock are the unique divergence-free actions in D>4."
+  },
+  {
+   "g": "Gravity & quantum gravity",
+   "f": "EFT of gravity",
+   "p": [
+    "coupling-free"
+   ],
+   "w": "Organized around G as a free, underived coupling."
+  },
+  {
+   "g": "Gravity & quantum gravity",
+   "f": "QG phenomenology (BMV)",
+   "p": [
+    "gravity-quantum"
+   ],
+   "w": "Ruling out classical hybrid gravity is the premise of entanglement-via-gravity tests."
+  },
+  {
+   "g": "Standard Model & beyond",
+   "f": "Beyond-SM model building",
+   "p": [
+    "anomaly-cancellation",
+    "hypercharge-uniqueness"
+   ],
+   "w": "New gauge sectors must keep anomalies cancelled and reproduce the unique hypercharge."
+  },
+  {
+   "g": "Standard Model & beyond",
+   "f": "Grand unification",
+   "p": [
+    "hypercharge-uniqueness",
+    "anomaly-cancellation"
+   ],
+   "w": "Hypercharge quantization + exact cancellation are the GUT signatures."
+  },
+  {
+   "g": "Standard Model & beyond",
+   "f": "String phenomenology",
+   "p": [
+    "sm-index",
+    "generation-free"
+   ],
+   "w": "N_gen=3 as a topological index is the bridge to compactification."
+  },
+  {
+   "g": "Standard Model & beyond",
+   "f": "Axion physics / strong CP",
+   "p": [
+    "the-19",
+    "anomaly-cancellation"
+   ],
+   "w": "θ_QCD is one of the 19; the axion resolves the anomaly."
+  },
+  {
+   "g": "Standard Model & beyond",
+   "f": "Precision electroweak / global fits",
+   "p": [
+    "the-19"
+   ],
+   "w": "A well-posed fit needs the exact free-parameter count."
+  },
+  {
+   "g": "Landscape, ToE & the method",
+   "f": "String flux landscape",
+   "p": [
+    "mitchell-uniqueness",
+    "constraint-first",
+    "completeness"
+   ],
+   "w": "The unique invariant separates vacua; 'no selector' is why enumeration resists."
+  },
+  {
+   "g": "Landscape, ToE & the method",
+   "f": "Topological quantum error correction",
+   "p": [
+    "mitchell-uniqueness",
+    "completeness"
+   ],
+   "w": "Topological order is the absence of a local order parameter — the 'no selector' theorem."
+  },
+  {
+   "g": "Landscape, ToE & the method",
+   "f": "Lattice gauge theory",
+   "p": [
+    "mitchell-uniqueness",
+    "completeness"
+   ],
+   "w": "The unique invariant fixes loop classes; 'no selector' is Gribov ambiguity."
+  },
+  {
+   "g": "Landscape, ToE & the method",
+   "f": "Model identifiability",
+   "p": [
+    "completeness",
+    "mitchell-uniqueness"
+   ],
+   "w": "Identifiability is whether a complete invariant + exact selector exists."
+  },
+  {
+   "g": "Landscape, ToE & the method",
+   "f": "Geometric deep learning",
+   "p": [
+    "constraint-first",
+    "mitchell-uniqueness"
+   ],
+   "w": "Equivariant nets are built on invariant theory; one generator is the minimal feature."
+  },
+  {
+   "g": "Landscape, ToE & the method",
+   "f": "Graph isomorphism",
+   "p": [
+    "mitchell-uniqueness",
+    "completeness"
+   ],
+   "w": "GI is the search for a complete invariant + selector; the no-go is its hardness boundary."
+  }
+ ]
+}
