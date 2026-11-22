@@ -29,4 +29,13 @@ def fssInfraredBound (J : ℝ → ℝ) (corr : ℝ → ℝ) : Prop :=
 theorem infrared_bound_gives_volume_uniform {gap : ℕ → ℝ} (h : ∃ c : ℝ, 0 < c ∧ ∀ m : ℕ, 0 < m → c ≤ gap m) :
     QM.volumeUniformGap gap := h
 
+/-- **The Gaussian domination (the final rung, stated).** The interacting partition function in an
+external field `f` is dominated by the free (Gaussian) partition function in the same field. For the
+gauge theory, `f` couples to the non-Abelian trace observable `Tr U_p` (the plaquette), and the free
+partition function is `e^{½ ⟨f, K^{-1} f⟩}` with the covariant kinetic `K`. This is the precise estimate
+the mass-gap reduction now rests on; proving it for the non-Abelian trace observables is the open
+constructive-QFT step. -/
+def gaussianDomination (Z : (ℝ → ℝ) → ℝ) (Zfree : (ℝ → ℝ) → ℝ) : Prop :=
+  ∀ f : ℝ → ℝ, Z f ≤ Zfree f
+
 end FSSInfraredBound
