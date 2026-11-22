@@ -138,6 +138,21 @@ def _cmd_scrape_github(a: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_benchmark(a: argparse.Namespace) -> int:
+    from dataclasses import asdict
+    from pacland import benchmarks as b
+    if a.live:
+        out = b.run_llm_benchmark(a.campaign, judged=a.judged)
+    else:
+        # offline: the straw-man arms prove the harness executes (no LLM, no cost)
+        arms = {"llm": b.five_jump_generator, "generic-llm": b.untyped_generator}
+        data = b.B_DATASET if a.campaign == "B" else b.DATASET
+        results = b.run_blinded(arms, a.campaign, data, matcher=b._full_word_matcher)
+        out = {**b.gate(results), "arms": [asdict(r) for r in results]}
+    print(json.dumps(out, indent=2))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="sextant", description="the Sextant discovery engine")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -210,6 +225,12 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("query", help="the GitHub search query (e.g. 'quantum' or 'yang-mills')")
     p.add_argument("--limit", type=int, default=3)
     p.set_defaults(fn=_cmd_scrape_github)
+
+    p = sub.add_parser("benchmark", help="run the G3 discovery benchmark (llm vs generic-llm baseline)")
+    p.add_argument("--campaign", choices=["A", "B"], default="A")
+    p.add_argument("--live", action="store_true", help="use the real LLM (SEXTANT_LLM_* must be set); default is the offline straw-man arms")
+    p.add_argument("--judged", action="store_true", help="use the LLM semantic judge instead of full-word match")
+    p.set_defaults(fn=_cmd_benchmark)
 
     a = ap.parse_args(argv)
     return a.fn(a)
