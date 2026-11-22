@@ -289,8 +289,9 @@ def wilson_flow_scale(beta, N=8, n_flow_steps=200, epsilon=0.05, target=0.08,
     t = 0.0
     E_prev = energy_density(links)
     t2E_prev = 0.0
+    eps_eff = epsilon * (4.0 / float(beta))  # g0^2 = 4/beta: the Wilson-flow rate
     for _ in range(n_flow_steps):
-        links = wilson_flow_step(links, epsilon)
+        links = wilson_flow_step(links, eps_eff)
         t += epsilon
         E = energy_density(links)
         t2E = t * t * E

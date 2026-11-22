@@ -9,6 +9,8 @@ Requires numba (installed on the Mac; `pip install numba` on a node).
 """
 from __future__ import annotations
 
+import math
+
 import numpy as np
 
 try:
@@ -92,6 +94,80 @@ if _HAVE_NUMBA:
                         links[mu, flat] = new
         return links
 
+    @njit
+    def _staple_sum_flat(links, mu, flat, strides, N):
+        """The sum of the 2(d-1) staples around link (mu, flat) — a 4-vector (numba)."""
+        d = links.shape[0]
+        Z = np.zeros(4)
+        for nu in range(d):
+            if nu == mu:
+                continue
+            s = strides[nu]
+            # forward staple: U_nu(x) U_mu(x+nu) U_nu(x+mu)^dag
+            xn = flat + s
+            if (flat // s) % N == N - 1:
+                xn -= N * s
+            xm = flat + strides[mu]
+            if (flat // strides[mu]) % N == N - 1:
+                xm -= N * strides[mu]
+            fwd = _qmul(links[nu, flat], links[mu, xn])
+            fwd = _qmul(fwd, _qconj(links[nu, xm]))
+            Z += fwd
+            # backward staple: U_nu(x-nu)^dag U_mu(x-nu) U_nu(x-nu+mu)
+            xnm = flat - s
+            if (flat // s) % N == 0:
+                xnm += N * s
+            xnm2 = xnm + strides[mu]
+            if (xnm // strides[mu]) % N == N - 1:
+                xnm2 -= N * strides[mu]
+            bwd = _qmul(_qconj(links[nu, xnm]), links[mu, xnm])
+            bwd = _qmul(bwd, links[nu, xnm2])
+            Z += bwd
+        return Z
+
+    @njit
+    def _wilson_flow_step_flat(links, epsilon):
+        """One Euler Wilson-flow step over a flat (d, N^d, 4) link array (numba)."""
+        d = links.shape[0]
+        nsites = links.shape[1]
+        N = round(nsites ** (1.0 / d))
+        strides = np.empty(d, dtype=np.int64)
+        for mu in range(d):
+            strides[mu] = N ** (d - 1 - mu)
+        out = links.copy()
+        for mu in range(d):
+            for flat in range(nsites):
+                V = links[mu, flat]
+                Z = _staple_sum_flat(links, mu, flat, strides, N)
+                w = _qmul(Z, _qconj(V))
+                f0, f1, f2 = w[1], w[2], w[3]
+                norm = math.sqrt(f0 * f0 + f1 * f1 + f2 * f2)
+                if norm < 1e-12:
+                    continue
+                theta = epsilon * norm
+                c = math.cos(theta)
+                s = math.sin(theta) / norm
+                out[mu, flat] = _qmul(np.array([c, s * f0, s * f1, s * f2]), V)
+        return out
+
+    @njit
+    def _energy_density_flat(links):
+        """The Wilson-flow energy density <1 - 1/2 Re Tr U_plaq> over a flat link array (numba)."""
+        d = links.shape[0]
+        nsites = links.shape[1]
+        N = round(nsites ** (1.0 / d))
+        strides = np.empty(d, dtype=np.int64)
+        for mu in range(d):
+            strides[mu] = N ** (d - 1 - mu)
+        total = 0.0
+        count = 0
+        for mu in range(d):
+            for nu in range(mu + 1, d):
+                for flat in range(nsites):
+                    total += 1.0 - 0.5 * _plaquette(links, mu, nu, flat, strides, N)
+                    count += 1
+        return total / count
+
 
 def metropolis_fast(links: np.ndarray, beta: float, n_sweeps: int, seed: int = 0) -> np.ndarray:
     """Drop-in numba replacement for `lattice_ym_su2.metropolis` (same shape in/out).
@@ -111,6 +187,41 @@ def metropolis_fast(links: np.ndarray, beta: float, n_sweeps: int, seed: int = 0
     return flat.reshape(links.shape)
 
 
-__all__ = ["metropolis_fast", "HAVE_NUMBA"]
+def wilson_flow_scale_fast(beta: float, N: int = 8, n_flow_steps: int = 200,
+                           epsilon: float = 0.05, target: float = 0.08,
+                           n_sweeps: int = 10, seed: int = 0):
+    """The Wilson-flow t0 scale (t^2 E = target) using the numba flow + metropolis.
+
+    Falls back to the pure-Python `lattice_ym_su2.wilson_flow_scale` if numba is missing."""
+    if not _HAVE_NUMBA:
+        from pacland import lattice_ym_su2 as lm
+        return lm.wilson_flow_scale(beta, N=N, n_flow_steps=n_flow_steps, epsilon=epsilon,
+                                    target=target, n_sweeps=n_sweeps, seed=seed)
+    from pacland import lattice_ym_su2 as lm
+
+    d = 4
+    nsites = N ** d
+    rng = np.random.default_rng(seed)
+    links = np.array([lm.random_su2(rng) for _ in range(d * nsites)])
+    links = links.reshape((d,) + (N,) * d + (4,))
+    flat = metropolis_fast(links, beta, n_sweeps, seed).reshape(d, nsites, 4)
+    eps_eff = epsilon * (4.0 / float(beta))  # g0^2 = 4/beta: the Wilson-flow rate
+    t = 0.0
+    t2E_prev = 0.0
+    for _ in range(n_flow_steps):
+        flat = _wilson_flow_step_flat(flat, eps_eff)
+        t += epsilon
+        E = _energy_density_flat(flat)
+        t2E = t * t * E
+        if t2E >= target:
+            if t2E > t2E_prev:
+                frac = (target - t2E_prev) / (t2E - t2E_prev)
+                return t - epsilon + epsilon * frac
+            return t
+        t2E_prev = t2E
+    return None
+
+
+__all__ = ["metropolis_fast", "wilson_flow_scale_fast", "HAVE_NUMBA"]
 
 HAVE_NUMBA = _HAVE_NUMBA
