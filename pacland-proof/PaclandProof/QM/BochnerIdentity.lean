@@ -27,11 +27,11 @@ S³ ≅ SU(2), with the drift `a(θ) = 2·cot θ − 2β·sin θ` whose derivati
 def su2_full_generator (β : ℝ) (f : ℝ → ℝ) : ℝ → ℝ :=
   fun θ => deriv (deriv f) θ + (2 * (Real.cos θ / Real.sin θ) - 2 * β * Real.sin θ) * deriv f θ
 
-/-- **The Bochner formula (the statement)**: for the full generator, `Γ₂(f) = (f'')² + κ(θ)·(f')²`
-where `κ(θ) = su2_curvature β θ = 1/4 + 2β·cos θ`. This is the standard Γ₂-calculus identity on S³ with
-the Wilson potential. -/
+/-- **The Bochner formula (the statement, corrected)**: the FULL S³ Γ₂ is the 1D Γ₂ plus the
+tangential Hessian `2·cot²θ·(f')²`, so `Γ₂_full(f) = (f'')² + su2_curvature·(f')²`. The tower's
+algebraic `Gamma2` is the 1D part; the tangential term is the missing differential-geometry input. -/
 def BochnerFormulaSu2 (β : ℝ) (f : ℝ → ℝ) (θ : ℝ) : Prop :=
-  Gamma2 (su2_full_generator β) f θ
+  Gamma2 (su2_full_generator β) f θ + 2 * (Real.cos θ / Real.sin θ) ^ 2 * (deriv f θ) ^ 2
     = (deriv (deriv f) θ) ^ 2 + su2_curvature β θ * carreDuChamp (su2_full_generator β) f f θ
 
 /-- **The SU(2) Bochner identity (the statement)**: `Γ₂(f) ≥ κ(θ)·Γ(f)` with κ = su2_curvature. This
