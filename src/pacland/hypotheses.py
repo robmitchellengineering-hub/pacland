@@ -217,6 +217,23 @@ HYPOTHESES: dict[str, dict] = {
         ],
         "attack": "audit MorpheOS's crypto (the AGENTS.md already notes ed25519 for the update payload) — read the code, name each primitive.",
     },
+    "mass-gap-renormalization": {
+        "question": "which renormalisation scheme carries the running-coupling exponential e^{−cβ} to the transfer-matrix spectral gap, and what is the specific lemma?",
+        "forced": "the transfer-matrix spectral bridge (clustering ⟺ gap, kernel-checked, no sorry) + the transport bridge (spectral radius → refereeScalingLaw, kernel-checked).",
+        "open": "the running-coupling estimate: a scheme giving λ₁(β) ≤ e^{−A·e^{−(12π²/11)β}} uniformly in volume.",
+        "candidates": [
+            {"hypothesis": "Polchinski flow equation: the exact RG flow's integrated coupling gives the scale Λ ~ μ e^{−1/(2b₀g²)}",
+             "falsifier": "the flow's scale does not reach e^{−cβ} uniformly in volume"},
+            {"hypothesis": "block-spin / decimation RG: the iterated block-spin map contracts with rate ρ = e^{−m} (the gap is the contraction rate)",
+             "falsifier": "the contraction rate → 1 (no gap) at weak coupling"},
+            {"hypothesis": "gradient flow / trivialising map (Lüscher): the Wilson flow trivialises the measure at a flow time t* that carries e^{cβ}",
+             "falsifier": "no flow-time lower bound reaches e^{−cβ}"},
+            {"hypothesis": "constructive RG (Balaban): the multi-scale cluster expansion's scale sum reaches e^{−cβ}",
+             "falsifier": "the scale sum stops short of the asymptotic-freedom scale"},
+        ],
+        "attack": "for each scheme, harvest the specific lemma that carries the running coupling, then judge the resulting bound through bound_search.check_bound.",
+        "progress": "the harvest identified the four schemes; none has a complete verified proof of the weak-coupling exponential (the claimed preprints are unverified + one is critiqued). The next step is the specific running-coupling lemma per scheme.",
+    },
 }
 
 
