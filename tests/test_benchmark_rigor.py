@@ -36,5 +36,30 @@ class TestBlindedScoring(unittest.TestCase):
         self.assertGreater(r["untyped-baseline"].cost, 0)
 
 
+class TestCapableBaseline(unittest.TestCase):
+    def test_generic_llm_baseline_uses_the_neutral_prompt(self):
+        from unittest import mock
+        with mock.patch.object(b, "_llm_config", return_value=("http://x/v1", "", "m")):
+            with mock.patch.object(b, "_ask_llm", return_value="one explanation\n- another") as ask:
+                out = b.generic_llm_generator("some observation")
+        prompt = ask.call_args[0][0]
+        # the neutral baseline must NOT carry the discovery framing (that is the whole point)
+        self.assertNotIn("scientific hypothesis generator", prompt)
+        self.assertIn("Explanations:", prompt)
+        self.assertEqual(out, ["one explanation", "another"])
+
+    def test_run_llm_benchmark_compares_llm_against_generic_llm(self):
+        from unittest import mock
+        # stub both arms to the toy generators so the comparison runs offline
+        with mock.patch.object(b, "llm_generator", b.five_jump_generator):
+            with mock.patch.object(b, "generic_llm_generator", b.untyped_generator):
+                out = b.run_llm_benchmark("A", judged=False)
+        arms = {a["arm"]: a for a in out["arms"]}
+        self.assertIn("llm", arms)
+        self.assertIn("generic-llm", arms)
+        self.assertIn("passed", out)
+        self.assertIn("engine_cost_per_found", out)
+
+
 if __name__ == "__main__":
     unittest.main()

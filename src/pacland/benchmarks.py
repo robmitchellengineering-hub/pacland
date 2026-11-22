@@ -182,7 +182,8 @@ def gate(results: list[ArmResult]) -> dict:
     so an engine cannot win by flooding the judge with cheap guesses.
     """
     by_arm = {r.arm: r for r in results}
-    engine, baseline = by_arm.get("llm"), by_arm.get("untyped-baseline")
+    engine = by_arm.get("llm")
+    baseline = next((r for r in results if r.arm != "llm"), None)
     if engine is None or baseline is None:
         return {"passed": False, "reason": "missing an arm"}
     e = engine.found / max(engine.problems, 1)
@@ -380,6 +381,44 @@ _PROMPT = (
     "Output ONE candidate per line, no numbering, no bullet, no explanation.\n\n"
     "Pre-state: {pre}\n\nCandidates:"
 )
+
+
+# The CAPABLE baseline: the SAME model, asked the SAME observation, but WITHOUT the discovery framing.
+# If the discovery prompt is worth anything, "llm" must beat this arm — it is not a straw-man that never
+# finds the jump, but the same LLM doing a neutral brainstorm.
+_NEUTRAL_PROMPT = (
+    "List possible explanations for the observation below, one per line.\n\n"
+    "Observation: {pre}\n\nExplanations:"
+)
+
+
+def generic_llm_generator(pre: str) -> list[str]:
+    """The capable baseline: the same LLM with a NEUTRAL prompt (no discovery framing, no few-shot).
+
+    This is the honest comparison — does the discovery PROMPT add recall over the same model asked to
+    just list explanations? A real engine must beat this arm, not just a straw-man.
+    """
+    endpoint, key, model = _llm_config()
+    if not model:
+        raise RuntimeError("SEXTANT_LLM_MODEL is not set — set SEXTANT_LLM_MODEL (and "
+                           "SEXTANT_LLM_ENDPOINT if not localhost) to run the real baseline")
+    text = _ask_llm(_NEUTRAL_PROMPT.format(pre=pre), endpoint, key, model)
+    return [line.strip().lstrip("-*•0123456789.) \t")
+            for line in text.splitlines()
+            if line.strip() and not line.strip().startswith(("#", "//"))]
+
+
+def run_llm_benchmark(campaign: str = "A", dataset: dict | None = None, judged: bool = True) -> dict:
+    """The real G3 measurement: the discovery-prompted LLM vs the NEUTRAL-prompt LLM, blind + cost-aware.
+
+    Returns the gate verdict + the two ArmResults. This is the benchmark that actually answers "does
+    the engine beat a capable baseline", not just a straw-man.
+    """
+    data = dataset or (B_DATASET if campaign == "B" else DATASET)
+    arms = {"llm": llm_generator, "generic-llm": generic_llm_generator}
+    matcher = judge_matches if judged else _full_word_matcher
+    results = run_blinded(arms, campaign, data, matcher=matcher)
+    return {**gate(results), "arms": [__import__("dataclasses").asdict(r) for r in results]}
 
 
 def llm_generator(pre: str) -> list[str]:
