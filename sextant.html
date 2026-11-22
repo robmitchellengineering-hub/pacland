@@ -205,7 +205,14 @@ section, .field, .out, .callout { scroll-margin-top: 24px; }
       <li>A candidate must yield a <strong>new prediction, proof technique or more efficient experiment</strong>.</li>
       <li><strong>Blind proposal and external expert assessment</strong> are part of the success criterion.</li>
     </ul>
-    <p class="small">Status: the core generate → falsify → record → rank → prove loop is reported built. The cross-field transfer layer is <strong>not built</strong>, and empirical validation / partner work remains a dependency in the plan.</p>
+    <p class="small">Status (per the assessment log): the core loop and the cross-field machinery are <strong>built</strong> — cross-reference, transfer verification, the known-unifications library (282+ known links), the constraint-first economics work, the novelty-search loop, and the solvers. What remains a dependency is <strong>empirical validation and partner work</strong>, and genuine novelty stays rare by design.</p>
+  </section>
+
+  <section id="economics">
+    <p class="eyebrow">Working example</p>
+    <h2>Constraint-first economics — soft fields, hard checks</h2>
+    <p>The same method that labels a physics claim FORCED / FREE / IMPOSSIBLE is applied to economics: state the structure, derive what follows from it, and record what remains free. Precise unifications let a soft field inherit the same verifiability as hard science — every claim carries its assumptions, its falsifier and its epistemic tier, and the <strong>encoding-check gate</strong> refuses a mapping that is formally valid but scientifically empty.</p>
+    <p class="small">This is the clearest “product in action” outside pure physics: the known-unifications library recognises established connections, and a candidate is only counted when it yields a new prediction, a proof technique, or a more efficient experiment. See the plan and the assessment log for the current state.</p>
   </section>
 
   <section id="roadmap">
@@ -214,7 +221,7 @@ section, .field, .out, .callout { scroll-margin-top: 24px; }
     <div class="callout">
       <p><strong>Working now:</strong> the claim registry, falsifiers, oracles, evidence and per-claim downloads on this page; the headless <code>sextant</code> CLI and <code>sextant-node</code>.</p>
       <p><strong>Partial / experimental:</strong> the formal proof arm — some lemmas are kernel-checked, others are derived or conjectural; treat each claim's own column as the authority.</p>
-      <p><strong>Planned:</strong> the cross-field transfer layer and its encoding-check gate.</p>
+      <p><strong>Planned:</strong> empirical validation and partner work; wiring the live claim registry into this page.</p>
       <p><strong>Open research questions:</strong> the Yang–Mills mass gap, and every claim whose verdict is not yet backed by a checked proof.</p>
     </div>
     <p>Contribute by inspecting a claim, reproducing a falsifier, challenging an assumption, improving a formalization, or helping with empirical validation.</p>
@@ -495,7 +502,7 @@ renderFields();
   var el = document.getElementById('claimcount');
   if (el) {
     var sim = CLAIMS.filter(function (c) { return /quantum-simulated/.test(c.oracle); }).length;
-    el.textContent = CLAIMS.length + ' claims in the live registry · ' + sim + ' carry a live simulated oracle — each claim\'s own proof/evidence column says what is checked vs tested';
+    el.textContent = CLAIMS.length + ' claims in the live registry (snapshot ' + new Date().toISOString().slice(0,10) + ') · ' + sim + ' carry a live simulated oracle — each claim\'s own proof/evidence column says what is checked vs tested';
   }
 })();
 </script>
