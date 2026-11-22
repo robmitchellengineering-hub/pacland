@@ -26,19 +26,17 @@ def diffusion_generator (a : ℝ → ℝ) (f : ℝ → ℝ) : ℝ → ℝ :=
   fun θ => deriv (deriv f) θ + a θ * deriv f θ
 
 /-- **The carré du champ is the squared derivative**: `Γ(f) = (f')²` for a diffusion generator. -/
-theorem carre_du_champ_is_squared_deriv (a f : ℝ → ℝ) (θ : ℝ) :
+theorem carre_du_champ_is_squared_deriv (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 2 f) :
     carreDuChamp (diffusion_generator a) f f θ = (deriv f θ) ^ 2 := by
   dsimp [carreDuChamp, diffusion_generator]
-  -- L(f²) = (f²)'' + a·(f²)' ;  2·f·Lf = 2f·(f'' + a·f')
-  -- L(f²) − 2·f·Lf = 2·(f')² , so Γ(f) = (f')²
   have h1 : deriv (fun t => f t * f t) θ = 2 * f θ * deriv f θ := by
     change deriv (f * f) θ = 2 * f θ * deriv f θ
-    rw [deriv_mul]
+    rw [deriv_mul (by fun_prop) (by fun_prop)]
     ring
   have h2 : deriv (deriv (fun t => f t * f t)) θ = 2 * (deriv f θ) ^ 2 + 2 * f θ * deriv (deriv f) θ := by
     change deriv (deriv (f * f)) θ = 2 * (deriv f θ) ^ 2 + 2 * f θ * deriv (deriv f) θ
-    rw [deriv_mul]
-    simp [deriv_mul, deriv_add]
+    rw [deriv_mul (by fun_prop) (by fun_prop)]
+    simp [deriv_mul, deriv_add, deriv_const_mul, mul_comm, mul_left_comm, mul_assoc]
     ring
   rw [h1, h2]
   ring
