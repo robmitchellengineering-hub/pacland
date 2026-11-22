@@ -50,6 +50,32 @@ carries the `e^{−cβ}` exponent derived from `b₀`.
 Each is a `sorry`-target the churn loop (with me as the LLM) grinds; the kernel refuses anything but a
 real proof.
 
+## The jump at 3b (2026-11-22 harvest) — the heat-kernel determinant is the structure
+
+The harvest located the specific transferable structure that derives `c` from the beta function: the
+**heat-kernel determinant**. The chain is
+
+```
+det P = e^{−Tr log P}          (the weak-coupling partition function is a Gaussian determinant)
+Tr log P ~ ∫ a₂(x,x) log(Λ²/μ²)   (the Seeley–DeWitt coefficient a₂ carries the beta function)
+        ⟹  Z ~ e^{−cβ}          (the determinant's scale is the running coupling)
+```
+
+The `a₂` heat-kernel coefficient *is* the beta function (`a₂ ∝ b₀`), so the determinant
+`e^{−Tr log P}` yields the exponent `c` **derived, not fitted**. The remaining move is to connect the
+determinant's scale to the **spectral gap** — the smallest eigenvalue of the inverse propagator `P` is
+the mass, so `m ≥ (the determinant's scale) = e^{−cβ}`. That is the single sub-lemma to formalise:
+
+```
+m(β) = inf spec P(β)   and   det P(β) ≥ e^{−2cβ}   ⟹   m(β) ≥ A·e^{−cβ}
+```
+
+So the jump at 3b is concrete: **formalise the heat-kernel determinant of the weak-coupling YM
+propagator, show `a₂` gives `c`, and bound the spectral gap by the determinant's scale.** Each piece is
+a `sorry`-target; the heat-kernel coefficient is the transferable structure (differential geometry →
+running coupling → mass gap).
+
+
 ## The honest boundary
 
 Steps 1–2 and 3a are done and kernel-checked. Step 3b (the weak-coupling running-coupling scale) is the
