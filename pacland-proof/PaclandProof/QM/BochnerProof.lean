@@ -82,7 +82,6 @@ theorem cross_carre_du_champ (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 4
     carreDuChamp (diffusion_generator a) f (diffusion_generator a f) θ
       = deriv f θ * deriv (diffusion_generator a f) θ := by
   have hg : ContDiff ℝ 2 (diffusion_generator a f) := by
-    dsimp [diffusion_generator]
     fun_prop
   exact carre_du_champ_eq_mul a f (diffusion_generator a f) θ (hf.of_le (by norm_num)) hg
 
