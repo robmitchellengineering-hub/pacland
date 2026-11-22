@@ -90,6 +90,29 @@ def search_mathlib(keyword: str, dir: Path | None = None, limit: int = 10) -> li
     return hits[:limit]
 
 
+def _clone_repo(repo_url: str, tmp: str = "/tmp") -> tuple[Path | None, str]:
+    """Shallow-clone a repo into a temp dir keyed by its name; returns (target, error)."""
+    name = repo_url.rstrip("/").split("/")[-1].removesuffix(".git") or "lean-repo"
+    target = Path(tmp) / f"sextant-{name}"
+    if (target / ".git").exists():
+        return target, ""
+    r = subprocess.run(["git", "clone", "--depth", "1", repo_url, str(target)],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        return None, f"clone failed: {r.stderr.strip()[:200]}"
+    return target, ""
+
+
+def _scan_theorems(target: Path) -> list[dict]:
+    """The FULL list of (name, file) theorem/lemma declarations in a Lean tree."""
+    theorems: list[dict] = []
+    for p in sorted(target.rglob("*.lean")):
+        text = p.read_text(errors="ignore")
+        for m in re.finditer(r"^\s*(?:theorem|lemma)\s+([A-Za-z0-9_']+)", text, re.M):
+            theorems.append({"name": m.group(1), "file": str(p.relative_to(target))})
+    return theorems
+
+
 def scrape_github_lean(repo_url: str, source: str = "", limit: int = 20, tmp: str = "/tmp") -> dict:
     """Clone an external Lean repo from the internet and scan it for theorems.
 
@@ -97,19 +120,50 @@ def scrape_github_lean(repo_url: str, source: str = "", limit: int = 20, tmp: st
     dir keyed by the repo name, so re-scraping the same repo re-uses the clone.
     """
     name = repo_url.rstrip("/").split("/")[-1].removesuffix(".git") or "lean-repo"
-    target = Path(tmp) / f"sextant-{name}"
-    if not (target / ".git").exists():
-        r = subprocess.run(["git", "clone", "--depth", "1", repo_url, str(target)],
-                           capture_output=True, text=True)
-        if r.returncode != 0:
-            return {"repo": repo_url, "error": f"clone failed: {r.stderr.strip()[:200]}"}
-    theorems: list[dict] = []
-    for p in sorted(target.rglob("*.lean")):
-        text = p.read_text(errors="ignore")
-        for m in re.finditer(r"^\s*(?:theorem|lemma)\s+([A-Za-z0-9_']+)", text, re.M):
-            theorems.append({"name": m.group(1), "file": str(p.relative_to(target))})
+    target, err = _clone_repo(repo_url, tmp)
+    if err:
+        return {"repo": repo_url, "error": err}
+    theorems = _scan_theorems(target)
     return {"repo": repo_url, "source": source or name, "lean_theorems": len(theorems),
             "sample": theorems[:limit]}
+
+
+def ingest_github_repo(repo_url: str, source: str = "", tmp: str = "/tmp") -> dict:
+    """Scrape a GitHub Lean repo and ingest ALL its theorems as namespaced tier-1 properties."""
+    from pacland import registry
+    name = repo_url.rstrip("/").split("/")[-1].removesuffix(".git") or "lean-repo"
+    target, err = _clone_repo(repo_url, tmp)
+    if err:
+        return {"error": err}
+    source = source or name
+    theorems = _scan_theorems(target)
+    for t in theorems:
+        registry.add(registry.Entry(
+            id=f"ext:{source}:lean-{t['name']}", kind="property",
+            payload={"name": t["name"],
+                     "statement": f"theorem {t['name']} (machine-checked, from {source})",
+                     "tier": 1, "domain": "mathematics", "source": t["file"]},
+            provenance={"produced_by": "external", "source": source, "method": "github-repo",
+                        "ts": __import__("time").time()}))
+    return {"source": source, "ingested": len(theorems)}
+
+
+def ingest_github_search(query: str, limit: int = 3, tmp: str = "/tmp", _search=None) -> dict:
+    """Search GitHub for Lean repos and INGEST all their theorems as tier-1 properties.
+
+    ``_search`` is injectable (defaults to the live GitHub search) so the pipeline is testable offline.
+    """
+    searcher = _search or (lambda q, n: [(r["url"], r["full_name"].replace("/", "-"))
+                                         for r in search_github_lean_repos(q, n)])
+    repos = searcher(query, limit)
+    results: list[dict] = []
+    total = 0
+    for url, source in repos:
+        r = ingest_github_repo(url, source=source, tmp=tmp)
+        total += r.get("ingested", 0)
+        results.append({"source": source, "url": url, "ingested": r.get("ingested", 0),
+                        "error": r.get("error")})
+    return {"query": query, "repos": results, "total_ingested": total}
 
 
 def ingest_mathlib_hits(keyword: str, limit: int = 10, source: str = "mathlib") -> dict:

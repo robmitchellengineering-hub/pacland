@@ -78,6 +78,21 @@ class TestLeanScrape(unittest.TestCase):
             self.assertEqual(r["total_theorems"], 2)
             self.assertEqual(len(r["repos"]), 2)
 
+    def test_ingest_github_repo_registers_tier1_properties(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp) / "repo"
+            repo.mkdir()
+            (repo / "T.lean").write_text("theorem my_theorem : True := by trivial\n")
+            for cmd in (["git", "init", "-q"], ["git", "config", "user.email", "t@t"],
+                        ["git", "config", "user.name", "t"], ["git", "add", "-A"],
+                        ["git", "commit", "-q", "-m", "x"]):
+                subprocess.run(cmd, cwd=str(repo), check=True)
+            r = lean_scrape.ingest_github_repo(f"file://{repo}", source="researcher-a", tmp=tmp)
+            self.assertEqual(r["ingested"], 1)
+            p = registry.get("property", "ext:researcher-a:lean-my_theorem")
+            self.assertIsNotNone(p)
+            self.assertEqual(p["payload"]["tier"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()
