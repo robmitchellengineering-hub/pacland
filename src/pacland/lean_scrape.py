@@ -189,17 +189,46 @@ def ingest_mathlib_hits(keyword: str, limit: int = 10, source: str = "mathlib") 
 def harvest_mathlib(keywords: list[str], limit_per_keyword: int = 10, source: str = "mathlib") -> dict:
     """Populate the library from Mathlib: batch-ingest the theorems matching a list of keywords.
 
-    This is the "bigger library of empirical truths" step — for each keyword, the matching Mathlib
-    theorems become tier-1 properties the engine can cite, so a campaign has a real substrate of
-    proven lemmas to synthesise over (not just the hand-seeded facts).
+    Each keyword is expanded through ``KEYWORD_ALIASES`` (a concept → the Mathlib spellings that
+    actually carry it), and matches are de-duplicated by theorem name. This is the "bigger library of
+    empirical truths" step — for each concept, the matching Mathlib theorems become tier-1 properties
+    the engine can cite.
     """
+    from pacland import registry
     total = 0
+    seen: set[str] = set()
     per: dict[str, int] = {}
     for kw in keywords:
-        r = ingest_mathlib_hits(kw, limit=limit_per_keyword, source=source)
-        per[kw] = r["ingested"]
-        total += r["ingested"]
+        terms = KEYWORD_ALIASES.get(kw, [kw])
+        n = 0
+        for term in terms:
+            for h in search_mathlib(term, limit=limit_per_keyword):
+                if h["name"] in seen:
+                    continue
+                seen.add(h["name"])
+                registry.add(registry.Entry(
+                    id=f"ext:{source}:lean-{h['name']}", kind="property",
+                    payload={"name": h["name"], "statement": h["statement"], "tier": 1,
+                             "domain": "mathematics", "source": h["file"]},
+                    provenance={"produced_by": "external", "source": source,
+                                "method": "mathlib-search",
+                                "ts": __import__("time").time()}))
+                n += 1
+                total += 1
+        per[kw] = n
     return {"harvested": total, "per_keyword": per}
+
+
+# A concept → the Mathlib spellings that actually carry it. Mathlib's naming is the gap this bridges:
+# "spectral" there is spectral SPACES (topology), not the spectral gap; "mixing" is ergodic theory.
+KEYWORD_ALIASES = {
+    "spectral gap": ["spectral", "eigenvalue", "spectrum", "spectralRadius"],
+    "mass gap": ["decay", "exponential", "superexponential", "clustering"],
+    "mixing": ["ergodic", "mixing", "mixingTime", "measurePreserving"],
+    "conservation": ["conserved", "energy", "invariant"],
+    "decay": ["decay", "exponential", "superexponential"],
+    "entropy": ["entropy"],
+}
 
 
 def search_github_lean_repos(query: str, limit: int = 5) -> list[dict]:
