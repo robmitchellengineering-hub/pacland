@@ -183,3 +183,40 @@ def verify_all_legitimate() -> dict:
             produced_by="track-legitimacy",
         )
     return {"all_legitimate": all_ok, "verdicts": verdicts}
+
+
+# ------------------------------------------------------------------------------------------ #
+# The race: run every track, map the outcome to the assumptions it clears, report the leader.
+# ------------------------------------------------------------------------------------------ #
+
+# What a falsifier DEMONSTRATES when it survives. Two tracks are unresolved (empty), two run for real.
+FALSIFIER_CLEARS: dict[str, set[str]] = {
+    "string-tension-positive": {"A2", "A4"},   # positivity + β-uniformity, numerically (Monte-Carlo)
+    "flow-curvature-bounded": {"A5"},          # non-perturbative (the exact RG flow)
+    "gribov-no-residual-copy": set(),          # unresolved until the Lean quotient lands
+    "curvature-measure-negligible": set(),     # unresolved until Wang's criterion is formalized
+}
+
+
+def run_race() -> dict:
+    """Action 6: run every track's falsifier, map the outcome to the assumptions it clears, and report
+    which track is closest to the volume-uniform bound. The leader is the first to clear A1 + A3."""
+    from pacland import research_program as rp
+    from pacland import runner
+    wire_falsifiers()
+    satisfied: dict[str, set[str]] = {}
+    for tid, meta in TRACK_HYPOTHESES.items():
+        falsifier_key = meta["candidates"][0]["falsifier"]
+        survived, evidence = runner.FALSIFIERS[falsifier_key]()
+        satisfied[tid] = FALSIFIER_CLEARS.get(falsifier_key, set()) if survived else set()
+        registry.record_claim(
+            f"claim-race-{tid}",
+            f"the {tid} track clears assumptions {sorted(satisfied[tid])}",
+            "survived" if survived else "failed",
+            problem=tid,
+            reason=evidence,
+            produced_by="race",
+        )
+    report = rp.report(satisfied)
+    report["satisfied_by_track"] = {k: sorted(v) for k, v in satisfied.items()}
+    return report

@@ -63,6 +63,13 @@ class TestTrackWiring(unittest.TestCase):
         claims = registry.claims("survived")
         self.assertTrue(any("legitimacy-coulomb" in c["id"] for c in claims))
 
+    def test_run_race_reports_the_leader(self):
+        r = tw.run_race()
+        self.assertIn("leader", r)
+        self.assertIn("leaderboard", r)
+        # no track has cleared A1 + A3 (the missing uniformity) yet — that is the honest state
+        self.assertFalse(r["any_full"])
+
 
 if __name__ == "__main__":
     unittest.main()
