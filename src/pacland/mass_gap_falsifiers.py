@@ -196,3 +196,65 @@ def verify_orbifold_curvature(beta: float = 2.5, Ns=(6, 8, 10), n_sweeps: int = 
                   f"K ≥ λ_min holds at finite N — the continuum (λ_phys = λ/a²) is the separate open test")
 
 
+def verify_rg_contraction(beta: float = 2.5, Ns=(8, 12), n_configs: int = 40,
+                          n_sweeps: int = 12) -> tuple[bool, str]:
+    """'one block-spin RG step contracts the YM measure (positive contraction coefficient)': block the
+    lattice N → N/2, measure the mass before (m = √σ) and after (m̄ = √σ̄ on the blocked lattice), and
+    require the contraction coefficient ρ = m̄/m to be measurably > 1 (the correlation length shrinks).
+
+    ρ → 2 is the gapped behaviour (the mass in lattice units doubles when the spacing doubles); ρ ≈ 1
+    means no contraction — the correlation length does not shrink — which refutes the claim. A negative
+    or noise-dominated σ (the same Polyakov caveat as Phase 2) is flagged 'unresolved', not 'survives'.
+    """
+    import math
+
+    import numpy as np
+    from pacland import lattice_ym_su2 as lm
+
+    def _sigma_of_correlator(C):
+        C = np.maximum(np.asarray(C), 1e-12)
+        V = -np.log(C)
+        R = np.arange(1, C.shape[0] + 1)
+        A = np.vstack([R, np.ones_like(R)]).T
+        sig, _ = np.linalg.lstsq(A, V, rcond=None)[0]
+        return float(sig)
+
+    def _blocked_sigma(beta, N, n_configs, n_sweeps, seed):
+        acc = None
+        for i in range(n_configs):
+            rng = np.random.default_rng(seed + i)
+            links = np.array([lm.random_su2(rng) for _ in range(4 * N ** 4)])
+            links = links.reshape((4,) + (N,) * 4 + (4,))
+            try:
+                from pacland.lattice_ym_su2_fast import metropolis_fast
+                links = metropolis_fast(links, beta, n_sweeps, seed + i)
+            except ImportError:
+                links = lm.metropolis(links, beta, rng, n_sweeps)
+            coarse = lm.block_links(links, b=2)
+            C = lm.polyakov_correlator(coarse, 3)
+            acc = C if acc is None else acc + C
+        return _sigma_of_correlator(acc / n_configs)
+
+    rho = {}
+    for N in Ns:
+        s_before = lm.string_tension_from_polyakov(
+            beta, N=N, n_configs=n_configs, n_sweeps=n_sweeps, seed=0)["sigma"]
+        s_after = _blocked_sigma(beta, N, n_configs, n_sweeps, seed=1000)
+        rho[N] = math.sqrt(s_after / s_before) if (s_before > 1e-9 and s_after > 1e-9) else float("nan")
+
+    curve = ", ".join(f"ρ(N={N})={v:.3f}" for N, v in rho.items())
+    first, last = rho[Ns[0]], rho[Ns[-1]]
+    if math.isnan(last):
+        return False, (f"RG contraction: {curve} → σ is noise-dominated at the available N/configs "
+                       f"— unresolved (demonstration, not a measurement)")
+    contracting = last > 1.2          # measurably > 1 (the correlation length shrinks)
+    conv = _converged(first, last)
+    if not contracting:
+        return False, (f"RG contraction: {curve} → ρ ≈ 1 (no contraction) — the block-spin claim is refuted")
+    if not conv:
+        return True, (f"RG contraction: {curve} → ρ > 1 (contraction present) but does NOT converge "
+                      f"between lattice sizes — unresolved, not a stable measurement")
+    return True, (f"RG contraction: {curve} → ρ > 1 and converges — the block-spin step contracts the "
+                  f"measure at this β; the continuum persistence is the separate open test")
+
+

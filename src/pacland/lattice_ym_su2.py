@@ -306,7 +306,43 @@ def wilson_flow_scale(beta, N=8, n_flow_steps=200, epsilon=0.05, target=0.08,
     return None
 
 
+def block_links(links: np.ndarray, b: int = 2) -> np.ndarray:
+    """One block-spin step: `(d,) + (N,)*d + (4,)` -> `(d,) + (N//b,)*d + (4,)`.
+
+    The block link in direction `μ` is the projected average (normalised quaternion) of the `b^(d-1)`
+    straight 2-link paths across each block face. This is the deterministic map `U → Ū` (no Monte-Carlo
+    at the blocking step) that the RG-contraction falsifier measures against.
+    """
+    d = links.shape[0]
+    N = links.shape[1]
+    if N % b != 0:
+        raise ValueError(f"block size {b} does not divide N={N}")
+    Nc = N // b
+    coarse = np.zeros((d,) + (Nc,) * d + (4,))
+    for mu in range(d):
+        for cidx in np.ndindex((Nc,) * d):
+            acc = np.zeros(4)
+            for face in np.ndindex((b,) * (d - 1)):
+                x = [b * cidx[k] for k in range(d)]
+                fi = 0
+                for nu in range(d):
+                    if nu == mu:
+                        continue
+                    x[nu] += face[fi]
+                    fi += 1
+                x[mu] = b * cidx[mu] + (b - 1)   # the last mu-layer — the face between the two blocks
+                x1 = tuple(x)
+                x2 = list(x)
+                x2[mu] = (x2[mu] + 1) % N
+                path = qmul(links[mu][x1], links[mu][tuple(x2)])
+                acc += path
+            n = float(np.linalg.norm(acc))
+            coarse[mu][cidx] = acc / n if n > 1e-12 else np.array([1.0, 0.0, 0.0, 0.0])
+    return coarse
+
+
 __all__ = ["qmul", "qconj", "random_su2", "plaquette_trace", "metropolis",
            "wilson_loop", "creutz_ratio", "measure_string_tension",
            "polyakov_loops", "polyakov_correlator", "string_tension_from_polyakov", "scale_a",
-           "staple_sum", "wilson_flow_step", "energy_density", "wilson_flow_scale"]
+           "staple_sum", "wilson_flow_step", "energy_density", "wilson_flow_scale",
+           "block_links"]
