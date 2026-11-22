@@ -110,6 +110,11 @@ pre { background: #050a11 !important; border: 1px solid var(--sx-line); border-r
 .actions { gap: 10px; }
 .small { font-size: .84rem; }
 section, .field, .out, .callout { scroll-margin-top: 24px; }
+.chips { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 4px; }
+.chip { font:700 .66rem/1.5 ui-monospace,SFMono-Regular,monospace; letter-spacing:.09em; text-transform:uppercase; padding:3px 9px; border-radius:999px; border:1px solid; white-space:nowrap; }
+.chip-kernel { color:var(--sx-green); border-color:rgba(115,214,160,.4); background:rgba(115,214,160,.08); }
+.chip-num { color:var(--sx-cyan); border-color:rgba(98,215,232,.4); background:rgba(98,215,232,.08); }
+.claimlist li .mini { margin-left:auto; font:600 .66rem ui-monospace,monospace; color:var(--sx-green); }
 @media (max-width: 760px) {
   .wrap { width: min(100% - 28px, 680px); padding-top: 18px; }
   .grid { grid-template-columns: 1fr; }
@@ -413,7 +418,7 @@ function renderList(filter) {
   hits.forEach(c => {
     const li = document.createElement('li');
     li.className = 'claim';
-    li.innerHTML = `<span class="glyph verdict-${c.v}">${G[c.v]}</span><span>${c.id.replace(/-/g,' ')}</span>`;
+    li.innerHTML = `<span class="glyph verdict-${c.v}">${G[c.v]}</span><span>${c.id.replace(/-/g,' ')}</span>${/kernel-checked/.test(c.oracle) ? '<span class="mini">kernel</span>' : ''}`;
     li.onclick = () => { document.querySelectorAll('.claim').forEach(x=>x.classList.remove('active')); li.classList.add('active'); renderClaim(c); };
     list.appendChild(li);
   });
@@ -423,6 +428,7 @@ function renderClaim(c) {
   const x = EXTRA[c.id] || {};
   out.innerHTML = `
     <h2><span class="big verdict-${c.v}">${G[c.v]} ${c.v}</span></h2>
+    <div class="chips">${/kernel-checked/.test(c.oracle) ? '<span class="chip chip-kernel">kernel-checked</span>' : ''}${/quantum-simulated/.test(c.oracle) ? '<span class="chip chip-num">numerically verified</span>' : ''}</div>
     <p><strong>${c.id.replace(/-/g,' ')}</strong></p>
     <dl class="proof">
       <dt>Theorem</dt><dd>${c.claim}.</dd>
@@ -437,7 +443,7 @@ function renderClaim(c) {
       <h3>What it does <em>not</em> say</h3>
       <p class="muted">${(typeof x === 'string' ? x : '')}</p>
     </div>
-    <button class="btn ghost" onclick="downloadClaim('${c.id}')">Download this proof (.txt)</button>
+    <p class="actions"><button class="btn ghost" onclick="downloadClaim('${c.id}')">Download this proof (.txt)</button><a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md">Reproduce — run the falsifier</a></p>
   `;
 }
 
