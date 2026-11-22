@@ -100,12 +100,13 @@ theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
   have ha1 : Differentiable ℝ a := ha.differentiable (by norm_num)
   -- (1) ((f')²)' = 2·f'·f''
   have hderiv_sq : deriv (fun y => (deriv f y) ^ 2) θ = 2 * deriv f θ * deriv (deriv f) θ := by
-    change deriv ((deriv f) * (deriv f)) θ = _
+    rw [show (fun y => (deriv f y) ^ 2) = (fun y => (deriv f y) * (deriv f y)) by funext y; ring]
     rw [deriv_mul (hf1' θ) (hf1' θ)]
     ring
   -- (2) ((f')²)'' = 2·(f'')² + 2·f'·f'''
   have hderiv_sq2 : deriv (deriv (fun y => (deriv f y) ^ 2)) θ
       = 2 * (deriv (deriv f) θ) ^ 2 + 2 * deriv f θ * deriv (deriv (deriv f)) θ := by
+    rw [show (fun y => (deriv f y) ^ 2) = (fun y => (deriv f y) * (deriv f y)) by funext y; ring]
     change deriv (deriv ((deriv f) * (deriv f))) θ = _
     have hfun : deriv ((deriv f) * (deriv f)) = fun y => 2 * deriv f y * deriv (deriv f) y := by
       funext y
@@ -119,8 +120,7 @@ theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
   -- (3) (Lf)' = f''' + a'·f' + a·f''
   have hLf' : deriv (diffusion_generator a f) θ
       = deriv (deriv (deriv f)) θ + deriv a θ * deriv f θ + a θ * deriv (deriv f) θ := by
-    dsimp [diffusion_generator]
-    change deriv ((deriv (deriv f)) + a * deriv f) θ = _
+    change deriv (fun x => deriv (deriv f) x + a x * deriv f x) θ = _
     rw [deriv_add (hf1'' θ) ((ha1.mul hf1') θ)]
     rw [deriv_mul (ha1 θ) (hf1' θ)]
     ring
