@@ -32,12 +32,13 @@ theorem carre_du_champ_is_squared_deriv (a f : ℝ → ℝ) (θ : ℝ) :
   -- L(f²) = (f²)'' + a·(f²)' ;  2·f·Lf = 2f·(f'' + a·f')
   -- L(f²) − 2·f·Lf = 2·(f')² , so Γ(f) = (f')²
   have h1 : deriv (fun t => f t * f t) θ = 2 * f θ * deriv f θ := by
-    rw [deriv_mul]
-    ring_nf
+    rw [← pow_two]
+    simp [deriv_mul]
+    ring
   have h2 : deriv (deriv (fun t => f t * f t)) θ = 2 * (deriv f θ) ^ 2 + 2 * f θ * deriv (deriv f) θ := by
-    rw [deriv_mul]
-    ring_nf
-  dsimp
+    rw [h1]
+    simp [deriv_mul]
+    ring
   rw [h1, h2]
   ring
 
