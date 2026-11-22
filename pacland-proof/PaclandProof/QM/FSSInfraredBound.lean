@@ -58,4 +58,17 @@ They are not two proofs to conjoin afterwards; they are the one bound on the one
 must use them together from the start. -/
 def massGapUnified (mGap : ℝ → ℝ) : Prop := QM.refereeScalingLaw mGap
 
+/-- **The RG contraction — one map, one rate.** The block-spin map `T β` contracts at rate `e^{−Δ β}`:
+`|T β x − T β y| ≤ e^{−Δ β} · |x − y|`. The contraction rate `Δ β` IS the gap, and its β-dependence IS
+the running coupling — so this single contraction is where the two mechanisms are the same object. -/
+def rgContraction (T : ℝ → ℝ → ℝ) (Δ : ℝ → ℝ) : Prop :=
+  ∀ β : ℝ, ∀ x y : ℝ, |T β x - T β y| ≤ Real.exp (-Δ β) * |x - y|
+
+/-- **The unified mass-gap theorem — the single open target.** The contraction rate `Δ β` (the gap)
+satisfies the running-coupling bound `Δ β ≥ A·e^{−cβ}` (the scale). This is the ONE statement to prove:
+the RG contraction's rate is the mass gap and carries the beta-function scale in the same exponent.
+`massGapUnified` and `rgContraction` meet here — the gap (from the contraction) and the scale (from the
+running coupling) are the one bound on the one object. -/
+def rgContractionMassGap (Δ : ℝ → ℝ) : Prop := QM.refereeScalingLaw Δ
+
 end FSSInfraredBound
