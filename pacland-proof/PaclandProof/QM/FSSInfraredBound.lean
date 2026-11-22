@@ -106,7 +106,7 @@ theorem contraction_iterate_decay {T : ℝ → ℝ} {Δ : ℝ}
         _ ≤ Real.exp (-Δ) * (Real.exp (-Δ * (n : ℝ)) * |x - y|) := by
           exact mul_le_mul_of_nonneg_left hind (le_of_lt (Real.exp_pos (-Δ)))
         _ = Real.exp (-Δ * ((n : ℝ) + 1)) * |x - y| := by
-          rw [← Real.exp_add]
+          rw [mul_assoc, ← Real.exp_add]
           congr 1
           ring
         _ = Real.exp (-Δ * ((n + 1 : ℕ) : ℝ)) * |x - y| := by
