@@ -433,28 +433,29 @@ theorem physical_mass_gap_constant_pos (C c β : ℝ) (hC : 0 < C) :
   exact hC
 
 /-- **The Gribov–Zwanziger gap equation (the horizon condition).** The Gribov parameter `γ` is the
-FIXED POINT `γ⁴ = μ⁴·e^{−1/(b₀·g²)}` (the self-consistency). Its solution is the AF scale — the
-NON-PERTURBATIVE mechanism: the gap equation DETERMINES the scale from the coupling. -/
-def gapEquation (γ μ b₀ g : ℝ) : Prop := γ^4 = μ^4 * Real.exp (-1 / (b₀ * g^2))
+FIXED POINT `γ⁴ = μ⁴·e^{−4/(b₀·g²)}` (the self-consistency). Its solution is the AF scale — the
+NON-PERTURBATIVE mechanism: the gap equation DETERMINES the scale from the coupling. The exponent is
+`−4/(b₀g²)` so that the solution `γ = μ·e^{−1/(b₀g²)}` matches `log_gap_to_exp` (the factor-of-4 fix). -/
+def gapEquation (γ μ b₀ g : ℝ) : Prop := γ^4 = μ^4 * Real.exp (-4 / (b₀ * g^2))
 
--- The gap equation is WELL-POSED: the solution γ = μ·e^{−1/(4b₀·g²)} satisfies it (the self-consistency
--- holds). The exponent −1/(4b₀g²) is the dimensional transmutation — the scale is generated.
-/-- **The gap equation is well-posed:** `γ = μ·e^{−1/(4b₀·g²)}` satisfies it — the dimensional
+-- The gap equation is WELL-POSED: the solution γ = μ·e^{−1/(b₀·g²)} satisfies it (the self-consistency
+-- holds). The exponent −1/(b₀g²) is the dimensional transmutation — the scale is generated.
+/-- **The gap equation is well-posed:** `γ = μ·e^{−1/(b₀·g²)}` satisfies it — the dimensional
 transmutation generates the scale. -/
 theorem gap_equation_well_posed (μ b₀ g : ℝ) (hb₀ : b₀ ≠ 0) (hg : g ≠ 0) :
-    gapEquation (μ * Real.exp (-1 / (4 * b₀ * g^2))) μ b₀ g := by
+    gapEquation (μ * Real.exp (-1 / (b₀ * g^2))) μ b₀ g := by
   unfold gapEquation
   rw [mul_pow]
-  have hpow : (Real.exp (-1 / (4 * b₀ * g^2)))^4 = Real.exp (-1 / (b₀ * g^2)) := by
-    have harg : 4 * (-1 / (4 * b₀ * g^2)) = -1 / (b₀ * g^2) := by field_simp [hb₀, hg]
+  have hpow : (Real.exp (-1 / (b₀ * g^2)))^4 = Real.exp (-4 / (b₀ * g^2)) := by
+    have harg : 4 * (-1 / (b₀ * g^2)) = -4 / (b₀ * g^2) := by field_simp [hb₀, hg]
     rw [← Real.exp_nat_mul]
     simpa [harg]
   rw [hpow]
 
--- The solution's scale: γ = μ·e^{−1/(4b₀·g²)} is the AF scale (Λ), and γ > 0 — the Gribov parameter is
+-- The solution's scale: γ = μ·e^{−1/(b₀·g²)} is the AF scale (Λ), and γ > 0 — the Gribov parameter is
 -- a genuine positive mass scale (the mass gap's square root, σ_Coul ~ γ² > 0).
 theorem gribov_parameter_positive (μ b₀ g : ℝ) (hμ : 0 < μ) :
-    0 < μ * Real.exp (-1 / (4 * b₀ * g^2)) :=
+    0 < μ * Real.exp (-1 / (b₀ * g^2)) :=
   mul_pos hμ (Real.exp_pos _)
 
 
