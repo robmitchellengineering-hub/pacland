@@ -71,4 +71,17 @@ the RG contraction's rate is the mass gap and carries the beta-function scale in
 running coupling) are the one bound on the one object. -/
 def rgContractionMassGap (Δ : ℝ → ℝ) : Prop := QM.refereeScalingLaw Δ
 
+/-- **The scaling-law bound is positive.** A witness `A > 0` with `A·e^{−cβ} ≤ mGap β` forces
+`0 < mGap β` for every `β > 0` — the positivity of the mass gap delivered by the scaling law. -/
+theorem scaling_law_bound_positive {mGap : ℝ → ℝ} (h : QM.refereeScalingLaw mGap) (β : ℝ) (hβ : 0 < β) :
+    0 < mGap β := by
+  rcases h with ⟨A, hA0, hbound⟩
+  exact lt_of_lt_of_le (mul_pos hA0 (Real.exp_pos _)) (hbound β hβ)
+
+/-- **The running-coupling radius bound is positive.** The double exponential `A·e^{−cβ}` is positive
+whenever `A > 0` — the `hpos` the transport bridge needs to carry the radius bound to the scaling law. -/
+theorem running_coupling_radius_positive {A c β : ℝ} (hA : 0 < A) :
+    0 < A * Real.exp (-c * β) := by
+  exact mul_pos hA (Real.exp_pos _)
+
 end FSSInfraredBound
