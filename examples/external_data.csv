@@ -1,0 +1,3 @@
+domain,dataset,what,tier
+geology,Theis 1935,drawdown follows the Theis curve (diffusive scaling),4
+geology,Cooper-Jacob 1946,log-time drawdown is linear in the far field,4

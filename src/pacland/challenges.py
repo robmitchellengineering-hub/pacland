@@ -43,6 +43,10 @@ class Candidate:
     falsifier: str = ""
     assumptions: list[str] = field(default_factory=list)
     theorem: str = ""    # the Lean theorem it claims, if any
+    # The (survived, evidence) the runner's falsifier ALREADY computed. When supplied, the mechanical
+    # falsifier stages use it instead of re-running (and instead of looking up by name). survived may be
+    # None (a falsifier ran but the verdict is approximate/unresolved → INCONCLUSIVE).
+    falsifier_result: tuple[bool | None, str] | None = None
 
 
 CHALLENGES = [
@@ -193,21 +197,32 @@ def run_sequence(c: Candidate) -> list[ChallengeResult]:
     else:
         add("known-results", "mechanical", "NOT_APPLICABLE", "SEXTANT not importable")
 
-    # 4: boundary-testing — mechanical (RUN the falsifier: it probes the limiting/extreme case)
-    if phantom is not None and c.name in getattr(phantom, "FALSIFIERS", {}):
+    # 4: boundary-testing — mechanical (the falsifier probes the limiting/extreme case).
+    # The runner's already-computed falsifier result is authoritative; otherwise fall back to a live
+    # run keyed by c.falsifier (NOT c.name — the runner's name is a generated id, not a falsifier key).
+    if c.falsifier_result is not None:
+        survived, ev = c.falsifier_result
+        verdict = ("PASS" if survived is True else "FAIL" if survived is False else "INCONCLUSIVE")
+        add("boundary-testing", "mechanical", verdict, ev + " [runner-supplied falsifier result]")
+    elif phantom is not None and c.falsifier in getattr(phantom, "FALSIFIERS", {}):
         try:
-            ok, ev = phantom.FALSIFIERS[c.name]()
+            ok, ev = phantom.FALSIFIERS[c.falsifier]()
             add("boundary-testing", "mechanical", ("PASS" if ok else "FAIL"), ev)
         except Exception as exc:  # noqa: BLE001
             add("boundary-testing", "mechanical", "INCONCLUSIVE",
                 f"falsifier raised {type(exc).__name__}: {exc}")
     else:
-        add("boundary-testing", "mechanical", "FAIL", "no runnable falsifier — cannot be boundary-tested")
+        add("boundary-testing", "mechanical", "INCONCLUSIVE",
+            "no runnable falsifier — untested, not refuted")
 
-    # 5: counterexample-search — mechanical (the live Phantom falsifier)
-    if phantom is not None and c.name in getattr(phantom, "FALSIFIERS", {}):
+    # 5: counterexample-search — mechanical (the live Phantom falsifier, or the runner's result)
+    if c.falsifier_result is not None:
+        survived, ev = c.falsifier_result
+        verdict = ("PASS" if survived is True else "FAIL" if survived is False else "INCONCLUSIVE")
+        add("counterexample-search", "mechanical", verdict, ev + " [runner-supplied falsifier result]")
+    elif phantom is not None and c.falsifier in getattr(phantom, "FALSIFIERS", {}):
         try:
-            ok, ev = phantom.FALSIFIERS[c.name]()
+            ok, ev = phantom.FALSIFIERS[c.falsifier]()
             add("counterexample-search", "mechanical",
                 ("PASS" if ok else "FAIL"), ev)
         except Exception as exc:
@@ -221,10 +236,10 @@ def run_sequence(c: Candidate) -> list[ChallengeResult]:
     add("alternative-explanation", "model-judged", v, ev)
 
     # 7: reproducibility — mechanical (run the falsifier twice, require determinism)
-    if phantom is not None and c.name in getattr(phantom, "FALSIFIERS", {}):
+    if phantom is not None and c.falsifier in getattr(phantom, "FALSIFIERS", {}):
         try:
-            a = phantom.FALSIFIERS[c.name]()
-            b = phantom.FALSIFIERS[c.name]()
+            a = phantom.FALSIFIERS[c.falsifier]()
+            b = phantom.FALSIFIERS[c.falsifier]()
             add("reproducibility", "mechanical",
                 ("PASS" if a == b else "FAIL"), "two runs " + ("agree" if a == b else "disagree"))
         except Exception as exc:

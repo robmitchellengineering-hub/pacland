@@ -161,7 +161,8 @@ class TestPairedSeedsAndCutoff(unittest.TestCase):
                            env={**os.environ, "PYTHONPATH": "src"})
             with open(out) as fh:
                 lines = fh.read().splitlines()
-        self.assertEqual(len(lines), 10 + 10 + 3 + 10)  # historical + disguised + post-cutoff + synthetic
+        self.assertEqual(len(lines), len(b.DATASET) + len(b.DISGUISED_DATASET)
+                         + len(b.POST_CUTOFF_DATASET) + 10)  # historical + disguised + post-cutoff + synthetic
 
 
 class TestJudge(unittest.TestCase):

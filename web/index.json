@@ -109,6 +109,13 @@
    "title": "SEXTANT \u2014 the cross-field verified-discovery system (revision 2)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-ROADMAP.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-ROADMAP.md",
+   "summary": "North star: Milestone 3 \u2014 a new uniform analytic bound (or a new cross-structure connection), independently verified, more significant than another thousand simulation runs.",
+   "title": "SEXTANT \u2014 consolidated roadmap (assessed from Rob's messages)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOLVING-STRING-THEORY.md",
    "kind": "doc",
    "path": "docs/SOLVING-STRING-THEORY.md",
@@ -723,6 +730,13 @@
    "path": "docs/external-claims-padgett.md",
    "summary": "Asked to look at Jason Padgett's research. This is the record of what exists, what in it is checkable, and what the checks returned. It is not a judgement of the man \u2014 the machine is\u2026",
    "title": "An outside claim through the same machine: Jason Padgett's QIH preprints"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/external-integration.md",
+   "kind": "doc",
+   "path": "docs/external-integration.md",
+   "summary": "SEXTANT ingests other people's domain data into the same registry its discovery engine searches, so a project can hand over its structures, properties, evidence and mappings and the engine\u2026",
+   "title": "Giving SEXTANT your data"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/fading-is-rayleigh.md",

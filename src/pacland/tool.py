@@ -77,6 +77,82 @@ def _cmd_run(a: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_ingest_external(a: argparse.Namespace) -> int:
+    from pacland import ingest
+    from pathlib import Path
+    p = Path(a.file)
+    if not p.exists():
+        print(f"file not found: {p}", file=sys.stderr)
+        return 1
+    data = json.loads(p.read_text(encoding="utf-8"))
+    counts = ingest.ingest_external(data)
+    print(json.dumps({"source": data.get("source"), **counts}, indent=2))
+    return 0
+
+
+def _cmd_ingest_library(a: argparse.Namespace) -> int:
+    from pacland import ingest
+    mod = ingest.load_module_from_path(a.path)
+    out = ingest.ingest_library(mod)
+    print(json.dumps(out, indent=2, default=str))
+    return 0
+
+
+def _cmd_ingest_lean(a: argparse.Namespace) -> int:
+    from pacland import ingest
+    out = ingest.ingest_lean_repo(a.path, source=a.source)
+    print(json.dumps(out, indent=2))
+    return 0
+
+
+def _cmd_ingest_csv(a: argparse.Namespace) -> int:
+    from pacland import ingest
+    out = ingest.ingest_csv(a.path, source=a.source, kind=a.kind)
+    print(json.dumps(out, indent=2))
+    return 0
+
+
+def _cmd_search_lean(a: argparse.Namespace) -> int:
+    from pacland import lean_scrape
+    hits = lean_scrape.search_mathlib(a.keyword, limit=a.limit)
+    print(f"{len(hits)} Mathlib theorem(s) matching {a.keyword!r}:")
+    for h in hits:
+        print(f"  {h['name']:40s} {h['file']}\n     {h['statement']}")
+    if a.ingest:
+        r = lean_scrape.ingest_mathlib_hits(a.keyword, limit=a.limit)
+        print(f"ingested {r['ingested']} as tier-1 properties (ext:mathlib:lean-<name>)")
+    return 0
+
+
+def _cmd_scrape_lean(a: argparse.Namespace) -> int:
+    from pacland import lean_scrape
+    r = lean_scrape.scrape_github_lean(a.url, source=a.source, limit=a.limit)
+    print(json.dumps(r, indent=2))
+    return 0
+
+
+def _cmd_scrape_github(a: argparse.Namespace) -> int:
+    from pacland import lean_scrape
+    r = lean_scrape.scrape_github_search(a.query, limit=a.limit)
+    print(json.dumps(r, indent=2))
+    return 0
+
+
+def _cmd_benchmark(a: argparse.Namespace) -> int:
+    from dataclasses import asdict
+    from pacland import benchmarks as b
+    if a.live:
+        out = b.run_llm_benchmark(a.campaign, judged=a.judged)
+    else:
+        # offline: the straw-man arms prove the harness executes (no LLM, no cost)
+        arms = {"llm": b.five_jump_generator, "generic-llm": b.untyped_generator}
+        data = b.B_DATASET if a.campaign == "B" else b.DATASET
+        results = b.run_blinded(arms, a.campaign, data, matcher=b._full_word_matcher)
+        out = {**b.gate(results), "arms": [asdict(r) for r in results]}
+    print(json.dumps(out, indent=2))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="sextant", description="the Sextant discovery engine")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -113,6 +189,48 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--rounds", type=int, default=1)
     p.add_argument("--budget", type=int, default=4)
     p.set_defaults(fn=_cmd_run)
+
+    p = sub.add_parser("ingest-external", help="ingest another project's data (structures/properties/evidence/mappings) from a JSON file")
+    p.add_argument("file", help="path to the contribution JSON (see examples/external-contribution.json)")
+    p.set_defaults(fn=_cmd_ingest_external)
+
+    p = sub.add_parser("ingest-library", help="register an external Python library (its CONTRIBUTION data + FALSIFIERS)")
+    p.add_argument("path", help="path to the .py library module")
+    p.set_defaults(fn=_cmd_ingest_library)
+
+    p = sub.add_parser("ingest-lean", help="ingest an external Lean repo's theorems as tier-1 properties")
+    p.add_argument("path", help="path to the Lean repo / directory of .lean files")
+    p.add_argument("--source", default="", help="the contributor slug (defaults to the directory name)")
+    p.set_defaults(fn=_cmd_ingest_lean)
+
+    p = sub.add_parser("ingest-csv", help="ingest a CSV — each row becomes an entry (default evidence)")
+    p.add_argument("path", help="path to the .csv file")
+    p.add_argument("--source", default="", help="the contributor slug (defaults to the filename)")
+    p.add_argument("--kind", default="evidence", help="the registry kind for each row (default evidence)")
+    p.set_defaults(fn=_cmd_ingest_csv)
+
+    p = sub.add_parser("search-lean", help="search the local Mathlib (~170k theorems) for a keyword")
+    p.add_argument("keyword")
+    p.add_argument("--limit", type=int, default=10)
+    p.add_argument("--ingest", action="store_true", help="also register the matches as tier-1 properties")
+    p.set_defaults(fn=_cmd_search_lean)
+
+    p = sub.add_parser("scrape-lean", help="clone + scan an external Lean repo from the internet")
+    p.add_argument("url", help="the git repo URL (e.g. https://github.com/org/repo.git)")
+    p.add_argument("--source", default="", help="the contributor slug")
+    p.add_argument("--limit", type=int, default=20)
+    p.set_defaults(fn=_cmd_scrape_lean)
+
+    p = sub.add_parser("scrape-github", help="search GitHub for Lean repos and scrape their theorems")
+    p.add_argument("query", help="the GitHub search query (e.g. 'quantum' or 'yang-mills')")
+    p.add_argument("--limit", type=int, default=3)
+    p.set_defaults(fn=_cmd_scrape_github)
+
+    p = sub.add_parser("benchmark", help="run the G3 discovery benchmark (llm vs generic-llm baseline)")
+    p.add_argument("--campaign", choices=["A", "B"], default="A")
+    p.add_argument("--live", action="store_true", help="use the real LLM (SEXTANT_LLM_* must be set); default is the offline straw-man arms")
+    p.add_argument("--judged", action="store_true", help="use the LLM semantic judge instead of full-word match")
+    p.set_defaults(fn=_cmd_benchmark)
 
     a = ap.parse_args(argv)
     return a.fn(a)

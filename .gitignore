@@ -24,3 +24,6 @@ data/discoveries/
 
 # SEXTANT runner local state (discoveries/verdicts are regenerated per run)
 runs/
+
+# the prove loop writes its temp proposal here
+pacland-proof/.prove/
