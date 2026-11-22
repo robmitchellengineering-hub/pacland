@@ -29,9 +29,10 @@ def diffusion_generator (a : ℝ → ℝ) (f : ℝ → ℝ) : ℝ → ℝ :=
 theorem carre_du_champ_is_squared_deriv (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 2 f) :
     carreDuChamp (diffusion_generator a) f f θ = (deriv f θ) ^ 2 := by
   dsimp [carreDuChamp, diffusion_generator]
+  have hf1 : Differentiable ℝ f := hf.differentiable (by norm_num)
   have hfun : deriv (f * f) = fun y => 2 * f y * deriv f y := by
     funext y
-    rw [deriv_mul (hf.differentiableAt y) (hf.differentiableAt y)]
+    rw [deriv_mul (hf1 y) (hf1 y)]
     ring
   have h1 : deriv (fun t => f t * f t) θ = 2 * f θ * deriv f θ := by
     change deriv (f * f) θ = 2 * f θ * deriv f θ
