@@ -55,6 +55,12 @@ section p, section li { max-width: 72ch; }
 p { color: #c7d5e3; }
 
 /* hero */
+.wordmark {
+  margin: 0 0 .2em;
+  font: 800 clamp(2rem, 5.5vw, 3.4rem)/1 ui-monospace, SFMono-Regular, monospace;
+  letter-spacing: .3em; text-transform: uppercase; color: var(--sx-cyan);
+  text-shadow: 0 0 28px rgba(98,215,232,.4), 0 0 2px rgba(98,215,232,.6);
+}
 .headline {
   position: relative; overflow: hidden; isolation: isolate;
   margin: 8px 0 8px; padding: clamp(32px, 5vw, 68px) var(--gutter);
@@ -188,6 +194,7 @@ pre code { background: none; padding: 0; }
 
   <!-- A · HERO -->
   <header class="headline">
+    <p class="wordmark">SEXTANT</p>
     <p class="kicker">a proof engine, not a calculator</p>
     <h1>Relations, never values.</h1>
     <p class="lede">The universe has been answering <strong>yes or no</strong> all along — SEXTANT is how you hear it. Ask a claim, and it runs the falsifier, checks the machine theorem, and hands you the verdict: <strong>FORCED</strong>, <strong>FREE</strong>, or <strong>IMPOSSIBLE</strong> — each scoped to its stated assumptions and recorded with its limits.</p>
