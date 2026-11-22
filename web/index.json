@@ -74,6 +74,13 @@
    "title": "The Yang\u2013Mills mass gap: a falsifier-first reduction to one open rung"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASTER-RESEARCH.md",
+   "kind": "doc",
+   "path": "docs/MASTER-RESEARCH.md",
+   "summary": "The single source of truth for the mass-gap program. It states the one metric, names the exact assumptions still doing the heavy lifting, separates the four competing tracks, gives each an\u2026",
+   "title": "SEXTANT \u2014 Master Research Document"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MITCHELLS-LAWS.md",
    "kind": "doc",
    "path": "docs/MITCHELLS-LAWS.md",
@@ -86,6 +93,13 @@
    "path": "docs/OPEN-RUNGS.md",
    "summary": "Everything formalizable up to the Clay content is now kernel-checked. These two are the open content \u2014 stated precisely here so the boundary is unambiguous. Both are research programs, not\u2026",
    "title": "The two open rungs, stated precisely"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RESEARCH-PLAN.md",
+   "kind": "doc",
+   "path": "docs/RESEARCH-PLAN.md",
+   "summary": "The master document (MASTER-RESEARCH.md) is the why and what. This is the how, in order. Each action is a concrete build with a test and a PR; nothing is prose-only.",
+   "title": "SEXTANT \u2014 Research Plan (ordered actions)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RETRODICTION-TEST.md",

@@ -46,6 +46,28 @@ def check_bound(c, *, beta_pos=(2.0, 2.5, 3.0, 4.0, 6.0, 10.0, 20.0),
     }
 
 
+def check_uniformity(c, *, betas=(2.0, 2.5, 3.0), volumes=(4, 8, 16, 32, 64),
+                     spacings=(1.0, 0.5, 0.25, 0.125)) -> dict:
+    """A1 (volume-uniformity) + A3 (continuum survival): the bound c(β, V, a) must be POSITIVE at
+    EVERY point of the (β, V, a) grid — uniform in volume and lattice spacing.
+
+    A bound that is positive at one volume or one spacing does NOT clear the missing uniformity. This
+    is the machine-checkable form of the two assumptions the referee previously did not test.
+    """
+    for b in betas:
+        for V in volumes:
+            for a in spacings:
+                try:
+                    val = c(b, V, a)
+                except Exception as exc:  # noqa: BLE001
+                    return {"uniform": False, "beta": b, "volume": V, "spacing": a,
+                            "reason": f"raised {type(exc).__name__}"}
+                if val <= 0.0:
+                    return {"uniform": False, "beta": b, "volume": V, "spacing": a, "value": val,
+                            "reason": f"c(β={b}, V={V}, a={a}) = {val} ≤ 0"}
+    return {"uniform": True}
+
+
 def exponential(a: float, k: float):
     """A candidate bound c(β) = a·e^(−kβ) from the exponential family."""
     return lambda b: a * math.exp(-k * b)

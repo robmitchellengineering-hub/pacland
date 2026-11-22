@@ -60,5 +60,24 @@ class TestBoundSearch(unittest.TestCase):
         self.assertTrue(any("log-corrected" in s for s in failed))
 
 
+class TestUniformity(unittest.TestCase):
+    def test_volume_and_spacing_independent_bound_is_uniform(self):
+        # a bound with no V/a dependence is positive everywhere -> uniform
+        c = lambda b, V, a: 25.28 * __import__("math").exp(-1.182 * b)
+        self.assertTrue(bs.check_uniformity(c)["uniform"])
+
+    def test_finite_volume_bound_is_not_uniform(self):
+        # positive only at small volume, dies as V grows -> NOT volume-uniform
+        c = lambda b, V, a: 1.0 if V <= 16 else 0.0
+        r = bs.check_uniformity(c)
+        self.assertFalse(r["uniform"])
+
+    def test_lattice_only_bound_is_not_continuum(self):
+        # positive only at coarse spacing, vanishes as a -> 0 -> NOT continuum-surviving
+        c = lambda b, V, a: 1.0 if a >= 0.5 else 0.0
+        r = bs.check_uniformity(c)
+        self.assertFalse(r["uniform"])
+
+
 if __name__ == "__main__":
     unittest.main()
