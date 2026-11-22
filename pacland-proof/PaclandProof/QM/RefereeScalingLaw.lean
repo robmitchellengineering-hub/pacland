@@ -18,8 +18,10 @@ bound transfers to a mass-gap bound. This is the single transport step behind th
 theorem mass_gap_of_radius_bound {ρ m B : ℝ} (hm : m = -Real.log ρ)
     (hρ : ρ ≤ Real.exp (-B)) (hρ0 : 0 < ρ) : B ≤ m := by
   rw [hm]
-  have hlog : Real.log ρ ≤ -B :=
-    (Real.log_le_log_iff hρ0 (Real.exp_pos (-B))).2 hρ
+  have hlog : Real.log ρ ≤ -B := by
+    have hle : Real.log ρ ≤ Real.log (Real.exp (-B)) :=
+      (Real.log_le_log_iff hρ0 (Real.exp_pos (-B))).2 hρ
+    simpa [Real.log_exp] using hle
   linarith
 
 /-- **The radius bound `ρ ≤ e^{-A·e^{-cβ}}` implies `A·e^{-cβ} ≤ m(β)`.** The mass gap inherits the
