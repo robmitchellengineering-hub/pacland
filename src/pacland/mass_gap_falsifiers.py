@@ -258,3 +258,15 @@ def verify_rg_contraction(beta: float = 2.5, Ns=(8, 12), n_configs: int = 40,
                   f"measure at this β; the continuum persistence is the separate open test")
 
 
+def verify_log_sobolev(beta: float = 2.5, Ns=(6, 8, 10), n_sweeps: int = 10) -> tuple[bool, str]:
+    """'the YM transfer matrix satisfies the log-Sobolev inequality Ent(f²) ≤ (2/λ_min(M))·∫Γ(f)': the
+    Sobolev constant 1/λ_min(M) is finite iff λ_min(M) > 0, so the inequality is refuted iff λ_min(M) → 0
+    (the Gribov horizon). This is the SAME observable as the orbifold-curvature test (both collapse to
+    the FP gap λ_min); this falsifier carries the log-Sobolev interpretation.
+    """
+    from pacland.mass_gap_falsifiers import verify_orbifold_curvature
+
+    survived, evidence = verify_orbifold_curvature(beta=beta, Ns=Ns, n_sweeps=n_sweeps)
+    return survived, evidence.replace("orbifold curvature", "log-Sobolev (via λ_min(FP))")
+
+
