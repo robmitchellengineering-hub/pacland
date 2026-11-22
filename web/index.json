@@ -732,6 +732,13 @@
    "title": "An outside claim through the same machine: Jason Padgett's QIH preprints"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/external-integration.md",
+   "kind": "doc",
+   "path": "docs/external-integration.md",
+   "summary": "SEXTANT ingests other people's domain data into the same registry its discovery engine searches, so a project can hand over its structures, properties, evidence and mappings and the engine\u2026",
+   "title": "Giving SEXTANT your data"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/fading-is-rayleigh.md",
    "kind": "doc",
    "path": "docs/fading-is-rayleigh.md",
