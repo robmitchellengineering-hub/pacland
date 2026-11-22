@@ -83,7 +83,9 @@ theorem cross_carre_du_champ (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 4
       = deriv f θ * deriv (diffusion_generator a f) θ := by
   have hg : ContDiff ℝ 2 (diffusion_generator a f) := by
     change ContDiff ℝ 2 (fun θ => deriv (deriv f) θ + a θ * deriv f θ)
-    fun_prop
+    have hf' : ContDiff ℝ 3 (deriv f) := ContDiff.deriv' hf
+    have hf'' : ContDiff ℝ 2 (deriv (deriv f)) := ContDiff.deriv' hf'
+    exact hf''.add ((ha.mul hf').of_le (by norm_num))
   exact carre_du_champ_eq_mul a f (diffusion_generator a f) θ (hf.of_le (by norm_num)) hg
 
 /-- **The 1D Bochner formula**: `Γ₂(f) = (f'')² − a'(θ)·(f')²`. -/
