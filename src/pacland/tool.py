@@ -112,6 +112,22 @@ def _cmd_ingest_csv(a: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_search_lean(a: argparse.Namespace) -> int:
+    from pacland import lean_scrape
+    hits = lean_scrape.search_mathlib(a.keyword, limit=a.limit)
+    print(f"{len(hits)} Mathlib theorem(s) matching {a.keyword!r}:")
+    for h in hits:
+        print(f"  {h['name']:40s} {h['file']}\n     {h['statement']}")
+    return 0
+
+
+def _cmd_scrape_lean(a: argparse.Namespace) -> int:
+    from pacland import lean_scrape
+    r = lean_scrape.scrape_github_lean(a.url, source=a.source, limit=a.limit)
+    print(json.dumps(r, indent=2))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="sextant", description="the Sextant discovery engine")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -167,6 +183,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--source", default="", help="the contributor slug (defaults to the filename)")
     p.add_argument("--kind", default="evidence", help="the registry kind for each row (default evidence)")
     p.set_defaults(fn=_cmd_ingest_csv)
+
+    p = sub.add_parser("search-lean", help="search the local Mathlib (~170k theorems) for a keyword")
+    p.add_argument("keyword")
+    p.add_argument("--limit", type=int, default=10)
+    p.set_defaults(fn=_cmd_search_lean)
+
+    p = sub.add_parser("scrape-lean", help="clone + scan an external Lean repo from the internet")
+    p.add_argument("url", help="the git repo URL (e.g. https://github.com/org/repo.git)")
+    p.add_argument("--source", default="", help="the contributor slug")
+    p.add_argument("--limit", type=int, default=20)
+    p.set_defaults(fn=_cmd_scrape_lean)
 
     a = ap.parse_args(argv)
     return a.fn(a)

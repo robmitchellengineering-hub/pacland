@@ -1,0 +1,112 @@
+"""lean_scrape.py — scrape Lean proofs: the fundamental core of what makes SEXTANT work.
+
+Machine-checked theorems are the empirical truths the whole engine builds on. This module makes the
+BIGGEST local Lean library (Mathlib, ~170k theorems) queryable, and scrapes external Lean repos from
+the internet so the library of truths keeps growing.
+
+  * ``count_mathlib_theorems`` — how many machine-checked theorems Mathlib holds (the size of the truth).
+  * ``search_mathlib``       — find theorems matching a keyword (name + file + statement) — the engine's
+                               way to cite an existing proof as a tier-1 fact.
+  * ``scrape_github_lean``   — clone an external Lean repo and scan it for theorems (the internet part).
+"""
+from __future__ import annotations
+
+import re
+import shutil
+import subprocess
+from pathlib import Path
+
+
+def mathlib_dir() -> Path | None:
+    """The local Mathlib source tree (a Lean dependency of the pacland proof tree), if present."""
+    here = Path(__file__).resolve().parent.parent.parent  # .../pacland
+    for cand in (here / "pacland-proof" / ".lake" / "packages" / "mathlib" / "Mathlib",):
+        if cand.exists():
+            return cand
+    return None
+
+
+def _rg_available() -> bool:
+    return shutil.which("rg") is not None
+
+
+def count_mathlib_theorems(dir: Path | None = None) -> int:
+    """The number of theorem/lemma declarations in a Lean tree (Mathlib by default)."""
+    d = dir or mathlib_dir()
+    if d is None or not d.exists():
+        return 0
+    if _rg_available():
+        r = subprocess.run(["rg", "-c", r"^\s*(theorem|lemma)\s+", str(d)],
+                           capture_output=True, text=True)
+        if r.returncode == 0 and r.stdout.strip():
+            return sum(int(ln.split(":")[-1]) for ln in r.stdout.splitlines() if ":" in ln)
+    # pure-Python fallback (rg not installed, or it returned nothing)
+    n = 0
+    for p in d.rglob("*.lean"):
+        n += len(re.findall(r"^\s*(?:theorem|lemma)\s+", p.read_text(errors="ignore"), re.M))
+    return n
+
+
+def search_mathlib(keyword: str, dir: Path | None = None, limit: int = 10) -> list[dict]:
+    """Find theorem/lemma declarations matching ``keyword`` — name + file + the statement line.
+
+    Matching is case-insensitive over the declaration line (name and/or statement). This is the
+    engine's citation surface: a match is an existing, machine-checked fact it can use as a tier-1
+    building block, rather than re-deriving or re-proposing it.
+    """
+    d = dir or mathlib_dir()
+    if d is None or not d.exists():
+        return []
+    words = [w for w in keyword.lower().split() if w] or [keyword.lower()]
+    hits: list[dict] = []
+
+    def _take(path: str, line: str):
+        m = re.search(r"(?:theorem|lemma)\s+([A-Za-z0-9_']+)", line)
+        if m:
+            hits.append({"name": m.group(1),
+                         "file": path.split("Mathlib/")[-1] if "Mathlib/" in path else path,
+                         "statement": line.strip()[:160]})
+
+    if _rg_available():
+        alt = "|".join(re.escape(w) for w in words)
+        r = subprocess.run(
+            ["rg", "-i", "--no-heading", "-n",
+             rf"^\s*(theorem|lemma)\s+.*({alt})", str(d)],
+            capture_output=True, text=True)
+        if r.returncode == 0:
+            for ln in r.stdout.splitlines():
+                if ":" not in ln:
+                    continue
+                path, rest = ln.split(":", 1)
+                _take(path, rest)
+    else:
+        for p in d.rglob("*.lean"):
+            for ln in p.read_text(errors="ignore").splitlines():
+                low = ln.lower()
+                if re.match(r"^\s*(?:theorem|lemma)\s+", ln) and any(w in low for w in words):
+                    _take(str(p), ln)
+            if len(hits) >= limit * 4:  # over-collect a little, then trim
+                break
+    return hits[:limit]
+
+
+def scrape_github_lean(repo_url: str, source: str = "", limit: int = 20, tmp: str = "/tmp") -> dict:
+    """Clone an external Lean repo from the internet and scan it for theorems.
+
+    Returns the count + a sample of (name, file). The clone is shallow (--depth 1) and lands in a temp
+    dir keyed by the repo name, so re-scraping the same repo re-uses the clone.
+    """
+    name = repo_url.rstrip("/").split("/")[-1].removesuffix(".git") or "lean-repo"
+    target = Path(tmp) / f"sextant-{name}"
+    if not (target / ".git").exists():
+        r = subprocess.run(["git", "clone", "--depth", "1", repo_url, str(target)],
+                           capture_output=True, text=True)
+        if r.returncode != 0:
+            return {"repo": repo_url, "error": f"clone failed: {r.stderr.strip()[:200]}"}
+    theorems: list[dict] = []
+    for p in sorted(target.rglob("*.lean")):
+        text = p.read_text(errors="ignore")
+        for m in re.finditer(r"^\s*(?:theorem|lemma)\s+([A-Za-z0-9_']+)", text, re.M):
+            theorems.append({"name": m.group(1), "file": str(p.relative_to(target))})
+    return {"repo": repo_url, "source": source or name, "lean_theorems": len(theorems),
+            "sample": theorems[:limit]}
