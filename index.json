@@ -32,6 +32,41 @@
  "generated_from": "scripts/build_site_index.py",
  "items": [
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/CANDIDATE-LEDGER.md",
+   "kind": "doc",
+   "path": "docs/CANDIDATE-LEDGER.md",
+   "summary": "Every hypothesis is logged with its jump type, falsifier, cost and status, and fed into the belief layer so the system allocates its falsifier budget to the highest\u2026",
+   "title": "Candidate ledger \u2014 the falsifier-before-believe belief layer"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/CONSTRAINT-FIRST-ECONOMICS.md",
+   "kind": "doc",
+   "path": "docs/CONSTRAINT-FIRST-ECONOMICS.md",
+   "summary": "Use the proven hard-science unifications as constraints to do economic analysis better and find solutions \u2014 the SEXTANT constraint-first methodology applied to the soft field.",
+   "title": "Constraint-first economics \u2014 the plan"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-ENGINE.md",
+   "kind": "doc",
+   "path": "docs/DISCOVERY-ENGINE.md",
+   "summary": "The engine is src/pacland/runner.py (the DiscoveryEngine class). It is an automated frontier discovery-and-proof machine: propose \u2192 falsify \u2192 challenge \u2192 prove \u2192 record \u2192 acquire, runnable\u2026",
+   "title": "The discovery engine \u2014 architecture and state"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-PROCESS.md",
+   "kind": "doc",
+   "path": "docs/DISCOVERY-PROCESS.md",
+   "summary": "shows that naming the types produces better hypotheses than an untyped baseline. That is exactly what RETRODICTION-TEST.md is for. Read this doc as a proposal to be tested, not an\u2026",
+   "title": "The discovery process \u2014 jump taxonomy + jump-seeking loop"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/KILL-CRITERIA.md",
+   "kind": "doc",
+   "path": "docs/KILL-CRITERIA.md",
+   "summary": "Without a stop rule, the discovery loop is an open-ended grind that burns budget on a dead framing. These are the rules that force a re-frame instead.",
+   "title": "Kill criteria \u2014 budget and stop rules per rung"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-METHODS.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-METHODS.md",
@@ -44,6 +79,34 @@
    "path": "docs/MITCHELLS-LAWS.md",
    "summary": "The duality covariance table of the flux landscape: five laws specifying how the observables of a flux vacuum transform under the duality group Sp(b\u2083,\u2124) \u00d7 SL(2,\u2124) and under flux rescaling\u2026",
    "title": "MITCHELL'S LAWS OF DUALITY COVARIANCE"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/OPEN-RUNGS.md",
+   "kind": "doc",
+   "path": "docs/OPEN-RUNGS.md",
+   "summary": "Everything formalizable up to the Clay content is now kernel-checked. These two are the open content \u2014 stated precisely here so the boundary is unambiguous. Both are research programs, not\u2026",
+   "title": "The two open rungs, stated precisely"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RETRODICTION-TEST.md",
+   "kind": "doc",
+   "path": "docs/RETRODICTION-TEST.md",
+   "summary": "The five-type taxonomy is retrospective until this passes. The test: run the loop blind on historical problems with the jump withheld, and compare it against the same pipeline without the\u2026",
+   "title": "Retrodiction test \u2014 does the jump-seeking loop beat a baseline?"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-ASSESSMENT-LOG.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-ASSESSMENT-LOG.md",
+   "summary": "Every external assessment and correction, with its disposition. This is the record we assess together before making further changes. Dated; newest last.",
+   "title": "SEXTANT \u2014 assessment & correction log"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-CROSS-FIELD-PLAN.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-CROSS-FIELD-PLAN.md",
+   "summary": "this revision corrects them: (1) it treated \"an adjunction\" as a discovery, when the adjoints come free for every functor; (2) it implied FDM migration is \"lossless\", when \u03a3 fills gaps and\u2026",
+   "title": "SEXTANT \u2014 the cross-field verified-discovery system (revision 2)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOLVING-STRING-THEORY.md",
@@ -65,6 +128,13 @@
    "path": "docs/TOE.md",
    "summary": "That is the whole of it. It is not a conjecture \u2014 it is kernel-checked: 308 theorems and 123 definitions across 44 Lean files, lake build green, no sorry/axiom/admit anywhere.",
    "title": "THE TOE \u2014 Mitchell's Constraint-First Theory of Everything"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/TOOL-SEXTANT-DELIVERY.md",
+   "kind": "doc",
+   "path": "docs/TOOL-SEXTANT-DELIVERY.md",
+   "summary": "The thing being shipped is the discovery engine \u2014 the whole autonomous loop \u2014 as one self-contained tool, in two delivery forms. This is the plan Rob confirmed (\"both is the answer\").",
+   "title": "Tool Sextant \u2014 the delivery plan (both forms)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/UNIFICATION-METHOD-v2.md",
@@ -984,6 +1054,13 @@
    "title": "Partner appeals \u2014 the open problems, framed as collaborations"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/peft-finetune.md",
+   "kind": "doc",
+   "path": "docs/peft-finetune.md",
+   "summary": "The plan is to fine-tune the self-hosted LLM (qwen2.5:7b on pacland-rog) on the discovery skill, so it runs the discovery loop unattended without DeepSeek. The front half (data \u2192 fine-tune)\u2026",
+   "title": "Fine-tuning the local discovery model \u2014 the full path"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/phenotype-network.md",
    "kind": "doc",
    "path": "docs/phenotype-network.md",
@@ -1544,6 +1621,13 @@
    "title": "WiFi as LiDAR \u2014 what closes the gap, and what never will"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/wolfram-mass-gap.md",
+   "kind": "doc",
+   "path": "docs/wolfram-mass-gap.md",
+   "summary": "speculative framework, not established physics \u2014 but one methodological point in it transfers to the mass-gap work and changes how the machine should attack the problem. This is that point\u2026",
+   "title": "Wolfram methodology \u2192 the mass gap (what transfers)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/working-across-the-estate.md",
    "kind": "doc",
    "path": "docs/working-across-the-estate.md",
@@ -1570,6 +1654,13 @@
    "path": "docs/ym-mass-gap-spacing-uniform.md",
    "summary": "Source: the lgt formalization (Douglas + Rajasekaran), LGT/MassGap/StrongCoupling.lean. This records the exact boundary of what is proven and the exact statement that remains.",
    "title": "The continuum 4D Yang\u2013Mills mass gap \u2014 the precise missing lemma"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/zoubin-uncertainty-assessment.md",
+   "kind": "doc",
+   "path": "docs/zoubin-uncertainty-assessment.md",
+   "summary": "mathematics of AI uncertainty\" ([YouTube](https://www.youtube.com/watch?v=tBjgCjdGZM), Aug 2026) and Zoubin Ghahramani's published body of work. The full transcript is saved in the\u2026",
+   "title": "The mathematics of uncertainty \u2014 how Zoubin Ghahramani's work confirms the belief layer"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/ap_health.py",
@@ -1607,6 +1698,13 @@
    "title": "band_sweep.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/benchmark_llm.py",
+   "kind": "script",
+   "path": "scripts/benchmark_llm.py",
+   "summary": "Phase 2 \u2014 run the discovery benchmark against the real LLM (DeepSeek).",
+   "title": "benchmark_llm.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/bmv_sim.py",
    "kind": "script",
    "path": "scripts/bmv_sim.py",
@@ -1628,11 +1726,32 @@
    "title": "build_climate_charts.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_discovery_extra.py",
+   "kind": "script",
+   "path": "scripts/build_discovery_extra.py",
+   "summary": "Generate more DISGUISED real-physics discovery examples to thicken the discovery skill.",
+   "title": "build_discovery_extra.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_peft_dataset.py",
+   "kind": "script",
+   "path": "scripts/build_peft_dataset.py",
+   "summary": "Build the PEFT instruction dataset from the benchmark's (pre-state -> jump) pairs.",
+   "title": "build_peft_dataset.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_site_index.py",
    "kind": "script",
    "path": "scripts/build_site_index.py",
    "summary": "Build the site's searchable index \u2014 one place to find everything.",
    "title": "build_site_index.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_skill_dataset.py",
+   "kind": "script",
+   "path": "scripts/build_skill_dataset.py",
+   "summary": "Generate the falsifier-skill and Lean-skill training examples with DeepSeek.",
+   "title": "build_skill_dataset.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_trust_summary.py",
@@ -1787,6 +1906,13 @@
    "path": "scripts/climb_deficit.py",
    "summary": "The autonomous deficit climber \u2014 run the oracle over a corpus and hone m.",
    "title": "climb_deficit.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/compare_models.py",
+   "kind": "script",
+   "path": "scripts/compare_models.py",
+   "summary": "Compare two self-hosted models (ROG Ollama) on judged recall, judged by deepseek-reasoner.",
+   "title": "compare_models.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/compression.py",
@@ -2146,6 +2272,13 @@
    "title": "epidemiology_identifiability.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/eval_recall.py",
+   "kind": "script",
+   "path": "scripts/eval_recall.py",
+   "summary": "Evaluate a merged HF model's JUDGED recall on the full benchmark (the metric that matters).",
+   "title": "eval_recall.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/exact_series.py",
    "kind": "script",
    "path": "scripts/exact_series.py",
@@ -2249,6 +2382,13 @@
    "path": "scripts/find_flux_vacua.py",
    "summary": "Find SUSY flux vacua for a bundled KS model (JAXVacua quickstart workflow).",
    "title": "find_flux_vacua.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/fine_tune_peft.py",
+   "kind": "script",
+   "path": "scripts/fine_tune_peft.py",
+   "summary": "Fine-tune a local LLM on the discovery skill with QLoRA (HuggingFace PEFT + TRL).",
+   "title": "fine_tune_peft.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/glueball_mass.py",
@@ -2398,6 +2538,13 @@
    "title": "layout_check.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/live_measurement.py",
+   "kind": "script",
+   "path": "scripts/live_measurement.py",
+   "summary": "One live end-to-end measurement: independent decontaminated baselines + a frontier pass.",
+   "title": "live_measurement.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/make_explainer_pdf.py",
    "kind": "script",
    "path": "scripts/make_explainer_pdf.py",
@@ -2424,6 +2571,13 @@
    "path": "scripts/make_plain_speak.py",
    "summary": "Render the plain-speak one-pagers.",
    "title": "make_plain_speak.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/mass_gap_search.py",
+   "kind": "script",
+   "path": "scripts/mass_gap_search.py",
+   "summary": "",
+   "title": "mass_gap_search.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_animal_constraints.py",
@@ -2459,6 +2613,13 @@
    "path": "scripts/measure_covariance_table.py",
    "summary": "The covariance table, rows 2 and 3 \u2014 |W| and g_s under S and T (Law III + the T-row).",
    "title": "measure_covariance_table.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_distinct.py",
+   "kind": "script",
+   "path": "scripts/measure_distinct.py",
+   "summary": "Honest measurement: a DISTINCT judge (deepseek-reasoner) grades deepseek-chat's proposals.",
+   "title": "measure_distinct.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/measure_elimination_curve.py",
@@ -2508,6 +2669,13 @@
    "path": "scripts/measure_w0_tuning.py",
    "summary": "Turn the measured log-uniform |W0| prior into the KKLT tuning probability.",
    "title": "measure_w0_tuning.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/merge_lora.py",
+   "kind": "script",
+   "path": "scripts/merge_lora.py",
+   "summary": "Merge a LoRA/QLoRA adapter back into its base model (full fine-tuned checkpoint).",
+   "title": "merge_lora.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/mine_structure.py",
@@ -2699,6 +2867,13 @@
    "title": "preconditions.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/publish_ollama.sh",
+   "kind": "script",
+   "path": "scripts/publish_ollama.sh",
+   "summary": "Publish a merged HF model to Ollama: convert to GGUF, quantize to Q4_K_M, import.",
+   "title": "publish_ollama.sh"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/qg-proof-beliefs.py",
    "kind": "script",
    "path": "scripts/qg-proof-beliefs.py",
@@ -2760,6 +2935,20 @@
    "path": "scripts/run-tests.sh",
    "summary": "run-tests.sh \u2014 the test suite, as a gate, in a checkout that was never pip-installed.",
    "title": "run-tests.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/run_frontier_massgap.py",
+   "kind": "script",
+   "path": "scripts/run_frontier_massgap.py",
+   "summary": "One frontier run: the mass gap (Campaign C). The LLM proposes, SEXTANT falsifies, report survivors.",
+   "title": "run_frontier_massgap.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/run_massgap.py",
+   "kind": "script",
+   "path": "scripts/run_massgap.py",
+   "summary": "One full frontier pass of the automated machine on the Yang-Mills mass gap.",
+   "title": "run_massgap.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/sample_ds_test.py",
@@ -2865,6 +3054,13 @@
    "path": "scripts/sign_manifest.py",
    "summary": "Sign the certificate manifest with an OpenSSH (ed25519) key, and publish the public key.",
    "title": "sign_manifest.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/smoke_finetune.sh",
+   "kind": "script",
+   "path": "scripts/smoke_finetune.sh",
+   "summary": "One-shot smoke run on the rented GPU: prove the whole path trains and merges before the full run.",
+   "title": "smoke_finetune.sh"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/spectral_explicit.py",
@@ -3483,6 +3679,13 @@
    "title": "Find anything \u2014 every doc, script and explainer"
   },
   {
+   "href": "./chemistry.html",
+   "kind": "page",
+   "path": "web/chemistry.html",
+   "summary": "page on this site",
+   "title": "chemistry"
+  },
+  {
    "href": "./climate-3d.html",
    "kind": "page",
    "path": "web/climate-3d.html",
@@ -3530,6 +3733,13 @@
    "path": "web/node.html",
    "summary": "page on this site",
    "title": "node"
+  },
+  {
+   "href": "./quantum-verification.html",
+   "kind": "page",
+   "path": "web/quantum-verification.html",
+   "summary": "page on this site",
+   "title": "quantum-verification"
   },
   {
    "href": "./sextant.html",
