@@ -92,7 +92,7 @@ theorem cross_carre_du_champ (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 4
 theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : ContDiff ℝ 4 f) (ha : ContDiff ℝ 3 a) :
     Gamma2 (diffusion_generator a) f θ
       = (deriv (deriv f) θ) ^ 2 - deriv a θ * (deriv f θ) ^ 2 := by
-  dsimp [Gamma2, diffusion_generator, carreDuChamp]
+  dsimp [Gamma2, diffusion_generator]
   have hf1 : Differentiable ℝ f := hf.differentiable (by norm_num)
   have hf1' : Differentiable ℝ (deriv f) := ContDiff.differentiable_deriv_two (hf.of_le (by norm_num))
   have hf1'' : Differentiable ℝ (deriv (deriv f)) :=
