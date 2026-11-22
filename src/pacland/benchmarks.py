@@ -231,7 +231,8 @@ import operator
 
 _LAW_OPS = {
     ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul,
-    ast.Div: operator.truediv, ast.Pow: operator.pow, ast.Mod: operator.mod,
+    ast.Div: operator.truediv, ast.FloorDiv: operator.floordiv,
+    ast.Pow: operator.pow, ast.Mod: operator.mod,
     ast.USub: operator.neg, ast.UAdd: operator.pos,
 }
 
@@ -293,7 +294,7 @@ def synthetic_induction_suite(n: int = 10, seed: int = 0) -> list[dict]:
         ("n**3", lambda n: n * n * n),
         ("n*(n+1)//2", lambda n: n * (n + 1) // 2),
         ("2**n", lambda n: 2 ** n),
-        ("math.factorial(n)", lambda n: math.factorial(n)),
+        ("3*n + 1", lambda n: 3 * n + 1),
     ]
     rng = random.Random(seed)
     out = []
