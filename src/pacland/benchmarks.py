@@ -84,6 +84,7 @@ class ArmResult:
     found: int = 0                # recall: the withheld jump was among the candidates
     total_rank: int = 0           # sum of the jump's rank when found
     false_positives: int = 0      # candidates that are not the jump
+    cost: int = 0                 # research effort: total candidates generated (an output-token proxy)
 
 
 Matcher = Callable[[list[str], str], list[bool]]
@@ -99,6 +100,7 @@ def run_arm(arm: str, generator: Generator, suite: str, dataset: dict,
     for name, d in dataset.items():
         r.problems += 1
         cands = generator(d["pre"])          # blind: only the pre-state
+        r.cost += len(cands)                 # cost = effort (candidates ≈ output tokens)
         matched = matcher(cands, d["jump"])
         first_rank = next((i + 1 for i, m in enumerate(matched) if m), None)
         if first_rank is not None:           # recall counts a PROBLEM once, at its first hit
@@ -106,6 +108,37 @@ def run_arm(arm: str, generator: Generator, suite: str, dataset: dict,
             r.total_rank += first_rank
         r.false_positives += len(cands) - sum(matched)
     return r
+
+
+def run_blinded(arms: dict[str, Generator], suite: str, dataset: dict,
+                matcher: Matcher = _full_word_matcher, seed: int = 0) -> list[ArmResult]:
+    """BLINDED scoring: pool + shuffle the candidates from every arm, score them WITHOUT the arm
+    label, then attribute the scores back to arms only at the end.
+
+    This removes the judge's ability to favour the engine arm on sight — the scorer sees an anonymous
+    stream of (candidate, withheld-answer) pairs and cannot tell the LLM from the baseline.
+    """
+    import random
+
+    rng = random.Random(seed)
+    # 1. generate + pool, unlabeled (only the pre-state reaches each generator)
+    pooled = [(arm, d["jump"], gen(d["pre"])) for arm, gen in arms.items() for d in dataset.values()]
+    # 2. shuffle so the scorer cannot reconstruct which arm produced which candidate
+    rng.shuffle(pooled)
+    # 3. score anonymously
+    scored = [(arm, jump, cands, matcher(cands, jump)) for arm, jump, cands in pooled]
+    # 4. attribute to arms
+    results = {arm: ArmResult(arm=arm, suite=suite) for arm in arms}
+    for arm, _jump, cands, matched in scored:
+        r = results[arm]
+        r.problems += 1
+        r.cost += len(cands)
+        first_rank = next((i + 1 for i, m in enumerate(matched) if m), None)
+        if first_rank is not None:
+            r.found += 1
+            r.total_rank += first_rank
+        r.false_positives += len(cands) - sum(matched)
+    return list(results.values())
 
 
 _STOP = {"the", "and", "for", "that", "this", "with", "from", "are", "was", "has", "have",
@@ -143,11 +176,10 @@ def report(results: list[ArmResult]) -> str:
 
 
 def gate(results: list[ArmResult]) -> dict:
-    """The G3 gate: the engine must beat the untyped baseline blind on recall.
+    """The G3 gate: the engine must beat the untyped baseline blind on recall, at measured cost.
 
-    Returns ``passed`` plus the two recall fractions and a one-line reason. This is the honest
-    PASS/FAIL before the engine may claim to help discovery; the baseline is a straw-man that
-    never finds the jump, so a real engine must strictly exceed it.
+    Returns ``passed`` plus the recall fractions AND the cost-per-found (discoveries per unit effort),
+    so an engine cannot win by flooding the judge with cheap guesses.
     """
     by_arm = {r.arm: r for r in results}
     engine, baseline = by_arm.get("llm"), by_arm.get("untyped-baseline")
@@ -155,7 +187,11 @@ def gate(results: list[ArmResult]) -> dict:
         return {"passed": False, "reason": "missing an arm"}
     e = engine.found / max(engine.problems, 1)
     b = baseline.found / max(baseline.problems, 1)
+    engine_cpf = engine.found / max(engine.cost, 1)
+    baseline_cpf = baseline.found / max(baseline.cost, 1)
     return {"passed": e > b, "engine_recall": e, "baseline_recall": b,
+            "engine_cost_per_found": engine_cpf, "baseline_cost_per_found": baseline_cpf,
+            "engine_cost": engine.cost, "baseline_cost": baseline.cost,
             "reason": f"engine recall {e:.2f} vs baseline {b:.2f}"}
 
 
@@ -242,6 +278,9 @@ POST_CUTOFF_DATASET = {
     "lk99":  {"published": "2023-08", "pre": "a material was claimed to superconduct at room temperature and ambient pressure, but independent groups could not reproduce it", "jump": "LK-99 is not a superconductor; the diamagnetism is from an impurity phase"},
     "jwst-early-galaxies": {"published": "2022-12", "pre": "the earliest galaxies seen by JWST are brighter and more massive than the standard timeline predicts", "jump": "early star formation is more efficient than standard models assumed"},
     "desi-dark-energy": {"published": "2024-04", "pre": "a survey of millions of galaxies finds the expansion's acceleration may have weakened recently", "jump": "dark energy may be a dynamical field, weakening at late times"},
+    "rna-vaccine": {"published": "2023-10", "pre": "a vaccine platform works by delivering instructions the cell reads to make a viral protein", "jump": "mRNA encodes the antigen; the cell translates it (Nobel 2023)"},
+    "quantum-error-threshold": {"published": "2023-02", "pre": "a quantum computer's logical error rate drops as more physical qubits are added, past a crossover point", "jump": "the surface-code threshold: below a critical physical error rate, errors are exponentially suppressed"},
+    "clay-mineral-water": {"published": "2023-09", "pre": "fine dust on an airless body holds more water than the rock can absorb, and it persists in sunlight", "jump": "water is trapped in impact-glass beads (lunar regolith)"},
 }
 
 
