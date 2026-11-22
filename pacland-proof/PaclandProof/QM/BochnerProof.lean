@@ -125,8 +125,14 @@ theorem one_dimensional_bochner_formula (a f : ℝ → ℝ) (θ : ℝ) (hf : Con
     rw [deriv_mul (ha1 θ) (hf1' θ)]
     ring
   -- (4) assemble: Γ₂ = (L((f')²) − 2·f'·(Lf)') / 2
-  rw [carre_du_champ_is_squared_deriv a f θ (hf.of_le (by norm_num))]
-  rw [cross_carre_du_champ a f θ hf ha]
+  have hΓ_fun : carreDuChamp (diffusion_generator a) f f = fun x => (deriv f x) ^ 2 := by
+    funext x
+    exact carre_du_champ_is_squared_deriv a f x (hf.of_le (by norm_num))
+  have hcross_fun : carreDuChamp (diffusion_generator a) f (diffusion_generator a f)
+      = fun x => deriv f x * deriv (diffusion_generator a f) x := by
+    funext x
+    exact cross_carre_du_champ a f x hf ha
+  rw [hΓ_fun, hcross_fun]
   rw [hderiv_sq, hderiv_sq2, hLf']
   ring
 
