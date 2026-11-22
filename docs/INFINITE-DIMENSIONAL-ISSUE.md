@@ -1,0 +1,34 @@
+# The infinite-dimensional issue — what the engine must find
+
+Status: 2026-11-22, the discovery target Rob set. The boundary that stops every finite-lattice result:
+the actual Faddeev–Popov operator and the transfer operator act on the **infinite-dimensional**
+gauge-field space, and no finite truncation establishes their spectral properties. This file names
+the precise gap and the candidate structures that could bridge it.
+
+## The gap (one sentence)
+
+A finite-dimensional matrix (the lattice FP operator, the lattice transfer matrix) has a spectrum that
+is a **lattice artifact** (the UV cutoff `λ_min/a² → ∞`); the required property — the Gribov horizon,
+the mass gap — is a statement about the **infinite-dimensional operator**'s spectrum, which the finite
+matrix does not determine.
+
+## The candidates (what the engine searches, each falsifiable)
+
+| structure | what it would provide | falsifier |
+|---|---|---|
+| **spectral / norm-resolvent convergence** | the lattice operator converges to the continuum operator in norm-resolvent sense as `a → 0`, so `λ_min(a)` has a genuine `a → 0` limit | `λ_min(a)` has no convergent limit (it diverges — the observed `λ_min/a²` blow-up) |
+| **Gribov–Zwanziger continuum** | the horizon as an infinite-dimensional fixed point of a self-consistency equation on the gauge-field space | the fixed-point equation is only stated on a finite truncation, never on the full space |
+| **constructive QFT (infinite-volume / Balaban)** | the scale-by-scale infinite-volume limit that carries the operator's spectrum to the continuum | the scale sum stops at a finite volume / coupling |
+| **infinite-dimensional Perron–Frobenius (Jentzsch / Krein–Rutman)** | a positive, compact, irreducible operator has a simple positive leading eigenvalue — the infinite-dim generalisation of the finite transfer-matrix gap | the operator fails positivity / compactness / irreducibility on the infinite-dim space |
+
+## What the harvest already surfaced
+
+- The lattice FP spectrum is well studied ([Landau-gauge ghost/gluon propagators and the FP spectrum, hep-lat/0511053](https://export.arxiv.org/pdf/hep-lat/0511053v1)); a spectral gap for lattice YM via [Jentzsch's theorem](https://zenodo.org/records/19497901) is recorded; the [Gribov horizon in the continuum](http://vietnam.in2p3.fr/2004/trans/ps4_greensite.pdf) is the actual infinite-dim object.
+- The recurring honest obstacle: the finite→infinite step is the **spectral convergence** of the operator, and it is the exact place the lattice `λ_min ≈ 2.4` (UV cutoff) fails to be a horizon.
+
+## The engine's job (search, not manufacture)
+
+Harvest the specific **norm-resolvent convergence** theorem (or its failure) for the lattice FP operator
+and the transfer operator, and the **infinite-dimensional Perron–Frobenius/Krein–Rutman** theorem that
+would replace the finite matrix inequality. Each is a falsifiable hypothesis: if the operator's
+`a → 0` limit diverges or fails positivity/compactness, that is the honest refutation of that bridge.

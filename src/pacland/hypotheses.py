@@ -234,6 +234,23 @@ HYPOTHESES: dict[str, dict] = {
         "attack": "for each scheme, harvest the specific lemma that carries the running coupling, then judge the resulting bound through bound_search.check_bound.",
         "progress": "the harvest identified the four schemes; none has a complete verified proof of the weak-coupling exponential (the claimed preprints are unverified + one is critiqued). The next step is the specific running-coupling lemma per scheme.",
     },
+    "mass-gap-infinite-dimensional": {
+        "question": "what structure establishes the SPECTRAL properties of the infinite-dimensional Faddeev-Popov / transfer operator, when the finite lattice truncation's spectrum is a UV-cutoff artifact (λ_min/a² → ∞)?",
+        "forced": "the finite-dimensional machine is correct about the finite matrix (kernel-checked); the finite spectrum λ_min ≈ 2.4 is the UV cutoff, not the horizon.",
+        "open": "the spectral convergence of the operator as a → 0, and the infinite-dimensional spectral theorem (the horizon, the gap) on the full gauge-field space.",
+        "candidates": [
+            {"hypothesis": "norm-resolvent convergence: the lattice FP operator converges to the continuum operator as a → 0, so λ_min(a) has a genuine continuum limit",
+             "falsifier": "λ_min(a) diverges (the observed λ_min/a² blow-up — no convergent limit)"},
+            {"hypothesis": "infinite-dimensional Perron-Frobenius (Jentzsch / Krein-Rutman): a positive compact irreducible operator has a simple positive leading eigenvalue (the gap)",
+             "falsifier": "the infinite-dim operator fails positivity / compactness / irreducibility"},
+            {"hypothesis": "Gribov-Zwanziger continuum: the horizon is an infinite-dimensional self-consistency fixed point on the gauge-field space",
+             "falsifier": "the fixed-point equation is only ever stated on a finite truncation"},
+            {"hypothesis": "constructive QFT (infinite-volume / Balaban): the scale-by-scale limit carries the spectrum to the continuum",
+             "falsifier": "the scale sum stops at a finite volume / coupling"},
+        ],
+        "attack": "harvest the specific norm-resolvent convergence theorem (or its failure) and the infinite-dimensional Perron-Frobenius / Krein-Rutman theorem, each as a falsifiable bridge.",
+        "progress": "the harvest surfaced the lattice FP spectrum (hep-lat/0511053), a Jentzsch spectral gap, and the continuum Gribov horizon; the finite→infinite step is the spectral convergence, the exact place λ_min ≈ 2.4 fails to be a horizon.",
+    },
 }
 
 
