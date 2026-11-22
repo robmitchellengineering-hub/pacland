@@ -431,7 +431,7 @@ function renderList(filter) {
     const li = document.createElement('li');
     li.className = 'claim';
     li.innerHTML = `<span class="glyph verdict-${c.v}">${G[c.v]}</span><span>${c.id.replace(/-/g,' ')}</span>${/kernel-checked/.test(c.oracle) ? '<span class="mini">kernel</span>' : ''}`;
-    li.onclick = () => { document.querySelectorAll('.claim').forEach(x=>x.classList.remove('active')); li.classList.add('active'); renderClaim(c); };
+    li.onclick = () => { document.querySelectorAll('.claim').forEach(x=>x.classList.remove('active')); li.classList.add('active'); renderClaim(c); if (window.innerWidth < 760) { document.getElementById('out').scrollIntoView({ behavior: 'smooth', block: 'start' }); } };
     list.appendChild(li);
   });
 }
