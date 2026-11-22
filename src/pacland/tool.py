@@ -118,6 +118,9 @@ def _cmd_search_lean(a: argparse.Namespace) -> int:
     print(f"{len(hits)} Mathlib theorem(s) matching {a.keyword!r}:")
     for h in hits:
         print(f"  {h['name']:40s} {h['file']}\n     {h['statement']}")
+    if a.ingest:
+        r = lean_scrape.ingest_mathlib_hits(a.keyword, limit=a.limit)
+        print(f"ingested {r['ingested']} as tier-1 properties (ext:mathlib:lean-<name>)")
     return 0
 
 
@@ -187,6 +190,7 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("search-lean", help="search the local Mathlib (~170k theorems) for a keyword")
     p.add_argument("keyword")
     p.add_argument("--limit", type=int, default=10)
+    p.add_argument("--ingest", action="store_true", help="also register the matches as tier-1 properties")
     p.set_defaults(fn=_cmd_search_lean)
 
     p = sub.add_parser("scrape-lean", help="clone + scan an external Lean repo from the internet")

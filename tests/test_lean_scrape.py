@@ -4,10 +4,19 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pacland import lean_scrape
+from pacland import registry, lean_scrape
 
 
 class TestLeanScrape(unittest.TestCase):
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self._old = registry.REGISTRY_DIR
+        registry.REGISTRY_DIR = Path(self._tmp.name)
+
+    def tearDown(self):
+        registry.REGISTRY_DIR = self._old
+
     def test_mathlib_is_present_and_huge(self):
         d = lean_scrape.mathlib_dir()
         if d is None:
@@ -24,6 +33,17 @@ class TestLeanScrape(unittest.TestCase):
             hits = lean_scrape.search_mathlib("spectral", dir=d, limit=5)
         self.assertTrue(hits)
         self.assertTrue(all(h["name"] for h in hits))
+
+    def test_ingest_mathlib_hits_registers_tier1_properties(self):
+        d = lean_scrape.mathlib_dir()
+        if d is None:
+            self.skipTest("Mathlib not present locally")
+        r = lean_scrape.ingest_mathlib_hits("spectral", limit=3)
+        self.assertEqual(r["ingested"], 3)
+        for name in r["names"]:
+            p = registry.get("property", f"ext:mathlib:lean-{name}")
+            self.assertIsNotNone(p)
+            self.assertEqual(p["payload"]["tier"], 1)
 
     def test_scrape_local_repo(self):
         with tempfile.TemporaryDirectory() as tmp:

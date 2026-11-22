@@ -110,3 +110,23 @@ def scrape_github_lean(repo_url: str, source: str = "", limit: int = 20, tmp: st
             theorems.append({"name": m.group(1), "file": str(p.relative_to(target))})
     return {"repo": repo_url, "source": source or name, "lean_theorems": len(theorems),
             "sample": theorems[:limit]}
+
+
+def ingest_mathlib_hits(keyword: str, limit: int = 10, source: str = "mathlib") -> dict:
+    """The on-demand bridge: search Mathlib for a keyword and register the MATCHES as tier-1 properties.
+
+    Ingesting all ~173k Mathlib theorems as individual entries would be impractically large; this
+    ingests only the RELEVANT ones (the search matches), namespaced ``ext:<source>:lean-<name>`` and
+    tagged tier-1 — so the synthesis and bound-derivation layers can cite a proven fact without the
+    whole library in the registry.
+    """
+    from pacland import registry
+    hits = search_mathlib(keyword, limit=limit)
+    for h in hits:
+        registry.add(registry.Entry(
+            id=f"ext:{source}:lean-{h['name']}", kind="property",
+            payload={"name": h["name"], "statement": h["statement"], "tier": 1,
+                     "domain": "mathematics", "source": h["file"]},
+            provenance={"produced_by": "external", "source": source, "method": "mathlib-search",
+                        "ts": __import__("time").time()}))
+    return {"ingested": len(hits), "names": [h["name"] for h in hits]}
