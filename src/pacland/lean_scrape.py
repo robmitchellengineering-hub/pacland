@@ -221,13 +221,20 @@ def harvest_mathlib(keywords: list[str], limit_per_keyword: int = 10, source: st
 
 # A concept → the Mathlib spellings that actually carry it. Mathlib's naming is the gap this bridges:
 # "spectral" there is spectral SPACES (topology), not the spectral gap; "mixing" is ergodic theory.
+# The M3-relevant concepts (Yang-Mills mass gap = exponential clustering / spectral gap) map onto
+# Mathlib's analysis + measure-theory machinery.
 KEYWORD_ALIASES = {
-    "spectral gap": ["spectral", "eigenvalue", "spectrum", "spectralRadius"],
-    "mass gap": ["decay", "exponential", "superexponential", "clustering"],
+    "spectral gap": ["spectral", "eigenvalue", "spectrum", "spectralRadius", "eigenvalues"],
+    "mass gap": ["decay", "exponential", "superexponential", "clustering", "cluster"],
     "mixing": ["ergodic", "mixing", "mixingTime", "measurePreserving"],
     "conservation": ["conserved", "energy", "invariant"],
     "decay": ["decay", "exponential", "superexponential"],
     "entropy": ["entropy"],
+    "semigroup": ["semigroup", "contraction", "MarkovSemigroup", "generator", "semigroup"],
+    "curvature": ["curvature", "Ricci", "Bakry", "logSobolev", "logarithmic"],
+    "martingale": ["martingale", "stopping", "optional"],
+    "ergodic": ["ergodic", "mixing", "measurePreserving"],
+    "measure": ["measure", "ergodic", "mixing"],
 }
 
 
