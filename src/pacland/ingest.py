@@ -253,3 +253,51 @@ def ingest_external(contribution: dict) -> dict[str, int]:
         n["mappings"] += 1
 
     return n
+
+
+def ingest_library(module) -> dict:
+    """Register an EXTERNAL Python library so its data AND its falsifiers become usable by the engine.
+
+    A library module follows the same contribution schema, plus an optional ``FALSIFIERS`` dict::
+
+        SOURCE = "my-project"
+        DOMAIN = "geology"
+        CONTRIBUTION = {"structures": [...], "properties": [...], "mappings": [...]}
+        FALSIFIERS = {"my-check": lambda: (True, "evidence")}
+
+    ``CONTRIBUTION`` is ingested via :func:`ingest_external`; each ``FALSIFIERS`` entry is registered
+    into the runner's ``FALSIFIERS`` (namespaced ``ext:<source>:<name>``) AND recorded as an evidence
+    claim, so the discovery engine can actually RUN the external checks, not just index their names.
+    """
+    source = str(getattr(module, "SOURCE", "") or getattr(module, "__name__", "external"))
+    out: dict = {"source": source, "falsifiers": 0}
+    contrib = getattr(module, "CONTRIBUTION", None)
+    if contrib is not None:
+        c = dict(contrib)
+        c["source"] = source
+        out["contribution"] = ingest_external(c)
+    falsifiers = getattr(module, "FALSIFIERS", None)
+    if isinstance(falsifiers, dict):
+        from pacland import runner
+        for name, fn in falsifiers.items():
+            key = f"ext:{source}:{name}"
+            runner.FALSIFIERS[key] = fn
+            registry.add(registry.Entry(
+                id=f"ext:{source}:evidence-{name}", kind="evidence",
+                payload={"name": name, "check": key, "tier": 4,
+                         "domain": str(getattr(module, "DOMAIN", ""))},
+                provenance={"produced_by": "external", "source": source,
+                            "method": "library-falsifier", "ts": time.time()}))
+            out["falsifiers"] += 1
+    return out
+
+
+def load_module_from_path(path: str):
+    """Import a ``.py`` file as a module (for the ``ingest-library`` CLI)."""
+    import importlib.util
+    from pathlib import Path
+    p = Path(path)
+    spec = importlib.util.spec_from_file_location(p.stem, p)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    return mod

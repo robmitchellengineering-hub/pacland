@@ -90,6 +90,14 @@ def _cmd_ingest_external(a: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_ingest_library(a: argparse.Namespace) -> int:
+    from pacland import ingest
+    mod = ingest.load_module_from_path(a.path)
+    out = ingest.ingest_library(mod)
+    print(json.dumps(out, indent=2, default=str))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="sextant", description="the Sextant discovery engine")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -130,6 +138,10 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("ingest-external", help="ingest another project's data (structures/properties/evidence/mappings) from a JSON file")
     p.add_argument("file", help="path to the contribution JSON (see examples/external-contribution.json)")
     p.set_defaults(fn=_cmd_ingest_external)
+
+    p = sub.add_parser("ingest-library", help="register an external Python library (its CONTRIBUTION data + FALSIFIERS)")
+    p.add_argument("path", help="path to the .py library module")
+    p.set_defaults(fn=_cmd_ingest_library)
 
     a = ap.parse_args(argv)
     return a.fn(a)
