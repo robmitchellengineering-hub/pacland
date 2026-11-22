@@ -96,5 +96,19 @@ So the rung `fssInfraredBound` decomposes into **two concrete, falsifiable input
 positivity on the physical space, and the Gaussian domination — each of which is a named, testable
 sub-lemma, and both of which are the precise place the non-Abelian infrared bound has not been closed.
 
+## Status of the two inputs (2026-11-22) — one is already proved
+
+1. **YM reflection positivity (OS3): DONE — Osterwalder–Seiler 1978.** The lattice gauge theory's
+   measure is reflection-positive on the physical (gauge-invariant) Hilbert space; this is the standard
+   theorem the constructive route invokes. So this input is a **known result**, not open — the physical
+   Hilbert space carries reflection positivity, and only the gauge-fixed measure fails it.
+2. **Gaussian domination for the gauge-invariant observables: OPEN.** The partition-function bound that
+   seeds the infrared bound has not been established for the non-Abelian plaquette / Wilson-loop
+   observables. This — not reflection positivity — is the actual remaining rung.
+
+So the frontier sharpens again: of the two inputs, **one is already a named theorem (Osterwalder–Seiler),
+and the other — Gaussian domination — is the single open sub-lemma** the mass-gap reduction now rests on.
+
+
 
 
