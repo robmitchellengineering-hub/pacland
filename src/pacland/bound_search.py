@@ -33,7 +33,9 @@ def check_bound(c, *, beta_pos=(2.0, 2.5, 3.0, 4.0, 6.0, 10.0, 20.0),
     faster than m and vanishes relative to it is not AT the mass-gap scale).
     """
     positive = all(c(b) > 0.0 for b in beta_pos)
-    valid = all(c(b) <= referee(b) for b in beta_val)
+    # a relative tolerance: a bound computed via 1/ξ can be a hair above the referee from float roundoff;
+    # that is equality, not a false bound (which would be above by a finite factor, not 1e-9).
+    valid = all(c(b) <= referee(b) * (1.0 + 1e-9) for b in beta_val)
     ratios = [c(b) / referee(b) for b in beta_sharp]
     sharp = ratios[1] >= 0.5 * ratios[0]
     reaches_scale = c(beta_scale) / referee(beta_scale) >= scale_floor
