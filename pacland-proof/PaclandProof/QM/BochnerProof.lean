@@ -56,13 +56,21 @@ theorem carre_du_champ_eq_mul (a f g : ℝ → ℝ) (θ : ℝ) (hf : ContDiff �
   dsimp [carreDuChamp, diffusion_generator]
   have hf1 : Differentiable ℝ f := hf.differentiable (by norm_num)
   have hg1 : Differentiable ℝ g := hg.differentiable (by norm_num)
+  have hf1' : Differentiable ℝ (deriv f) := ContDiff.differentiable_deriv_two hf
+  have hg1' : Differentiable ℝ (deriv g) := ContDiff.differentiable_deriv_two hg
   -- L(fg) − f·Lg − g·Lf = 2·f'·g'  (the diffusion identity)
+  have hderiv_fg : deriv (f * g) = fun y => deriv f y * g y + f y * deriv g y := by
+    funext y
+    rw [deriv_mul (hf1 y) (hg1 y)]
   have hfg : deriv (fun t => f t * g t) θ = deriv f θ * g θ + f θ * deriv g θ := by
-    rw [deriv_mul (hf1 θ) (hg1 θ)]
+    rw [hderiv_fg]
   have hfg2 : deriv (deriv (fun t => f t * g t)) θ
       = deriv (deriv f) θ * g θ + 2 * (deriv f θ * deriv g θ) + f θ * deriv (deriv g) θ := by
-    rw [deriv_mul (hf1 θ) (hg1 θ)]
-    simp [deriv_mul, deriv_add, deriv_const_mul]
+    change deriv (deriv (f * g)) θ = _
+    rw [hderiv_fg]
+    rw [deriv_add]
+    rw [deriv_mul (hf1' θ) (hg1 θ)]
+    rw [deriv_mul (hf1 θ) (hg1' θ)]
     ring
   rw [hfg, hfg2]
   ring
