@@ -37,33 +37,4 @@ theorem cos_kernel_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) :
   rw [h]
   exact add_nonneg (sq_nonneg _) (sq_nonneg _)
 
-/-- **cos² is positive-definite** — the base case of the power-reduction for the Wilson heat kernel.
-`cos²x = (1 + cos 2x)/2`, the average of the constant kernel and the `cos(2·)` kernel, both PSD. -/
-theorem cos_sq_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) :
-    0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2 := by
-  have hcos : ∀ x, Real.cos x ^ 2 = (1 + Real.cos (2 * x)) / 2 := by
-    intro x
-    have h1 : Real.cos x ^ 2 + Real.sin x ^ 2 = 1 := Real.cos_sq_add_sin_sq x
-    have h2 : Real.cos (2 * x) = Real.cos x ^ 2 - Real.sin x ^ 2 := Real.cos_two_mul x
-    linarith
-  have h1 : 0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j := by
-    rw [Finset.sum_mul, Finset.mul_sum]
-    simpa [mul_comm, mul_left_comm, mul_assoc] using sq_nonneg (∑ i : Fin m, c i)
-  have h2 : 0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * Real.cos (2 * (θ i - θ j)) :=
-    cos_kernel_posdef (fun i => 2 * θ i) c
-  have h12 : 0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (1 + Real.cos (2 * (θ i - θ j))) := by
-    rw [show ∑ i : Fin m, ∑ j : Fin m, c i * c j * (1 + Real.cos (2 * (θ i - θ j)))
-        = (∑ i : Fin m, ∑ j : Fin m, c i * c j) + (∑ i : Fin m, ∑ j : Fin m, c i * c j * Real.cos (2 * (θ i - θ j))) by
-        simp_rw [mul_add, mul_one]
-        rw [Finset.sum_add_distrib]]
-    exact add_nonneg h1 h2
-  rw [show ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2
-      = ∑ i : Fin m, ∑ j : Fin m, c i * c j * ((1 + Real.cos (2 * (θ i - θ j))) / 2) by
-      apply Finset.sum_congr rfl
-      intro i hi
-      apply Finset.sum_congr rfl
-      intro j hj
-      rw [hcos (θ i - θ j)]]
-  exact mul_nonneg (by norm_num : 0 ≤ (1 / 2 : ℝ)) h12
-
 end QM
