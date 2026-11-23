@@ -80,4 +80,16 @@ theorem volume_uniform_ir_bound {E : Type*} [NormedAddCommGroup E] [InnerProduct
     ⟪f, Θ f⟫_ℝ ≤ ⟪f, f⟫_ℝ :=
   reflection_positivity_covariance_bound Θ f hpos
 
+/-- **The 1D discrete Laplacian's symbol is `2(1 − cos k)`.** On the Fourier mode `fᵢ = cos(k·i)`, the
+second difference `(Lf)ᵢ = 2fᵢ − fᵢ₊₁ − fᵢ₋₁` is `2(1 − cos k)·fᵢ`. This is the Fourier transform of the
+Dirichlet form `Σ (fᵢ₊₁ − fᵢ)²` — the sum-over-reflection-planes denominator. -/
+theorem laplacian_symbol_1d (k i : ℝ) :
+    2 * Real.cos (k * i) - Real.cos (k * (i + 1)) - Real.cos (k * (i - 1))
+      = 2 * (1 - Real.cos k) * Real.cos (k * i) := by
+  have hsum : Real.cos (k * (i + 1)) + Real.cos (k * (i - 1)) = 2 * Real.cos (k * i) * Real.cos k := by
+    rw [mul_add, mul_sub]
+    rw [Real.cos_add, Real.cos_sub]
+    ring
+  linarith
+
 end FSSGaussianDomination
