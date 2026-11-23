@@ -48,7 +48,7 @@ theorem cos_double_posdef {m : ℕ} (θ : Fin m → ℝ) : PosDefKernel (fun i j
 
 /-- **The square of the cosine kernel is positive-definite** — the double-angle turns `cos²` into
 the positive combination `(1 + cos(2θ))/2`. -/
-theorem cos_sq_posdef {m : ℕ} (θ : Fin m → ℝ) : PosDefKernel (fun i j => (Real.cos (θ i - θ j))^2) := by
+theorem cos_sq_kernel_posdef {m : ℕ} (θ : Fin m → ℝ) : PosDefKernel (fun i j => (Real.cos (θ i - θ j))^2) := by
   have heq : (fun i j => (Real.cos (θ i - θ j))^2) = fun i j => (1 / 2) * ((1 : ℝ) + Real.cos (2 * (θ i - θ j))) := by
     funext i j
     rw [Real.cos_sq]
@@ -82,7 +82,7 @@ theorem heat_kernel_truncated_posdef {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (
   let K₃ : Fin m → Fin m → ℝ := fun i j => (Real.cos (θ i - θ j))^2
   have hK₁ : PosDefKernel K₁ := by dsimp [K₁]; exact const_kernel_posdef
   have hK₂ : PosDefKernel K₂ := by dsimp [K₂]; exact cos_kernel_posdef θ
-  have hK₃ : PosDefKernel K₃ := by dsimp [K₃]; exact cos_sq_posdef θ
+  have hK₃ : PosDefKernel K₃ := by dsimp [K₃]; exact cos_sq_kernel_posdef θ
   have h1 : PosDefKernel (fun i j => (1 : ℝ) + (2 * β) * K₂ i j) := by
     exact posdef_add K₁ (fun i j => (2 * β) * K₂ i j) hK₁ (posdef_smul K₂ (2 * β) (by nlinarith [hβ]) hK₂)
   have h2 : PosDefKernel (fun i j => (1 : ℝ) + (2 * β) * K₂ i j + ((2 * β)^2 / 2) * K₃ i j) := by
@@ -389,19 +389,6 @@ theorem isPosCosComb_all (n : ℕ) : IsPosCosComb n (fun θ => (Real.cos θ) ^ n
   | succ n ih =>
       have hstep := isPosCosComb_step ih
       simpa [pow_succ] using hstep
-
-/-- **Every power of the cosine kernel is positive-definite.** -/
-theorem cos_pow_posdef {m : ℕ} (θ : Fin m → ℝ) (n : ℕ) :
-    PosDefKernel (fun i j => (Real.cos (θ i - θ j)) ^ n) := by
-  rcases isPosCosComb_all n with ⟨a, ha_nonneg, ha⟩
-  have hmain : (fun i j => (Real.cos (θ i - θ j)) ^ n) = fun i j => ∑ k ∈ Finset.range (n + 1), a k * Real.cos ((k : ℝ) * (θ i - θ j)) := by
-    funext i j
-    simpa using ha (θ i - θ j)
-  rw [hmain]
-  exact posdef_finset_sum (Finset.range (n + 1))
-    (fun k => fun i j => Real.cos ((k : ℝ) * (θ i - θ j))) a ha_nonneg
-    (fun k => cos_scaled_posdef θ k)
-
 
 /-- **The full Wilson heat kernel is positive-definite** (the OS3 reflection positivity of the
 SU(2) Wilson measure): `exp(2β·cos(θ_i−θ_j))` is PSD for `β ≥ 0`. This is the complete theorem — the
