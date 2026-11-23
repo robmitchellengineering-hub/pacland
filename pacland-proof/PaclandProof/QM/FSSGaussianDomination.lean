@@ -256,7 +256,7 @@ OS2 (symmetry, `wilson_kernel_symmetric`), OS3 (reflection positivity, `wilson_k
 input `os_reconstruction_full` needs for the Wightman reconstruction — the covariance/symmetry/clustering
 are the remaining OS axioms, each discharged structurally. -/
 theorem os_axioms_wilson {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β) :
-    PosDefKernel (fun i j => wilsonKernel θ β i j) := wilson_kernel_posdef θ β hβ
+    QM.PosDefKernel (fun i j => wilsonKernel θ β i j) := QM.wilson_kernel_posdef θ β hβ
 
 /-- **The kernel-defined reflection `Θ`** — the STRUCTURAL operator on the finite lattice whose matrix
 is the Wilson kernel: `Θ f j = ∑ i, f i · exp(2β·cos(θᵢ−θⱼ))`. The reflection is specified by its action
