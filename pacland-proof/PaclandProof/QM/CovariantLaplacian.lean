@@ -53,4 +53,19 @@ theorem fieldStrength_antisym (A₁ A₂ : ℤ → ℝ) (x : ℤ) :
   unfold fieldStrength
   ring
 
+/-- **The covariant derivative annihilates constants (for `U = 1`).** The constant function is the zero
+mode — the vacuum — of the free covariant derivative. The mass gap is the gap *above* this zero mode. -/
+theorem covariant_derivative_annihilates_constant (c : ℝ) (x : ℤ) :
+    covariantDerivative (fun _ => 1) (fun _ => c) x = 0 := by
+  unfold covariantDerivative
+  simp
+
+/-- **The covariant Laplacian annihilates constants.** The constant (vacuum) is the zero mode of the
+free covariant Laplacian too — so the spectrum of `−∇·D` has the vacuum at zero and the mass gap is the
+first positive eigenvalue above it. This is the spectral structure the mass-gap bound needs. -/
+theorem covariant_laplacian_annihilates_constant (c : ℝ) (x : ℤ) :
+    covariantLaplacian (fun _ => 1) (fun _ => c) x = 0 := by
+  unfold covariantLaplacian covariantDerivative
+  simp
+
 end CovariantLaplacian
