@@ -157,7 +157,8 @@ theorem fss_join {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   have hsym' : ⟪f, f⟫_ℝ = ⟪f, L f⟫_ℝ / J := by
     rw [hsym]
     field_simp [hJ.ne']
-  simpa [hsym'] using hcs
+  rw [hsym'] at hcs
+  exact hcs
 
 end FSSGaussianDomination
 
