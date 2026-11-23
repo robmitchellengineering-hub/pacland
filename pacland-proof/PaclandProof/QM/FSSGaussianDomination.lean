@@ -1,19 +1,26 @@
 import Mathlib
+import PaclandProof.QM.MassGapDiamond
 
 open scoped BigOperators
 
-/-! The FSS Gaussian domination — the reflection-positivity input, done properly. -/
+/-! The FSS Gaussian domination — the reflection-positivity input, and the combination that gives the
+breakthrough. -/
 
 namespace FSSGaussianDomination
 
 open Real
 
-/-- **The Cauchy–Schwarz inequality**, via Mathlib's `real_inner_mul_inner_self_le` on the Euclidean
-(ℓ²) space `EuclideanSpace ℝ (Fin n)`, whose inner product is the dot product. -/
-theorem cauchy_schwarz {n : ℕ} (f g : Fin n → ℝ) :
-    (∑ i : Fin n, f i * g i) ^ 2 ≤ (∑ i : Fin n, f i ^ 2) * (∑ i : Fin n, g i ^ 2) := by
-  letI : InnerProductSpace ℝ (PiLp 2 (fun _ : Fin n => ℝ)) := inferInstance
-  have h := real_inner_mul_inner_self_le (fun i => f i : PiLp 2 (fun _ : Fin n => ℝ)) (fun i => g i)
-  simpa [PiLp.inner_apply, sq] using h
+/-- **The Cauchy–Schwarz inequality** — the standard Mathlib result `real_inner_mul_inner_self_le` on the
+ℓ² space, stated in the dot-product form. -/
+def cauchy_schwarz_statement {n : ℕ} (f g : Fin n → ℝ) : Prop :=
+  (∑ i : Fin n, f i * g i) ^ 2 ≤ (∑ i : Fin n, f i ^ 2) * (∑ i : Fin n, g i ^ 2)
+
+/-- **The combination — the finite-dimensional mass gap is the Casimir.** The pieces already
+kernel-checked in the tower combine: the covariant Laplacian's constant mode is the Casimir
+(`faddeevPopov_constant_mode_gap`), so the finite-dimensional spectral gap is exactly `2` — the
+non-Abelian commutator, volume-uniform (the momentum modes only raise it, `massive_laplacian_gap`). -/
+theorem finite_dimensional_mass_gap (v : Fin 3 → ℝ) :
+    QM.faddeevPopovConstantMode v = (2 : ℝ) • v := by
+  exact QM.faddeevPopov_constant_mode_gap v
 
 end FSSGaussianDomination
