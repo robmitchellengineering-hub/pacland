@@ -353,3 +353,33 @@ def verify_mass_gap_running_coupling(betas=(2.0, 2.5, 3.0), N=8, n_configs=8, n_
     slope = -(logm[-1] - logm[0]) / (betas[-1] - betas[0])
     return True, (f"mass-gap running coupling: {curve} → σ decreases (measured slope {slope:.3f} vs "
                   f"referee 1.182); positivity + running confirmed at this β-scan")
+
+
+def verify_mass_gap_creutz(betas=(3.5, 4.0, 4.5), N=10, R=3, T=3, n_configs=10, n_sweeps=12, seed=0) -> tuple[bool, str]:
+    """The SU(2) Creutz ratio χ(R,T) (the Wilson-loop string tension — the correct weak-coupling
+    observable, unlike the noise-dominated Polyakov loop) must stay POSITIVE (area law) and DECREASE as β
+    grows (running coupling → asymptotic freedom). χ ≤ 0 refutes the area law; a non-decreasing χ refutes
+    the running. This is the compute-bound test the ROG/mesh runs."""
+    import numpy as np
+    from pacland import lattice_ym_su2 as lm
+    from pacland.lattice_ym_su2_fast import metropolis_fast
+
+    chi = {}
+    for beta in betas:
+        vals = []
+        for i in range(n_configs):
+            rng = np.random.default_rng(seed + int(10 * beta) + i)
+            links = np.array([lm.random_su2(rng) for _ in range(4 * N ** 4)])
+            links = links.reshape((4,) + (N,) * 4 + (4,))
+            links = metropolis_fast(links, beta, n_sweeps, seed + i)
+            vals.append(lm.creutz_ratio(links, R, T))
+        chi[beta] = float(np.mean(vals))
+    curve = ", ".join(f"χ(β={b})={v:.4f}" for b, v in chi.items())
+    cvals = [chi[b] for b in betas]
+    positive = all(c > 1e-4 for c in cvals)
+    running = cvals[-1] < cvals[0]
+    if not positive:
+        return False, f"Creutz ratio: {curve} → χ ≤ 0 (no area law / no string tension)"
+    if not running:
+        return False, f"Creutz ratio: {curve} → χ does NOT decrease as β grows (no running coupling)"
+    return True, f"Creutz ratio: {curve} → χ positive (area law) + decreasing (running coupling confirmed)"
