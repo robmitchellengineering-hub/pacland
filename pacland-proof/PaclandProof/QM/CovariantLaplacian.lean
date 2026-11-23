@@ -1,5 +1,7 @@
 import Mathlib
 
+open scoped BigOperators
+
 /-! The covariant Laplacian — the first lemmas of step 1 (the covariance is `−∇·D`).
 
 The weak-coupling Gaussian covariance is the covariant Laplacian `−∇·D`, i.e. the Faddeev–Popov
