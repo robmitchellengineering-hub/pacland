@@ -361,6 +361,41 @@ FACTS: dict[str, Fact] = {
         source="PaclandProof.QM.fisher_information_identity (Lean, kernel-checked)",
         category="bakry-emery",
     ),
+    "ym-casimir": Fact(
+        id="ym-casimir",
+        statement="the SU(2) FP operator's finite-volume spectral gap is the Casimir 2 (Σᵢ eᵢ×(eᵢ×v) = −2v)",
+        falsifier="a finite-volume FP operator with gap ≤ 0 (the Abelian case)",
+        source="PaclandProof.QM.MassGapDiamond.casimir_su2 + massive_laplacian_gap (Lean, kernel-checked)",
+        category="yang-mills",
+    ),
+    "ym-running-coupling": Fact(
+        id="ym-running-coupling",
+        statement="the running-coupling exponent is c = 12π²/11 (the heat-kernel determinant, a₂ ∝ b₀)",
+        falsifier="a beta function with b₀ ≤ 0 (no asymptotic freedom)",
+        source="PaclandProof.QM.HeatKernel.determinant_gives_exponent (Lean, kernel-checked)",
+        category="yang-mills",
+    ),
+    "ym-fss-linear": Fact(
+        id="ym-fss-linear",
+        statement="the linear FSS infrared bound: reflection positivity ⟹ the two-point function ≤ the free propagator (falk_bruch + character_orthonormal + laplacian_symbol_1d + fss_join)",
+        falsifier="a reflection-positive linear model whose two-point function exceeds the free propagator",
+        source="PaclandProof.QM.FSSGaussianDomination (Lean, kernel-checked)",
+        category="yang-mills",
+    ),
+    "ym-character-bounded": Fact(
+        id="ym-character-bounded",
+        statement="the SU(2) character is bounded by its dimension (the Weyl bound |χ_j| ≤ 2j+1), so the character covariance ⟪χ,Θχ⟫ ≤ (2j+1)²",
+        falsifier="a character exceeding its dimension bound",
+        source="PaclandProof.QM.Su2Character.su2_character_weyl_bound + FSSGaussianDomination.su2_character_fss_bound (Lean, kernel-checked)",
+        category="yang-mills",
+    ),
+    "ym-free-propagator": Fact(
+        id="ym-free-propagator",
+        statement="the momentum-space two-point function is dominated by the free propagator 1/(k²+2) (the Casimir mass 2 in the symbol)",
+        falsifier="a normalized two-point function exceeding 1/J",
+        source="PaclandProof.QM.FSSGaussianDomination.su2_momentum_space_fss_bound (Lean, kernel-checked)",
+        category="yang-mills",
+    ),
 }
 
 
@@ -408,6 +443,16 @@ def generate(fact_ids: list[str], strategy: str) -> Candidate:
                 strategy="combine",
                 source_facts=("ou-curvature", "gronwall-decay"),
                 test="ou-gap",
+            )
+        # Yang–Mills: the Casimir gap × the running coupling, joined by the FSS infrared bound.
+        if {"ym-casimir", "ym-running-coupling", "ym-fss-linear"} <= set(fact_ids):
+            return Candidate(
+                id="su2-mass-gap-three-mechanisms",
+                statement="the SU(2) mass gap is m(β) ≥ 2·e^{−(12π²/11)β}: the Casimir gap 2 (finite-volume, volume-uniform) × the running-coupling scale, joined by the FSS infrared bound",
+                falsifier="a mass gap below 2·e^{−(12π²/11)β}, or the finite Casimir gap collapsing in the thermodynamic limit",
+                strategy="combine",
+                source_facts=("ym-casimir", "ym-running-coupling", "ym-fss-linear"),
+                test="ym-volume-uniform-su2",
             )
 
     if strategy == "generalize":
