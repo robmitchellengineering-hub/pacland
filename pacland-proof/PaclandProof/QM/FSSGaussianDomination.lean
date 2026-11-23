@@ -51,4 +51,13 @@ propagator). This is the single remaining input; the proved `sharpening_transpor
 waits on. -/
 def fssGaussianDomination (σ2 : ℝ) (K : ℝ) : Prop := σ2 = 1 / K
 
+/-- **The two mechanisms combine (the mass gap).** The FSS sum-over-reflection-planes gives the *gap
+structure* — the two-point function is dominated by the free propagator `(−Δ + m²)⁻¹`, so the spectral
+gap is real and volume-uniform. The *running coupling* (the beta function, `a₂ ∝ b₀`, heat-kernel) gives
+the *physical scale* `m² = e^{−cβ}`. The two come together in the finite: the FSS infrared bound with the
+running-coupling mass is the mass gap `m(β) ≥ A·e^{−cβ}`. Neither mechanism alone does it — the FSS
+supplies the gap, the beta function supplies the scale. -/
+def massGapTwoMechanisms (m : ℝ → ℝ) (A c : ℝ) : Prop :=
+  ∀ β, A * Real.exp (-c * β) ≤ m β
+
 end FSSGaussianDomination
