@@ -142,9 +142,9 @@ finite-volume kernels are PSD (each volume) and converge pointwise to the infini
 the infinite-volume kernel is PSD — the limit of PSD is PSD (`posdef_of_tendsto`). This is the
 volume-uniformity mechanism of the FSS: the finite-volume reflected correlations are PSD, and the
 thermodynamic limit preserves positivity. -/
-theorem volume_uniform_psd {α : Type*} [Fintype α] (K : ℕ → α → α → ℝ) (K∞ : α → α → ℝ)
+theorem volume_uniform_psd {α : Type*} [Fintype α] (K : ℕ → α → α → ℝ) (Klim : α → α → ℝ)
     (hK : ∀ N, PosDefKernel (K N))
-    (hlim : ∀ i j, Filter.Tendsto (fun N => K N i j) Filter.atTop (nhds (K∞ i j))) :
-    PosDefKernel K∞ := posdef_of_tendsto K K∞ hlim hK
+    (hlim : ∀ i j, Filter.Tendsto (fun N => K N i j) Filter.atTop (nhds (Klim i j))) :
+    PosDefKernel Klim := posdef_of_tendsto K Klim hlim hK
 
 end QM

@@ -249,10 +249,10 @@ remaining input is the finite-volume `hpos` — the measure→kernel connection 
 Gibbs measure's reflected correlation is the Wilson kernel's quadratic form, which `QM.wilson_kernel_posdef`
 already proves is PSD. -/
 theorem volume_uniform_covariance_bound {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    (Θ : ℕ → E →ₗᵢ[ℝ] E) (Θ∞ : E →ₗᵢ[ℝ] E) (χ : E)
+    (Θ : ℕ → E →ₗᵢ[ℝ] E) (Θlim : E →ₗᵢ[ℝ] E) (χ : E)
     (hpos : ∀ N, 0 ≤ ⟪χ, Θ N χ⟫_ℝ)
-    (hlim : Filter.Tendsto (fun N => ⟪χ, Θ N χ⟫_ℝ) Filter.atTop (nhds (⟪χ, Θ∞ χ⟫_ℝ))) :
-    ⟪χ, Θ∞ χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := by
+    (hlim : Filter.Tendsto (fun N => ⟪χ, Θ N χ⟫_ℝ) Filter.atTop (nhds (⟪χ, Θlim χ⟫_ℝ))) :
+    ⟪χ, Θlim χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := by
   have hle : ∀ N, ⟪χ, Θ N χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := fun N =>
     reflection_positivity_covariance_bound (Θ N) χ (hpos N)
   exact le_of_tendsto_of_tendsto' hlim tendsto_const_nhds (Filter.Eventually.of_forall hle)
