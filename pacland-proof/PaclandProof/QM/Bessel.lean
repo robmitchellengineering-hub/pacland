@@ -97,8 +97,8 @@ and each factor is its exponential series, so the kernel is `Σₘ Σₗ (2β)^{
 `fₘₗ(θ) = cosᵐθ·sinˡθ` — a positive (for β ≥ 0) sum of rank-one kernels. -/
 theorem wilson_kernel_direct (β θi θj : ℝ) :
     Real.exp (2 * β * Real.cos (θi - θj))
-      = ∑' z : ℕ × ℕ, ((2 * β) ^ (z.1 + z.2) / ((z.1.factorial : ℝ) * (z.2.factorial : ℝ)))
-          * (Real.cos θi ^ z.1 * Real.sin θi ^ z.2) * (Real.cos θj ^ z.1 * Real.sin θj ^ z.2) := by
+      = ∑' m : ℕ, ∑' l : ℕ, ((2 * β) ^ (m + l) / ((m.factorial : ℝ) * (l.factorial : ℝ)))
+          * (Real.cos θi ^ m * Real.sin θi ^ l) * (Real.cos θj ^ m * Real.sin θj ^ l) := by
   have hcos : Real.cos (θi - θj) = Real.cos θi * Real.cos θj + Real.sin θi * Real.sin θj :=
     Real.cos_sub θi θj
   rw [hcos, mul_add, Real.exp_add]
