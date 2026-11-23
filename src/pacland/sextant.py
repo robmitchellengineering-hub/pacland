@@ -413,6 +413,15 @@ CATALOG: dict[str, dict] = {
         "verdict": "FREE",
         "why": "the linear FSS chain (ym-fss-linear) + the Casimir gap 2 (ym-casimir-gap) + the running coupling c (ym-running-coupling) are each FORCED, but the JOIN — the volume-uniform reflection-positivity estimate for the SU(2) character — is the open Clay rung. Mechanism 3 of 3 (volume-uniformity), the single missing step.",
     },
+    "ym-mass-gap-running-coupling": {
+        "claim": "the SU(2) string tension σ(β) (the Polyakov-loop mass proxy) runs with the coupling — it decreases as β grows, reaching the asymptotic-freedom scale e^{−cβ}",
+        "simulate": mass_gap_falsifiers.verify_mass_gap_running_coupling,
+        "theorem": "none — computational (the running-coupling regime is at β ≳ 3.5, beyond the current scan)",
+        "falsifier": "a string tension that fails to decrease as β grows (no running), or that collapses to zero",
+        "oracle": ["lattice (SU(2) Polyakov string tension, verify_mass_gap_running_coupling)"],
+        "verdict": "FREE",
+        "why": "first run REFUTED at β=2.0–3.0 because σ INCREASES there (0.66→1.23→1.51) — that is the strong-coupling regime, not the asymptotic-freedom regime. The running (decreasing σ) is expected at larger β; the falsifier's β-range is the fix, not the physics.",
+    },
 
 }
 

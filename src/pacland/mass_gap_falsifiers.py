@@ -329,3 +329,31 @@ def verify_volume_uniform_su2(beta: float = 2.5, Ns=(6, 8), n_sweeps: int = 12, 
         return False, f"volume-uniform SU(2): {curve} → mass ≤ 0 — no gap (volume-uniformity refuted)"
     return True, (f"volume-uniform SU(2): {curve} → mass stays positive across N; the finite Casimir gap "
                   f"survives this volume scan (the continuum limit is the separate, harder test)")
+
+
+def verify_mass_gap_running_coupling(betas=(2.0, 2.5, 3.0), N=8, n_configs=8, n_sweeps=10, seed=0) -> tuple[bool, str]:
+    """The SU(2) string tension σ(β) (the Polyakov-loop mass proxy) must RUN with the coupling: it stays
+    positive and DECREASES as β grows (weak coupling → σ in lattice units shrinks like the asymptotic-
+    freedom scale). A string tension that fails to decrease refutes the running-coupling mechanism; a
+    collapse to zero (or noise) refutes positivity. σ is measured from the Polyakov correlator, not the
+    referee."""
+    import math
+
+    from pacland import lattice_ym_su2 as lm
+
+    sigma = {}
+    for beta in betas:
+        sigma[beta] = lm.string_tension_from_polyakov(
+            beta, N=N, n_configs=n_configs, n_sweeps=n_sweeps, seed=seed + int(10 * beta))["sigma"]
+    curve = ", ".join(f"σ(β={b})={v:.4f}" for b, v in sigma.items())
+    svals = [sigma[b] for b in betas]
+    positive = all(s > 1e-6 for s in svals)
+    running = svals[-1] < svals[0]      # the string tension decreases as β grows (running coupling)
+    if not positive:
+        return False, f"mass-gap running coupling: {curve} → a string tension ≤ 0 (no gap at weak coupling)"
+    if not running:
+        return False, f"mass-gap running coupling: {curve} → σ does NOT decrease as β grows (no running)"
+    logm = [math.log(s) for s in svals]
+    slope = -(logm[-1] - logm[0]) / (betas[-1] - betas[0])
+    return True, (f"mass-gap running coupling: {curve} → σ decreases (measured slope {slope:.3f} vs "
+                  f"referee 1.182); positivity + running confirmed at this β-scan")
