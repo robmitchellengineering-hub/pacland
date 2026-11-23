@@ -93,4 +93,20 @@ theorem cos_pow_posdef {m : ℕ} (θ : Fin m → ℝ) (n : ℕ) :
   exact posdef_sum (fun k : Fin (n + 1) => fun i j => (n.choose k.1 : ℝ) * ((Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1)) * (Real.cos (θ j) ^ k.1 * Real.sin (θ j) ^ (n - k.1))))
     (fun k => posdef_smul (fun i j => (Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1)) * (Real.cos (θ j) ^ k.1 * Real.sin (θ j) ^ (n - k.1))) (n.choose k.1 : ℝ) (by positivity) (rank_one_posdef_kernel (fun i => Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1))))
 
+/-- **The Wilson heat kernel is positive-definite** (the OS reflection positivity): `exp(2β·cos(θᵢ−θⱼ))`
+is the pointwise limit of the exp partial sums `Σ_{n≤N} (2β)ⁿ/n!·cosⁿ(θᵢ−θⱼ)`, each PSD by
+`cos_pow_posdef` + `posdef_smul`, and the limit preserves PSD (`posdef_of_tendsto`). The infinite is handled
+by the finite limit, not a `tsum` reindexing. -/
+theorem wilson_kernel_posdef {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β) :
+    PosDefKernel (fun i j => Real.exp (2 * β * Real.cos (θ i - θ j))) := by
+  refine posdef_of_tendsto
+    (fun N => fun i j => ∑ n ∈ Finset.range (N + 1), (2 * β) ^ n / (n.factorial : ℝ) * (Real.cos (θ i - θ j)) ^ n)
+    (fun i j => Real.exp (2 * β * Real.cos (θ i - θ j))) ?_ ?_
+  · intro N
+    exact posdef_sum (fun n : Fin (N + 1) => fun i j => (2 * β) ^ n.1 / (n.1.factorial : ℝ) * (Real.cos (θ i - θ j)) ^ n.1)
+      (fun n => posdef_smul (fun i j => (Real.cos (θ i - θ j)) ^ n.1) ((2 * β) ^ n.1 / (n.1.factorial : ℝ))
+        (div_nonneg (pow_nonneg (mul_nonneg (by norm_num) hβ) _) (by positivity)) (cos_pow_posdef θ n.1))
+  · intro i j
+    exact (Real.hasSum_exp (2 * β * Real.cos (θ i - θ j))).tendsto_sum_nat
+
 end QM
