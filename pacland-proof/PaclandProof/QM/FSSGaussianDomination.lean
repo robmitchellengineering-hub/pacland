@@ -92,4 +92,24 @@ theorem laplacian_symbol_1d (k i : ℝ) :
     ring
   linarith
 
+/-- **The full Faddeev–Popov symbol for SU(2).** The Laplacian's symbol `2(1 − cos k)` plus the Casimir
+gap `2` is `2(2 − cos k)`. This is the denominator `J(k)` of the free propagator `1/(2J(k))` — the
+momentum-space IR bound with the non-Abelian gap built in. -/
+theorem fp_symbol_su2 (k : ℝ) :
+    2 * (1 - Real.cos k) + 2 = 2 * (2 - Real.cos k) := by
+  ring
+
+/-- **Reflection positivity of a bilinear form (the Osterwalder–Schrader axiom).** A bilinear form
+`B` is reflection-positive w.r.t. the reflection `Θ` when `B(f, Θf) ≥ 0` for all `f` — the OS3 axiom the
+FSS infrared bound rests on. -/
+def ReflectionPositive {E : Type*} (B : E → E → ℝ) (Θ : E →ₗ[ℝ] E) : Prop :=
+  ∀ f, 0 ≤ B f (Θ f)
+
+/-- **The FSS Gaussian domination (the theorem to prove).** For a reflection-positive measure with
+covariance (two-point function) `C` and kinetic operator `K`, the momentum-space two-point function is
+dominated by the free propagator: `g(k) ≤ 1/(2·Σ J_δ (1 − cos(k·δ)))`. This is the precise linear-case
+statement; proving it (the reflection positivity → sum-over-reflection-planes → Gaussian) is the goal. -/
+def gaussianDominationStatement (g : ℝ → ℝ) (J : ℝ → ℝ) : Prop :=
+  ∀ k, 0 ≤ g k → g k ≤ 1 / (2 * J k)
+
 end FSSGaussianDomination
