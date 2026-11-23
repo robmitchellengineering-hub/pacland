@@ -135,6 +135,22 @@ cutoff). The reduction has closed the loop: the mass gap's Gaussian covariance *
 the last expression to prove is the formal weak-coupling expansion of the plaquette — and its continuum
 spectrum is the same open horizon the lattice run flagged. The whole problem is now one operator.
 
+## The single open thing — the continuum Gribov horizon (2026-11-22)
+
+The harvest confirms the loop's endpoint. The continuum spectrum of `−∇·D` is the **Gribov horizon**: the
+boundary where the FP operator's lowest non-trivial eigenvalue → 0 (and eigenvalues go negative beyond
+it). The finite-N `λ_min ≈ 2.4` is the UV cutoff, *not* the horizon — so the single open thing is:
+
+> **prove the continuum FP operator `−∇·D` has (or fails to have) a zero mode at the horizon** —
+> the infinite-dimensional spectral question no finite lattice reaches.
+
+The known candidate (the GZ gap equation, PR #602) has its own flagged limitation — the horizon function
+has "blind spots" ([arXiv 2608.12413](https://export.arxiv.org/pdf/2608.12413)) — so it stays a candidate,
+not a result. The honest endpoint of the whole thread: the mass gap is the continuum spectrum of the
+covariant Laplacian, and its one open question is the existence/absence of the horizon zero mode in the
+infinite-dimensional limit.
+
+
 
 ## The gauge-invariance rigidity — what it actually is (2026-11-22)
 
