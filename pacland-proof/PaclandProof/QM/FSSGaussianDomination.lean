@@ -131,7 +131,7 @@ def freePropagator (J : ℝ → ℝ) (k : ℝ) : ℝ := 1 / (2 * J k)
 characteristic function `e^{−½·cov(t,t)}` — the FSS Gaussian bound with equality. This is the real
 Mathlib lemma `IsGaussian.charFun_eq'`, the free-case stepping stone the interacting reflection-positive
 bound sharpens into an inequality. -/
-theorem gaussian_domination_free {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+theorem gaussian_domination_free {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [MeasurableSpace E]
     {μ : Measure E} [IsGaussian μ] (hmean : μ[id] = 0) (t : E) :
     charFun μ t = Real.exp (-(covarianceBilin μ t t / 2)) := by
   rw [IsGaussian.charFun_eq' μ t]
