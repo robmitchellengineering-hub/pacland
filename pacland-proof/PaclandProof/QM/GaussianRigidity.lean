@@ -20,7 +20,6 @@ theorem trace_is_fundamental_character (θ : ℝ) (h : Real.sin θ ≠ 0) :
     Real.sin (2 * θ) / Real.sin θ = 2 * Real.cos θ := by
   rw [Real.sin_two_mul]
   field_simp [h]
-  ring
 
 /-- **Gauge-invariance rigidity: the covariance is the covariant Laplacian.** The Gaussian covariance
 of a gauge theory is forced by gauge invariance to the covariant kinetic operator `K = −D²` where
