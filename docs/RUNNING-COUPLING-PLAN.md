@@ -91,6 +91,29 @@ So the spectral-gap mechanism has been located precisely: reflection positivity 
 domination (the rung) → infrared bound → minimum eigenvalue. The two halves of 3b meet at that one
 estimate: it bounds the minimum eigenvalue (the gap) the same place the heat-kernel gave the scale.
 
+## The Gaussian domination — the one estimate, and its specific structure (2026-11-22)
+
+The harvest located the structure that could crack the Gaussian domination for the non-Abelian trace:
+**the rigidity of the Gaussian under the non-Abelian symmetry.** In the presence of a non-linear symmetry
+(non-Abelian gauge / BRST), Gaussianity is *forced* — the covariance is not free, it must be the
+gauge-invariant kinetic operator, and the trace observable's Gaussian is determined by the group
+structure. Concretely:
+
+- the reflection-positivity → Gaussian chain (FSS/FILS) needs a *covariance*; for a non-Abelian theory
+  the covariance is constrained by gauge invariance to the covariant Laplacian `K = −∇·D`;
+- the observable `Tr U_p` is a character, and under the Peter–Weyl expansion `Tr U = Σ_r χ_r` the
+  Gaussian domination reduces to the per-character case, where the group's rigidity fixes the covariance.
+
+So the single estimate decomposes one final time into two rigidity lemmas:
+1. **gauge-invariance rigidity** — the Gaussian covariance is the covariant Laplacian (forced by the
+   non-Abelian symmetry), and
+2. **character rigidity** — the trace's Gaussian is the per-character sum, each with the same covariance.
+
+Each is a `sorry`-target; the transferable structure is the *rigidity* of Gaussianity under a non-linear
+symmetry (the thing that turns "some Gaussian" into "the Gaussian", with the exponent carried by the
+covariant Laplacian).
+
+
 
 
 ## The honest boundary
