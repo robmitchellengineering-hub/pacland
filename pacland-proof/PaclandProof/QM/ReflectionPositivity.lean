@@ -46,7 +46,7 @@ theorem one_plus_cos_two_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → �
       = (∑ i : Fin m, c i) ^ 2 + (∑ i : Fin m, c i * Real.cos (2 * θ i)) ^ 2
           + (∑ i : Fin m, c i * Real.sin (2 * θ i)) ^ 2 := by
     simp_rw [mul_add, mul_one]
-    rw [Finset.sum_add_distrib]
+    simp_rw [Finset.sum_add_distrib]
     simp_rw [Real.cos_sub]
     rw [pow_two, pow_two, pow_two]
     simp_rw [Finset.sum_mul_sum]
@@ -62,18 +62,23 @@ theorem one_plus_cos_two_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → �
 `1 + cos(2·)` kernel. -/
 theorem cos_sq_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) :
     0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2 := by
-  have hcos : ∀ x, Real.cos x ^ 2 = (1 + Real.cos (2 * x)) / 2 := by
-    intro x
-    have h1 : Real.cos x ^ 2 + Real.sin x ^ 2 = 1 := Real.cos_sq_add_sin_sq x
-    have h2 : Real.cos (2 * x) = Real.cos x ^ 2 - Real.sin x ^ 2 := Real.cos_two_mul x
-    linarith
-  rw [show ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2
-      = ∑ i : Fin m, ∑ j : Fin m, c i * c j * ((1 + Real.cos (2 * (θ i - θ j))) / 2) by
-      apply Finset.sum_congr rfl
-      intro i hi
-      apply Finset.sum_congr rfl
-      intro j hj
-      rw [hcos (θ i - θ j)]]
-  exact mul_nonneg (by norm_num : 0 ≤ (1 / 2 : ℝ)) (one_plus_cos_two_posdef θ c)
+  have h2cos : 0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (2 * Real.cos (θ i - θ j) ^ 2) := by
+    rw [show ∑ i : Fin m, ∑ j : Fin m, c i * c j * (2 * Real.cos (θ i - θ j) ^ 2)
+        = ∑ i : Fin m, ∑ j : Fin m, c i * c j * (1 + Real.cos (2 * (θ i - θ j))) by
+        apply Finset.sum_congr rfl
+        intro i hi
+        apply Finset.sum_congr rfl
+        intro j hj
+        have hcos : 2 * Real.cos (θ i - θ j) ^ 2 = 1 + Real.cos (2 * (θ i - θ j)) := by
+          have h2 : Real.cos (2 * (θ i - θ j)) = 2 * Real.cos (θ i - θ j) ^ 2 - 1 :=
+            Real.cos_two_mul (θ i - θ j)
+          linarith
+        rw [hcos]]
+    exact one_plus_cos_two_posdef θ c
+  rw [show ∑ i : Fin m, ∑ j : Fin m, c i * c j * (2 * Real.cos (θ i - θ j) ^ 2)
+      = 2 * (∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2) by
+      rw [← Finset.sum_mul, ← Finset.sum_mul]
+      simp [mul_assoc, mul_left_comm, mul_comm]] at h2cos
+  exact (mul_nonneg_iff_of_pos_left (by norm_num : 0 < (2 : ℝ))).mp h2cos
 
 end QM
