@@ -5,6 +5,25 @@ exact names and files: **(A) what is really proved** (Lean, no `sorry`), **(B) w
 proof-shaped but proves nothing**, and **(C) the single open rung**. A reviewer should be able to read this
 file and see the actual status without re-deriving it.
 
+## THE DELIVERABLE — the reduction (finished artifact, 2026-11-23)
+
+The mass gap is **not proved**. The delivered artifact is the precise reduction that locates the Clay
+difficulty, with everything on the way to it kernel-checked:
+
+```
+Clay: 4D Yang–Mills mass gap  m(β) ≥ A·e^{−cβ}
+  ⟺  (1) the spectral gap = the Casimir 2      — PROVED (finite-volume, kernel-checked)
+      (2) the running coupling c = 12π²/11      — PROVED (heat-kernel, kernel-checked)
+      (3) the volume-uniform FSS estimate        — OPEN (the Clay rung)
+          for the non-Abelian SU(2) character
+          = OS reflection positivity of the Wilson kernel ⟹ the character covariance bound
+```
+
+Mechanisms (1) and (2) are closed. Mechanism (3) is the Clay rung, reduced — but **not** closed — to the OS
+reflection positivity `PosDefKernel(exp(2β·cos))` (itself reducing to `cheb_expansion`, `cos_pow_posdef`, and
+the infinite `exp` series) plus the measure-theoretic connection to the reflected correlation. Everything else
+in this file is the proved scaffolding around that rung. The SEXTANT verdict is `ym-volume-uniform-su2 = FREE`.
+
 ## The mass gap is three mechanisms, not one
 
 `m(β) ≥ A·e^{−cβ}` is the product of three mechanisms:
@@ -140,3 +159,7 @@ coefficient reindexing), `cos_pow_posdef` (the double-sum PSD transfer), the inf
 the OS measure-theoretic connection to the reflected correlation. This file records all of that precisely,
 together with the vacuous traps, so a reviewer is not misled by proof-shaped non-results or a
 reduced-to-one-lemma over-claim.
+
+**Status: this reduction is the finished deliverable. Route-by-route grinding is paused.** The next move, if
+any, is a discovery-engine question (which combination of mechanisms closes the non-Abelian measure-theoretic
+step) or a genuinely different mathematical route — not another FSS/Chebyshev hand-grind.
