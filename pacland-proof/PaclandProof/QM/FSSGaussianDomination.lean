@@ -227,6 +227,20 @@ theorem su2_momentum_space_fss_bound {E : Type*} [NormedAddCommGroup E] [InnerPr
   field_simp [hLpos.ne', hJ.ne']
   exact hmul
 
+/-- **The OS reflection positivity (the Wilson kernel PSD) + the Cauchy-Schwarz → the character
+covariance bound** (the Bochner/Bessel cross-synthesis join). The Wilson kernel's positivity
+(`QM.wilson_kernel_posdef`) supplies the reflected correlation's positivity `0 ≤ ⟪χ, Θχ⟫`, and the
+reflection Cauchy–Schwarz (`reflection_positivity_covariance_bound`) gives `⟪χ, Θχ⟫ ≤ ⟪χ, χ⟫` — the
+character covariance bound. The harmonic-analysis route replaces the stuck Chebyshev reindexing. -/
+theorem su2_character_covariance_bound_from_os {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β)
+    (Θ : (Fin m → ℝ) →ₗᵢ[ℝ] (Fin m → ℝ)) (χ : Fin m → ℝ)
+    (hΘ : ∀ f, ⟪f, Θ f⟫_ℝ = ∑ i : Fin m, ∑ j : Fin m, f i * f j * Real.exp (2 * β * Real.cos (θ i - θ j))) :
+    ⟪χ, Θ χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := by
+  have hpos : 0 ≤ ⟪χ, Θ χ⟫_ℝ := by
+    rw [hΘ χ]
+    exact QM.wilson_kernel_posdef θ β hβ χ
+  exact reflection_positivity_covariance_bound Θ χ hpos
+
 end FSSGaussianDomination
 
 end
