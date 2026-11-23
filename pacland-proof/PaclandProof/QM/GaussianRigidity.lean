@@ -46,4 +46,13 @@ theorem bounded_character_linear_bound (χ f M : ℝ) (hχ : χ ≤ M) (hf : 0 �
     Real.exp (f * χ) ≤ Real.exp (f * M) := by
   exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hχ hf)
 
+/-- **The per-character domination sums to the trace's domination (the "sum" step).** If every character
+`χ_r` is Gaussian-dominated (`Z r ≤ Z_free r`), then their sum — the trace's partition function via the
+Peter–Weyl decomposition `Tr U = Σ_r χ_r` — is dominated by the sum of the free Gaussians. This is the
+transport that turns the per-character rung into the trace's rung. -/
+theorem gaussian_domination_sums {ι : Type*} [Fintype ι] (Z Zfree : ι → ℝ) :
+    (∀ r, Z r ≤ Zfree r) → (∑ r, Z r) ≤ (∑ r, Zfree r) := by
+  intro h
+  exact Finset.sum_le_sum (fun r _ => h r)
+
 end GaussianRigidity
