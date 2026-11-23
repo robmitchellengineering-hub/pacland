@@ -44,30 +44,22 @@ theorem cos_sq_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) :
     0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2 := by
   have hcos : ∀ x, Real.cos x ^ 2 = (1 + Real.cos (2 * x)) / 2 := by
     intro x
-    rw [Real.cos_two_mul]
     have h1 : Real.cos x ^ 2 + Real.sin x ^ 2 = 1 := Real.cos_sq_add_sin_sq x
+    have h2 : Real.cos (2 * x) = Real.cos x ^ 2 - Real.sin x ^ 2 := Real.cos_two_mul x
     linarith
-  calc
-    ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2
-        = ∑ i : Fin m, ∑ j : Fin m, c i * c j * ((1 + Real.cos (2 * (θ i - θ j))) / 2) := by
-          apply Finset.sum_congr rfl
-          intro i hi
-          apply Finset.sum_congr rfl
-          intro j hj
-          rw [hcos (θ i - θ j)]
-    _ = (1 / 2) * (∑ i : Fin m, ∑ j : Fin m, c i * c j)
-          + (1 / 2) * (∑ i : Fin m, ∑ j : Fin m, c i * c j * Real.cos (2 * (θ i - θ j))) := by
-          rw [Finset.sum_mul]
-          simp_rw [mul_add]
-          rw [Finset.sum_add_distrib]
-          ring
-    _ ≥ 0 := by
-          have hconst : 0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j := by
-            rw [Finset.sum_mul, Finset.sum_mul]
-            simpa [mul_comm] using sq_nonneg (∑ i : Fin m, c i)
-          have hcos2 : 0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * Real.cos (2 * (θ i - θ j)) := by
-            simpa using cos_kernel_posdef (fun i => 2 * θ i) c
-          nlinarith [mul_nonneg (by norm_num : 0 ≤ (1 / 2 : ℝ)) hconst,
-            mul_nonneg (by norm_num : 0 ≤ (1 / 2 : ℝ)) hcos2]
+  have hsum : (∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2)
+      = (1 / 2) * (∑ i : Fin m, c i) ^ 2
+        + (1 / 2) * (∑ i : Fin m, ∑ j : Fin m, c i * c j * Real.cos (2 * (θ i - θ j))) := by
+    simp_rw [hcos]
+    rw [Finset.sum_mul, Finset.sum_mul]
+    simp_rw [mul_add]
+    rw [Finset.sum_add_distrib]
+    ring_nf
+  rw [hsum]
+  have hsq : 0 ≤ (1 / 2) * (∑ i : Fin m, c i) ^ 2 :=
+    mul_nonneg (by norm_num) (sq_nonneg _)
+  have hcos2 : 0 ≤ (1 / 2) * (∑ i : Fin m, ∑ j : Fin m, c i * c j * Real.cos (2 * (θ i - θ j))) :=
+    mul_nonneg (by norm_num) (cos_kernel_posdef (fun i => 2 * θ i) c)
+  exact add_nonneg hsq hcos2
 
 end QM
