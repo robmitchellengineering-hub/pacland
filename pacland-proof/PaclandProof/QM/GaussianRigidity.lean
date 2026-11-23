@@ -1,5 +1,7 @@
 import Mathlib
 
+noncomputable section
+
 /-! The two rigidity lemmas for the Gaussian domination of the non-Abelian trace.
 
 The harvest located the transferable structure: Gaussianity is *rigid* under a non-Abelian symmetry.
@@ -71,3 +73,5 @@ theorem freeGaussian_pos (f K : ℝ) : 0 < freeGaussian f K := by
   exact Real.exp_pos _
 
 end GaussianRigidity
+
+end
