@@ -105,8 +105,8 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-PROOF-PLAN.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-PROOF-PLAN.md",
-   "summary": "isolation; the proof has to use the proved pieces as levers, in one connected argument. The lever is the character rigidity (proved), and the plan is how it drives the whole final section.",
-   "title": "The mass-gap proof \u2014 the full plan (not the rung in isolation)"
+   "summary": "one bound, and they are proven separately in the finite volume; the single open rung is the volume-uniformity that joins them.",
+   "title": "The mass-gap proof \u2014 the finished plan"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-STATE.md",

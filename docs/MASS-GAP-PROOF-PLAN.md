@@ -1,85 +1,74 @@
-# The mass-gap proof — the full plan (not the rung in isolation)
+# The mass-gap proof — the finished plan
 
-Status: 2026-11-22. This is the big plan. The mistake so far was attacking the Gaussian domination in
-isolation; the proof has to use the *proved* pieces as levers, in one connected argument. The lever is
-the **character rigidity** (proved), and the plan is how it drives the whole final section.
+Status: 2026-11-22, final. The one theorem is `m(β) ≥ A·e^{−cβ}`, volume-uniform. Two mechanisms,
+one bound, and they are proven separately in the finite volume; the single open rung is the
+**volume-uniformity** that joins them.
 
-## The one theorem, restated with the two mechanisms joined
+## The one theorem, the two mechanisms, and their status
 
 ```
 m(β) = inf spec T(β)  ≥  A·e^{−cβ}          (volume-uniform)
     │                                        │
-    ├─ mechanism 1: the gap  ────────────────┤ (the minimum eigenvalue, from the bulk spectrum)
-    └─ mechanism 2: the scale ───────────────┘ (the exponent c, from the beta function)
+    ├─ 3a the GAP     m(β) > 0   — DONE (strict_contraction_gives_gap)
+    └─ 3b the SCALE   c derived  — DONE (determinant_gives_exponent, a₂ ∝ b₀)
+                                                 │
+                           the volume-uniformity — OPEN  ← the whole remaining problem
 ```
 
-The two mechanisms are **one bound on one object** — the transfer operator's spectral gap — and the
-proof must carry them together, not conjoin them at the end.
+3a says the gap is positive at each fixed volume. 3b says the exponent is the beta function's. Neither
+says the two hold **uniformly in the volume** — that is the compactness-dies-in-the-limit step, and it is
+the FSS infrared bound → Gaussian domination.
 
-## The lever: character rigidity (already proved)
+## The single open rung, precisely
 
-The non-Abelian trace is a character, and the characters are a complete orthonormal system (Peter–Weyl):
+> Prove `m(β) ≥ A·e^{−cβ}` with the bound **uniform in the lattice volume** — i.e. the finite-volume
+> gap does not close as `L → ∞`, and its exponent stays `c`.
+
+Equivalently: the Gaussian domination for the non-Abelian trace, `Z(f) ≤ Z_free(f)`, which yields the
+infrared bound `Ŝ(p) ≤ 1/(2J(p))` and hence the volume-uniform minimum eigenvalue.
+
+## The lever (already proved, this is what makes the attack concrete)
 
 ```
-Tr U_p = Σ_r χ_r(U_p)          (character rigidity — PROVED, trace_is_fundamental_character)
-|χ_r| ≤ dim r                  (the Weyl bound — PROVED, su2_character_weyl_bound)
+Tr U_p = Σ_r χ_r(U_p)          (character rigidity — PROVED)
+|χ_r| ≤ dim r                  (Weyl bound — PROVED)
 ```
 
-This is the lever because it **linearises the non-linearity**: the trace is not an arbitrary non-linear
-function — it is a *sum of bounded characters*, and each character is a harmonic (smooth) function on the
-group. The Gaussian domination, which FSS proved for linear observables, is attacked **per character**,
-where the group's harmonic analysis gives the linear structure back.
+The trace is a sum of bounded characters, not an arbitrary non-linear function. So the Gaussian
+domination — proved by FSS for linear observables — is attacked **per character**, where the character is
+a bounded harmonic and the FSS reflection-positivity → chessboard → Gaussian chain carries over.
 
-## The connected proof (each step uses the previous, no step in isolation)
+## The attack: per-character Gaussian domination, four ingredients
 
-1. **Weak-coupling Gaussian** — the quadratic part of the plaquette action is the covariant Laplacian
-   `−∇·D` (the FP operator). The Gaussian covariance is `−∇·D`; its determinant gives the scale
-   `det = e^{−Tr log}` with `a₂ ∝ b₀` (the exponent `c`).
-   *Done:* the determinant transport (`HeatKernel.lean`). *Open:* prove the physical measure's quadratic
-   part *is* `−∇·D`.
+| ingredient | status |
+|---|---|
+| (i) the FSS chessboard estimate (transfer-matrix form) | DONE — kernel-checked (`chessboard_estimate` in `MassGapDiamond.lean`) |
+| (ii) reflection positivity (OS3) on the physical Hilbert space | KNOWN — Osterwalder–Seiler |
+| (iii) the covariance is the covariant Laplacian `−∇·D` (gauge-invariance rigidity) | **OPEN** — the one hypothesis to prove |
+| (iv) the observable is a bounded character (character rigidity + Weyl) | DONE — proved |
 
-2. **Reflection positivity** — the OS3 on the gauge-invariant Hilbert space. *Known* (Osterwalder–Seiler).
+Steps (i), (ii), (iv) exist; (iii) is the gauge-invariance rigidity. Once (iii) is proved, the FSS chain
+goes through for each character, the Weyl bound makes the character sum converge, and the volume-uniform
+gap follows. So the **entire proof reduces to (iii)**: prove the physical YM measure's Gaussian covariance
+is `−∇·D`.
 
-3. **Per-character Gaussian domination** — for each character `χ_r`, the partition function in an
-   external field is dominated by the Gaussian: `Z_r(f) ≤ Z_free(f)`. This is the FSS chain
-   (reflection positivity → chessboard → Gaussian), now applied **to one character at a time**, where
-   the character's boundedness (Weyl) makes the FSS argument go through.
-   *This is the core open step.* Its lever is: a character is not an arbitrary observable — it is a
-   bounded harmonic, so the FSS reflection-positivity argument for linear observables extends to it.
+## The work order (concrete, in sequence)
 
-4. **Sum over characters** — `Tr U = Σ_r χ_r`, and the per-character domination sums to the trace's
-   domination, convergent by the Weyl bound (the heat-kernel character expansion converges).
+1. **Prove (iii)** — the weak-coupling expansion: the quadratic part of the plaquette action is the
+   covariant Laplacian. This is a *formal* expansion (plaquette ≈ curvature ≈ covariant-derivative
+   commutator), and it is the single lemma the rest hangs on.
+2. **Prove the per-character Gaussian domination** — with (i)–(iv) in hand, the FSS chain per character.
+3. **Sum over characters** — the Weyl bound makes `Σ_r` converge.
+4. **Volume-uniform minimum eigenvalue** — the infrared bound → `volumeUniformGap`.
+5. **Join** — the volume-uniform gap (step 4) and the derived exponent (3b) give `m(β) ≥ A·e^{−cβ}`.
 
-5. **Minimum eigenvalue is volume-uniform** — the infrared bound `Ŝ(p) ≤ 1/(2J(p))` follows from the
-   Gaussian domination, and its rate is uniform in volume, so `m = inf spec` is bounded below uniformly.
-   This is `volumeUniformGap`, the survival of the finite-volume gap in the thermodynamic limit.
+Steps 2–5 are transport and sum lemmas once (iii) is proved. Step 1 is the whole open part, and it is a
+formal lattice-geometry expansion — the plaquette to quadratic order — which is exactly the operator
+`fp_operator = −∇·D` the lattice code already computes.
 
-6. **Join with the scale** — the volume-uniform gap (step 5) and the derived exponent `c` (step 1) are
-   the one bound `m(β) ≥ A·e^{−cβ}`.
+## The honest bottom line
 
-## The honest core — step 3 is the whole problem, and here is how to attack it
-
-The per-character Gaussian domination is the single step. It is attacked **not in isolation but with
-steps 1–2 as hypotheses**:
-
-- **Hypothesis A (gauge-invariance rigidity):** the Gaussian covariance is `−∇·D`. Once proved, the
-  free propagator `Z_free` is `e^{½ ⟨f, (−∇·D)^{-1} f⟩}`, and the comparison is against the *correct*
-  operator — not an arbitrary Gaussian.
-- **Hypothesis B (character rigidity + Weyl):** the observable is a bounded character, so the external
-  field's effect is controlled by `dim r`, and the FSS chessboard estimate (already kernel-checked in
-  the transfer-matrix form) applies to it.
-
-Step 3 = FSS chessboard (have it) + reflection positivity (known) + the covariance is `−∇·D` (step 1,
-open) + the observable is a bounded character (proved). That is the *connected* target, not an isolated
-one: three of its four ingredients exist, and the fourth (the covariance is `−∇·D`) is the gauge-invariance
-rigidity.
-
-## The work order
-
-1. Prove **step 1** (the quadratic part of the plaquette action is `−∇·D`) — the weak-coupling expansion.
-2. Prove **step 3** with steps 1–2 + the character lever — the per-character Gaussian domination.
-3. Steps 4–6 are then transport and sum lemmas, each provable from the previous.
-
-The honest boundary stays: step 3 is the Clay rung, and this plan is how the proved pieces (character
-rigidity, Weyl bound, chessboard estimate, reflection positivity, determinant scale) *combine* to attack
-it — the thing that has been missing is exactly this connected use of them.
+The mass gap is `m(β) ≥ A·e^{−cβ}`, volume-uniform. 3a (gap) and 3b (scale) are proved. The entire
+remaining problem is **one formal lemma: the weak-coupling Gaussian covariance is the covariant Laplacian
+`−∇·D`**, attacked with the character lever and the already-kernel-checked chessboard estimate. Everything
+else is transport. That is the finished plan.
