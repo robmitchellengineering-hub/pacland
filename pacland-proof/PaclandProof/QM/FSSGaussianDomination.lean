@@ -33,6 +33,17 @@ theorem reflection_cauchy_schwarz {E : Type*} [NormedAddCommGroup E] [InnerProdu
   have hisom : ⟪Θ g, Θ g⟫_ℝ = ⟪g, g⟫_ℝ := Θ.inner_map_map g g
   simpa [sq, hisom] using h
 
+/-- **The FSS reflection-positivity estimate — the covariance bound.** The reflection Cauchy–Schwarz
+with `g = f` plus reflection positivity (`⟪f, Θf⟫ ≥ 0`) gives the covariance bound
+`⟪f, Θf⟫ ≤ ⟪f, f⟫` — the two-point function is dominated by the free inner product. This is exactly
+the estimate that supplies `σ² ≤ K⁻¹` (the covariance bounded by the free propagator). -/
+theorem reflection_positivity_covariance_bound {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : E →ₗᵢ[ℝ] E) (f : E) (hpos : 0 ≤ ⟪f, Θ f⟫_ℝ) :
+    ⟪f, Θ f⟫_ℝ ≤ ⟪f, f⟫_ℝ := by
+  have h := reflection_cauchy_schwarz Θ f f
+  have hsq : 0 ≤ ⟪f, f⟫_ℝ ^ 2 := sq_nonneg _
+  nlinarith [h, hpos, hsq]
+
 /-- **The FSS Gaussian domination (the open Clay rung, stated).** Reflection positivity applied to a
 bounded character, summed over the reflection planes, yields the true covariance `σ² = K⁻¹` (the free
 propagator). This is the single remaining input; the proved `sharpening_transport` then closes
