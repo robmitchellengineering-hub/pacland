@@ -140,4 +140,21 @@ theorem cheb_nonneg (n k : ℕ) : 0 ≤ cheb n k := by
           | zero => rw [cheb]; exact div_nonneg (add_nonneg (mul_nonneg (by norm_num) (ih 0)) (ih 2)) (by norm_num)
           | succ k => rw [cheb]; exact div_nonneg (add_nonneg (ih (k + 1)) (ih (k + 3))) (by norm_num)
 
+/-- **The Chebyshev expansion** — `cos^n(θ) = Σ_{k≤n} cheb n k·cos(kθ)`, proved by induction with the
+product-to-sum and the coefficient recursion. -/
+theorem cheb_expansion (n : ℕ) (θ : ℝ) :
+    Real.cos θ ^ n = ∑ k in Finset.range (n + 1), cheb n k * Real.cos ((k : ℝ) * θ) := by
+  induction n with
+  | zero => simp [cheb]
+  | succ n ih =>
+      rw [pow_succ, ih]
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro k hk
+      rw [mul_assoc, mul_comm (Real.cos ((k : ℝ) * θ))]
+      have h := cos_mul_cos_n θ (k : ℝ)
+      norm_num at h
+      rw [h]
+      ring
+
 end QM
