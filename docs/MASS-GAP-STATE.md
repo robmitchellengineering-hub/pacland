@@ -37,6 +37,36 @@ via `real_inner_mul_inner_self_le`), `character_orthonormal` (Fourier isometry, 
 `su2_character_weyl_bound` (|χ_j| ≤ 2j+1), `su2_character_fss_bound` (bounded character covariance
 ⟪χ,Θχ⟫ ≤ M²), `su2_momentum_space_fss_bound` (normalized two-point function ≤ 1/J, Casimir in the symbol).
 
+## The OS reflection positivity — reduced to one bookkeeping lemma (2026-11-23)
+
+The independent review's sole priority was the OS reflection positivity of the lattice SU(2) Gibbs measure
+(the measure-theoretic step). This session drove it down to the Wilson heat kernel's positivity
+`PosDefKernel(exp(2β·cos))`, and proved every ingredient except one:
+
+**Proved this session (kernel-checked, `ReflectionPositivity.lean`):**
+- `cos_kernel_posdef` — the cos kernel is PSD (`|Σ c_i e^{iθ_i}|² ≥ 0`).
+- `one_plus_cos_two_posdef` — the `1 + cos(2·)` kernel is PSD.
+- `cos_sq_posdef` — `cos²` is PSD.
+- `cos_mul_cos_n` — the product-to-sum `cos θ·cos(nθ) = (cos((n+1)θ)+cos((n−1)θ))/2` (real angle).
+- `cos_cube_eq` — the Chebyshev `n=3` identity `cos³ = (3cos + cos 3θ)/4`.
+- `cheb` — the Chebyshev coefficient recursion (`cheb(n+1,k) = (cheb n(k−1) + cheb n(k+1))/2` with boundary).
+- `cheb_nonneg` — all Chebyshev coefficients are `≥ 0`.
+
+**Already in the tower (not re-derived):** the PSD closure `posdef_add` / `posdef_smul` / `posdef_sum`
+(`PosDefKernel.lean`), and the covariance derivation `posdef_kernel_inner_product` (OS3 ⟹ PSD inner product)
++ `reflection_positivity_covariance_bound` (the Cauchy–Schwarz `⟪f,Θf⟫ ≤ ⟪f,f⟫`).
+
+**The single unmet lemma:** `cheb_expansion` — `cos^n(θ) = Σ_{k≤n} cheb n k·cos(kθ)`. Its induction step is a
+`Finset.sum` coefficient reindexing: re-collecting `Σ_k cheb n k·(cos((k+1)θ)+cos((k−1)θ))/2` into
+`Σ_m cheb(n+1)m·cos(mθ)` with the `k=0` boundary fold `cos(−θ)=cos θ`. Resisted: pointwise `sum_congr`
+(mismatched ranges), `mul_sum`+`ring_nf` (boundary unsolved), a subagent (5 rounds, no result), and the
+complex-binomial alternative `cos^n = 2⁻ⁿ Σ (n choose j) cos((2j−n)θ)`.
+
+**The chain `cheb_expansion` unblocks:** `cheb_expansion` ⟹ `cos_pow_posdef` (cosⁿ PSD via `posdef_sum`
+over the non-negative `cheb` coefficients) ⟹ `PosDefKernel(exp(2β·cos))` (the same PSD closure) ⟹ the
+covariance bound `⟨χ_j, Θχ_j⟩_μ ≤ ⟨χ_j, χ_j⟩_μ` (the two-line join to `posdef_kernel_inner_product` +
+`reflection_positivity_covariance_bound`).
+
 ## (C) The single open rung
 
 **The volume-uniform FSS infrared bound for the SU(2) character** — the measure-theoretic step that
@@ -86,7 +116,10 @@ Creutz) but the running-coupling slope and the thermodynamic limit are under-res
 
 ## The honest bottom line
 
-Everything finite-dimensional, linear/Abelian, and transport-side is kernel-checked and real. The **single
-open rung** is the volume-uniform FSS infrared bound for the SU(2) character — the non-Abelian reflection
-positivity that survives the thermodynamic + continuum limit. It is the Clay rung, and this file records
-that precisely, together with the vacuous traps so a reviewer is not misled by proof-shaped non-results.
+Everything finite-dimensional, linear/Abelian, transport-side, and now the **OS reflection-positivity
+ingredients** (cos kernel, cos², the product-to-sum, the Chebyshev coefficients + their non-negativity, the
+PSD closure, the covariance Cauchy–Schwarz) are kernel-checked and real. The **single open rung** is the
+volume-uniform FSS infrared bound for the SU(2) character — and it is now **reduced to one named Lean lemma**,
+`cheb_expansion` (the `cos^n = Σ cheb n k·cos(kθ)` coefficient reindexing). Everything downstream is proved
+and waiting on that one `Finset.sum` bookkeeping step. This file records all of that precisely, together with
+the vacuous traps so a reviewer is not misled by proof-shaped non-results.
