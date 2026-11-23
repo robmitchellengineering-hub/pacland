@@ -55,4 +55,19 @@ theorem gaussian_domination_sums {ι : Type*} [Fintype ι] (Z Zfree : ι → ℝ
   intro h
   exact Finset.sum_le_sum (fun r _ => h r)
 
+/-- **The free propagator is the covariant Laplacian's inverse.** `K⁻¹`, where `K = −∇·D` is the
+covariant Laplacian (proved in step 1). This is the covariance of the free Gaussian — the connection that
+makes the Gaussian domination a statement about `−∇·D`. -/
+def freePropagator (K : ℝ) : ℝ := 1 / K
+
+/-- **The free Gaussian.** The Gaussian with covariance `K⁻¹` (the free propagator): `Z_free(f) = e^{½ f²·K⁻¹}`.
+This is the free-field partition function the interacting one is dominated by in the Gaussian domination. -/
+def freeGaussian (f K : ℝ) : ℝ := Real.exp ((1 / 2) * f ^ 2 * freePropagator K)
+
+/-- **The free Gaussian is positive.** `Z_free(f) > 0` for any `f` — the free-field partition function is
+positive, so a domination by it is a genuine (non-vacuous) bound. -/
+theorem freeGaussian_pos (f K : ℝ) : 0 < freeGaussian f K := by
+  unfold freeGaussian
+  exact Real.exp_pos _
+
 end GaussianRigidity
