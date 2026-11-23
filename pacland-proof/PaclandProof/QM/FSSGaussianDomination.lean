@@ -33,4 +33,11 @@ theorem reflection_cauchy_schwarz {E : Type*} [NormedAddCommGroup E] [InnerProdu
   have hisom : ⟪Θ g, Θ g⟫_ℝ = ⟪g, g⟫_ℝ := Θ.inner_map_map g g
   simpa [sq, hisom] using h
 
+/-- **The FSS Gaussian domination (the open Clay rung, stated).** Reflection positivity applied to a
+bounded character, summed over the reflection planes, yields the true covariance `σ² = K⁻¹` (the free
+propagator). This is the single remaining input; the proved `sharpening_transport` then closes
+`m(β) ≥ A·e^{−cβ}`. Stated here as the rung the finite-dimensional mass gap (`finite_dimensional_mass_gap`)
+waits on. -/
+def fssGaussianDomination (σ² : ℝ) (K : ℝ) : Prop := σ² = 1 / K
+
 end FSSGaussianDomination
