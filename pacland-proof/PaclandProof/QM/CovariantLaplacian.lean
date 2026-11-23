@@ -38,4 +38,19 @@ theorem covariant_dirichlet_form_nonneg (U : ℤ → ℝ) (f : ℤ → ℝ) (S :
     0 ≤ ∑ x ∈ S, (covariantDerivative U f x) ^ 2 := by
   exact Finset.sum_nonneg (fun x _ => sq_nonneg _)
 
+/-- **The field strength (the curvature) — the plaquette's phase.** In 2D the field strength is the
+discrete curl `F = ∂₁A₂ − ∂₂A₁`, the curvature that the plaquette measures to leading order. This is the
+bridge from the plaquette to the covariant Laplacian: the quadratic part of the action is `Σ F²`, and
+`Σ F²` is the covariant Laplacian's kernel. -/
+def fieldStrength (A₁ A₂ : ℤ → ℝ) (x : ℤ) : ℝ :=
+  (A₂ (x + 1) - A₂ x) - (A₁ (x + 1) - A₁ x)
+
+/-- **The field strength is anti-symmetric.** Swapping the two directions negates the curvature
+`F(A₂,A₁) = −F(A₁,A₂)` — the standard anti-symmetry of the field-strength tensor, the first proof that
+the plaquette's quadratic part is the (anti-symmetric) curvature. -/
+theorem fieldStrength_antisym (A₁ A₂ : ℤ → ℝ) (x : ℤ) :
+    fieldStrength A₂ A₁ x = -fieldStrength A₁ A₂ x := by
+  unfold fieldStrength
+  ring
+
 end CovariantLaplacian
