@@ -109,10 +109,11 @@ theorem cos_cube_eq (θ : ℝ) :
     have h := cos_mul_cos_n θ (2 : ℝ)
     norm_num at h
     exact h
+  have hmul' : Real.cos (θ * 2) * Real.cos θ = (Real.cos (3 * θ) + Real.cos θ) / 2 := by
+    simpa [mul_comm, mul_left_comm, mul_assoc] using hmul
   rw [pow_succ, hcos2]
   ring_nf
-  rw [mul_comm]
-  rw [hmul]
+  rw [hmul']
   ring_nf
 
 end QM
