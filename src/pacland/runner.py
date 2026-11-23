@@ -454,6 +454,17 @@ def generate(fact_ids: list[str], strategy: str) -> Candidate:
                 source_facts=("ym-casimir", "ym-running-coupling", "ym-fss-linear"),
                 test="ym-volume-uniform-su2",
             )
+        # The Wilson kernel's positivity, by the "prove the infinite without computing it" route:
+        # rank-one PSD + finite-truncation PSD + the pointwise-limit-of-PSD theorem.
+        if {"ym-rank-one-posdef", "ym-finite-truncation-posdef", "ym-posdef-limit"} <= set(fact_ids):
+            return Candidate(
+                id="ym-wilson-kernel-posdef",
+                statement="exp(2β·cos(θᵢ−θⱼ)) = exp(2β·cos θᵢ·cos θⱼ)·exp(2β·sin θᵢ·sin θⱼ) is positive-definite: each factor is the pointwise limit of the finite rank-one truncations (rank-one PSD + finite-truncation PSD), and the limit preserves PSD (ym-posdef-limit) — the infinite handled without computing it",
+                falsifier="a pointwise limit of PSD kernels that is not PSD (impossible by the limit theorem), or a non-positive Wilson kernel",
+                strategy="combine",
+                source_facts=("ym-rank-one-posdef", "ym-finite-truncation-posdef", "ym-posdef-limit"),
+                test="ym-wilson-kernel-posdef",
+            )
 
     if strategy == "generalize":
         # the 1D OU gap generalizes to n dimensions by tensorization.

@@ -431,6 +431,33 @@ CATALOG: dict[str, dict] = {
         "verdict": "FREE",
         "why": "the discovery-engine question after recording the reduction: does the character lever close the rung (FORCED) or is it dead (IMPOSSIBLE)? The falsifier is the reflected correlator ratio at increasing N — a wrong-able numeric test that replaces the hand-grind.",
     },
+    "ym-rank-one-posdef": {
+        "claim": "the rank-one kernel f(θᵢ)·f(θⱼ) is positive-definite — Σ cᵢ cⱼ f(θᵢ)f(θⱼ) = |Σ cᵢ f(θᵢ)|² ≥ 0 (the direct factorization, no infinite sum)",
+        "simulate": None,
+        "theorem": "PaclandProof.QM.FSSGaussianDomination.cos_kernel_posdef (kernel-checked) — the cos kernel's |Σ cᵢ e^{iθᵢ}|² factorization",
+        "falsifier": "coefficients c with |Σ cᵢ f(θᵢ)|² < 0 (impossible — a square)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "a square is non-negative — the finite half of the Wilson-kernel positivity, already proved as the cos-kernel factorization.",
+    },
+    "ym-finite-truncation-posdef": {
+        "claim": "the finite truncation Σ_{m≤N} (2β)ᵐ/m!·(cos θᵢ)ᵐ(cos θⱼ)ᵐ is positive-definite — a finite non-negative (for β ≥ 0) sum of rank-one kernels",
+        "simulate": None,
+        "theorem": "PaclandProof.QM.PosDefKernel.posdef_sum + posdef_smul (kernel-checked) — PSD closed under finite non-negative sums and scaling",
+        "falsifier": "a finite non-negative combination of PSD kernels that is not PSD (impossible — the closure)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the PSD closure (posdef_sum/posdef_smul) makes every finite truncation PSD — the second finite half, already proved.",
+    },
+    "ym-posdef-limit": {
+        "claim": "the pointwise limit of positive-definite kernels is positive-definite — Σ cᵢ cⱼ K(i,j) = lim_N Σ cᵢ cⱼ K_N(i,j) ≥ 0 (the finite sum commutes with the limit)",
+        "simulate": None,
+        "theorem": "the limit theorem (to be kernel-checked): the finite sum over Fin m commutes with the pointwise Tendsto, so the limit of PSD is PSD",
+        "falsifier": "a sequence of PSD kernels whose pointwise limit is not PSD (impossible — the finite-sum/limit commutation)",
+        "oracle": ["kernel-checked (Lean) — the limit theorem"],
+        "verdict": "FREE",
+        "why": "this is the 'prove the infinite without computing it' principle: the infinite sum is replaced by a pointwise limit of finitely-proved PSD objects. It is the single new finite lemma that closes the Wilson-kernel positivity — not yet kernel-checked.",
+    },
 
 }
 
