@@ -111,7 +111,8 @@ theorem cos_cube_eq (θ : ℝ) :
     exact h
   rw [pow_succ, hcos2]
   ring_nf
+  rw [mul_comm]
   rw [hmul]
-  ring
+  ring_nf
 
 end QM
