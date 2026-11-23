@@ -83,4 +83,20 @@ theorem cos_sq_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) :
   rw [hpull] at h2cos
   exact (mul_nonneg_iff_of_pos_left (by norm_num : 0 < (2 : ℝ))).mp h2cos
 
+/-- **The product-to-sum identity** (real angle `n`, no `ℕ`-smul coercion): `cos θ · cos(nθ) =
+(cos((n+1)θ) + cos((n−1)θ))/2` — the building block of the Chebyshev recursion that expresses `cos^m`
+as a non-negative sum of `cos(k·)` kernels. -/
+theorem cos_mul_cos_n (θ : ℝ) (n : ℝ) :
+    Real.cos θ * Real.cos (n * θ) = (Real.cos ((n + 1) * θ) + Real.cos ((n - 1) * θ)) / 2 := by
+  have hsum : Real.cos ((n + 1) * θ) + Real.cos ((n - 1) * θ)
+      = Real.cos (θ + n * θ) + Real.cos (θ - n * θ) := by
+    rw [show (n + 1) * θ = θ + n * θ by ring]
+    rw [show (n - 1) * θ = n * θ - θ by ring]
+    rw [show Real.cos (n * θ - θ) = Real.cos (θ - n * θ) by
+      rw [show θ - n * θ = -(n * θ - θ) by ring]
+      rw [Real.cos_neg]]
+  rw [hsum]
+  rw [Real.cos_add, Real.cos_sub]
+  ring
+
 end QM
