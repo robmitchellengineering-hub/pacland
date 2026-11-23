@@ -38,6 +38,6 @@ bounded character, summed over the reflection planes, yields the true covariance
 propagator). This is the single remaining input; the proved `sharpening_transport` then closes
 `m(β) ≥ A·e^{−cβ}`. Stated here as the rung the finite-dimensional mass gap (`finite_dimensional_mass_gap`)
 waits on. -/
-def fssGaussianDomination (σ² : ℝ) (K : ℝ) : Prop := σ² = 1 / K
+def fssGaussianDomination (σ2 : ℝ) (K : ℝ) : Prop := σ2 = 1 / K
 
 end FSSGaussianDomination
