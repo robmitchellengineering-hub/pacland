@@ -154,8 +154,10 @@ theorem fss_join {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     (hsym : ⟪f, L f⟫_ℝ = J * ⟪f, f⟫_ℝ) (hJ : 0 < J) :
     ⟪f, Θ f⟫_ℝ ≤ ⟪f, L f⟫_ℝ / J := by
   have hcs : ⟪f, Θ f⟫_ℝ ≤ ⟪f, f⟫_ℝ := reflection_positivity_covariance_bound Θ f hpos
-  have hff : 0 ≤ ⟪f, f⟫_ℝ := real_inner_self_nonneg (x := f)
-  nlinarith [hcs, hsym, hJ, hff]
+  have hsym' : ⟪f, f⟫_ℝ = ⟪f, L f⟫_ℝ / J := by
+    rw [hsym]
+    field_simp [hJ.ne']
+  simpa [hsym'] using hcs
 
 end FSSGaussianDomination
 
