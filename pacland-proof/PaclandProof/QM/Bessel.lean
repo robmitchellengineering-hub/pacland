@@ -104,7 +104,7 @@ theorem wilson_kernel_direct (β θi θj : ℝ) :
   rw [hcos, mul_add, Real.exp_add]
   have h1 : Real.exp (2 * β * (Real.cos θi * Real.cos θj)) =
       ∑' m : ℕ, (2 * β) ^ m * (Real.cos θi * Real.cos θj) ^ m / (m.factorial : ℝ) := by
-    rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum (𝕂 := ℝ)]
+    rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum]
     apply tsum_congr
     intro m
     rw [inv_natCast_smul_eq_div]
@@ -112,7 +112,7 @@ theorem wilson_kernel_direct (β θi θj : ℝ) :
     ring
   have h2 : Real.exp (2 * β * (Real.sin θi * Real.sin θj)) =
       ∑' l : ℕ, (2 * β) ^ l * (Real.sin θi * Real.sin θj) ^ l / (l.factorial : ℝ) := by
-    rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum (𝕂 := ℝ)]
+    rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum]
     apply tsum_congr
     intro l
     rw [inv_natCast_smul_eq_div]
