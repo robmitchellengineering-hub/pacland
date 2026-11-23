@@ -310,4 +310,5 @@ FALSIFIERS = {
     "gravity-quantum": verify_gravity_quantum,
     "ym-volume-uniform-su2": mass_gap_falsifiers.verify_volume_uniform_su2,
     "ym-mass-gap-running-coupling": mass_gap_falsifiers.verify_mass_gap_running_coupling,
+    "ym-fss-nonabelian-closable": mass_gap_falsifiers.verify_fss_character_lever,
 }

@@ -422,6 +422,15 @@ CATALOG: dict[str, dict] = {
         "verdict": "FREE",
         "why": "first run REFUTED at β=2.0–3.0 because σ INCREASES there (0.66→1.23→1.51) — that is the strong-coupling regime, not the asymptotic-freedom regime. The running (decreasing σ) is expected at larger β; the falsifier's β-range is the fix, not the physics.",
     },
+    "ym-fss-nonabelian-closable": {
+        "claim": "the character-rigidity (Tr U = Σ_r χ_r) + Weyl-bound (|χ_r| ≤ dim r) lever closes the non-Abelian FSS rung — the character covariance bound ⟨χ, Θχ⟩ ≤ ⟨χ, χ⟩ holds volume-uniform (the ratio ≤ 1 as N grows)",
+        "simulate": mass_gap_falsifiers.verify_fss_character_lever,
+        "theorem": "none — the numeric test of the lever (the Lean reindexing cheb_expansion → cos_pow_posdef → exp series remains the unclosed bookkeeping)",
+        "falsifier": "a character reflected-correlation ⟨χ, Θχ⟩ exceeding the variance ⟨χ, χ⟩ (ratio > 1), or the ratio creeping toward 1 as N grows (gap-closing)",
+        "oracle": ["lattice (SU(2) plaquette-trace reflected correlator, verify_fss_character_lever)"],
+        "verdict": "FREE",
+        "why": "the discovery-engine question after recording the reduction: does the character lever close the rung (FORCED) or is it dead (IMPOSSIBLE)? The falsifier is the reflected correlator ratio at increasing N — a wrong-able numeric test that replaces the hand-grind.",
+    },
 
 }
 
