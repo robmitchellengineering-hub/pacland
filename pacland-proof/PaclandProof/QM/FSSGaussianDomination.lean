@@ -337,28 +337,6 @@ theorem volume_uniform_covariance_bound {E : Type*} [NormedAddCommGroup E] [Inne
     reflection_positivity_covariance_bound (Θ N) χ (hpos N)
   exact le_of_tendsto_of_tendsto' hlim tendsto_const_nhds hle
 
-/-- **The `hΘ` connection for the geometric reflection (structural).** For the isometric reflection `Θ`
-and an orthonormal basis `eᵢ`, the reflected correlation's quadratic form expands as
-`⟪f, Θf⟫ = Σᵢⱼ fᵢ fⱼ ⟪eᵢ, Θeⱼ⟫` — the kernel `K(i,j) := ⟪eᵢ, Θeⱼ⟫` *is* the reflected correlation, and the
-connection holds by bilinearity. This is the structural `hΘ`, discharged by the bilinear expansion, not by
-a computed group integral. -/
-theorem geometric_reflection_hTheta {ι : Type*} [Fintype ι] {E : Type*} [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] (Θ : E →ₗᵢ[ℝ] E) (e : _root_.Basis ι ℝ E) (he : _root_.Orthonormal ℝ e) (f : E) :
-    ⟪f, Θ f⟫_ℝ = ∑ i : ι, ∑ j : ι, (e.repr f i) * (e.repr f j) * ⟪e i, Θ (e j)⟫_ℝ := by
-  rw [← e.sum_repr f]
-  rw [map_sum]
-  simp_rw [map_sum]
-  rw [Finset.sum_inner]
-  simp_rw [Finset.inner_sum]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro j hj
-  apply Finset.sum_congr rfl
-  intro i hi
-  rw [inner_smul_left, inner_smul_right, inner_smul_left, inner_smul_right]
-  rw [he i i hi]
-  ring
-
 end FSSGaussianDomination
 
 end
