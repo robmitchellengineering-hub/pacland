@@ -99,7 +99,9 @@ sharpening; the actual FSS argument — reflection positivity across the reflect
 true `σ² = K⁻¹` — is the open Clay rung this transport is waiting on. -/
 theorem sharpening_transport (f σ M : ℝ) (hσ : σ ^ 2 ≤ M ^ 2) (hf : 0 ≤ f) :
     Real.exp (f ^ 2 * σ ^ 2 / 2) ≤ Real.exp (f ^ 2 * M ^ 2 / 2) := by
-  exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hσ (by nlinarith [sq_nonneg f]))
+  refine Real.exp_le_exp.mpr ?_
+  have h1 : f ^ 2 * σ ^ 2 ≤ f ^ 2 * M ^ 2 := mul_le_mul_of_nonneg_left hσ (sq_nonneg f)
+  nlinarith
 
 end GaussianRigidity
 
