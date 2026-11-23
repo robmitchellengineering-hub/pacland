@@ -160,8 +160,16 @@ theorem cos_pow_rankone (n : ℕ) (θi θj : ℝ) :
 theorem rank_one_posdef {m : ℕ} (f : Fin m → ℝ) (c : Fin m → ℝ) :
     0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (f i * f j) := by
   rw [show (∑ i : Fin m, ∑ j : Fin m, c i * c j * (f i * f j)) = (∑ i : Fin m, c i * f i) ^ 2 by
-    rw [Finset.sum_mul, Finset.mul_sum, pow_two]
-    simp [mul_assoc, mul_left_comm, mul_comm]]
+    calc
+      ∑ i : Fin m, ∑ j : Fin m, c i * c j * (f i * f j)
+          = ∑ i : Fin m, (c i * f i) * (∑ j : Fin m, c j * f j) := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            rw [← Finset.mul_sum]
+            ring_nf
+      _ = (∑ i : Fin m, c i * f i) * (∑ j : Fin m, c j * f j) := by
+            rw [Finset.sum_mul]
+      _ = (∑ i : Fin m, c i * f i) ^ 2 := by rw [pow_two]]
   exact sq_nonneg _
 
 end QM
