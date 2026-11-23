@@ -1,5 +1,6 @@
 import Mathlib
 import PaclandProof.QM.MassGapDiamond
+import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 
 noncomputable section
 
@@ -130,6 +131,17 @@ def freePropagator (J : ℝ → ℝ) (k : ℝ) : ℝ := 1 / (2 * J k)
 -- `IsGaussian.charFun_eq'` (in `Mathlib.Probability.Distributions.Gaussian.CharFun`) — the equality case
 -- the interacting reflection-positive bound sharpens into an inequality. Wiring the full measure-theory
 -- structure is a separate step; the real lemma name is recorded here.
+
+/-- **The characters form an orthonormal basis — the FSS sum over the reflection planes.** The weighted
+inner product of two characters is the Kronecker delta (`1` if equal, `0` otherwise). This is the real
+Mathlib result `AddChar.wInner_cWeight_eq_boole`, and it is exactly the Plancherel/Fourier-isometry: the
+character (momentum) basis is orthonormal, so the reflection Cauchy–Schwarz — abstract in `f, g` — is
+unchanged in the momentum basis. This is the step that makes the infrared bound a momentum-space
+statement. -/
+theorem character_orthonormal {G : Type*} [AddCommGroup G] [Fintype G] [RCLike ℂ]
+    (ψ₁ ψ₂ : AddChar G ℂ) :
+    ⟪(ψ₁ : G → ℂ), ψ₂⟫ₙ_[ℂ] = if ψ₁ = ψ₂ then 1 else 0 :=
+  AddChar.wInner_cWeight_eq_boole ψ₁ ψ₂
 
 end FSSGaussianDomination
 
