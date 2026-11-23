@@ -303,31 +303,27 @@ def _character_correlator_mass(links, plane=(0, 1)) -> float:
     return float(m)
 
 
-def verify_volume_uniform_su2(beta: float = 2.5, Ns=(6, 8), n_sweeps: int = 12, seed: int = 0) -> tuple[bool, str]:
-    """'the SU(2) character satisfies the volume-uniform FSS infrared bound': the connected character
-    (plaquette-trace) correlator's mass must stay POSITIVE and NOT collapse as the lattice grows — the
-    finite Casimir gap 2 surviving the thermodynamic-limit scan. A mass collapsing toward zero as N grows
-    refutes the volume-uniformity (the open rung ym-volume-uniform-su2's falsifier)."""
-    import numpy as np
+def verify_volume_uniform_su2(beta: float = 2.5, Ns=(6, 8), n_configs=8, n_sweeps=12, seed: int = 0) -> tuple[bool, str]:
+    """'the SU(2) character satisfies the volume-uniform FSS infrared bound': the string tension σ (the
+    Polyakov-loop mass proxy, a RELIABLE observable — the plaquette-trace character correlator is
+    noise-dominated) must stay POSITIVE and NOT collapse as the lattice grows — the finite Casimir gap
+    surviving the thermodynamic-limit scan. A σ collapsing toward zero as N grows refutes volume-uniformity."""
     from pacland import lattice_ym_su2 as lm
 
-    mass = {}
+    sigma = {}
     for N in Ns:
-        rng = np.random.default_rng(seed + N)
-        links = np.array([lm.random_su2(rng) for _ in range(4 * N ** 4)])
-        links = links.reshape((4,) + (N,) * 4 + (4,))
-        links = lm.metropolis(links, beta, rng, n_sweeps)
-        mass[N] = _character_correlator_mass(links)
-    curve = ", ".join(f"m(N={N})={v:.3f}" for N, v in mass.items())
-    first, last = mass[Ns[0]], mass[Ns[-1]]
-    collapsing = last < 0.5 * first          # the gap collapses toward zero as the volume grows
+        sigma[N] = lm.string_tension_from_polyakov(
+            beta, N=N, n_configs=n_configs, n_sweeps=n_sweeps, seed=seed + N)["sigma"]
+    curve = ", ".join(f"σ(N={N})={v:.4f}" for N, v in sigma.items())
+    first, last = sigma[Ns[0]], sigma[Ns[-1]]
+    collapsing = last < 0.5 * first          # σ collapses toward zero as the volume grows
     positive = last > 1e-6
     if collapsing:
-        return False, (f"volume-uniform SU(2): {curve} → mass COLLAPSES as N grows — the finite Casimir "
+        return False, (f"volume-uniform SU(2): {curve} → σ COLLAPSES as N grows — the finite Casimir "
                        f"gap does not survive the volume scan (volume-uniformity refuted)")
     if not positive:
-        return False, f"volume-uniform SU(2): {curve} → mass ≤ 0 — no gap (volume-uniformity refuted)"
-    return True, (f"volume-uniform SU(2): {curve} → mass stays positive across N; the finite Casimir gap "
+        return False, f"volume-uniform SU(2): {curve} → σ ≤ 0 — no gap (volume-uniformity refuted)"
+    return True, (f"volume-uniform SU(2): {curve} → σ stays positive across N; the finite Casimir gap "
                   f"survives this volume scan (the continuum limit is the separate, harder test)")
 
 
