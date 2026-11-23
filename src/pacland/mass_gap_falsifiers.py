@@ -270,3 +270,62 @@ def verify_log_sobolev(beta: float = 2.5, Ns=(6, 8, 10), n_sweeps: int = 10) -> 
     return survived, evidence.replace("orbifold curvature", "log-Sobolev (via λ_min(FP))")
 
 
+
+
+def _character_correlator_mass(links, plane=(0, 1)) -> float:
+    """The connected SU(2) character (plaquette-trace) correlator's mass — the decay rate of
+    ⟨Tr U_p(x)·Tr U_p(0)⟩ − ⟨Tr U_p⟩² in the given plane. This is the two-point function of the trace
+    observable, whose mass is the FSS infrared-bound gap the open rung must keep volume-uniform."""
+    import numpy as np
+    from pacland import lattice_ym_su2 as lm
+
+    mu, nu = plane
+    N = links.shape[1]
+    tr = np.zeros((N, N))
+    for x in range(N):
+        for y in range(N):
+            tr[x, y] = lm.plaquette_trace(links, mu, nu, (x, y, 0, 0))
+    mean = tr.mean()
+    C = []
+    for r in range(1, N // 2 + 1):
+        acc = 0.0
+        cnt = 0
+        for x in range(N - r):
+            for y in range(N):
+                acc += (tr[x, y] - mean) * (tr[x + r, y] - mean)
+                cnt += 1
+        C.append(acc / cnt)
+    C = np.maximum(np.asarray(C), 1e-12)
+    V = -np.log(C)
+    R = np.arange(1, len(C) + 1)
+    A = np.vstack([R, np.ones_like(R)]).T
+    m, _ = np.linalg.lstsq(A, V, rcond=None)[0]
+    return float(m)
+
+
+def verify_volume_uniform_su2(beta: float = 2.5, Ns=(6, 8), n_sweeps: int = 12, seed: int = 0) -> tuple[bool, str]:
+    """'the SU(2) character satisfies the volume-uniform FSS infrared bound': the connected character
+    (plaquette-trace) correlator's mass must stay POSITIVE and NOT collapse as the lattice grows — the
+    finite Casimir gap 2 surviving the thermodynamic-limit scan. A mass collapsing toward zero as N grows
+    refutes the volume-uniformity (the open rung ym-volume-uniform-su2's falsifier)."""
+    import numpy as np
+    from pacland import lattice_ym_su2 as lm
+
+    mass = {}
+    for N in Ns:
+        rng = np.random.default_rng(seed + N)
+        links = np.array([lm.random_su2(rng) for _ in range(4 * N ** 4)])
+        links = links.reshape((4,) + (N,) * 4 + (4,))
+        links = lm.metropolis(links, beta, rng, n_sweeps)
+        mass[N] = _character_correlator_mass(links)
+    curve = ", ".join(f"m(N={N})={v:.3f}" for N, v in mass.items())
+    first, last = mass[Ns[0]], mass[Ns[-1]]
+    collapsing = last < 0.5 * first          # the gap collapses toward zero as the volume grows
+    positive = last > 1e-6
+    if collapsing:
+        return False, (f"volume-uniform SU(2): {curve} → mass COLLAPSES as N grows — the finite Casimir "
+                       f"gap does not survive the volume scan (volume-uniformity refuted)")
+    if not positive:
+        return False, f"volume-uniform SU(2): {curve} → mass ≤ 0 — no gap (volume-uniformity refuted)"
+    return True, (f"volume-uniform SU(2): {curve} → mass stays positive across N; the finite Casimir gap "
+                  f"survives this volume scan (the continuum limit is the separate, harder test)")

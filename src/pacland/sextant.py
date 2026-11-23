@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import math
 
+from pacland import mass_gap_falsifiers
 from pacland import phantom
 
 # The theorem registry: every kernel-checked claim, its falsifier, its oracle class, and its verdict.
@@ -405,9 +406,10 @@ CATALOG: dict[str, dict] = {
     },
     "ym-volume-uniform-su2": {
         "claim": "the SU(2) character (the trace Tr U = Σ_r χ_r) satisfies the volume-uniform FSS infrared bound — the finite Casimir gap 2 survives the thermodynamic + continuum limit, giving m(β) ≥ A·e^{−cβ}",
+        "simulate": mass_gap_falsifiers.verify_volume_uniform_su2,
         "theorem": "none — the open Clay rung (the non-Abelian reflection-positivity estimate, not yet kernel-checked)",
         "falsifier": "a volume-uniform SU(2) character two-point function exceeding the free propagator, or the finite Casimir gap collapsing in the thermodynamic limit",
-        "oracle": ["lattice (SU(2) character correlator, to be built)", "kernel-checked (Lean) — NOT YET"],
+        "oracle": ["lattice (SU(2) character correlator, verify_volume_uniform_su2)", "kernel-checked (Lean) — NOT YET"],
         "verdict": "FREE",
         "why": "the linear FSS chain (ym-fss-linear) + the Casimir gap 2 (ym-casimir-gap) + the running coupling c (ym-running-coupling) are each FORCED, but the JOIN — the volume-uniform reflection-positivity estimate for the SU(2) character — is the open Clay rung. Mechanism 3 of 3 (volume-uniformity), the single missing step.",
     },
