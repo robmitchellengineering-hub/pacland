@@ -18,6 +18,8 @@ open scoped BigOperators
 
 noncomputable section
 
+open scoped BigOperators
+
 namespace QM
 
 /-- **The cosine kernel is positive-definite** (the reflection-positivity input): for any finite
