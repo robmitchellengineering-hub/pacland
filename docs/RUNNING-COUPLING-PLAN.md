@@ -150,6 +150,21 @@ not a result. The honest endpoint of the whole thread: the mass gap is the conti
 covariant Laplacian, and its one open question is the existence/absence of the horizon zero mode in the
 infinite-dimensional limit.
 
+## The answer to the zero-mode question (2026-11-22)
+
+The harvest settles the literal question: **yes, the covariant Laplacian has a zero mode at the horizon —
+by definition.** The Gribov horizon *is* the boundary where the FP operator's lowest eigenvalue first hits
+zero, and the horizon is a **measure-zero set** ([the measure-zero property](https://zenodo.org/records/17227373/files/main.pdf)).
+So the zero mode exists, but only on an exceptional, non-generic set.
+
+That reframes the *real* open question. It is no longer "does a zero mode exist" (it does, on the
+measure-zero horizon) but **"is that horizon zero mode the mass-generating mechanism, or a gauge
+artifact?"** — i.e. whether the measure-zero boundary where `−∇·D` is singular is what forces the
+exponential mass gap, or whether it is irrelevant to the physical spectrum. That is the genuine frontier,
+and it is a spectral-geometry question ([arXiv 2607.13228](https://arxiv.org/html/2607.13228v2)), not a
+compactness or renormalisation question.
+
+
 
 
 ## The gauge-invariance rigidity — what it actually is (2026-11-22)
