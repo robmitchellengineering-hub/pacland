@@ -109,9 +109,32 @@ So the single estimate decomposes one final time into two rigidity lemmas:
    non-Abelian symmetry), and
 2. **character rigidity** — the trace's Gaussian is the per-character sum, each with the same covariance.
 
+So the single estimate decomposes one final time into two rigidity lemmas:
+1. **gauge-invariance rigidity** — the Gaussian covariance is the covariant Laplacian (forced by the
+   non-Abelian symmetry), and
+2. **character rigidity** — the trace's Gaussian is the per-character sum, each with the same covariance.
+
 Each is a `sorry`-target; the transferable structure is the *rigidity* of Gaussianity under a non-linear
 symmetry (the thing that turns "some Gaussian" into "the Gaussian", with the exponent carried by the
 covariant Laplacian).
+
+## The last expression — the weak-coupling expansion closes the loop (2026-11-22)
+
+The harvest located the last expression: the plaquette **is** the curvature (the covariant-derivative
+commutator), so its quadratic part is the covariant Laplacian. The chain is
+
+```
+plaquette U_μ U_ν U_μ† U_ν† ≈ e^{i a² F_{μν}}   (the curvature / field strength)
+quadratic part of the action = Σ Tr F_{μν}²      (the Yang–Mills Gaussian)
+quadratic operator = −∇·D = the Faddeev–Popov operator   (the covariant Laplacian)
+```
+
+So the weak-coupling Gaussian covariance is **the Faddeev–Popov operator `M = −∇·D`** — the exact operator
+the lattice thread already measured (`fp_operator` in `lattice_ghost.py`, whose `λ_min ≈ 2.4` is the UV
+cutoff). The reduction has closed the loop: the mass gap's Gaussian covariance *is* the FP operator, so
+the last expression to prove is the formal weak-coupling expansion of the plaquette — and its continuum
+spectrum is the same open horizon the lattice run flagged. The whole problem is now one operator.
+
 
 ## The gauge-invariance rigidity — what it actually is (2026-11-22)
 
