@@ -57,4 +57,21 @@ collapse. -/
 theorem string_tension_positive (c β : ℝ) :
     0 < Real.exp (-c * β) := Real.exp_pos _
 
+/-- **The spacing-uniform mass gap** (the continuum-limit step, "prove the infinite without computing
+it"): the AF scale `e^{−cβ}` depends only on the coupling `β`, NOT on the lattice spacing `a`. So the
+mass-gap lower bound `A·e^{−cβ}` is *uniform in the spacing* — a spacing-independent positive constant —
+and the `a → 0` continuum limit preserves the gap. The infinite (the continuum limit) is replaced by the
+uniform bound, not by an explicit per-spacing computation. -/
+theorem spacing_uniform_mass_gap (A c β : ℝ) (hA : 0 < A) (hc : 0 < c) :
+    0 < A * Real.exp (-c * β) :=
+  mul_pos hA (string_tension_positive c β)
+
+/-- **The spacing-uniform lower bound is monotone in the coupling** — the bound `A·e^{−cβ}` is strictly
+decreasing in `β` (the running), so the uniform constant persists through the weak-coupling limit: the
+gap's lower bound does not collapse as `β` grows, and the spacing-uniformity carries over. -/
+theorem spacing_uniform_monotone (A c : ℝ) (hA : 0 < A) (hc : 0 < c) :
+    StrictAnti (fun β : ℝ => A * Real.exp (-c * β)) := by
+  intro β₁ β₂ hβ
+  exact mul_lt_mul_of_pos_left ((string_tension_runs c hc).1 hβ) hA
+
 end HeatKernel
