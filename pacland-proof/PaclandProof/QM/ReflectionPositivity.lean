@@ -1,7 +1,5 @@
 import Mathlib
 
-set_option maxHeartbeats 500000
-
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
