@@ -92,6 +92,15 @@ sharpening starts from, not re-derived. -/
 def reflectionCauchySchwarz {n : ℕ} (f g : Fin n → ℝ) : Prop :=
   (∑ i : Fin n, f i * g i) ^ 2 ≤ (∑ i : Fin n, f i ^ 2) * (∑ i : Fin n, g i ^ 2)
 
+/-- **The sharpening transport.** If the true covariance `σ²` is bounded by the crude scale `M²`
+(`σ² ≤ M²`, the bound the reflection positivity would deliver), then the sharp Gaussian bound
+`e^{f²σ²/2}` is stronger than the crude `e^{f²M²/2}`. This is the provable transport of the FSS
+sharpening; the actual FSS argument — reflection positivity across the reflection planes yielding the
+true `σ² = K⁻¹` — is the open Clay rung this transport is waiting on. -/
+theorem sharpening_transport (f σ M : ℝ) (hσ : σ ^ 2 ≤ M ^ 2) (hf : 0 ≤ f) :
+    Real.exp (f ^ 2 * σ ^ 2 / 2) ≤ Real.exp (f ^ 2 * M ^ 2 / 2) := by
+  exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hσ (by nlinarith [sq_nonneg f]))
+
 end GaussianRigidity
 
 end
