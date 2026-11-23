@@ -112,4 +112,12 @@ statement; proving it (the reflection positivity → sum-over-reflection-planes 
 def gaussianDominationStatement (g : ℝ → ℝ) (J : ℝ → ℝ) : Prop :=
   ∀ k, 0 ≤ g k → g k ≤ 1 / (2 * J k)
 
+/-- **The Falk–Bruch inequality** — the FSS proof's first step: reflection positivity gives the
+Cauchy–Schwarz for the reflected two-point function. This is exactly the already-proved reflection
+Cauchy–Schwarz (`reflection_cauchy_schwarz`, via the real `real_inner_mul_inner_self_le` + isometry). -/
+theorem falk_bruch {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : E →ₗᵢ[ℝ] E) (f g : E) :
+    ⟪f, Θ g⟫_ℝ ^ 2 ≤ ⟪f, f⟫_ℝ * ⟪g, g⟫_ℝ :=
+  reflection_cauchy_schwarz Θ f g
+
 end FSSGaussianDomination
