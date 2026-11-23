@@ -78,7 +78,7 @@ theorem cos_sq_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) :
     exact one_plus_cos_two_posdef θ c
   have hpull : ∑ i : Fin m, ∑ j : Fin m, c i * c j * (2 * Real.cos (θ i - θ j) ^ 2)
       = 2 * (∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2) := by
-    rw [Finset.sum_mul, Finset.sum_mul]
+    rw [Finset.mul_sum, Finset.mul_sum]
     ring_nf
   rw [hpull] at h2cos
   exact (mul_nonneg_iff_of_pos_left (by norm_num : 0 < (2 : ℝ))).mp h2cos
