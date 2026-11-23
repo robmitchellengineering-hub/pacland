@@ -124,7 +124,8 @@ theorem wilson_kernel_direct (β θi θj : ℝ) :
   have hsum2 : Summable (fun l : ℕ => (2 * β) ^ l * (Real.sin θi * Real.sin θj) ^ l / (l.factorial : ℝ)) :=
     (Real.summable_pow_div_factorial (2 * β * (Real.sin θi * Real.sin θj))).congr (fun l => by ring)
   rw [hsum.tsum_mul_tsum hsum2]
-  ext z
+  apply tsum_congr
+  intro z
   rcases z with ⟨m, l⟩
   rw [mul_pow, mul_pow, mul_pow]
   ring
