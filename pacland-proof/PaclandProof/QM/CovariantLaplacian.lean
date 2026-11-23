@@ -1,4 +1,5 @@
 import Mathlib
+import PaclandProof.QM.MassGapDiamond
 
 open scoped BigOperators
 
@@ -111,5 +112,22 @@ theorem quadratic_part_is_covariant_laplacian (f : ℕ → ℝ) (N : ℕ) :
     (∑ i ∈ Finset.range N, (fieldStrength1D f i) ^ 2) = f N ^ 2 - f 0 ^ 2 - 2 * (∑ i ∈ Finset.range N, f i * (fieldStrength1D f i)) := by
   unfold fieldStrength1D
   exact dirichlet_identity f N
+
+/-- **The non-Abelian field strength (the full SU(2) curvature).** The Abelian curl plus the commutator
+`[A₁, A₂]` — for SU(2) the Lie bracket is the cross product. This is the full curvature the plaquette
+measures: the free part (the curl) plus the non-Abelian part (the cross product, whose square is the
+Casimir gap `casimir_su2`). -/
+def nonAbelianFieldStrength (A₁ A₂ : ℕ → Fin 3 → ℝ) (x : ℕ) : Fin 3 → ℝ :=
+  fun i => (A₂ (x + 1) i - A₂ x i) - (A₁ (x + 1) i - A₁ x i) + QM.crossProduct (A₁ x) (A₂ x) i
+
+/-- **The Abelian reduction.** When the commutator vanishes (`A₁ × A₂ = 0`), the non-Abelian field
+strength is exactly the Abelian curl — the free seed. So the non-Abelian structure adds only the
+commutator, whose double cross product is the Casimir (the gap), already proven in `MassGapDiamond.lean`.
+This connects the free seed to the non-Abelian gap. -/
+theorem nonAbelian_reduces_to_abelian (A₁ A₂ : ℕ → Fin 3 → ℝ) (x : ℕ)
+    (hcomm : QM.crossProduct (A₁ x) (A₂ x) = 0) :
+    nonAbelianFieldStrength A₁ A₂ x = fun i => (A₂ (x + 1) i - A₂ x i) - (A₁ (x + 1) i - A₁ x i) := by
+  unfold nonAbelianFieldStrength
+  simp [hcomm]
 
 end CovariantLaplacian
