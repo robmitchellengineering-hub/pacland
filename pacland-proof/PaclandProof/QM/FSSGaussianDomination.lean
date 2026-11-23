@@ -30,6 +30,7 @@ theorem reflection_cauchy_schwarz {E : Type*} [NormedAddCommGroup E] [InnerProdu
     (Θ : E →ₗᵢ[ℝ] E) (f g : E) :
     ⟪f, Θ g⟫_ℝ ^ 2 ≤ ⟪f, f⟫_ℝ * ⟪g, g⟫_ℝ := by
   have h := real_inner_mul_inner_self_le f (Θ g)
-  simpa using h
+  have hisom : ⟪Θ g, Θ g⟫_ℝ = ⟪g, g⟫_ℝ := Θ.inner_map_map g g
+  simpa [sq, hisom] using h
 
 end FSSGaussianDomination
