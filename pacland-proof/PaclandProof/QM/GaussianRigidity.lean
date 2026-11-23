@@ -72,6 +72,18 @@ theorem freeGaussian_pos (f K : ℝ) : 0 < freeGaussian f K := by
   unfold freeGaussian
   exact Real.exp_pos _
 
+/-- **The bounded character gives the quadratic (sub-Gaussian) bound.** For a Weyl-bounded character
+`χ ≤ M` and a large-enough external field (`2 ≤ f·M`), the exponential is dominated by the Gaussian
+quadratic `e^{f·χ} ≤ e^{f²M²/2}`. This is the provable *quadratic* form of the Gaussian domination — the
+Hoeffding-type seed of the FSS chain, where the reflection positivity replaces the crude boundedness with
+the sharp covariance `K⁻¹`. -/
+theorem bounded_character_quadratic_bound (χ f M : ℝ) (hχ : χ ≤ M) (hf : 0 ≤ f) (hM : 2 ≤ f * M) :
+    Real.exp (f * χ) ≤ Real.exp (f ^ 2 * M ^ 2 / 2) := by
+  have h1 : f * χ ≤ f * M := mul_le_mul_of_nonneg_left hχ hf
+  have h2 : f * M ≤ f ^ 2 * M ^ 2 / 2 := by
+    nlinarith [hM, sq_nonneg (f * M)]
+  exact Real.exp_le_exp.mpr (le_trans h1 h2)
+
 end GaussianRigidity
 
 end
