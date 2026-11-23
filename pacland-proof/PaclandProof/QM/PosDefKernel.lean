@@ -99,7 +99,7 @@ is the pointwise limit of the exp partial sums `Σ_{n≤N} (2β)ⁿ/n!·cosⁿ(�
 by the finite limit, not a `tsum` reindexing. -/
 theorem wilson_kernel_posdef {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β) :
     PosDefKernel (fun i j => Real.exp (2 * β * Real.cos (θ i - θ j))) := by
-  refine posdef_of_tendsto
+  refine posdef_of_tendsto (α := Fin m)
     (fun N => fun i j => ∑ n ∈ Finset.range (N + 1), (2 * β) ^ n / (n.factorial : ℝ) * (Real.cos (θ i - θ j)) ^ n)
     (fun i j => Real.exp (2 * β * Real.cos (θ i - θ j))) ?_ ?_
   · intro N
@@ -111,7 +111,7 @@ theorem wilson_kernel_posdef {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 
   · intro i j
     let x := 2 * β * Real.cos (θ i - θ j)
     have hsum : Summable (fun n : ℕ => x ^ n / (n.factorial : ℝ)) := Real.summable_pow_div_factorial x
-    have hrange : Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, x ^ n / (n.factorial : ℝ)) atTop (nhds (Real.exp x)) := by
+    have hrange : Filter.Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, x ^ n / (n.factorial : ℝ)) Filter.atTop (nhds (Real.exp x)) := by
       rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum (𝕂 := ℝ)]
       simpa [div_eq_mul_inv, smul_eq_mul] using hsum.hasSum.tendsto_sum_nat
     simpa [x] using hrange.comp (tendsto_add_atTop_nat 1)
