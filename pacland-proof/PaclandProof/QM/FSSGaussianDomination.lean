@@ -193,7 +193,9 @@ theorem su2_character_fss_bound {E : Type*} [NormedAddCommGroup E] [InnerProduct
   have hcs : ⟪χ, Θ χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := reflection_positivity_covariance_bound Θ χ hpos
   have hnorm : ⟪χ, χ⟫_ℝ = ‖χ‖ ^ 2 := by
     rw [real_inner_self_eq_norm_sq]
-  nlinarith [hcs, hnorm, hχ, sq_nonneg ‖χ‖]
+  rw [hnorm] at hcs
+  have hsq : ‖χ‖ ^ 2 ≤ M ^ 2 := by nlinarith [hχ, norm_nonneg χ]
+  nlinarith [hcs, hsq]
 
 end FSSGaussianDomination
 
