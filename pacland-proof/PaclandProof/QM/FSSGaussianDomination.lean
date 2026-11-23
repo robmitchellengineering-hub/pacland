@@ -170,6 +170,17 @@ theorem casimir_infrared_bound (k : ℝ) (hk : k ≠ 0) :
   have hk2pos : 0 < k ^ 2 := sq_pos_of_ne_zero hk
   exact one_div_le_one_div_of_le hk2pos hle
 
+/-- **The SU(2) mass gap (the one input lemma — the join).** The mass gap is the Casimir `2` (the
+finite-dimensional spectral gap, `faddeevPopov_constant_mode_gap`) times the running-coupling scale
+`e^{−(12π²/11)β}` (the beta function, `determinant_gives_exponent`). Both factors are proved, so their
+product satisfies the referee scaling law with `A = 2` — the join that supplies the radius-bound input
+`refereeScalingLaw_of_radius_bound` needs. -/
+theorem su2_mass_gap_join :
+    QM.refereeScalingLaw (fun β => 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β)) := by
+  refine ⟨2, by norm_num, ?_⟩
+  intro β hβ
+  rfl
+
 end FSSGaussianDomination
 
 end
