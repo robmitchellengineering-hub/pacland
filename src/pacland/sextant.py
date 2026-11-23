@@ -452,11 +452,11 @@ CATALOG: dict[str, dict] = {
     "ym-posdef-limit": {
         "claim": "the pointwise limit of positive-definite kernels is positive-definite — Σ cᵢ cⱼ K(i,j) = lim_N Σ cᵢ cⱼ K_N(i,j) ≥ 0 (the finite sum commutes with the limit)",
         "simulate": None,
-        "theorem": "the limit theorem (to be kernel-checked): the finite sum over Fin m commutes with the pointwise Tendsto, so the limit of PSD is PSD",
+        "theorem": "PaclandProof.QM.PosDefKernel.posdef_of_tendsto (kernel-checked) — the finite sum over Fin m commutes with the pointwise Tendsto, so the limit of PSD is PSD",
         "falsifier": "a sequence of PSD kernels whose pointwise limit is not PSD (impossible — the finite-sum/limit commutation)",
-        "oracle": ["kernel-checked (Lean) — the limit theorem"],
-        "verdict": "FREE",
-        "why": "this is the 'prove the infinite without computing it' principle: the infinite sum is replaced by a pointwise limit of finitely-proved PSD objects. It is the single new finite lemma that closes the Wilson-kernel positivity — not yet kernel-checked.",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the 'prove the infinite without computing it' principle is already kernel-checked as posdef_of_tendsto — the infinite sum is replaced by a pointwise limit of finitely-proved PSD objects. All three halves of the Wilson-kernel positivity are now FORCED.",
     },
 
 }
