@@ -106,27 +106,12 @@ theorem cos_cube_eq (θ : ℝ) :
     have h := Real.cos_two_mul θ
     linarith
   have hmul : Real.cos θ * Real.cos (2 * θ) = (Real.cos (3 * θ) + Real.cos θ) / 2 := by
-    simpa using cos_mul_cos_n θ (2 : ℝ)
+    have h := cos_mul_cos_n θ (2 : ℝ)
+    norm_num at h
+    exact h
   rw [pow_succ, pow_two, hcos2]
   ring_nf
   rw [hmul]
   ring
-
-/-- **cos³ is positive-definite** — `cos³ = (3 cos + cos 3θ)/4`, a non-negative combination of the
-already-PSD `cos` and `cos(3·)` kernels. -/
-theorem cos_cube_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) :
-    0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 3 := by
-  rw [show ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 3
-      = (1 / 4) * (3 * (∑ i : Fin m, ∑ j : Fin m, c i * c j * Real.cos (θ i - θ j))
-          + ∑ i : Fin m, ∑ j : Fin m, c i * c j * Real.cos (3 * (θ i - θ j))) by
-      simp_rw [cos_cube_eq]
-      ring_nf
-      simp_rw [Finset.sum_add_distrib]
-      ring_nf
-      simp_rw [Finset.mul_sum]
-      ring_nf]
-  exact mul_nonneg (by norm_num : 0 ≤ (1 / 4 : ℝ)) (add_nonneg
-    (mul_nonneg (by norm_num : 0 ≤ (3 : ℝ)) (cos_kernel_posdef θ c))
-    (cos_kernel_posdef (fun i => 3 * θ i) c))
 
 end QM
