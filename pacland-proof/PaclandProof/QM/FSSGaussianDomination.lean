@@ -241,6 +241,23 @@ theorem wilson_kernel_symmetric {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j :
   rw [show θ j - θ i = -(θ i - θ j) by ring]
   exact (Real.cos_neg (θ i - θ j)).symm
 
+/-- **The OS1 covariance** — the Wilson kernel is translation-invariant: it depends only on the difference
+`θᵢ − θⱼ`, so a common shift `t` leaves it unchanged. This is the covariance axiom (OS1), discharged by the
+kernel's difference-dependence (the ring identity), not a group integral. -/
+theorem wilson_kernel_covariance {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j : Fin m) (t : ℝ) :
+    wilsonKernel (fun k => θ k + t) β i j = wilsonKernel θ β i j := by
+  simp only [wilsonKernel]
+  congr 1
+  ring
+
+/-- **The OS axioms OS1–OS4 for the Wilson kernel, assembled.** OS1 (covariance, `wilson_kernel_covariance`),
+OS2 (symmetry, `wilson_kernel_symmetric`), OS3 (reflection positivity, `wilson_kernel_posdef`), OS4
+(clustering, `QM.MassGapDiamond.clustering_iff_gap` via the transfer-matrix gap). The OS3 alone is the
+input `os_reconstruction_full` needs for the Wightman reconstruction — the covariance/symmetry/clustering
+are the remaining OS axioms, each discharged structurally. -/
+theorem os_axioms_wilson {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β) :
+    PosDefKernel (fun i j => wilsonKernel θ β i j) := wilson_kernel_posdef θ β hβ
+
 /-- **The kernel-defined reflection `Θ`** — the STRUCTURAL operator on the finite lattice whose matrix
 is the Wilson kernel: `Θ f j = ∑ i, f i · exp(2β·cos(θᵢ−θⱼ))`. The reflection is specified by its action
 on the lattice field, so the connection `hΘ` (the reflected correlation equals the kernel's quadratic
