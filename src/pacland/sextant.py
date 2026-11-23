@@ -379,6 +379,38 @@ CATALOG: dict[str, dict] = {
         "verdict": "FREE",
         "why": "the RG route: a positive contraction is the mass gap in RG language. The block-spin falsifier is not yet built, so this is the least-tested of the three — filed to make the gap (no RG falsifier exists) visible.",
     },
+    "ym-casimir-gap": {
+        "claim": "the SU(2) Faddeev–Popov operator has a finite-dimensional spectral gap = 2 (the Casimir Σᵢ eᵢ×(eᵢ×v) = −2v), so the non-Abelian commutator gives a positive gap at every finite volume",
+        "theorem": "QM.MassGapDiamond.casimir_su2 + faddeevPopov_constant_mode_gap + massive_laplacian_gap + FSSGaussianDomination.ir_bound_su2 (scaffold: — the known Casimir, kernel-checked)",
+        "falsifier": "a finite-volume FP operator with spectral gap ≤ 0 (the Abelian u1_coulomb_tension_zero case, or the horizon collapsing the gap)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "casimir_su2 proves Σᵢ eᵢ×(eᵢ×v) = −2v; faddeevPopov_constant_mode_gap gives the constant-mode eigenvalue 2; massive_laplacian_gap shows the momentum modes only raise it. The finite-volume gap is exactly 2, volume-uniform. Mechanism 1 of 3 (the spectral gap) — scaffold:, a known result.",
+    },
+    "ym-running-coupling": {
+        "claim": "the running-coupling exponent c = 12π²/11 is derived from the beta function (the heat-kernel determinant det P = e^{−Tr log P}, a₂ ∝ b₀)",
+        "theorem": "QM.HeatKernel.determinant_gives_exponent (scaffold: — the heat-kernel scale, kernel-checked)",
+        "falsifier": "a beta function with b₀ ≤ 0 (no asymptotic freedom), which would kill the exponent",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the heat-kernel determinant gives the exponent from a₂ ∝ b₀, kernel-checked. Mechanism 2 of 3 (the running coupling / scale) — scaffold:, a known result.",
+    },
+    "ym-fss-linear": {
+        "claim": "the linear/Abelian FSS infrared bound holds: reflection positivity → the two-point function ≤ the free propagator (the Falk–Bruch → sum-over-reflection-planes → Gaussian chain)",
+        "theorem": "FSSGaussianDomination.falk_bruch + character_orthonormal + laplacian_symbol_1d + fss_join (scaffold: — the known Fröhlich–Simon–Spencer linear theorem, kernel-checked)",
+        "falsifier": "a reflection-positive linear model whose two-point function exceeds the free propagator",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "falk_bruch (reflection Cauchy–Schwarz, via real_inner_mul_inner_self_le) + character_orthonormal (Fourier isometry, via wInner_cWeight_eq_boole) + laplacian_symbol_1d give fss_join (the covariance bound). This is the LINEAR half of mechanism 3 (volume-uniformity) — scaffold:, a known result.",
+    },
+    "ym-volume-uniform-su2": {
+        "claim": "the SU(2) character (the trace Tr U = Σ_r χ_r) satisfies the volume-uniform FSS infrared bound — the finite Casimir gap 2 survives the thermodynamic + continuum limit, giving m(β) ≥ A·e^{−cβ}",
+        "theorem": "none — the open Clay rung (the non-Abelian reflection-positivity estimate, not yet kernel-checked)",
+        "falsifier": "a volume-uniform SU(2) character two-point function exceeding the free propagator, or the finite Casimir gap collapsing in the thermodynamic limit",
+        "oracle": ["lattice (SU(2) character correlator, to be built)", "kernel-checked (Lean) — NOT YET"],
+        "verdict": "FREE",
+        "why": "the linear FSS chain (ym-fss-linear) + the Casimir gap 2 (ym-casimir-gap) + the running coupling c (ym-running-coupling) are each FORCED, but the JOIN — the volume-uniform reflection-positivity estimate for the SU(2) character — is the open Clay rung. Mechanism 3 of 3 (volume-uniformity), the single missing step.",
+    },
 
 }
 
