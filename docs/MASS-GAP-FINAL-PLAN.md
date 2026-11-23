@@ -32,6 +32,13 @@ assembled (`reflectionCauchySchwarz`, `chessboard_estimate`, `bounded_character_
 `sharpening_transport`); the one input it needs is reflection positivity supplying the true covariance
 `σ² = K⁻¹` (the free propagator), which is the open Clay step.
 
+**Key correction (2026-11-22):** the sum-over-reflection-planes does **not** work alone — it gives the
+*gap structure* (the two-point function dominated by the free propagator `(−Δ + m²)⁻¹`) but not the
+*physical scale*. It must be **combined with the running coupling** (the beta function, `a₂ ∝ b₀`,
+heat-kernel), which supplies `m² = e^{−cβ}`. The two mechanisms — the FSS spectral gap and the running
+coupling — come together in the finite: `m(β) ≥ A·e^{−cβ}`. This is `massGapTwoMechanisms` in
+`FSSGaussianDomination.lean`.
+
 ## The finish line
 
 Prove the per-character FSS estimate — reflection positivity applied to a bounded character, summed over
