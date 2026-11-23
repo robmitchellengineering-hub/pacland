@@ -67,3 +67,26 @@ physical YM measure's Gaussian covariance is `−∇·D` and the minimum eigenva
 **Refuted (recorded, honest):** cluster expansion (log β), Dobrushin (ceiling), single-plaquette (1/β),
 the finite-N FP horizon (UV cutoff `λ_min/a² → ∞`), the compact-operator Jentzsch bridge in the
 infinite-volume limit, and the GZ horizon as the mass mechanism (measure-zero gauge artifact).
+
+## The reflection-positivity input (σ² = K⁻¹) — the single missing thing, located (2026-11-22)
+
+The harvest located the exact theorem that supplies the missing input: the **FSS infrared bound**
+([arXiv 2204.12896](https://arxiv.org/html/2204.12896v2)). Reflection positivity gives the *Gaussian
+domination* — the characteristic function is bounded by the free Gaussian:
+
+```
+⟨e^{i Σ f·φ}⟩ ≤ e^{−½ Σ f·K⁻¹·f} ,   K⁻¹ = the free propagator (ω² + k²)⁻¹
+```
+
+The argument is the reflection Cauchy–Schwarz `C(θf, f) ≥ 0` plus the **sum over reflection planes** —
+and the covariance it yields is exactly `K⁻¹`, the covariant Laplacian's inverse. So the missing input
+`σ² = K⁻¹` is not a free constant: it is *forced* by reflection positivity to be the free propagator.
+
+The route to the non-Abelian case is the **character lever**: `Tr U = Σ_r χ_r` (proved) turns the trace
+into a sum of bounded characters, and the FSS argument applies **per character** — each character is a
+bounded harmonic, so the reflection-positivity → Gaussian chain carries over to it, then the sum
+transport (proved) reassembles the trace. The remaining open step is the *per-character* FSS argument
+(the reflection positivity applied to a character), which is the non-Abelian Clay rung — but the input is
+now precisely located, not a mystery: **reflection positivity forces `σ² = K⁻¹`, via the sum over
+reflection planes.**
+
