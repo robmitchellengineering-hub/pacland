@@ -120,4 +120,8 @@ theorem falk_bruch {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     ⟪f, Θ g⟫_ℝ ^ 2 ≤ ⟪f, f⟫_ℝ * ⟪g, g⟫_ℝ :=
   reflection_cauchy_schwarz Θ f g
 
+/-- **The free propagator in momentum space.** `1/(2·J(k))` — the inverse of twice the kinetic symbol
+`J(k)` (the lattice Laplacian). This is the RHS of the FSS infrared bound. -/
+def freePropagator (J : ℝ → ℝ) (k : ℝ) : ℝ := 1 / (2 * J k)
+
 end FSSGaussianDomination
