@@ -156,4 +156,10 @@ theorem cos_pow_rankone (n : ℕ) (θi θj : ℝ) :
   rw [mul_pow, mul_pow]
   ring
 
+/-- **The rank-one kernel is positive-definite**: `Σ cᵢ cⱼ fᵢ·fⱼ = (Σ cᵢ fᵢ)² ≥ 0`. -/
+theorem rank_one_posdef {m : ℕ} (f : Fin m → ℝ) (c : Fin m → ℝ) :
+    0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (f i * f j) := by
+  rw [Finset.sum_mul, Finset.mul_sum]
+  simpa [mul_comm, mul_left_comm, mul_assoc] using sq_nonneg (∑ i : Fin m, c i * f i)
+
 end QM
