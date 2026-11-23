@@ -383,3 +383,35 @@ def verify_mass_gap_creutz(betas=(3.5, 4.0, 4.5), N=10, R=3, T=3, n_configs=10, 
     if not running:
         return False, f"Creutz ratio: {curve} → χ does NOT decrease as β grows (no running coupling)"
     return True, f"Creutz ratio: {curve} → χ positive (area law) + decreasing (running coupling confirmed)"
+
+
+def verify_mass_gap_creutz_smeared(betas=(2.5, 3.0, 3.5), N=10, R=4, T=4, n_configs=30,
+                                   n_sweeps=14, smear=3, seed=0) -> tuple[bool, str]:
+    """The SU(2) Creutz ratio with APE smearing (the standard lattice string-tension measurement) must
+    stay POSITIVE (area law) and DECREASE as β grows (running coupling → asymptotic freedom). APE
+    smearing suppresses the UV noise that drowned the unsmeared loop at weak coupling; a larger R=T=4
+    loop + 30 configs gives a stable mean. This is the real compute campaign the ROG runs."""
+    import numpy as np
+    from pacland import lattice_ym_su2 as lm
+    from pacland.lattice_ym_su2_fast import metropolis_fast
+
+    chi = {}
+    for beta in betas:
+        vals = []
+        for i in range(n_configs):
+            rng = np.random.default_rng(seed + int(10 * beta) + i)
+            links = np.array([lm.random_su2(rng) for _ in range(4 * N ** 4)])
+            links = links.reshape((4,) + (N,) * 4 + (4,))
+            links = metropolis_fast(links, beta, n_sweeps, seed + i)
+            links = lm.ape_smear(links, alpha=0.5, n_iter=smear)
+            vals.append(lm.creutz_ratio(links, R, T))
+        chi[beta] = float(np.mean(vals))
+    curve = ", ".join(f"χ(β={b})={v:.4f}" for b, v in chi.items())
+    cvals = [chi[b] for b in betas]
+    positive = all(c > 1e-4 for c in cvals)
+    running = cvals[-1] < cvals[0]
+    if not positive:
+        return False, f"Creutz (smeared): {curve} → χ ≤ 0 (no area law / no string tension)"
+    if not running:
+        return False, f"Creutz (smeared): {curve} → χ does NOT decrease as β grows (no running coupling)"
+    return True, f"Creutz (smeared): {curve} → χ positive (area law) + decreasing (running coupling confirmed)"
