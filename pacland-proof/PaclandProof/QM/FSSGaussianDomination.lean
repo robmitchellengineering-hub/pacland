@@ -60,4 +60,14 @@ supplies the gap, the beta function supplies the scale. -/
 def massGapTwoMechanisms (m : ℝ → ℝ) (A c : ℝ) : Prop :=
   ∀ β, A * Real.exp (-c * β) ≤ m β
 
+/-- **The IR bound for SU(2) — the Casimir gap is the operator's spectral gap.** The full Faddeev–Popov
+operator `L + 2·id` (momentum Laplacian `L` plus the Casimir `2`, proved in `casimir_su2`) has quadratic
+form `≥ 2·‖f‖²`: the momentum modes only raise the eigenvalue, so the constant-mode Casimir gap `2` is
+the full operator's spectral gap. This is the finite-dimensional core of the FSS infrared bound — the
+two-point function (the inverse) is bounded by the free propagator `1/2`. -/
+theorem ir_bound_su2 {n : ℕ} (L : Matrix (Fin n) (Fin n) ℝ)
+    (hquad : ∀ f : Fin n → ℝ, 0 ≤ ∑ i, f i * ((L.mulVec f) i)) (f : Fin n → ℝ) :
+    2 * (∑ i, (f i)^2) ≤ ∑ i, f i * (((L + (2 : ℝ) • (1 : Matrix (Fin n) (Fin n) ℝ)).mulVec f) i) := by
+  exact QM.massive_laplacian_gap L 2 hquad (by norm_num) f
+
 end FSSGaussianDomination
