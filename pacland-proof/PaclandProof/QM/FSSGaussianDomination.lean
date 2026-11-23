@@ -149,9 +149,9 @@ theorem character_orthonormal {G : Type*} [AddCommGroup G] [Fintype G]
 covariance is dominated by the free propagator `⟪f, Lf⟫/J` — i.e. `g(k) ≤ 1/J(k)` up to the FSS
 normalization. This is the join of `falk_bruch` + `laplacian_symbol_1d` + `character_orthonormal`. -/
 theorem fss_join {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    (Θ : E →ₗᵢ[ℝ] E) (L : E →ₗ[ℝ] E) (J : ℝ)
+    (Θ : E →ₗᵢ[ℝ] E) (L : E →ₗ[ℝ] E) (J : ℝ) (f : E)
     (hpos : 0 ≤ ⟪f, Θ f⟫_ℝ)
-    (hsym : ⟪f, L f⟫_ℝ = J * ⟪f, f⟫_ℝ) (hJ : 0 < J) (f : E) :
+    (hsym : ⟪f, L f⟫_ℝ = J * ⟪f, f⟫_ℝ) (hJ : 0 < J) :
     ⟪f, Θ f⟫_ℝ ≤ ⟪f, L f⟫_ℝ / J := by
   have hcs : ⟪f, Θ f⟫_ℝ ≤ ⟪f, f⟫_ℝ := reflection_positivity_covariance_bound Θ f hpos
   nlinarith [hcs, hsym, hJ, real_inner_self_nonneg]
