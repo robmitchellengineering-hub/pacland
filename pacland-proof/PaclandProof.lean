@@ -66,6 +66,7 @@ import PaclandProof.QM.CosPowers
 import PaclandProof.QM.BakryEmery
 import PaclandProof.QM.Su2Curvature
 import PaclandProof.QM.LogSobolev
+import PaclandProof.QM.BakryEmeryLSI
 import PaclandProof.QM.GaugeOrbit
 import PaclandProof.QM.WangCriterion
 import PaclandProof.QM.FullLatticeLyapunov
@@ -92,3 +93,11 @@ import PaclandProof.QM.ClayReduction
 import PaclandProof.QM.MassGapDiamond
 import PaclandProof.QM.GradientFlow
 import PaclandProof.QM.ConstructiveQFT
+import PaclandProof.QM.HeatKernel
+import PaclandProof.QM.GaussianLSI
+import PaclandProof.QM.CovariantLaplacian
+import PaclandProof.QM.FSSInfraredBound
+import PaclandProof.QM.RefereeScalingLaw
+import PaclandProof.QM.GaussianRigidity
+import PaclandProof.QM.RenormalizedAction
+import PaclandProof.QM.AdSCFT
