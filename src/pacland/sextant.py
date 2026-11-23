@@ -417,7 +417,7 @@ CATALOG: dict[str, dict] = {
     },
     "ym-mass-gap-running-coupling": {
         "claim": "the SU(2) string tension σ(β) (the Polyakov-loop mass proxy) runs with the coupling — it decreases as β grows, reaching the asymptotic-freedom scale e^{−cβ}",
-        "simulate": mass_gap_falsifiers.verify_mass_gap_running_coupling,
+        "simulate": mass_gap_falsifiers.verify_mass_gap_creutz,
         "theorem": "QM.HeatKernel.string_tension_runs + string_tension_positive + determinant_gives_exponent (the inverse scale e^{−cβ} is strictly decreasing in β and strictly positive — the running, derived from the beta function's exponent)",
         "falsifier": "a string tension that fails to decrease as β grows (no running), or that collapses to zero",
         "oracle": ["lattice (SU(2) Polyakov string tension, verify_mass_gap_running_coupling)"],
