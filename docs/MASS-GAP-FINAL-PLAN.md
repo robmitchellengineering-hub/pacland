@@ -62,6 +62,26 @@ into `K⁻¹ = (−Δ + m²)⁻¹` — then the correlation decays as `e^{−m|x
 the SU(2) character (the trace observable, per-character via `Tr U = Σ χ_r`), and the two mechanisms are
 joined. Everything else in the chain is kernel-checked.
 
+## The sum-over-reflection-planes — the exact input, located (2026-11-22)
+
+The one lemma that closes `fssInfraredBound` is the **sum-over-reflection-planes**, and the harvest
+located its precise content ([Björnberg–Ueltschi §4.2](https://arxiv.org/html/2204.12896v2);
+[Sodin, "Infrared bound"](https://webspace.maths.qmul.ac.uk/a.sodin/teaching/teaching/ir.pdf);
+[GSSI lecture notes](https://indico.gssi.it/event/478/attachments/868/1522/Lecture%20notes.pdf)):
+
+- **Falk–Bruch inequality** — reflection positivity turns the Duhamel two-point function into a
+  Cauchy–Schwarz bound (the kernel-checked `reflection_positivity_covariance_bound`, `⟪f,Θf⟫ ≤ ⟪f,f⟫`).
+- **Sum over reflection planes** — the Fourier transform `f(x) = (1/ℓᵈ) Σ_k e^{ikx} f̂(k)` plus the sum
+  over the reflection planes turns that position-space bound into the momentum-space bound
+  `g(k) ≤ 1/(2 Σᵢ (1 − cos kᵢ))`.
+
+The denominator `Σᵢ (1 − cos kᵢ)` **is the lattice Laplacian's symbol** — the covariant Laplacian
+`−∇·D` from step 1, with the Casimir `2` added (the `ir_bound_su2` gap). So the missing input is a
+single, well-defined lemma: **the Fourier transform of the reflection Cauchy–Schwarz, summed over the
+reflection planes, yields `g(k) ≤ 1/(2J(k))`.** With that one lemma the radius-bound hypothesis of
+`refereeScalingLaw_of_radius_bound` is supplied and the mass gap closes. This is the concrete, citable
+target — not a vague "open problem" but a named inequality with a known denominator.
+
 ## The finish line
 
 Prove the per-character FSS estimate — reflection positivity applied to a bounded character, summed over
