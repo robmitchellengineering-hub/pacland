@@ -114,12 +114,29 @@ falsifier `verify_volume_uniform_su2`), `ym-mass-gap-running-coupling` (FREE, fa
 Creutz) but the running-coupling slope and the thermodynamic limit are under-resolved at the compute budget
 (the measurement is noise-bound, not physics-refuted).
 
+## The pattern these approaches keep hitting (recorded 2026-11-23)
+
+Every route tried — FSS reflection-positivity, RG block-spin, Bakry–Émery curvature, log-Sobolev, and now
+the OS reflection-positivity Chebyshev chain — converges on the same shape: prove the finite/linear/Abelian
+scaffolding, then "reduce" to one remaining step, which on inspection is the non-Abelian measure-theoretic
+estimate itself (or several hard lemmas that amount to it). The "reduced to one lemma" has repeatedly been an
+over-claim. After `cheb_expansion` still come: `cos_pow_posdef` (its own double-sum transfer), the infinite
+`exp` series limit (the PSD closure `posdef_sum` is finite only), and the OS measure-theoretic connection to
+the reflected correlation (the reflection Θ on the gauge-field algebra). That is not one lemma — it is the
+Clay rung, and grinding it route-by-route has run away each time.
+
+**The approach change (decided 2026-11-23):** stop treating the open rung as "one more lemma to grind" and
+record the honest deliverable as the REDUCTION — Clay ⟺ the volume-uniform non-Abelian FSS estimate — plus the
+SEXTANT CATALOG's FREE/OPEN verdicts and falsifiers. Further progress is a discovery-engine question (what
+combination, if any, closes the non-Abelian measure-theoretic step), not another hand-grind of one route.
+
 ## The honest bottom line
 
-Everything finite-dimensional, linear/Abelian, transport-side, and now the **OS reflection-positivity
-ingredients** (cos kernel, cos², the product-to-sum, the Chebyshev coefficients + their non-negativity, the
-PSD closure, the covariance Cauchy–Schwarz) are kernel-checked and real. The **single open rung** is the
-volume-uniform FSS infrared bound for the SU(2) character — and it is now **reduced to one named Lean lemma**,
-`cheb_expansion` (the `cos^n = Σ cheb n k·cos(kθ)` coefficient reindexing). Everything downstream is proved
-and waiting on that one `Finset.sum` bookkeeping step. This file records all of that precisely, together with
-the vacuous traps so a reviewer is not misled by proof-shaped non-results.
+Everything finite-dimensional, linear/Abelian, transport-side, and the OS reflection-positivity ingredients
+(cos kernel, cos², the product-to-sum, the Chebyshev coefficients + their non-negativity, the PSD closure, the
+covariance Cauchy–Schwarz) are kernel-checked and real. The open rung — the volume-uniform FSS infrared bound
+for the SU(2) character — remains open and is **several remaining lemmas, not one**: `cheb_expansion` (the
+coefficient reindexing), `cos_pow_posdef` (the double-sum PSD transfer), the infinite `exp` series limit, and
+the OS measure-theoretic connection to the reflected correlation. This file records all of that precisely,
+together with the vacuous traps, so a reviewer is not misled by proof-shaped non-results or a
+reduced-to-one-lemma over-claim.
