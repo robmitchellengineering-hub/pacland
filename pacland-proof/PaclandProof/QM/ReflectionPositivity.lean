@@ -109,7 +109,7 @@ theorem cos_cube_eq (θ : ℝ) :
     have h := cos_mul_cos_n θ (2 : ℝ)
     norm_num at h
     exact h
-  rw [pow_succ, pow_two, hcos2]
+  rw [pow_succ, hcos2]
   ring_nf
   rw [hmul]
   ring
