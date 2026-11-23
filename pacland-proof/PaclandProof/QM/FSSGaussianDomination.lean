@@ -138,7 +138,7 @@ Mathlib result `AddChar.wInner_cWeight_eq_boole`, and it is exactly the Plancher
 character (momentum) basis is orthonormal, so the reflection Cauchy–Schwarz — abstract in `f, g` — is
 unchanged in the momentum basis. This is the step that makes the infrared bound a momentum-space
 statement. -/
-theorem character_orthonormal {G : Type*} [AddCommGroup G] [Fintype G] [RCLike ℂ]
+theorem character_orthonormal {G : Type*} [AddCommGroup G] [Fintype G]
     (ψ₁ ψ₂ : AddChar G ℂ) :
     ⟪(ψ₁ : G → ℂ), ψ₂⟫ₙ_[ℂ] = if ψ₁ = ψ₂ then 1 else 0 :=
   AddChar.wInner_cWeight_eq_boole ψ₁ ψ₂
