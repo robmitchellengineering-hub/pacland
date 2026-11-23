@@ -359,6 +359,7 @@ CATALOG: dict[str, dict] = {
     "ym-orbifold-curvature": {
         "claim": "the Yang-Mills measure on the gauge-orbit quotient has Bakry-Émery curvature K ≥ λ_min(FP), so it has a spectral gap iff λ_min(FP) stays uniformly positive (no Gribov-horizon collapse)",
         "theorem": "QM.GradientFlow.orbit_curvature_integrated_gap + effective_curvature_positive + QM.OrbitCurvature.orbit_curvature_beta_uniform (the pointwise ceiling is measure-suppressed, so the integrated curvature is β-uniform positive — no per-β pointwise computation)",
+        "simulate": mass_gap_falsifiers.verify_orbifold_curvature,
         "falsifier": "λ_min(FP) → 0 in the continuum / at the FMR boundary (the Gribov horizon), which would refute uniform positive curvature",
         "oracle": ["lattice (FP operator spectrum, lattice_ghost.py)"],
         "verdict": "FORCED",
@@ -375,6 +376,7 @@ CATALOG: dict[str, dict] = {
     "ym-rg-contraction": {
         "claim": "one block-spin renormalisation-group step contracts the Yang-Mills measure (a positive RG contraction coefficient), so the mass gap is the RG contraction rate",
         "theorem": "QM.GradientFlow.rg_contraction_positive + effective_rate_below_one + flow_rate_gap_lower_bound (the effective RG rate (1 − t·β·c) + e^{−2β} < 1, a positive contraction, so the gap is the contraction rate)",
+        "simulate": mass_gap_falsifiers.verify_rg_contraction,
         "falsifier": "the RG contraction coefficient → 1 (no contraction) at the horizon or in the continuum",
         "oracle": ["lattice (block-spin RG flow, to be built)"],
         "verdict": "FORCED",
