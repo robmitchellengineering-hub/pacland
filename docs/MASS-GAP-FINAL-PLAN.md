@@ -71,7 +71,15 @@ already kernel-checked (`casimir_su2`, `faddeevPopov_constant_mode_gap`, `ir_bou
 `2` on the full operator). So the SU(2) case is **not** a new reflection-positivity statement; it is the
 linear FSS chain (`falk_bruch` + `character_orthonormal` + `laplacian_symbol_1d` + `fss_join`) with the
 free propagator `k²` replaced by `k² + 2` (the Casimir). The join is the single remaining move:
-`(k² + 2)⁻¹ ≤ k⁻²`, i.e. the Casimir mass supplies the infrared bound.
+`(k² + 2)⁻¹ ≤ k⁻²`, i.e. the Casimir mass supplies the infrared bound — proved as
+`casimir_infrared_bound`.
+
+**Honest boundary (2026-11-22):** the SU(2) *input* is proved (`casimir_infrared_bound`), but the *join to
+the mass gap* is the renormalization step — the lattice gap (Casimir `2`, a constant) carried to the
+physical gap `2·e^{−cβ}` by the running coupling. That renormalization (lattice → physical scale) is the
+open Clay rung. The verified deliverable is the linear-case FSS theorem (`falk_bruch`,
+`character_orthonormal`, `laplacian_symbol_1d`, `fss_join`) plus the finite-dimensional mass gap
+(`casimir_su2`, `massive_laplacian_gap`, `ir_bound_su2`). The SU(2) character FSS estimate remains open.
 
 ## The sum-over-reflection-planes — the exact input, located (2026-11-22)
 
