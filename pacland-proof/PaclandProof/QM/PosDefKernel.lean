@@ -103,10 +103,17 @@ theorem wilson_kernel_posdef {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 
     (fun N => fun i j => ∑ n ∈ Finset.range (N + 1), (2 * β) ^ n / (n.factorial : ℝ) * (Real.cos (θ i - θ j)) ^ n)
     (fun i j => Real.exp (2 * β * Real.cos (θ i - θ j))) ?_ ?_
   · intro N
-    exact posdef_sum (fun n : Fin (N + 1) => fun i j => (2 * β) ^ n.1 / (n.1.factorial : ℝ) * (Real.cos (θ i - θ j)) ^ n.1)
-      (fun n => posdef_smul (fun i j => (Real.cos (θ i - θ j)) ^ n.1) ((2 * β) ^ n.1 / (n.1.factorial : ℝ))
-        (div_nonneg (pow_nonneg (mul_nonneg (by norm_num) hβ) _) (by positivity)) (cos_pow_posdef θ n.1))
+    have hfin : PosDefKernel (fun i j => ∑ n : Fin (N + 1), (2 * β) ^ n.1 / (n.1.factorial : ℝ) * (Real.cos (θ i - θ j)) ^ n.1) :=
+      posdef_sum (fun n : Fin (N + 1) => fun i j => (2 * β) ^ n.1 / (n.1.factorial : ℝ) * (Real.cos (θ i - θ j)) ^ n.1)
+        (fun n => posdef_smul (fun i j => (Real.cos (θ i - θ j)) ^ n.1) ((2 * β) ^ n.1 / (n.1.factorial : ℝ))
+          (div_nonneg (pow_nonneg (mul_nonneg (by norm_num) hβ) _) (by positivity)) (cos_pow_posdef θ n.1))
+    simpa [Fin.sum_univ_eq_sum_range] using hfin
   · intro i j
-    exact (Real.hasSum_exp (2 * β * Real.cos (θ i - θ j))).tendsto_sum_nat
+    let x := 2 * β * Real.cos (θ i - θ j)
+    have hsum : Summable (fun n : ℕ => x ^ n / (n.factorial : ℝ)) := Real.summable_pow_div_factorial x
+    have hrange : Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, x ^ n / (n.factorial : ℝ)) atTop (nhds (Real.exp x)) := by
+      rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum (𝕂 := ℝ)]
+      simpa [div_eq_mul_inv, smul_eq_mul] using hsum.hasSum.tendsto_sum_nat
+    simpa [x] using hrange.comp (tendsto_add_atTop_nat 1)
 
 end QM
