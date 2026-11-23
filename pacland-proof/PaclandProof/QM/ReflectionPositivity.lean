@@ -47,6 +47,7 @@ theorem one_plus_cos_two_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → �
           + (∑ i : Fin m, c i * Real.sin (2 * θ i)) ^ 2 := by
     simp_rw [mul_add, mul_one]
     simp_rw [Finset.sum_add_distrib]
+    simp_rw [mul_sub]
     simp_rw [Real.cos_sub]
     rw [pow_two, pow_two, pow_two]
     simp_rw [Finset.sum_mul_sum]
