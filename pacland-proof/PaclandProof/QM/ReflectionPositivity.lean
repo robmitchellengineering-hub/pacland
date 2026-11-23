@@ -145,7 +145,7 @@ theorem cheb_nonneg (n k : ℕ) : 0 ≤ cheb n k := by
 /-- **The Chebyshev expansion** — `cos^n(θ) = Σ_{k≤n} cheb n k·cos(kθ)`, proved by induction with the
 product-to-sum and the coefficient recursion. -/
 theorem cheb_expansion (n : ℕ) (θ : ℝ) :
-    Real.cos θ ^ n = ∑ k in Finset.range (n + 1), cheb n k * Real.cos ((k : ℝ) * θ) := by
+    Real.cos θ ^ n = ∑ k ∈ Finset.range (n + 1), cheb n k * Real.cos ((k : ℝ) * θ) := by
   induction n with
   | zero => simp [cheb]
   | succ n ih =>
