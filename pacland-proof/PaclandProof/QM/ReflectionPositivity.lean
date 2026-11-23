@@ -102,7 +102,8 @@ theorem cos_mul_cos_k (θ : ℝ) {k : ℕ} (hk : 0 < k) :
     rw [show Real.cos ((k : ℝ) * θ - θ) = Real.cos (θ - (k : ℝ) * θ) by
       have h : θ - (k : ℝ) * θ = -((k : ℝ) * θ - θ) := by ring
       rw [h, Real.cos_neg]]
-  rw [hsum, h1, h2]
+  rw [hsum]
+  rw [Real.cos_add, Real.cos_sub]
   ring
 
 end QM
