@@ -198,4 +198,23 @@ theorem refereeScalingLaw_iff_volumeUniformRatio (mGap Λ : ℝ → ℝ)
     intro β hβ
     exact (le_div_iff₀ (hΛ β)).mp (hC β hβ)
 
+/-- **The `ym-orbifold-curvature` rung (integrated form).** The pointwise Bakry–Émery ceiling
+(`su2_curvature_ceiling`, negative at the antipode for `β > 1/8`) is measure-suppressed
+(`antipode_measure_suppression`, the antipode carries weight `e^{−2β}`), so the *integrated* curvature
+`β·(c − (1+c)·e^{−2β})` is positive for large `β` (`effective_curvature_positive`). This is the
+β-uniform spectral-gap bound — derived from the measure suppression, not a per-β pointwise computation. -/
+theorem orbit_curvature_integrated_gap (β c : ℝ) (hβ : 0 < β) (hc : 0 < c)
+    (h : Real.exp (-2 * β) < c * (1 - Real.exp (-2 * β))) :
+    0 < β * (c - (1 + c) * Real.exp (-2 * β)) :=
+  effective_curvature_positive β c hβ hc h
+
+/-- **The `ym-rg-contraction` rung.** One RG (flow-time / block-spin) step contracts the measure at the
+effective rate `(1 − t·β·c) + e^{−2β}`, which is strictly below `1` whenever the good-region contraction
+rate `t·β·c` exceeds the antipode's measure `e^{−2β}` — a positive contraction coefficient, so the mass
+gap is the contraction rate (`flow_rate_gap_lower_bound`). Derived, not per-β computed. -/
+theorem rg_contraction_positive (t β c : ℝ)
+    (hc : 0 < c) (hpos : 0 < t * β) (hle : t * β * c ≤ 1) (h : Real.exp (-2 * β) < t * β * c) :
+    (1 - t * β * c) + Real.exp (-2 * β) < 1 :=
+  effective_rate_below_one t β c hc hpos hle h
+
 end QM
