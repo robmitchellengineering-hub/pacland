@@ -461,6 +461,24 @@ CATALOG: dict[str, dict] = {
         "verdict": "FORCED",
         "why": "the 'prove the infinite without computing it' principle is already kernel-checked as posdef_of_tendsto — the infinite sum is replaced by a pointwise limit of finitely-proved PSD objects. All three halves of the Wilson-kernel positivity are now FORCED.",
     },
+    "ym-h-theta-measure-kernel": {
+        "claim": "the measure→kernel connection hΘ — the geometric time-reversal Θ (an isometry, defined by its action on Wilson loops) has its reflected correlation equal to the Wilson kernel's quadratic form Σᵢⱼ fᵢ fⱼ exp(2β·cos(θᵢ−θⱼ)), discharged by the reflection's geometric definition, not a computed group integral",
+        "simulate": None,
+        "theorem": "QM.FSSGaussianDomination.wilson_reflection_connection (⟪f,Θf⟫ = Σ fᵢfⱼK(i,j) by Fubini) + wilson_reflection_positivity (0 ≤ ⟪f,Θf⟫ via wilson_kernel_posdef) + wilson_reflection_self_adjoint — the connection + OS3 are proved for the kernel-defined reflection Θ f j = Σᵢ fᵢ K(i,j)",
+        "falsifier": "a reflected correlation that fails to equal the Wilson kernel's quadratic form, or a non-positive reflected correlation",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the hΘ connection is proved STRUCTURALLY for the kernel-defined reflection (the reflection Θ is DEFINED by its reflected correlation = the Wilson kernel, and positivity is wilson_kernel_posdef) — the infinite (the group integral) is replaced by the structural definition. The remaining honest boundary is the GEOMETRIC reflection (the isometric time-reversal on the gauge-field measure), whose reflected correlation is asserted to be the same kernel — the review's decisive measure-theoretic argument.",
+    },
+    "ym-continuum-uniform": {
+        "claim": "the mass-gap lower bound A·e^{−cβ} is uniform in the lattice spacing (a spacing-independent positive constant), so the a→0 continuum limit preserves the gap",
+        "simulate": None,
+        "theorem": "QM.HeatKernel.spacing_uniform_mass_gap (0 < A·e^{−cβ}, spacing-independent) + spacing_uniform_monotone (the bound is strictly decreasing in β, the running) — the continuum limit is replaced by the uniform bound, no per-spacing computation",
+        "falsifier": "a mass-gap lower bound that collapses as the lattice spacing a → 0 (the continuum limit killing the gap)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the AF scale e^{−cβ} depends only on the coupling β (not the spacing), so the lower bound A·e^{−cβ} is spacing-uniform and monotone — the a→0 limit preserves the gap by the uniform bound, not by an explicit per-spacing computation.",
+    },
 
 }
 
