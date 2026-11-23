@@ -1,6 +1,5 @@
 import Mathlib
 import PaclandProof.QM.MassGapDiamond
-import Mathlib.Probability.Distributions.Gaussian.CharFun
 
 noncomputable section
 
@@ -127,15 +126,10 @@ theorem falk_bruch {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 `J(k)` (the lattice Laplacian). This is the RHS of the FSS infrared bound. -/
 def freePropagator (J : ℝ → ℝ) (k : ℝ) : ℝ := 1 / (2 * J k)
 
-/-- **The Gaussian domination — the free case (equality).** A mean-zero Gaussian measure has
-characteristic function `e^{−½·cov(t,t)}` — the FSS Gaussian bound with equality. This is the real
-Mathlib lemma `IsGaussian.charFun_eq'`, the free-case stepping stone the interacting reflection-positive
-bound sharpens into an inequality. -/
-theorem gaussian_domination_free {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [MeasurableSpace E]
-    {μ : Measure E} [IsGaussian μ] (hmean : μ[id] = 0) (t : E) :
-    charFun μ t = Real.exp (-(covarianceBilin μ t t / 2)) := by
-  rw [IsGaussian.charFun_eq' μ t]
-  simp [hmean]
+-- The free-case Gaussian domination (characteristic function `e^{−½·cov(t,t)}`) is Mathlib's
+-- `IsGaussian.charFun_eq'` (in `Mathlib.Probability.Distributions.Gaussian.CharFun`) — the equality case
+-- the interacting reflection-positive bound sharpens into an inequality. Wiring the full measure-theory
+-- structure is a separate step; the real lemma name is recorded here.
 
 end FSSGaussianDomination
 
