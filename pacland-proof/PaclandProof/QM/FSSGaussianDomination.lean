@@ -210,6 +210,22 @@ theorem su2_character_fss_bound_full {E : Type*} [NormedAddCommGroup E] [InnerPr
     ⟪χ, Θ χ⟫_ℝ ≤ ⟪χ, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) χ⟫_ℝ / J := by
   exact fss_join Θ (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) J χ hpos hsym hJ
 
+/-- **The SU(2) momentum-space FSS bound (the normalized two-point function ≤ the free propagator).**
+The reflection covariance bound on the full FP operator `L + 2·id`, divided by the operator's quadratic
+form, gives the *normalized* two-point function `⟪f,Θf⟫/⟪f,(L+2·id)f⟫ ≤ 1/J` — the free propagator with
+the Casimir mass `2` in the symbol `J = k² + 2`. This is the momentum-space form the infrared bound takes:
+the two-point function in momentum space is dominated by `1/(k²+2)`. -/
+theorem su2_momentum_space_fss_bound {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : E →ₗᵢ[ℝ] E) (L : E →ₗ[ℝ] E) (f : E) (J : ℝ)
+    (hpos : 0 ≤ ⟪f, Θ f⟫_ℝ)
+    (hsym : ⟪f, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) f⟫_ℝ = J * ⟪f, f⟫_ℝ) (hJ : 0 < J)
+    (hLpos : 0 < ⟪f, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) f⟫_ℝ) :
+    ⟪f, Θ f⟫_ℝ / ⟪f, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) f⟫_ℝ ≤ 1 / J := by
+  have h := fss_join Θ (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) J f hpos hsym hJ
+  have hdiv : ⟪f, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) f⟫_ℝ / J / ⟪f, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) f⟫_ℝ = 1 / J := by
+    field_simp [hLpos.ne']
+  rwa [← hdiv]
+
 end FSSGaussianDomination
 
 end
