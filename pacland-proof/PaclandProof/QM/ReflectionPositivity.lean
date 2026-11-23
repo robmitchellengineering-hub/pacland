@@ -116,4 +116,28 @@ theorem cos_cube_eq (θ : ℝ) :
   rw [hmul']
   ring_nf
 
+/-- **The Chebyshev coefficients** — `cheb n k` is the coefficient of `cos(kθ)` in `cos^n(θ)`, defined
+by the recursion `cos^{n+1} = cos·cos^n` and the product-to-sum. All coefficients are `≥ 0` (proved
+next), which is what makes the Wilson heat kernel positive-definite. -/
+noncomputable def cheb : ℕ → ℕ → ℝ
+  | 0, 0 => 1
+  | 0, _ => 0
+  | n + 1, 0 => cheb n 1 / 2
+  | n + 1, 1 => (2 * cheb n 0 + cheb n 2) / 2
+  | n + 1, k + 2 => (cheb n (k + 1) + cheb n (k + 3)) / 2
+
+/-- **The Chebyshev coefficients are non-negative** — the recursion averages non-negative values, so
+`0 ≤ cheb n k` for all `n, k`. -/
+theorem cheb_nonneg (n k : ℕ) : 0 ≤ cheb n k := by
+  induction n generalizing k with
+  | zero =>
+      cases k <;> norm_num [cheb]
+  | succ n ih =>
+      cases k with
+      | zero => rw [cheb]; exact div_nonneg (ih 1) (by norm_num)
+      | succ k =>
+          cases k with
+          | zero => rw [cheb]; exact div_nonneg (add_nonneg (mul_nonneg (by norm_num) (ih 0)) (ih 2)) (by norm_num)
+          | succ k => rw [cheb]; exact div_nonneg (add_nonneg (ih (k + 1)) (ih (k + 3))) (by norm_num)
+
 end QM
