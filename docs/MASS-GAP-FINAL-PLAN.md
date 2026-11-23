@@ -62,6 +62,17 @@ into `K⁻¹ = (−Δ + m²)⁻¹` — then the correlation decays as `e^{−m|x
 the SU(2) character (the trace observable, per-character via `Tr U = Σ χ_r`), and the two mechanisms are
 joined. Everything else in the chain is kernel-checked.
 
+## The SU(2) input, located (2026-11-22)
+
+The harvest found the exact input for the non-Abelian case ([Simon R67](http://math.caltech.edu/SimonPapers/R67.pdf)):
+the FSS infrared bound for the mass gap "just needs that `(k² + m²)⁻¹ ≤ k⁻²`" — i.e. it needs only the
+**mass `m² > 0`** in the free propagator. For SU(2) the mass is the **Casimir `m² = 2`**, which is
+already kernel-checked (`casimir_su2`, `faddeevPopov_constant_mode_gap`, `ir_bound_su2` — the Casimir gap
+`2` on the full operator). So the SU(2) case is **not** a new reflection-positivity statement; it is the
+linear FSS chain (`falk_bruch` + `character_orthonormal` + `laplacian_symbol_1d` + `fss_join`) with the
+free propagator `k²` replaced by `k² + 2` (the Casimir). The join is the single remaining move:
+`(k² + 2)⁻¹ ≤ k⁻²`, i.e. the Casimir mass supplies the infrared bound.
+
 ## The sum-over-reflection-planes — the exact input, located (2026-11-22)
 
 The one lemma that closes `fssInfraredBound` is the **sum-over-reflection-planes**, and the harvest
