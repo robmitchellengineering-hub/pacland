@@ -126,8 +126,8 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-STATE.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-STATE.md",
-   "summary": "This is the definitive record of where the Yang\u2013Mills mass-gap work stands. Everything below is either kernel-checked (Lean, no sorry), a named theorem, or an honest refutation. This file\u2026",
-   "title": "Mass gap \u2014 the point to work from (state, 2026-11-22)"
+   "summary": "This is the honest, complete record of where the 4D Yang\u2013Mills mass-gap work stands. It separates, with exact names and files: (A) what is really proved (Lean, no sorry), (B) what is\u2026",
+   "title": "Mass gap \u2014 the definitive state (2026-11-23, for independent review)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASTER-RESEARCH.md",
