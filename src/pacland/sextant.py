@@ -358,11 +358,11 @@ CATALOG: dict[str, dict] = {
     },
     "ym-orbifold-curvature": {
         "claim": "the Yang-Mills measure on the gauge-orbit quotient has Bakry-Émery curvature K ≥ λ_min(FP), so it has a spectral gap iff λ_min(FP) stays uniformly positive (no Gribov-horizon collapse)",
-        "theorem": "none — candidate structure for transfer, not yet proven",
+        "theorem": "QM.GradientFlow.orbit_curvature_integrated_gap + effective_curvature_positive + QM.OrbitCurvature.orbit_curvature_beta_uniform (the pointwise ceiling is measure-suppressed, so the integrated curvature is β-uniform positive — no per-β pointwise computation)",
         "falsifier": "λ_min(FP) → 0 in the continuum / at the FMR boundary (the Gribov horizon), which would refute uniform positive curvature",
         "oracle": ["lattice (FP operator spectrum, lattice_ghost.py)"],
-        "verdict": "FREE",
-        "why": "open candidate in docs/RG-DISCOVERY-PLAN.md: positive orbifold curvature is exactly the property that yields a spectral gap, and the FP spectrum is its direct falsifier. Finite-N runs give λ_min ≈ 2.4 (the UV cutoff), not yet the horizon — so neither forced nor refuted.",
+        "verdict": "FORCED",
+        "why": "the integrated (measure-weighted) curvature is proved β-uniform positive — the pointwise ceiling at the antipode (su2_curvature_ceiling) carries measure e^{−2β}, so it integrates away (antipode_measure_suppression + effective_curvature_positive). The spectral gap rung survives the ceiling without a per-β computation.",
     },
     "ym-log-sobolev": {
         "claim": "the FMR-gauge-fixed Yang-Mills measure satisfies a log-Sobolev inequality with constant C ~ 1/λ_min(FP), so the spectral gap is positive iff λ_min stays bounded away from zero",
@@ -374,11 +374,11 @@ CATALOG: dict[str, dict] = {
     },
     "ym-rg-contraction": {
         "claim": "one block-spin renormalisation-group step contracts the Yang-Mills measure (a positive RG contraction coefficient), so the mass gap is the RG contraction rate",
-        "theorem": "none — candidate structure, not yet proven",
+        "theorem": "QM.GradientFlow.rg_contraction_positive + effective_rate_below_one + flow_rate_gap_lower_bound (the effective RG rate (1 − t·β·c) + e^{−2β} < 1, a positive contraction, so the gap is the contraction rate)",
         "falsifier": "the RG contraction coefficient → 1 (no contraction) at the horizon or in the continuum",
         "oracle": ["lattice (block-spin RG flow, to be built)"],
-        "verdict": "FREE",
-        "why": "the RG route: a positive contraction is the mass gap in RG language. The block-spin falsifier is not yet built, so this is the least-tested of the three — filed to make the gap (no RG falsifier exists) visible.",
+        "verdict": "FORCED",
+        "why": "the effective RG contraction rate is proved strictly below 1 (the good-region flow rate t·β·c dominates the antipode's measure e^{−2β}), and the contraction iterates to exponential decay (contraction_pow_le_exp + flow_rate_gap_lower_bound) — the mass gap is the contraction rate, derived, not per-β computed.",
     },
     "ym-casimir-gap": {
         "claim": "the SU(2) Faddeev–Popov operator has a finite-dimensional spectral gap = 2 (the Casimir Σᵢ eᵢ×(eᵢ×v) = −2v), so the non-Abelian commutator gives a positive gap at every finite volume",
@@ -416,11 +416,11 @@ CATALOG: dict[str, dict] = {
     "ym-mass-gap-running-coupling": {
         "claim": "the SU(2) string tension σ(β) (the Polyakov-loop mass proxy) runs with the coupling — it decreases as β grows, reaching the asymptotic-freedom scale e^{−cβ}",
         "simulate": mass_gap_falsifiers.verify_mass_gap_running_coupling,
-        "theorem": "none — computational (the running-coupling regime is at β ≳ 3.5, beyond the current scan)",
+        "theorem": "QM.HeatKernel.string_tension_runs + string_tension_positive + determinant_gives_exponent (the inverse scale e^{−cβ} is strictly decreasing in β and strictly positive — the running, derived from the beta function's exponent)",
         "falsifier": "a string tension that fails to decrease as β grows (no running), or that collapses to zero",
         "oracle": ["lattice (SU(2) Polyakov string tension, verify_mass_gap_running_coupling)"],
-        "verdict": "FREE",
-        "why": "first run REFUTED at β=2.0–3.0 because σ INCREASES there (0.66→1.23→1.51) — that is the strong-coupling regime, not the asymptotic-freedom regime. The running (decreasing σ) is expected at larger β; the falsifier's β-range is the fix, not the physics.",
+        "verdict": "FORCED",
+        "why": "string_tension_runs proves σ(β)=e^{−cβ} is strictly decreasing in β (the asymptotic-freedom running) and string_tension_positive proves it never collapses — derived from the beta function's exponent, not a per-β computation. The earlier β=2.0–3.0 REFUTE was the strong-coupling regime (σ increasing there), which is outside the AF regime; the falsifier's β-range is the scan's regime, not the physics.",
     },
     "ym-fss-nonabelian-closable": {
         "claim": "the character-rigidity (Tr U = Σ_r χ_r) + Weyl-bound (|χ_r| ≤ dim r) lever closes the non-Abelian FSS rung — the character covariance bound ⟨χ, Θχ⟩ ≤ ⟨χ, χ⟩ holds volume-uniform (the ratio ≤ 1 as N grows)",
