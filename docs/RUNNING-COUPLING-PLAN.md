@@ -113,6 +113,27 @@ Each is a `sorry`-target; the transferable structure is the *rigidity* of Gaussi
 symmetry (the thing that turns "some Gaussian" into "the Gaussian", with the exponent carried by the
 covariant Laplacian).
 
+## The gauge-invariance rigidity — what it actually is (2026-11-22)
+
+The harvest located the specific structure: the gauge-invariance rigidity is the **transverse condition**
+`p^μ K_{μν}(p) = 0`. The Yang–Mills kinetic operator is forced to be transverse by gauge invariance,
+and the transverse second-order gauge-covariant operator is *uniquely* the covariant Laplacian `−∇·D`.
+So the rigidity is a uniqueness statement:
+
+```
+gauge invariance  ⟹  K is transverse (p^μ K_{μν} = 0)
+transverse + gauge-covariant + second-order  ⟹  K = −∇·D (up to a constant)
+```
+
+The provable half is the formal one: the covariant derivative `D = ∂ + A` transforms covariantly
+(`D → g D g⁻¹`), so the covariant Laplacian `−D²` is gauge-covariant and its spectrum is
+gauge-invariant — that is `covariantLaplacian` in `GaussianRigidity.lean`. The remaining half is the
+**weak-coupling expansion**: prove the actual YM measure's quadratic (Gaussian) part *is* `−∇·D`. That
+is the one formal step left — the Gaussian covariance of the physical YM measure equals the covariant
+Laplacian, which is where the `a₂` heat-kernel coefficient (the scale) and the minimum eigenvalue (the
+gap) meet the same operator.
+
+
 
 
 
