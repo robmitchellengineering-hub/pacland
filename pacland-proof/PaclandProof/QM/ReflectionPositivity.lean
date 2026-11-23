@@ -83,25 +83,4 @@ theorem cos_sq_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) :
   rw [hpull] at h2cos
   exact (mul_nonneg_iff_of_pos_left (by norm_num : 0 < (2 : ℝ))).mp h2cos
 
-/-- **The product-to-sum identity** (`k ≥ 1`): `cos θ · cos(kθ) = (cos((k+1)θ) + cos((k−1)θ))/2` —
-the building block of the Chebyshev recursion that expresses `cos^n` as a non-negative sum of
-`cos(m·)` kernels. -/
-theorem cos_mul_cos_k (θ : ℝ) {k : ℕ} (hk : 0 < k) :
-    Real.cos θ * Real.cos (k * θ) = (Real.cos ((k + 1) * θ) + Real.cos ((k - 1) * θ)) / 2 := by
-  have h1 : Real.cos (θ + k * θ) = Real.cos θ * Real.cos (k * θ) - Real.sin θ * Real.sin (k * θ) :=
-    Real.cos_add θ (k * θ)
-  have h2 : Real.cos (θ - k * θ) = Real.cos θ * Real.cos (k * θ) + Real.sin θ * Real.sin (k * θ) :=
-    Real.cos_sub θ (k * θ)
-  have hsum : Real.cos ((k + 1) * θ) + Real.cos ((k - 1) * θ)
-      = Real.cos (θ + k * θ) + Real.cos (θ - k * θ) := by
-    have hk1 : (1 : ℕ) ≤ k := Nat.succ_le_of_lt hk
-    push_cast
-    ring_nf
-    rw [show Real.cos (-(↑k : ℝ) * θ + θ) = Real.cos ((↑k : ℝ) * θ - θ) by
-      rw [show -(↑k : ℝ) * θ + θ = -((↑k : ℝ) * θ - θ) by ring]
-      rw [Real.cos_neg]]
-  rw [hsum]
-  rw [Real.cos_add, Real.cos_sub]
-  ring
-
 end QM
