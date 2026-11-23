@@ -157,10 +157,10 @@ theorem cos_pow_rankone (n : ℕ) (θi θj : ℝ) :
   ring
 
 /-- **The rank-one kernel is positive-definite**: `Σ cᵢ cⱼ fᵢ·fⱼ = (Σ cᵢ fᵢ)² ≥ 0`. -/
-theorem rank_one_posdef {m : ℕ} (f : Fin m → ℝ) (c : Fin m → ℝ) :
-    0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (f i * f j) := by
-  rw [show (∑ i : Fin m, ∑ j : Fin m, c i * c j * (f i * f j)) = (∑ i : Fin m, c i * f i) ^ 2 by
-    rw [show (∑ i : Fin m, ∑ j : Fin m, c i * c j * (f i * f j)) = (∑ i : Fin m, ∑ j : Fin m, (c i * f i) * (c j * f j)) by
+theorem rank_one_posdef {α : Type*} [Fintype α] (f : α → ℝ) (c : α → ℝ) :
+    0 ≤ ∑ i : α, ∑ j : α, c i * c j * (f i * f j) := by
+  rw [show (∑ i : α, ∑ j : α, c i * c j * (f i * f j)) = (∑ i : α, c i * f i) ^ 2 by
+    rw [show (∑ i : α, ∑ j : α, c i * c j * (f i * f j)) = (∑ i : α, ∑ j : α, (c i * f i) * (c j * f j)) by
       apply Finset.sum_congr rfl
       intro i hi
       apply Finset.sum_congr rfl
