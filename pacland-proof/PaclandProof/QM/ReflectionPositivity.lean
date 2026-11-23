@@ -95,7 +95,8 @@ theorem cos_mul_cos_k (θ : ℝ) {k : ℕ} (hk : 0 < k) :
   have hsum : Real.cos ((k + 1) * θ) + Real.cos ((k - 1) * θ)
       = Real.cos (θ + k * θ) + Real.cos (θ - k * θ) := by
     have hk1 : (1 : ℕ) ≤ k := Nat.succ_le_of_lt hk
-    rw [Nat.cast_add, Nat.cast_one, Nat.cast_sub hk1]
+    push_cast
+    rw [Nat.cast_sub hk1]
     ring_nf
     rw [Real.cos_neg]
     ring_nf
