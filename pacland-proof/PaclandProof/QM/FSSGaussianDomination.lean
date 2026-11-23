@@ -1,7 +1,7 @@
 import Mathlib
 import PaclandProof.QM.MassGapDiamond
 
-open scoped BigOperators
+open scoped BigOperators InnerProductSpace
 
 /-! The FSS Gaussian domination — the reflection-positivity input, and the combination that gives the
 breakthrough. -/
