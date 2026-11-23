@@ -428,7 +428,7 @@ CATALOG: dict[str, dict] = {
     "ym-fss-nonabelian-closable": {
         "claim": "the character-rigidity (Tr U = Σ_r χ_r) + Weyl-bound (|χ_r| ≤ dim r) lever closes the non-Abelian FSS rung — the character covariance bound ⟨χ, Θχ⟩ ≤ ⟨χ, χ⟩ holds volume-uniform (the ratio ≤ 1 as N grows)",
         "simulate": mass_gap_falsifiers.verify_fss_character_lever,
-        "theorem": "QM.PosDefKernel.wilson_kernel_posdef (the OS reflection positivity, kernel PSD) + QM.FSSGaussianDomination.volume_uniform_covariance_bound (the thermodynamic-limit step) + su2_character_covariance_bound_from_os (the covariance bound off the reflection hΘ, which is the single measure-theoretic hypothesis)",
+        "theorem": "QM.FSSGaussianDomination.wilson_reflection_connection (the hΘ by construction — ⟪f,Θf⟫ = Σᵢⱼ fᵢfⱼ exp(2β·cos(θᵢ−θⱼ)) via Fubini, no gauge-group integral) + wilson_reflection_positivity (0 ≤ ⟪f,Θf⟫ via QM.wilson_kernel_posdef) + wilson_reflection_self_adjoint + volume_uniform_covariance_bound (the thermodynamic-limit step) + reflection_positivity_covariance_bound (the abstract Cauchy-Schwarz for the isometry reflection)",
         "falsifier": "a character reflected-correlation ⟨χ, Θχ⟩ exceeding the variance ⟨χ, χ⟩ (ratio > 1), or the ratio creeping toward 1 as N grows (gap-closing)",
         "oracle": ["lattice (SU(2) plaquette-trace reflected correlator, verify_fss_character_lever)"],
         "verdict": "FORCED",
