@@ -93,6 +93,7 @@ import PaclandProof.QM.ClayReduction
 import PaclandProof.QM.MassGapDiamond
 import PaclandProof.QM.GradientFlow
 import PaclandProof.QM.ConstructiveQFT
+import PaclandProof.QM.FSSGaussianDomination
 import PaclandProof.QM.HeatKernel
 import PaclandProof.QM.GaussianLSI
 import PaclandProof.QM.CovariantLaplacian

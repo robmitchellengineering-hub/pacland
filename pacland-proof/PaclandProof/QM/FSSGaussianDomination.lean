@@ -227,19 +227,82 @@ theorem su2_momentum_space_fss_bound {E : Type*} [NormedAddCommGroup E] [InnerPr
   field_simp [hLpos.ne', hJ.ne']
   exact hmul
 
-/-- **The OS reflection positivity (the Wilson kernel PSD) + the Cauchy-Schwarz → the character
-covariance bound** (the Bochner/Bessel cross-synthesis join). The Wilson kernel's positivity
-(`QM.wilson_kernel_posdef`) supplies the reflected correlation's positivity `0 ≤ ⟪χ, Θχ⟫`, and the
-reflection Cauchy–Schwarz (`reflection_positivity_covariance_bound`) gives `⟪χ, Θχ⟫ ≤ ⟪χ, χ⟫` — the
-character covariance bound. The harmonic-analysis route replaces the stuck Chebyshev reindexing. -/
-theorem su2_character_covariance_bound_from_os {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β)
-    (Θ : (Fin m → ℝ) →ₗᵢ[ℝ] (Fin m → ℝ)) (χ : Fin m → ℝ)
-    (hΘ : ∀ f, ⟪f, Θ f⟫_ℝ = ∑ i : Fin m, ∑ j : Fin m, f i * f j * Real.exp (2 * β * Real.cos (θ i - θ j))) :
-    ⟪χ, Θ χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := by
-  have hpos : 0 ≤ ⟪χ, Θ χ⟫_ℝ := by
-    rw [hΘ χ]
-    exact QM.wilson_kernel_posdef θ β hβ χ
-  exact reflection_positivity_covariance_bound Θ χ hpos
+/-- The Wilson kernel `K(i,j) = exp(2β·cos(θᵢ−θⱼ))` — the reflected correlation of the SU(2) Gibbs
+measure (the free case). Its positivity (`QM.wilson_kernel_posdef`) is the OS3 reflection positivity. -/
+def wilsonKernel {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j : Fin m) : ℝ :=
+  Real.exp (2 * β * Real.cos (θ i - θ j))
+
+/-- The Wilson kernel is symmetric: `K(i,j) = K(j,i)` (cos is even). This is the OS2 reflection
+symmetry the reflection self-adjointness (`wilson_reflection_self_adjoint`) rests on. -/
+theorem wilson_kernel_symmetric {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j : Fin m) :
+    wilsonKernel θ β i j = wilsonKernel θ β j i := by
+  simp only [wilsonKernel]
+  congr 2
+  rw [show θ j - θ i = -(θ i - θ j) by ring]
+  exact (Real.cos_neg (θ i - θ j)).symm
+
+/-- **The kernel-defined reflection `Θ`** — the STRUCTURAL operator on the finite lattice whose matrix
+is the Wilson kernel: `Θ f j = ∑ i, f i · exp(2β·cos(θᵢ−θⱼ))`. The reflection is specified by its action
+on the lattice field, so the connection `hΘ` (the reflected correlation equals the kernel's quadratic
+form) holds by construction — no gauge-group integral is computed. `Θ` is a symmetric linear map, NOT an
+isometry: its operator norm is `e^{2β}` (the top eigenvalue of the PSD kernel), not `1`, so the ℓ²
+covariance bound `⟪f, Θ f⟫ ≤ ⟪f, f⟫` does NOT hold for it (m = 1 gives `χ²·e^{2β} ≤ χ²`). -/
+noncomputable def wilsonReflection {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) :
+    (Fin m → ℝ) →ₗ[ℝ] (Fin m → ℝ) where
+  toFun f := fun j => ∑ i : Fin m, f i * wilsonKernel θ β i j
+  map_add' := by
+    intro f g
+    funext j
+    simp only [Pi.add_apply]
+    simp_rw [add_mul]
+    rw [Finset.sum_add_distrib]
+  map_smul' := by
+    intro a f
+    funext j
+    simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
+    simp_rw [mul_assoc]
+    rw [Finset.mul_sum]
+
+/-- **The connection `hΘ`** (the reflection → kernel connection, proved structurally). The reflected
+inner product `⟪f, Θ f⟫` (the ℓ² pairing `∑ j, f j · (Θ f) j`) equals the Wilson kernel's quadratic form
+`Σᵢⱼ fᵢ fⱼ exp(2β·cos(θᵢ−θⱼ))`. This is the `hΘ` hypothesis of the OS closure, discharged by the
+definition of `Θ` (Fubini over the finite lattice) rather than a computed gauge-group integral. -/
+theorem wilson_reflection_connection {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (f : Fin m → ℝ) :
+    (∑ j : Fin m, f j * (wilsonReflection θ β) f j)
+      = ∑ i : Fin m, ∑ j : Fin m, f i * f j * wilsonKernel θ β i j := by
+  simp only [wilsonReflection, LinearMap.coe_mk, AddHom.coe_mk]
+  simp_rw [Finset.mul_sum]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro i hi
+  apply Finset.sum_congr rfl
+  intro j hj
+  ring
+
+/-- **The reflection positivity** — the kernel-defined reflection's quadratic form is non-negative,
+supplied by the Wilson kernel's PSD (`QM.wilson_kernel_posdef`), not by a computed gauge-group integral.
+This is the `hpos` input the abstract `reflection_positivity_covariance_bound` needs (for the isometry
+reflection), now proven for the kernel-defined reflection via the connection `wilson_reflection_connection`. -/
+theorem wilson_reflection_positivity {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β) (f : Fin m → ℝ) :
+    0 ≤ ∑ j : Fin m, f j * (wilsonReflection θ β) f j := by
+  rw [wilson_reflection_connection θ β f]
+  simpa [wilsonKernel] using (QM.wilson_kernel_posdef θ β hβ f)
+
+/-- **The reflection is self-adjoint** — `⟪f, Θ g⟫ = ⟪Θ f, g⟫`, the structural symmetry of the
+reflection (its matrix, the Wilson kernel, is symmetric). This is the OS2 reflection symmetry the
+analytic continuation rests on. -/
+theorem wilson_reflection_self_adjoint {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (f g : Fin m → ℝ) :
+    (∑ j : Fin m, f j * (wilsonReflection θ β) g j)
+      = ∑ j : Fin m, (wilsonReflection θ β) f j * g j := by
+  simp only [wilsonReflection, LinearMap.coe_mk, AddHom.coe_mk]
+  simp_rw [Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro i hi
+  apply Finset.sum_congr rfl
+  intro j hj
+  rw [wilson_kernel_symmetric θ β i j]
+  ring
 
 /-- **The volume-uniform character covariance bound (the FSS thermodynamic-limit step).** The
 finite-volume covariance bound (each volume `N`, from the finite-volume reflected-correlation positivity
@@ -255,7 +318,7 @@ theorem volume_uniform_covariance_bound {E : Type*} [NormedAddCommGroup E] [Inne
     ⟪χ, Θlim χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := by
   have hle : ∀ N, ⟪χ, Θ N χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := fun N =>
     reflection_positivity_covariance_bound (Θ N) χ (hpos N)
-  exact le_of_tendsto_of_tendsto' hlim tendsto_const_nhds (Filter.Eventually.of_forall hle)
+  exact le_of_tendsto_of_tendsto' hlim tendsto_const_nhds hle
 
 end FSSGaussianDomination
 
