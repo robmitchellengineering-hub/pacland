@@ -175,22 +175,20 @@ theorem rank_one_posdef {m : ℕ} (f : Fin m → ℝ) (c : Fin m → ℝ) :
 replaces the Chebyshev reindexing. -/
 theorem cos_pow_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) (n : ℕ) :
     0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ n := by
-  rw [show (∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ n)
+  have h : (∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ n)
       = ∑ k ∈ Finset.range (n + 1), (n.choose k : ℝ) * (∑ i : Fin m, c i * (Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k))) ^ 2 := by
-      simp_rw [cos_pow_rankone n]
-      rw [Finset.sum_comm]
-      apply Finset.sum_congr rfl
-      intro k hk
-      rw [Finset.mul_sum]
-      rw [show (∑ i : Fin m, ∑ j : Fin m, c i * (n.choose k : ℝ) * ((Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k)) * (Real.cos (θ j) ^ k * Real.sin (θ j) ^ (n - k))) * c j)
-          = (n.choose k : ℝ) * (∑ i : Fin m, c i * (Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k))) ^ 2 := by
-        simp_rw [Finset.mul_sum, Finset.sum_mul]
-        rw [show (∑ i : Fin m, ∑ j : Fin m, c i * ((Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k)) * (Real.cos (θ j) ^ k * Real.sin (θ j) ^ (n - k))) * c j)
-            = (∑ i : Fin m, c i * (Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k))) ^ 2 := by
-          rw [← Finset.sum_mul_sum]
-          rw [pow_two]
-          ring]
-        ring]
+    simp_rw [cos_pow_rankone n]
+    rw [Finset.sum_comm]
+    apply Finset.sum_congr rfl
+    intro k hk
+    rw [Finset.mul_sum]
+    rw [show (∑ i : Fin m, ∑ j : Fin m, c i * (n.choose k : ℝ) * ((Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k)) * (Real.cos (θ j) ^ k * Real.sin (θ j) ^ (n - k))) * c j)
+        = (n.choose k : ℝ) * (∑ i : Fin m, c i * (Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k))) ^ 2 by
+      simp_rw [Finset.mul_sum, Finset.sum_mul]
+      rw [← Finset.sum_mul_sum]
+      rw [pow_two]
+      ring]
+  rw [h]
   exact Finset.sum_nonneg (fun k hk => mul_nonneg (by positivity) (sq_nonneg _))
 
 end QM
