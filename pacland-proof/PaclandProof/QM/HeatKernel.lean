@@ -72,6 +72,6 @@ gap's lower bound does not collapse as `β` grows, and the spacing-uniformity ca
 theorem spacing_uniform_monotone (A c : ℝ) (hA : 0 < A) (hc : 0 < c) :
     StrictAnti (fun β : ℝ => A * Real.exp (-c * β)) := by
   intro β₁ β₂ hβ
-  exact mul_lt_mul_of_pos_left ((string_tension_runs c hc).1 hβ) hA
+  exact mul_lt_mul_of_pos_left (string_tension_runs c hc hβ) hA
 
 end HeatKernel
