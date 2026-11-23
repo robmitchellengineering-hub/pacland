@@ -90,9 +90,7 @@ FSS chain sharpens it into the Gaussian domination by applying it to the reflect
 over the reflection planes. -/
 theorem reflection_cauchy_schwarz {n : ℕ} (f g : Fin n → ℝ) :
     (∑ i : Fin n, f i * g i) ^ 2 ≤ (∑ i : Fin n, f i ^ 2) * (∑ i : Fin n, g i ^ 2) := by
-  rw [sq_le_sq, abs_of_nonneg]
-  · exact norm_inner_le_norm (PiLp.equiv 2 (fun _ => ℝ) f) (PiLp.equiv 2 (fun _ => ℝ) g)
-  · exact Finset.sum_nonneg (fun i _ => mul_nonneg (sq_nonneg _) (sq_nonneg _))
+  exact sq_sum_mul_le_sum_sq_mul f g
 
 end GaussianRigidity
 
