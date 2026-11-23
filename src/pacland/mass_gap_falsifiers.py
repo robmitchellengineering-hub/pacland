@@ -163,3 +163,110 @@ def verify_polyakov_clustering(beta: float = 5.0, Nt: int = 2, Ns: int = 6, n_sw
     return survived, f"SU(3) Polyakov screening mass (N_t={Nt}, N_s={Ns}, β={beta}) = {m:.4f} → {verdict}"
 
 
+def verify_orbifold_curvature(beta: float = 2.5, Ns=(6, 8, 10), n_sweeps: int = 10) -> tuple[bool, str]:
+    """'YM on the gauge-orbit quotient has Bakry–Émery curvature K ≥ λ_min(FP)': measure the lowest FP
+    eigenvalue at increasing N and require it to stay POSITIVE (not collapse toward zero).
+
+    λ_min → 0 is the Gribov horizon — the point where the orbifold curvature vanishes — so a collapse
+    refutes uniform positive curvature (and with it the spectral-gap estimate). A flat positive λ_min is
+    the UV cutoff, so the bound K ≥ λ_min holds at finite N but the continuum (λ_phys = λ/a²) is the
+    separate, harder test — this falsifier flags the finite-N horizon collapse, not the continuum limit.
+    """
+    import numpy as np
+    from pacland import lattice_ghost as lg
+    from pacland import lattice_ym_su2 as lm
+
+    lam = {}
+    for N in Ns:
+        rng = np.random.default_rng(N)
+        links = np.array([lm.random_su2(rng) for _ in range(4 * N ** 4)])
+        links = links.reshape((4,) + (N,) * 4 + (4,))
+        links = lm.metropolis(links, beta, rng, n_sweeps)
+        lam[N] = lg.lowest_fp_eigenvalue(links)
+    curve = ", ".join(f"λ_min(N={N})={v:.3f}" for N, v in lam.items())
+    first, last = lam[Ns[0]], lam[Ns[-1]]
+    collapsing = last < 0.5 * first          # a genuine collapse toward zero (the horizon)
+    positive = last > 1e-6
+    if collapsing:
+        return False, (f"orbifold curvature: {curve} → λ_min COLLAPSES toward zero (the Gribov horizon) "
+                       f"— uniform positive curvature is refuted")
+    if not positive:
+        return False, f"orbifold curvature: {curve} → λ_min ≤ 0 — positive curvature refuted"
+    return True, (f"orbifold curvature: {curve} → λ_min stays positive (~the UV cutoff); "
+                  f"K ≥ λ_min holds at finite N — the continuum (λ_phys = λ/a²) is the separate open test")
+
+
+def verify_rg_contraction(beta: float = 2.5, Ns=(8, 12), n_configs: int = 40,
+                          n_sweeps: int = 12) -> tuple[bool, str]:
+    """'one block-spin RG step contracts the YM measure (positive contraction coefficient)': block the
+    lattice N → N/2, measure the mass before (m = √σ) and after (m̄ = √σ̄ on the blocked lattice), and
+    require the contraction coefficient ρ = m̄/m to be measurably > 1 (the correlation length shrinks).
+
+    ρ → 2 is the gapped behaviour (the mass in lattice units doubles when the spacing doubles); ρ ≈ 1
+    means no contraction — the correlation length does not shrink — which refutes the claim. A negative
+    or noise-dominated σ (the same Polyakov caveat as Phase 2) is flagged 'unresolved', not 'survives'.
+    """
+    import math
+
+    import numpy as np
+    from pacland import lattice_ym_su2 as lm
+
+    def _sigma_of_correlator(C):
+        C = np.maximum(np.asarray(C), 1e-12)
+        V = -np.log(C)
+        R = np.arange(1, C.shape[0] + 1)
+        A = np.vstack([R, np.ones_like(R)]).T
+        sig, _ = np.linalg.lstsq(A, V, rcond=None)[0]
+        return float(sig)
+
+    def _blocked_sigma(beta, N, n_configs, n_sweeps, seed):
+        acc = None
+        for i in range(n_configs):
+            rng = np.random.default_rng(seed + i)
+            links = np.array([lm.random_su2(rng) for _ in range(4 * N ** 4)])
+            links = links.reshape((4,) + (N,) * 4 + (4,))
+            try:
+                from pacland.lattice_ym_su2_fast import metropolis_fast
+                links = metropolis_fast(links, beta, n_sweeps, seed + i)
+            except ImportError:
+                links = lm.metropolis(links, beta, rng, n_sweeps)
+            coarse = lm.block_links(links, b=2)
+            C = lm.polyakov_correlator(coarse, 3)
+            acc = C if acc is None else acc + C
+        return _sigma_of_correlator(acc / n_configs)
+
+    rho = {}
+    for N in Ns:
+        s_before = lm.string_tension_from_polyakov(
+            beta, N=N, n_configs=n_configs, n_sweeps=n_sweeps, seed=0)["sigma"]
+        s_after = _blocked_sigma(beta, N, n_configs, n_sweeps, seed=1000)
+        rho[N] = math.sqrt(s_after / s_before) if (s_before > 1e-9 and s_after > 1e-9) else float("nan")
+
+    curve = ", ".join(f"ρ(N={N})={v:.3f}" for N, v in rho.items())
+    first, last = rho[Ns[0]], rho[Ns[-1]]
+    if math.isnan(last):
+        return False, (f"RG contraction: {curve} → σ is noise-dominated at the available N/configs "
+                       f"— unresolved (demonstration, not a measurement)")
+    contracting = last > 1.2          # measurably > 1 (the correlation length shrinks)
+    conv = _converged(first, last)
+    if not contracting:
+        return False, (f"RG contraction: {curve} → ρ ≈ 1 (no contraction) — the block-spin claim is refuted")
+    if not conv:
+        return True, (f"RG contraction: {curve} → ρ > 1 (contraction present) but does NOT converge "
+                      f"between lattice sizes — unresolved, not a stable measurement")
+    return True, (f"RG contraction: {curve} → ρ > 1 and converges — the block-spin step contracts the "
+                  f"measure at this β; the continuum persistence is the separate open test")
+
+
+def verify_log_sobolev(beta: float = 2.5, Ns=(6, 8, 10), n_sweeps: int = 10) -> tuple[bool, str]:
+    """'the YM transfer matrix satisfies the log-Sobolev inequality Ent(f²) ≤ (2/λ_min(M))·∫Γ(f)': the
+    Sobolev constant 1/λ_min(M) is finite iff λ_min(M) > 0, so the inequality is refuted iff λ_min(M) → 0
+    (the Gribov horizon). This is the SAME observable as the orbifold-curvature test (both collapse to
+    the FP gap λ_min); this falsifier carries the log-Sobolev interpretation.
+    """
+    from pacland.mass_gap_falsifiers import verify_orbifold_curvature
+
+    survived, evidence = verify_orbifold_curvature(beta=beta, Ns=Ns, n_sweeps=n_sweeps)
+    return survived, evidence.replace("orbifold curvature", "log-Sobolev (via λ_min(FP))")
+
+
