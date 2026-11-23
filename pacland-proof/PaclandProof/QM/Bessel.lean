@@ -90,4 +90,41 @@ theorem besselI_pos {n : ℕ} {x : ℝ} (hx : 0 < x) : 0 < besselI n x := by
       exact div_nonneg (pow_nonneg (div_nonneg (le_of_lt hx) (by norm_num)) _)
         (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _))
   exact add_pos_of_pos_of_nonneg hfirst htail
+
+/-- **The Wilson heat kernel as a double sum of rank-one kernels** (the direct factorization, which
+avoids the Jacobi–Anger coefficient collection): `exp(2β·cos(θᵢ−θⱼ)) = exp(2β·cos θᵢ·cos θⱼ)·exp(2β·sin θᵢ·sin θⱼ)`,
+and each factor is its exponential series, so the kernel is `Σₘ Σₗ (2β)^{m+l}/(m!·l!)·fₘₗ(θᵢ)·fₘₗ(θⱼ)` with
+`fₘₗ(θ) = cosᵐθ·sinˡθ` — a positive (for β ≥ 0) sum of rank-one kernels. -/
+theorem wilson_kernel_direct (β θi θj : ℝ) :
+    Real.exp (2 * β * Real.cos (θi - θj))
+      = ∑' m : ℕ, ∑' l : ℕ, ((2 * β) ^ (m + l) / ((m.factorial : ℝ) * (l.factorial : ℝ)))
+          * (Real.cos θi ^ m * Real.sin θi ^ l) * (Real.cos θj ^ m * Real.sin θj ^ l) := by
+  have hcos : Real.cos (θi - θj) = Real.cos θi * Real.cos θj + Real.sin θi * Real.sin θj :=
+    Real.cos_sub θi θj
+  rw [hcos, mul_add, Real.exp_add]
+  have h1 : Real.exp (2 * β * (Real.cos θi * Real.cos θj)) =
+      ∑' m : ℕ, (2 * β) ^ m * (Real.cos θi * Real.cos θj) ^ m / (m.factorial : ℝ) := by
+    rw [Real.exp_eq_tsum]
+    congr 1
+    ext m
+    ring
+  have h2 : Real.exp (2 * β * (Real.sin θi * Real.sin θj)) =
+      ∑' l : ℕ, (2 * β) ^ l * (Real.sin θi * Real.sin θj) ^ l / (l.factorial : ℝ) := by
+    rw [Real.exp_eq_tsum]
+    congr 1
+    ext l
+    ring
+  rw [h1, h2]
+  have hsum : Summable (fun m : ℕ => (2 * β) ^ m * (Real.cos θi * Real.cos θj) ^ m / (m.factorial : ℝ)) :=
+    (Real.summable_pow_div_factorial (2 * β * (Real.cos θi * Real.cos θj))).congr (fun m => by ring)
+  have hsum2 : Summable (fun l : ℕ => (2 * β) ^ l * (Real.sin θi * Real.sin θj) ^ l / (l.factorial : ℝ)) :=
+    (Real.summable_pow_div_factorial (2 * β * (Real.sin θi * Real.sin θj))).congr (fun l => by ring)
+  rw [hsum.tsum_mul_tsum hsum2]
+  apply tsum_congr
+  intro m
+  apply tsum_congr
+  intro l
+  rw [mul_pow, mul_pow, mul_pow]
+  ring
+
 end QM
