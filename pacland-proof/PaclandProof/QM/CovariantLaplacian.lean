@@ -68,4 +68,17 @@ theorem covariant_laplacian_annihilates_constant (c : ℝ) (x : ℤ) :
   unfold covariantLaplacian covariantDerivative
   simp
 
+/-- **Abel summation (summation by parts) for the forward difference.** The telescoping identity
+`Σᵢ aᵢ(b_{i+1}−bᵢ) = a_N b_N − a₀ b₀ − Σᵢ b_{i+1}(a_{i+1}−aᵢ)`. This is the algebraic core of the
+Dirichlet identity: applied with `a = f` and `b = f`, it converts the covariant Laplacian's quadratic form
+into the Dirichlet form `Σ |Df|²`. -/
+theorem abel_summation (a b : ℕ → ℝ) (N : ℕ) :
+    (∑ i in Finset.range N, a i * (b (i + 1) - b i)) =
+      a N * b N - a 0 * b 0 - (∑ i in Finset.range N, b (i + 1) * (a (i + 1) - a i)) := by
+  induction N with
+  | zero => simp
+  | succ N ih =>
+      rw [Finset.sum_range_succ, Finset.sum_range_succ, ih]
+      ring
+
 end CovariantLaplacian
