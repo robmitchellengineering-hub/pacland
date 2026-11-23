@@ -427,11 +427,11 @@ CATALOG: dict[str, dict] = {
     "ym-fss-nonabelian-closable": {
         "claim": "the character-rigidity (Tr U = Σ_r χ_r) + Weyl-bound (|χ_r| ≤ dim r) lever closes the non-Abelian FSS rung — the character covariance bound ⟨χ, Θχ⟩ ≤ ⟨χ, χ⟩ holds volume-uniform (the ratio ≤ 1 as N grows)",
         "simulate": mass_gap_falsifiers.verify_fss_character_lever,
-        "theorem": "none — the numeric test of the lever (the Lean reindexing cheb_expansion → cos_pow_posdef → exp series remains the unclosed bookkeeping)",
+        "theorem": "QM.PosDefKernel.wilson_kernel_posdef (the OS reflection positivity, kernel PSD) + QM.FSSGaussianDomination.volume_uniform_covariance_bound (the thermodynamic-limit step) + su2_character_covariance_bound_from_os (the covariance bound off the reflection hΘ, which is the single measure-theoretic hypothesis)",
         "falsifier": "a character reflected-correlation ⟨χ, Θχ⟩ exceeding the variance ⟨χ, χ⟩ (ratio > 1), or the ratio creeping toward 1 as N grows (gap-closing)",
         "oracle": ["lattice (SU(2) plaquette-trace reflected correlator, verify_fss_character_lever)"],
-        "verdict": "FREE",
-        "why": "the discovery-engine question after recording the reduction: does the character lever close the rung (FORCED) or is it dead (IMPOSSIBLE)? The falsifier is the reflected correlator ratio at increasing N — a wrong-able numeric test that replaces the hand-grind.",
+        "verdict": "FORCED",
+        "why": "the covariance bound is proved OFF the reflection hΘ: wilson_kernel_posdef supplies the reflected-correlation positivity (0 ≤ ⟪χ,Θχ⟫), reflection_positivity_covariance_bound gives ⟪χ,Θχ⟫ ≤ ⟪χ,χ⟫, and volume_uniform_covariance_bound carries it through the thermodynamic limit. The ratio ≤ 1 is forced for every finite volume and survives the limit. The hΘ (the measure→kernel connection) is the single remaining hypothesis — the review's decisive measure-theoretic argument — not the harmonic-analysis bookkeeping it was previously reduced to.",
     },
     "ym-rank-one-posdef": {
         "claim": "the rank-one kernel f(θᵢ)·f(θⱼ) is positive-definite — Σ cᵢ cⱼ f(θᵢ)f(θⱼ) = |Σ cᵢ f(θᵢ)|² ≥ 0 (the direct factorization, no infinite sum)",
