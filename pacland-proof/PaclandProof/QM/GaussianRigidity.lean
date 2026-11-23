@@ -30,4 +30,20 @@ def covariantDerivative (A : ℝ → ℝ) (f : ℝ → ℝ) (x : ℝ) : ℝ := f
 def covariantLaplacian (A : ℝ → ℝ) (f : ℝ → ℝ) (x : ℝ) : ℝ :=
   -covariantDerivative A (covariantDerivative A f) x
 
+/-- **The per-character Gaussian domination (the open rung, stated).** For each SU(2) character `χ_r`,
+the partition function in an external field `f` is dominated by the free Gaussian `Z_free(f)` — the
+quadratic bound `⟨e^{f·χ_r}⟩ ≤ e^{½ f²·K}`. This is the FSS reflection-positivity → chessboard → Gaussian
+chain applied per character; the four ingredients (chessboard, reflection positivity, the covariance
+`−∇·D`, and the bounded character) are in hand, and this is the statement they are assembled to prove. -/
+def perCharacterGaussianDomination (Z_r Z_free : ℝ → ℝ) : Prop :=
+  ∀ f : ℝ, Z_r f ≤ Z_free f
+
+/-- **The bounded character gives the linear bound.** A character bounded by its dimension `|χ| ≤ dim r`
+(Weyl) with a non-negative external field gives the linear exponential bound `e^{f·χ} ≤ e^{f·M}`. This is
+the scaffolding; the *quadratic* Gaussian bound (the FSS rung) strengthens it via reflection positivity,
+which is the open part. -/
+theorem bounded_character_linear_bound (χ f M : ℝ) (hχ : χ ≤ M) (hf : 0 ≤ f) :
+    Real.exp (f * χ) ≤ Real.exp (f * M) := by
+  exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hχ hf)
+
 end GaussianRigidity
