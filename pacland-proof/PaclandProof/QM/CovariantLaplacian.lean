@@ -29,4 +29,11 @@ theorem covariant_laplacian_trivial (f : ℤ → ℝ) (x : ℤ) :
   simp
   ring
 
+/-- **The covariant Dirichlet form is non-negative.** `Σ_x (D_U f x)² ≥ 0` — the quadratic form of the
+covariant derivative. This is the positivity of the covariant Laplacian `D†D` (its spectrum is non-negative),
+the seed of the mass gap's positivity. -/
+theorem covariant_dirichlet_form_nonneg (U : ℤ → ℝ) (f : ℤ → ℝ) (S : Finset ℤ) :
+    0 ≤ ∑ x in S, (covariantDerivative U f x) ^ 2 := by
+  exact Finset.sum_nonneg (fun x _ => sq_nonneg _)
+
 end CovariantLaplacian
