@@ -160,6 +160,17 @@ theorem fss_join {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   rw [hsym'] at hcs
   exact hcs
 
+/-- **The Casimir mass supplies the infrared bound (the SU(2) input).** For `k ≠ 0`, the massive free
+propagator is dominated by the massless one: `(k² + 2)⁻¹ ≤ k⁻²`. This is exactly the step Simon's R67
+isolates — the infrared bound for the mass gap needs only the mass `m² = 2` (the Casimir) in the free
+propagator. -/
+theorem casimir_infrared_bound (k : ℝ) (hk : k ≠ 0) :
+    1 / (k ^ 2 + 2) ≤ 1 / (k ^ 2) := by
+  have hle : k ^ 2 ≤ k ^ 2 + 2 := by linarith
+  have hk2pos : 0 < k ^ 2 := sq_pos_of_ne_zero hk
+  have hnumpos : 0 < k ^ 2 + 2 := by linarith
+  exact one_div_le_one_div_of_le hnumpos hle
+
 end FSSGaussianDomination
 
 end
