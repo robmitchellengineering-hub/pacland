@@ -127,7 +127,7 @@ theorem wilson_kernel_direct (β θi θj : ℝ) :
     (Real.summable_pow_div_factorial (2 * β * (Real.sin θi * Real.sin θj))).congr (fun l => by ring)
   have hfg : Summable (fun z : ℕ × ℕ => (2 * β) ^ z.1 * (Real.cos θi * Real.cos θj) ^ z.1 / (z.1.factorial : ℝ) *
         ((2 * β) ^ z.2 * (Real.sin θi * Real.sin θj) ^ z.2 / (z.2.factorial : ℝ))) := by
-    exact (hsum.hasSum.mul hsum2.hasSum).summable
+    exact hsum.prod hsum2
   rw [hsum.tsum_mul_tsum hsum2 hfg]
   have hfg' : (fun z : ℕ × ℕ => (2 * β) ^ z.1 * (Real.cos θi * Real.cos θj) ^ z.1 / (z.1.factorial : ℝ) *
         ((2 * β) ^ z.2 * (Real.sin θi * Real.sin θj) ^ z.2 / (z.2.factorial : ℝ)))
