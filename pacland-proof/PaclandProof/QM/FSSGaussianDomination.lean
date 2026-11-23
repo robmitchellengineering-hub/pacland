@@ -1,5 +1,6 @@
 import Mathlib
 import PaclandProof.QM.MassGapDiamond
+import PaclandProof.QM.Su2Character
 import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 
 noncomputable section
@@ -180,6 +181,19 @@ theorem su2_mass_gap_join :
   refine ⟨2, by norm_num, ?_⟩
   intro β hβ
   rfl
+
+/-- **The SU(2) character FSS infrared bound (the boundedness core).** A bounded observable `χ` with
+`‖χ‖ ≤ M` (for the SU(2) character, `M = 2j+1` by the Weyl bound `su2_character_weyl_bound`) has its
+reflected covariance dominated by the free inner product, hence by `M²`: reflection positivity
+(`⟪χ, Θχ⟫ ≤ ⟪χ, χ⟫`) plus the bound `‖χ‖ ≤ M` gives `⟪χ, Θχ⟫ ≤ M²`. This is the character's contribution
+to the Gaussian domination — the bounded non-Abelian observable's two-point function is controlled. -/
+theorem su2_character_fss_bound {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : E →ₗᵢ[ℝ] E) (χ : E) (M : ℝ) (hχ : ‖χ‖ ≤ M) (hpos : 0 ≤ ⟪χ, Θ χ⟫_ℝ) :
+    ⟪χ, Θ χ⟫_ℝ ≤ M ^ 2 := by
+  have hcs : ⟪χ, Θ χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := reflection_positivity_covariance_bound Θ χ hpos
+  have hnorm : ⟪χ, χ⟫_ℝ = ‖χ‖ ^ 2 := by
+    rw [inner_self_eq_norm_sq]
+  nlinarith [hcs, hnorm, hχ, sq_nonneg ‖χ‖]
 
 end FSSGaussianDomination
 
