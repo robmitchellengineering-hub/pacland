@@ -93,14 +93,10 @@ theorem cos_mul_cos_k (θ : ℝ) (k : ℕ) :
     Real.cos_sub θ (k * θ)
   have hsum : Real.cos ((k + 1) * θ) + Real.cos ((k - 1) * θ)
       = Real.cos (θ + k * θ) + Real.cos (θ - k * θ) := by
-    have hk : (1 : ℕ) ≤ k := Nat.succ_le_iff.mpr (Nat.zero_le k)
-    rw [Nat.cast_add, Nat.cast_one, Nat.cast_sub hk]
-    have hleft1 : ((k : ℝ) + 1) * θ = θ + (k : ℝ) * θ := by ring
-    have hleft2 : ((k : ℝ) - 1) * θ = (k : ℝ) * θ - θ := by ring
-    rw [hleft1, hleft2]
-    rw [show Real.cos ((k : ℝ) * θ - θ) = Real.cos (θ - (k : ℝ) * θ) by
-      have h : θ - (k : ℝ) * θ = -((k : ℝ) * θ - θ) := by ring
-      rw [h, Real.cos_neg]]
+    rw [add_mul, sub_mul]
+    rw [Nat.cast_add, Nat.cast_sub]
+    · ring
+    · exact Nat.succ_le_iff.mpr (Nat.zero_le k)
   rw [hsum, h1, h2]
   ring
 
