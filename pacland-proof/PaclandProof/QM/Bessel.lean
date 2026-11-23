@@ -107,7 +107,7 @@ theorem wilson_kernel_direct (β θi θj : ℝ) :
     rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum (𝕂 := ℝ)]
     apply tsum_congr
     intro m
-    rw [inv_natCast_smul_eq_div]
+    rw [smul_eq_mul]
     rw [mul_pow]
     ring
   have h2 : Real.exp (2 * β * (Real.sin θi * Real.sin θj)) =
@@ -115,7 +115,7 @@ theorem wilson_kernel_direct (β θi θj : ℝ) :
     rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum (𝕂 := ℝ)]
     apply tsum_congr
     intro l
-    rw [inv_natCast_smul_eq_div]
+    rw [smul_eq_mul]
     rw [mul_pow]
     ring
   rw [h1, h2]
