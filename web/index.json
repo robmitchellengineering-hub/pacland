@@ -102,6 +102,13 @@
    "title": "The Yang\u2013Mills mass gap: a falsifier-first reduction to one open rung"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-PROOF-PLAN.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-PROOF-PLAN.md",
+   "summary": "isolation; the proof has to use the proved pieces as levers, in one connected argument. The lever is the character rigidity (proved), and the plan is how it drives the whole final section.",
+   "title": "The mass-gap proof \u2014 the full plan (not the rung in isolation)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-STATE.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-STATE.md",
