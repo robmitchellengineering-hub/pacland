@@ -41,7 +41,7 @@ theorem reflection_positivity_covariance_bound {E : Type*} [NormedAddCommGroup E
     (Θ : E →ₗᵢ[ℝ] E) (f : E) (hpos : 0 ≤ ⟪f, Θ f⟫_ℝ) :
     ⟪f, Θ f⟫_ℝ ≤ ⟪f, f⟫_ℝ := by
   have h := reflection_cauchy_schwarz Θ f f
-  have hff : 0 ≤ ⟪f, f⟫_ℝ := inner_self_nonneg
+  have hff : 0 ≤ ⟪f, f⟫_ℝ := re_inner_self_nonneg
   nlinarith [h, hpos, hff]
 
 /-- **The FSS Gaussian domination (the open Clay rung, stated).** Reflection positivity applied to a
