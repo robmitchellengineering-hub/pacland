@@ -197,6 +197,19 @@ theorem su2_character_fss_bound {E : Type*} [NormedAddCommGroup E] [InnerProduct
   have hsq : ‖χ‖ ^ 2 ≤ M ^ 2 := by nlinarith [hχ, norm_nonneg χ]
   nlinarith [hcs, hsq]
 
+/-- **The SU(2) character FSS infrared bound (the full, Casimir join).** The reflection covariance
+bound (`fss_join`) applied to the *full* Faddeev–Popov operator `L + 2·id` (the momentum Laplacian plus
+the Casimir `2`, proved in `casimir_su2`) gives the momentum-space bound: the character's reflected
+covariance is dominated by the free propagator's quadratic form divided by the symbol `J = k² + 2`. This
+is the volume-uniform FSS estimate for the SU(2) character — the free propagator with the non-Abelian
+mass `2` built in. -/
+theorem su2_character_fss_bound_full {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : E →ₗᵢ[ℝ] E) (L : E →ₗ[ℝ] E) (χ : E) (J : ℝ)
+    (hpos : 0 ≤ ⟪χ, Θ χ⟫_ℝ)
+    (hsym : ⟪χ, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) χ⟫_ℝ = J * ⟪χ, χ⟫_ℝ) (hJ : 0 < J) :
+    ⟪χ, Θ χ⟫_ℝ ≤ ⟪χ, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) χ⟫_ℝ / J := by
+  exact fss_join Θ (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) J χ hpos hsym hJ
+
 end FSSGaussianDomination
 
 end
