@@ -39,6 +39,29 @@ heat-kernel), which supplies `m² = e^{−cβ}`. The two mechanisms — the FSS 
 coupling — come together in the finite: `m(β) ≥ A·e^{−cβ}`. This is `massGapTwoMechanisms` in
 `FSSGaussianDomination.lean`.
 
+## The exact open step, located (2026-11-22)
+
+The FSS infrared bound ([Björnberg–Ueltschi, arXiv:2204.12896](https://arxiv.org/html/2204.12896v2),
+§4) is the precise statement of the sum-over-reflection-planes. Its two moves:
+
+1. **Falk–Bruch inequality** (§4.1) — the reflection-positivity core: transfers the Duhamel correlation
+   to the usual correlation.
+2. **Infrared bound** (§4.2) — the conclusion, in momentum space:
+
+```
+0 ≤ g(k) ≤ [2J (2π)^{d/2} Σᵢ (1 − cos kᵢ)]⁻¹
+```
+
+The denominator `Σᵢ (1 − cos kᵢ)` **is the lattice Laplacian** — so the bound is exactly
+`⟨φ_x φ_y⟩ ≤ K⁻¹(x−y)`, the two-point function dominated by the free propagator `K⁻¹` (the covariant
+Laplacian's inverse, step 1). This is the missing input `σ² = K⁻¹`, with the volume-uniformity built in
+(the bound is uniform in `Λ`). The join to the mass gap is: insert the running-coupling mass `m² = e^{−cβ}`
+into `K⁻¹ = (−Δ + m²)⁻¹` — then the correlation decays as `e^{−m|x|}` and `m(β) ≥ A·e^{−cβ}`.
+
+**The finish line is now a named, citable theorem:** prove the Falk–Bruch → infrared-bound transfer for
+the SU(2) character (the trace observable, per-character via `Tr U = Σ χ_r`), and the two mechanisms are
+joined. Everything else in the chain is kernel-checked.
+
 ## The finish line
 
 Prove the per-character FSS estimate — reflection positivity applied to a bounded character, summed over
