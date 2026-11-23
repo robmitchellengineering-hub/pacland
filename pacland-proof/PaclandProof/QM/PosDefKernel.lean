@@ -93,12 +93,12 @@ theorem cos_pow_posdef {m : ℕ} (θ : Fin m → ℝ) (n : ℕ) :
   exact posdef_sum (fun k : Fin (n + 1) => fun i j => (n.choose k.1 : ℝ) * ((Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1)) * (Real.cos (θ j) ^ k.1 * Real.sin (θ j) ^ (n - k.1))))
     (fun k => posdef_smul (fun i j => (Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1)) * (Real.cos (θ j) ^ k.1 * Real.sin (θ j) ^ (n - k.1))) (n.choose k.1 : ℝ) (by positivity) (rank_one_posdef_kernel (fun i => Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1))))
 
+set_option maxHeartbeats 800000 in
 /-- **The Wilson heat kernel is positive-definite** (the OS reflection positivity of the SU(2) Wilson
 measure): `exp(2β·cos(θᵢ−θⱼ))` is the pointwise limit of the exponential partial sums
 `Σ_{n<N} (2β)ⁿ/n!·cosⁿ(θᵢ−θⱼ)`, each PSD by `cos_pow_posdef` + `posdef_smul`, and the pointwise limit
 of PSD kernels is PSD (`posdef_of_tendsto`). The infinite sum is handled by the finite partial-sum
 limit, not a `tsum` reindexing. -/
-set_option maxHeartbeats 800000 in
 theorem wilson_kernel_posdef {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β) :
     PosDefKernel (fun i j => Real.exp (2 * β * Real.cos (θ i - θ j))) := by
   intro c
