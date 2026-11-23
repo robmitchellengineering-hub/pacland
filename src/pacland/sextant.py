@@ -479,6 +479,15 @@ CATALOG: dict[str, dict] = {
         "verdict": "FORCED",
         "why": "the AF scale e^{−cβ} depends only on the coupling β (not the spacing), so the lower bound A·e^{−cβ} is spacing-uniform and monotone — the a→0 limit preserves the gap by the uniform bound, not by an explicit per-spacing computation.",
     },
+    "ym-os-existence": {
+        "claim": "the OS reconstruction — the Wilson kernel's PSD (OS3) + the reflection symmetry (OS2, wilson_reflection_self_adjoint) reconstruct the Wightman Hilbert space and the mass gap via os_reconstruction_full",
+        "simulate": None,
+        "theorem": "QM.OSAxioms.os_reconstruction_full (PosDefKernel K ⟹ WightmanHilbert + WightmanMassGap) + clay_assembly_final (WightmanHilbert + 0 < physicalMass via spacing_uniform_exact) + QM.FSSGaussianDomination.wilson_reflection_positivity (the OS3 input) + wilson_reflection_self_adjoint (the OS2 input)",
+        "falsifier": "a positive-definite kernel that fails to yield a Wightman Hilbert space, or a spacing-uniform mass that collapses",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "why": "the OS reconstruction is proved STRUCTURALLY: the Wilson kernel's PSD (wilson_kernel_posdef) is the OS3 input, wilson_reflection_self_adjoint is the OS2 symmetry, and os_reconstruction_full turns them into the Wightman Hilbert space + the mass gap. The honest Clay boundary (per the clay_assembly_final docstring) is the FULL continuum existence + the non-perturbative spectral gap Δ > 0 in 4D — the finite-lattice Wightman reconstruction is forced, the continuum existence remains open.",
+    },
 
 }
 
