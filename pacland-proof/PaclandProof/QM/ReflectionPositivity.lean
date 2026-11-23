@@ -154,7 +154,6 @@ theorem cos_pow_rankone (n : ℕ) (θi θj : ℝ) :
   apply Finset.sum_congr rfl
   intro m hm
   rw [mul_pow, mul_pow]
-  rw [nsmul_eq_mul]
   ring
 
 end QM
