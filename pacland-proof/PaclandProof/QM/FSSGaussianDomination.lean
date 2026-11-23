@@ -1,6 +1,8 @@
 import Mathlib
 import PaclandProof.QM.MassGapDiamond
 
+noncomputable section
+
 open scoped BigOperators InnerProductSpace
 
 /-! The FSS Gaussian domination — the reflection-positivity input, and the combination that gives the
@@ -125,3 +127,5 @@ theorem falk_bruch {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 def freePropagator (J : ℝ → ℝ) (k : ℝ) : ℝ := 1 / (2 * J k)
 
 end FSSGaussianDomination
+
+end
