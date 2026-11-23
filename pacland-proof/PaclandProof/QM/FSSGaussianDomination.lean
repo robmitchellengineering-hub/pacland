@@ -23,4 +23,13 @@ theorem finite_dimensional_mass_gap (v : Fin 3 → ℝ) :
     QM.faddeevPopovConstantMode v = (2 : ℝ) • v := by
   exact QM.faddeevPopov_constant_mode_gap v
 
+/-- **The reflection Cauchy–Schwarz (the FSS seed, proved).** For a linear isometry `Θ` (the reflection),
+the Cauchy–Schwarz `real_inner_mul_inner_self_le` gives `⟪f, Θg⟫² ≤ ⟪f,f⟫·⟪g,g⟫` — the reflection
+factorization the FSS chain sharpens into the Gaussian domination. -/
+theorem reflection_cauchy_schwarz {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : E →ₗᵢ[ℝ] E) (f g : E) :
+    ⟪f, Θ g⟫_ℝ ^ 2 ≤ ⟪f, f⟫_ℝ * ⟪g, g⟫_ℝ := by
+  have h := real_inner_mul_inner_self_le f (Θ g)
+  simpa using h
+
 end FSSGaussianDomination
