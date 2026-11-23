@@ -311,4 +311,7 @@ FALSIFIERS = {
     "ym-volume-uniform-su2": mass_gap_falsifiers.verify_volume_uniform_su2,
     "ym-mass-gap-running-coupling": mass_gap_falsifiers.verify_mass_gap_running_coupling,
     "ym-fss-nonabelian-closable": mass_gap_falsifiers.verify_fss_character_lever,
+    "ym-orbifold-curvature": mass_gap_falsifiers.verify_orbifold_curvature,
+    "ym-rg-contraction": mass_gap_falsifiers.verify_rg_contraction,
+    "ym-log-sobolev": mass_gap_falsifiers.verify_log_sobolev,
 }
