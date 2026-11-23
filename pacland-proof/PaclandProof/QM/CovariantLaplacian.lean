@@ -81,4 +81,21 @@ theorem abel_summation (a b : ℕ → ℝ) (N : ℕ) :
       rw [Finset.sum_range_succ, Finset.sum_range_succ, ih]
       ring
 
+/-- **The Dirichlet identity (with boundary).** The Dirichlet form of the free covariant derivative
+equals the covariant Laplacian's quadratic form up to the boundary:
+`Σ (f(i+1)−f(i))² = f(N)² − f(0)² − 2·Σ f(i)(f(i+1)−f(i))`. This is the sum-reordering that ties the
+field-strength-squared (the quadratic part of the action) to the covariant Laplacian's kernel — the core
+of step 1. -/
+theorem dirichlet_identity (f : ℕ → ℝ) (N : ℕ) :
+    (∑ i ∈ Finset.range N, (f (i + 1) - f i) ^ 2) = f N ^ 2 - f 0 ^ 2 - 2 * (∑ i ∈ Finset.range N, f i * (f (i + 1) - f i)) := by
+  have habel := abel_summation f f N
+  have hsplit : (∑ i ∈ Finset.range N, f (i + 1) * (f (i + 1) - f i)) =
+      (∑ i ∈ Finset.range N, f i * (f (i + 1) - f i)) + (∑ i ∈ Finset.range N, (f (i + 1) - f i) ^ 2) := by
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl
+    intro i hi
+    ring
+  rw [hsplit] at habel
+  linarith
+
 end CovariantLaplacian
