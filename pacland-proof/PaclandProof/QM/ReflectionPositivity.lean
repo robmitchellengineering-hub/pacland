@@ -37,4 +37,37 @@ theorem cos_kernel_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) :
   rw [h]
   exact add_nonneg (sq_nonneg _) (sq_nonneg _)
 
+/-- **cos² is positive-definite** — the base case of the power-reduction that makes the Wilson heat
+kernel `exp(2β·cos)` positive-definite. `cos²x = (1 + cos 2x)/2`, the average of the constant kernel and
+the `cos` kernel, both positive-definite. -/
+theorem cos_sq_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → ℝ) :
+    0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2 := by
+  have hcos : ∀ x, Real.cos x ^ 2 = (1 + Real.cos (2 * x)) / 2 := by
+    intro x
+    rw [Real.cos_two_mul]
+    have h1 : Real.cos x ^ 2 + Real.sin x ^ 2 = 1 := Real.cos_sq_add_sin_sq x
+    linarith
+  calc
+    ∑ i : Fin m, ∑ j : Fin m, c i * c j * (Real.cos (θ i - θ j)) ^ 2
+        = ∑ i : Fin m, ∑ j : Fin m, c i * c j * ((1 + Real.cos (2 * (θ i - θ j))) / 2) := by
+          apply Finset.sum_congr rfl
+          intro i hi
+          apply Finset.sum_congr rfl
+          intro j hj
+          rw [hcos (θ i - θ j)]
+    _ = (1 / 2) * (∑ i : Fin m, ∑ j : Fin m, c i * c j)
+          + (1 / 2) * (∑ i : Fin m, ∑ j : Fin m, c i * c j * Real.cos (2 * (θ i - θ j))) := by
+          rw [Finset.sum_mul]
+          simp_rw [mul_add]
+          rw [Finset.sum_add_distrib]
+          ring
+    _ ≥ 0 := by
+          have hconst : 0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j := by
+            rw [Finset.sum_mul, Finset.sum_mul]
+            simpa [mul_comm] using sq_nonneg (∑ i : Fin m, c i)
+          have hcos2 : 0 ≤ ∑ i : Fin m, ∑ j : Fin m, c i * c j * Real.cos (2 * (θ i - θ j)) := by
+            simpa using cos_kernel_posdef (fun i => 2 * θ i) c
+          nlinarith [mul_nonneg (by norm_num : 0 ≤ (1 / 2 : ℝ)) hconst,
+            mul_nonneg (by norm_num : 0 ≤ (1 / 2 : ℝ)) hcos2]
+
 end QM
