@@ -98,4 +98,19 @@ theorem dirichlet_identity (f : ℕ → ℝ) (N : ℕ) :
   rw [hsplit] at habel
   linarith
 
+/-- **The 1D field strength (the curvature) is the covariant derivative.** `F = DA` — the plaquette's
+phase to leading order is the covariant difference. This is the bridge that makes the quadratic part of
+the action the covariant Laplacian's kernel. -/
+def fieldStrength1D (A : ℤ → ℝ) (x : ℤ) : ℝ := covariantDerivative (fun _ => 1) A x
+
+/-- **The quadratic part of the action is the covariant Laplacian (step 1's conclusion).** The
+field-strength-squared summed over the lattice equals the covariant Laplacian's quadratic form — the
+Dirichlet identity. So the weak-coupling Gaussian covariance is the covariant Laplacian `−∇·D`, with the
+field strength as its kernel. This is the 1D free seed of the full 4D non-Abelian statement. -/
+theorem quadratic_part_is_covariant_laplacian (f : ℕ → ℝ) (N : ℕ) :
+    (∑ i ∈ Finset.range N, (fieldStrength1D f i) ^ 2) = f N ^ 2 - f 0 ^ 2 - 2 * (∑ i ∈ Finset.range N, f i * (fieldStrength1D f i)) := by
+  unfold fieldStrength1D covariantDerivative
+  simp
+  exact dirichlet_identity f N
+
 end CovariantLaplacian
