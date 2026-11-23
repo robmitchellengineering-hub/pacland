@@ -309,7 +309,7 @@ FALSIFIERS = {
     "black-hole-unitarity": verify_black_hole_unitarity,
     "gravity-quantum": verify_gravity_quantum,
     "ym-volume-uniform-su2": mass_gap_falsifiers.verify_volume_uniform_su2,
-    "ym-mass-gap-running-coupling": mass_gap_falsifiers.verify_mass_gap_running_coupling,
+    "ym-mass-gap-running-coupling": mass_gap_falsifiers.verify_mass_gap_creutz,
     "ym-fss-nonabelian-closable": mass_gap_falsifiers.verify_fss_character_lever,
     "ym-orbifold-curvature": mass_gap_falsifiers.verify_orbifold_curvature,
     "ym-rg-contraction": mass_gap_falsifiers.verify_rg_contraction,
