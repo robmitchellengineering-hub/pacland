@@ -19,24 +19,10 @@ theorem cauchy_schwarz {n : ℕ} (f g : Fin n → ℝ) :
     exact Finset.sum_nonneg (fun i _ => sq_nonneg _)
   have hid : (∑ i : Fin n, (f i * C - g i * B) ^ 2) = C * (A * C - B ^ 2) := by
     dsimp [A, B, C]
-    calc
-      (∑ i : Fin n, (f i * (∑ j : Fin n, g j ^ 2) - g i * (∑ j : Fin n, f j * g j)) ^ 2)
-          = ∑ i : Fin n, (f i ^ 2 * (∑ j : Fin n, g j ^ 2) ^ 2
-              - 2 * (f i * g i) * ((∑ j : Fin n, g j ^ 2) * (∑ j : Fin n, f j * g j))
-              + g i ^ 2 * (∑ j : Fin n, f j * g j) ^ 2) := by
-        apply Finset.sum_congr rfl
-        intro i hi
-        ring
-      _ = (∑ i : Fin n, f i ^ 2) * (∑ j : Fin n, g j ^ 2) ^ 2
-          - 2 * (∑ i : Fin n, f i * g i) * ((∑ j : Fin n, g j ^ 2) * (∑ j : Fin n, f j * g j))
-          + (∑ i : Fin n, g i ^ 2) * (∑ j : Fin n, f j * g j) ^ 2 := by
-        rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
-        rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
-        ring
-      _ = (∑ j : Fin n, g j ^ 2) * ((∑ i : Fin n, f i ^ 2) * (∑ j : Fin n, g j ^ 2) - (∑ i : Fin n, f i * g i) ^ 2) := by
-        ring
+    simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.mul_sum]
+    ring
   by_cases hC : C = 0
-  · -- C = 0 ⟹ all gᵢ = 0 ⟹ B = 0 ⟹ RHS = 0 ≥ LHS = 0
+  · -- C = 0 ⟹ all gᵢ = 0 ⟹ B = 0 ⟹ both sides 0
     have hg : ∀ i, g i = 0 := by
       intro i
       have hi : g i ^ 2 = 0 := by
@@ -46,12 +32,13 @@ theorem cauchy_schwarz {n : ℕ} (f g : Fin n → ℝ) :
       dsimp [B]
       simp [hg]
     dsimp [A, B, C]
-    rw [hB]
+    rw [hB, hC]
     simp
-  · -- C ≠ 0 ⟹ C > 0 (C ≥ 0) ⟹ A·C − B² ≥ 0 ⟹ B² ≤ A·C
+  · -- C > 0 ⟹ A·C − B² ≥ 0 ⟹ B² ≤ A·C
     have hCpos : 0 < C := by
-      dsimp [C]
-      have hnn : 0 ≤ ∑ i : Fin n, g i ^ 2 := Finset.sum_nonneg (fun i _ => sq_nonneg _)
+      have hnn : 0 ≤ C := by
+        dsimp [C]
+        exact Finset.sum_nonneg (fun i _ => sq_nonneg _)
       exact lt_of_le_of_ne hnn (Ne.symm hC)
     have hAC : A * C - B ^ 2 ≥ 0 := by
       have h0 := hnonneg
