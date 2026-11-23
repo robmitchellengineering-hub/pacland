@@ -222,9 +222,10 @@ theorem su2_momentum_space_fss_bound {E : Type*} [NormedAddCommGroup E] [InnerPr
     (hLpos : 0 < ⟪f, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) f⟫_ℝ) :
     ⟪f, Θ f⟫_ℝ / ⟪f, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) f⟫_ℝ ≤ 1 / J := by
   have h := fss_join Θ (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) J f hpos hsym hJ
-  have hdiv : ⟪f, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) f⟫_ℝ / J / ⟪f, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) f⟫_ℝ = 1 / J := by
-    field_simp [hLpos.ne']
-  rwa [← hdiv]
+  have hmul : ⟪f, Θ f⟫_ℝ * J ≤ ⟪f, (L + (2 : ℝ) • (1 : E →ₗ[ℝ] E)) f⟫_ℝ := by
+    exact (le_div_iff₀ hJ).mp h
+  field_simp [hLpos.ne', hJ.ne']
+  exact hmul
 
 end FSSGaussianDomination
 
