@@ -88,7 +88,7 @@ theorem cos_pow_posdef {m : ℕ} (θ : Fin m → ℝ) (n : ℕ) :
     rw [← Fin.sum_univ_eq_sum_range]
     apply Finset.sum_congr rfl
     intro k hk
-    norm_num
+    ring_nf
   rw [hid]
   exact posdef_sum (fun k : Fin (n + 1) => fun i j => (n.choose k.1 : ℝ) * ((Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1)) * (Real.cos (θ j) ^ k.1 * Real.sin (θ j) ^ (n - k.1))))
     (fun k => posdef_smul (fun i j => (Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1)) * (Real.cos (θ j) ^ k.1 * Real.sin (θ j) ^ (n - k.1))) (n.choose k.1 : ℝ) (by positivity) (rank_one_posdef_kernel (fun i => Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1))))
