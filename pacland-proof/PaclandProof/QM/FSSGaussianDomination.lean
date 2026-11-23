@@ -70,4 +70,14 @@ theorem ir_bound_su2 {n : ℕ} (L : Matrix (Fin n) (Fin n) ℝ)
     2 * (∑ i, (f i)^2) ≤ ∑ i, f i * (((L + (2 : ℝ) • (1 : Matrix (Fin n) (Fin n) ℝ)).mulVec f) i) := by
   exact QM.massive_laplacian_gap L 2 hquad (by norm_num) f
 
+/-- **The volume-uniform IR bound (extrapolated from 1D).** The reflection covariance bound is *abstract*
+— it holds for every inner-product space `E`, hence for every lattice volume — and the Casimir gap `2` is
+a constant, hence volume-independent. So the two-point function is bounded by the free propagator
+uniformly in the volume: this is the same method as the 1D Dirichlet identity (`quadratic_part_is_covariant_laplacian`),
+lifted to arbitrary `E` by reflection positivity. -/
+theorem volume_uniform_ir_bound {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : E →ₗᵢ[ℝ] E) (f : E) (hpos : 0 ≤ ⟪f, Θ f⟫_ℝ) :
+    ⟪f, Θ f⟫_ℝ ≤ ⟪f, f⟫_ℝ :=
+  reflection_positivity_covariance_bound Θ f hpos
+
 end FSSGaussianDomination
