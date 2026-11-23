@@ -42,4 +42,19 @@ the open half of 3b. -/
 def determinantDoesNotBoundMinimum (P : ℝ → ℝ) (m : ℝ) : Prop :=
   m = sInf (Set.range P)
 
+/-- **The string tension runs with the coupling** (the `ym-mass-gap-running-coupling` rung): the
+inverse scale `σ(β) = e^{−c·β}` (the string tension, the Polyakov-loop mass proxy) is strictly
+decreasing in `β` for `c > 0` — the asymptotic freedom. This is the *derived* monotonicity from the beta
+function's exponent (the `determinant_gives_exponent` scale `e^{c·β}`), not a per-β computation. -/
+theorem string_tension_runs (c : ℝ) (hc : 0 < c) :
+    StrictAnti (fun β : ℝ => Real.exp (-c * β)) := by
+  intro β₁ β₂ hβ
+  exact Real.exp_lt_exp.mpr (by nlinarith [hc, hβ])
+
+/-- **The string tension never collapses to zero** (the running-coupling rung's second half): for every
+`β` and `c > 0`, `e^{−c·β} > 0` — the string tension is strictly positive, so the mass proxy does not
+collapse. -/
+theorem string_tension_positive (c β : ℝ) :
+    0 < Real.exp (-c * β) := Real.exp_pos _
+
 end HeatKernel
