@@ -109,7 +109,6 @@ theorem wilson_kernel_direct (β θi θj : ℝ) :
     intro m
     rw [smul_eq_mul]
     rw [mul_pow]
-    rw [div_eq_mul_inv]
     ring
   have h2 : Real.exp (2 * β * (Real.sin θi * Real.sin θj)) =
       ∑' l : ℕ, (2 * β) ^ l * (Real.sin θi * Real.sin θj) ^ l / (l.factorial : ℝ) := by
@@ -118,7 +117,6 @@ theorem wilson_kernel_direct (β θi θj : ℝ) :
     intro l
     rw [smul_eq_mul]
     rw [mul_pow]
-    rw [div_eq_mul_inv]
     ring
   rw [h1, h2]
   have hsum : Summable (fun m : ℕ => (2 * β) ^ m * (Real.cos θi * Real.cos θj) ^ m / (m.factorial : ℝ)) :=
