@@ -1,4 +1,5 @@
 import Mathlib
+import PaclandProof.QM.PosDefKernel
 
 /-!
 Copyright (c) 2026 Rob Mitchell. All rights reserved.
@@ -169,5 +170,24 @@ theorem rank_one_posdef {m : ℕ} (f : Fin m → ℝ) (c : Fin m → ℝ) :
     rw [← Finset.sum_mul_sum]
     rw [pow_two]]
   exact sq_nonneg _
+
+/-- **The rank-one kernel as a `PosDefKernel`** (from the direct `rank_one_posdef`). -/
+theorem rank_one_posdef_kernel {α : Type*} [Fintype α] (f : α → ℝ) :
+    PosDefKernel (fun i j => f i * f j) := fun c => rank_one_posdef f c
+
+/-- **cos(θᵢ−θⱼ)ⁿ is positive-definite** — the binomial rank-one expansion (cos_pow_rankone), each term
+`(n choose k)·|Σ cᵢ fₖ(θᵢ)|² ≥ 0`, so the finite positive sum is PSD (posdef_sum/posdef_smul over the
+`Fin (n+1)`). The finite Fubini replaces the Chebyshev reindexing. -/
+theorem cos_pow_posdef {m : ℕ} (θ : Fin m → ℝ) (n : ℕ) :
+    PosDefKernel (fun i j => (Real.cos (θ i - θ j)) ^ n) := by
+  have hid : (fun i j => (Real.cos (θ i - θ j)) ^ n)
+      = (fun i j => ∑ k : Fin (n + 1), (n.choose k : ℝ) * ((Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k)) * (Real.cos (θ j) ^ k * Real.sin (θ j) ^ (n - k)))) := by
+    funext i j
+    rw [cos_pow_rankone n (θ i) (θ j)]
+    rw [← Fin.sum_univ_eq_sum_range]
+    rfl
+  rw [hid]
+  exact posdef_sum (fun k : Fin (n + 1) => fun i j => (n.choose k : ℝ) * ((Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k)) * (Real.cos (θ j) ^ k * Real.sin (θ j) ^ (n - k))))
+    (fun k => posdef_smul (fun i j => (Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k)) * (Real.cos (θ j) ^ k * Real.sin (θ j) ^ (n - k))) (n.choose k : ℝ) (by positivity) (rank_one_posdef_kernel (fun i => Real.cos (θ i) ^ k * Real.sin (θ i) ^ (n - k))))
 
 end QM
