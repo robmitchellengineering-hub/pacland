@@ -163,3 +163,23 @@ reduced-to-one-lemma over-claim.
 **Status: this reduction is the finished deliverable. Route-by-route grinding is paused.** The next move, if
 any, is a discovery-engine question (which combination of mechanisms closes the non-Abelian measure-theoretic
 step) or a genuinely different mathematical route — not another FSS/Chebyshev hand-grind.
+
+## UPDATE — Bochner/Bessel cross-synthesis CLOSED via the limit theorem (2026-11)
+
+Rob's "prove the infinite without computing it" route worked. The OS reflection positivity and the
+covariance-bound derivation are now PROVED and kernel-checked; full `lake build PaclandProof` green @ `2f4fad61`:
+
+- `cos_pow_rankone` — the **binomial** rank-one expansion `cos(θᵢ−θⱼ)ⁿ = Σₘ (n choose m)·fₘ(θᵢ)·fₘ(θⱼ)` (finite; no Chebyshev).
+- `rank_one_posdef` / `rank_one_posdef_kernel` — the rank-one kernel `f(i)·f(j)` is PSD (`|Σ cᵢ fᵢ|²`).
+- `cos_pow_posdef` — `cosⁿ(θᵢ−θⱼ)` is PSD via the binomial + rank-one + `posdef_sum`/`posdef_smul` (the **finite** Fubini).
+- `wilson_kernel_posdef` — `PosDefKernel (exp(2β·cos(θᵢ−θⱼ)))` via the exp partial sums + `posdef_of_tendsto` (the pointwise-limit-of-PSD theorem, already in the tower).
+- `su2_character_covariance_bound_from_os` — the join to `reflection_positivity_covariance_bound`: Wilson-kernel positivity supplies `0 ≤ ⟪χ,Θχ⟫`, Cauchy–Schwarz gives `⟪χ,Θχ⟫ ≤ ⟪χ,χ⟫` (with the reflection↔kernel connection `hΘ` as a hypothesis).
+
+The wall moved from the infinite `tsum`/Chebyshev reindexing to the **binomial (finite)** + the **limit
+(`posdef_of_tendsto`)**. No `sorry`/`admit`/`axiom`. Also fixed two `CosPowers.lean` name collisions that broke
+the full build (invisible to per-file checks).
+
+**Honest boundary (unchanged):** the mass gap is still not solved. The covariance bound's `hΘ` (the reflection
+on the gauge fields ↔ the Wilson kernel) is a **hypothesis** — the volume-uniform non-Abelian FSS estimate (the
+review's "decisive non-Abelian measure-theoretic argument") is the remaining Clay rung. This route closes the OS
+reflection positivity and the covariance-bound derivation, not that connection.
