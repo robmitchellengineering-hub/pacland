@@ -168,7 +168,7 @@ theorem rank_one_posdef {m : ℕ} (f : Fin m → ℝ) (c : Fin m → ℝ) :
             rw [← Finset.mul_sum]
             ring_nf
       _ = (∑ i : Fin m, c i * f i) * (∑ j : Fin m, c j * f j) := by
-            rw [Finset.sum_mul]
+            rw [← Finset.sum_mul]
       _ = (∑ i : Fin m, c i * f i) ^ 2 := by rw [pow_two]]
   exact sq_nonneg _
 
