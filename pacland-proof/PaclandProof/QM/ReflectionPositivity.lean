@@ -49,10 +49,10 @@ theorem one_plus_cos_two_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → �
     simp_rw [Finset.sum_add_distrib]
     simp_rw [mul_sub]
     simp_rw [Real.cos_sub]
-    rw [pow_two, pow_two, pow_two]
-    simp_rw [Finset.sum_mul_sum]
     simp_rw [mul_add]
     simp_rw [Finset.sum_add_distrib]
+    rw [pow_two, pow_two, pow_two]
+    simp_rw [Finset.sum_mul_sum]
     ring_nf
   rw [h]
   nlinarith [sq_nonneg (∑ i : Fin m, c i),
