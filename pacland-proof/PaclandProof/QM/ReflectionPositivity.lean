@@ -142,4 +142,19 @@ theorem cheb_nonneg (n k : ℕ) : 0 ≤ cheb n k := by
           | zero => rw [cheb]; exact div_nonneg (add_nonneg (mul_nonneg (by norm_num) (ih 0)) (ih 2)) (by norm_num)
           | succ k => rw [cheb]; exact div_nonneg (add_nonneg (ih (k + 1)) (ih (k + 3))) (by norm_num)
 
+/-- **The binomial rank-one expansion** (the finite route, no Chebyshev reindexing): `cos(θᵢ−θⱼ)ⁿ =
+Σ_{m≤n} (n choose m)·fₘ(θᵢ)·fₘ(θⱼ)` with `fₘ(θ) = cosᵐθ·sinⁿ⁻ᵐθ` — the binomial theorem applied to
+`cos(θᵢ−θⱼ) = cos θᵢ·cos θⱼ + sin θᵢ·sin θⱼ`, a *finite* sum of rank-one kernels with positive
+coefficients. -/
+theorem cos_pow_rankone (n : ℕ) (θi θj : ℝ) :
+    Real.cos (θi - θj) ^ n = ∑ m ∈ Finset.range (n + 1),
+      (n.choose m : ℝ) * (Real.cos θi ^ m * Real.sin θi ^ (n - m)) * (Real.cos θj ^ m * Real.sin θj ^ (n - m)) := by
+  rw [Real.cos_sub]
+  rw [add_pow]
+  apply Finset.sum_congr rfl
+  intro m hm
+  rw [mul_pow, mul_pow, mul_pow]
+  rw [nsmul_eq_mul]
+  ring
+
 end QM
