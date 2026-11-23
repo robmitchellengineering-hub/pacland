@@ -137,4 +137,14 @@ theorem wilson_kernel_posdef {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 
         (by exact div_nonneg (pow_nonneg (mul_nonneg (by norm_num : 0 ≤ (2 : ℝ)) hβ) _) (Nat.cast_nonneg _)) (cos_pow_posdef θ n.1))
   simpa [xij] using ((posdef_of_tendsto (fun N => fun i j => ∑ n ∈ Finset.range N, (xij i j)^n / (n.factorial : ℝ)) (fun i j => Real.exp (xij i j)) hlim hK) c)
 
+/-- **The volume-uniform FSS estimate (the kernel form, the thermodynamic-limit step).** If the
+finite-volume kernels are PSD (each volume) and converge pointwise to the infinite-volume kernel, then
+the infinite-volume kernel is PSD — the limit of PSD is PSD (`posdef_of_tendsto`). This is the
+volume-uniformity mechanism of the FSS: the finite-volume reflected correlations are PSD, and the
+thermodynamic limit preserves positivity. -/
+theorem volume_uniform_psd {α : Type*} [Fintype α] (K : ℕ → α → α → ℝ) (K∞ : α → α → ℝ)
+    (hK : ∀ N, PosDefKernel (K N))
+    (hlim : ∀ i j, Filter.Tendsto (fun N => K N i j) Filter.atTop (nhds (K∞ i j))) :
+    PosDefKernel K∞ := posdef_of_tendsto K K∞ hlim hK
+
 end QM

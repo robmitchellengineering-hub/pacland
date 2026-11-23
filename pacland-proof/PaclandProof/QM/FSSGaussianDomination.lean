@@ -241,6 +241,22 @@ theorem su2_character_covariance_bound_from_os {m : ℕ} (θ : Fin m → ℝ) (�
     exact QM.wilson_kernel_posdef θ β hβ χ
   exact reflection_positivity_covariance_bound Θ χ hpos
 
+/-- **The volume-uniform character covariance bound (the FSS thermodynamic-limit step).** The
+finite-volume covariance bound (each volume `N`, from the finite-volume reflected-correlation positivity
+`hpos` + the Cauchy–Schwarz) plus the pointwise convergence of the reflected correlation to the
+infinite-volume value gives the infinite-volume covariance bound `⟪χ, Θ∞ χ⟫ ≤ ⟪χ, χ⟫`. The single
+remaining input is the finite-volume `hpos` — the measure→kernel connection (the `hΘ`): that the gauge-field
+Gibbs measure's reflected correlation is the Wilson kernel's quadratic form, which `QM.wilson_kernel_posdef`
+already proves is PSD. -/
+theorem volume_uniform_covariance_bound {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : ℕ → E →ₗᵢ[ℝ] E) (Θ∞ : E →ₗᵢ[ℝ] E) (χ : E)
+    (hpos : ∀ N, 0 ≤ ⟪χ, Θ N χ⟫_ℝ)
+    (hlim : Filter.Tendsto (fun N => ⟪χ, Θ N χ⟫_ℝ) Filter.atTop (nhds (⟪χ, Θ∞ χ⟫_ℝ))) :
+    ⟪χ, Θ∞ χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := by
+  have hle : ∀ N, ⟪χ, Θ N χ⟫_ℝ ≤ ⟪χ, χ⟫_ℝ := fun N =>
+    reflection_positivity_covariance_bound (Θ N) χ (hpos N)
+  exact le_of_tendsto_of_tendsto' hlim tendsto_const_nhds (Filter.Eventually.of_forall hle)
+
 end FSSGaussianDomination
 
 end
