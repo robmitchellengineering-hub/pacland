@@ -73,8 +73,8 @@ theorem covariant_laplacian_annihilates_constant (c : ℝ) (x : ℤ) :
 Dirichlet identity: applied with `a = f` and `b = f`, it converts the covariant Laplacian's quadratic form
 into the Dirichlet form `Σ |Df|²`. -/
 theorem abel_summation (a b : ℕ → ℝ) (N : ℕ) :
-    (∑ i in Finset.range N, a i * (b (i + 1) - b i)) =
-      a N * b N - a 0 * b 0 - (∑ i in Finset.range N, b (i + 1) * (a (i + 1) - a i)) := by
+    (∑ i ∈ Finset.range N, a i * (b (i + 1) - b i)) =
+      a N * b N - a 0 * b 0 - (∑ i ∈ Finset.range N, b (i + 1) * (a (i + 1) - a i)) := by
   induction N with
   | zero => simp
   | succ N ih =>
