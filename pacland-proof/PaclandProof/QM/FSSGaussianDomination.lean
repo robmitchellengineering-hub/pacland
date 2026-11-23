@@ -143,6 +143,19 @@ theorem character_orthonormal {G : Type*} [AddCommGroup G] [Fintype G]
     ⟪(ψ₁ : G → ℂ), ψ₂⟫ₙ_[ℂ] = if ψ₁ = ψ₂ then 1 else 0 :=
   AddChar.wInner_cWeight_eq_boole ψ₁ ψ₂
 
+/-- **The FSS join — the covariance bound (Rayleigh quotient).** Reflection positivity
+(`⟪f, Θf⟫ ≤ ⟪f, f⟫`, the Cauchy–Schwarz) combined with the Laplacian's symbol
+(`⟪f, Lf⟫ = J·⟪f, f⟫`, the `2(1−cos k)` denominator) gives the infrared bound's core: the reflected
+covariance is dominated by the free propagator `⟪f, Lf⟫/J` — i.e. `g(k) ≤ 1/J(k)` up to the FSS
+normalization. This is the join of `falk_bruch` + `laplacian_symbol_1d` + `character_orthonormal`. -/
+theorem fss_join {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : E →ₗᵢ[ℝ] E) (L : E →ₗ[ℝ] E) (J : ℝ)
+    (hpos : 0 ≤ ⟪f, Θ f⟫_ℝ)
+    (hsym : ⟪f, L f⟫_ℝ = J * ⟪f, f⟫_ℝ) (hJ : 0 < J) (f : E) :
+    ⟪f, Θ f⟫_ℝ ≤ ⟪f, L f⟫_ℝ / J := by
+  have hcs : ⟪f, Θ f⟫_ℝ ≤ ⟪f, f⟫_ℝ := reflection_positivity_covariance_bound Θ f hpos
+  nlinarith [hcs, hsym, hJ, real_inner_self_nonneg]
+
 end FSSGaussianDomination
 
 end
