@@ -52,7 +52,7 @@ theorem one_plus_cos_two_posdef {m : ℕ} (θ : Fin m → ℝ) (c : Fin m → �
     simp_rw [Finset.sum_mul_sum]
     simp_rw [mul_add]
     simp_rw [Finset.sum_add_distrib]
-    simp [mul_assoc, mul_left_comm, mul_comm]
+    ring_nf
   rw [h]
   nlinarith [sq_nonneg (∑ i : Fin m, c i),
     sq_nonneg (∑ i : Fin m, c i * Real.cos (2 * θ i)),
