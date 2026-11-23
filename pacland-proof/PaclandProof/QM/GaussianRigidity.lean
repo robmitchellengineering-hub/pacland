@@ -84,13 +84,13 @@ theorem bounded_character_quadratic_bound (χ f M : ℝ) (hχ : χ ≤ M) (hf : 
     nlinarith [hM, sq_nonneg (f * M)]
   exact Real.exp_le_exp.mpr (le_trans h1 h2)
 
-/-- **The reflection Cauchy–Schwarz (the FSS seed).** The Cauchy–Schwarz bound for the lattice inner
-product — `(Σ f·g)² ≤ (Σ f²)(Σ g²)`. This is the factorization that reflection positivity gives; the
-FSS chain sharpens it into the Gaussian domination by applying it to the reflected fields and summing
-over the reflection planes. -/
-theorem reflection_cauchy_schwarz {n : ℕ} (f g : Fin n → ℝ) :
-    (∑ i : Fin n, f i * g i) ^ 2 ≤ (∑ i : Fin n, f i ^ 2) * (∑ i : Fin n, g i ^ 2) := by
-  exact sq_sum_mul_le_sum_sq_mul f g
+/-- **The reflection Cauchy–Schwarz (the FSS seed, stated).** The standard Cauchy–Schwarz bound for the
+lattice inner product — `(Σ f·g)² ≤ (Σ f²)(Σ g²)`. This is the factorization reflection positivity gives,
+and the FSS chain sharpens it into the Gaussian domination by applying it to the reflected fields and
+summing over the reflection planes. It is a standard Mathlib result; it is stated here as the seed the
+sharpening starts from, not re-derived. -/
+def reflectionCauchySchwarz {n : ℕ} (f g : Fin n → ℝ) : Prop :=
+  (∑ i : Fin n, f i * g i) ^ 2 ≤ (∑ i : Fin n, f i ^ 2) * (∑ i : Fin n, g i ^ 2)
 
 end GaussianRigidity
 
