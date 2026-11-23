@@ -168,8 +168,7 @@ theorem casimir_infrared_bound (k : ℝ) (hk : k ≠ 0) :
     1 / (k ^ 2 + 2) ≤ 1 / (k ^ 2) := by
   have hle : k ^ 2 ≤ k ^ 2 + 2 := by linarith
   have hk2pos : 0 < k ^ 2 := sq_pos_of_ne_zero hk
-  have hnumpos : 0 < k ^ 2 + 2 := by linarith
-  exact one_div_le_one_div_of_le hnumpos hle
+  exact one_div_le_one_div_of_le hk2pos hle
 
 end FSSGaussianDomination
 
