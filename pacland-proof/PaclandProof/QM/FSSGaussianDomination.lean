@@ -102,7 +102,7 @@ theorem fp_symbol_su2 (k : ℝ) :
 /-- **Reflection positivity of a bilinear form (the Osterwalder–Schrader axiom).** A bilinear form
 `B` is reflection-positive w.r.t. the reflection `Θ` when `B(f, Θf) ≥ 0` for all `f` — the OS3 axiom the
 FSS infrared bound rests on. -/
-def ReflectionPositive {E : Type*} (B : E → E → ℝ) (Θ : E →ₗ[ℝ] E) : Prop :=
+def ReflectionPositive {E : Type*} (B : E → E → ℝ) (Θ : E → E) : Prop :=
   ∀ f, 0 ≤ B f (Θ f)
 
 /-- **The FSS Gaussian domination (the theorem to prove).** For a reflection-positive measure with
