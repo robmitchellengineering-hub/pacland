@@ -468,23 +468,4 @@ theorem integral_cos_of_ne_zero {k : ℕ} (hk : k ≠ 0) :
   rw [Polynomial.Chebyshev.integral_measureT_eq_integral_cos] at h
   simpa [Polynomial.Chebyshev.T_real_cos] using h
 
-/-- **The ℤ Fourier ingredient `∫₀^π cos(kθ) dθ = 0`** for `k : ℤ ≠ 0` — the cosine's even symmetry
-(`cos(−x) = cos x`) reduces the negative case to the ℕ case. -/
-theorem integral_cos_of_ne_zero_int {k : ℤ} (hk : k ≠ 0) :
-    ∫ θ in 0..Real.pi, Real.cos (k * θ) = 0 := by
-  by_cases hkpos : 0 ≤ k
-  · have hk' : Int.toNat k ≠ 0 := by
-      rw [Int.toNat_eq_zero]
-      omega
-    have h := integral_cos_of_ne_zero hk'
-    simpa [Int.toNat_of_nonneg hkpos] using h
-  · have hkneg : k < 0 := by omega
-    have hk' : Int.toNat (-k) ≠ 0 := by
-      rw [Int.toNat_eq_zero]
-      omega
-    have h := integral_cos_of_ne_zero hk'
-    rw [show (k : ℝ) * θ = -((-k : ℝ) * θ) by ring]
-    rw [Real.cos_neg]
-    simpa [Int.toNat_of_nonneg (by omega : 0 ≤ -k)] using h
-
 end QM
