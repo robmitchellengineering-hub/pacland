@@ -265,7 +265,7 @@ theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
             Finset.card_biUnion_le
       _ = ∑ w ∈ (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}), (G.finsetWalkLength n w v).card := by
             refine Finset.sum_congr rfl (fun w hw => ?_)
-            exact Finset.card_map
+            rw [Finset.card_map]
       _ ≤ ∑ w ∈ (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}), G.maxDegree ^ n :=
             Finset.sum_le_sum (fun w hw => ih w v)
       _ = (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}).card * G.maxDegree ^ n := by
