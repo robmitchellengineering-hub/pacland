@@ -256,7 +256,7 @@ theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
     simp only [SimpleGraph.finsetWalkLength]
     calc
       (Finset.univ.biUnion fun w : {w : V // w ∈ G.neighborSet u} => (G.finsetWalkLength n w v).map
-        ⟨fun p => SimpleGraph.Walk.cons w.property p, fun _ _ => by simp⟩).card
+        ⟨fun p => SimpleGraph.Walk.cons w.property p, fun _ _ h => by injection h with hpq; exact hpq⟩).card
         ≤ ∑ w : {w : V // w ∈ G.neighborSet u}, (G.finsetWalkLength n w v).card :=
             Finset.card_biUnion_le
       _ ≤ ∑ w : {w : V // w ∈ G.neighborSet u}, G.maxDegree ^ n :=
