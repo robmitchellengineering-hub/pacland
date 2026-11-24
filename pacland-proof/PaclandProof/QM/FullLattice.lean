@@ -273,7 +273,7 @@ theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
       _ = G.degree u * G.maxDegree ^ n := by
             congr 1
             rw [SimpleGraph.degree]
-            simpa [Finset.mem_filter] using
+            simpa [SimpleGraph.neighborFinset_def, Finset.mem_filter] using
               (Fintype.card_coe (s := Finset.filter (fun x => G.Adj u x) Finset.univ))
       _ ≤ G.maxDegree * G.maxDegree ^ n := Nat.mul_le_mul_right _ (G.degree_le_maxDegree u)
       _ = G.maxDegree ^ (n + 1) := by rw [pow_succ']
