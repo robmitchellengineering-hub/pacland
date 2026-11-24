@@ -48,12 +48,12 @@ theorem fss_reflection_positivity_square {α : Type*} [Fintype α]
 /-- **The Wilson 1-plaquette action on SU(2)** — `1 − Re Tr U`, the real part of the trace of the holonomy
 (the `specialUnitaryGroup (Fin 2)` element). This is the specific lattice weight the full action sums over
 the plaquettes. -/
-noncomputable def wilsonPlaquette (U : specialUnitaryGroup (Fin 2) ℂ) : ℝ :=
+noncomputable def wilsonPlaquette (U : Matrix.specialUnitaryGroup (Fin 2) ℂ) : ℝ :=
   1 - (Matrix.trace (U : Matrix (Fin 2) (Fin 2) ℂ)).re
 
 /-- **The full Wilson action** — the sum of the 1-plaquette actions over a finite set of plaquettes (the
 specific lattice configuration space's action). -/
-noncomputable def wilsonAction {P : Type*} [Fintype P] (U : P → specialUnitaryGroup (Fin 2) ℂ) : ℝ :=
+noncomputable def wilsonAction {P : Type*} [Fintype P] (U : P → Matrix.specialUnitaryGroup (Fin 2) ℂ) : ℝ :=
   ∑ p : P, wilsonPlaquette (U p)
 
 end QM
