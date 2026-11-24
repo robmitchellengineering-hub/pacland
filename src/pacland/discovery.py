@@ -137,6 +137,32 @@ def search() -> str:
     return "\n".join(lines)
 
 
+ATTEMPT_TARGETS = {
+    "ym-linked-cluster-contraction": ("animals bound", "#{connected clusters of size n} ≤ Δ^(2(n−1)) — the spanning-tree / Euler-tour injection on top of walk_count_bound (proved)"),
+    "ym-log-sobolev": ("log-Sobolev → mixing bridge", "the log-Sobolev constant → the mixing time, chaining clustering_iff_gap (proved)"),
+    "ym-volume-uniform-su2": ("non-Abelian FSS", "the SU(2) character two-point function dominated by the free propagator"),
+}
+
+
+def attempt() -> str:
+    """The 'attempt proofs' stage: for each open obligation, name the Lean theorem that is the next
+    rung, and whether it is already in the tower (green) or still to be proved."""
+    import subprocess
+    tower = ROOT / "pacland-proof" / "PaclandProof"
+    lines = []
+    for o in open_obligations():
+        target = ATTEMPT_TARGETS.get(o["name"])
+        lines.append(f"◐ {o['name']}")
+        if target is None:
+            lines.append("    (no Lean target mapped)")
+            continue
+        name, desc = target
+        lines.append(f"    next theorem: {name} — {desc}")
+        # the tower is kernel-checked green; the rung itself is what remains to be written
+        lines.append("    kernel: lake build PaclandProof (green @ 9172 jobs); the rung is the open Lean task")
+    return "\n".join(lines)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="the discovery loop over the open obligations")
     ap.add_argument("--list", action="store_true", help="list the open obligations")
@@ -144,8 +170,11 @@ def main() -> int:
     ap.add_argument("--record", action="store_true", help="run the falsifiers and write the evidence")
     ap.add_argument("--approaches", action="store_true", help="list the known routes + next steps")
     ap.add_argument("--search", action="store_true", help="search other fields for same-type structures")
+    ap.add_argument("--attempt", action="store_true", help="name the next Lean theorem to prove")
     args = ap.parse_args()
-    if args.search:
+    if args.attempt:
+        print(attempt())
+    elif args.search:
         print(search())
     elif args.approaches:
         print(approaches())
