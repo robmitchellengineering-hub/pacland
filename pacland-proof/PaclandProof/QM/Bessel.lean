@@ -454,12 +454,10 @@ theorem wilson_heat_kernel_rank_one (β θi θj : ℝ) :
       besselI 0 (2 * β) + 2 * ∑' n : ℕ, besselI (n + 1) (2 * β) *
         (Real.cos ((n + 1) * θi) * Real.cos ((n + 1) * θj) + Real.sin ((n + 1) * θi) * Real.sin ((n + 1) * θj)) := by
   rw [jacobi_anger_real (2 * β) (θi - θj)]
-  congr 1
-  · rfl
-  · congr 1
-    apply tsum_congr
-    intro n
-    rw [show (n + 1 : ℝ) * (θi - θj) = (n + 1 : ℝ) * θi - (n + 1 : ℝ) * θj by ring]
-    rw [Real.cos_sub]
+  congr 2
+  apply tsum_congr
+  intro n
+  rw [show (n + 1 : ℝ) * (θi - θj) = (n + 1 : ℝ) * θi - (n + 1 : ℝ) * θj by ring]
+  rw [Real.cos_sub]
 
 end QM
