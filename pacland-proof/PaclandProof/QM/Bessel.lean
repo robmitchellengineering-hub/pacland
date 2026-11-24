@@ -473,20 +473,13 @@ theorem sin_mul_sin_eq (a b : ℝ) : Real.sin a * Real.sin b = (Real.cos (a - b)
   rw [Real.cos_sub, Real.cos_add]
   ring
 
-/-- **The ℤ Fourier ingredient `∫₀^π cos(kθ) dθ = 0`** for `k : ℤ ≠ 0` — the cosine's even symmetry
-(`cos(−x) = cos x`) and the absolute value reduce the negative case to the ℕ case. -/
+/-- **The ℤ Fourier ingredient `∫₀^π cos(kθ) dθ = 0`** for `k : ℤ ≠ 0` — Mathlib's Chebyshev orthogonality
+already takes the `ℤ` frequency, so this is the direct real-name form (no `natAbs` / even-symmetry detour). -/
 theorem integral_cos_of_ne_zero_int {k : ℤ} (hk : k ≠ 0) :
     ∫ θ in 0..Real.pi, Real.cos (k * θ) = 0 := by
-  have hkabs : Int.natAbs k ≠ 0 := by
-    rwa [Int.natAbs_ne_zero]
-  have h := integral_cos_of_ne_zero hkabs
-  rw [intervalIntegral.integral_congr (fun θ _ => by
-    rw [show Real.cos ((k : ℝ) * θ) = Real.cos ((Int.natAbs k : ℝ) * θ) by
-      rcases Int.natAbs_eq k with hpos | hneg
-      · subst hpos; rfl
-      · rw [show (k : ℝ) = -((Int.natAbs k : ℝ)) by exact_mod_cast hneg]
-        rw [Real.cos_neg])]
-  exact h
+  have h := Polynomial.Chebyshev.integral_eval_T_real_measureT_of_ne_zero hk
+  rw [Polynomial.Chebyshev.integral_measureT_eq_integral_cos] at h
+  simpa [Polynomial.Chebyshev.T_real_cos] using h
 
 /-- **The full SU(2) character orthogonality (off-diagonal)** — the Chebyshev U / one-variable sin
 integral: `∫₀^π sin((n+1)θ)·sin((m+1)θ) dθ = 0` for `n ≠ m`, via the product-to-sum
