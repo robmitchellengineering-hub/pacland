@@ -221,16 +221,5 @@ theorem linked_cluster_weights (ρ : ℝ) (h : |ρ| < 1) :
   · funext n
     ring_nf
   · rw [neg_neg, show (1 : ℝ) - (-ρ) = 1 + ρ by ring]
-/-- **The connected-cluster weight decays** — the size-`(n+1)` cluster weight
-`|(−1)ⁿ ρ^{n+1}/(n+1)| ≤ |ρ|^{n+1}`: the `1/(n+1) ≤ 1` factor and the unit norm of `(−1)ⁿ` give the
-geometric decay in the activity `|ρ| < 1`. This is the first tree/spatial-decay estimate of the
-multiscale contraction. -/
-theorem cluster_weight_bound (ρ : ℝ) (n : ℕ) :
-    |(-1 : ℝ) ^ n * ρ ^ (n + 1) / ((n : ℝ) + 1)| ≤ |ρ| ^ (n + 1) := by
-  rw [abs_div, abs_mul, abs_pow]
-  norm_num
-  exact div_le_self (pow_nonneg (abs_nonneg ρ) (n + 1)) (by
-    have hn : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le n
-    linarith)
 
 end QM
