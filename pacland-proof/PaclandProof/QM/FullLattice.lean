@@ -184,4 +184,23 @@ theorem cluster_expansion_converges_small_field (β x : ℝ) (hβ : 0 < β) (hx 
   (cluster_expansion_converges_iff (z := clusterActivity β x)).2
     (cluster_activity_abs_lt_one β x hβ hx)
 
+/-- **The polymer-expansion subset identity** — the algebraic core of the cluster expansion:
+`∏_p (1 + ρ p) = Σ_{S ⊆ P} ∏_{p∈S} ρ p` (multiplying out the factors selects a subset `S` of the
+plaquettes). Proved by induction on `Finset.univ` using Mathlib's `Finset.sum_powerset_insert`. -/
+theorem polymer_expansion_subset {P : Type*} [Fintype P] [DecidableEq P] (ρ : P → ℝ) :
+    ∏ p : P, (1 + ρ p) = ∑ S : Finset P, ∏ p ∈ S, ρ p := by
+  classical
+  have h : ∏ p in (Finset.univ : Finset P), (1 + ρ p) =
+      ∑ S ∈ (Finset.univ : Finset P).powerset, ∏ p ∈ S, ρ p := by
+    induction (Finset.univ : Finset P) using Finset.induction with
+    | empty => simp
+    | insert a s ha ih =>
+      rw [Finset.prod_insert ha, ih]
+      rw [Finset.sum_powerset_insert ha]
+      rw [Finset.sum_congr rfl (fun S hS => by
+        rw [Finset.prod_insert (by simpa using (Finset.mem_powerset.1 hS).1 ha)]
+        ring)]
+      ring
+  simpa using h
+
 end QM
