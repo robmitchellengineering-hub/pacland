@@ -92,13 +92,30 @@ def record_results() -> list[dict]:
     return results
 
 
+def approaches() -> str:
+    """List the known routes + the next step for each open obligation (the 'generate' stage)."""
+    data = json.loads((ROOT / "web" / "approaches.json").read_text())
+    lines = []
+    for o in data["obligations"]:
+        lines.append(f"◐ {o['name']}")
+        for r in o["routes"]:
+            mark = "●" if r["state"] == "attempted" else "○"
+            lines.append(f"    {mark} {r['name']} — next: {r['next']}")
+            if r.get("note"):
+                lines.append(f"        ({r['note']})")
+    return "\n".join(lines)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="the discovery loop over the open obligations")
     ap.add_argument("--list", action="store_true", help="list the open obligations")
     ap.add_argument("--run", action="store_true", help="run each obligation's falsifier")
     ap.add_argument("--record", action="store_true", help="run the falsifiers and write the evidence")
+    ap.add_argument("--approaches", action="store_true", help="list the known routes + next steps")
     args = ap.parse_args()
-    if args.record:
+    if args.approaches:
+        print(approaches())
+    elif args.record:
         results = record_results()
         for r in results:
             print(f"◐ {r['name']:<32} {r['status']}  {r['evidence']}")
