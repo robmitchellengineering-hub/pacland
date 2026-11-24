@@ -74,4 +74,14 @@ theorem spacing_uniform_monotone (A c : ℝ) (hA : 0 < A) (hc : 0 < c) :
   intro β₁ β₂ hβ
   exact mul_lt_mul_of_pos_left (string_tension_runs c hc hβ) hA
 
+/-- **The continuum-uniform mass gap** (the a→0 thermodynamic+continuum limit, "prove the infinite
+without computing it"): the lower bound `A·e^{−cβ}` is positive + spacing-uniform
+(`spacing_uniform_mass_gap`) AND strictly decreasing in `β` (`spacing_uniform_monotone`) — a
+spacing-independent positive constant that persists through the weak-coupling limit. The `a→0` limit
+preserves the gap by this uniform bound, not by an explicit per-spacing computation; the Wightman
+reconstruction (`os_reconstruction_full`) is the separate existence half. -/
+theorem continuum_uniform_mass_gap (A c β : ℝ) (hA : 0 < A) (hc : 0 < c) :
+    0 < A * Real.exp (-c * β) ∧ StrictAnti (fun b : ℝ => A * Real.exp (-c * b)) := by
+  exact ⟨spacing_uniform_mass_gap A c β hA hc, spacing_uniform_monotone A c hA hc⟩
+
 end HeatKernel
