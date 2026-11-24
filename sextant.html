@@ -265,6 +265,19 @@ flowchart TB
     </div>
   </section>
 
+  <section id="frontier">
+    <p class="eyebrow">The research frontier — live</p>
+    <h2>Proved, open, and failed — one view</h2>
+    <div class="callout">
+      <p><strong>Root obligation:</strong> <span id="fr-root">loading…</span></p>
+    </div>
+    <h3>Open obligations — the remaining rungs</h3>
+    <ul id="fr-obligations" class="claimlist"></ul>
+    <h3>Rejected approaches — what the walls taught</h3>
+    <ul id="fr-rejections" class="claimlist"></ul>
+    <p class="small">Sourced from <code>research-frontier.json</code> and <code>rejections.json</code> — the same data the drift test guards, so this page cannot silently diverge from the accounting.</p>
+  </section>
+
   <section id="cross-field">
     <p class="eyebrow">Major feature — cross-field discovery</p>
     <h2>The cross-field engine, front and centre</h2>
@@ -336,6 +349,20 @@ sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
 
 </div>
 <script>
+// The live frontier — render research-frontier.json + rejections.json (priority 4)
+fetch('research-frontier.json').then(r => r.json()).then(d => {
+  const root = document.getElementById('fr-root');
+  if (root) root.textContent = d.root_obligation;
+  const obs = document.getElementById('fr-obligations');
+  if (obs) obs.innerHTML = d.obligations.map(o =>
+    `<li><strong>${o.name}</strong> — ${o.rung} <span class="mini">OPEN</span></li>`).join('');
+}).catch(() => {});
+fetch('rejections.json').then(r => r.json()).then(d => {
+  const rej = document.getElementById('fr-rejections');
+  if (rej) rej.innerHTML = d.rejections.map(r =>
+    `<li><strong>${r.name}</strong> — ${r.wall}. <em>Failed:</em> ${r.why_failed}. <span class="mini">won → ${r.workaround}</span></li>`).join('');
+}).catch(() => {});
+
 const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕', IRREDUCIBLE:'◐' };
 const CLAIMS = [
  { id:'chsh', v:'FORCED', th:'QM.Tsirelson', claim:'no quantum state violates the CHSH inequality beyond 2√2', falsifier:'a state exceeding 2√2', oracle:'quantum-simulated + kernel-checked', ev:'simulated CHSH = 2.828427 = 2√2 — nothing exceeds it',
