@@ -491,9 +491,9 @@ theorem su2_character_orthogonality_ne {n m : ℕ} (h : n ≠ m) :
     exact H (by omega : m ≠ n) (by omega : m < n)
   · rw [intervalIntegral.integral_congr
       (fun θ _ => sin_mul_sin_eq ((n + 1 : ℝ) * θ) ((m + 1 : ℝ) * θ))]
-    have hI1 : IntervalIntegrable (fun θ : ℝ => Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ)) volume 0 Real.pi :=
+    have hI1 : IntervalIntegrable (fun θ : ℝ => Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ)) MeasureTheory.volume 0 Real.pi :=
       Continuous.intervalIntegrable (by continuity) 0 Real.pi
-    have hI2 : IntervalIntegrable (fun θ : ℝ => Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ)) volume 0 Real.pi :=
+    have hI2 : IntervalIntegrable (fun θ : ℝ => Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ)) MeasureTheory.volume 0 Real.pi :=
       Continuous.intervalIntegrable (by continuity) 0 Real.pi
     rw [intervalIntegral.integral_div, intervalIntegral.integral_sub hI1 hI2]
     have hdiff : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ) = 0 := by
@@ -523,14 +523,16 @@ theorem su2_character_orthogonality_diag {n : ℕ} :
     ring_nf
   have hcos : ∫ θ in 0..Real.pi, Real.cos (2 * ((n + 1 : ℝ) * θ)) = 0 := by
     rw [intervalIntegral.integral_congr (fun θ _ => by
-      rw [show 2 * ((n + 1 : ℝ) * θ) = ((2 * (n + 1) : ℕ) : ℝ) * θ by ring_nf])]
+      rw [show 2 * ((n + 1 : ℝ) * θ) = ((2 * (n + 1) : ℕ) : ℝ) * θ by
+        norm_num [Nat.cast_add, Nat.cast_mul]
+        ring])]
     exact integral_cos_of_ne_zero (by omega : 2 * (n + 1) ≠ 0)
   have hconst : ∫ θ in 0..Real.pi, (1 : ℝ) = Real.pi := by
     rw [intervalIntegral.integral_const]
     norm_num
-  have hI1 : IntervalIntegrable (fun _ : ℝ => (1 : ℝ)) volume 0 Real.pi :=
+  have hI1 : IntervalIntegrable (fun _ : ℝ => (1 : ℝ)) MeasureTheory.volume 0 Real.pi :=
     Continuous.intervalIntegrable continuous_const 0 Real.pi
-  have hI2 : IntervalIntegrable (fun θ : ℝ => Real.cos (2 * ((n + 1 : ℝ) * θ))) volume 0 Real.pi :=
+  have hI2 : IntervalIntegrable (fun θ : ℝ => Real.cos (2 * ((n + 1 : ℝ) * θ))) MeasureTheory.volume 0 Real.pi :=
     Continuous.intervalIntegrable (by continuity) 0 Real.pi
   calc
     ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((n + 1 : ℝ) * θ)
