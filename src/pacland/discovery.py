@@ -66,12 +66,44 @@ def run_falsifiers() -> str:
     return "\n".join(lines)
 
 
+def record_results() -> list[dict]:
+    """Run the falsifiers and record the evidence (the 'learn' stage of the loop).
+
+    The result is written to `web/evidence.json` — the same schema the interface renders, so a
+    falsifier run updates the frontier's evidence, closing the identify → test → learn loop.
+    """
+    import datetime
+    at = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    results = []
+    for o in open_obligations():
+        e = _catalog().get(o["name"])
+        simulate = e.get("simulate") if e else None
+        if simulate is None:
+            results.append({"name": o["name"], "status": "NO-FALSIFIER", "evidence": e.get("falsifier", "") if e else "", "at": at})
+            continue
+        try:
+            survived, evidence = simulate()
+            status = "SURVIVES" if survived else "REFUTED"
+        except Exception as exc:
+            status, evidence = "ERROR", f"{type(exc).__name__}: {exc}"
+        results.append({"name": o["name"], "status": status, "evidence": str(evidence), "at": at})
+    out = ROOT / "web" / "evidence.json"
+    out.write_text(json.dumps({"schema": "sextant-evidence", "runs": results}, indent=2))
+    return results
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="the discovery loop over the open obligations")
     ap.add_argument("--list", action="store_true", help="list the open obligations")
     ap.add_argument("--run", action="store_true", help="run each obligation's falsifier")
+    ap.add_argument("--record", action="store_true", help="run the falsifiers and write the evidence")
     args = ap.parse_args()
-    if args.run:
+    if args.record:
+        results = record_results()
+        for r in results:
+            print(f"◐ {r['name']:<32} {r['status']}  {r['evidence']}")
+        print(f"\nwrote web/evidence.json ({len(results)} runs)")
+    elif args.run:
         print(run_falsifiers())
     else:
         print(list_open())
