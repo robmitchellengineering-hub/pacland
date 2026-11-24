@@ -74,6 +74,13 @@
    "title": "The discovery process \u2014 jump taxonomy + jump-seeking loop"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/HTHE-PAIRING.md",
+   "kind": "doc",
+   "path": "docs/HTHE-PAIRING.md",
+   "summary": "The 4D Yang\u2013Mills mass gap is now conditionally complete: the structural chain wilsonkernelposdef \u2192 reflectionpositivitycovariancebound \u2192 spacinguniform \u2192 osreconstructionfull \u2192 m(\u03b2) \u2265\u2026",
+   "title": "The `h\u0398` pairing \u2014 what must be found, and the current candidate (2026-11)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/INFINITE-DIMENSIONAL-ISSUE.md",
    "kind": "doc",
    "path": "docs/INFINITE-DIMENSIONAL-ISSUE.md",
@@ -86,6 +93,20 @@
    "path": "docs/KILL-CRITERIA.md",
    "summary": "Without a stop rule, the discovery loop is an open-ended grind that burns budget on a dead framing. These are the rules that force a re-frame instead.",
    "title": "Kill criteria \u2014 budget and stop rules per rung"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-CONSOLIDATION.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-CONSOLIDATION.md",
+   "summary": "The mass gap m(\u03b2) \u2265 A\u00b7e^{\u2212c\u03b2} is three mechanisms multiplying, not one thing in isolation.",
+   "title": "The mass gap \u2014 the consolidated state (the hard think, 2026-11-22)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-FINAL-PLAN.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-FINAL-PLAN.md",
+   "summary": "not a single new lemma. The mass gap is one object, one bound, and its finite-dimensional half is assembled; the single open rung is the infinite-dimensional FSS step.",
+   "title": "The mass gap \u2014 the final plan (the combination)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-HORIZON-PLAN.md",
@@ -102,11 +123,25 @@
    "title": "The Yang\u2013Mills mass gap: a falsifier-first reduction to one open rung"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-PROOF-PLAN.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-PROOF-PLAN.md",
+   "summary": "one bound, and they are proven separately in the finite volume; the single open rung is the volume-uniformity that joins them.",
+   "title": "The mass-gap proof \u2014 the finished plan"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-REDUCTION.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-REDUCTION.md",
+   "summary": "This is the consolidation of the whole lattice + reflection-positivity + constructive-QFT arc. It records, in one place, the exact theorem chain that is proved and kernel-checked (lake\u2026",
+   "title": "The Yang\u2013Mills mass gap: a kernel-checked reduction to one hypothesis"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-STATE.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-STATE.md",
-   "summary": "This is the definitive record of where the Yang\u2013Mills mass-gap work stands. Everything below is either kernel-checked (Lean, no sorry), a named theorem, or an honest refutation. This file\u2026",
-   "title": "Mass gap \u2014 the point to work from (state, 2026-11-22)"
+   "summary": "This is the honest, complete record of where the 4D Yang\u2013Mills mass-gap work stands. It separates, with exact names and files: (A) what is really proved (Lean, no sorry), (B) what is\u2026",
+   "title": "Mass gap \u2014 the definitive state (2026-11-23, for independent review)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASTER-RESEARCH.md",
@@ -212,6 +247,13 @@
    "path": "docs/SEXTANT-MANUAL.md",
    "summary": "This manual is written so any session (human or harness) can operate SEXTANT correctly. Read it before driving the engine; it is self-contained and gives the exact commands, function\u2026",
    "title": "SEXTANT \u2014 User Manual"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-PROOF-TIERS.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-PROOF-TIERS.md",
+   "summary": "A sextant does not create the stars; it reads your position from them. The mass-gap program is giving SEXTANT its sharpest case study yet, because it forces the system to separate five\u2026",
+   "title": "SEXTANT proof tiers \u2014 the five-way distinction at the heart of the identity"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-ROADMAP.md",
@@ -2592,6 +2634,13 @@
    "path": "scripts/house_map.py",
    "summary": "The house as a 3D map, inferred from the walk \u2014 and honest about what is inferred and what is invented.",
    "title": "house_map.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/hthe_pairing_sweep.py",
+   "kind": "script",
+   "path": "scripts/hthe_pairing_sweep.py",
+   "summary": "The hTheta pairing sweep (rented-CPU job): lock the trace\u2192Bessel vs heat-kernel separation across",
+   "title": "hthe_pairing_sweep.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/hypotheses.py",

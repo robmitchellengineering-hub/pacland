@@ -71,4 +71,80 @@ theorem posdef_of_tendsto {α : Type*} [Fintype α] (K : ℕ → α → α → �
     intro j _
     exact (h i j).const_mul (c i * c j)
   exact ge_of_tendsto hsum (Filter.Eventually.of_forall (fun n => hK n c))
+
+/-- **The rank-one kernel as a `PosDefKernel`** (from the direct `rank_one_posdef`). -/
+theorem rank_one_posdef_kernel {α : Type*} [Fintype α] (f : α → ℝ) :
+    PosDefKernel (fun i j => f i * f j) := fun c => rank_one_posdef f c
+
+/-- **cos(θᵢ−θⱼ)ⁿ is positive-definite** — the binomial rank-one expansion (cos_pow_rankone), each term
+`(n choose k)·|Σ cᵢ fₖ(θᵢ)|² ≥ 0`, so the finite positive sum is PSD (posdef_sum/posdef_smul over the
+`Fin (n+1)`). The finite Fubini replaces the Chebyshev reindexing. -/
+theorem cos_pow_posdef {m : ℕ} (θ : Fin m → ℝ) (n : ℕ) :
+    PosDefKernel (fun i j => (Real.cos (θ i - θ j)) ^ n) := by
+  have hid : (fun i j => (Real.cos (θ i - θ j)) ^ n)
+      = (fun i j => ∑ k : Fin (n + 1), (n.choose k.1 : ℝ) * ((Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1)) * (Real.cos (θ j) ^ k.1 * Real.sin (θ j) ^ (n - k.1)))) := by
+    funext i j
+    rw [cos_pow_rankone n (θ i) (θ j)]
+    rw [← Fin.sum_univ_eq_sum_range]
+    apply Finset.sum_congr rfl
+    intro k hk
+    ring_nf
+  rw [hid]
+  exact posdef_sum (fun k : Fin (n + 1) => fun i j => (n.choose k.1 : ℝ) * ((Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1)) * (Real.cos (θ j) ^ k.1 * Real.sin (θ j) ^ (n - k.1))))
+    (fun k => posdef_smul (fun i j => (Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1)) * (Real.cos (θ j) ^ k.1 * Real.sin (θ j) ^ (n - k.1))) (n.choose k.1 : ℝ) (by positivity) (rank_one_posdef_kernel (fun i => Real.cos (θ i) ^ k.1 * Real.sin (θ i) ^ (n - k.1))))
+
+set_option maxHeartbeats 800000 in
+/-- **The Wilson heat kernel is positive-definite** (the OS reflection positivity of the SU(2) Wilson
+measure): `exp(2β·cos(θᵢ−θⱼ))` is the pointwise limit of the exponential partial sums
+`Σ_{n<N} (2β)ⁿ/n!·cosⁿ(θᵢ−θⱼ)`, each PSD by `cos_pow_posdef` + `posdef_smul`, and the pointwise limit
+of PSD kernels is PSD (`posdef_of_tendsto`). The infinite sum is handled by the finite partial-sum
+limit, not a `tsum` reindexing. -/
+theorem wilson_kernel_posdef {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β) :
+    PosDefKernel (fun i j => Real.exp (2 * β * Real.cos (θ i - θ j))) := by
+  intro c
+  let xij : Fin m → Fin m → ℝ := fun i j => 2 * β * Real.cos (θ i - θ j)
+  have hlim : ∀ i j, Filter.Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N, (xij i j)^n / (n.factorial : ℝ)) Filter.atTop (nhds (Real.exp (xij i j))) := by
+    intro i j
+    have hsum : Summable (fun n : ℕ => (xij i j)^n / (n.factorial : ℝ)) := Real.summable_pow_div_factorial (xij i j)
+    have hhas : HasSum (fun n : ℕ => (xij i j)^n / (n.factorial : ℝ)) (Real.exp (xij i j)) := by
+      have htsum : Real.exp (xij i j) = ∑' n : ℕ, (xij i j)^n / (n.factorial : ℝ) := by
+        have h1 : NormedSpace.exp (𝔸 := ℝ) (xij i j) = ∑' n : ℕ, (n.factorial : ℝ)⁻¹ • (xij i j)^n := by
+          rw [NormedSpace.exp_eq_tsum ℝ]
+        have h2 : NormedSpace.exp (𝔸 := ℝ) (xij i j) = Real.exp (xij i j) := congr_fun Real.exp_eq_exp_ℝ.symm (xij i j)
+        rw [← h2, h1]
+        apply tsum_congr
+        intro n
+        simp [div_eq_mul_inv, mul_comm]
+      rw [htsum]
+      exact hsum.hasSum
+    exact hhas.tendsto_sum_nat
+  have hK : ∀ N : ℕ, PosDefKernel (fun i j => ∑ n ∈ Finset.range N, (xij i j)^n / (n.factorial : ℝ)) := by
+    intro N
+    have hrewrite : (fun i j => ∑ n ∈ Finset.range N, (xij i j)^n / (n.factorial : ℝ)) = fun i j => ∑ n ∈ Finset.range N, ((2 * β)^n / (n.factorial : ℝ)) * (Real.cos (θ i - θ j))^n := by
+      funext i j
+      dsimp [xij]
+      apply Finset.sum_congr rfl
+      intro n hn
+      rw [mul_pow]
+      ring
+    rw [hrewrite]
+    have hfin : (fun i j => ∑ n ∈ Finset.range N, ((2 * β)^n / (n.factorial : ℝ)) * (Real.cos (θ i - θ j))^n) = fun i j => ∑ n : Fin N, ((2 * β)^(n.1) / (n.1.factorial : ℝ)) * (Real.cos (θ i - θ j))^(n.1) := by
+      funext i j
+      rw [← Fin.sum_univ_eq_sum_range]
+    rw [hfin]
+    exact posdef_sum (fun n : Fin N => fun i j => ((2 * β)^(n.1) / (n.1.factorial : ℝ)) * (Real.cos (θ i - θ j))^(n.1))
+      (fun n => posdef_smul (fun i j => (Real.cos (θ i - θ j))^(n.1)) ((2 * β)^(n.1) / (n.1.factorial : ℝ))
+        (by exact div_nonneg (pow_nonneg (mul_nonneg (by norm_num : 0 ≤ (2 : ℝ)) hβ) _) (Nat.cast_nonneg _)) (cos_pow_posdef θ n.1))
+  simpa [xij] using ((posdef_of_tendsto (fun N => fun i j => ∑ n ∈ Finset.range N, (xij i j)^n / (n.factorial : ℝ)) (fun i j => Real.exp (xij i j)) hlim hK) c)
+
+/-- **The volume-uniform FSS estimate (the kernel form, the thermodynamic-limit step).** If the
+finite-volume kernels are PSD (each volume) and converge pointwise to the infinite-volume kernel, then
+the infinite-volume kernel is PSD — the limit of PSD is PSD (`posdef_of_tendsto`). This is the
+volume-uniformity mechanism of the FSS: the finite-volume reflected correlations are PSD, and the
+thermodynamic limit preserves positivity. -/
+theorem volume_uniform_psd {α : Type*} [Fintype α] (K : ℕ → α → α → ℝ) (Klim : α → α → ℝ)
+    (hK : ∀ N, PosDefKernel (K N))
+    (hlim : ∀ i j, Filter.Tendsto (fun N => K N i j) Filter.atTop (nhds (Klim i j))) :
+    PosDefKernel Klim := posdef_of_tendsto K Klim hlim hK
+
 end QM

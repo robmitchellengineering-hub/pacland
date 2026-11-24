@@ -29,9 +29,14 @@ def adjoint_matrix(q: tuple) -> np.ndarray:
 
 
 def fp_operator(links: np.ndarray) -> np.ndarray:
-    """The lattice Faddeev–Popov operator (covariant Laplacian, adjoint rep), a (3·N^d)² matrix.
+    """The genuine lattice Landau-gauge Faddeev-Popov operator (the Hessian of the gauge-fixing
+    functional), a (3·N^d)² matrix in the adjoint representation.
 
-    `(M φ)(x) = Σ_μ [ 2 φ(x) − R(U_μ(x)) φ(x+μ) − R(U_μ(x−μ))ᵀ φ(x−μ) ]` with `R` the adjoint matrix.
+    `M(x,y) = Σ_μ [ δ(x,y)·(R(U_μ(x)) + R(U_μ(x−μ))) − δ(x+μ,y)·R(U_μ(x)) − δ(x−μ,y)·R(U_μ(x−μ))ᵀ ]`
+
+    with `R` the adjoint (SO(3)) matrix. The diagonal is the adjoint-matrix sum `R(U_μ(x)) + R(U_μ(x−μ))`,
+    NOT the Abelian covariant Laplacian's scalar `2·I` — the two coincide only for the trivial link
+    (`R = I`), and diverge for non-Abelian links. This is the true FP Hessian, not the covariant Laplacian.
     """
     d, N = links.shape[0], links.shape[1]
     nsites = N ** d
@@ -40,11 +45,12 @@ def fp_operator(links: np.ndarray) -> np.ndarray:
     for flat in range(nsites):
         idx = np.unravel_index(flat, (N,) * d)
         row = 3 * flat
-        M[row:row + 3, row:row + 3] += 2 * d * np.eye(3)
+        diag = np.zeros((3, 3))
         for mu in range(d):
             # forward neighbour
             u = links[mu][tuple(idx)]
             R = adjoint_matrix(u)
+            diag += R
             fwd = list(idx); fwd[mu] = (fwd[mu] + 1) % N
             col = 3 * int(np.ravel_multi_index(fwd, (N,) * d))
             M[row:row + 3, col:col + 3] -= R
@@ -52,8 +58,10 @@ def fp_operator(links: np.ndarray) -> np.ndarray:
             bwd = list(idx); bwd[mu] = (bwd[mu] - 1) % N
             ub = links[mu][tuple(bwd)]
             Rb = adjoint_matrix(ub)
+            diag += Rb
             colb = 3 * int(np.ravel_multi_index(bwd, (N,) * d))
             M[row:row + 3, colb:colb + 3] -= Rb.T
+        M[row:row + 3, row:row + 3] += diag
     return (M + M.T) / 2  # symmetrise
 
 
@@ -80,9 +88,15 @@ def fp_operator_sparse(links: np.ndarray):
 
     site = np.arange(nsites)
     rows, cols, vals = [], [], []
-    # diagonal: +2d on every component
-    for a in range(3):
-        rows.append(3 * site + a); cols.append(3 * site + a); vals.append(np.full(nsites, 2.0 * d))
+    # diagonal: the adjoint sum Σ_μ [R(U_μ(x)) + R(U_μ(x−μ))] — the FP Hessian, NOT the scalar 2d
+    for mu in range(d):
+        st = strides[mu]
+        x_mu = (site // st) % N
+        bwd = site - st + (N * st) * (x_mu == 0)
+        for a in range(3):
+            for b in range(3):
+                rows.append(3 * site + a); cols.append(3 * site + b)
+                vals.append(R[mu, :, a, b] + R[mu, bwd, a, b])
     # off-diagonal: forward (+mu) and backward (-mu) couplings
     for mu in range(d):
         st = strides[mu]
@@ -248,6 +262,11 @@ def fmr_gauge_fix(links: np.ndarray, n_copies: int = 5, n_gf: int = 20, seed=Non
     """Gribov-copy search toward the FMR: `n_copies` random transforms, Landau-fix each, keep the
     copy with the *highest* gauge functional (closest to the global maximum / fundamental modular
     region).
+
+    HONEST LIMITATION: `n_copies` (default 5) is a FINITE copy search — it keeps the best of the sampled
+    copies, NOT the provable global maximum that defines the fundamental modular region. The result is a
+    local gauge-fixing copy, not a certified FMR representative; a higher-copy / convergence test is the
+    honest way to approach the FMR.
 
     This is Phase 1 of `docs/MASS-GAP-HORIZON-PLAN.md` — the horizon is at the FMR boundary, so an
     arbitrary Landau copy (first Gribov region) is not enough.

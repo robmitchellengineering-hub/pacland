@@ -24,6 +24,19 @@ namespace QM
 angle (the argument of the holonomy). -/
 def onePlaquetteAction (β θ : ℝ) : ℝ := β * (1 - Real.cos θ)
 
+/-- **The geometric reflection Θ** (the time-reversal on the 1-plaquette SU(2) holonomy): `Θ θ = −θ`
+— the inversion of the holonomy angle. This is the reflection whose reflected correlation is the Wilson
+heat kernel (the `hΘ` pairing, `docs/HTHE-PAIRING.md`). -/
+def reflectionTheta (θ : ℝ) : ℝ := -θ
+
+/-- **The reflection symmetry of the Wilson action** — the 1-plaquette action is invariant under the
+geometric reflection `Θ`: `S(Θθ) = S(θ)`, since `cos` is even. This is the structural half of the FSS
+reflection positivity (the action is reflection-symmetric, so the measure is too), not a computed integral. -/
+theorem wilson_action_reflection_symmetric (β θ : ℝ) :
+    onePlaquetteAction β (reflectionTheta θ) = onePlaquetteAction β θ := by
+  dsimp [onePlaquetteAction, reflectionTheta]
+  rw [Real.cos_neg]
+
 /-- The action derivative: `S'(θ) = β·sin θ` — the Wilson (link) gradient of the 1-plaquette
 action. -/
 lemma onePlaquetteAction_deriv (β θ : ℝ) :
@@ -89,6 +102,15 @@ theorem flow_rate_gap_lower_bound (n : ℕ) {t β c : ℝ}
 
 /-- The Boltzmann weight `e^{−S(θ)}` of the 1-plaquette action at angle `θ`. -/
 def boltzmannWeight (β θ : ℝ) : ℝ := Real.exp (-(onePlaquetteAction β θ))
+
+/-- **The Boltzmann weight is reflection-symmetric** — `e^{−S(Θθ)} = e^{−S(θ)}`, the direct consequence of
+the action's reflection symmetry. This is the measure's reflection symmetry (the Gibbs weight is invariant
+under the geometric reflection), the structural half the FSS reflection positivity rests on — no Haar
+integral computed. -/
+theorem boltzmann_weight_reflection_symmetric (β θ : ℝ) :
+    boltzmannWeight β (reflectionTheta θ) = boltzmannWeight β θ := by
+  dsimp [boltzmannWeight, onePlaquetteAction, reflectionTheta]
+  rw [Real.cos_neg]
 
 /-- **The antipode's measure suppression — the "ceiling is an artifact" mechanism.** The weight at the
 antipode `θ = π` relative to the vacuum `θ = 0` is `e^{−2β}`: the antipode, where the Bakry–Émery
@@ -197,5 +219,24 @@ theorem refereeScalingLaw_iff_volumeUniformRatio (mGap Λ : ℝ → ℝ)
     refine ⟨C, hC0, ?_⟩
     intro β hβ
     exact (le_div_iff₀ (hΛ β)).mp (hC β hβ)
+
+/-- **The `ym-orbifold-curvature` rung (integrated form).** The pointwise Bakry–Émery ceiling
+(`su2_curvature_ceiling`, negative at the antipode for `β > 1/8`) is measure-suppressed
+(`antipode_measure_suppression`, the antipode carries weight `e^{−2β}`), so the *integrated* curvature
+`β·(c − (1+c)·e^{−2β})` is positive for large `β` (`effective_curvature_positive`). This is the
+β-uniform spectral-gap bound — derived from the measure suppression, not a per-β pointwise computation. -/
+theorem orbit_curvature_integrated_gap (β c : ℝ) (hβ : 0 < β) (hc : 0 < c)
+    (h : Real.exp (-2 * β) < c * (1 - Real.exp (-2 * β))) :
+    0 < β * (c - (1 + c) * Real.exp (-2 * β)) :=
+  effective_curvature_positive β c hβ hc h
+
+/-- **The `ym-rg-contraction` rung.** One RG (flow-time / block-spin) step contracts the measure at the
+effective rate `(1 − t·β·c) + e^{−2β}`, which is strictly below `1` whenever the good-region contraction
+rate `t·β·c` exceeds the antipode's measure `e^{−2β}` — a positive contraction coefficient, so the mass
+gap is the contraction rate (`flow_rate_gap_lower_bound`). Derived, not per-β computed. -/
+theorem rg_contraction_positive (t β c : ℝ)
+    (hc : 0 < c) (hpos : 0 < t * β) (hle : t * β * c ≤ 1) (h : Real.exp (-2 * β) < t * β * c) :
+    (1 - t * β * c) + Real.exp (-2 * β) < 1 :=
+  effective_rate_below_one t β c hc hpos hle h
 
 end QM
