@@ -138,7 +138,7 @@ noncomputable def su2WilsonAction (z : Metric.sphere (0 : ℂ × ℂ) 1) : ℝ :
 leaves the trace invariant: `1 − 2·Re(conj a) = 1 − 2·Re a`, via `Complex.conj_re`. This is the S³
 parametrization of `wilson_trace_reflection_invariant`. -/
 theorem su2WilsonAction_reflection_symmetric (a b : ℂ) :
-    1 - 2 * (Complex.conj a).re = 1 - 2 * a.re := by
+    1 - 2 * (star a).re = 1 - 2 * a.re := by
   rw [Complex.conj_re]
 
 end QM
