@@ -216,7 +216,7 @@ per-plaquette log is the sum over the single-plaquette clusters of size `n+1`. -
 theorem linked_cluster_weights (ρ : ℝ) (h : |ρ| < 1) :
     HasSum (fun n : ℕ => (-1 : ℝ) ^ n * ρ ^ (n + 1) / ((n : ℝ) + 1)) (Real.log (1 + ρ)) := by
   have hx : |(-ρ)| < 1 := by simpa using h
-  have hsum := hasSum_pow_div_log_of_abs_lt_one (x := -ρ) hx
+  have hsum := Real.hasSum_pow_div_log_of_abs_lt_one (x := -ρ) hx
   convert hsum.neg using 1
   · rw [neg_sub, sub_eq_add_neg, neg_neg]
     simp [add_comm]
