@@ -490,12 +490,14 @@ theorem su2_character_orthogonality_ne {n m : ℕ} (h : n ≠ m) :
   rw [intervalIntegral.integral_div, intervalIntegral.integral_sub]
   · have h1 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ) = 0 := by
       convert integral_cos_of_ne_zero_int (by omega : (n : ℤ) - (m : ℤ) ≠ 0) using 1
-      · congr 1
-        ring
+      funext θ
+      congr 1
+      ring_nf
     have h2 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ) = 0 := by
       convert integral_cos_of_ne_zero_int (by omega : (n : ℤ) + (m : ℤ) + 2 ≠ 0) using 1
-      · congr 1
-        ring
+      funext θ
+      congr 1
+      ring_nf
     rw [h1, h2]
     norm_num
   · exact Continuous.intervalIntegrable (by fun_prop)
@@ -512,8 +514,9 @@ theorem su2_character_orthogonality_diag {n : ℕ} :
       simp
     have h2 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ + (n + 1 : ℝ) * θ) = 0 := by
       convert integral_cos_of_ne_zero (by omega : 2 * (n + 1) ≠ 0) using 1
-      · congr 1
-        ring
+      funext θ
+      congr 1
+      ring_nf
     rw [h0, h2]
     norm_num
   · exact Continuous.intervalIntegrable (by fun_prop)
