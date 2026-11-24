@@ -247,13 +247,13 @@ theorem cluster_weights_summable (ρ : ℝ) (h : |ρ| < 1) :
 from `v` to `v` on a finite graph is at most `maxDegree ^ n`. The induction follows `finsetWalkLength`'s
 recursion — a walk of length `n+1` is a walk of length `n` from a neighbor `w` of `v`, preceded by the
 edge `v—w`, so each step adds at most `maxDegree` choices. -/
-theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V] [DecidableRel G.Adj]
-    (G : SimpleGraph V) (v : V) (n : ℕ) :
+theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj] (v : V) (n : ℕ) :
     (G.finsetWalkLength n v v).card ≤ G.maxDegree ^ n := by
   induction n generalizing v with
-  | zero => simp [finsetWalkLength]
+  | zero => simp [SimpleGraph.finsetWalkLength]
   | succ n ih =>
-    simp only [finsetWalkLength]
+    simp only [SimpleGraph.finsetWalkLength]
     calc
       (Finset.univ.biUnion fun w : G.neighborSet v => (G.finsetWalkLength n w v).map
         ⟨fun p => Walk.cons w.property p, fun _ _ => by simp⟩).card
