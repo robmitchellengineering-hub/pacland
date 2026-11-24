@@ -56,4 +56,13 @@ specific lattice configuration space's action). -/
 noncomputable def wilsonAction {P : Type*} [Fintype P] (U : P → Matrix.specialUnitaryGroup (Fin 2) ℂ) : ℝ :=
   ∑ p : P, wilsonPlaquette (U p)
 
+/-- **The trace invariance under the reflection Θ** — the geometric reflection maps the SU(2) holonomy to
+its inverse (the conjugate transpose `Uᴴ`), and the real part of the trace is invariant:
+`Re Tr(Uᴴ) = Re Tr U`. This is the specific version of the reflection symmetry for the Wilson plaquette
+action (Mathlib's `Matrix.trace_conjTranspose` + `Complex.conj_re`). -/
+theorem wilson_trace_reflection_invariant (U : Matrix (Fin 2) (Fin 2) ℂ) :
+    (Matrix.trace Uᴴ).re = (Matrix.trace U).re := by
+  rw [Matrix.trace_conjTranspose]
+  simp [Complex.conj_re]
+
 end QM
