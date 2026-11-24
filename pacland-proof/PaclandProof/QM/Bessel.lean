@@ -479,5 +479,49 @@ theorem integral_cos_of_ne_zero_int {k : ℤ} (hk : k ≠ 0) :
 theorem sin_mul_sin_eq (a b : ℝ) : Real.sin a * Real.sin b = (Real.cos (a - b) - Real.cos (a + b)) / 2 := by
   rw [Real.cos_sub, Real.cos_add]
   ring
+/-- **The full SU(2) character orthogonality (off-diagonal)** — the Chebyshev U / one-variable sin
+integral: `∫₀^π sin((n+1)θ)·sin((m+1)θ) dθ = 0` for `n ≠ m`. Uses `wlog n ≤ m` (the integrand is
+symmetric) so the difference frequency is the nonnegative ℕ `m - n` (no ℤ coercion, avoiding the
+`ring_nf`/`isDefEq` heartbeat timeout). -/
+theorem su2_character_orthogonality_ne {n m : ℕ} (h : n ≠ m) :
+    ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((m + 1 : ℝ) * θ) = 0 := by
+  wlog hle : n ≤ m generalizing n m with H
+  · rw [intervalIntegral.integral_congr (fun θ _ => mul_comm _ _)]
+    exact H (by omega : m ≠ n) (by omega : m ≤ n)
+  · rw [intervalIntegral.integral_congr (fun θ _ => sin_mul_sin_eq ((n + 1 : ℝ) * θ) ((m + 1 : ℝ) * θ))]
+    rw [intervalIntegral.integral_div, intervalIntegral.integral_sub]
+    · have h1 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ) = 0 := by
+        rw [intervalIntegral.integral_congr (fun θ _ => by
+          rw [show (n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ = -((m - n : ℕ) : ℝ) * θ by
+            rw [Nat.cast_sub_of_le hle]
+            ring])]
+        rw [intervalIntegral.integral_congr (fun θ _ => by
+          rw [Real.cos_neg])]
+        exact integral_cos_of_ne_zero (by omega : m - n ≠ 0)
+      have h2 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ) = 0 := by
+        rw [intervalIntegral.integral_congr (fun θ _ => by
+          rw [show (n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ = (n + m + 2 : ℕ) * θ by norm_num; ring])]
+        exact integral_cos_of_ne_zero (by omega : n + m + 2 ≠ 0)
+      rw [h1, h2]
+      norm_num
+    · exact Continuous.intervalIntegrable (by fun_prop)
+    · exact Continuous.intervalIntegrable (by fun_prop)
+
+/-- **The full SU(2) character orthogonality (diagonal)** — `∫₀^π sin((n+1)θ)² dθ = π/2`. -/
+theorem su2_character_orthogonality_diag {n : ℕ} :
+    ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((n + 1 : ℝ) * θ) = Real.pi / 2 := by
+  rw [intervalIntegral.integral_congr (fun θ _ => sin_mul_sin_eq ((n + 1 : ℝ) * θ) ((n + 1 : ℝ) * θ))]
+  rw [intervalIntegral.integral_div, intervalIntegral.integral_sub]
+  · have h0 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ - (n + 1 : ℝ) * θ) = Real.pi := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by rw [sub_self]; simp)]
+      simp
+    have h2 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ + (n + 1 : ℝ) * θ) = 0 := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by
+        rw [show (n + 1 : ℝ) * θ + (n + 1 : ℝ) * θ = (2 * (n + 1) : ℕ) * θ by ring])]
+      exact integral_cos_of_ne_zero (by omega : 2 * (n + 1) ≠ 0)
+    rw [h0, h2]
+    norm_num
+  · exact Continuous.intervalIntegrable (by fun_prop)
+  · exact Continuous.intervalIntegrable (by fun_prop)
 
 end QM
