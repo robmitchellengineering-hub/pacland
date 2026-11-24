@@ -119,6 +119,6 @@ theorem asymptotic_freedom_exponent_pos : 0 < asymptoticFreedomExponent 2 := by
 by the Wilson action's Boltzmann factor, whose reflection symmetry is `gibbs_weight_reflection_symmetric`. -/
 noncomputable def gibbsMeasure {α : Type*} [MeasurableSpace α]
     (μ : MeasureTheory.Measure α) (S : α → ℝ) (β : ℝ) : MeasureTheory.Measure α :=
-  μ.withDensity (fun x => Real.exp (-β * S x))
+  μ.withDensity (fun x => ENNReal.ofReal (Real.exp (-β * S x)))
 
 end QM
