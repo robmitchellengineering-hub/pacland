@@ -148,4 +148,11 @@ noncomputable def latticeHaar {L : Type*} [Fintype L] :
     MeasureTheory.Measure (L → Metric.sphere (0 : ℂ × ℂ) 1) :=
   MeasureTheory.Measure.pi (fun _ : L => su2Haar)
 
+/-- **The block-spin (decimation) map on SU(2)** — the coarse link `j` is the ordered product of the two
+fine links `U (2j)` and `U (2j+1)` (the `specialUnitaryGroup`'s matrix multiplication, non-abelian). This
+is the specific SU(2) instance of `BlockSpin.blockSpin`, the coarse-graining step of the multiscale RG. -/
+def blockSpinSU2 (U : ℕ → Matrix.specialUnitaryGroup (Fin 2) ℂ) (j : ℕ) :
+    Matrix.specialUnitaryGroup (Fin 2) ℂ :=
+  U (2 * j) * U (2 * j + 1)
+
 end QM
