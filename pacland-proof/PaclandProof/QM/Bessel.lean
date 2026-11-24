@@ -488,16 +488,14 @@ theorem su2_character_orthogonality_ne {n m : ℕ} (h : n ≠ m) :
     ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((m + 1 : ℝ) * θ) = 0 := by
   rw [intervalIntegral.integral_congr (fun θ _ => sin_mul_sin_eq ((n + 1 : ℝ) * θ) ((m + 1 : ℝ) * θ))]
   rw [intervalIntegral.integral_div, intervalIntegral.integral_sub]
-  · have h1 : ∫ θ in 0..Real.pi, Real.cos (((n : ℤ) - (m : ℤ) : ℝ) * θ) = 0 := by
-      rw [intervalIntegral.integral_congr (fun θ _ => by
-        congr 1
-        rw [show (n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ = ((n : ℤ) - (m : ℤ) : ℝ) * θ by ring])]
-      exact integral_cos_of_ne_zero_int (by omega : (n : ℤ) - (m : ℤ) ≠ 0)
-    have h2 : ∫ θ in 0..Real.pi, Real.cos (((n : ℤ) + (m : ℤ) + 2 : ℝ) * θ) = 0 := by
-      rw [intervalIntegral.integral_congr (fun θ _ => by
-        congr 1
-        rw [show (n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ = ((n : ℤ) + (m : ℤ) + 2 : ℝ) * θ by ring])]
-      exact integral_cos_of_ne_zero_int (by omega : (n : ℤ) + (m : ℤ) + 2 ≠ 0)
+  · have h1 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ) = 0 := by
+      convert integral_cos_of_ne_zero_int (by omega : (n : ℤ) - (m : ℤ) ≠ 0) using 1
+      · congr 1
+        ring
+    have h2 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ) = 0 := by
+      convert integral_cos_of_ne_zero_int (by omega : (n : ℤ) + (m : ℤ) + 2 ≠ 0) using 1
+      · congr 1
+        ring
     rw [h1, h2]
     norm_num
   · exact Continuous.intervalIntegrable (by fun_prop)
@@ -509,14 +507,13 @@ theorem su2_character_orthogonality_diag {n : ℕ} :
     ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((n + 1 : ℝ) * θ) = Real.pi / 2 := by
   rw [intervalIntegral.integral_congr (fun θ _ => sin_mul_sin_eq ((n + 1 : ℝ) * θ) ((n + 1 : ℝ) * θ))]
   rw [intervalIntegral.integral_div, intervalIntegral.integral_sub]
-  · have h0 : ∫ θ in 0..Real.pi, Real.cos (((n + 1 : ℝ) * θ) - ((n + 1 : ℝ) * θ)) = Real.pi := by
-      rw [intervalIntegral.integral_congr (fun θ _ => by simp [sub_self])]
+  · have h0 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ - (n + 1 : ℝ) * θ) = Real.pi := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by rw [sub_self]; simp)]
       simp
-    have h2 : ∫ θ in 0..Real.pi, Real.cos (((n + 1 : ℝ) * θ) + ((n + 1 : ℝ) * θ)) = 0 := by
-      rw [intervalIntegral.integral_congr (fun θ _ => by
-        congr 1
-        rw [show (n + 1 : ℝ) * θ + (n + 1 : ℝ) * θ = (2 * (n + 1) : ℝ) * θ by ring])]
-      exact integral_cos_of_ne_zero (by omega : 2 * (n + 1) ≠ 0)
+    have h2 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ + (n + 1 : ℝ) * θ) = 0 := by
+      convert integral_cos_of_ne_zero (by omega : 2 * (n + 1) ≠ 0) using 1
+      · congr 1
+        ring
     rw [h0, h2]
     norm_num
   · exact Continuous.intervalIntegrable (by fun_prop)
