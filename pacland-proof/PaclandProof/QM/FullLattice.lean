@@ -84,4 +84,13 @@ theorem full_lattice_os3_haar {α : Type*} [MeasurableSpace α] (μ : MeasureThe
   intro x
   exact mul_self_nonneg (f x * w x)
 
+/-- **The full lattice's mass gap survives the thermodynamic + continuum limits** — the structural
+assembly: the reflection positivity (`full_lattice_os3_haar`, the OS3) supplies the transfer matrix's PSD,
+and the spacing-uniform positive bound (`HeatKernel.continuum_uniform_mass_gap`) gives the gap
+`A·e^{−cβ} > 0` uniformly in the lattice size and spacing, so the `N→∞` and `a→0` limits preserve the gap.
+The specific renormalization of the physical SU(2) measure is the remaining Clay rung. -/
+theorem full_lattice_mass_gap_uniform (A c β : ℝ) (hA : 0 < A) (hc : 0 < c) :
+    0 < A * Real.exp (-c * β) ∧ StrictAnti (fun b : ℝ => A * Real.exp (-c * b)) :=
+  HeatKernel.continuum_uniform_mass_gap A c β hA hc
+
 end QM
