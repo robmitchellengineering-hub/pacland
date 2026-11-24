@@ -16,6 +16,8 @@ namespace QM
 
 open scoped BigOperators
 
+open scoped BigOperators
+
 /-- **The full Wilson action's reflection symmetry** — a sum over a finite set of plaquettes is invariant
 under the reflection Θ (a bijection on the plaquettes): `Σ_p w(Θ p) = Σ_p w p`. This is the multi-plaquette
 generalization of `wilson_action_reflection_symmetric`: the reflection permutes the plaquettes, and the
@@ -190,17 +192,16 @@ plaquettes). Proved by induction on `Finset.univ` using Mathlib's `Finset.sum_po
 theorem polymer_expansion_subset {P : Type*} [Fintype P] [DecidableEq P] (ρ : P → ℝ) :
     ∏ p : P, (1 + ρ p) = ∑ S : Finset P, ∏ p ∈ S, ρ p := by
   classical
-  have h : ∏ p in (Finset.univ : Finset P), (1 + ρ p) =
-      ∑ S ∈ (Finset.univ : Finset P).powerset, ∏ p ∈ S, ρ p := by
-    induction (Finset.univ : Finset P) using Finset.induction with
+  let s : Finset P := Finset.univ
+  have h : ∏ p in s, (1 + ρ p) = ∑ S in s.powerset, ∏ p in S, ρ p := by
+    induction s using Finset.induction with
     | empty => simp
     | insert a s ha ih =>
-      rw [Finset.prod_insert ha, ih]
-      rw [Finset.sum_powerset_insert ha]
+      rw [Finset.prod_insert ha, ih, Finset.sum_powerset_insert ha]
       rw [Finset.sum_congr rfl (fun S hS => by
         rw [Finset.prod_insert (by simpa using (Finset.mem_powerset.1 hS).1 ha)]
         ring)]
       ring
-  simpa using h
+  simpa [s] using h
 
 end QM
