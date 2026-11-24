@@ -200,7 +200,6 @@ theorem polymer_expansion_subset {P : Type*} [Fintype P] [DecidableEq P] (ρ : P
         intro x hx
         show ρ a * ∏ p ∈ x, ρ p = ∏ p ∈ insert a x, ρ p
         rw [Finset.prod_insert (by intro hax; exact ha (Finset.mem_powerset.1 hx hax))]]
-      simp
   simpa [s] using h
 
 end QM
