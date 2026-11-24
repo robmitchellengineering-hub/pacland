@@ -198,7 +198,7 @@ theorem polymer_expansion_subset {P : Type*} [Fintype P] [DecidableEq P] (ρ : P
       rw [add_mul, one_mul]
       rw [Finset.mul_sum]
       congr 1
-      · rfl
+      · simp
       · rw [Finset.sum_congr rfl (fun S hS => by
           rw [Finset.prod_insert (by simpa using (Finset.mem_powerset.1 hS).1 ha)]
           ring)]
