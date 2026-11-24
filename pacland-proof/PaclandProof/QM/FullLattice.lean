@@ -103,6 +103,7 @@ theorem gibbs_weight_reflection_symmetric {P : Type*} [Fintype P] [DecidableEq P
     Real.exp (-β * wilsonAction U) = Real.exp (-β * wilsonAction (fun p => U (Θ p))) := by
   congr 1
   rw [wilsonAction, wilsonAction]
+  congr 1
   exact (full_wilson_action_reflection_symmetric (fun p => wilsonPlaquette (U p)) Θ).symm
 
 end QM
