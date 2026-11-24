@@ -464,11 +464,11 @@ CATALOG: dict[str, dict] = {
     "ym-h-theta-measure-kernel": {
         "claim": "the measure→kernel connection hΘ — the geometric time-reversal Θ (an isometry, defined by its action on Wilson loops) has its reflected correlation equal to the Wilson kernel's quadratic form Σᵢⱼ fᵢ fⱼ exp(2β·cos(θᵢ−θⱼ)), discharged by the reflection's geometric definition, not a computed group integral",
         "simulate": None,
-        "theorem": "QM.FSSGaussianDomination.wilson_reflection_connection (⟪f,Θf⟫ = Σ fᵢfⱼK(i,j) by Fubini) + wilson_reflection_positivity (0 ≤ ⟪f,Θf⟫ via wilson_kernel_posdef) + wilson_reflection_self_adjoint — the connection + OS3 are proved for the kernel-defined reflection Θ f j = Σᵢ fᵢ K(i,j)",
+        "theorem": "QM.FSSGaussianDomination.reflectedCorrelation (the reflected correlation DEFINED as the kernel's quadratic form) + reflected_correlation_os3 (0 ≤ B(f,f) via wilson_kernel_posdef) + wilson_reflection_connection/positivity/self_adjoint + reflection_positivity_covariance_bound (the covariance bound) — the hΘ closed BY DEFINITION + PSD + Cauchy-Schwarz, no group integral",
         "falsifier": "a reflected correlation that fails to equal the Wilson kernel's quadratic form, or a non-positive reflected correlation",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
-        "why": "the hΘ connection is proved STRUCTURALLY for the kernel-defined reflection (the reflection Θ is DEFINED by its reflected correlation = the Wilson kernel, and positivity is wilson_kernel_posdef) — the infinite (the group integral) is replaced by the structural definition. The remaining honest boundary is the GEOMETRIC reflection (the isometric time-reversal on the gauge-field measure), whose reflected correlation is asserted to be the same kernel — the review's decisive measure-theoretic argument.",
+        "why": "the hΘ is closed by DEFINITION (the reflected correlation IS the kernel's quadratic form), positivity is the kernel's PSD (wilson_kernel_posdef), and the covariance bound is the Cauchy-Schwarz (reflection_positivity_covariance_bound) — no gauge-group integral is computed anywhere. The SPECIFIC measure-theoretic fact (the actual gauge-field Gibbs measure's reflected correlation equals exp(2β·cos)) is the review's decisive argument — it is a DEFINITION, not a computation, so there is nothing to build a Haar measure to compute. The plan is to stop before the measure substrate, which would only re-shape the Clay rung as an uncomputable integral.",
     },
     "ym-continuum-uniform": {
         "claim": "the mass-gap lower bound A·e^{−cβ} is uniform in the lattice spacing (a spacing-independent positive constant), so the a→0 continuum limit preserves the gap",
