@@ -155,4 +155,10 @@ def blockSpinSU2 (U : ℕ → Matrix.specialUnitaryGroup (Fin 2) ℂ) (j : ℕ) 
     Matrix.specialUnitaryGroup (Fin 2) ℂ :=
   U (2 * j) * U (2 * j + 1)
 
+/-- **The cluster-expansion activity** — the deviation of the SU(2) plaquette weight from the trivial
+connection: `ρ = 1 − e^{−β(2 − Re Tr U)}`. Zero at the vacuum (`Re Tr U = 2`), and small at weak coupling
+(large `β`) in the small-field (near-vacuum) region — the polymer/cluster expansion's activity. -/
+noncomputable def clusterActivity (β : ℝ) (x : ℝ) : ℝ :=
+  1 - Real.exp (-β * (2 - x))
+
 end QM
