@@ -160,5 +160,29 @@
     "cluster_weights_summable",
     "posdef_*"
   ],
-  "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it."
+  "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
+  "equivalence_collapse": {
+    "status": "partially established by the tower (verified, not assumed)",
+    "bridges": [
+      {
+        "a": "block-spin contraction / scaling law",
+        "b": "volume-uniform FSS / ratio",
+        "theorem": "refereeScalingLaw_iff_volumeUniformRatio",
+        "note": "A·Λ ≤ mGap ⟺ C ≤ mGap/Λ — the scaling law and the volume-uniform ratio are the same statement"
+      },
+      {
+        "a": "clustering / mixing",
+        "b": "spectral gap",
+        "theorem": "clustering_iff_gap",
+        "note": "|Tⁿ i j| ≤ lam1ⁿ·m ⟺ |eigenvalues| ≤ lam1 — exponential clustering and the spectral bound are two faces of one fact"
+      },
+      {
+        "a": "radius bound",
+        "b": "mass gap",
+        "theorem": "mass_gap_of_radius_bound + refereeScalingLaw_of_radius_bound",
+        "note": "ρ ≤ e^(−A·e^(−cβ)) ⟹ m ≥ A·e^(−cβ) — the radius bound chains to both the gap and the scaling law"
+      }
+    ],
+    "collapse_result": "the three named rungs are NOT three independent obligations — the tower proves the scaling law ⟺ the volume-uniform ratio and the clustering ⟺ the gap, and the radius bound chains to both. The open set collapses to ONE obligation: the radius bound ρ ≤ e^(−A·e^(−cβ)) itself, whose first rung is the animals bound."
+  }
 }
