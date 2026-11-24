@@ -33,10 +33,8 @@ theorem connected_exists_visiting_walk {V : Type*} [Fintype V] [DecidableEq V] [
         by_cases hxa : x = a
         · subst x
           right
-          rw [SimpleGraph.Walk.support_append, List.tail_append]
-          exact List.mem_append.mpr (Or.inl (by
-            rw [List.mem_tail]
-            exact Or.inr (SimpleGraph.Walk.end_mem_support p₁)))
+          simpa [SimpleGraph.Walk.support_append, hav] using
+            (List.mem_append.mpr (Or.inl (SimpleGraph.Walk.end_mem_support p₁)))
         · left
           exact hw x (by simpa [hxa] using hx)
   obtain ⟨w, hw⟩ := hwalk Finset.univ
