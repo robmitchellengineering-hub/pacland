@@ -445,4 +445,21 @@ theorem hTheta_character_mean {n : ℕ} (hn : n ≠ 0) :
     ∫ x, (Polynomial.Chebyshev.T ℝ n).eval x ∂Polynomial.Chebyshev.measureT = 0 :=
   Polynomial.Chebyshev.integral_eval_T_real_measureT_of_ne_zero (by omega : (n : ℤ) ≠ 0)
 
+/-- **The `hΘ` two-variable rank-one decomposition** — the Wilson heat kernel factors into the positive
+rank-one character modes: `exp(2β·cos(θᵢ−θⱼ)) = I₀(2β) + 2Σₙ Iₙ₊₁(2β)·(cos((n+1)θᵢ)cos((n+1)θⱼ) + sin((n+1)θᵢ)sin((n+1)θⱼ))`,
+the Jacobi–Anger identity plus the cosine addition formula `cos(a−b) = cos a cos b + sin a sin b`. This is
+the measure→kernel connection's concrete kernel — the all-mode observable's reflected correlation. -/
+theorem wilson_heat_kernel_rank_one (β θi θj : ℝ) :
+    Real.exp (2 * β * Real.cos (θi - θj)) =
+      besselI 0 (2 * β) + 2 * ∑' n : ℕ, besselI (n + 1) (2 * β) *
+        (Real.cos ((n + 1) * θi) * Real.cos ((n + 1) * θj) + Real.sin ((n + 1) * θi) * Real.sin ((n + 1) * θj)) := by
+  rw [jacobi_anger_real (2 * β) (θi - θj)]
+  congr 1
+  · rfl
+  · congr 1
+    apply tsum_congr
+    intro n
+    rw [show (n + 1 : ℝ) * (θi - θj) = (n + 1 : ℝ) * θi - (n + 1 : ℝ) * θj by ring]
+    rw [Real.cos_sub]
+
 end QM
