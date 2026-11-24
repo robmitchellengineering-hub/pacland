@@ -405,4 +405,20 @@ theorem jacobi_anger_real (x θ : ℝ) :
   simp only [Complex.ofReal_add, Complex.ofReal_mul, Complex.ofReal_tsum]
   norm_num
 
+/-- **The Wilson heat kernel's Chebyshev expansion** — the Jacobi–Anger identity restated in the SU(2)/SO(3)
+character basis: `exp(2β·cos θ) = Σₙ (2−δₙ₀)·Iₙ(2β)·Tₙ(cos θ)`, using `Tₙ(cos θ) = cos(nθ)` (Mathlib's
+`Polynomial.Chebyshev.T_real_cos`). This is the representation-theory half of the `hΘ` measure→kernel
+connection: the heat kernel is the reflected correlation of the all-mode Chebyshev observable
+`W = Σₙ √((2−δₙ₀)·Iₙ(2β))·Tₙ`, whose positivity is the Chebyshev orthogonality (Mathlib) + `besselI_pos`. -/
+theorem wilson_heat_kernel_chebyshev (β θ : ℝ) :
+    Real.exp (2 * β * Real.cos θ)
+      = besselI 0 (2 * β) * (Polynomial.Chebyshev.T ℝ 0).eval (Real.cos θ)
+        + 2 * ∑' n : ℕ, besselI (n + 1) (2 * β) * (Polynomial.Chebyshev.T ℝ (n + 1)).eval (Real.cos θ) := by
+  rw [jacobi_anger_real (2 * β) θ]
+  congr 1
+  · simp [Polynomial.Chebyshev.T_real_cos]
+  · apply tsum_congr
+    intro n
+    rw [Polynomial.Chebyshev.T_real_cos]
+
 end QM
