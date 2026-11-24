@@ -102,3 +102,4 @@ import PaclandProof.QM.RefereeScalingLaw
 import PaclandProof.QM.GaussianRigidity
 import PaclandProof.QM.RenormalizedAction
 import PaclandProof.QM.AdSCFT
+import PaclandProof.QM.FullLattice
