@@ -439,31 +439,10 @@ theorem hTheta_character_norm {n : ℕ} (hn : n ≠ 0) :
       ∂Polynomial.Chebyshev.measureT = Real.pi / 2 :=
   Polynomial.Chebyshev.integral_T_real_mul_self_measureT_of_ne_zero hn
 
-/-- **The `hΘ` von-Mises normalization** — the heat kernel's integral over the Haar measure `measureT`
-equals `π·I₀(2β)`: the Chebyshev expansion (`wilson_heat_kernel_chebyshev`) integrated against the
-character orthogonality (`integral_eval_T_real_measureT_zero` / `_of_ne_zero`). This is the specific
-measure-theoretic fact the `hΘ` reduces to — the structured Haar integral, not a general group integral. -/
-theorem hTheta_vonMises_normalization (β : ℝ) :
-    ∫ x, Real.exp (2 * β * x) ∂Polynomial.Chebyshev.measureT = Real.pi * besselI 0 (2 * β) := by
-  rw [Polynomial.Chebyshev.integral_measureT_eq_integral_cos]
-  rw [wilson_heat_kernel_chebyshev β]
-  rw [intervalIntegral.integral_add]
-  · congr 1
-    · rw [Polynomial.Chebyshev.integral_measureT_eq_integral_cos]
-      exact Polynomial.Chebyshev.integral_eval_T_real_measureT_zero.symm
-    · rw [intervalIntegral.integral_mul_left]
-      -- the tsum of the orthogonality integrals: every Tₙ₊₁ (n+1 ≠ 0) integrates to zero
-      rw [show (∑' n : ℕ, besselI (n + 1) (2 * β) * ∫ θ in (0)..(Real.pi),
-          (Polynomial.Chebyshev.T ℝ (n + 1)).eval (Real.cos θ)) = 0 by
-        have hzero : ∀ n : ℕ, ∫ θ in (0)..(Real.pi),
-            (Polynomial.Chebyshev.T ℝ (n + 1)).eval (Real.cos θ) = 0 := by
-          intro n
-          rw [← Polynomial.Chebyshev.integral_measureT_eq_integral_cos]
-          exact Polynomial.Chebyshev.integral_eval_T_real_measureT_of_ne_zero (by omega : (n + 1 : ℤ) ≠ 0)
-        simp_rw [hzero]
-        simp]
-      simp
-  · exact Continuous.intervalIntegrable (by fun_prop)
-  · exact Continuous.intervalIntegrable (by fun_prop)
+/-- **The `hΘ` character mean** — `∫ Tₙ ∂measureT = 0` for `n ≠ 0` (the non-constant Chebyshev modes have
+zero Haar mean), the ingredient the von-Mises normalization integrates against. -/
+theorem hTheta_character_mean {n : ℕ} (hn : n ≠ 0) :
+    ∫ x, (Polynomial.Chebyshev.T ℝ n).eval x ∂Polynomial.Chebyshev.measureT = 0 :=
+  Polynomial.Chebyshev.integral_eval_T_real_measureT_of_ne_zero (by omega : (n : ℤ) ≠ 0)
 
 end QM
