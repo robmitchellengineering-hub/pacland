@@ -496,16 +496,22 @@ theorem su2_character_orthogonality_ne {n m : ℕ} (h : n ≠ m) :
     have hI2 : IntervalIntegrable (fun θ : ℝ => Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ)) MeasureTheory.volume 0 Real.pi :=
       Continuous.intervalIntegrable (by continuity) 0 Real.pi
     rw [intervalIntegral.integral_div, intervalIntegral.integral_sub hI1 hI2]
+    have hdiff_arg : ∀ θ : ℝ, Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ) = Real.cos (((m - n : ℕ) : ℝ) * θ) := by
+      intro θ
+      rw [show (n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ = -(((m - n : ℕ) : ℝ) * θ) by
+        rw [Nat.cast_sub (by omega : n ≤ m)]
+        ring]
+      rw [Real.cos_neg]
     have hdiff : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ) = 0 := by
-      rw [intervalIntegral.integral_congr (fun θ _ => by
-        rw [show (n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ = -(((m - n : ℕ) : ℝ) * θ) by
-          rw [Nat.cast_sub (by omega : n ≤ m)]
-          ring]
-        rw [Real.cos_neg])]
+      rw [intervalIntegral.integral_congr (fun θ _ => hdiff_arg θ)]
       exact integral_cos_of_ne_zero (by omega : m - n ≠ 0)
+    have hsum_arg : ∀ θ : ℝ, Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ) = Real.cos (((n + m + 2 : ℕ) : ℝ) * θ) := by
+      intro θ
+      rw [show (n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ = ((n + m + 2 : ℕ) : ℝ) * θ by
+        norm_num [Nat.cast_add, Nat.cast_mul]
+        ring]
     have hsum : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ) = 0 := by
-      rw [intervalIntegral.integral_congr (fun θ _ => by
-        rw [show (n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ = ((n + m + 2 : ℕ) : ℝ) * θ by ring_nf])]
+      rw [intervalIntegral.integral_congr (fun θ _ => hsum_arg θ)]
       exact integral_cos_of_ne_zero (by omega : n + m + 2 ≠ 0)
     rw [hdiff, hsum]
     norm_num
@@ -540,7 +546,7 @@ theorem su2_character_orthogonality_diag {n : ℕ} :
             rw [intervalIntegral.integral_congr (fun θ _ => hsin_sq θ)]
         _ = (∫ θ in 0..Real.pi, (1 - Real.cos (2 * ((n + 1 : ℝ) * θ)))) / 2 := by
             rw [intervalIntegral.integral_div]
-        _ = (∫ θ in 0..Real.pi, (1 : ℝ) - ∫ θ in 0..Real.pi, Real.cos (2 * ((n + 1 : ℝ) * θ))) / 2 := by
+        _ = ((∫ θ in 0..Real.pi, (1 : ℝ)) - (∫ θ in 0..Real.pi, Real.cos (2 * ((n + 1 : ℝ) * θ)))) / 2 := by
             rw [intervalIntegral.integral_sub hI1 hI2]
         _ = Real.pi / 2 := by
             rw [hconst, hcos]
