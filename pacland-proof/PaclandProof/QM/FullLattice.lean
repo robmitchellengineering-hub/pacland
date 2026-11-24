@@ -139,6 +139,6 @@ leaves the trace invariant: `1 − 2·Re(conj a) = 1 − 2·Re a`, via `Complex.
 parametrization of `wilson_trace_reflection_invariant`. -/
 theorem su2WilsonAction_reflection_symmetric (a b : ℂ) :
     1 - 2 * (star a).re = 1 - 2 * a.re := by
-  rw [Complex.conj_re]
+  simp
 
 end QM
