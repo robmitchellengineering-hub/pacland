@@ -348,6 +348,8 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a Polyakov screening mass ≤ 0 (a divergent correlation length)",
         "oracle": ["lattice (SU(3) Polyakov correlator, N_t=2, N_s=6)"],
         "verdict": "IRREDUCIBLE",
+        "tier": "identity",
+        "tier": "identity",
         "why": "the lattice keeps returning a positive screening mass (m = 0.227) across sizes, so the claim survives every falsifier tried — but there is no sorry-free Lean certificate, so it is computable, not FORCED. Per docs/wolfram-mass-gap.md this is recorded as convergence evidence, not discarded.",
     },
     "ym-mass-gap-bulk-transition": {
@@ -356,6 +358,8 @@ CATALOG: dict[str, dict] = {
         "falsifier": "the transition jump vanishing as the lattice grows (a finite-volume artifact)",
         "oracle": ["lattice (SU(2) bulk-transition falsifier, β=1.8–2.6, N=4,6)"],
         "verdict": "IRREDUCIBLE",
+        "tier": "identity",
+        "tier": "identity",
         "why": "the jump persists across N (0.232 → 0.189) instead of vanishing, so the transition is a genuine bulk phase — but there is no sorry-free Lean certificate, so it is computable, not FORCED.",
     },
     "ym-d5-confinement": {
@@ -364,6 +368,8 @@ CATALOG: dict[str, dict] = {
         "falsifier": "the d=5 string tension decreasing toward zero across β (deconfinement)",
         "oracle": ["lattice (d=5 SU(2) string tension, β=2.0–3.2)"],
         "verdict": "IRREDUCIBLE",
+        "tier": "conditional",
+        "tier": "conditional",
         "why": "the d=5 tension stays flat (0.952, 0.936, 0.958, 1.034) rather than decreasing, so d=5 stays confining — but this is a nonzero string tension (confinement evidence), NOT a proof of the absence of a spectral mass gap.",
     },
     "ym-orbifold-curvature": {
@@ -373,6 +379,8 @@ CATALOG: dict[str, dict] = {
         "falsifier": "λ_min(FP) → 0 in the continuum / at the FMR boundary (the Gribov horizon), which would refute uniform positive curvature",
         "oracle": ["lattice (FP operator spectrum, lattice_ghost.py)"],
         "verdict": "FORCED",
+        "tier": "lemma",
+        "tier": "lemma",
         "why": "the integrated (measure-weighted) curvature is proved β-uniform positive — the pointwise ceiling at the antipode (su2_curvature_ceiling) carries measure e^{−2β}, so it integrates away (antipode_measure_suppression + effective_curvature_positive). The spectral gap rung survives the ceiling without a per-β computation.",
     },
     "ym-log-sobolev": {
@@ -382,6 +390,7 @@ CATALOG: dict[str, dict] = {
         "falsifier": "the log-Sobolev constant blowing up as λ_min(FP) → 0 (the horizon)",
         "oracle": ["lattice (FP spectrum → log-Sobolev constant, lattice_ghost.py)"],
         "verdict": "FORCED",
+        "tier": "conditional",
         "why": "the log-Sobolev constant 2/κ is proved positive off the integrated curvature κ (effective_curvature_positive), via the structural Bakry–Émery implication bakryEmery_logSobolev — the constant stays bounded away from zero whenever the good region wins, with no per-β computation.",
     },
     "ym-rg-contraction": {
@@ -391,6 +400,7 @@ CATALOG: dict[str, dict] = {
         "falsifier": "the RG contraction coefficient → 1 (no contraction) at the horizon or in the continuum",
         "oracle": ["lattice (block-spin RG flow, to be built)"],
         "verdict": "FORCED",
+        "tier": "conditional",
         "why": "the effective RG contraction rate is proved strictly below 1 (the good-region flow rate t·β·c dominates the antipode's measure e^{−2β}), and the contraction iterates to exponential decay (contraction_pow_le_exp + flow_rate_gap_lower_bound) — the mass gap is the contraction rate, derived, not per-β computed.",
     },
     "ym-casimir-gap": {
@@ -399,6 +409,8 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a finite-volume FP operator with spectral gap ≤ 0 (the Abelian u1_coulomb_tension_zero case, or the horizon collapsing the gap)",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
+        "tier": "lemma",
+        "tier": "lemma",
         "why": "casimir_su2 proves Σᵢ eᵢ×(eᵢ×v) = −2v; faddeevPopov_constant_mode_gap gives the constant-mode eigenvalue 2; massive_laplacian_gap shows the momentum modes only raise it. The finite-volume gap is exactly 2, volume-uniform. Mechanism 1 of 3 (the spectral gap) — scaffold:, a known result.",
     },
     "ym-running-coupling": {
@@ -407,6 +419,7 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a beta function with b₀ ≤ 0 (no asymptotic freedom), which would kill the exponent",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
+        "tier": "lemma",
         "why": "the heat-kernel determinant gives the exponent from a₂ ∝ b₀, kernel-checked. Mechanism 2 of 3 (the running coupling / scale) — scaffold:, a known result.",
     },
     "ym-fss-linear": {
@@ -415,6 +428,8 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a reflection-positive linear model whose two-point function exceeds the free propagator",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
+        "tier": "chain",
+        "tier": "chain",
         "why": "falk_bruch (reflection Cauchy–Schwarz, via real_inner_mul_inner_self_le) + character_orthonormal (Fourier isometry, via wInner_cWeight_eq_boole) + laplacian_symbol_1d give fss_join (the covariance bound). This is the LINEAR half of mechanism 3 (volume-uniformity) — scaffold:, a known result.",
     },
     "ym-volume-uniform-su2": {
@@ -424,6 +439,7 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a volume-uniform SU(2) character two-point function exceeding the free propagator, or the finite Casimir gap collapsing in the thermodynamic limit",
         "oracle": ["lattice (SU(2) character correlator, verify_volume_uniform_su2)", "kernel-checked (Lean) — NOT YET"],
         "verdict": "FREE",
+        "tier": "conditional",
         "why": "the linear FSS chain (ym-fss-linear) + the Casimir gap 2 (ym-casimir-gap) + the running coupling c (ym-running-coupling) are each FORCED, but the JOIN — the volume-uniform reflection-positivity estimate for the SU(2) character — is the open Clay rung. Mechanism 3 of 3 (volume-uniformity), the single missing step.",
     },
     "ym-mass-gap-running-coupling": {
@@ -433,6 +449,7 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a string tension that fails to decrease as β grows (no running), or that collapses to zero",
         "oracle": ["lattice (SU(2) Polyakov string tension, verify_mass_gap_running_coupling)"],
         "verdict": "FORCED",
+        "tier": "lemma",
         "why": "string_tension_runs proves σ(β)=e^{−cβ} is strictly decreasing in β (the asymptotic-freedom running) and string_tension_positive proves it never collapses — derived from the beta function's exponent, not a per-β computation. The earlier β=2.0–3.0 REFUTE was the strong-coupling regime (σ increasing there), which is outside the AF regime; the falsifier's β-range is the scan's regime, not the physics.",
     },
     "ym-fss-nonabelian-closable": {
@@ -442,6 +459,8 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a character reflected-correlation ⟨χ, Θχ⟩ exceeding the variance ⟨χ, χ⟩ (ratio > 1), or the ratio creeping toward 1 as N grows (gap-closing)",
         "oracle": ["lattice (SU(2) plaquette-trace reflected correlator, verify_fss_character_lever)"],
         "verdict": "FORCED",
+        "tier": "conditional",
+        "tier": "conditional",
         "why": "the covariance bound is proved OFF the reflection hΘ: wilson_kernel_posdef supplies the reflected-correlation positivity (0 ≤ ⟪χ,Θχ⟫), reflection_positivity_covariance_bound gives ⟪χ,Θχ⟫ ≤ ⟪χ,χ⟫, and volume_uniform_covariance_bound carries it through the thermodynamic limit. The ratio ≤ 1 is forced for every finite volume and survives the limit. The hΘ (the measure→kernel connection) is the single remaining hypothesis — the review's decisive measure-theoretic argument — not the harmonic-analysis bookkeeping it was previously reduced to.",
     },
     "ym-rank-one-posdef": {
@@ -451,6 +470,7 @@ CATALOG: dict[str, dict] = {
         "falsifier": "coefficients c with |Σ cᵢ f(θᵢ)|² < 0 (impossible — a square)",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
+        "tier": "lemma",
         "why": "a square is non-negative — the finite half of the Wilson-kernel positivity, already proved as the cos-kernel factorization.",
     },
     "ym-finite-truncation-posdef": {
@@ -460,6 +480,7 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a finite non-negative combination of PSD kernels that is not PSD (impossible — the closure)",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
+        "tier": "lemma",
         "why": "the PSD closure (posdef_sum/posdef_smul) makes every finite truncation PSD — the second finite half, already proved.",
     },
     "ym-posdef-limit": {
@@ -469,6 +490,8 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a sequence of PSD kernels whose pointwise limit is not PSD (impossible — the finite-sum/limit commutation)",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
+        "tier": "conditional",
+        "tier": "conditional",
         "why": "the 'prove the infinite without computing it' principle is already kernel-checked as posdef_of_tendsto — the infinite sum is replaced by a pointwise limit of finitely-proved PSD objects. All three halves of the Wilson-kernel positivity are now FORCED.",
     },
     "ym-h-theta-measure-kernel": {
@@ -499,6 +522,7 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a mass-gap lower bound that collapses as the lattice spacing a → 0 (the continuum limit killing the gap)",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
+        "tier": "conditional",
         "why": "the AF scale e^{−cβ} depends only on the coupling β (not the spacing), so the lower bound A·e^{−cβ} is spacing-uniform and monotone — the a→0 limit preserves the gap by the uniform bound, not by an explicit per-spacing computation.",
     },
     "ym-os-existence": {
@@ -508,6 +532,8 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a positive-definite kernel that fails to yield a Wightman Hilbert space, or a spacing-uniform mass that collapses",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
+        "tier": "conditional",
+        "tier": "conditional",
         "why": "the OS reconstruction is proved STRUCTURALLY: the Wilson kernel's PSD (wilson_kernel_posdef) is the OS3 input, wilson_reflection_self_adjoint is the OS2 symmetry, and os_reconstruction_full turns them into the Wightman Hilbert space + the mass gap. The honest Clay boundary (per the clay_assembly_final docstring) is the FULL continuum existence + the non-perturbative spectral gap Δ > 0 in 4D — the finite-lattice Wightman reconstruction is forced, the continuum existence remains open.",
     },
 
