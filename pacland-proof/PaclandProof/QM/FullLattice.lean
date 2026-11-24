@@ -250,14 +250,18 @@ theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
     (G.finsetWalkLength n u v).card ≤ G.maxDegree ^ n := by
   induction n generalizing u v with
   | zero =>
-    by_cases h : u = v <;> simp [SimpleGraph.finsetWalkLength, h]
+    simp only [SimpleGraph.finsetWalkLength]
+    split_ifs <;> simp
   | succ n ih =>
     simp only [SimpleGraph.finsetWalkLength]
     calc
       (Finset.univ.biUnion fun w : {w : V // w ∈ G.neighborSet u} => (G.finsetWalkLength n w v).map
         ⟨fun p => SimpleGraph.Walk.cons w.property p, fun _ _ h => by injection h with hpq; exact hpq⟩).card
-        ≤ ∑ w ∈ (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}), (G.finsetWalkLength n w v).card :=
+        ≤ ∑ w ∈ (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}), ((G.finsetWalkLength n w v).map
+            ⟨fun p => SimpleGraph.Walk.cons w.property p, fun _ _ h => by injection h with hpq; exact hpq⟩).card :=
             Finset.card_biUnion_le
+      _ ≤ ∑ w ∈ (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}), (G.finsetWalkLength n w v).card :=
+            Finset.sum_le_sum (fun w hw => Finset.card_map_le)
       _ ≤ ∑ w ∈ (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}), G.maxDegree ^ n :=
             Finset.sum_le_sum (fun w hw => ih w v)
       _ = (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}).card * G.maxDegree ^ n := by
