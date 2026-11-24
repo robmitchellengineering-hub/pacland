@@ -17,20 +17,28 @@ theorem connected_exists_visiting_walk {V : Type*} [Fintype V] [DecidableEq V] [
     intro s
     induction s using Finset.induction_on with
     | empty =>
-      exact ⟨SimpleGraph.Walk.nil, by intro x hx; exact (Finset.not_mem_empty x hx).elim⟩
+      exact ⟨SimpleGraph.Walk.nil, by intro x hx; simp at hx⟩
     | insert a s ha ih =>
       obtain ⟨w, hw⟩ := ih
-      obtain ⟨p₁, _⟩ := hG.exists_isPath v₀ a
-      let w' : G.Walk v₀ v₀ := w.append (p₁.append p₁.reverse)
-      refine ⟨w', fun x hx => ?_⟩
-      rw [SimpleGraph.Walk.support_append, List.mem_append]
-      by_cases hxa : x = a
-      · subst x
-        right
-        rw [SimpleGraph.Walk.support_append]
-        exact List.mem_append.mpr (Or.inl (SimpleGraph.Walk.end_mem_support p₁))
-      · left
-        exact hw x (by simpa [hxa] using hx)
+      by_cases hav : a = v₀
+      · subst a
+        exact ⟨w, fun x hx => by
+          by_cases hxv : x = v₀
+          · subst x; exact SimpleGraph.Walk.start_mem_support w
+          · exact hw x (by simpa [hxv] using hx)⟩
+      · obtain ⟨p₁, _⟩ := hG.exists_isPath v₀ a
+        let w' : G.Walk v₀ v₀ := w.append (p₁.append p₁.reverse)
+        refine ⟨w', fun x hx => ?_⟩
+        rw [SimpleGraph.Walk.support_append, List.mem_append]
+        by_cases hxa : x = a
+        · subst x
+          right
+          rw [SimpleGraph.Walk.support_append, List.tail_append]
+          exact List.mem_append.mpr (Or.inl (by
+            rw [List.mem_tail]
+            exact Or.inr (SimpleGraph.Walk.end_mem_support p₁)))
+        · left
+          exact hw x (by simpa [hxa] using hx)
   obtain ⟨w, hw⟩ := hwalk Finset.univ
   exact ⟨w, fun x => hw x (Finset.mem_univ x)⟩
 
