@@ -174,4 +174,13 @@ theorem cluster_activity_abs_lt_one (β x : ℝ) (hβ : 0 < β) (hx : x < 2) :
   rw [abs_of_pos (sub_pos.mpr hlt)]
   linarith
 
+/-- **The cluster expansion converges in the small-field region** — the activity's smallness
+(`cluster_activity_abs_lt_one`) makes the geometric series in the activity summable (the tower's
+`ClusterExpansion.cluster_expansion_converges_iff`). The concrete polymer expansion's convergence
+criterion, specific to the SU(2) measure. -/
+theorem cluster_expansion_converges_small_field (β x : ℝ) (hβ : 0 < β) (hx : x < 2) :
+    Summable (fun n : ℕ => (clusterActivity β x) ^ n) :=
+  (ClusterExpansion.cluster_expansion_converges_iff (z := clusterActivity β x)).2
+    (cluster_activity_abs_lt_one β x hβ hx)
+
 end QM
