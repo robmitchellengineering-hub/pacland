@@ -229,6 +229,6 @@ theorem cluster_weight_bound (ρ : ℝ) (n : ℕ) :
     |(-1 : ℝ) ^ n * ρ ^ (n + 1) / ((n : ℝ) + 1)| ≤ |ρ| ^ (n + 1) := by
   rw [abs_div, abs_mul, abs_pow]
   norm_num
-  exact div_le_self (pow_nonneg (abs_nonneg ρ) (n + 1)) (by have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n; linarith)
+  exact div_le_self (pow_nonneg (abs_nonneg ρ) (n + 1)) (by nlinarith [Nat.cast_nonneg (n : ℕ)])
 
 end QM
