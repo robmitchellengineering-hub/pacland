@@ -479,5 +479,46 @@ theorem integral_cos_of_ne_zero_int {k : ℤ} (hk : k ≠ 0) :
 theorem sin_mul_sin_eq (a b : ℝ) : Real.sin a * Real.sin b = (Real.cos (a - b) - Real.cos (a + b)) / 2 := by
   rw [Real.cos_sub, Real.cos_add]
   ring
+/-- **The full SU(2) character orthogonality (off-diagonal)** — the Chebyshev U / one-variable sin
+integral: `∫₀^π sin((n+1)θ)·sin((m+1)θ) dθ = 0` for `n ≠ m`, via the product-to-sum and the ℤ cos
+integral `integral_cos_of_ne_zero_int`. -/
+theorem su2_character_orthogonality_ne {n m : ℕ} (h : n ≠ m) :
+    ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((m + 1 : ℝ) * θ) = 0 := by
+  rw [intervalIntegral.integral_congr (fun θ _ => sin_mul_sin_eq ((n + 1 : ℝ) * θ) ((m + 1 : ℝ) * θ))]
+  rw [intervalIntegral.integral_div, intervalIntegral.integral_sub]
+  · have h1 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ) = 0 := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by
+        rw [show (n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ = ((n : ℤ) - (m : ℤ) : ℝ) * θ by
+          norm_num [Int.cast_sub, Int.cast_ofNat]
+          ring])]
+      exact integral_cos_of_ne_zero_int (by omega : (n : ℤ) - (m : ℤ) ≠ 0)
+    have h2 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ) = 0 := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by
+        rw [show (n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ = ((n : ℤ) + (m : ℤ) + 2 : ℝ) * θ by
+          norm_num [Int.cast_add, Int.cast_ofNat]
+          ring])]
+      exact integral_cos_of_ne_zero_int (by omega : (n : ℤ) + (m : ℤ) + 2 ≠ 0)
+    rw [h1, h2]
+    norm_num
+  · exact Continuous.intervalIntegrable (by fun_prop)
+  · exact Continuous.intervalIntegrable (by fun_prop)
+
+/-- **The full SU(2) character orthogonality (diagonal)** — `∫₀^π sin((n+1)θ)² dθ = π/2`, the diagonal of
+the sin orthogonality. -/
+theorem su2_character_orthogonality_diag {n : ℕ} :
+    ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((n + 1 : ℝ) * θ) = Real.pi / 2 := by
+  rw [intervalIntegral.integral_congr (fun θ _ => sin_mul_sin_eq ((n + 1 : ℝ) * θ) ((n + 1 : ℝ) * θ))]
+  rw [intervalIntegral.integral_div, intervalIntegral.integral_sub]
+  · have h0 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ - (n + 1 : ℝ) * θ) = Real.pi := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by rw [sub_self]; simp)]
+      simp
+    have h2 : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ + (n + 1 : ℝ) * θ) = 0 := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by
+        rw [show (n + 1 : ℝ) * θ + (n + 1 : ℝ) * θ = (2 * (n + 1) : ℝ) * θ by ring])]
+      exact integral_cos_of_ne_zero (by omega : 2 * (n + 1) ≠ 0)
+    rw [h0, h2]
+    norm_num
+  · exact Continuous.intervalIntegrable (by fun_prop)
+  · exact Continuous.intervalIntegrable (by fun_prop)
 
 end QM
