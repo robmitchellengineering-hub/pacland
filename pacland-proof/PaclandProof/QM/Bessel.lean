@@ -417,7 +417,8 @@ theorem wilson_heat_kernel_chebyshev (β θ : ℝ) :
   rw [jacobi_anger_real (2 * β) θ]
   congr 1
   · simp [Polynomial.Chebyshev.T_real_cos]
-  · apply tsum_congr
+  · congr 1
+    apply tsum_congr
     intro n
     rw [Polynomial.Chebyshev.T_real_cos]
 
