@@ -480,4 +480,68 @@ theorem sin_mul_sin_eq (a b : ℝ) : Real.sin a * Real.sin b = (Real.cos (a - b)
   rw [Real.cos_sub, Real.cos_add]
   ring
 
+/-- **The SU(2) `sin` character orthogonality (off-diagonal, `n ≠ m`)** — `∫₀^π sin((n+1)θ)·sin((m+1)θ) dθ = 0`.
+The product-to-sum identity `sin a · sin b = (cos(a−b) − cos(a+b))/2` turns the integrand into two cosine
+modes whose frequencies are the non-zero natural numbers `m − n` (the difference term, up to a sign absorbed
+by `cos (−x) = cos x`) and `n + m + 2` (the sum term). Both vanish by `integral_cos_of_ne_zero`. -/
+theorem su2_character_orthogonality_ne {n m : ℕ} (h : n ≠ m) :
+    ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((m + 1 : ℝ) * θ) = 0 := by
+  wlog hlt : n < m generalizing n m with H
+  · rw [intervalIntegral.integral_congr (fun θ _ => mul_comm _ _)]
+    exact H (by omega : m ≠ n) (by omega : m < n)
+  · rw [intervalIntegral.integral_congr
+      (fun θ _ => sin_mul_sin_eq ((n + 1 : ℝ) * θ) ((m + 1 : ℝ) * θ))]
+    have hI1 : IntervalIntegrable (fun θ : ℝ => Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ)) volume 0 Real.pi :=
+      Continuous.intervalIntegrable (by continuity) 0 Real.pi
+    have hI2 : IntervalIntegrable (fun θ : ℝ => Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ)) volume 0 Real.pi :=
+      Continuous.intervalIntegrable (by continuity) 0 Real.pi
+    rw [intervalIntegral.integral_div, intervalIntegral.integral_sub hI1 hI2]
+    have hdiff : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ) = 0 := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by
+        rw [show (n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ = -(((m - n : ℕ) : ℝ) * θ) by
+          rw [Nat.cast_sub (by omega : n ≤ m)]
+          ring]
+        rw [Real.cos_neg])]
+      exact integral_cos_of_ne_zero (by omega : m - n ≠ 0)
+    have hsum : ∫ θ in 0..Real.pi, Real.cos ((n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ) = 0 := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by
+        rw [show (n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ = ((n + m + 2 : ℕ) : ℝ) * θ by ring_nf])]
+      exact integral_cos_of_ne_zero (by omega : n + m + 2 ≠ 0)
+    rw [hdiff, hsum]
+    norm_num
+
+/-- **The SU(2) `sin` character norm (diagonal)** — `∫₀^π sin((n+1)θ)² dθ = π/2`. The double-angle form
+`sin² = (1 − cos 2·)/2` (not the product-to-sum) reduces the integral to `(∫₀^π 1 − ∫₀^π cos(2(n+1)θ))/2`;
+the constant integrates to `π` and the cosine mode vanishes by `integral_cos_of_ne_zero` at the non-zero
+natural frequency `2(n+1)`. -/
+theorem su2_character_orthogonality_diag {n : ℕ} :
+    ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((n + 1 : ℝ) * θ) = Real.pi / 2 := by
+  have hsin_sq : ∀ θ : ℝ, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((n + 1 : ℝ) * θ) =
+      (1 - Real.cos (2 * ((n + 1 : ℝ) * θ))) / 2 := by
+    intro θ
+    rw [← sq, Real.sin_sq_eq_half_sub]
+    ring_nf
+  have hcos : ∫ θ in 0..Real.pi, Real.cos (2 * ((n + 1 : ℝ) * θ)) = 0 := by
+    rw [intervalIntegral.integral_congr (fun θ _ => by
+      rw [show 2 * ((n + 1 : ℝ) * θ) = ((2 * (n + 1) : ℕ) : ℝ) * θ by ring_nf])]
+    exact integral_cos_of_ne_zero (by omega : 2 * (n + 1) ≠ 0)
+  have hconst : ∫ θ in 0..Real.pi, (1 : ℝ) = Real.pi := by
+    rw [intervalIntegral.integral_const]
+    norm_num
+  have hI1 : IntervalIntegrable (fun _ : ℝ => (1 : ℝ)) volume 0 Real.pi :=
+    Continuous.intervalIntegrable continuous_const 0 Real.pi
+  have hI2 : IntervalIntegrable (fun θ : ℝ => Real.cos (2 * ((n + 1 : ℝ) * θ))) volume 0 Real.pi :=
+    Continuous.intervalIntegrable (by continuity) 0 Real.pi
+  calc
+    ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((n + 1 : ℝ) * θ)
+        = ∫ θ in 0..Real.pi, (1 - Real.cos (2 * ((n + 1 : ℝ) * θ))) / 2 := by
+            rw [intervalIntegral.integral_congr (fun θ _ => hsin_sq θ)]
+        _ = (∫ θ in 0..Real.pi, (1 - Real.cos (2 * ((n + 1 : ℝ) * θ)))) / 2 := by
+            rw [intervalIntegral.integral_div]
+        _ = (∫ θ in 0..Real.pi, (1 : ℝ) - ∫ θ in 0..Real.pi, Real.cos (2 * ((n + 1 : ℝ) * θ))) / 2 := by
+            rw [intervalIntegral.integral_sub hI1 hI2]
+        _ = Real.pi / 2 := by
+            rw [hconst, hcos]
+            norm_num
+
 end QM
