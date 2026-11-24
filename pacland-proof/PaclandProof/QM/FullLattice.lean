@@ -155,18 +155,4 @@ def blockSpinSU2 (U : ℕ → Matrix.specialUnitaryGroup (Fin 2) ℂ) (j : ℕ) 
     Matrix.specialUnitaryGroup (Fin 2) ℂ :=
   U (2 * j) * U (2 * j + 1)
 
-/-- **The SU(2) block-spin preserves the total holonomy** — the ordered product of `2n` fine links equals
-the ordered product of `n` coarse links (the non-abelian version of `BlockSpin.blockSpin_preserves_holonomy`).
-The coarse field carries the same topological (Wilson-loop) information. -/
-theorem blockSpinSU2_preserves_holonomy (U : ℕ → Matrix.specialUnitaryGroup (Fin 2) ℂ) (n : ℕ) :
-    (∏ i ∈ Finset.range (2 * n), U i) = (∏ j ∈ Finset.range n, blockSpinSU2 U j) := by
-  induction' n with n ih
-  · simp [blockSpinSU2]
-  · rw [Finset.prod_range_succ]
-    rw [show 2 * (n + 1) = 2 * n + 2 by ring]
-    rw [Finset.prod_range_succ, Finset.prod_range_succ]
-    rw [ih]
-    dsimp [blockSpinSU2]
-    group
-
 end QM
