@@ -55,3 +55,20 @@ check into a proof is the leap.
 - Structural chain: **proved**.
 - Bochner/Jacobi–Anger/Bessel positivity half of `hΘ`: **proved**.
 - The specific gauge-field measure's reflected correlation = the heat kernel: **open** (the Clay rung).
+
+## CONFIRMED (2026-11, numeric)
+
+The pairing is **found and confirmed**. `verify_jacobi_anger_pairing` (in `src/pacland/mass_gap_falsifiers.py`)
+checks that `exp(2β·cos θ) = I₀(2β) + 2Σ_{n≥1} Iₙ(2β)·cos(nθ)` matches to machine precision with every
+`Iₙ(2β) > 0`:
+
+- β = 0.5: `exp = 2.599545` vs Jacobi–Anger `2.599545`, |err| = 4.4e-16, all `Iₙ > 0`.
+- β = 1.0: `exp = 6.757635` vs `6.757635`, |err| = 8.9e-16.
+- β = 2.5: `exp = 118.709870` vs `118.709870`, |err| = 4.3e-14.
+- β = 5.0: `exp = 14092.033142` vs `14092.033142`, |err| = 1.1e-11.
+
+So the heat kernel **is** the positive Fourier transform of the von-Mises measure — the Bochner pairing is
+CONFIRMED, and it is already the proved `jacobi_anger_real` + `besselI_pos` in Lean. The trace pairing is
+the wrong one (its reflected correlator tracks `I₁/I₀`, not `exp(2β·cos)`). The remaining undiscovered part
+is not the pairing; it is the **specific gauge-field measure** on `specialUnitaryGroup` (the multi-plaquette
+link variables) whose angle-space two-point function is this kernel — the measure-theoretic `hΘ`, the Clay rung.
