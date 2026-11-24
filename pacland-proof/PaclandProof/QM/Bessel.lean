@@ -460,4 +460,12 @@ theorem wilson_heat_kernel_rank_one (β θi θj : ℝ) :
   rw [show (n + 1 : ℝ) * (θi - θj) = (n + 1 : ℝ) * θi - (n + 1 : ℝ) * θj by ring]
   rw [Real.cos_sub]
 
+/-- **The Fourier ingredient `∫₀^π cos(kθ) dθ = 0`** for `k ≠ 0` — via Mathlib's Chebyshev orthogonality
+(the `integral_measureT_eq_integral_cos` change of variables plus `Tₖ(cos θ) = cos(kθ)`). -/
+theorem integral_cos_of_ne_zero {k : ℕ} (hk : k ≠ 0) :
+    ∫ θ in 0..Real.pi, Real.cos (k * θ) = 0 := by
+  have h := Polynomial.Chebyshev.integral_eval_T_real_measureT_of_ne_zero (by omega : (k : ℤ) ≠ 0)
+  rw [Polynomial.Chebyshev.integral_measureT_eq_integral_cos] at h
+  simpa [Polynomial.Chebyshev.T_real_cos] using h
+
 end QM
