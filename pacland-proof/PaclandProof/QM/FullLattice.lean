@@ -1,4 +1,5 @@
 import Mathlib
+import PaclandProof.QM.HeatKernel
 
 /-!
 # The full 4D lattice gauge-field configuration space and its reflection symmetry
