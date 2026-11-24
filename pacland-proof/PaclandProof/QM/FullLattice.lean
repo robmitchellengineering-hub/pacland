@@ -161,4 +161,17 @@ connection: `ρ = 1 − e^{−β(2 − Re Tr U)}`. Zero at the vacuum (`Re Tr U 
 noncomputable def clusterActivity (β : ℝ) (x : ℝ) : ℝ :=
   1 - Real.exp (-β * (2 - x))
 
+/-- **The cluster-expansion activity is below 1** in the small-field region: for `x < 2` (near the
+vacuum, `Re Tr U < 2`) and weak coupling `β > 0`, the activity `|1 − e^{−β(2−x)}| < 1` — the polymer
+expansion's convergence criterion (chaining `ClusterExpansion.cluster_expansion_converges_iff`). -/
+theorem cluster_activity_abs_lt_one (β x : ℝ) (hβ : 0 < β) (hx : x < 2) :
+    |clusterActivity β x| < 1 := by
+  dsimp [clusterActivity]
+  have hpos : 0 < Real.exp (-β * (2 - x)) := Real.exp_pos _
+  have hlt : Real.exp (-β * (2 - x)) < 1 := by
+    rw [← Real.exp_zero]
+    exact Real.exp_lt_exp.mpr (by nlinarith [hβ, sub_pos.mpr hx])
+  rw [abs_of_pos (sub_pos.mpr hlt)]
+  linarith
+
 end QM
