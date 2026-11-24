@@ -416,10 +416,11 @@ theorem wilson_heat_kernel_chebyshev (β θ : ℝ) :
         + 2 * ∑' n : ℕ, besselI (n + 1) (2 * β) * (Polynomial.Chebyshev.T ℝ (n + 1)).eval (Real.cos θ) := by
   rw [jacobi_anger_real (2 * β) θ]
   congr 1
-  · simp [Polynomial.Chebyshev.T_real_cos]
+  · simp
   · congr 1
     apply tsum_congr
     intro n
     rw [Polynomial.Chebyshev.T_real_cos]
+    norm_num
 
 end QM
