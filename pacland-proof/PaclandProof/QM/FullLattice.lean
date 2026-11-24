@@ -201,5 +201,14 @@ theorem polymer_expansion_subset {P : Type*} [Fintype P] [DecidableEq P] (ρ : P
         show ρ a * ∏ p ∈ x, ρ p = ∏ p ∈ insert a x, ρ p
         rw [Finset.prod_insert (by intro hax; exact ha (Finset.mem_powerset.1 hx hax))]]
   simpa [s] using h
+/-- **The linked-cluster expansion (first step)** — the logarithm of the partition function's product
+factorizes into the sum of the single-plaquette logs: `log ∏_p (1 + ρ p) = Σ_p log (1 + ρ p)` (Mathlib's
+`Real.log_prod`). This is the entry point of the connected-cluster expansion: the free energy is the sum
+over the plaquettes, and the connected clusters refine this by the Taylor series of `log (1 + ρ)`. -/
+theorem linked_cluster_log_prod {P : Type*} [Fintype P] [DecidableEq P] (ρ : P → ℝ)
+    (hne : ∀ p, 1 + ρ p ≠ 0) :
+    Real.log (∏ p : P, (1 + ρ p)) = ∑ p : P, Real.log (1 + ρ p) := by
+  rw [Finset.prod_univ, Finset.sum_univ]
+  exact Real.log_prod (s := (Finset.univ : Finset P)) (f := fun p => 1 + ρ p) (by intro p hp; exact hne p)
 
 end QM
