@@ -1,0 +1,50 @@
+{
+  "schema": "sextant-approaches",
+  "note": "For each open obligation, the known routes in and their next step. This is the 'generate approaches' substrate of the discovery loop — it records what has been tried and what is available, so the engine can pick the next attempt rather than start blind.",
+  "obligations": [
+    {
+      "name": "ym-linked-cluster-contraction",
+      "routes": [
+        {
+          "name": "block-spin / animals bound",
+          "next": "prove #{connected clusters of size n} ≤ Δ^(2(n−1)) — the spanning-tree / Euler-tour injection on top of walk_count_bound (proved)",
+          "state": "attempted",
+          "rungs": [
+            "Connected.exists_isTree_le (Mathlib): a connected graph has a spanning tree T ≤ G (IsTree T)",
+            "IsTree.existsUnique_path (Mathlib): a tree has a unique path between any two vertices",
+            "EULER TOUR (NOT in Mathlib): a tree on n vertices has a walk of length 2(n−1) visiting all n vertices (each edge traversed twice)",
+            "injection connected-subset → Euler-tour walk, then walk_count_bound gives #{clusters of size n} ≤ Δ^(2(n−1))"
+          ]
+        },
+        {
+          "name": "volume-uniform FSS",
+          "next": "prove the non-Abelian FSS estimate for the SU(2) character (the linear/Abelian version is proved: fss_join, falk_bruch)",
+          "state": "available",
+          "note": "equivalent to the block-spin route via refereeScalingLaw_iff_volumeUniformRatio"
+        }
+      ]
+    },
+    {
+      "name": "ym-log-sobolev",
+      "routes": [
+        {
+          "name": "log-Sobolev → mixing → clustering",
+          "next": "prove the log-Sobolev → mixing bridge, then chain clustering_iff_gap to the spectral gap",
+          "state": "available",
+          "note": "the clustering ⟺ gap bridge is already proved (clustering_iff_gap); the log-Sobolev → mixing leg is the open bit"
+        }
+      ]
+    },
+    {
+      "name": "ym-volume-uniform-su2",
+      "routes": [
+        {
+          "name": "non-Abelian FSS",
+          "next": "the SU(2) character two-point function dominated by the free propagator, uniform in the volume",
+          "state": "available",
+          "note": "same obligation as the block-spin contraction (refereeScalingLaw_iff_volumeUniformRatio)"
+        }
+      ]
+    }
+  ]
+}
