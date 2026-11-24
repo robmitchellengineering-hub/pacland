@@ -95,6 +95,13 @@
    "title": "Kill criteria \u2014 budget and stop rules per rung"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-ACCOUNTING.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-ACCOUNTING.md",
+   "summary": "This is the reconciliation Rob asked for: not two reductions, not five, but the whole accumulation collapsed into one dependency graph with three states and one root obligation.",
+   "title": "The mass gap \u2014 the complete mathematical accounting (2026-11-25)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-CONSOLIDATION.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-CONSOLIDATION.md",
