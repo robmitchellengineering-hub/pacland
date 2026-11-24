@@ -29,12 +29,4 @@ positivity half of the FSS reflection positivity for the full measure. -/
 theorem full_lattice_transfer_posdef {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (hT : T.PosSemidef) (n : ℕ) :
     (T ^ n).PosSemidef := Matrix.PosSemidef.pow hT n
 
-/-- **The full lattice's OS3 reflection positivity** — the reflected correlation `Σ fᵢ T(i,j) fⱼ` of the
-transfer matrix `T` is non-negative (the transfer matrix's PSD, the real `Matrix.PosSemidef` name). The
-full-measure OS3: the reflected correlation across the reflection plane is the transfer matrix's quadratic
-form, positive by the factorization's positivity. -/
-theorem full_lattice_os3 {m : ℕ} (T : Matrix (Fin m) (Fin m) ℝ) (hT : T.PosSemidef) (f : Fin m → ℝ) :
-    0 ≤ ∑ i : Fin m, ∑ j : Fin m, f i * T i j * f j := by
-  simpa using (hT.2 f)
-
 end QM
