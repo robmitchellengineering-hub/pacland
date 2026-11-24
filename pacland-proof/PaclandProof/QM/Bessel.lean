@@ -423,4 +423,20 @@ theorem wilson_heat_kernel_chebyshev (β θ : ℝ) :
     rw [Polynomial.Chebyshev.T_real_cos]
     norm_num
 
+/-- **The `hΘ` character orthogonality (the real-name Peter–Weyl for the SU(2)/SO(3) trace)** — the
+Chebyshev modes `Tₙ` are orthogonal under the Haar measure `measureT`: `∫ Tₙ·Tₘ ∂measureT = 0` for
+`n ≠ m`. This is the *structured* Haar integral the measure→kernel connection reduces to, taken from
+Mathlib's `Polynomial.Chebyshev` orthogonality rather than hand-rolled. -/
+theorem hTheta_character_orthogonality_ne {n m : ℕ} (h : n ≠ m) :
+    ∫ x, (Polynomial.Chebyshev.T ℝ n).eval x * (Polynomial.Chebyshev.T ℝ m).eval x
+      ∂Polynomial.Chebyshev.measureT = 0 :=
+  Polynomial.Chebyshev.integral_eval_T_real_mul_eval_T_real_measureT_of_ne h
+
+/-- **The `hΘ` character norm** — `∫ Tₙ² ∂measureT = π/2` for `n ≠ 0` (the Chebyshev modes are normalized
+up to `π/2` under the Haar measure). The second half of the orthogonality relation. -/
+theorem hTheta_character_norm {n : ℕ} (hn : n ≠ 0) :
+    ∫ x, (Polynomial.Chebyshev.T ℝ n).eval x * (Polynomial.Chebyshev.T ℝ n).eval x
+      ∂Polynomial.Chebyshev.measureT = Real.pi / 2 :=
+  Polynomial.Chebyshev.integral_T_real_mul_self_measureT_of_ne_zero hn
+
 end QM
