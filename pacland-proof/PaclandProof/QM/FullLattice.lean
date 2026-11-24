@@ -16,8 +16,6 @@ namespace QM
 
 open scoped BigOperators
 
-open scoped BigOperators
-
 /-- **The full Wilson action's reflection symmetry** — a sum over a finite set of plaquettes is invariant
 under the reflection Θ (a bijection on the plaquettes): `Σ_p w(Θ p) = Σ_p w p`. This is the multi-plaquette
 generalization of `wilson_action_reflection_symmetric`: the reflection permutes the plaquettes, and the
@@ -185,23 +183,5 @@ theorem cluster_expansion_converges_small_field (β x : ℝ) (hβ : 0 < β) (hx 
     Summable (fun n : ℕ => (clusterActivity β x) ^ n) :=
   (cluster_expansion_converges_iff (z := clusterActivity β x)).2
     (cluster_activity_abs_lt_one β x hβ hx)
-
-/-- **The polymer-expansion subset identity** — the algebraic core of the cluster expansion:
-`∏_p (1 + ρ p) = Σ_{S ⊆ P} ∏_{p∈S} ρ p` (multiplying out the factors selects a subset `S` of the
-plaquettes). Proved by induction on `Finset.univ` using Mathlib's `Finset.sum_powerset_insert`. -/
-theorem polymer_expansion_subset {P : Type*} [Fintype P] [DecidableEq P] (ρ : P → ℝ) :
-    ∏ p : P, (1 + ρ p) = ∑ S : Finset P, ∏ p ∈ S, ρ p := by
-  classical
-  let s : Finset P := Finset.univ
-  have h : ∏ p in s, (1 + ρ p) = ∑ S in s.powerset, ∏ p in S, ρ p := by
-    induction s using Finset.induction with
-    | empty => simp
-    | insert a s ha ih =>
-      rw [Finset.prod_insert ha, ih, Finset.sum_powerset_insert ha]
-      rw [Finset.sum_congr rfl (fun S hS => by
-        rw [Finset.prod_insert (by simpa using (Finset.mem_powerset.1 hS).1 ha)]
-        ring)]
-      ring
-  simpa [s] using h
 
 end QM
