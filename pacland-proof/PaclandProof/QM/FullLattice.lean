@@ -256,16 +256,12 @@ theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
     simp only [SimpleGraph.finsetWalkLength]
     calc
       (Finset.univ.biUnion fun w : G.neighborSet v => (G.finsetWalkLength n w v).map
-        ⟨fun p => Walk.cons w.property p, fun _ _ => by simp⟩).card
-          ≤ ∑ w : G.neighborSet v, (G.finsetWalkLength n w v).card := by
-            simpa using (Finset.card_biUnion_le (s := (Finset.univ : Finset G.neighborSet v))
-              (t := fun w => (G.finsetWalkLength n w v).map
-                ⟨fun p => Walk.cons w.property p, fun _ _ => by simp⟩))
-      _ ≤ ∑ w : G.neighborSet v, G.maxDegree ^ n := by
-            exact Finset.sum_le_sum (fun w _ => ih w)
-      _ = (Finset.univ : Finset G.neighborSet v).card * G.maxDegree ^ n := by simp
-      _ ≤ G.maxDegree * G.maxDegree ^ n := by
-            exact Nat.mul_le_mul_right _ (G.degree_le_maxDegree v)
+        ⟨fun p => SimpleGraph.Walk.cons w.property p, fun _ _ => by simp⟩).card
+        ≤ ∑ w : G.neighborSet v, (G.finsetWalkLength n w v).card := Finset.card_biUnion_le
+      _ ≤ ∑ w : G.neighborSet v, G.maxDegree ^ n := Finset.sum_le_sum (fun w _ => ih w)
+      _ = (Finset.univ : Finset G.neighborSet v).card * G.maxDegree ^ n := by
+          rw [Finset.sum_const, Finset.card_univ]
+      _ ≤ G.maxDegree * G.maxDegree ^ n := Nat.mul_le_mul_right _ (G.degree_le_maxDegree v)
       _ = G.maxDegree ^ (n + 1) := by rw [pow_succ]
 
 end QM
