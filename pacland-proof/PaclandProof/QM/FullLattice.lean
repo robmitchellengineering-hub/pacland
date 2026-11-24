@@ -207,8 +207,7 @@ factorizes into the sum of the single-plaquette logs: `log ∏_p (1 + ρ p) = Σ
 over the plaquettes, and the connected clusters refine this by the Taylor series of `log (1 + ρ)`. -/
 theorem linked_cluster_log_prod {P : Type*} [Fintype P] [DecidableEq P] (ρ : P → ℝ)
     (hne : ∀ p, 1 + ρ p ≠ 0) :
-    Real.log (∏ p : P, (1 + ρ p)) = ∑ p : P, Real.log (1 + ρ p) := by
-  rw [Finset.prod_univ, Finset.sum_univ]
+    Real.log (∏ p ∈ (Finset.univ : Finset P), (1 + ρ p)) = ∑ p ∈ (Finset.univ : Finset P), Real.log (1 + ρ p) := by
   exact Real.log_prod (s := (Finset.univ : Finset P)) (f := fun p => 1 + ρ p) (by intro p hp; exact hne p)
 
 end QM
