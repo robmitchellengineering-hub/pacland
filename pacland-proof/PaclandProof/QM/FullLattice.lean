@@ -1,6 +1,7 @@
 import Mathlib
 import PaclandProof.QM.HeatKernel
 import PaclandProof.QM.AsymptoticFreedom
+import PaclandProof.QM.ClusterExpansion
 
 /-!
 # The full 4D lattice gauge-field configuration space and its reflection symmetry
@@ -180,7 +181,7 @@ theorem cluster_activity_abs_lt_one (β x : ℝ) (hβ : 0 < β) (hx : x < 2) :
 criterion, specific to the SU(2) measure. -/
 theorem cluster_expansion_converges_small_field (β x : ℝ) (hβ : 0 < β) (hx : x < 2) :
     Summable (fun n : ℕ => (clusterActivity β x) ^ n) :=
-  (ClusterExpansion.cluster_expansion_converges_iff (z := clusterActivity β x)).2
+  (cluster_expansion_converges_iff (z := clusterActivity β x)).2
     (cluster_activity_abs_lt_one β x hβ hx)
 
 end QM
