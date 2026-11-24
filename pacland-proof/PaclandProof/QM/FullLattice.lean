@@ -233,5 +233,12 @@ theorem cluster_weight_bound (ρ : ℝ) (n : ℕ) :
     rw [abs_of_nonneg hpos]
     linarith
   exact div_le_self (pow_nonneg (abs_nonneg ρ) (n + 1)) hle
+/-- **The cluster weights are absolutely summable** — the geometric decay `cluster_weight_bound` plus the
+convergent geometric series `Σ |ρ|ⁿ` (for `|ρ| < 1`) gives the absolute summability of the connected-cluster
+weights. This is the convergence of the linked-cluster expansion. -/
+theorem cluster_weights_summable (ρ : ℝ) (h : |ρ| < 1) :
+    Summable (fun n : ℕ => |(-1 : ℝ) ^ n * ρ ^ (n + 1) / ((n : ℝ) + 1)|) := by
+  refine Summable.of_nonneg_of_le (fun n => abs_nonneg _) (fun n => cluster_weight_bound ρ n) ?_
+  simpa [pow_succ] using (summable_geometric_iff_norm_lt_one.mpr h).of_norm
 
 end QM
