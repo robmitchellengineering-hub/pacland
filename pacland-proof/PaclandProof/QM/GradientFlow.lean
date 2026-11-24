@@ -24,6 +24,19 @@ namespace QM
 angle (the argument of the holonomy). -/
 def onePlaquetteAction (β θ : ℝ) : ℝ := β * (1 - Real.cos θ)
 
+/-- **The geometric reflection Θ** (the time-reversal on the 1-plaquette SU(2) holonomy): `Θ θ = −θ`
+— the inversion of the holonomy angle. This is the reflection whose reflected correlation is the Wilson
+heat kernel (the `hΘ` pairing, `docs/HTHE-PAIRING.md`). -/
+def reflectionTheta (θ : ℝ) : ℝ := -θ
+
+/-- **The reflection symmetry of the Wilson action** — the 1-plaquette action is invariant under the
+geometric reflection `Θ`: `S(Θθ) = S(θ)`, since `cos` is even. This is the structural half of the FSS
+reflection positivity (the action is reflection-symmetric, so the measure is too), not a computed integral. -/
+theorem wilson_action_reflection_symmetric (β θ : ℝ) :
+    onePlaquetteAction β (reflectionTheta θ) = onePlaquetteAction β θ := by
+  dsimp [onePlaquetteAction, reflectionTheta]
+  rw [Real.cos_neg]
+
 /-- The action derivative: `S'(θ) = β·sin θ` — the Wilson (link) gradient of the 1-plaquette
 action. -/
 lemma onePlaquetteAction_deriv (β θ : ℝ) :
