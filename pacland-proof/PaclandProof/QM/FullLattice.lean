@@ -94,4 +94,15 @@ theorem full_lattice_mass_gap_uniform (A c β : ℝ) (hA : 0 < A) (hc : 0 < c) :
     0 < A * Real.exp (-c * β) ∧ StrictAnti (fun b : ℝ => A * Real.exp (-c * b)) :=
   HeatKernel.continuum_uniform_mass_gap A c β hA hc
 
+/-- **The Gibbs weight's reflection symmetry** — the physical Gibbs density `e^{−β·S}` is invariant under
+the reflection Θ: the full Wilson action's reflection symmetry (`full_wilson_action_reflection_symmetric`)
+gives `S(Θx) = S(x)`, hence `e^{−β·S(Θx)} = e^{−β·S(x)}`. This is the measure's reflection symmetry, the
+structural half of the FSS reflection positivity for the physical measure. -/
+theorem gibbs_weight_reflection_symmetric {P : Type*} [Fintype P] [DecidableEq P]
+    (β : ℝ) (U : P → Matrix.specialUnitaryGroup (Fin 2) ℂ) (Θ : P ≃ P) :
+    Real.exp (-β * wilsonAction U) = Real.exp (-β * wilsonAction (fun p => U (Θ p))) := by
+  congr 1
+  rw [wilsonAction, wilsonAction]
+  exact full_wilson_action_reflection_symmetric (fun p => wilsonPlaquette (U p)) Θ
+
 end QM
