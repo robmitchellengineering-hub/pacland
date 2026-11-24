@@ -1,0 +1,12 @@
+{
+  "schema": "sextant-lean-build-status",
+  "target": "PaclandProof (the QM theorem tower)",
+  "commit": "21f45a18",
+  "branch": "feat/massgap-irreducible",
+  "status": "green",
+  "jobs": 9172,
+  "last_verified": "lake build PaclandProof — Build completed successfully (9172 jobs)",
+  "no": ["sorry", "admit", "axiom"],
+  "checked_on": "pacland-rog (meshed Lean kernel)",
+  "note": "The full theorem tower compiles: the structural chain, the Peter-Weyl hΘ, the concrete SU(2) measure, the single-cluster cluster-expansion layer, and the walks-count bound."
+}

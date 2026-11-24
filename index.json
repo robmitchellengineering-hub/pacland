@@ -32,6 +32,13 @@
  "generated_from": "scripts/build_site_index.py",
  "items": [
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/BLOCK-SPIN-RG-FALSIFIER.md",
+   "kind": "doc",
+   "path": "docs/BLOCK-SPIN-RG-FALSIFIER.md",
+   "summary": "The claim: one block-spin RG step contracts the Yang\u2013Mills measure (positive contraction coefficient), so the mass gap is the RG contraction rate.",
+   "title": "Spec \u2014 the block-spin RG falsifier (`ym-rg-contraction`)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/CANDIDATE-LEDGER.md",
    "kind": "doc",
    "path": "docs/CANDIDATE-LEDGER.md",
@@ -53,11 +60,32 @@
    "title": "The discovery engine \u2014 architecture and state"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-HARVEST.md",
+   "kind": "doc",
+   "path": "docs/DISCOVERY-HARVEST.md",
+   "summary": "claimed, and what each route is falsified by.",
+   "title": "Discovery harvest \u2014 transfer-matrix methodologies and renormalisation schemes"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-PROCESS.md",
    "kind": "doc",
    "path": "docs/DISCOVERY-PROCESS.md",
    "summary": "shows that naming the types produces better hypotheses than an untyped baseline. That is exactly what RETRODICTION-TEST.md is for. Read this doc as a proposal to be tested, not an\u2026",
    "title": "The discovery process \u2014 jump taxonomy + jump-seeking loop"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/HTHE-PAIRING.md",
+   "kind": "doc",
+   "path": "docs/HTHE-PAIRING.md",
+   "summary": "The 4D Yang\u2013Mills mass gap is now conditionally complete: the structural chain wilsonkernelposdef \u2192 reflectionpositivitycovariancebound \u2192 spacinguniform \u2192 osreconstructionfull \u2192 m(\u03b2) \u2265\u2026",
+   "title": "The `h\u0398` pairing \u2014 what must be found, and the current candidate (2026-11)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/INFINITE-DIMENSIONAL-ISSUE.md",
+   "kind": "doc",
+   "path": "docs/INFINITE-DIMENSIONAL-ISSUE.md",
+   "summary": "the actual Faddeev\u2013Popov operator and the transfer operator act on the infinite-dimensional gauge-field space, and no finite truncation establishes their spectral properties. This file\u2026",
+   "title": "The infinite-dimensional issue \u2014 what the engine must find"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/KILL-CRITERIA.md",
@@ -67,11 +95,67 @@
    "title": "Kill criteria \u2014 budget and stop rules per rung"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-CONSOLIDATION.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-CONSOLIDATION.md",
+   "summary": "The mass gap m(\u03b2) \u2265 A\u00b7e^{\u2212c\u03b2} is three mechanisms multiplying, not one thing in isolation.",
+   "title": "The mass gap \u2014 the consolidated state (the hard think, 2026-11-22)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-FINAL-PLAN.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-FINAL-PLAN.md",
+   "summary": "not a single new lemma. The mass gap is one object, one bound, and its finite-dimensional half is assembled; the single open rung is the infinite-dimensional FSS step.",
+   "title": "The mass gap \u2014 the final plan (the combination)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-HORIZON-PLAN.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-HORIZON-PLAN.md",
+   "summary": "not the horizon. This is the computation that actually reaches the Gribov\u2013Zwanziger condition.",
+   "title": "Plan \u2014 renormalized continuum near-zero FP density at the GZ horizon"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-METHODS.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-METHODS.md",
    "summary": "4D Yang\u2013Mills mass-gap problem to a single named statement. This is not a solution of the Clay problem. It is a traceable methods record: what was assumed, what was proven, what was\u2026",
    "title": "The Yang\u2013Mills mass gap: a falsifier-first reduction to one open rung"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-PROOF-PLAN.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-PROOF-PLAN.md",
+   "summary": "one bound, and they are proven separately in the finite volume; the single open rung is the volume-uniformity that joins them.",
+   "title": "The mass-gap proof \u2014 the finished plan"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-REDUCTION.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-REDUCTION.md",
+   "summary": "This is the consolidation of the whole lattice + reflection-positivity + constructive-QFT arc. It records, in one place, the exact theorem chain that is proved and kernel-checked (lake\u2026",
+   "title": "The Yang\u2013Mills mass gap: a kernel-checked reduction to one hypothesis"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-STATE.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-STATE.md",
+   "summary": "This is the honest, complete record of where the 4D Yang\u2013Mills mass-gap work stands. It separates, with exact names and files: (A) what is really proved (Lean, no sorry), (B) what is\u2026",
+   "title": "Mass gap \u2014 the definitive state (2026-11-23, for independent review)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASTER-RESEARCH.md",
+   "kind": "doc",
+   "path": "docs/MASTER-RESEARCH.md",
+   "summary": "The single source of truth for the mass-gap program. It states the one metric, names the exact assumptions still doing the heavy lifting, separates the four competing tracks, gives each an\u2026",
+   "title": "SEXTANT \u2014 Master Research Document"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MILESTONE-3-CANDIDATES.md",
+   "kind": "doc",
+   "path": "docs/MILESTONE-3-CANDIDATES.md",
+   "summary": "and \"the bound is proven\": each cross-field candidate is written as a precise inequality, with its falsifier and the evidence we already have. None of these is claimed to hold \u2014 that is the\u2026",
+   "title": "Milestone 3 \u2014 the three candidate inequalities and their falsifiers"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MITCHELLS-LAWS.md",
@@ -81,6 +165,13 @@
    "title": "MITCHELL'S LAWS OF DUALITY COVARIANCE"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/NON-PERTURBATIVE-PLAN.md",
+   "kind": "doc",
+   "path": "docs/NON-PERTURBATIVE-PLAN.md",
+   "summary": "The perturbative side is complete (the scale, the controlled flow, the consistent routes). What remains is the single non-perturbative inequality that turns \"controlled flow\" into \"positive\u2026",
+   "title": "SEXTANT \u2014 Plan for the Non-Perturbative Inequality"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/OPEN-RUNGS.md",
    "kind": "doc",
    "path": "docs/OPEN-RUNGS.md",
@@ -88,11 +179,53 @@
    "title": "The two open rungs, stated precisely"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/PROOF-TARGETS.md",
+   "kind": "doc",
+   "path": "docs/PROOF-TARGETS.md",
+   "summary": "and the open running-coupling bound \u2014 each is an assembly of existing lemmas, which is exactly the loop's Level-1 capability.",
+   "title": "Proof targets \u2014 the \u03b2-dependence rung (queued for the churn loop)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/PROOF-VERIFICATION-STANDARD.md",
+   "kind": "doc",
+   "path": "docs/PROOF-VERIFICATION-STANDARD.md",
+   "summary": "Adopted from the Lean + Mathlib communities' certification of the Alp\u00f6ge Riemann-Hypothesis proof ([Lean verification of the Riemann\u2026",
+   "title": "Proof-verification standard \u2014 the four criteria (adopted 2026-11-22)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RESEARCH-PLAN.md",
+   "kind": "doc",
+   "path": "docs/RESEARCH-PLAN.md",
+   "summary": "The master document (MASTER-RESEARCH.md) is the why and what. This is the how, in order. Each action is a concrete build with a test and a PR; nothing is prose-only.",
+   "title": "SEXTANT \u2014 Research Plan (ordered actions)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RETRODICTION-TEST.md",
    "kind": "doc",
    "path": "docs/RETRODICTION-TEST.md",
    "summary": "The five-type taxonomy is retrospective until this passes. The test: run the loop blind on historical problems with the jump withheld, and compare it against the same pipeline without the\u2026",
    "title": "Retrodiction test \u2014 does the jump-seeking loop beat a baseline?"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RG-DISCOVERY-PLAN.md",
+   "kind": "doc",
+   "path": "docs/RG-DISCOVERY-PLAN.md",
+   "summary": "the direct lattice horizon probe as the thing to invest in.",
+   "title": "Plan \u2014 RG-discovery for the Yang\u2013Mills mass gap (SEXTANT cross-field search)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RUNNING-COUPLING-LEMMAS.md",
+   "kind": "doc",
+   "path": "docs/RUNNING-COUPLING-LEMMAS.md",
+   "summary": "scheme must produce to carry e^{\u2212c\u03b2} \u2014 the running coupling \u2014 and what it shares across schemes.",
+   "title": "The running-coupling lemma per scheme \u2014 what the harvest pulls for each"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/RUNNING-COUPLING-PLAN.md",
+   "kind": "doc",
+   "path": "docs/RUNNING-COUPLING-PLAN.md",
+   "summary": "with a genuine exponent.",
+   "title": "Plan \u2014 the running-coupling step (deriving `c` from the beta function)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-ASSESSMENT-LOG.md",
@@ -107,6 +240,27 @@
    "path": "docs/SEXTANT-CROSS-FIELD-PLAN.md",
    "summary": "this revision corrects them: (1) it treated \"an adjunction\" as a discovery, when the adjoints come free for every functor; (2) it implied FDM migration is \"lossless\", when \u03a3 fills gaps and\u2026",
    "title": "SEXTANT \u2014 the cross-field verified-discovery system (revision 2)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-MANUAL.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-MANUAL.md",
+   "summary": "This manual is written so any session (human or harness) can operate SEXTANT correctly. Read it before driving the engine; it is self-contained and gives the exact commands, function\u2026",
+   "title": "SEXTANT \u2014 User Manual"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-PROOF-TIERS.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-PROOF-TIERS.md",
+   "summary": "A sextant does not create the stars; it reads your position from them. The mass-gap program is giving SEXTANT its sharpest case study yet, because it forces the system to separate five\u2026",
+   "title": "SEXTANT proof tiers \u2014 the five-way distinction at the heart of the identity"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-ROADMAP.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-ROADMAP.md",
+   "summary": "North star: Milestone 3 \u2014 a new uniform analytic bound (or a new cross-structure connection), independently verified, more significant than another thousand simulation runs.",
+   "title": "SEXTANT \u2014 consolidated roadmap (assessed from Rob's messages)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SOLVING-STRING-THEORY.md",
@@ -135,6 +289,13 @@
    "path": "docs/TOOL-SEXTANT-DELIVERY.md",
    "summary": "The thing being shipped is the discovery engine \u2014 the whole autonomous loop \u2014 as one self-contained tool, in two delivery forms. This is the plan Rob confirmed (\"both is the answer\").",
    "title": "Tool Sextant \u2014 the delivery plan (both forms)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/TRANSFER-MATRIX-ROUTE.md",
+   "kind": "doc",
+   "path": "docs/TRANSFER-MATRIX-ROUTE.md",
+   "summary": "precisely so the open step is a single statement.",
+   "title": "The transfer-matrix / correlation-length route to the Milestone-3 bound"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/UNIFICATION-METHOD-v2.md",
@@ -723,6 +884,13 @@
    "path": "docs/external-claims-padgett.md",
    "summary": "Asked to look at Jason Padgett's research. This is the record of what exists, what in it is checkable, and what the checks returned. It is not a judgement of the man \u2014 the machine is\u2026",
    "title": "An outside claim through the same machine: Jason Padgett's QIH preprints"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/external-integration.md",
+   "kind": "doc",
+   "path": "docs/external-integration.md",
+   "summary": "SEXTANT ingests other people's domain data into the same registry its discovery engine searches, so a project can hand over its structures, properties, evidence and mappings and the engine\u2026",
+   "title": "Giving SEXTANT your data"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/fading-is-rayleigh.md",
@@ -1838,6 +2006,13 @@
    "title": "chemistry_certification_demo.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/churn_driver.py",
+   "kind": "script",
+   "path": "scripts/churn_driver.py",
+   "summary": "The churn-loop driver: feed each sorry-target to the LLM prover + kernel-check, up to `attempts`.",
+   "title": "churn_driver.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/climate_carbon.py",
    "kind": "script",
    "path": "scripts/climate_carbon.py",
@@ -2398,6 +2573,13 @@
    "title": "fine_tune_peft.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/flow_t0_avg.py",
+   "kind": "script",
+   "path": "scripts/flow_t0_avg.py",
+   "summary": "Config-averaged Wilson-flow t0 across beta \u2014 the finite-lattice running-coupling check.",
+   "title": "flow_t0_avg.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/glueball_mass.py",
    "kind": "script",
    "path": "scripts/glueball_mass.py",
@@ -2433,6 +2615,13 @@
    "title": "height_error.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/horizon_density_parallel.py",
+   "kind": "script",
+   "path": "scripts/horizon_density_parallel.py",
+   "summary": "Parallel horizon-density measurement \u2014 run N configs across all cores, gather the FP spectrum",
+   "title": "horizon_density_parallel.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/house_from_walks.py",
    "kind": "script",
    "path": "scripts/house_from_walks.py",
@@ -2445,6 +2634,13 @@
    "path": "scripts/house_map.py",
    "summary": "The house as a 3D map, inferred from the walk \u2014 and honest about what is inferred and what is invented.",
    "title": "house_map.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/hthe_pairing_sweep.py",
+   "kind": "script",
+   "path": "scripts/hthe_pairing_sweep.py",
+   "summary": "The hTheta pairing sweep (rented-CPU job): lock the trace\u2192Bessel vs heat-kernel separation across",
+   "title": "hthe_pairing_sweep.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/hypotheses.py",
@@ -2816,6 +3012,27 @@
    "path": "scripts/orbit_content_slice.py",
    "summary": "The orbit-content slice \u2014 does the integer content d = gcd(F,H) carry physics?",
    "title": "orbit_content_slice.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/phase0_horizon_landau.py",
+   "kind": "script",
+   "path": "scripts/phase0_horizon_landau.py",
+   "summary": "Phase 0 \u2014 Landau-gauge-fixed FP near-zero density at beta=2.5, N=8..16.",
+   "title": "phase0_horizon_landau.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/phase1_fmr.py",
+   "kind": "script",
+   "path": "scripts/phase1_fmr.py",
+   "summary": "Phase 1 \u2014 FMR (Gribov-copy) horizon probe: unfixed vs Landau vs FMR lambda_min.",
+   "title": "phase1_fmr.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/phase3_continuum.py",
+   "kind": "script",
+   "path": "scripts/phase3_continuum.py",
+   "summary": "Phase 3 \u2014 continuum: the full horizon chain across beta (FMR + FP lambda_min + string tension).",
+   "title": "phase3_continuum.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/photo_glue.py",
@@ -3537,6 +3754,13 @@
    "path": "scripts/verify_sw_mod.py",
    "summary": "Verify SW's linearised model against the authors' own Dynare file.",
    "title": "verify_sw_mod.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/verify_theorem.sh",
+   "kind": "script",
+   "path": "scripts/verify_theorem.sh",
+   "summary": "Verify a theorem against the four-criteria standard (docs/PROOF-VERIFICATION-STANDARD.md).",
+   "title": "verify_theorem.sh"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/walk_plot.py",

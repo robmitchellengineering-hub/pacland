@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEXTANT — research &amp; verification environment</title>
 <style>
-/* SEXTANT — dark scientific interface, polished and self-contained */
-*, *::before, *::after { box-sizing: border-box; }
+/* SEXTANT redesign — visual layer
+   Integration: link this file after the existing inline stylesheet in web/sextant.html.
+   Add the semantic classes documented in IMPLEMENTATION-NOTES.md. */
 :root {
   color-scheme: dark;
   --sx-bg: #080d16;
@@ -21,183 +22,131 @@
   --sx-red: #ff8585;
   --sx-radius: 18px;
   --sx-shadow: 0 18px 60px rgba(0,0,0,.28);
-  --gutter: 56px;
 }
 html { scroll-behavior: smooth; }
 body {
-  margin: 0;
   color: var(--sx-text);
   background:
-    radial-gradient(ellipse at 72% 6%, rgba(39,125,154,.16), transparent 34rem),
-    radial-gradient(ellipse at 20% 20%, rgba(37,76,131,.15), transparent 36rem),
+    radial-gradient(ellipse at 78% 4%, rgba(39,125,154,.18), transparent 34rem),
+    radial-gradient(ellipse at 8% 22%, rgba(37,76,131,.15), transparent 36rem),
     var(--sx-bg);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
 }
-a { color: var(--sx-cyan); text-decoration: none; text-underline-offset: 3px; }
-a:hover { color: #b5f3fa; text-decoration: underline; }
-
-/* layout */
-.wrap { max-width: 1180px; margin: 0 auto; padding: 28px 24px 96px; }
-section { margin-top: 64px; padding-inline: var(--gutter); }
-h1, h2, h3 { color: var(--sx-text); line-height: 1.12; letter-spacing: -.03em; word-spacing: .06em; }
-h1 { font-size: clamp(2.8rem, 7vw, 5.4rem); margin: .12em 0 .14em; }
-h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); margin: 0 0 .7em; }
-h3 { font-size: 1.1rem; }
+a { color: var(--sx-cyan); text-underline-offset: 3px; }
+a:hover { color: #b5f3fa; }
+.wrap { width: min(1180px, calc(100% - 40px)); max-width: none; margin: 0 auto; padding: 26px 0 80px; }
 .kicker, .eyebrow {
-  color: var(--sx-cyan); font: 700 11.5px/1.4 ui-monospace, SFMono-Regular, monospace;
-  letter-spacing: .14em; text-transform: uppercase; margin: 0 0 .6rem;
+  color: var(--sx-cyan); font: 700 .72rem/1.4 ui-monospace, SFMono-Regular, monospace;
+  letter-spacing: .16em; text-transform: uppercase;
 }
-.lede { max-width: 72ch; color: #c4d2e0; font-size: clamp(1.05rem, 2vw, 1.3rem); margin: 0 0 1.4rem; }
-section p, section li { max-width: 72ch; }
-.small, .catdesc { color: var(--sx-muted); font-size: .86rem; }
-p { color: #c7d5e3; }
-
-/* hero */
-.wordmark {
-  margin: 0 0 .2em;
-  font: 800 clamp(2rem, 5.5vw, 3.4rem)/1 ui-monospace, SFMono-Regular, monospace;
-  letter-spacing: .3em; text-transform: uppercase; color: var(--sx-cyan);
-  text-shadow: 0 0 28px rgba(98,215,232,.4), 0 0 2px rgba(98,215,232,.6);
-}
+h1, h2, h3 { color: var(--sx-text); line-height: 1.12; letter-spacing: -.035em; }
+h1 { font-size: clamp(3rem, 8vw, 6.2rem); margin: .15em 0 .12em; }
+h2 { font-size: clamp(1.65rem, 3vw, 2.5rem); margin: 2.8rem 0 .8rem; }
+h3 { font-size: 1.12rem; }
+.lede { max-width: 760px; color: #c4d2e0; font-size: clamp(1.05rem, 2vw, 1.3rem); }
 .headline {
   position: relative; overflow: hidden; isolation: isolate;
-  margin: 8px 0 8px; padding: clamp(32px, 5vw, 68px) var(--gutter);
-  border: 1px solid rgba(98,215,232,.25); border-radius: 26px;
+  margin: 28px 0 30px !important; padding: clamp(28px, 5vw, 64px) !important;
+  border: 1px solid rgba(98,215,232,.25); border-radius: 26px !important;
   background:
-    linear-gradient(115deg, rgba(12,27,46,.97), rgba(14,48,65,.88) 62%, rgba(48,39,28,.76));
+    linear-gradient(115deg, rgba(12,27,46,.97), rgba(14,48,65,.88) 62%, rgba(48,39,28,.76)) !important;
   box-shadow: var(--sx-shadow);
 }
 .headline:after {
-  content: ""; position: absolute; z-index: -1; width: 560px; height: 560px;
-  right: -120px; top: -220px; border-radius: 50%;
+  content: ""; position: absolute; z-index: -1; width: 520px; height: 520px;
+  right: -100px; top: -210px; border-radius: 50%;
   border: 1px solid rgba(98,215,232,.2);
-  box-shadow: 0 0 0 32px rgba(98,215,232,.03), 0 0 0 72px rgba(98,215,232,.02),
+  box-shadow: 0 0 0 32px rgba(98,215,232,.025), 0 0 0 72px rgba(98,215,232,.02),
               0 0 0 118px rgba(98,215,232,.015);
 }
-.headline h1 { max-width: 900px; }
-.headline .lede { max-width: 62ch; }
-
-/* buttons — pill primary / ghost, consistent */
-.btn, button.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 48px; padding: 12px 24px; font-size: 17px;
-  color: #06121b; background: var(--sx-cyan); border: 1px solid var(--sx-cyan);
-  border-radius: 999px; text-decoration: none; font: 700 .92rem/1 inherit; cursor: pointer;
-  transition: transform .16s ease, box-shadow .16s ease, background .16s ease, border-color .16s ease;
+.headline h2 { max-width: 850px; font-size: clamp(2.1rem, 5.3vw, 4.6rem) !important; }
+.headline p { max-width: 780px; }
+.callout, .out, .field, .proof, .claimlist {
+  color: var(--sx-text); background: rgba(16,26,41,.82); border: 1px solid var(--sx-line);
+  border-radius: var(--sx-radius); box-shadow: 0 8px 28px rgba(0,0,0,.12);
 }
-.btn:hover, button.btn:hover { text-decoration: none; transform: translateY(-1px); box-shadow: 0 10px 24px rgba(98,215,232,.22); }
-.btn.ghost {
-  color: var(--sx-text); background: rgba(255,255,255,.05); border-color: rgba(98,215,232,.5);
-}
-.btn.ghost:hover { color: #b5f3fa; border-color: rgba(98,215,232,.5); background: rgba(98,215,232,.08); box-shadow: none; }
-
-/* category pills + chips */
-.cats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-.cats button {
-  color: #c8d8e7; background: #16222f; border: 1px solid rgba(151,181,211,.28);
-  border-radius: 999px; padding: 9px 15px; font: 650 .86rem/1 inherit; cursor: pointer;
-  transition: transform .14s ease, border-color .14s ease, background .14s ease, color .14s ease;
-}
-.cats button:hover { border-color: rgba(98,215,232,.5); color: #eaf6fb; }
-.cats button.active { color: #06121b; background: var(--sx-cyan); border-color: var(--sx-cyan); }
-.chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 2px; }
-.chip {
-  font: 700 .66rem/1.5 ui-monospace, SFMono-Regular, monospace; letter-spacing: .09em;
-  text-transform: uppercase; padding: 3px 10px; border-radius: 999px; border: 1px solid; white-space: nowrap;
-}
-.chip-kernel { color: var(--sx-green); border-color: rgba(115,214,160,.4); background: rgba(115,214,160,.08); }
-.chip-num { color: var(--sx-cyan); border-color: rgba(98,215,232,.4); background: rgba(98,215,232,.08); }
-
-/* the claim explorer grid — the centrepiece */
-.explorer-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; margin-bottom: 18px; }
-.explorer-filters .catdesc { flex: 1 1 100%; }
-.grid { display: grid; grid-template-columns: minmax(320px, 384px) minmax(0, 1fr); gap: 24px; align-items: stretch; margin: 0; }
-.explorer-foot { grid-column: 1 / -1; margin-top: 16px; font-size: 13px; }
-.side { display: flex; flex-direction: column; gap: 10px; }
+.callout { border-left: 3px solid var(--sx-cyan); padding: 18px 22px; }
+.callout.does-not { border-left-color: var(--sx-amber); }
+.callout p { color: #c7d5e3; }
+.grid { grid-template-columns: minmax(240px, .78fr) minmax(0, 1.6fr); gap: 20px; }
 .searchbox, input, textarea, select {
   color: var(--sx-text); background: #0a1320; border: 1px solid var(--sx-line);
   border-radius: 11px; padding: 12px 14px; font: inherit;
 }
 .searchbox:focus, input:focus, textarea:focus, select:focus {
-  outline: 2px solid rgba(98,215,232,.65); outline-offset: 2px; border-color: transparent;
+  outline: 2px solid rgba(98,215,232,.65); outline-offset: 2px;
 }
-::placeholder { color: #8da0b4; }
-.claimlist { list-style: none; margin: 0; padding: 0; overflow-y: auto; max-height: 552px; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(151,181,211,.35) transparent; border: 1px solid var(--sx-line); border-radius: 14px; background: rgba(16,26,41,.6); }
-.claimlist li {
-  display: flex; align-items: baseline; gap: 9px; color: #dce8f3;
-  padding: 12px 15px; border-bottom: 1px solid var(--sx-line); cursor: pointer; font-size: .94rem;
-}
-.claimlist li:last-child { border-bottom: none; }
+.claimlist { overflow: auto; max-height: 65vh; }
+.claimlist li { color: #dce8f3; border-bottom: 1px solid var(--sx-line); padding: 12px 14px; }
 .claimlist li:hover, .claimlist li.active { background: rgba(98,215,232,.09); }
-.claimlist li .glyph { flex: none; }
-.claimlist li .mini { margin-left: auto; font: 600 11px/1 ui-monospace, monospace; padding: 4px 9px; border-radius: 999px; background: #16232f; border: 1px solid rgba(115,214,160,.28); color: var(--sx-green); }
-
-/* detail + proof panels */
-.out, .field, .proof {
-  color: var(--sx-text); background: rgba(16,26,41,.82); border: 1px solid var(--sx-line);
-  border-radius: var(--sx-radius); box-shadow: 0 8px 28px rgba(0,0,0,.12);
+.cats button, .btn, button {
+  border-radius: 999px; font: 650 .9rem/1.2 inherit; cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease;
 }
-.out { padding: clamp(18px, 3vw, 30px); scroll-margin-top: 24px; min-height: 420px; display: flex; flex-direction: column; justify-content: center; }
-.out h2 { margin-top: 0; }
-.big { font-size: 1.5rem; font-weight: 700; }
+.cats button { color: #c8d8e7; background: #101b2a; border: 1px solid var(--sx-line); padding: 9px 13px; }
+.cats button.active { color: #06121b; background: var(--sx-cyan); border-color: var(--sx-cyan); }
+.btn, button.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 11px 18px; color: #07141d; background: var(--sx-cyan);
+  border: 1px solid var(--sx-cyan); border-radius: 999px; text-decoration: none;
+  font-weight: 750;
+}
+.btn:hover, button:hover { transform: translateY(-1px); }
+.btn.ghost { color: var(--sx-text); background: rgba(255,255,255,.035); border-color: var(--sx-line); }
+.proof { padding: 18px 20px; }
+.proof dt { margin-top: 13px; color: var(--sx-cyan); font: 700 .7rem ui-monospace, monospace; letter-spacing: .12em; }
+.proof dd { color: #cbd8e5; margin: 4px 0 8px; }
+.field { padding: 18px; }
+.field h3 { color: var(--sx-text); }
+.field p, .small, .catdesc { color: var(--sx-muted); }
+.field .tag { color: var(--sx-cyan); background: rgba(98,215,232,.08); border: 1px solid rgba(98,215,232,.18); padding: 5px 9px; border-radius: 999px; }
+.out { padding: clamp(18px, 3vw, 30px); }
 .verdict-FORCED { color: var(--sx-green); }
 .verdict-FREE { color: var(--sx-amber); }
 .verdict-IMPOSSIBLE { color: var(--sx-red); }
 .verdict-IRREDUCIBLE { color: var(--sx-amber); }
-.proof { padding: 16px 20px; margin: 14px 0; }
-.proof dt { margin-top: 13px; color: var(--sx-cyan); font: 700 .7rem ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; }
-.proof dd { color: #cbd8e5; margin: 4px 0 8px; }
-.plain h3 { color: var(--sx-cyan); font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; margin: 1.1em 0 .3em; }
-
-/* callouts + fields */
-.callout { border-left: 3px solid var(--sx-cyan); padding: 18px 22px; border-radius: 14px; background: rgba(16,26,41,.7); border: 1px solid var(--sx-line); margin: 16px 0; }
-.callout.does-not { border-left-color: var(--sx-amber); }
-.callout p { color: #c7d5e3; margin: .35em 0; }
-.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 16px; }
-.field { padding: 18px; }
-.field h3 { margin: 0 0 .3rem; font-size: 1rem; }
-.field p { margin: .2rem 0 .6rem; font-size: .88rem; color: var(--sx-muted); }
-.field .tag { display: inline-block; font-size: .76rem; padding: 4px 10px; border-radius: 999px; color: #a8dbe6; background: rgba(98,215,232,.07); border: 1px solid rgba(98,215,232,.22); margin: .12rem .25rem 0 0; cursor: pointer; }
-
-/* steps + actions + code */
-.steps { color: #c7d5e3; padding-left: 1.4em; margin: 0; list-style: none; }
-.steps li { margin: 0 0 .55em; }
-.steps li::marker { content: ''; }
-.steps strong::after { content: ' —'; }
-.actions { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0; }
-pre { background: #050a11 !important; border: 1px solid var(--sx-line); border-radius: 14px; padding: 18px !important; overflow-x: auto; }
-code { color: #bceef4; background: rgba(98,215,232,.08); border-radius: 5px; padding: .12em .38em; font-size: .92em; }
-pre code { background: none; padding: 0; }
-
-.site-footer { border-top: 1px solid var(--sx-line); margin-top: 72px; padding: 24px var(--gutter); display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--sx-muted); }
+code { color: #bceef4; background: rgba(98,215,232,.08); border-radius: 5px; padding: .12em .38em; }
+pre { background: #050a11 !important; border: 1px solid var(--sx-line); border-radius: 14px; padding: 18px !important; }
+.actions { gap: 10px; }
+.small { font-size: .84rem; }
+section, .field, .out, .callout { scroll-margin-top: 24px; }
+.chips { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 4px; }
+.chip { font:700 .66rem/1.5 ui-monospace,SFMono-Regular,monospace; letter-spacing:.09em; text-transform:uppercase; padding:3px 9px; border-radius:999px; border:1px solid; white-space:nowrap; }
+.chip-kernel { color:var(--sx-green); border-color:rgba(115,214,160,.4); background:rgba(115,214,160,.08); }
+.chip-num { color:var(--sx-cyan); border-color:rgba(98,215,232,.4); background:rgba(98,215,232,.08); }
+.claimlist li .mini { margin-left:auto; font:600 .66rem ui-monospace,monospace; color:var(--sx-green); }
+.badge { display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid var(--sx-line);
+  font:700 .66rem/1.6 ui-monospace,SFMono-Regular,monospace; letter-spacing:.09em; text-transform:uppercase;
+  vertical-align:1px; }
+.badge.green { color:var(--sx-green); border-color:rgba(115,214,160,.45); background:rgba(115,214,160,.10); }
 @media (max-width: 760px) {
-  :root { --gutter: 20px; }
-  .wrap { padding: 16px 16px 64px; }
+  .wrap { width: min(100% - 28px, 680px); padding-top: 18px; }
   .grid { grid-template-columns: 1fr; }
   .claimlist { max-height: 42vh; }
-  .headline { border-radius: 20px; }
-  .headline h1 { font-size: clamp(1.9rem, 11.5vw, 2.9rem); line-height: 1.12; }
-  .actions { flex-direction: column; }
+  .headline { border-radius: 20px !important; }
   .actions .btn { width: 100%; }
-  section { margin-top: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { transition: none !important; animation: none !important; }
+  *, *:before, *:after { transition: none !important; animation: none !important; }
 }
+.mermaid { background: transparent; }
+.mermaid svg { max-width: 100%; height: auto; }
 </style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark', themeVariables: { background: '#0d1522', primaryColor: '#142235', primaryTextColor: '#edf4fb', primaryBorderColor: '#62d7e8', lineColor: '#9aadc1', fontSize: '13px' } });
+</script>
 </head>
 <body>
 <div class="wrap">
 
   <!-- A · HERO -->
   <header class="headline">
-    <p class="wordmark">SEXTANT</p>
-    <p class="kicker">a proof engine, not a calculator</p>
-    <h1>Relations, never values.</h1>
-    <p class="lede">The universe has been answering <strong>yes or no</strong> all along — SEXTANT is how you hear it. Ask a claim, and it runs the falsifier, checks the machine theorem, and hands you the verdict: <strong>FORCED</strong>, <strong>FREE</strong>, or <strong>IMPOSSIBLE</strong> — each scoped to its stated assumptions and recorded with its limits.</p>
+    <p class="kicker">SEXTANT — research &amp; verification</p>
+    <h1>Navigate the space of what can be known</h1>
+    <p class="lede">SEXTANT is a research and verification environment for exploring what follows from stated mathematical structures, what remains free, and what evidence could rule a claim out.</p>
     <p class="actions">
       <a class="btn" href="#claims">Explore verified claims</a>
       <a class="btn ghost" href="./node.html">Open the SEXTANT node</a>
@@ -218,18 +167,6 @@ pre code { background: none; padding: 0; }
     <p class="small">A simulation is not a formal proof, and a claim that survives one stage may still fail the next. Each claim below says which stage it has reached and which it has not.</p>
   </section>
 
-  <section id="research">
-    <p class="eyebrow">The research machine</p>
-    <h2>What it is trying to discover, right now</h2>
-    <p>SEXTANT is not a finished answer — it is an instrument with a live research queue. Three open fronts:</p>
-    <div class="callout">
-      <p><strong>The Yang–Mills mass gap.</strong> The SU(3) lattice keeps returning a positive screening mass, and the claim survives every falsifier tried — but there is no closed-form proof yet, so it is <strong class="verdict-IRREDUCIBLE">IRREDUCIBLE</strong>: computable, not FORCED.</p>
-      <p><strong>The h12≥5 sampler yield.</strong> Whether degree-2 instanton corrections fix the low yield is still open — an earlier "fix" was withdrawn because it was confounded.</p>
-      <p><strong>Cross-field transfer.</strong> The frontier of genuinely new candidate links — a mapping only counts when it yields a new prediction, a proof technique, or a faster experiment.</p>
-    </div>
-    <p class="small">Every claim runs the same loop: frame → generate → falsify → verify → record. A claim earns its verdict only when its falsifier actually ran and its proof (where one exists) actually checked.</p>
-  </section>
-
   <section id="verdicts">
     <p class="eyebrow">Verdict vocabulary</p>
     <h2>Three verdicts, scoped to their assumptions</h2>
@@ -245,20 +182,16 @@ pre code { background: none; padding: 0; }
     <p class="eyebrow">Claim explorer</p>
     <h2>Inspect a claim, proof and limitation together</h2>
     <p>Every claim carries a theorem, a falsifier, an oracle, the evidence, a plain-language explanation, and what it does <em>not</em> say. Distinguish a formal result checked by the Lean kernel from a numerical test: a falsifier is evidence, not by itself a proof.</p>
-    <div class="explorer">
-      <div class="explorer-filters">
+    <div class="grid">
+      <div class="side">
         <div id="cats" class="cats"></div>
         <div id="catdesc" class="catdesc"></div>
-        <input id="q" class="searchbox" type="search" placeholder="Search claims — e.g. entanglement, clone, gravity">
+        <input id="q" class="searchbox" type="search" placeholder="search… e.g. 'entanglement', 'clone', 'gravity'">
+        <ul id="list" class="claimlist"></ul>
+        <div class="small" id="claimcount"></div>
       </div>
-      <div class="grid">
-        <div class="side">
-          <ul id="list" class="claimlist"></ul>
-          <div class="small explorer-foot" id="claimcount"></div>
-        </div>
-        <div id="out" class="out">
-          <p class="small">Pick a claim to see its proof and a one-page plain-speak explainer.</p>
-        </div>
+      <div id="out" class="out">
+        <p class="small">Pick a claim to see its proof and a one-page plain-speak explainer.</p>
       </div>
     </div>
   </section>
@@ -277,24 +210,65 @@ pre code { background: none; padding: 0; }
     </div>
   </section>
 
-  <section id="evidence">
-    <p class="eyebrow">The evidence</p>
-    <h2>What the falsifiers have actually returned</h2>
-    <p>Alongside the theorem catalogue, the machine runs empirical falsifiers and records the outcome. <strong>PASS-2</strong> means reproduced with a different parameterisation; <strong>PASS-1</strong> means one run, provisional and never a result.</p>
-    <div class="callout" id="evidence-list"></div>
+  <section id="proof-graph">
+    <p class="eyebrow">Proof dependency graph</p>
+    <h2>Exactly how far the proof goes</h2>
+    <div class="callout">
+      <p><strong>Lean build:</strong> <span class="badge green">green</span> <code>lake build PaclandProof</code> compiles at <code>21f45a18</code> — <strong>9172 jobs</strong>, no <code>sorry</code>/<code>admit</code>/<code>axiom</code>, checked on the meshed Lean kernel (pacland-rog).</p>
+      <p><strong>Five tiers:</strong> identity → lemma → chain → conditional → result. Every arrow below is a checked dependency; the red node is the open hypothesis <strong>H</strong>, the only thing between a proved conditional and the result.</p>
+    </div>
+    <pre class="mermaid">
+flowchart TB
+  subgraph T1["TIER 1 · identity"]
+    I1["polymer_expansion_subset<br/>∏(1+ρ) = Σ_S ∏ρ"]
+  end
+  subgraph T2["TIER 2 · lemma"]
+    L1["walk_count_bound<br/>#(walks of length n) ≤ Δⁿ"]
+    L2["cluster_weight_bound<br/>|weight| ≤ |ρ|ⁿ⁺¹"]
+    L3["cluster_activity_abs_lt_one<br/>|ρ| < 1"]
+  end
+  subgraph T3["TIER 3 · chain"]
+    C1["single-cluster cluster expansion<br/>subset → log-prod → Taylor weights → decay → summability"]
+  end
+  subgraph T4["TIER 4 · conditional"]
+    C2["refereeScalingLaw_of_radius_bound<br/>ρ ≤ e^(−A·e^(−cβ)) ⟹ m ≥ A·e^(−cβ)"]
+    C3["volume_uniform_covariance_bound + wightman_limit_stable<br/>(the N→∞ and a→0 transports)"]
+  end
+  subgraph T5["TIER 5 · result"]
+    R1["Yang–Mills mass gap<br/>m(β) ≥ A·e^(−(12π²/11)β)"]
+  end
+  H["H · the linked-cluster contraction<br/>ρ(β) ≤ e^(−A·e^(−cβ))<br/>the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1))<br/>— OPEN"]:::open
+
+  I1 --> C1
+  L1 --> C1
+  L2 --> C1
+  L3 --> C1
+  C1 --> C2
+  H --> C2
+  C2 --> R1
+  C3 --> R1
+
+  classDef open fill:#ff8585,stroke:#ff8585,color:#080d16,font-weight:700
+    </pre>
   </section>
 
-  <section id="retractions">
-    <p class="eyebrow">Honesty</p>
-    <h2>What it got wrong — and retracted</h2>
-    <p>A scientific instrument is only as trustworthy as its retractions. Three claims were published, then failed, and are kept in the registry with the reason:</p>
-    <div class="callout does-not" id="retractions-list"></div>
-    <p class="small">These remain in the registry as evidence of the retraction, not of the claim. That is the point: a machine that cannot admit a wrong result cannot be trusted with a right one.</p>
+  <section id="three-way">
+    <p class="eyebrow">Three separate kinds of evidence</p>
+    <h2>Discovery, verification, validation — never conflated</h2>
+    <div class="callout">
+      <p><strong>Automated discovery</strong> — the lattice/Phantom loop proposes and stress-tests candidates (the falsifiers, the β-scans, the cluster-ratio probes). This finds where the answer <em>looks</em> like it is; it proves nothing.</p>
+      <p><strong>Machine verification</strong> — the Lean proof tower checks each lemma against Mathlib (the <code>lake build</code> above). This proves each tier 1–3 statement and the tier-4 conditional, and nothing more.</p>
+      <p><strong>Independent scientific validation</strong> — external expert assessment and community acceptance. This has <em>not</em> happened, and no internal check can substitute for it.</p>
+    </div>
+    <div class="callout does-not">
+      <p><strong>Status, said plainly:</strong> discovery and verification are in active use; independent validation is a dependency that is still open. A green build is machine verification, not scientific acceptance.</p>
+    </div>
   </section>
 
   <section id="cross-field">
-    <p class="eyebrow">Cross-field discovery</p>
-    <h2>The intended methodology, and its honest status</h2>
+    <p class="eyebrow">Major feature — cross-field discovery</p>
+    <h2>The cross-field engine, front and centre</h2>
+    <p>The same five-tier discipline that reads a physics claim's position is the engine that searches <em>across</em> fields: recognise an established unification, transfer a structure, verify the transfer, and refuse anything formally valid but scientifically empty.</p>
     <ul class="steps">
       <li>A <strong>known-unifications library</strong> that recognises established connections.</li>
       <li>An <strong>open-transfer frontier</strong> for genuinely new candidate links.</li>
@@ -346,13 +320,6 @@ sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
     <div id="fields" class="fields"></div>
   </section>
 
-  <footer class="site-footer">
-    <a href="./index.html">PACLAND</a>
-    <a href="https://github.com/robmitchellengineering-hub/pacland">GitHub</a>
-    <a href="https://github.com/robmitchellengineering-hub/pacland/issues">Issues</a>
-    <a href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md">Docs</a>
-  </footer>
-
   <section id="geometry">
     <p class="eyebrow">Geometry</p>
     <h2>The geometry, in 3D</h2>
@@ -370,7 +337,140 @@ sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
 </div>
 <script>
 const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕', IRREDUCIBLE:'◐' };
-let CLAIMS = [], CAT = {}, CATS = {}, FIELDS = [];
+const CLAIMS = [
+ { id:'chsh', v:'FORCED', th:'QM.Tsirelson', claim:'no quantum state violates the CHSH inequality beyond 2√2', falsifier:'a state exceeding 2√2', oracle:'quantum-simulated + kernel-checked', ev:'simulated CHSH = 2.828427 = 2√2 — nothing exceeds it',
+   plain:"The quantum world can beat classical physics by a hair — 2√2, and not a hair more. That ceiling is not a measurement, it's a theorem we machine-checked: the universe has a hard limit on how much quantum beats classical. The gap between the classical wall (2) and the quantum maximum (2√2) is the 'quantum advantage', quantified exactly." },
+ { id:'bell-classical', v:'FORCED', th:'QM.CHSH (Bell)', claim:'no local-hidden-variable theory violates CHSH beyond 2', falsifier:'a classical strategy exceeding 2', oracle:'quantum-simulated + kernel-checked', ev:'max classical = 2.0 — the wall holds',
+   plain:"Classical physics caps correlation at 2. Quantum reaches 2√2. The gap is the 'free column' — the space where entanglement lets you do things no local rule can. This claim is the wall: it says what the classical world cannot cross, so the quantum crossing is the headline." },
+ { id:'no-cloning', v:'IMPOSSIBLE', th:'QM.NoCloning', claim:'no machine clones an arbitrary quantum state', falsifier:'a universal cloner', oracle:'kernel-checked', ev:'linearity + unitarity forbid |ψ⟩|0⟩ → |ψ⟩|ψ⟩ for all |ψ⟩',
+   plain:"You cannot copy an unknown quantum state. Not because we lack a clever machine — because the mathematics of linearity itself forbids it. It is not an engineering limit; it is a law. This one fact is why quantum information is fundamentally different from classical: you cannot Xerox a qubit." },
+ { id:'no-broadcasting', v:'IMPOSSIBLE', th:'QM.NoBroadcasting', claim:'no machine broadcasts an arbitrary mixed state', falsifier:'a linear broadcasting map', oracle:'kernel-checked', ev:'M ↦ M⊗M is not linear',
+   plain:"The no-copying rule extends even to the fuzzier, mixed states. You can't duplicate a quantum state even when it's only half-known. It's the same wall as no-cloning, one level deeper: the very shape of quantum probability refuses to be broadcast." },
+ { id:'born-rule', v:'FORCED', th:'Gleason', claim:'the Born rule is the unique non-contextual probability rule', falsifier:'a second non-contextual probability rule', oracle:'kernel-checked', ev:'every frame function is Tr(ρP)',
+   plain:"The rule that turns a quantum wave into probabilities — the Born rule — is the only one that works. Gleason proved there is no alternative: any consistent way to read probabilities off a quantum state is the Born rule. Quantum mechanics didn't choose its probability law; it was forced." },
+ { id:'pbr', v:'FORCED', th:'QM.PBR', claim:'distinct pure states cannot share a ψ-epistemic ontic overlap', falsifier:'two states with overlapping ontic support', oracle:'kernel-checked', ev:'two-copy states are linearly independent',
+   plain:"The quantum state is real — not just a guess about reality. PBR proved the wavefunction cannot be a mere 'state of knowledge' about some deeper hidden truth. The wavefunction is the thing itself. This is the sharpest answer to a hundred years of 'is it really real?'" },
+ { id:'mermin', v:'IMPOSSIBLE', th:'QM.Mermin', claim:'no non-contextual ±1 assignment to the Mermin square exists', falsifier:'a non-contextual ±1 assignment', oracle:'quantum-simulated + kernel-checked', ev:'rows +I, last column −I — the ±1 assignment cannot exist',
+   plain:"A tiny grid of nine numbers proves that reality refuses to commit until you measure it. The rows multiply to +1 and the columns to −1, which is impossible if the values were secretly pre-assigned. It's the smallest, sharpest proof that quantum logic is not a hidden set of pre-existing answers." },
+ { id:'locc-no-entanglement', v:'IMPOSSIBLE', th:'QM.Entanglement', claim:'a classical (LOCC) channel cannot create entanglement', falsifier:'a classical channel entangling two systems', oracle:'kernel-checked', ev:'Φ⊗Ψ preserves separability',
+   plain:"You cannot create entanglement by talking on a classical phone line. Entanglement is a resource you can move around but never grow classically — it has to be there to begin with. This is why 'quantum' and 'classical' are separated by a hard wall, not a matter of effort." },
+ { id:'clifford-polynomial', v:'FORCED', th:'QM.Stabilizer', claim:'Clifford/stabilizer circuits are classically simulable in polynomial time', falsifier:'a T-gate circuit blowing past 2^n', oracle:'quantum-simulated + kernel-checked', ev:'1000-qubit Clifford circuit in ~3 ms — polynomial, no blowup',
+   plain:"The 'easy' quantum circuits can be simulated on a laptop in milliseconds for a thousand qubits. The entire difference between 'easy' and 'exponential' is a single gate, the T gate. This is the honest boundary of quantum computing: most circuits are not magical, and one ingredient is the whole magic." },
+ { id:'entanglement-area', v:'FORCED', th:'QM.MERA', claim:'entanglement across a cut is bounded by the cut area D^m', falsifier:'entanglement exceeding D^m', oracle:'quantum-simulated + kernel-checked', ev:'MPS (D=4) entropy S = 0.96 ≤ log D = 1.39',
+   plain:"How much can two halves of a system be entangled? At most the size of the surface between them — not their whole volume. This 'area law' is the same mathematics behind 'entanglement = geometry'. It is why a laptop can describe a state that would naively need more numbers than there are atoms." },
+ { id:'mera-hyperbolic', v:'FORCED', th:'QM.Hyperbolic.treeDist_four_point + QM.MERA', claim:'the MERA causal cone is a discrete hyperbolic space (Gromov 0-hyperbolic)', falsifier:'a four-point violation of 0-hyperbolicity', oracle:'kernel-checked', ev:'four-point condition holds over all 16⁴ quadruples',
+   plain:"The network that describes entangled matter lives in a curved, hyperbolic space — the same kind of curve coral and lettuce grow. It is curved because that is the only way to cram exponential information into a finite space. We proved it, machine-checked: entanglement is geometry, as a theorem, not a metaphor." },
+ { id:'coupling-free', v:'FREE', th:'Gravity.QG.coupling_free', claim:'the gravitational coupling G is not derived', falsifier:'a derivation of G from the forced halves', oracle:'kernel-checked', ev:'∇·G = 0 involves no κ — consistent for every κ ≠ 0',
+   plain:"Gravity's strength, G, is a label the universe picked, not a number the mathematics forced. You cannot derive it; you can only measure it. This is the honest 'never values' result, one sector up: some numbers are constraints (forced), and G is a free one." },
+ { id:'gravity-quantum', v:'FORCED', th:'QM.Entanglement + QM.NoCloning + Gleason', claim:'the gravitational coupling must be quantum, not classical', falsifier:'a consistent classical (LOCC) coupling', oracle:'quantum-simulated + kernel-checked', ev:'quantum coupling entangles S = 0.42 > 0; classical (LOCC) cannot S = 0.00',
+   plain:"If gravity meddles with quantum systems, it must itself be quantum. A classical channel cannot create entanglement — so classical gravity cannot mediate quantum correlation. This is the hinge that forces quantum gravity: not a preference, a proof." },
+ { id:'lovelock', v:'FORCED', th:'Gravity.Lovelock', claim:'the Einstein equation is the unique divergence-free 2-tensor theory in 4D', falsifier:'a second divergence-free gravity theory', oracle:'kernel-checked', ev:'∇·(αR + βRg) = 0 iff β = −α/2',
+   plain:"Einstein's equation is the only gravity equation that is consistent in four dimensions. Every other candidate fails the same consistency test. Einstein didn't choose it from a menu; it was the only dish. That is what 'uniqueness' means here — and it is machine-checked." },
+ { id:'bianchi', v:'FORCED', th:'Gravity.QG.einstein_divergence_free', claim:'the Einstein tensor is divergence-free (∇·G = 0)', falsifier:'a metric with ∇·G ≠ 0', oracle:'kernel-checked', ev:'the contracted second Bianchi identity',
+   plain:"One identity — that the Einstein tensor is automatically 'conserved' — is the hinge that joins gravity to quantum. It is why the two theories can talk at all. A single line of geometry, and it carries the whole bridge." },
+ { id:'wdw', v:'FORCED', th:'Gravity.WheelerDeWitt', claim:'physical states satisfy Ĥ|ψ⟩ = 0', falsifier:'a physical state not in ker Ĥ', oracle:'kernel-checked', ev:'physical states = ker Ĥ',
+   plain:"The quantum state of the whole universe sits perfectly still — zero energy. Time itself is emergent, not fundamental: it is what appears when you look at a part of the universe, not a thing the whole universe has. The 'problem of time' is not a bug; it is the point." },
+ { id:'dirac', v:'FORCED', th:'Gravity.Dirac', claim:'the ADM constraints close under the Dirac algebra', falsifier:'a constraint algebra that fails to close', oracle:'kernel-checked', ev:'the structure function q^ab closes it — a Lie algebroid',
+   plain:"Gravity's constraints close into a beautiful algebra — the signature that gravity is geometry, not a force bolted onto space. When the constraints close, you have diffeomorphism invariance; when they don't, you don't have gravity. This is that closure, checked." },
+ { id:'adm', v:'FORCED', th:'Gravity.ADMConstraints', claim:"QG's forced content is {Ĥ = G·ππ − R, Ĥa = ∇·π}", falsifier:'a third independent constraint', oracle:'kernel-checked', ev:'Hamiltonian + momentum constraints',
+   plain:"Quantum gravity's 'must-haves' boil down to two constraints — energy and momentum. Everything else is free. This is the constraint-first result for gravity: the theory's exact content is small and forced, and the rest is the free column." },
+ { id:'hypercharge-uniqueness', v:'FORCED', th:'SM.Hypercharge', claim:'the SM anomaly conditions force the hypercharges uniquely', falsifier:'a second anomaly-free hypercharge assignment', oracle:'kernel-checked', ev:'the cubic [U(1)]³ collapses the 2-parameter family to one',
+   plain:"The Standard Model's charge-like numbers are the only ones that make the mathematics consistent. The universe had exactly one choice, up to an overall scale and a mirror swap. It's the Standard Model's version of 'uniqueness' — the charges were forced, not chosen." },
+ { id:'anomaly-cancellation', v:'FORCED', th:'SM.Anomaly', claim:"the SM's five anomaly coefficients vanish", falsifier:'a nonzero anomaly coefficient', oracle:'kernel-checked', ev:'[SU(3)]³ = [SU(2)]²U(1) = [U(1)]³ = [grav]²U(1) = 0 (5/5)',
+   plain:"The Standard Model's particles cancel all their internal inconsistencies — to the last digit. It looks like a miracle and is actually a theorem: the numbers are forced to cancel, and they do, exactly." },
+ { id:'generation-free', v:'FREE', th:'SM.Generation', claim:'N_gen is not fixed by anomaly cancellation', falsifier:'an anomaly condition fixing N_gen', oracle:'kernel-checked', ev:'the coefficients are homogeneous — any N_gen copies stay anomaly-free',
+   plain:"Why three generations of matter? The mathematics is silent — three is a label, not a law. We can prove the equations don't fix it: any number of copies would still cancel. So 'why 3?' is not a question the math can answer; it is a free parameter of the universe." },
+ { id:'the-19', v:'FREE', th:'SM.ParameterCount', claim:'the SM has 19 free parameters (orbit-space dimension)', falsifier:'a relation collapsing more than 2 of the 19 correctly', oracle:'kernel-checked + exact-symbolic', ev:'orbit-space rank 19; no completion derives more than 2 correctly',
+   plain:"The Standard Model has exactly nineteen numbers nobody can derive — nineteen knobs the universe just is. We can count them, and prove you cannot predict them: no deeper theory can correctly derive more than two. This is the 'never values' result at its sharpest — the honest boundary of prediction." },
+ { id:'mitchell-uniqueness', v:'FORCED', th:'Mitchell.mitchell_uniqueness_n1', claim:'the D3 tadpole FᵀJH is the unique bilinear symplectic invariant of the flux', falsifier:'a second bilinear symplectic invariant', oracle:'kernel-checked + exact-symbolic', ev:'the only matrix M with SᵀMS = M for every symplectic S is a scalar multiple of J',
+   plain:"The tadpole — the single number that quantifies the flux — is the ONLY invariant the mathematics allows. Every other candidate is secretly a function of it. This is the founding theorem of the whole project: the constraint is unique, machine-checked." },
+ { id:'constraint-first', v:'FORCED', th:'DegreeOne/Three/Four (Weyl FFT)', claim:'every duality-invariant exact polynomial in the flux is a function of the tadpole', falsifier:'an invariant polynomial not a function of FᵀJH', oracle:'kernel-checked + exact-symbolic', ev:'no linear invariant, no cubic, only N² at quartic',
+   plain:"The flux sector has exactly ONE independent invariant — the tadpole. Everything you can say exactly about the flux is a function of that one number. We machine-checked it degree by degree: no linear invariant, no cubic invariant, only N² at quartic." },
+ { id:'completeness', v:'FORCED', th:'Transitivity.transitivity_n1', claim:'no exact invariant selector can single out a vacuum', falsifier:'a second exact, duality-invariant selector', oracle:'kernel-checked', ev:'SᵀJS = det S · J, symplectic ⟺ det 1, one SL(2) orbit',
+   plain:"No exact formula can pick one vacuum out from another. The tadpole is 'complete' — which means the mathematics is blind to the differences. It is a no-go: searching for an exact selector is provably fruitless." },
+ { id:'pr-box', v:'FORCED', th:'Foundations.PRBox.prbox_chsh', claim:'the PR box saturates the non-signaling CHSH bound at 4', falsifier:'a non-signaling box exceeding CHSH = 4', oracle:'kernel-checked', ev:'chsh(prbox) = 4 — the ceiling',
+   plain:"The PR box is the wildest thing the universe allows without signalling faster than light — it hits CHSH = 4, above the quantum 2√2. It is the ceiling: quantum sits between the classical wall (2) and the PR box (4)." },
+ { id:'sm-index', v:'FORCED', th:'SM.Index.index_free + index_protected', claim:'N_gen is a protected topological index', falsifier:'an anomaly that un-protects the index', oracle:'kernel-checked', ev:'the index is free but robust — Atiyah–Singer N_gen = |χ|/2',
+   plain:"The number of matter generations is a protected topological index — like the number of holes in a doughnut. It is 'free' (not fixed by the equations) but 'protected' (robust to small change). It cannot be drifted away." },
+  { id:'black-hole-entropy', v:'FORCED', th:'QM.MERA.areaLaw_rank', claim:'no region\'s entanglement entropy exceeds its horizon area — S ≤ A/4G, and the black hole saturates it', falsifier:'a state whose horizon entanglement exceeds A/4G', oracle:'quantum-simulated + kernel-checked', ev:'random-state (black hole) entropy S = 3.68 ≤ A/4G = 4.16 — the bound holds',
+    plain:"The Bekenstein–Hawking entropy — S = A/4G — is not a dial the universe turns. It is the entanglement-area law with the cut drawn at the horizon: a black hole is the state that saturates the bound, and nothing exceeds it. Entropy is area, not volume." },
+  { id:'black-hole-unitarity', v:'FORCED', th:'QM.NoCloning + QM.NoBroadcasting', claim:'black hole evaporation is unitary — the information is never lost, only re-encoded in the radiation\'s entanglement', falsifier:'a non-unitary (information-losing) evaporation map', oracle:'quantum-simulated + kernel-checked', ev:'unitary evaporation preserves purity = 1.00000000 — pure stays pure',
+    plain:"Past the horizon, the information is not lost — it is re-encoded. A pure state stays pure under any unitary map, so the interior's information cannot vanish: it comes back out in the Hawking radiation's entanglement. The fact of unitarity is forced; the exact mechanism of the recovery is the open question." },
+
+  { id:'wang-criterion', v:'FORCED', th:'QM.WangCriterion + QM.LogSobolev', claim:'a positive spectral gap survives a measure-negligible negative-curvature region, when a Lyapunov drift forces return to the dominant state', falsifier:'a measure-negligible negative-curvature region that still collapses the gap', oracle:'kernel-checked', ev:'the SU(2) antipode (weight e^{-2β}) is measure-suppressed — the Lyapunov drift returns the measure to the trivial connection',
+    plain:"A spectral-gap argument can fail at a pointwise curvature ceiling — a spot where the local curvature is negative. The move: ask how much MEASURE that spot has, not how negative its curvature is. If the bad set is measure-negligible (like the antipode, weight e^{-2β}), the Lyapunov drift returns the measure to the dominant state, and the gap survives. Use this whenever a gap argument dies at a pointwise ceiling: check the failing set's measure." },
+  { id:'concentration-gap', v:'FORCED', th:'QM.BakryEmery + QM.LogSobolev', claim:'the spectral gap of a Markov generator is the exponential concentration rate of its invariant measure around its dominant state', falsifier:'a generator whose invariant measure concentrates faster or slower than its spectral gap', oracle:'kernel-checked', ev:'log-Sobolev ⟹ Poincaré: the concentration rate IS the spectral gap',
+    plain:"The gap is not a curvature bound — it is a concentration rate. The Wilson measure concentrates on the trivial connection, and the spectral gap is exactly how fast it does. When a 'curvature' picture stalls, reframe: the gap is the leak rate from the dominant state to everything else." },
+  { id:'mode-sum-exponent', v:'FORCED', th:'QM.AsymptoticFreedom + QM.FullLatticeLyapunov', claim:'a non-perturbative exponent that is a sum over soft modes equals the beta-function coefficient (c = 1/(2b₀))', falsifier:'a mode-sum exponent that does not match the beta-function coefficient', oracle:'kernel-checked', ev:'the weak-coupling exponent c = 12π²/11 is the SUM over the low-momentum gluon modes = the beta-function',
+    plain:"An exponent that looks like it needs 'one more tunneling event' may instead be a MODE SUM. The weak-coupling mass-gap exponent is the sum over all the low-momentum gluon modes, and that sum is the beta-function coefficient. Use this whenever an exponent seems to need one more mechanism: count the modes first." },
+  { id:'gauge-orbit-quotient', v:'FORCED', th:'QM.GaugeOrbit + QM.AxialGauge', claim:'running the spectral machinery on the gauge-invariant quotient removes the unphysical flat directions', falsifier:'a quotient that fails to remove the gauge flat directions (a residual Gribov copy)', oracle:'kernel-checked', ev:'the trivial connection\'s gauge orbit is a flat direction that is gauge, not physics — quotient removes it',
+    plain:"A 'ceiling' can sit on the gauge orbit — the flat direction of the trivial connection, which is pure gauge, not physics. Remove it: run the spectral machinery on the gauge-invariant quotient, not the full space. Use this whenever a flat direction is actually gauge redundancy." },
+  { id:'matchgate-seed', v:'FORCED', th:'QM.Matchgate + QM.PfaffianRec', claim:'matchgate amplitudes are Pfaffians — the full even/odd split is kernel-checked', falsifier:'a matchgate whose amplitude is not its Pfaffian, or a nonzero odd-dim antisymmetric determinant', oracle:'kernel-checked', ev:'2×2 and 4×4 Pf² = det; every odd-dim antisymmetric determinant = 0',
+    plain:"The 'easy' quantum circuits — matchgates — have amplitudes that are Pfaffians, a determinant-like quantity a laptop can compute. The split is exact and kernel-checked: even dimensions square to the determinant, odd dimensions vanish. It is the mathematical seed of why some quantum systems are classically simulable." },
+  { id:'perfect-code-distance', v:'FORCED', th:'QM.PerfectTensor.code_min_weight', claim:'the 5-qubit [[5,1,3]] code has distance ≥ 3 — no single- or two-qubit subsystem carries a stabilizer', falsifier:'a weight ≤ 2 element of the code stabilizer group', oracle:'kernel-checked', ev:'every non-identity product of the 4 code stabilizers has weight 4',
+    plain:"The smallest useful quantum error-correcting code — 5 qubits protecting 1 — can correct any single-qubit error. The distance-3 property is kernel-checked: no one- or two-qubit subsystem carries a stabilizer, which is the algebraic core of the code." },
+  { id:'code-ame52', v:'FORCED', th:'QM.PerfectTensor.code_state_ame52', claim:'the [[5,1,3]] code state (logical Z fixed) is AME(5,2) — every 2-qubit reduction is maximally mixed', falsifier:'a weight ≤ 2 element of the fixed-state stabilizer group', oracle:'kernel-checked', ev:'every non-identity element of the 5-generator fixed-state group has weight ≥ 3',
+    plain:"The 5-qubit code state is 'absolutely maximally entangled' across any 2|3 split — every pair of qubits is maximally mixed. It is the stabilizer form of AME(5,2), the entanglement pattern that makes the code work." },
+  { id:'happ-perfect-tensor', v:'FORCED', th:'QM.PerfectTensor.happy_is_perfect_tensor', claim:'the [[5,1,3]] code coupled to a reference qubit is a perfect tensor (AME(6,3))', falsifier:'a 3-qubit subsystem of the HaPPY hexagon carrying a stabilizer', oracle:'kernel-checked', ev:'every non-identity element of the 6-generator group has weight ≥ 4',
+    plain:"Couple the 5-qubit code to a reference qubit and you get a perfect tensor — the HaPPY hexagon, the smallest building block of holographic error-correcting codes. Every 3-qubit subsystem is maximally mixed; that is the discrete Ryu–Takayanagi statement." },
+  { id:'ym-mass-gap-polyakov', v:'IRREDUCIBLE', th:'none — computational, not closed-form', claim:'SU(3) Yang–Mills at finite temperature has a positive screening mass (the Polyakov correlator clusters exponentially)', falsifier:'a Polyakov screening mass ≤ 0', oracle:'lattice (SU(3) Polyakov correlator)', ev:'m = 0.227 across sizes — survives every falsifier tried',
+    plain:"The SU(3) lattice keeps returning a positive screening mass, so the claim survives every falsifier tried — but there is no sorry-free Lean certificate, so it is computational, not FORCED. It is recorded as convergence evidence, not a proof." },
+];
+
+const CAT = {
+  'no-cloning':'foundations','no-broadcasting':'foundations','born-rule':'foundations','pbr':'foundations','mermin':'foundations','locc-no-entanglement':'foundations',
+  'chsh':'computing','bell-classical':'computing','clifford-polynomial':'computing','entanglement-area':'computing',
+  'mera-hyperbolic':'gravity','coupling-free':'gravity','gravity-quantum':'gravity','lovelock':'gravity','bianchi':'gravity','wdw':'gravity','dirac':'gravity','adm':'gravity','black-hole-entropy':'gravity','black-hole-unitarity':'gravity',
+  'hypercharge-uniqueness':'sm','anomaly-cancellation':'sm','generation-free':'sm','the-19':'sm','sm-index':'sm',
+  'mitchell-uniqueness':'landscape','constraint-first':'landscape','completeness':'landscape',
+  'pr-box':'foundations',
+  'matchgate-seed':'computing','perfect-code-distance':'computing','code-ame52':'computing','happ-perfect-tensor':'gravity','ym-mass-gap-polyakov':'gravity'
+};
+const CATS = {
+  'foundations': { label:'Quantum foundations', desc:"The provable walls of quantum mechanics — what is impossible to do (clone, broadcast, entangle classically), what is forced (the Born rule, the state is real, Mermin's non-contextuality). If your field asks 'is the quantum state real?' or 'what does the math forbid?', this is it." },
+  'computing': { label:'Quantum computing', desc:"The provable bounds — the classical wall 2 vs the quantum 2√2, which circuits are classically easy (Clifford) and which are not (the T gate), and the area-law bound on entanglement. If you benchmark or claim quantum advantage, these are the falsifiers." },
+  'gravity': { label:'Quantum gravity & geometry', desc:"The kernel-checked MERA↔AdS ladder — entanglement = geometry, the discrete hyperbolicity (0-hyperbolicity), the area law — and the gravity constraints (Lovelock uniqueness, Bianchi, Wheeler–DeWitt, Dirac, ADM). If you work on AdS/CFT, tensor networks, or quantum gravity, this is your field." },
+  'sm': { label:'Standard Model & prediction', desc:"What the Standard Model forces (anomaly cancellation, the unique hypercharge) and what it leaves free (the generation count, the 19 parameters). If you ask what physics can predict versus measure, this is the honest boundary." },
+  'landscape': { label:'String landscape', desc:"The founding spine — the theorem tower: the tadpole is the unique invariant (Mitchell's Uniqueness), the invariant ring has one generator (Constraint-First), and no exact selector can single out a vacuum (Completeness). The machine-checked core behind 'relations, never values'." }
+};
+
+const FIELDS = [
+ { g:'Quantum information & cryptography', f:'Quantum key distribution (QKD)', p:['no-cloning','bell-classical','chsh'], w:"Interception is detectable because a qubit can't be copied without disturbance." },
+ { g:'Quantum information & cryptography', f:'Device-independent QKD & randomness', p:['chsh','bell-classical','pr-box'], w:"A Bell violation above 2 is the only evidence of non-classicality with untrusted devices." },
+ { g:'Quantum information & cryptography', f:'Quantum money & unforgeable tokens', p:['no-cloning'], w:"Unforgeability IS the no-cloning theorem." },
+ { g:'Quantum information & cryptography', f:'Entanglement theory & networks', p:['locc-no-entanglement'], w:"Entanglement is a resource only because LOCC can't create it." },
+ { g:'Quantum information & cryptography', f:'Quantum error correction', p:['no-cloning','no-broadcasting','clifford-polynomial'], w:"No copying forces entangled encoding; stabilizer codes are Clifford-tractable." },
+ { g:'Quantum information & cryptography', f:'Quantum foundations (ψ-realism)', p:['pbr','mermin','born-rule'], w:"PBR/Mermin are the load-bearing theorems of the ψ-ontic debate." },
+ { g:'Quantum information & cryptography', f:'Reconstructions of QM ("why quantum")', p:['pr-box','chsh','born-rule'], w:"These fix which non-signaling theory and probability rule are 'quantum'." },
+ { g:'Quantum computing & benchmarking', f:'Randomized benchmarking', p:['clifford-polynomial'], w:"Cliffords are simulable and form a 2-design." },
+ { g:'Quantum computing & benchmarking', f:'Loophole-free Bell tests', p:['bell-classical','chsh'], w:"2 is the threshold; 2√2 the quantum maximum." },
+ { g:'Quantum computing & benchmarking', f:'Device-independent randomness & self-testing', p:['chsh','bell-classical'], w:"A Bell violation certifies un-predetermined outcomes." },
+ { g:'Quantum computing & benchmarking', f:'Tensor-network simulation (DMRG/MPS/PEPS)', p:['entanglement-area'], w:"The area law is why low bond dimension is exact, not heuristic." },
+ { g:'Geometry & holography', f:'Holographic duality (AdS/CFT)', p:['mera-hyperbolic','entanglement-area'], w:"The hyperbolic causal cone is the discrete bulk; the area law the discrete Ryu–Takayanagi." },
+ { g:'Geometry & holography', f:'Holographic quantum error correction', p:['mera-hyperbolic','entanglement-area'], w:"HaPPY codes' distance follows from the RT-style area bound." },
+ { g:'Geometry & holography', f:'Tensor networks for critical systems', p:['mera-hyperbolic','entanglement-area'], w:"MPS fails where the area law breaks; MERA works because its cone is hyperbolic." },
+ { g:'Geometry & holography', f:'Spacetime emergence from entanglement', p:['mera-hyperbolic','entanglement-area'], w:"MERA is the model where cutting entanglement removes the radial direction." },
+ { g:'Gravity & quantum gravity', f:'Numerical relativity', p:['adm','bianchi'], w:"The ADM constraints are the evolution equations; ∇·G=0 keeps them satisfied." },
+ { g:'Gravity & quantum gravity', f:'Quantum cosmology', p:['wdw','dirac'], w:"Ĥ|ψ⟩=0 is the defining equation (Hartle–Hawking/Vilenkin)." },
+ { g:'Gravity & quantum gravity', f:'Loop quantum gravity', p:['adm','dirac','wdw'], w:"LQG quantizes the ADM constraints; must recover WDW." },
+ { g:'Gravity & quantum gravity', f:'Modified gravity / Horndeski', p:['lovelock'], w:"Every modified theory is defined by which Lovelock assumption it breaks." },
+ { g:'Gravity & quantum gravity', f:'Higher-dimensional gravity', p:['lovelock'], w:"Gauss–Bonnet/Lovelock are the unique divergence-free actions in D>4." },
+ { g:'Gravity & quantum gravity', f:'EFT of gravity', p:['coupling-free'], w:"Organized around G as a free, underived coupling." },
+ { g:'Gravity & quantum gravity', f:'QG phenomenology (BMV)', p:['gravity-quantum'], w:"Ruling out classical hybrid gravity is the premise of entanglement-via-gravity tests." },
+ { g:'Standard Model & beyond', f:'Beyond-SM model building', p:['anomaly-cancellation','hypercharge-uniqueness'], w:"New gauge sectors must keep anomalies cancelled and reproduce the unique hypercharge." },
+ { g:'Standard Model & beyond', f:'Grand unification', p:['hypercharge-uniqueness','anomaly-cancellation'], w:"Hypercharge quantization + exact cancellation are the GUT signatures." },
+ { g:'Standard Model & beyond', f:'String phenomenology', p:['sm-index','generation-free'], w:"N_gen=3 as a topological index is the bridge to compactification." },
+ { g:'Standard Model & beyond', f:'Axion physics / strong CP', p:['the-19','anomaly-cancellation'], w:"θ_QCD is one of the 19; the axion resolves the anomaly." },
+ { g:'Standard Model & beyond', f:'Precision electroweak / global fits', p:['the-19'], w:"A well-posed fit needs the exact free-parameter count." },
+ { g:'Landscape, ToE & the method', f:'String flux landscape', p:['mitchell-uniqueness','constraint-first','completeness'], w:"The unique invariant separates vacua; 'no selector' is why enumeration resists." },
+ { g:'Landscape, ToE & the method', f:'Topological quantum error correction', p:['mitchell-uniqueness','completeness'], w:"Topological order is the absence of a local order parameter — the 'no selector' theorem." },
+ { g:'Landscape, ToE & the method', f:'Lattice gauge theory', p:['mitchell-uniqueness','completeness'], w:"The unique invariant fixes loop classes; 'no selector' is Gribov ambiguity." },
+ { g:'Landscape, ToE & the method', f:'Model identifiability', p:['completeness','mitchell-uniqueness'], w:"Identifiability is whether a complete invariant + exact selector exists." },
+ { g:'Landscape, ToE & the method', f:'Geometric deep learning', p:['constraint-first','mitchell-uniqueness'], w:"Equivariant nets are built on invariant theory; one generator is the minimal feature." },
+ { g:'Landscape, ToE & the method', f:'Graph isomorphism', p:['mitchell-uniqueness','completeness'], w:"GI is the search for a complete invariant + selector; the no-go is its hardness boundary." },
+];
+
+const EXTRA = {"chsh": "Proves the bound 2√2, not which state reaches it, nor the value of any specific experiment.", "bell-classical": "Proves the classical wall is 2, not that every classical strategy achieves it.", "no-cloning": "Proves exact cloning is impossible, not that approximate cloning is useless (approximate cloners do exist).", "no-broadcasting": "Proves exact broadcasting is impossible, not that approximate broadcasting is.", "born-rule": "Proves the rule is unique, not which probabilities any specific state gives.", "pbr": "Proves the state is real, not what the state IS for any particular system.", "mermin": "Proves non-contextual assignment is impossible, not that measurement is deterministic.", "locc-no-entanglement": "Proves classical channels cannot CREATE entanglement, not that they cannot distribute it.", "clifford-polynomial": "Proves the Clifford class is easy, not that all quantum circuits are easy (T gates are not).", "entanglement-area": "Proves the bound D^m, not the exact entropy of any specific state.", "mera-hyperbolic": "Proves the discrete hyperbolicity, not the continuous N→∞ AdS limit (still open).", "coupling-free": "Proves G is not derived, not that G has no origin — only that it is not forced.", "gravity-quantum": "Proves the coupling must be quantum, not WHICH quantum theory of gravity.", "lovelock": "Proves uniqueness in 4 dimensions, not in higher dimensions (Lovelock terms exist there).", "bianchi": "Proves the identity, not that it alone picks the physics.", "wdw": "Proves states sit at Ĥ=0, not what time IS — that is the open problem.", "dirac": "Proves the algebra closes, not that it is the only closed algebra.", "adm": "Proves the constraints, not the value of any coupling.", "hypercharge-uniqueness": "Proves uniqueness up to scale + swap, not the absolute normalization.", "anomaly-cancellation": "Proves cancellation, not that the SM is the only consistent theory.", "generation-free": "Proves N_gen is not fixed by anomalies, not that 3 has no explanation elsewhere.", "the-19": "Proves 19 are free, not that a deeper theory cannot RELATE them — only that it cannot derive their values.", "mitchell-uniqueness": "Proves the tadpole is the unique bilinear invariant, not that it fixes the vacuum (many vacua share a tadpole).", "constraint-first": "Proves the invariant ring has one generator, not that no statistical or moduli-dependent selector exists (those are not ruled out).", "completeness": "Proves no EXACT invariant selector exists, not that statistical selection is impossible (it is not).", "pr-box": "Proves the PR box saturates no-signaling at 4, not that the PR box is physically realizable (it is not in quantum theory).", "sm-index": "Proves N_gen is a protected index, not that 3 is derived from the index (it is still a free label)."};
 
 const list = document.getElementById('list');
 const out = document.getElementById('out');
@@ -403,7 +503,7 @@ function renderList(filter) {
 }
 
 function renderClaim(c) {
-  const x = c.dont || '';
+  const x = EXTRA[c.id] || {};
   out.innerHTML = `
     <h2><span class="big verdict-${c.v}">${G[c.v]} ${c.v}</span></h2>
     <div class="chips">${/kernel-checked/.test(c.oracle) ? '<span class="chip chip-kernel">kernel-checked</span>' : ''}${/quantum-simulated/.test(c.oracle) ? '<span class="chip chip-num">numerically verified</span>' : ''}</div>
@@ -419,7 +519,7 @@ function renderClaim(c) {
       <h3>Plain speak — what it says</h3>
       <p>${c.plain}</p>
       <h3>What it does <em>not</em> say</h3>
-      <p class="muted">${x}</p>
+      <p class="muted">${(typeof x === 'string' ? x : '')}</p>
     </div>
     <p class="actions"><button class="btn ghost" onclick="downloadClaim('${c.id}')">Download this proof (.txt)</button><a class="btn ghost" href="https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/sextant.md">Reproduce — run the falsifier</a></p>
   `;
@@ -427,7 +527,7 @@ function renderClaim(c) {
 
 function downloadClaim(id) {
   const c = CLAIMS.find(c => c.id === id);
-  const x = c.dont || '';
+  const x = EXTRA[id] || {};
   const txt = [
     c.id.toUpperCase() + ' — ' + c.v,
     '',
@@ -439,7 +539,7 @@ function downloadClaim(id) {
     '',
     'Plain speak. ' + c.plain,
     '',
-    'What it does NOT say. ' + x,
+    'What it does NOT say. ' + ((typeof x === 'string' ? x : '')),
   ].join('\n');
   const blob = new Blob([txt], { type: 'text/plain' });
   const a = document.createElement('a');
@@ -479,44 +579,6 @@ renderCats();
 catdesc.textContent = 'Every claim, across all four fields. Pick a field, or search.';
 renderList('');
 renderFields();
-
-async function loadRegistry() {
-  const el = document.getElementById('claimcount');
-  try {
-    const r = await fetch('sextant-claims.json', { cache: 'no-store' });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const d = await r.json();
-    CLAIMS = d.claims; CAT = d.cat; CATS = d.cats; FIELDS = d.fields;
-    if (el) el.textContent = CLAIMS.length + ' claims from the live registry (snapshot ' + d.generated + ') · ' + CLAIMS.filter(function (c) { return /quantum-simulated/.test(c.oracle); }).length + ' carry a live simulated oracle';
-  } catch (e) {
-    if (el) el.textContent = 'could not load the live claim registry — ' + e.message;
-  }
-  renderCats();
-  catdesc.textContent = 'Every claim, across all five fields. Pick a field, or search.';
-  renderList('');
-  renderFields();
-}
-loadRegistry();
-
-async function loadMeasurementRegistry() {
-  try {
-    const r = await fetch('sextant-registry.json', { cache: 'no-store' });
-    if (!r.ok) return;
-    const d = await r.json();
-    const claims = d.claims || [];
-    const withdrawn = claims.filter(function (c) { return c.status === 'withdrawn'; });
-    const live = claims.filter(function (c) { return c.status !== 'withdrawn'; });
-    const ret = document.getElementById('retractions-list');
-    if (ret) ret.innerHTML = withdrawn.map(function (c) { return '<p><strong>Retracted:</strong> \"' + c.claim + '\" — ' + (c.reason || 'no reason recorded') + '.</p>'; }).join('');
-    const ev = document.getElementById('evidence-list');
-    if (ev) ev.innerHTML = live.map(function (c) {
-      const cls = c.status === 'PASS-2' ? 'chip-kernel' : 'chip-num';
-      const evi = Array.isArray(c.evidence) ? c.evidence.join(' · ') : (c.evidence || '');
-      return '<p><span class="chip ' + cls + '">' + c.status + '</span> <strong>' + c.claim + '</strong>' + (evi ? ' — ' + evi : '') + '.</p>';
-    }).join('');
-  } catch (e) {}
-}
-loadMeasurementRegistry();
 </script>
 <script>
 // honest, dynamic counts — never a hard-coded stale number in the page copy
