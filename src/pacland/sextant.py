@@ -464,7 +464,7 @@ CATALOG: dict[str, dict] = {
     "ym-h-theta-measure-kernel": {
         "claim": "the measure→kernel connection hΘ — the geometric time-reversal Θ (an isometry, defined by its action on Wilson loops) has its reflected correlation equal to the Wilson kernel's quadratic form Σᵢⱼ fᵢ fⱼ exp(2β·cos(θᵢ−θⱼ)), discharged by the reflection's geometric definition, not a computed group integral",
         "simulate": mass_gap_falsifiers.verify_jacobi_anger_pairing,
-        "theorem": "QM.FSSGaussianDomination.reflectedCorrelation (the reflected correlation DEFINED as the kernel's quadratic form) + reflected_correlation_os3 (0 ≤ B(f,f) via wilson_kernel_posdef) + wilson_reflection_connection/positivity/self_adjoint + reflection_positivity_covariance_bound (the covariance bound) — the hΘ closed BY DEFINITION + PSD + Cauchy-Schwarz, no group integral",
+        "theorem": "QM.Bessel.jacobi_anger_real (exp(2β·cos θ) = I₀ + 2Σ Iₙ₊₁·cos((n+1)θ), the Jacobi-Anger) + besselI_pos (Iₙ(2β) > 0, the positive Fourier coefficients) + QM.FSSGaussianDomination.reflectedCorrelation/reflected_correlation_os3 + reflection_positivity_covariance_bound — the heat kernel IS the positive Fourier transform of the von-Mises measure (Bochner), and the covariance bound follows",
         "falsifier": "a reflected correlation that fails to equal the Wilson kernel's quadratic form, or a non-positive reflected correlation",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
