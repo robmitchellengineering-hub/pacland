@@ -106,14 +106,48 @@ def approaches() -> str:
     return "\n".join(lines)
 
 
+SEARCH_TYPES = {
+    "ym-linked-cluster-contraction": ("spectral-gap", "gauge-theory"),
+    "ym-log-sobolev": ("markov", "gauge-theory"),
+    "ym-volume-uniform-su2": ("spectral-gap", "gauge-theory"),
+}
+
+
+def search() -> str:
+    """The 'search across fields' stage: for each open obligation, list same-type structures in other
+    fields (candidate transfers — a match is a correspondence, NOT a verified transfer)."""
+    from pacland import cross_reference
+    lines = []
+    for o in open_obligations():
+        tt = SEARCH_TYPES.get(o["name"])
+        lines.append(f"◐ {o['name']}")
+        if tt is None:
+            lines.append("    (no cross-field type mapped)")
+            continue
+        typ, dom = tt
+        cands = cross_reference.cross_field(typ, dom)
+        if not cands:
+            lines.append(f"    no {typ} structures outside {dom}")
+        for c in cands[:5]:
+            p = c["payload"]
+            d = p.get("domain") or p.get("domains") or []
+            d = d if isinstance(d, str) else ", ".join(d)
+            reproduces = p.get("reproduces", "")
+            lines.append(f"    → [{p.get('type', '')}] in {d} — reproduces: {reproduces}")
+    return "\n".join(lines)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="the discovery loop over the open obligations")
     ap.add_argument("--list", action="store_true", help="list the open obligations")
     ap.add_argument("--run", action="store_true", help="run each obligation's falsifier")
     ap.add_argument("--record", action="store_true", help="run the falsifiers and write the evidence")
     ap.add_argument("--approaches", action="store_true", help="list the known routes + next steps")
+    ap.add_argument("--search", action="store_true", help="search other fields for same-type structures")
     args = ap.parse_args()
-    if args.approaches:
+    if args.search:
+        print(search())
+    elif args.approaches:
         print(approaches())
     elif args.record:
         results = record_results()
