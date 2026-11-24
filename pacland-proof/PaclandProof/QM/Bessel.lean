@@ -468,4 +468,44 @@ theorem integral_cos_of_ne_zero {k : ℕ} (hk : k ≠ 0) :
   rw [Polynomial.Chebyshev.integral_measureT_eq_integral_cos] at h
   simpa [Polynomial.Chebyshev.T_real_cos] using h
 
+/-- **The ℤ Fourier ingredient `∫₀^π cos(kθ) dθ = 0`** for `k : ℤ ≠ 0` — the cosine's even symmetry
+(`cos(−x) = cos x`) reduces the negative case to the ℕ case. -/
+theorem integral_cos_of_ne_zero_int {k : ℤ} (hk : k ≠ 0) :
+    ∫ θ in 0..Real.pi, Real.cos (k * θ) = 0 := by
+  by_cases hkpos : 0 ≤ k
+  · have hk' : Int.toNat k ≠ 0 := by
+      rw [Int.toNat_eq_zero]
+      omega
+    have h := integral_cos_of_ne_zero hk'
+    simpa [Int.toNat_of_nonneg hkpos] using h
+  · have hkneg : k < 0 := by omega
+    have hk' : Int.toNat (-k) ≠ 0 := by
+      rw [Int.toNat_eq_zero]
+      omega
+    have h := integral_cos_of_ne_zero hk'
+    rw [show (k : ℝ) * θ = -((-k : ℝ) * θ) by ring]
+    rw [Real.cos_neg]
+    simpa [Int.toNat_of_nonneg (by omega : 0 ≤ -k)] using h
+
+/-- **The full SU(2) character orthogonality (off-diagonal)** — the Chebyshev U / the one-variable sin
+integral: `∫₀^π sin((n+1)θ)·sin((m+1)θ) dθ = 0` for `n ≠ m`, via the product-to-sum
+`sin a sin b = (cos(a−b) − cos(a+b))/2` and `integral_cos_of_ne_zero_int`. -/
+theorem su2_character_orthogonality_ne {n m : ℕ} (h : n ≠ m) :
+    ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((m + 1 : ℝ) * θ) = 0 := by
+  have hprod (a b : ℝ) : Real.sin a * Real.sin b = (Real.cos (a - b) - Real.cos (a + b)) / 2 := by
+    rw [Real.cos_sub, Real.cos_add]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ _ => hprod ((n + 1 : ℝ) * θ) ((m + 1 : ℝ) * θ))]
+  rw [intervalIntegral.integral_sub, intervalIntegral.integral_div]
+  · rw [show (n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ = ((n : ℤ) - (m : ℤ) : ℝ) * θ by ring_nf]
+    rw [show (n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ = ((n : ℤ) + (m : ℤ) + 2 : ℝ) * θ by ring_nf]
+    have h1 : ∫ θ in 0..Real.pi, Real.cos (((n : ℤ) - (m : ℤ) : ℝ) * θ) = 0 :=
+      integral_cos_of_ne_zero_int (by omega : (n : ℤ) - (m : ℤ) ≠ 0)
+    have h2 : ∫ θ in 0..Real.pi, Real.cos (((n : ℤ) + (m : ℤ) + 2 : ℝ) * θ) = 0 :=
+      integral_cos_of_ne_zero_int (by omega : (n : ℤ) + (m : ℤ) + 2 ≠ 0)
+    rw [h1, h2]
+    norm_num
+  · exact Continuous.intervalIntegrable (by fun_prop)
+  · exact Continuous.intervalIntegrable (by fun_prop)
+
 end QM
