@@ -221,5 +221,12 @@ theorem linked_cluster_weights (ρ : ℝ) (h : |ρ| < 1) :
   · funext n
     ring_nf
   · rw [neg_neg, show (1 : ℝ) - (-ρ) = 1 + ρ by ring]
+/-- **The connected-cluster weight decays** — the size-`(n+1)` cluster weight
+`|(−1)ⁿ ρ^{n+1}/(n+1)| ≤ |ρ|^{n+1}`: the `1/(n+1) ≤ 1` factor gives the geometric decay in `|ρ|`. -/
+theorem cluster_weight_bound (ρ : ℝ) (n : ℕ) :
+    |(-1 : ℝ) ^ n * ρ ^ (n + 1) / ((n : ℝ) + 1)| ≤ |ρ| ^ (n + 1) := by
+  rw [abs_div, abs_mul, abs_pow]
+  norm_num
+  nlinarith [div_le_self (pow_nonneg (abs_nonneg ρ) (n + 1)) (by linarith [Nat.cast_nonneg n] : 1 ≤ (n : ℝ) + 1)]
 
 end QM
