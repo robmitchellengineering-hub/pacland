@@ -103,3 +103,4 @@ import PaclandProof.QM.GaussianRigidity
 import PaclandProof.QM.RenormalizedAction
 import PaclandProof.QM.AdSCFT
 import PaclandProof.QM.FullLattice
+import PaclandProof.QM.AnimalsBound
