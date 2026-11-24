@@ -352,30 +352,6 @@ theorem reflected_correlation_os3 {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ
     0 ≤ reflectedCorrelation (fun i j => wilsonKernel θ β i j) f f := by
   simpa [reflectedCorrelation, wilsonKernel] using (QM.wilson_kernel_posdef θ β hβ f)
 
-/-- **The Wilson kernel matrix is positive semidefinite** (the real Mathlib `Matrix.PosSemidef`). This is
-the `QM.wilson_kernel_posdef` restated against the standard PSD name rather than the hand-rolled
-`PosDefKernel`: the `IsHermitian` half is the symmetry `wilson_kernel_symmetric` (for ℝ, `star = id`), and
-the quadratic-form half is the PSD itself. -/
-theorem wilson_kernel_posSemidef {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β) :
-    Matrix.PosSemidef (fun i j => wilsonKernel θ β i j) := by
-  constructor
-  · rw [Matrix.IsHermitian]
-    ext i j
-    exact wilson_kernel_symmetric θ β i j
-  · intro x
-    rw [Finsupp.sum, Finsupp.sum]
-    rw [show (∑ i ∈ x.support, ∑ j ∈ x.support, x i * wilsonKernel θ β i j * x j)
-        = ∑ i : Fin m, ∑ j : Fin m, x i * wilsonKernel θ β i j * x j by
-      apply Finset.sum_subset (Finsupp.support_subset_univ x)
-      intro i hi his
-      rw [Finsupp.not_mem_support_iff.mp his]
-      simp
-      apply Finset.sum_subset (Finsupp.support_subset_univ x)
-      intro j hj hjs
-      rw [Finsupp.not_mem_support_iff.mp hjs]
-      simp]
-    simpa [mul_comm, mul_left_comm, mul_assoc, wilsonKernel] using (QM.wilson_kernel_posdef θ β hβ x)
-
 end FSSGaussianDomination
 
 end
