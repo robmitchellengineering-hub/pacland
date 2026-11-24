@@ -74,6 +74,13 @@
    "title": "The discovery process \u2014 jump taxonomy + jump-seeking loop"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/HTHE-PAIRING.md",
+   "kind": "doc",
+   "path": "docs/HTHE-PAIRING.md",
+   "summary": "The 4D Yang\u2013Mills mass gap is now conditionally complete: the structural chain wilsonkernelposdef \u2192 reflectionpositivitycovariancebound \u2192 spacinguniform \u2192 osreconstructionfull \u2192 m(\u03b2) \u2265\u2026",
+   "title": "The `h\u0398` pairing \u2014 what must be found, and the current candidate (2026-11)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/INFINITE-DIMENSIONAL-ISSUE.md",
    "kind": "doc",
    "path": "docs/INFINITE-DIMENSIONAL-ISSUE.md",
@@ -121,6 +128,13 @@
    "path": "docs/MASS-GAP-PROOF-PLAN.md",
    "summary": "one bound, and they are proven separately in the finite volume; the single open rung is the volume-uniformity that joins them.",
    "title": "The mass-gap proof \u2014 the finished plan"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-REDUCTION.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-REDUCTION.md",
+   "summary": "This is the consolidation of the whole lattice + reflection-positivity + constructive-QFT arc. It records, in one place, the exact theorem chain that is proved and kernel-checked (lake\u2026",
+   "title": "The Yang\u2013Mills mass gap: a kernel-checked reduction to one hypothesis"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-STATE.md",
@@ -238,8 +252,8 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-PROOF-TIERS.md",
    "kind": "doc",
    "path": "docs/SEXTANT-PROOF-TIERS.md",
-   "summary": "The five-way distinction at the heart of SEXTANT's identity: a mathematical identity, a formally verified lemma, a verified chain, a theorem conditional on an outstanding hypothesis, and a completed result \u2014 the mass-gap program as the live case study.",
-   "title": "SEXTANT \u2014 proof tiers (the five-way distinction)"
+   "summary": "A sextant does not create the stars; it reads your position from them. The mass-gap program is giving SEXTANT its sharpest case study yet, because it forces the system to separate five\u2026",
+   "title": "SEXTANT proof tiers \u2014 the five-way distinction at the heart of the identity"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-ROADMAP.md",
@@ -2620,6 +2634,13 @@
    "path": "scripts/house_map.py",
    "summary": "The house as a 3D map, inferred from the walk \u2014 and honest about what is inferred and what is invented.",
    "title": "house_map.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/hthe_pairing_sweep.py",
+   "kind": "script",
+   "path": "scripts/hthe_pairing_sweep.py",
+   "summary": "The hTheta pairing sweep (rented-CPU job): lock the trace\u2192Bessel vs heat-kernel separation across",
+   "title": "hthe_pairing_sweep.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/hypotheses.py",
