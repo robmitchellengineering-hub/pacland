@@ -114,4 +114,11 @@ theorem asymptotic_freedom_exponent_pos : 0 < asymptoticFreedomExponent 2 := by
   rw [su2_exponent]
   positivity
 
+/-- **The physical Gibbs measure** — the product Haar measure with the Gibbs density `e^{−β·S}` (the
+`withDensity` construction). This is the physical 4D SU(2) gauge-field measure: the Haar measure weighted
+by the Wilson action's Boltzmann factor, whose reflection symmetry is `gibbs_weight_reflection_symmetric`. -/
+noncomputable def gibbsMeasure {α : Type*} [MeasurableSpace α]
+    (μ : MeasureTheory.Measure α) (S : α → ℝ) (β : ℝ) : MeasureTheory.Measure α :=
+  μ.withDensity (fun x => Real.exp (-β * S x))
+
 end QM
