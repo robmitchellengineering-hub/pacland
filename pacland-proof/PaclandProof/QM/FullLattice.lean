@@ -243,5 +243,28 @@ theorem cluster_weights_summable (ρ : ℝ) (h : |ρ| < 1) :
   have hgeo' : Summable (fun n : ℕ => |ρ| ^ (n + 1)) := by
     simpa [pow_succ, mul_comm] using hgeo.mul_left |ρ|
   exact hgeo'
+/-- **The walks-count bound** (the animals estimate's first lemma): the number of walks of length `n`
+from `u` to `v` on a finite graph is at most `maxDegree ^ n`. -/
+theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj] (u v : V) (n : ℕ) :
+    (G.finsetWalkLength n u v).card ≤ G.maxDegree ^ n := by
+  induction n generalizing u v with
+  | zero => simp [SimpleGraph.finsetWalkLength]
+  | succ n ih =>
+    simp only [SimpleGraph.finsetWalkLength]
+    calc
+      (Finset.univ.biUnion fun w : {w : V // w ∈ G.neighborSet u} => (G.finsetWalkLength n w v).map
+        ⟨fun p => SimpleGraph.Walk.cons w.property p, fun _ _ => by simp⟩).card
+        ≤ ∑ w : {w : V // w ∈ G.neighborSet u}, (G.finsetWalkLength n w v).card :=
+            Finset.card_biUnion_le
+      _ ≤ ∑ w : {w : V // w ∈ G.neighborSet u}, G.maxDegree ^ n :=
+            Finset.sum_le_sum (fun w _ => ih w v)
+      _ = (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}).card * G.maxDegree ^ n := by simp
+      _ ≤ G.degree u * G.maxDegree ^ n := by
+            refine Nat.mul_le_mul_right _ ?_
+            rw [SimpleGraph.card_neighborFinset_eq_degree]
+            exact Fintype.card_coe_le_card  -- hmm, direction
+      _ ≤ G.maxDegree * G.maxDegree ^ n := Nat.mul_le_mul_right _ (G.degree_le_maxDegree u)
+      _ = G.maxDegree ^ (n + 1) := by rw [pow_succ]
 
 end QM
