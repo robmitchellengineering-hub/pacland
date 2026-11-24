@@ -219,7 +219,6 @@ theorem linked_cluster_weights (ρ : ℝ) (h : |ρ| < 1) :
   have hsum := Real.hasSum_pow_div_log_of_abs_lt_one (x := -ρ) hx
   convert hsum.neg using 1
   · funext n
-    rw [neg_div]
     ring_nf
   · rw [neg_neg, show (1 : ℝ) - (-ρ) = 1 + ρ by ring]
 
