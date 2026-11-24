@@ -6,6 +6,16 @@ IMPOSSIBLE (a no-go), or IRREDUCIBLE (computable — the lattice keeps forcing i
 closed-form certificate). This is the theorem registry + classifier — the first rung. The quantum
 facts come from Phantom (Stim/Quimb) and the certificates from the Lean proof tower (pacland-proof/).
 
+Every claim also carries a `tier` — how far the proof actually goes, the distinction SEXTANT's
+identity is built on (docs/SEXTANT-PROOF-TIERS.md):
+    identity    — a mathematical identity (true by algebra/combinatorics, no hypothesis)
+    lemma       — a formally verified lemma (a single machine-checked certificate)
+    chain       — a verified chain of lemmas (the wiring is the theorem)
+    conditional — a theorem "if H then T" with T proved and H named-but-open
+    result      — a completed result with the outstanding hypothesis discharged
+A FORCED claim can still be only a lemma; an IRREDUCIBLE claim can be a proved conditional whose
+result tier is open. The verdict answers *where it sits*; the tier answers *how far the proof goes*.
+
 Usage:
     python -m pacland.sextant --list
     python -m pacland.sextant chsh
@@ -468,6 +478,7 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a reflected correlation that fails to equal the Wilson kernel's quadratic form, or a non-positive reflected correlation",
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
+        "tier": "chain",
         "why": "the hΘ is proved by the Peter-Weyl / character-orthogonality route: the heat kernel is the Jacobi-Anger sum over the Chebyshev characters (wilson_heat_kernel_chebyshev + wilson_heat_kernel_rank_one), the characters are orthogonal under the structured Haar measure measureT (Mathlib's Chebyshev orthogonality, hTheta_character_*), and the Bessel weights are positive (besselI_pos), so the kernel is PSD (wilson_kernel_posdef) — the measure→kernel connection is reduced to the already-proved Chebyshev orthogonality + Jacobi-Anger, not a computed general group integral.",
     },
     "ym-linked-cluster-contraction": {
@@ -477,6 +488,7 @@ CATALOG: dict[str, dict] = {
         "falsifier": "a numeric counterexample: the block-spin propagator NOT contracting to ρ(β) ≤ e^{−A·e^{−cβ}} across scales (the decimated two-point function failing to decay by the contraction rate)",
         "oracle": ["lattice (block-spin propagator decay, β scan)"],
         "verdict": "IRREDUCIBLE",
+        "tier": "conditional",
         "why": "the block-spin propagator's contraction is the single remaining measure-theoretic estimate (the Balaban-style linked-cluster). Everything above and below H is proved and kernel-checked; H is the open real-analysis rung, not a structural rearrangement.",
     },
     "ym-continuum-uniform": {

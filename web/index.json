@@ -235,6 +235,13 @@
    "title": "SEXTANT \u2014 User Manual"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-PROOF-TIERS.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-PROOF-TIERS.md",
+   "summary": "The five-way distinction at the heart of SEXTANT's identity: a mathematical identity, a formally verified lemma, a verified chain, a theorem conditional on an outstanding hypothesis, and a completed result \u2014 the mass-gap program as the live case study.",
+   "title": "SEXTANT \u2014 proof tiers (the five-way distinction)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-ROADMAP.md",
    "kind": "doc",
    "path": "docs/SEXTANT-ROADMAP.md",
