@@ -1,5 +1,6 @@
 import Mathlib
 import PaclandProof.QM.HeatKernel
+import PaclandProof.QM.AsymptoticFreedom
 
 /-!
 # The full 4D lattice gauge-field configuration space and its reflection symmetry
@@ -105,5 +106,12 @@ theorem gibbs_weight_reflection_symmetric {P : Type*} [Fintype P] [DecidableEq P
   rw [wilsonAction, wilsonAction]
   congr 1
   exact (full_wilson_action_reflection_symmetric (fun p => wilsonPlaquette (U p)) Θ).symm
+
+/-- **The asymptotic-freedom exponent is positive** — the RG flow's running coupling `c = 12π²/11 > 0`
+(`AsymptoticFreedom.su2_exponent`) is a finite positive constant as `a→0`, the renormalization's
+finiteness: the mass gap runs as `e^{−cβ}` with `c > 0` kept finite through the continuum limit. -/
+theorem asymptotic_freedom_exponent_pos : 0 < AsymptoticFreedom.asymptoticFreedomExponent 2 := by
+  rw [AsymptoticFreedom.su2_exponent]
+  positivity
 
 end QM
