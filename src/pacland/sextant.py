@@ -470,6 +470,15 @@ CATALOG: dict[str, dict] = {
         "verdict": "FORCED",
         "why": "the hΘ is proved by the Peter-Weyl / character-orthogonality route: the heat kernel is the Jacobi-Anger sum over the Chebyshev characters (wilson_heat_kernel_chebyshev + wilson_heat_kernel_rank_one), the characters are orthogonal under the structured Haar measure measureT (Mathlib's Chebyshev orthogonality, hTheta_character_*), and the Bessel weights are positive (besselI_pos), so the kernel is PSD (wilson_kernel_posdef) — the measure→kernel connection is reduced to the already-proved Chebyshev orthogonality + Jacobi-Anger, not a computed general group integral.",
     },
+    "ym-linked-cluster-contraction": {
+        "claim": "the linked-cluster contraction H — the concrete SU(2) Gibbs measure's transfer-matrix spectral radius contracts under blockSpinSU2 to ρ(β) ≤ e^{−A·e^{−(12π²/11)β}} (the single remaining hypothesis of the mass-gap reduction, docs/MASS-GAP-REDUCTION.md)",
+        "simulate": None,
+        "theorem": "none — the open hypothesis (the mass-gap reduction's single input). The transport is proved: refereeScalingLaw_of_radius_bound (ρ ≤ e^{−A·e^{−cβ}} ⟹ m ≥ A·e^{−cβ}) + volume_uniform_covariance_bound + wightman_limit_stable; the radius bound itself is H",
+        "falsifier": "a numeric counterexample: the block-spin propagator NOT contracting to ρ(β) ≤ e^{−A·e^{−cβ}} across scales (the decimated two-point function failing to decay by the contraction rate)",
+        "oracle": ["lattice (block-spin propagator decay, β scan)"],
+        "verdict": "IRREDUCIBLE",
+        "why": "the block-spin propagator's contraction is the single remaining measure-theoretic estimate (the Balaban-style linked-cluster). Everything above and below H is proved and kernel-checked; H is the open real-analysis rung, not a structural rearrangement.",
+    },
     "ym-continuum-uniform": {
         "claim": "the mass-gap lower bound A·e^{−cβ} is uniform in the lattice spacing (a spacing-independent positive constant), so the a→0 continuum limit preserves the gap",
         "simulate": None,
