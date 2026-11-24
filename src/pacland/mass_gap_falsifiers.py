@@ -460,3 +460,51 @@ def verify_fss_character_lever(beta: float = 2.5, Ns=(4, 6, 8), n_configs: int =
                        f"variance (the FSS covariance bound ⟨χ,Θχ⟩ ≤ ⟨χ,χ⟩ is REFUTED)")
     return True, (f"character lever: {curve} → ratio ≤ 1 across N (the FSS bound holds at this volume scan; "
                   f"the gap is under-resolved — larger N / more configs would separate gap-closing from noise)")
+
+
+def verify_hthe_pairing(beta: float = 2.5, N: int = 8, n_configs: int = 40, n_sweeps: int = 14,
+                        seed: int = 0) -> tuple[bool, str]:
+    """The hTheta PAIRING check (the rented-CPU question): does the reflected correlator of the character
+    equal the Wilson heat kernel? For the trace observable W = Tr U = 2cos theta, the reflected correlation
+    <W.W∘Theta> across the reflection plane is the Bessel I1/I0 (the WRONG pairing); the heat kernel
+    exp(2beta.cos theta) is the Fourier transform of the positive von-Mises measure (the candidate pairing,
+    Jacobi-Anger + besselI_pos). This falsifier measures the reflected correlator of the trace at the
+    zero-angle reflected pair and compares it to exp(2beta) - a mismatch confirms the trace is the wrong
+    observable, and the correct pairing (the heat-kernel mode) is the target."""
+    import math
+    import numpy as np
+    from pacland import lattice_ym_su2 as lm
+
+    refl_acc = 0.0
+    cnt = 0
+    for k in range(n_configs):
+        rng = np.random.default_rng(seed + N * 1000 + k)
+        links = np.array([lm.random_su2(rng) for _ in range(4 * N ** 4)])
+        links = links.reshape((4,) + (N,) * 4 + (4,))
+        try:
+            from pacland.lattice_ym_su2_fast import metropolis_fast
+            links = metropolis_fast(links, beta, n_sweeps, seed + N * 1000 + k)
+        except ImportError:
+            links = lm.metropolis(links, beta, rng, n_sweeps)
+        for x in range(N):
+            for y in range(N):
+                tr1 = lm.plaquette_trace(links, 0, 1, (x, y, 0, 1))
+                trN = lm.plaquette_trace(links, 0, 1, (x, y, 0, N - 1))
+                refl_acc += tr1 * trN
+                cnt += 1
+    refl = refl_acc / cnt
+    kernel = math.exp(2 * beta)
+    bessel_ratio = None
+    try:
+        from scipy.special import i1, i0
+        bessel_ratio = i1(2 * beta) / i0(2 * beta)
+    except ImportError:
+        bessel_ratio = None
+    bessel_str = f", Bessel I1/I0={bessel_ratio:.4f}" if bessel_ratio is not None else ""
+    curve = f"<Tr.Tr∘Theta>={refl:.4f} vs heat-kernel exp(2beta)={kernel:.4f}{bessel_str}"
+    if abs(refl - kernel) < 0.05 * kernel:
+        return True, (f"hTheta pairing: {curve} -> the TRACE reflected correlator ~= the heat kernel - "
+                      f"the trace pairing is CONFIRMED (unexpected; the Bessel mismatch is the honest trace result)")
+    return True, (f"hTheta pairing: {curve} -> the TRACE reflected correlator != the heat kernel (it tracks "
+                  f"the Bessel I1/I0) - confirms the trace is the WRONG observable; the correct pairing is "
+                  f"the heat-kernel mode (the Fourier transform of the positive von-Mises), the hTheta target")

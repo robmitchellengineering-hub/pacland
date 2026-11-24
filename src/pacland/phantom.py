@@ -314,4 +314,5 @@ FALSIFIERS = {
     "ym-orbifold-curvature": mass_gap_falsifiers.verify_orbifold_curvature,
     "ym-rg-contraction": mass_gap_falsifiers.verify_rg_contraction,
     "ym-log-sobolev": mass_gap_falsifiers.verify_log_sobolev,
+    "ym-h-theta-measure-kernel": mass_gap_falsifiers.verify_hthe_pairing,
 }
