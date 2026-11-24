@@ -125,13 +125,13 @@ noncomputable def gibbsMeasure {α : Type*} [MeasurableSpace α]
 `(a, b)` with `|a|² + |b|² = 1`), and its Haar measure is the round measure on that sphere, given by
 Mathlib's `MeasureTheory.Measure.toSphere` (the `HaarToSphere` construction) applied to the ℂ² Lebesgue
 measure. This avoids the compactness proof: the S³ measure is defined directly, not via `PositiveCompacts`. -/
-noncomputable def su2Haar : MeasureTheory.Measure (sphere (0 : ℂ × ℂ) 1) :=
-  MeasureTheory.Measure.toSphere (volume : MeasureTheory.Measure (ℂ × ℂ))
+noncomputable def su2Haar : MeasureTheory.Measure (Metric.sphere (0 : ℂ × ℂ) 1) :=
+  MeasureTheory.Measure.toSphere (MeasureTheory.volume : MeasureTheory.Measure (ℂ × ℂ))
 
 /-- **The SU(2) Wilson action on the S³** — the holonomy trace `1 − Re Tr U` for the SU(2) element
 `[[a, −conj b], [b, conj a]]`, whose trace is `2·Re a`: `S(a, b) = 1 − 2·Re a`. This is the specific
 `wilsonPlaquette` in the S³ parametrization of SU(2). -/
-noncomputable def su2WilsonAction (z : sphere (0 : ℂ × ℂ) 1) : ℝ :=
+noncomputable def su2WilsonAction (z : Metric.sphere (0 : ℂ × ℂ) 1) : ℝ :=
   1 - 2 * (z.1.1).re
 
 end QM
