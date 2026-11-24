@@ -350,7 +350,7 @@ connection's positivity half, discharged by the kernel's PSD + the definition of
 group integral. -/
 theorem reflected_correlation_os3 {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β) (f : Fin m → ℝ) :
     0 ≤ reflectedCorrelation (fun i j => wilsonKernel θ β i j) f f := by
-  simpa [reflectedCorrelation] using (QM.wilson_kernel_posdef θ β hβ f)
+  simpa [reflectedCorrelation, wilsonKernel] using (QM.wilson_kernel_posdef θ β hβ f)
 
 end FSSGaussianDomination
 
