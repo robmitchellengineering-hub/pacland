@@ -209,5 +209,20 @@ theorem linked_cluster_log_prod {P : Type*} [Fintype P] [DecidableEq P] (ρ : P 
     (hne : ∀ p, 1 + ρ p ≠ 0) :
     Real.log (∏ p ∈ (Finset.univ : Finset P), (1 + ρ p)) = ∑ p ∈ (Finset.univ : Finset P), Real.log (1 + ρ p) := by
   exact Real.log_prod (s := (Finset.univ : Finset P)) (f := fun p => 1 + ρ p) (by intro p hp; exact hne p)
+/-- **The connected-cluster weights** — the Taylor series of the single-plaquette log:
+`log (1 + ρ) = Σ_{n≥0} (−1)ⁿ ρ^{n+1}/(n+1)` for `|ρ| < 1` (Mathlib's `hasSum_pow_div_log_of_abs_lt_one`
+with `x = −ρ`). These are the connected-cluster weights of the linked-cluster expansion: the free energy's
+per-plaquette log is the sum over the single-plaquette clusters of size `n+1`. -/
+theorem linked_cluster_weights (ρ : ℝ) (h : |ρ| < 1) :
+    HasSum (fun n : ℕ => (-1 : ℝ) ^ n * ρ ^ (n + 1) / ((n : ℝ) + 1)) (Real.log (1 + ρ)) := by
+  have hx : |(-ρ)| < 1 := by simpa using h
+  have hsum := hasSum_pow_div_log_of_abs_lt_one (x := -ρ) hx
+  convert hsum.neg using 1
+  · rw [neg_sub, sub_eq_add_neg, neg_neg]
+    simp [add_comm]
+  · ext n
+    rw [neg_div]
+    push_cast
+    ring
 
 end QM
