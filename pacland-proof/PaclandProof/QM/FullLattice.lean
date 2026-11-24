@@ -251,7 +251,7 @@ theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
   induction n generalizing u v with
   | zero =>
     simp only [SimpleGraph.finsetWalkLength]
-    split_ifs <;> simp
+    split_ifs <;> simp [Finset.card_singleton]
   | succ n ih =>
     simp only [SimpleGraph.finsetWalkLength]
     calc
@@ -261,15 +261,15 @@ theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
             ⟨fun p => SimpleGraph.Walk.cons w.property p, fun _ _ h => by injection h with hpq; exact hpq⟩).card :=
             Finset.card_biUnion_le
       _ ≤ ∑ w ∈ (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}), (G.finsetWalkLength n w v).card :=
-            Finset.sum_le_sum (fun w hw => Finset.card_map_le)
+            Finset.sum_congr rfl (fun w hw => Finset.card_map)
       _ ≤ ∑ w ∈ (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}), G.maxDegree ^ n :=
             Finset.sum_le_sum (fun w hw => ih w v)
       _ = (Finset.univ : Finset {w : V // w ∈ G.neighborSet u}).card * G.maxDegree ^ n := by
             simp [Finset.sum_const]
       _ = G.degree u * G.maxDegree ^ n := by
             congr 1
-            simp [SimpleGraph.degree, SimpleGraph.neighborFinset_def]
+            simp [SimpleGraph.degree, SimpleGraph.neighborFinset_def, Fintype.card_coe]
       _ ≤ G.maxDegree * G.maxDegree ^ n := Nat.mul_le_mul_right _ (G.degree_le_maxDegree u)
-      _ = G.maxDegree ^ (n + 1) := by rw [pow_succ]
+      _ = G.maxDegree ^ (n + 1) := by rw [pow_succ']
 
 end QM
