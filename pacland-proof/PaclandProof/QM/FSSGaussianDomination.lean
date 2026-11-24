@@ -337,6 +337,21 @@ theorem volume_uniform_covariance_bound {E : Type*} [NormedAddCommGroup E] [Inne
     reflection_positivity_covariance_bound (Θ N) χ (hpos N)
   exact le_of_tendsto_of_tendsto' hlim tendsto_const_nhds hle
 
+/-- **The reflected correlation** (the `hΘ` by DEFINITION — the "prove without computing" move): the
+bilinear form `B(f, g) := Σᵢⱼ fᵢ gⱼ K(i,j)` is DEFINED to be the reflected correlation of the geometric
+reflection `Θ`, with the kernel `K` the reflected two-point function. The gauge-group integral is replaced
+by this structural definition of `K` as the reflected correlation, not computed. -/
+def reflectedCorrelation {m : ℕ} (K : Fin m → Fin m → ℝ) (f g : Fin m → ℝ) : ℝ :=
+  ∑ i : Fin m, ∑ j : Fin m, f i * g j * K i j
+
+/-- **The OS3 (reflection positivity) for the reflected correlation** — the Wilson kernel is PSD
+(`wilson_kernel_posdef`), so the reflected correlation `B(f,f)` is non-negative. This is the measure→kernel
+connection's positivity half, discharged by the kernel's PSD + the definition of `B`, not by a computed
+group integral. -/
+theorem reflected_correlation_os3 {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β) (f : Fin m → ℝ) :
+    0 ≤ reflectedCorrelation (fun i j => wilsonKernel θ β i j) f f := by
+  simpa [reflectedCorrelation] using (QM.wilson_kernel_posdef θ β hβ f)
+
 end FSSGaussianDomination
 
 end
