@@ -141,4 +141,11 @@ theorem su2WilsonAction_reflection_symmetric (a b : ℂ) :
     1 - 2 * (star a).re = 1 - 2 * a.re := by
   simp
 
+/-- **The product Haar over the links** — the full 4D lattice's configuration-space measure: the product
+of the SU(2) Haar `su2Haar` over a finite index set of link variables `L` (the `U_μ(x)`). Mathlib's
+`MeasureTheory.Measure.pi` (the finite product of σ-finite measures). -/
+noncomputable def latticeHaar {L : Type*} [Fintype L] :
+    MeasureTheory.Measure (L → Metric.sphere (0 : ℂ × ℂ) 1) :=
+  MeasureTheory.Measure.pi (fun _ : L => su2Haar)
+
 end QM
