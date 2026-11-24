@@ -1,0 +1,48 @@
+{
+  "schema": "sextant-rejections",
+  "note": "Rejected approaches are information, not waste. Each entry records the wall, why it failed, and the workaround that won.",
+  "rejections": [
+    {
+      "name": "su2-compactness-heine-borel",
+      "wall": "SU(2) compactness + Haar via Heine-Borel / PositiveCompacts",
+      "why_failed": "Mathlib has no CompactSpace/PositiveCompacts instance for Matrix.specialUnitaryGroup (Fin 2) ℂ",
+      "workaround": "Measure.toSphere on Metric.sphere (0 : ℂ × ℂ) 1 — S³ = SU(2), avoiding the compactness wall",
+      "source": "FullLattice.lean"
+    },
+    {
+      "name": "specialUnitaryGroup-as-group",
+      "wall": "treating specialUnitaryGroup as a Group (the group tactic)",
+      "why_failed": "specialUnitaryGroup is a Submonoid, not a Group; the inverse lives in the Subgroup",
+      "workaround": "associativity-only Monoid form, not group",
+      "source": "FullLattice.lean"
+    },
+    {
+      "name": "bigoperators-in-binder",
+      "wall": "∏ p in s BigOperators notation",
+      "why_failed": "parse error on the 'in' binder",
+      "workaround": "∏ p ∈ s (the ∈ binder)",
+      "source": "FullLattice.lean"
+    },
+    {
+      "name": "prod-insert-subset-identity",
+      "wall": "Finset.prod_insert in the subset identity ∏(1+ρ)=Σ_S ∏ρ",
+      "why_failed": "metavariable / wrong occurrence — rw couldn't target ∏ p ∈ insert a x",
+      "workaround": "show B = C + apply sum_congr rfl + intro + explicit pointwise prod_insert",
+      "source": "FullLattice.lean (polymer_expansion_subset)"
+    },
+    {
+      "name": "neighborset-subtype-walk-count",
+      "wall": "G.neighborSet as a type in the walks-count bound",
+      "why_failed": "G.neighborSet : V → Set V is not a type; the sum over it needs the subtype",
+      "workaround": "explicit {w : V // w ∈ G.neighborSet u} + Fintype.card_coe (Finset.filter (Adj u) univ)",
+      "source": "FullLattice.lean (walk_count_bound)"
+    },
+    {
+      "name": "reduction-milestone-framing",
+      "wall": "re-labelling the same open rung as a new 'reduction' milestone",
+      "why_failed": "the ~80 mass-gap framings are one wall, restated; the framing disguised non-progress as progress",
+      "workaround": "the accounting graph + the three states (proved-lemma / proved-transport / open-obligation)",
+      "source": "docs/MASS-GAP-ACCOUNTING.md"
+    }
+  ]
+}
