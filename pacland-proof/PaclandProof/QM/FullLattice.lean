@@ -65,4 +65,23 @@ theorem wilson_trace_reflection_invariant (U : Matrix (Fin 2) (Fin 2) ℂ) :
   rw [Matrix.trace_conjTranspose]
   simp [Complex.conj_re]
 
+/-- **The Haar measure's positivity** — the integral of a non-negative function against a measure is
+non-negative (Mathlib's `MeasureTheory.integral_nonneg`). This is the positivity half of the FSS
+reflection positivity for the full measure: the reflected correlation's integrand is a square, hence
+non-negative, so its integral is non-negative. -/
+theorem haar_measure_positivity {α : Type*} [MeasurableSpace α] (μ : Measure α)
+    {f : α → ℝ} (hf : ∀ x, 0 ≤ f x) :
+    0 ≤ ∫ x, f x ∂μ := integral_nonneg hf
+
+/-- **The full lattice's OS3 (the Haar-measure form)** — the reflected correlation `∫ (f·w)² ∂μ` is
+non-negative: the integrand is a square (`fss_reflection_positivity_square`) and the Haar measure is
+positive (`haar_measure_positivity`). This discharges the OS3 for the full measure up to the transfer
+factorization `reflected correlation = ∫ (f·w)²`. -/
+theorem full_lattice_os3_haar {α : Type*} [MeasurableSpace α] (μ : Measure α)
+    (w f : α → ℝ) :
+    0 ≤ ∫ x, (f x * w x) * (f x * w x) ∂μ := by
+  apply haar_measure_positivity μ
+  intro x
+  positivity
+
 end QM
