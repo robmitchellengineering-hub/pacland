@@ -42,11 +42,17 @@ Everything else — above and below that hypothesis — is proved.
 - `besselI_pos` — the positive Fourier weights.
 - `wilson_kernel_posdef` — the heat-kernel PSD.
 
-**RG + cluster-expansion foundation**:
+**RG + cluster-expansion foundation** (the full single-cluster layer, all green):
 - `blockSpinSU2` — the SU(2) decimation `U(2j)·U(2j+1)`.
 - `clusterActivity`, `cluster_activity_abs_lt_one`, `cluster_expansion_converges_small_field` — the
   single-plaquette activity `ρ = 1 − e^{−β(2−Re Tr U)}` and its small-field convergence.
 - `polymer_expansion_subset` — the subset identity `∏(1+ρ) = Σ_S ∏ρ`.
+- `linked_cluster_log_prod` — `log ∏(1+ρ) = Σ log(1+ρ)` (the free-energy factorization).
+- `linked_cluster_weights` — the connected-cluster weights `(−1)ⁿ ρ^{n+1}/(n+1)` (the `log(1+ρ)` Taylor).
+- `cluster_weight_bound` — `|weight| ≤ |ρ|^{n+1}` (the geometric decay).
+- `cluster_weights_summable` — the absolute summability of the weights (the cluster-expansion convergence).
+- `walk_count_bound` — `#(finsetWalkLength n u v) ≤ maxDegreeⁿ` (the walks-count bound, the animals
+  estimate's first lemma).
 
 **Limits + reconstruction** (the tower):
 - `HeatKernel.continuum_uniform_mass_gap` — the spacing-uniform positive bound (a→0).
@@ -64,5 +70,11 @@ Their hypothesis is **H** above. So the Clay problem is reduced to:
 > **H** — the Balaban-style linked-cluster estimate: the concrete `gibbsMeasure`/`blockSpinSU2`
 > propagator contracts to `ρ(β) ≤ e^{−A·e^{−(12π²/11)β}}`.
 
-This is the one genuine real-analysis estimate left, and it is the open mathematics of the
-Millennium problem.
+The next (and now precise) unproved rung toward H is the **lattice-animals bound**:
+
+> `#{connected clusters of size n} ≤ Δ^{2(n−1)}` — a connected subset of `n` vertices has a spanning
+> tree of `n−1` edges whose Euler/DFS tour is a walk of length `2(n−1)`; combined with
+> `walk_count_bound` (proved) this gives `#{animals} ≤ Δ^{2(n−1)}`.
+
+This is the one genuine combinatorial/real-analysis estimate left before the block-spin contraction,
+and it is the open mathematics of the Millennium problem.

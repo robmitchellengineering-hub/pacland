@@ -473,7 +473,7 @@ CATALOG: dict[str, dict] = {
     "ym-linked-cluster-contraction": {
         "claim": "the linked-cluster contraction H — the concrete SU(2) Gibbs measure's transfer-matrix spectral radius contracts under blockSpinSU2 to ρ(β) ≤ e^{−A·e^{−(12π²/11)β}} (the single remaining hypothesis of the mass-gap reduction, docs/MASS-GAP-REDUCTION.md)",
         "simulate": None,
-        "theorem": "none — the open hypothesis (the mass-gap reduction's single input). The transport is proved: refereeScalingLaw_of_radius_bound (ρ ≤ e^{−A·e^{−cβ}} ⟹ m ≥ A·e^{−cβ}) + volume_uniform_covariance_bound + wightman_limit_stable; the radius bound itself is H",
+        "theorem": "none — the open hypothesis (the mass-gap reduction's single input). The transport is proved: refereeScalingLaw_of_radius_bound (ρ ≤ e^{−A·e^{−cβ}} ⟹ m ≥ A·e^{−cβ}) + volume_uniform_covariance_bound + wightman_limit_stable. The full single-cluster layer toward H is proved: clusterActivity/smallness/convergence + polymer_expansion_subset + linked_cluster_log_prod + linked_cluster_weights + cluster_weight_bound + cluster_weights_summable + walk_count_bound (#(walks length n) ≤ maxDegreeⁿ, the animals estimate's first lemma). The next unproved rung is the animals bound #{connected clusters of size n} ≤ Δ^{2(n−1)} (spanning tree + Euler tour).",
         "falsifier": "a numeric counterexample: the block-spin propagator NOT contracting to ρ(β) ≤ e^{−A·e^{−cβ}} across scales (the decimated two-point function failing to decay by the contraction rate)",
         "oracle": ["lattice (block-spin propagator decay, β scan)"],
         "verdict": "IRREDUCIBLE",
