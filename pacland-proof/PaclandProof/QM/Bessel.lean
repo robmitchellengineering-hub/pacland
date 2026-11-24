@@ -468,4 +468,65 @@ theorem integral_cos_of_ne_zero {k : ℕ} (hk : k ≠ 0) :
   rw [Polynomial.Chebyshev.integral_measureT_eq_integral_cos] at h
   simpa [Polynomial.Chebyshev.T_real_cos] using h
 
+/-- **The product-to-sum identity** `sin a · sin b = (cos(a−b) − cos(a+b))/2`. -/
+theorem sin_mul_sin_eq (a b : ℝ) : Real.sin a * Real.sin b = (Real.cos (a - b) - Real.cos (a + b)) / 2 := by
+  rw [Real.cos_sub, Real.cos_add]
+  ring
+
+/-- **The ℤ Fourier ingredient `∫₀^π cos(kθ) dθ = 0`** for `k : ℤ ≠ 0` — the cosine's even symmetry
+(`cos(−x) = cos x`) and the absolute value reduce the negative case to the ℕ case. -/
+theorem integral_cos_of_ne_zero_int {k : ℤ} (hk : k ≠ 0) :
+    ∫ θ in 0..Real.pi, Real.cos (k * θ) = 0 := by
+  have hkabs : Int.natAbs k ≠ 0 := by
+    rwa [Int.natAbs_ne_zero]
+  have h := integral_cos_of_ne_zero hkabs
+  rw [intervalIntegral.integral_congr (fun θ _ => by
+    rw [show Real.cos ((k : ℝ) * θ) = Real.cos ((Int.natAbs k : ℝ) * θ) by
+      rcases Int.natAbs_eq k with hpos | hneg
+      · subst hpos; rfl
+      · rw [show (k : ℝ) = -((Int.natAbs k : ℝ)) by exact_mod_cast hneg]
+        rw [Real.cos_neg])]
+  exact h
+
+/-- **The full SU(2) character orthogonality (off-diagonal)** — the Chebyshev U / one-variable sin
+integral: `∫₀^π sin((n+1)θ)·sin((m+1)θ) dθ = 0` for `n ≠ m`, via the product-to-sum
+`sin a sin b = (cos(a−b) − cos(a+b))/2` and `integral_cos_of_ne_zero_int`. -/
+theorem su2_character_orthogonality_ne {n m : ℕ} (h : n ≠ m) :
+    ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((m + 1 : ℝ) * θ) = 0 := by
+  rw [intervalIntegral.integral_congr (fun θ _ => sin_mul_sin_eq ((n + 1 : ℝ) * θ) ((m + 1 : ℝ) * θ))]
+  rw [intervalIntegral.integral_sub, intervalIntegral.integral_div]
+  · have h1 : ∫ θ in 0..Real.pi, Real.cos (((n : ℤ) - (m : ℤ) : ℝ) * θ) = 0 := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by
+        congr 1
+        rw [show (n + 1 : ℝ) * θ - (m + 1 : ℝ) * θ = ((n : ℤ) - (m : ℤ) : ℝ) * θ by ring])]
+      exact integral_cos_of_ne_zero_int (by omega : (n : ℤ) - (m : ℤ) ≠ 0)
+    have h2 : ∫ θ in 0..Real.pi, Real.cos (((n : ℤ) + (m : ℤ) + 2 : ℝ) * θ) = 0 := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by
+        congr 1
+        rw [show (n + 1 : ℝ) * θ + (m + 1 : ℝ) * θ = ((n : ℤ) + (m : ℤ) + 2 : ℝ) * θ by ring])]
+      exact integral_cos_of_ne_zero_int (by omega : (n : ℤ) + (m : ℤ) + 2 ≠ 0)
+    rw [h1, h2]
+    norm_num
+  · exact Continuous.intervalIntegrable (by fun_prop)
+  · exact Continuous.intervalIntegrable (by fun_prop)
+
+/-- **The full SU(2) character orthogonality (diagonal)** — `∫₀^π sin((n+1)θ)² dθ = π/2`, the diagonal of
+the sin orthogonality (`∫ cos 0 = π`, the `2(n+1)θ` term vanishes). -/
+theorem su2_character_orthogonality_diag {n : ℕ} :
+    ∫ θ in 0..Real.pi, Real.sin ((n + 1 : ℝ) * θ) * Real.sin ((n + 1 : ℝ) * θ) = Real.pi / 2 := by
+  rw [intervalIntegral.integral_congr (fun θ _ => sin_mul_sin_eq ((n + 1 : ℝ) * θ) ((n + 1 : ℝ) * θ))]
+  rw [intervalIntegral.integral_sub, intervalIntegral.integral_div]
+  · have h0 : ∫ θ in 0..Real.pi, Real.cos (((n + 1 : ℝ) * θ) - ((n + 1 : ℝ) * θ)) = Real.pi := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by simp [sub_self])]
+      simp
+    have h2 : ∫ θ in 0..Real.pi, Real.cos (((n + 1 : ℝ) * θ) + ((n + 1 : ℝ) * θ)) = 0 := by
+      rw [intervalIntegral.integral_congr (fun θ _ => by
+        congr 1
+        rw [show (n + 1 : ℝ) * θ + (n + 1 : ℝ) * θ = (2 * (n + 1) : ℝ) * θ by ring])]
+      exact integral_cos_of_ne_zero (by omega : 2 * (n + 1) ≠ 0)
+    rw [h0, h2]
+    norm_num
+  · exact Continuous.intervalIntegrable (by fun_prop)
+  · exact Continuous.intervalIntegrable (by fun_prop)
+
 end QM
