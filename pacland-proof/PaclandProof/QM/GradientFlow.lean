@@ -37,6 +37,15 @@ theorem wilson_action_reflection_symmetric (β θ : ℝ) :
   dsimp [onePlaquetteAction, reflectionTheta]
   rw [Real.cos_neg]
 
+/-- **The Boltzmann weight is reflection-symmetric** — `e^{−S(Θθ)} = e^{−S(θ)}`, the direct consequence of
+the action's reflection symmetry. This is the measure's reflection symmetry (the Gibbs weight is invariant
+under the geometric reflection), the structural half the FSS reflection positivity rests on — no Haar
+integral computed. -/
+theorem boltzmann_weight_reflection_symmetric (β θ : ℝ) :
+    boltzmannWeight β (reflectionTheta θ) = boltzmannWeight β θ := by
+  dsimp [boltzmannWeight, onePlaquetteAction, reflectionTheta]
+  rw [Real.cos_neg]
+
 /-- The action derivative: `S'(θ) = β·sin θ` — the Wilson (link) gradient of the 1-plaquette
 action. -/
 lemma onePlaquetteAction_deriv (β θ : ℝ) :
