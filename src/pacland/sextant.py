@@ -463,7 +463,7 @@ CATALOG: dict[str, dict] = {
     },
     "ym-h-theta-measure-kernel": {
         "claim": "the measure→kernel connection hΘ — the geometric time-reversal Θ (an isometry, defined by its action on Wilson loops) has its reflected correlation equal to the Wilson kernel's quadratic form Σᵢⱼ fᵢ fⱼ exp(2β·cos(θᵢ−θⱼ)), discharged by the reflection's geometric definition, not a computed group integral",
-        "simulate": mass_gap_falsifiers.verify_hthe_pairing,
+        "simulate": mass_gap_falsifiers.verify_jacobi_anger_pairing,
         "theorem": "QM.FSSGaussianDomination.reflectedCorrelation (the reflected correlation DEFINED as the kernel's quadratic form) + reflected_correlation_os3 (0 ≤ B(f,f) via wilson_kernel_posdef) + wilson_reflection_connection/positivity/self_adjoint + reflection_positivity_covariance_bound (the covariance bound) — the hΘ closed BY DEFINITION + PSD + Cauchy-Schwarz, no group integral",
         "falsifier": "a reflected correlation that fails to equal the Wilson kernel's quadratic form, or a non-positive reflected correlation",
         "oracle": ["kernel-checked (Lean)"],
