@@ -239,6 +239,8 @@ weights. This is the convergence of the linked-cluster expansion. -/
 theorem cluster_weights_summable (ρ : ℝ) (h : |ρ| < 1) :
     Summable (fun n : ℕ => |(-1 : ℝ) ^ n * ρ ^ (n + 1) / ((n : ℝ) + 1)|) := by
   refine Summable.of_nonneg_of_le (fun n => abs_nonneg _) (fun n => cluster_weight_bound ρ n) ?_
-  simpa [pow_succ] using (summable_geometric_iff_norm_lt_one.mpr h).of_norm
+  have hgeo : Summable (fun n : ℕ => |ρ| ^ (n + 1)) := by
+    simpa [pow_succ, mul_comm] using (summable_geometric_iff_norm_lt_one.mpr h).mul_left |ρ|
+  exact hgeo
 
 end QM
