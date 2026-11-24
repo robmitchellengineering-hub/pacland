@@ -127,7 +127,13 @@ section, .field, .out, .callout { scroll-margin-top: 24px; }
   html { scroll-behavior: auto; }
   *, *:before, *:after { transition: none !important; animation: none !important; }
 }
+.mermaid { background: transparent; }
+.mermaid svg { max-width: 100%; height: auto; }
 </style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark', themeVariables: { background: '#0d1522', primaryColor: '#142235', primaryTextColor: '#edf4fb', primaryBorderColor: '#62d7e8', lineColor: '#9aadc1', fontSize: '13px' } });
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -200,9 +206,65 @@ section, .field, .out, .callout { scroll-margin-top: 24px; }
     </div>
   </section>
 
+  <section id="proof-graph">
+    <p class="eyebrow">Proof dependency graph</p>
+    <h2>Exactly how far the proof goes</h2>
+    <div class="callout">
+      <p><strong>Lean build:</strong> <span class="badge green">green</span> <code>lake build PaclandProof</code> compiles at <code>21f45a18</code> — <strong>9172 jobs</strong>, no <code>sorry</code>/<code>admit</code>/<code>axiom</code>, checked on the meshed Lean kernel (pacland-rog).</p>
+      <p><strong>Five tiers:</strong> identity → lemma → chain → conditional → result. Every arrow below is a checked dependency; the red node is the open hypothesis <strong>H</strong>, the only thing between a proved conditional and the result.</p>
+    </div>
+    <pre class="mermaid">
+flowchart TB
+  subgraph T1["TIER 1 · identity"]
+    I1["polymer_expansion_subset<br/>∏(1+ρ) = Σ_S ∏ρ"]
+  end
+  subgraph T2["TIER 2 · lemma"]
+    L1["walk_count_bound<br/>#(walks of length n) ≤ Δⁿ"]
+    L2["cluster_weight_bound<br/>|weight| ≤ |ρ|ⁿ⁺¹"]
+    L3["cluster_activity_abs_lt_one<br/>|ρ| < 1"]
+  end
+  subgraph T3["TIER 3 · chain"]
+    C1["single-cluster cluster expansion<br/>subset → log-prod → Taylor weights → decay → summability"]
+  end
+  subgraph T4["TIER 4 · conditional"]
+    C2["refereeScalingLaw_of_radius_bound<br/>ρ ≤ e^(−A·e^(−cβ)) ⟹ m ≥ A·e^(−cβ)"]
+    C3["volume_uniform_covariance_bound + wightman_limit_stable<br/>(the N→∞ and a→0 transports)"]
+  end
+  subgraph T5["TIER 5 · result"]
+    R1["Yang–Mills mass gap<br/>m(β) ≥ A·e^(−(12π²/11)β)"]
+  end
+  H["H · the linked-cluster contraction<br/>ρ(β) ≤ e^(−A·e^(−cβ))<br/>the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1))<br/>— OPEN"]:::open
+
+  I1 --> C1
+  L1 --> C1
+  L2 --> C1
+  L3 --> C1
+  C1 --> C2
+  H --> C2
+  C2 --> R1
+  C3 --> R1
+
+  classDef open fill:#ff8585,stroke:#ff8585,color:#080d16,font-weight:700
+    </pre>
+  </section>
+
+  <section id="three-way">
+    <p class="eyebrow">Three separate kinds of evidence</p>
+    <h2>Discovery, verification, validation — never conflated</h2>
+    <div class="callout">
+      <p><strong>Automated discovery</strong> — the lattice/Phantom loop proposes and stress-tests candidates (the falsifiers, the β-scans, the cluster-ratio probes). This finds where the answer <em>looks</em> like it is; it proves nothing.</p>
+      <p><strong>Machine verification</strong> — the Lean proof tower checks each lemma against Mathlib (the <code>lake build</code> above). This proves each tier 1–3 statement and the tier-4 conditional, and nothing more.</p>
+      <p><strong>Independent scientific validation</strong> — external expert assessment and community acceptance. This has <em>not</em> happened, and no internal check can substitute for it.</p>
+    </div>
+    <div class="callout does-not">
+      <p><strong>Status, said plainly:</strong> discovery and verification are in active use; independent validation is a dependency that is still open. A green build is machine verification, not scientific acceptance.</p>
+    </div>
+  </section>
+
   <section id="cross-field">
-    <p class="eyebrow">Cross-field discovery</p>
-    <h2>The intended methodology, and its honest status</h2>
+    <p class="eyebrow">Major feature — cross-field discovery</p>
+    <h2>The cross-field engine, front and centre</h2>
+    <p>The same five-tier discipline that reads a physics claim's position is the engine that searches <em>across</em> fields: recognise an established unification, transfer a structure, verify the transfer, and refuse anything formally valid but scientifically empty.</p>
     <ul class="steps">
       <li>A <strong>known-unifications library</strong> that recognises established connections.</li>
       <li>An <strong>open-transfer frontier</strong> for genuinely new candidate links.</li>

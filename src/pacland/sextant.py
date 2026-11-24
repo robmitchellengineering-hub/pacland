@@ -489,6 +489,7 @@ CATALOG: dict[str, dict] = {
         "oracle": ["lattice (block-spin propagator decay, β scan)"],
         "verdict": "IRREDUCIBLE",
         "tier": "conditional",
+        "task": "formalize the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1)) (the spanning-tree / Euler-tour injection on top of walk_count_bound), then the block-spin contraction of the two-point function to ρ(β) ≤ e^(−A·e^(−cβ))",
         "why": "the block-spin propagator's contraction is the single remaining measure-theoretic estimate (the Balaban-style linked-cluster). Everything above and below H is proved and kernel-checked; H is the open real-analysis rung, not a structural rearrangement.",
     },
     "ym-continuum-uniform": {
