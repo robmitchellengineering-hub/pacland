@@ -716,6 +716,49 @@ theorem mode_reflection_positivity (k m : ℕ) [NeZero m] :
   rw [hsq]
   exact Finset.sum_nonneg (fun i _ => sq_nonneg _)
 
+/-- **The momentum mode as an ℓ² vector** — `χ_k = cos(2πk·i/m)` lifted to `PiLp 2 (Fin m → ℝ)`, the
+`f` the momentum-space FSS bound uses. -/
+noncomputable def momentumMode (k m : ℕ) : PiLp 2 (fun _ : Fin m => ℝ) :=
+  (WithLp.equiv 2 (Fin m → ℝ)).symm (fun i => Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m))
+
+/-- **The momentum mode's Laplacian symbol** — `⟪χ_k, L χ_k⟫ = 2(1−cos(2πk/m))·⟪χ_k, χ_k⟫`, the ℓ² `hL`
+for the mode (the `PiLp 2` inner product reduces to the finite sum `cyclic_fourier_hL_uncond`). -/
+theorem mode_hL (k m : ℕ) [NeZero m] :
+    ⟪momentumMode k m, latticeLaplacian (m := m) (momentumMode k m)⟫_ℝ
+      = 2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) * ⟪momentumMode k m, momentumMode k m⟫_ℝ := by
+  rw [PiLp.inner_apply, PiLp.inner_apply]
+  simp [momentumMode, latticeLaplacian, WithLp.ofLp, wilsonLaplacian, LinearMap.coe_mk, AddHom.coe_mk, Pi.add_apply, smul_eq_mul]
+  rw [Finset.sum_congr rfl (fun i hi => by rw [mul_comm])]
+  exact cyclic_fourier_hL_uncond k m
+
+/-- **The momentum-mode FSS infrared bound, all hypotheses discharged.** The concrete
+`fss_ir_bound_geometric` instantiated to `f = momentumMode k m` (the mode `χ_k`), with `hpos` supplied by
+`mode_reflection_positivity` (the mode is even under reflection), `hsym` by `running_hsym` + `mode_hL`,
+`hJ` by `fp_symbol_running_pos`, and `hLpos` by `cyclic_mode_norm_pos`. The normalized two-point function
+is bounded by the running-mass free propagator `1/(2(1−cos(2πk/m)) + m(β)²)`. -/
+theorem fss_ir_bound_mode (β : ℝ) (k m : ℕ) [NeZero m] (hk : k ≠ 0)
+    (mβ : ℝ) (hmβ : mβ = 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β)) :
+    ⟪momentumMode k m, latticeReflection (momentumMode k m)⟫_ℝ
+      / ⟪momentumMode k m, (latticeLaplacian (m := m) + mβ ^ 2 • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) (momentumMode k m)⟫_ℝ
+      ≤ 1 / (2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) + mβ ^ 2) := by
+  let M := (PiLp 2 (fun _ : Fin m => ℝ))
+  have hpos : 0 ≤ ⟪momentumMode k m, latticeReflection (momentumMode k m)⟫_ℝ := by
+    rw [latticeReflection_inner]
+    exact mode_reflection_positivity k m
+  have hsym : ⟪momentumMode k m, (latticeLaplacian (m := m) + mβ ^ 2 • (1 : M →ₗ[ℝ] M)) (momentumMode k m)⟫_ℝ = (2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) + mβ ^ 2) * ⟪momentumMode k m, momentumMode k m⟫_ℝ := by
+    exact running_hsym latticeLaplacian (momentumMode k m) (2 * Real.pi * (k : ℝ) / m) mβ (mode_hL k m)
+  have hJ : 0 < 2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) + mβ ^ 2 := by
+    rw [hmβ]
+    exact fp_symbol_running_pos (2 * Real.pi * (k : ℝ) / m) β
+  have hLpos : 0 < ⟪momentumMode k m, (latticeLaplacian (m := m) + mβ ^ 2 • (1 : M →ₗ[ℝ] M)) (momentumMode k m)⟫_ℝ := by
+    rw [hsym]
+    have hnorm : 0 < ⟪momentumMode k m, momentumMode k m⟫_ℝ := by
+      rw [PiLp.inner_apply]
+      simp [momentumMode, WithLp.ofLp]
+      exact cyclic_mode_norm_pos k m hk
+    exact mul_pos hJ hnorm
+  exact fss_ir_bound_geometric β k m mβ hmβ (momentumMode k m) hpos (2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) + mβ ^ 2) hJ hsym hLpos
+
 /-- **The Weyl density is reflection-invariant** — `sin²(π − θ) = sin²θ`, the symmetry of the
 single-plaquette Weyl measure density under the lattice reflection `θ ↦ π − θ`. This is the input to the
 measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dν)²`. -/
