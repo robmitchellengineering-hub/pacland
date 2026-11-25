@@ -32,11 +32,15 @@ echo SEXTANT-node.bat launcher
   echo python -m pacland.sextant_node
 ) > "%SEXTANT_DIR%\SEXTANT-node.bat"
 
+echo [..] Registering with Claude Code / Cursor ...
+python "%SEXTANT_DIR%\scripts\register-harness.py" 2>nul || echo [WARN] harness registration skipped - run it later: python "%SEXTANT_DIR%\scripts\register-harness.py"
+
 echo.
 echo ==============================================
 echo   Done.
 echo   SEXTANT:  %SEXTANT_DIR%
 echo   Open it:  double-click SEXTANT-node.bat
 echo   VVS:      run 'valiant status' in a terminal
+echo   Claude/Cursor: restart them to load the SEXTANT tools
 echo ==============================================
 pause

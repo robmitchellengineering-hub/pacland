@@ -43,12 +43,18 @@ python3 -m pacland.sextant_node
 EOF
 chmod +x "$SEXTANT_DIR/SEXTANT-node.command"
 
+# 5 — register the MCP server with Claude Code / Cursor (so they can call SEXTANT + VVS)
+echo "↓ Registering with Claude Code / Cursor …"
+python3 "$SEXTANT_DIR/scripts/register-harness.py" 2>/dev/null \
+  || echo "⚠ harness registration skipped (run it later: python3 $SEXTANT_DIR/scripts/register-harness.py)"
+
 echo
 echo "=============================================="
 echo "  Done."
 echo "  SEXTANT:  $SEXTANT_DIR"
 echo "  Open it:  double-click SEXTANT-node.command (in $SEXTANT_DIR)"
 echo "  VVS:      run 'valiant status' in a terminal"
+echo "  Claude/Cursor: restart them to load the SEXTANT tools"
 echo "=============================================="
 echo "Press Return to close."
 read -r
