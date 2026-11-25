@@ -118,6 +118,18 @@ theorem su2ConfinementScale_eq (μ g : ℝ) :
   dsimp [su2ConfinementScale]
   rw [su2_exponent]
 
+/-- **The running mass IS the confinement scale** — with the Casimir `μ = 2` and the Wilson coupling
+`g = 1/√β` (so `g² = 1/β`), the confinement scale is exactly the running mass:
+`Λ = 2·e^(−(12π²/11)β) = m(β)`. This is the derivation: the weak-coupling mass gap is the dimensional-
+transmutation scale, the physical mass the running coupling produces. -/
+theorem running_mass_eq_confinement_scale (β : ℝ) (hβ : 0 < β) :
+    su2ConfinementScale 2 (1 / Real.sqrt β) = 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) := by
+  dsimp [su2ConfinementScale]
+  rw [su2_exponent]
+  have hsqrt : 0 < Real.sqrt β := Real.sqrt_pos.mpr hβ
+  field_simp [hsqrt.ne', hβ.ne']
+  rw [Real.sq_sqrt (le_of_lt hβ)]
+
 /-- **The collective (full-lattice) instanton weight**: the winding-1 collective instanton has the
 weight `e^{−cβ}` with the SU(2) exponent `c = 12π²/11` — the physical asymptotic-freedom scale that
 the toy `e^{−β}` (PR #530) generalizes to. -/

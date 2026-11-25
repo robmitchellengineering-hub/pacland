@@ -191,7 +191,8 @@
     "betaFunctionCoefficient_two",
     "su2ConfinementScale_eq",
     "fp_symbol_running_pos",
-    "running_hsym"
+    "running_hsym",
+    "running_mass_eq_confinement_scale"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

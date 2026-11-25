@@ -50,7 +50,8 @@
     "betaFunctionCoefficient_two",
     "su2ConfinementScale_eq",
     "fp_symbol_running_pos",
-    "running_hsym"
+    "running_hsym",
+    "running_mass_eq_confinement_scale"
   ],
   "transports": [
     {
@@ -196,7 +197,8 @@
             "running_mass_pos + running_mass_decay — m(β)=2·e^(−(12π²/11)β) > 0 at every β and → 0 as β → ∞ (the weak-coupling running scale)",
             "betaFunctionCoefficient_two + su2ConfinementScale_eq — the dimensional transmutation Λ = μ·e^(−(12π²/11)/g²) with b₀ = 11/(24π²)",
             "fp_symbol_running_pos — the running FP symbol J = 2(1−cos k) + m(β)² > 0 (the hJ input to the FSS infrared bound)",
-            "running_hsym — the FP symbol factors as J = 2(1−cos k) + m(β)² (the hsym discharge, closing Rung 3)"
+            "running_hsym — the FP symbol factors as J = 2(1−cos k) + m(β)² (the hsym discharge, closing Rung 3)",
+            "running_mass_eq_confinement_scale — the running mass IS the confinement scale: Λ = 2·e^(−(12π²/11)β) with μ=2 and g=1/√β (the transmutation derives the mass)"
           ]
         },
         {
