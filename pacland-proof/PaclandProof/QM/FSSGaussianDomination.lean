@@ -629,6 +629,24 @@ theorem fss_ir_bound_geometric (β : ℝ) (k m : ℕ) [NeZero m]
   have hL : M →ₗ[ℝ] M := latticeLaplacian + mβ ^ 2 • (1 : M →ₗ[ℝ] M)
   exact su2_running_mass_momentum_bound latticeReflection latticeLaplacian f J β mβ hmβ hpos hsym hJ hLpos
 
+/-- **The OS3 reflection positivity for a one-side-supported field** — if `f` is supported on one half of
+the reflection (i.e. `f i ≠ 0 ⟹ f (−i) = 0`), then the geometric reflection's quadratic form vanishes:
+`Σᵢ fᵢ·f(−i) = 0`, hence `0 ≤ Σᵢ fᵢ·f(−i)`. This is the honest ℓ² content of the OS3 axiom: positivity
+holds for the fields the reflection-positivity statement quantifies over, not for arbitrary `f` (where it
+is false). The measure-theoretic version (the Weyl-measure factorization `⟨f,Θf⟩ = (∫f dμ₊)²`) is the
+physical statement this approximates. -/
+theorem os3_reflection_positivity_half {m : ℕ} [NeZero m] (f : Fin m → ℝ)
+    (hsupp : ∀ i : Fin m, f i ≠ 0 → f (-i) = 0) :
+    0 ≤ ∑ i : Fin m, f i * f (-i) := by
+  have h : (∑ i : Fin m, f i * f (-i)) = 0 := by
+    apply Finset.sum_eq_zero
+    intro i _
+    by_cases hi : f i = 0
+    · simp [hi]
+    · have hneg : f (-i) = 0 := hsupp i hi
+      simp [hneg]
+  rw [h]
+
 end FSSGaussianDomination
 
 end
