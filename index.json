@@ -67,6 +67,13 @@
    "title": "Discovery harvest \u2014 transfer-matrix methodologies and renormalisation schemes"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-KNOWLEDGE-GRAPH.md",
+   "kind": "doc",
+   "path": "docs/DISCOVERY-KNOWLEDGE-GRAPH.md",
+   "summary": "machine can reason about what it learned and reuse it.\" This file is the schema for the graph: the node types, the relationship types, the process that adds them, and the evidence each\u2026",
+   "title": "The discovery knowledge graph \u2014 nodes with relationships, not a notebook"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-PROCESS.md",
    "kind": "doc",
    "path": "docs/DISCOVERY-PROCESS.md",
@@ -156,6 +163,13 @@
    "path": "docs/MASTER-RESEARCH.md",
    "summary": "The single source of truth for the mass-gap program. It states the one metric, names the exact assumptions still doing the heavy lifting, separates the four competing tracks, gives each an\u2026",
    "title": "SEXTANT \u2014 Master Research Document"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/METHODOLOGY-DISCOVERIES.md",
+   "kind": "doc",
+   "path": "docs/METHODOLOGY-DISCOVERIES.md",
+   "summary": "us something. The journey is usually the richer science. A final theorem is one sentence; the techniques that produced it transfer to the next fifty problems. If the machine only records\u2026",
+   "title": "Methodology discoveries \u2014 the explainer and tracker"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MILESTONE-3-CANDIDATES.md",
@@ -261,6 +275,13 @@
    "path": "docs/SEXTANT-MANUAL.md",
    "summary": "This manual is written so any session (human or harness) can operate SEXTANT correctly. Read it before driving the engine; it is self-contained and gives the exact commands, function\u2026",
    "title": "SEXTANT \u2014 User Manual"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-MEDICAL.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-MEDICAL.md",
+   "summary": "SEXTANT does not guess \u2014 it verifies. You hand it a research claim (\"this treatment works\", \"this molecule is a drug candidate\", \"these two diseases share a mechanism\"), and it tells you\u2026",
+   "title": "SEXTANT \u2014 a verified research and discovery tool, for medicine"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-PROOF-TIERS.md",
@@ -1906,6 +1927,13 @@
    "path": "scripts/build_climate_charts.py",
    "summary": "Build the climate figure page \u2014 charts drawn from the checked-in data.",
    "title": "build_climate_charts.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_delivery_status.py",
+   "kind": "script",
+   "path": "scripts/build_delivery_status.py",
+   "summary": "Generate the committed live status snapshot (web/delivery-status.json).",
+   "title": "build_delivery_status.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_discovery_extra.py",
@@ -3915,6 +3943,13 @@
    "path": "PACLAND-oracles-plain-speak.pdf",
    "summary": "explainer PDF",
    "title": "oracles plain speak"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-physics-explainer.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-physics-explainer.pdf",
+   "summary": "explainer PDF",
+   "title": "physics explainer"
   },
   {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf",
