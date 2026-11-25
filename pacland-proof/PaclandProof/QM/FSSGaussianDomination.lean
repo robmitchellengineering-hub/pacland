@@ -647,6 +647,12 @@ theorem os3_reflection_positivity_half {m : ℕ} [NeZero m] (f : Fin m → ℝ)
       simp [hneg]
   rw [h]
 
+/-- **The Weyl density is reflection-invariant** — `sin²(π − θ) = sin²θ`, the symmetry of the
+single-plaquette Weyl measure density under the lattice reflection `θ ↦ π − θ`. This is the input to the
+measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dμ₊)²`. -/
+theorem sin_sq_pi_sub (θ : ℝ) : Real.sin (Real.pi - θ)^2 = Real.sin θ^2 := by
+  rw [Real.sin_pi_sub]
+
 end FSSGaussianDomination
 
 end
