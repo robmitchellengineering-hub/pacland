@@ -569,4 +569,13 @@ theorem connected_clusters_count_bound {V : Type u} [Fintype V] [DecidableEq V] 
     _ ≤ Fintype.card (Σ r : V, {S : Finset V // S ∈ rooted r}) := hcard
     _ ≤ (Fintype.card V) * (2*n) * (Δ+1)^(2*(n-1)) := hsigma
 
+/-- **Arrow B (second half): the full cluster-weight series is volume-bounded** — the full size-class
+weight `|V|·(2n)(Δ+1)^(2(n−1))·|ρ|ⁿ` is summable when `(Δ+1)²|ρ| < 1`, i.e. the full connected-cluster
+sum `Σ_{Γ connected} |w(Γ)|` is `≤ |V|` times the rooted bound. The per-vertex factor (divide by `|V|`)
+is exactly `animals_majorant_tour_summable`'s series — a `(Δ, ρ)`-only bound, uniform in the volume. -/
+theorem full_cluster_weights_summable {V : Type u} [Fintype V] [DecidableEq V]
+    (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Summable (fun n : ℕ => (Fintype.card V : ℝ) * (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |ρ|^n) := by
+  simpa [mul_assoc] using (animals_majorant_tour_summable Δ ρ h).mul_left (Fintype.card V : ℝ)
+
 end QM
