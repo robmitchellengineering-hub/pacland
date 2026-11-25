@@ -27,7 +27,8 @@
     "connected_subset_tour_gen",
     "rooted_animals_count_bound_gen",
     "rooted_connected_subset_tour_gen",
-    "animals_weight_summable"
+    "animals_weight_summable",
+    "block_spin_contraction_su2"
   ],
   "transports": [
     {
@@ -134,7 +135,7 @@
       "routes": [
         {
           "name": "block-spin / animals bound",
-          "next": "the block-spin contraction ρ ≤ e^(−(12π²/11)β): the cluster-weight summability + the running coupling c = 12π²/11 give the contraction rate",
+          "next": "the ACTUAL block-spin map's contraction (rgContraction: |T β x − T β y| ≤ e^(−Δ β)·|x−y|) remains the open radius bound — the mass gap's core",
           "state": "attempted",
           "rungs": [
             "Connected.exists_isTree_le (Mathlib): a connected graph has a spanning tree T ≤ G (IsTree T)",
@@ -151,7 +152,8 @@
             "rooted_animals_count_bound — #{rooted connected clusters of size n} ≤ (2n)(Δ+1)^(2(n−1)) via the S↦tour injection + walk_count_bound",
             "connected_subset_tour_gen — a connected induced subset of an ARBITRARY finite graph has a tour, length ≤ 2(|S|−1) (spanning-tree reduction)",
             "rooted_animals_count_bound_gen — #{rooted connected clusters of size n} ≤ (2n)(Δ+1)^(2(n−1)) for an ARBITRARY finite graph (the spanning-tree reduction)",
-            "animals_weight_summable — Σ_n (Δ+1)^(2n) |ρ|^n converges when (Δ+1)^2 |ρ| < 1 (the small-field cluster-expansion convergence)"
+            "animals_weight_summable — Σ_n (Δ+1)^(2n) |ρ|^n converges when (Δ+1)^2 |ρ| < 1 (the small-field cluster-expansion convergence)",
+            "block_spin_contraction_su2 — the block-spin contraction rate carries the SU(2) scale 2·e^(−(12π²/11)β) (rgContractionMassGap = su2_mass_gap_join)"
           ]
         },
         {
