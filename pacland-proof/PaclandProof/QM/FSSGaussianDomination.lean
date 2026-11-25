@@ -679,6 +679,43 @@ theorem fss_ir_bound_geometric_one_sided (β : ℝ) (k m : ℕ) [NeZero m]
     ⟪f, latticeReflection f⟫_ℝ / ⟪f, (latticeLaplacian (m := m) + mβ ^ 2 • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) f⟫_ℝ ≤ 1 / J := by
   exact fss_ir_bound_geometric β k m mβ hmβ f (fss_hpos_one_sided f hsupp) J hJ hsym hLpos
 
+/-- **The momentum mode is even under the reflection** — `χ_k(−i) = χ_k(i)`: `cos(2πk·(−i)/m) = cos(2πk·i/m)`,
+using `(−i).val = m − i` and the periodicity `cos(2πk − x) = cos x`. -/
+theorem mode_reflection_eq (k m : ℕ) [NeZero m] (i : Fin m) :
+    Real.cos (2 * Real.pi * (k : ℝ) * ((-i).val : ℝ) / m) = Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m) := by
+  rw [Fin.val_neg]
+  by_cases hi : i = 0
+  · subst hi
+    simp
+  · simp [hi]
+    have hm : (m : ℝ) ≠ 0 := by exact_mod_cast (NeZero.ne m)
+    have hrewrite : 2 * Real.pi * (k : ℝ) * ((m : ℝ) - (i.val : ℝ)) / (m : ℝ)
+        = 2 * Real.pi * (k : ℝ) - 2 * Real.pi * (k : ℝ) * (i.val : ℝ) / (m : ℝ) := by
+      calc
+        2 * Real.pi * (k : ℝ) * ((m : ℝ) - (i.val : ℝ)) / (m : ℝ)
+            = 2 * Real.pi * (k : ℝ) * (((m : ℝ) - (i.val : ℝ)) / (m : ℝ)) := by ring
+        _ = 2 * Real.pi * (k : ℝ) * ((m : ℝ) / (m : ℝ) - (i.val : ℝ) / (m : ℝ)) := by rw [div_sub_div_same]
+        _ = 2 * Real.pi * (k : ℝ) * (1 - (i.val : ℝ) / (m : ℝ)) := by rw [div_self hm]
+        _ = 2 * Real.pi * (k : ℝ) - 2 * Real.pi * (k : ℝ) * (i.val : ℝ) / (m : ℝ) := by ring
+    rw [hrewrite]
+    rw [Real.cos_sub]
+    have hk : (k : ℝ) * (2 * Real.pi) = 2 * Real.pi * (k : ℝ) := by ring
+    rw [← hk, Real.cos_nat_mul_two_pi k, sin_nat_mul_two_pi k]
+    ring
+
+/-- **The momentum mode's reflected quadratic form is non-negative** — `Σᵢ χ_k(i)·χ_k(−i) = Σᵢ χ_k(i)² ≥ 0`
+(the mode is even under the reflection). This is the concrete `hpos` for the momentum mode `χ_k`. -/
+theorem mode_reflection_positivity (k m : ℕ) [NeZero m] :
+    0 ≤ ∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m) * Real.cos (2 * Real.pi * (k : ℝ) * ((-i).val : ℝ) / m) := by
+  have hsq : (∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m) * Real.cos (2 * Real.pi * (k : ℝ) * ((-i).val : ℝ) / m))
+      = ∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m) ^ 2 := by
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [mode_reflection_eq k m i]
+    ring
+  rw [hsq]
+  exact Finset.sum_nonneg (fun i _ => sq_nonneg _)
+
 /-- **The Weyl density is reflection-invariant** — `sin²(π − θ) = sin²θ`, the symmetry of the
 single-plaquette Weyl measure density under the lattice reflection `θ ↦ π − θ`. This is the input to the
 measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dν)²`. -/

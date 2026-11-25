@@ -215,7 +215,9 @@
     "lpReflection",
     "latticeReflection_inner",
     "fss_hpos_one_sided",
-    "fss_ir_bound_geometric_one_sided"
+    "fss_ir_bound_geometric_one_sided",
+    "mode_reflection_eq",
+    "mode_reflection_positivity"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

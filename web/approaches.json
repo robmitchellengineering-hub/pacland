@@ -66,7 +66,8 @@
             "reflection_factorization — the Fubini split ∫ g(x)g(y) d(μ⊗ν) = (∫ g dμ)(∫ g dν) (the OS3 factorization)",
             "os3_weyl_positivity — the concrete OS3 for the symmetric Weyl product: ∫g(x)g(y)d(ν⊗ν) = (∫g dν)² ≥ 0",
             "lpReflection — the geometric reflection f ↦ f∘θ is a linear isometry on Lp ℝ 2 ν (the FSS Θ on the measure L² space)",
-            "fss_ir_bound_geometric_one_sided — the FSS bound with hpos DISCHARGED for the one-side-supported f (latticeReflection_inner + fss_hpos_one_sided)"
+            "fss_ir_bound_geometric_one_sided — the FSS bound with hpos DISCHARGED for the one-side-supported f (latticeReflection_inner + fss_hpos_one_sided)",
+            "mode_reflection_positivity — the momentum mode χ_k has hpos: 0 ≤ Σ χ_k(i)·χ_k(−i) = Σ χ_k(i)² (the spectral bridge between one-side hpos and the mode hsym)"
           ]
         },
         {
