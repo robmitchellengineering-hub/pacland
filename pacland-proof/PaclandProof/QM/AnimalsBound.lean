@@ -364,4 +364,50 @@ theorem connected_subset_tour_gen {V : Type u} [Fintype V] [DecidableEq V]
     rw [hcard] at hl
     exact hl
 
+/-- **A rooted connected subset of an ARBITRARY graph has a rooted tour** — rotate `connected_subset_tour_gen`'s
+tour to start at the prescribed root `r`, preserving the `x ∈ w.support ↔ x ∈ S` characterization. -/
+theorem rooted_connected_subset_tour_gen {V : Type u} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj] [Fintype G.edgeSet]
+    (S : Finset V) (hconn : (G.induce (S : Set V)).Connected) (r : V) (hr : r ∈ S) :
+    ∃ w : G.Walk r r, (∀ x, x ∈ w.support ↔ x ∈ S) ∧ w.length ≤ 2 * (S.card - 1) := by
+  classical
+  obtain ⟨v, w, hw, hl⟩ := connected_subset_tour_gen G S hconn ⟨r, hr⟩
+  have hr_mem : r ∈ w.support := (hw r).2 hr
+  obtain ⟨q, r', hwq⟩ := SimpleGraph.Walk.mem_support_iff_exists_append.mp hr_mem
+  let wrot : G.Walk r r := r'.append q
+  refine ⟨wrot, ?_, ?_⟩
+  · intro x
+    constructor
+    · intro hx
+      dsimp [wrot] at hx
+      rw [SimpleGraph.Walk.support_append, List.mem_append] at hx
+      rcases hx with hxr | hxq
+      · have hxw : x ∈ w.support := by
+          have : x ∈ (q.append r').support := SimpleGraph.Walk.support_subset_support_append_right q r' hxr
+          simpa [hwq] using this
+        exact (hw x).1 hxw
+      · have hxq' : x ∈ q.support := List.tail_subset q.support hxq
+        have hxw : x ∈ w.support := by
+          have : x ∈ (q.append r').support := SimpleGraph.Walk.support_subset_support_append_left q r' hxq'
+          simpa [hwq] using this
+        exact (hw x).1 hxw
+    · intro hx
+      have hxw : x ∈ w.support := (hw x).2 hx
+      dsimp [wrot]
+      rw [SimpleGraph.Walk.support_append, List.mem_append]
+      have this : x ∈ q.support ∨ x ∈ r'.support.tail := by
+        have h : x ∈ (q.append r').support := by simpa [hwq] using hxw
+        simpa [SimpleGraph.Walk.support_append, List.mem_append] using h
+      rcases this with hxq2 | hxr2
+      · by_cases hxv : x = v
+        · subst x; left; exact SimpleGraph.Walk.end_mem_support r'
+        · right; exact (List.mem_cons.mp (by simpa using hxq2)).resolve_left hxv
+      · left; exact List.tail_subset r'.support hxr2
+  · dsimp [wrot]
+    rw [SimpleGraph.Walk.length_append]
+    have hlen : q.length + r'.length = w.length := by
+      have : (q.append r').length = w.length := congrArg (fun p : G.Walk v v => p.length) hwq.symm
+      simpa [SimpleGraph.Walk.length_append] using this
+    omega
+
 end QM
