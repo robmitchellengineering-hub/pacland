@@ -266,6 +266,24 @@ theorem running_hsym {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E
   rw [inner_add_right, real_inner_smul_right, hL, real_inner_self_eq_norm_sq]
   ring_nf
 
+/-- **The running-mass momentum-space infrared bound (Rung 3 assembly)** — the normalized two-point
+function `⟪f,Θf⟫/⟪f,(L + m(β)²·id)f⟫ ≤ 1/J` with the running mass `m(β) = 2·e^(−(12π²/11)β)`: the
+free propagator with the running mass in the symbol `J = 2(1−cos k) + m(β)²`. Combined with
+`running_hsym` and `fp_symbol_running_pos`, this is the FSS infrared bound closed around the derived
+running mass — the volume-uniform statement the mass gap's continuum survival needs. -/
+theorem su2_running_mass_momentum_bound {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : E →ₗᵢ[ℝ] E) (L : E →ₗ[ℝ] E) (f : E) (J β : ℝ)
+    (mβ : ℝ) (hmβ : mβ = 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β))
+    (hpos : 0 ≤ ⟪f, Θ f⟫_ℝ)
+    (hsym : ⟪f, (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) f⟫_ℝ = J * ⟪f, f⟫_ℝ) (hJ : 0 < J)
+    (hLpos : 0 < ⟪f, (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) f⟫_ℝ) :
+    ⟪f, Θ f⟫_ℝ / ⟪f, (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) f⟫_ℝ ≤ 1 / J := by
+  have h := fss_join Θ (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) J f hpos hsym hJ
+  have hmul : ⟪f, Θ f⟫_ℝ * J ≤ ⟪f, (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) f⟫_ℝ := by
+    exact (le_div_iff₀ hJ).mp h
+  field_simp [hLpos.ne', hJ.ne']
+  exact hmul
+
 /-- The Wilson kernel `K(i,j) = exp(2β·cos(θᵢ−θⱼ))` — the reflected correlation of the SU(2) Gibbs
 measure (the free case). Its positivity (`QM.wilson_kernel_posdef`) is the OS3 reflection positivity. -/
 def wilsonKernel {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j : Fin m) : ℝ :=
