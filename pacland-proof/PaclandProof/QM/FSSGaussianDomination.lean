@@ -633,7 +633,7 @@ theorem fss_ir_bound_geometric (β : ℝ) (k m : ℕ) [NeZero m]
 the reflection (i.e. `f i ≠ 0 ⟹ f (−i) = 0`), then the geometric reflection's quadratic form vanishes:
 `Σᵢ fᵢ·f(−i) = 0`, hence `0 ≤ Σᵢ fᵢ·f(−i)`. This is the honest ℓ² content of the OS3 axiom: positivity
 holds for the fields the reflection-positivity statement quantifies over, not for arbitrary `f` (where it
-is false). The measure-theoretic version (the Weyl-measure factorization `⟨f,Θf⟩ = (∫f dμ₊)²`) is the
+is false). The measure-theoretic version (the Weyl-measure factorization `⟨f,Θf⟩ = (∫f dν)²`) is the
 physical statement this approximates. -/
 theorem os3_reflection_positivity_half {m : ℕ} [NeZero m] (f : Fin m → ℝ)
     (hsupp : ∀ i : Fin m, f i ≠ 0 → f (-i) = 0) :
@@ -649,13 +649,13 @@ theorem os3_reflection_positivity_half {m : ℕ} [NeZero m] (f : Fin m → ℝ)
 
 /-- **The Weyl density is reflection-invariant** — `sin²(π − θ) = sin²θ`, the symmetry of the
 single-plaquette Weyl measure density under the lattice reflection `θ ↦ π − θ`. This is the input to the
-measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dμ₊)²`. -/
+measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dν)²`. -/
 theorem sin_sq_pi_sub (θ : ℝ) : Real.sin (Real.pi - θ)^2 = Real.sin θ^2 := by
   rw [Real.sin_pi_sub]
 
 /-- **The Weyl density's reflection-invariance** — `∫₀^π f(π−θ)·sin²θ dθ = ∫₀^π f θ·sin²θ dθ`, via the
 substitutions `θ ↦ θ+π` (shift) and `θ ↦ −θ` (reversal), using `sin²`'s symmetry. This is the
-measure-theoretic reflection-invariance the OS3 factorization `⟨f,Θf⟩ = (∫ f dμ₊)²` uses. -/
+measure-theoretic reflection-invariance the OS3 factorization `⟨f,Θf⟩ = (∫ f dν)²` uses. -/
 theorem weyl_reflection_invariant (f : ℝ → ℝ) :
     (∫ θ in (0)..Real.pi, f (Real.pi - θ) * Real.sin θ ^ 2) = ∫ θ in (0)..Real.pi, f θ * Real.sin θ ^ 2 := by
   have hcomp := intervalIntegral.integral_comp_sub_right (a := 0) (b := Real.pi) (fun x => f (-x) * Real.sin x ^ 2) Real.pi
@@ -686,6 +686,16 @@ theorem weyl_reflection_invariant (f : ℝ → ℝ) :
             rw [hsin]
             rw [hneg]
             simp
+
+/-- **The OS3 reflection positivity, conditional on the factorization** — if the reflected expectation
+factorizes as `∫ f(θ)·f(Θθ) dμ = (∫ f dν)²` (the product-measure Fubini split across the reflection
+plane, the physical content of the reflection-positive Weyl measure), then it is non-negative by
+`sq_nonneg`. This is the measure-theoretic OS3 the FSS chain's `hpos` should be instantiated to. -/
+theorem os3_measure_positivity {ι : Type*} [MeasurableSpace ι] (μ ν : MeasureTheory.Measure ι) (Θ : ι → ι) (f : ι → ℝ)
+    (hfact : ∫ θ, f θ * f (Θ θ) ∂μ = (∫ θ, f θ ∂ν)^2) :
+    0 ≤ ∫ θ, f θ * f (Θ θ) ∂μ := by
+  rw [hfact]
+  exact sq_nonneg _
 
 end FSSGaussianDomination
 

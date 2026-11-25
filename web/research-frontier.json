@@ -208,7 +208,8 @@
     "fss_ir_bound_geometric",
     "os3_reflection_positivity_half",
     "sin_sq_pi_sub",
-    "weyl_reflection_invariant"
+    "weyl_reflection_invariant",
+    "os3_measure_positivity"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
