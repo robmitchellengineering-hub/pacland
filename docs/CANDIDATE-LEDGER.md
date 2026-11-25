@@ -43,6 +43,9 @@ a brainstorm.
 | mg-004 | confining mechanism | principle | IR suppression `G(0)=0` ⇒ 1/p⁴ | `M(p)=p²` is *chosen*, not derived | surviving (model, not proof) |
 | mg-rungA-001 | crossover | inversion | scale-wise BE: effective curvature κ_Λ bounded below | toy `effectiveHessian_bounded_below` | surviving (toy only) |
 | mg-rungB-001 | mass gap | inversion | exclude spectrum in (0,Δ) off vacuum | `HasMassGap` statement + sanity controls | open |
+| mg-rungB-002 | weak-coupling gap | unification | the cluster-expansion condition `(Δ+1)²|ρ| < 1` IS the RG contraction: the renormalised activity is `ρ' = (Δ+1)²·|ρ|²` (quadratic), so the animals summability + blockSpinPow iterate to `ρ_n → 0` | numeric: a `ρ` with `(Δ+1)²|ρ| < 1` whose renormalised `ρ' = (Δ+1)²ρ²` violates `(Δ+1)²|ρ'| < 1` | open |
+| mg-crossover-001 | the β≈1 crossover | anomaly | the strong-coupling `1/κ` and weak-coupling `e^(−cβ)` are the SAME gap, and the field proves only the two ends, not the middle; candidate `m(β) ≥ min(1/κ, e^(−(12π²/11)β))` | numeric: a β in the crossover where BOTH regime bounds fail | open |
+| mg-rungB-003 | weak-coupling gap | inversion | flip "contraction on the field" to "contraction on the correlation": `⟨AB⟩−⟨A⟩⟨B⟩ ≤ e^(−cβ)‖A‖‖B‖` (the clustering), what reflection positivity gives directly | a reflection-positive measure whose two-point decay is slower than `e^(−cβ)` | open |
 
 `status: open` = still hunting; `surviving` = survived a falsifier but not yet a proof. This ledger is the
 input to the belief layer; it is what `CANDIDATE-LEDGER.md` must keep growing so the discovery loop has a
