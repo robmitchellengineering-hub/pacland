@@ -503,5 +503,21 @@ theorem rooted_animals_count_bound_gen {V : Type u} [Fintype V] [DecidableEq V]
           _ ≤ (2*n) * (Δ+1)^(2*(n-1)) := Nat.mul_le_mul_right _ hle2)
     exact hcard.trans (hW.trans hsum)
 
+/-- **Arrow A: the animal bound gives the size-class summability of the cluster weights** — the rooted
+connected-cluster count of size `n` is `≤ (2n)(Δ+1)^(2(n−1))`, so the weighted sum
+`Σ_n #{rooted clusters of size n}·|ρ|ⁿ` is dominated by the tour-length majorant and converges when
+`(Δ+1)²|ρ| < 1`. This is the first arrow of the "animal bounds → uniform cluster" bridge. -/
+theorem rooted_cluster_weights_summable {V : Type u} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj] [Fintype G.edgeSet]
+    (r : V) (Δ : ℕ) (hΔ : G.maxDegree ≤ Δ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Summable (fun n : ℕ => ((Finset.univ.filter (fun S : Finset V =>
+      r ∈ S ∧ (G.induce (S : Set V)).Connected ∧ S.card = n)).card : ℝ) * |ρ|^n) := by
+  refine Summable.of_nonneg_of_le
+    (fun n => mul_nonneg (Nat.cast_nonneg _) (pow_nonneg (abs_nonneg ρ) n))
+    (fun n => ?_) (animals_majorant_tour_summable Δ ρ h)
+  have hcount : ((Finset.univ.filter (fun S : Finset V =>
+      r ∈ S ∧ (G.induce (S : Set V)).Connected ∧ S.card = n)).card : ℕ) ≤ (2*n) * (Δ+1)^(2*(n-1)) :=
+    rooted_animals_count_bound_gen G r Δ hΔ n
+  exact mul_le_mul_of_nonneg_right (by exact_mod_cast hcount) (pow_nonneg (abs_nonneg ρ) n)
 
 end QM
