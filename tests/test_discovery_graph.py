@@ -41,10 +41,29 @@ class TestDiscoveryGraph(unittest.TestCase):
 
     def test_seed_graph_is_wired(self):
         g = seed_mass_gap()
-        self.assertEqual(len(g.nodes), 16)
-        self.assertEqual(len(g.edges), 13)
+        self.assertEqual(len(g.nodes), 18)
+        self.assertEqual(len(g.edges), 15)
         # the transfer hypotheses are pending — no destination has been verified yet
         self.assertEqual(len(g.pending_hypotheses()), 4)
+
+    def test_directly_useful_vs_cross_field(self):
+        g = seed_mass_gap()
+        self.assertEqual(set(g.directly_useful_mechanisms()),
+                         {"count_via_rooted_trees", "reduce_per_irrep"})
+        self.assertEqual(g.non_directly_useful_mechanisms(),
+                         ["locate_gap_via_positivity"])
+
+    def test_cross_synthesize_rescues_only_non_direct_mechanisms(self):
+        g = seed_mass_gap()
+        mappings = [
+            {"from": "markov-chain-monte-carlo", "to": "wright-fisher",
+             "mapping": "a reversible Markov chain's spectral gap bounds mixing time"},
+        ]
+        emitted = g.cross_synthesize(mappings)
+        # only the non-directly-useful mechanism gets a unification declaration
+        self.assertEqual(len(emitted), 1)
+        self.assertEqual(emitted[0].src, "locate_gap_via_positivity")
+        self.assertEqual(emitted[0].relation, "transfers-to")
 
     def test_reusable_context_names_mechanisms_and_pending(self):
         g = seed_mass_gap()
