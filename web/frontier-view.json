@@ -35,7 +35,8 @@
     "blockSpin_contracts_two",
     "rooted_cluster_weights_summable",
     "connected_clusters_count_bound",
-    "full_cluster_weights_summable"
+    "full_cluster_weights_summable",
+    "su2_poincare_gap"
   ],
   "transports": [
     {
@@ -167,7 +168,8 @@
             "blockSpin_contracts_two — a uniform fine-field distance D contracts to 2D per block (the coarse-graining step; the e^(−cβ) rate is the further measure step)",
             "rooted_cluster_weights_summable — Arrow A: the animal bound gives Σ_n #{rooted clusters of size n}·|ρ|^n < ∞ (dominated by the tour-length majorant)",
             "connected_clusters_count_bound — Arrow B first half: #{connected n-subsets} ≤ |V|·(2n)(Δ+1)^(2(n−1)), the volume-dependence the uniform statement factors out",
-            "full_cluster_weights_summable — Arrow B second half: Σ_{Γ connected} |w(Γ)| is ≤ |V|·(the rooted bound); the per-vertex factor is the (Δ,ρ)-only series, uniform in the volume"
+            "full_cluster_weights_summable — Arrow B second half: Σ_{Γ connected} |w(Γ)| is ≤ |V|·(the rooted bound); the per-vertex factor is the (Δ,ρ)-only series, uniform in the volume",
+            "su2_poincare_gap — the SU(2) 1-plaquette spectral gap 1/κ = 1/(β(c−(1+c)e^(−2β))) from the log-Sobolev (the contraction's strong-coupling input)"
           ]
         },
         {

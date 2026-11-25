@@ -174,4 +174,26 @@ theorem su2_log_sobolev {β c : ℝ} (hβ : 0 < β) (hc : 0 < c)
   exact bakryEmery_logSobolev (μ := μ) (L := L) (κ := β * (c - (1 + c) * Real.exp (-2 * β)))
     hκ hEntDecay hChainSqLog
 
+/-- **The SU(2) 1-plaquette Poincaré (spectral) gap** — the log-Sobolev constant `2/κ` implies the
+Poincaré constant `1/κ` (via `logSobolev_implies_poincare`), the spectral gap of the single-plaquette
+transfer operator. This is the contraction's input: the transfer operator's gap is the mass gap's
+finite-β (strong-coupling) half, and `1/κ = 1/(β(c−(1+c)e^(−2β)))` is the explicit rate. -/
+theorem su2_poincare_gap {β c : ℝ} (hβ : 0 < β) (hc : 0 < c)
+    (h : Real.exp (-2 * β) < c * (1 - Real.exp (-2 * β)))
+    {μ : α → ℝ} {L : (α → ℝ) → α → ℝ}
+    (hΓlin : ∀ g ε, carreDuChamp L (fun x => 1 + ε * g x) (fun x => 1 + ε * g x) = fun x => ε ^ 2 * carreDuChamp L g g x)
+    (hEnt : EntropyQuadraticAtOne μ)
+    (hEntDecay : ∀ f,
+      2 * (β * (c - (1 + c) * Real.exp (-2 * β))) * entropy μ f ≤ fisherInformation μ L f)
+    (hChainSqLog : ∀ f x,
+      carreDuChamp L (fun y => f y ^ 2) (fun y => Real.log (f y ^ 2)) x
+        = 4 * carreDuChamp L f f x) :
+    Poincare μ (fun f => carreDuChamp L f f) (1 / (β * (c - (1 + c) * Real.exp (-2 * β)))) := by
+  have hLS : LogSobolev μ (fun f => carreDuChamp L f f) (2 / (β * (c - (1 + c) * Real.exp (-2 * β)))) :=
+    su2_log_sobolev hβ hc h hEntDecay hChainSqLog
+  have hP : Poincare μ (fun f => carreDuChamp L f f) ((2 / (β * (c - (1 + c) * Real.exp (-2 * β)))) / 2) :=
+    logSobolev_implies_poincare hΓlin hEnt hLS
+  convert hP using 1
+  ring
+
 end QM
