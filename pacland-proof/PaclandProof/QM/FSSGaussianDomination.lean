@@ -874,6 +874,29 @@ theorem hlam_assembly (k mβ lam E : ℝ) (hmβ : 0 ≤ mβ)
     rwa [Real.sqrt_sq hmβ] at hsqrt
   exact eigenvalue_le_exp_neg_mass E mβ lam hEge hlam
 
+/-- **Step A's final assembly — the finite-volume mass gap from the dispersion.** Given the
+transfer-matrix identification `eigenvalues k = e^(−E k)` and the dispersion lower bound `mβ ≤ E k`
+for `k ≠ 0`, the chessboard estimate gives the finite-volume exponential clustering
+`|Tⁿ − P₀| ≤ e^(−mβ n)·m`. This is the complete finite-volume constructive-QFT theorem, with the
+single input the standard Osterwalder–Schrader identification `eigenvalues k = e^(−E k)`. -/
+theorem stepA_mass_gap {m : ℕ} [NeZero m] (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : QM.PosDefKernel K)
+    (hvacuum : (QM.transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues 0 = 1)
+    (E : Fin m → ℝ) (mβ : ℝ) (hmβ : 0 ≤ mβ)
+    (hdisp : ∀ k, (QM.transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k = Real.exp (-E k))
+    (hE : ∀ k, k ≠ 0 → mβ ≤ E k)
+    (n : ℕ) (i j : Fin m) :
+    |((QM.transferMatrix K)^n) i j
+      - (((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ))
+            (QM.transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+          (Matrix.diagonal (fun k => if k = 0 then 1 else 0))) i j| ≤ (Real.exp (-mβ))^n * (m : ℝ) := by
+  have hlam : ∀ k, k ≠ 0 → |(QM.transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ Real.exp (-mβ) := by
+    intro k hk
+    rw [hdisp k]
+    have hle : Real.exp (-E k) ≤ Real.exp (-mβ) := eigenvalue_le_exp_neg_mass (E k) mβ (Real.exp (-E k)) (hE k hk) rfl
+    simpa [abs_of_nonneg (Real.exp_pos _).le] using hle
+  exact QM.chessboard_estimate K hSymm hK n (Real.exp (-mβ)) hvacuum hlam (by positivity) i j
+
 /-- **The gap lower bound on [0,2]** — `1 − e^(−x) ≥ x/4` for `0 ≤ x ≤ 2`: for `x ≤ 1` use
 `one_sub_exp_ge_half` (gives `x/2`), and for `1 ≤ x ≤ 2` use `1 − e^(−1) ≥ 1/2 ≥ x/4` (the monotonicity
 plus `2 ≤ e`). This is the small-`β` constant the referee scaling law needs when `mβ = 2·e^(−cβ) ≤ 2`. -/
