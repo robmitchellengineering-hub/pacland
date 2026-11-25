@@ -478,6 +478,15 @@ theorem cyclic_fourier_hL (k m : ℕ) [NeZero m]
     _ = 2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) * (∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m)^2) := by
             rw [Finset.mul_sum]
 
+/-- **The unconditional cyclic Fourier symbol** — the `hL` discharge with both modular periodicities
+discharged: `⟪f, Lf⟫ = 2(1−cos(2πk/m))·⟪f,f⟫` for the cyclic mode `fᵢ = cos(2πk·i/m)`, using
+`cos_fin_periodic` and `cos_fin_periodic_sub`. This is the concrete `hL` hypothesis the FSS chain's
+`running_hsym` needs. -/
+theorem cyclic_fourier_hL_uncond (k m : ℕ) [NeZero m] :
+    (∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m) * (wilsonLaplacian (fun i => Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m)) i))
+      = 2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) * (∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m)^2) := by
+  exact cyclic_fourier_hL k m (fun i => cos_fin_periodic k m i) (fun i => cos_fin_periodic_sub k m i)
+
 /-- **The connection `hΘ`** (the reflection → kernel connection, proved structurally). The reflected
 inner product `⟪f, Θ f⟫` (the ℓ² pairing `∑ j, f j · (Θ f) j`) equals the Wilson kernel's quadratic form
 `Σᵢⱼ fᵢ fⱼ exp(2β·cos(θᵢ−θⱼ))`. This is the `hΘ` hypothesis of the OS closure, discharged by the
