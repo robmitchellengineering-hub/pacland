@@ -196,4 +196,19 @@ theorem su2_poincare_gap {β c : ℝ} (hβ : 0 < β) (hc : 0 < c)
   convert hP using 1
   ring
 
+/-- **The SU(2) strong-coupling contraction rate is below 1** — the integrated curvature
+`κ = β(c−(1+c)e^(−2β))` is positive (strong coupling, the `effective_curvature_positive` region), so
+the transfer operator's contraction factor `e^(−κ)` is strictly below 1: the block-spin map's
+finite-β contraction. This is the strong-coupling half of the mass gap; the weak-coupling
+`e^(−(12π²/11)β)` rate is the separate Balaban EKR step. -/
+theorem strong_coupling_contracts {β c : ℝ} (hβ : 0 < β) (hc : 0 < c)
+    (h : Real.exp (-2 * β) < c * (1 - Real.exp (-2 * β))) :
+    Real.exp (-(β * (c - (1 + c) * Real.exp (-2 * β)))) < 1 := by
+  have hκ : 0 < β * (c - (1 + c) * Real.exp (-2 * β)) :=
+    effective_curvature_positive β c hβ hc h
+  have hneg : -(β * (c - (1 + c) * Real.exp (-2 * β))) < 0 := neg_neg_of_pos hκ
+  have hexp : Real.exp (-(β * (c - (1 + c) * Real.exp (-2 * β)))) < Real.exp 0 :=
+    Real.exp_lt_exp.mpr hneg
+  simpa [Real.exp_zero] using hexp
+
 end QM
