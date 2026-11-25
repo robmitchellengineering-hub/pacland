@@ -800,6 +800,16 @@ theorem one_sub_exp_ge_half (x : ℝ) (hx : 0 ≤ x) (hx1 : x ≤ 1) :
     exact hineq
   simpa [one_div] using (by nlinarith [hle] : x / 2 ≤ 1 - 1 / Real.exp x)
 
+/-- **The spectral-gap lower bound from the eigenvalue bound** — `λ₁ ≤ e^(−mβ)` (the transfer-matrix
+second eigenvalue decays at the FSS mass rate) implies `1 − λ₁ ≥ mβ/2` on `0 ≤ mβ ≤ 1`, via the core
+inequality `one_sub_exp_ge_half`. This is the connective that turns the remaining eigenvalue bound into
+the mass-gap lower bound. -/
+theorem spectral_gap_from_lam1 (mβ lam1 : ℝ) (hmβ : 0 ≤ mβ) (hmβ1 : mβ ≤ 1)
+    (hlam : lam1 ≤ Real.exp (-mβ)) :
+    mβ / 2 ≤ 1 - lam1 := by
+  have h : mβ / 2 ≤ 1 - Real.exp (-mβ) := one_sub_exp_ge_half mβ hmβ hmβ1
+  nlinarith [h, hlam]
+
 /-- **The Weyl density is reflection-invariant** — `sin²(π − θ) = sin²θ`, the symmetry of the
 single-plaquette Weyl measure density under the lattice reflection `θ ↦ π − θ`. This is the input to the
 measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dν)²`. -/

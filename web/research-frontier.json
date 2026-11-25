@@ -223,7 +223,8 @@
     "fss_ir_bound_mode",
     "mass_gap_scaling_from_mass",
     "mass_gap_from_lower_bound",
-    "one_sub_exp_ge_half"
+    "one_sub_exp_ge_half",
+    "spectral_gap_from_lam1"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
