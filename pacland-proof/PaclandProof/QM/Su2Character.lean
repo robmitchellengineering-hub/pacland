@@ -115,4 +115,40 @@ theorem singlePlaquettePartition_le (β : ℝ) (hβ : 0 ≤ β) :
       rw [Real.sin_zero, Real.cos_zero, Real.sin_pi, Real.cos_pi]
       norm_num
 
+/-- **FALSIFIER for mg-gd-001 (heat-kernel Gaussianization is not uniform)** — the SU(2) weight
+`e^(β·cos θ)` is NOT dominated by a Gaussian `C·e^(−βθ²/2)` uniformly in `θ`: the weight is bounded
+below by `e^(−β) > 0` (since `cos θ ≥ −1`), while the Gaussian tends to 0 as `θ → ∞`, so no constant
+`C` makes the domination hold for every `θ`. The heat-kernel Gaussian approximation is weak-coupling /
+small-θ only, not a uniform bound — the candidate is falsified as a *uniform* mechanism. -/
+theorem heat_kernel_gaussian_not_uniform (β : ℝ) (hβ : 0 < β) (C : ℝ) :
+    ¬ (∀ θ : ℝ, Real.exp (β * Real.cos θ) ≤ C * Real.exp (-β * θ^2 / 2)) := by
+  intro h
+  have hlower : ∀ θ : ℝ, Real.exp (-β) ≤ Real.exp (β * Real.cos θ) := by
+    intro θ
+    have hcos : -1 ≤ Real.cos θ := (abs_le.mp (Real.abs_cos_le_one θ)).1
+    have hmul : -β ≤ β * Real.cos θ := by
+      simpa using (mul_le_mul_of_nonneg_left hcos (le_of_lt hβ))
+    exact Real.exp_le_exp.mpr hmul
+  have hdecay : Filter.Tendsto (fun θ : ℝ => C * Real.exp (-β * θ^2 / 2)) Filter.atTop (nhds 0) := by
+    have harg : Filter.Tendsto (fun θ : ℝ => -β * θ^2 / 2) Filter.atTop Filter.atBot := by
+      have hs : Filter.Tendsto (fun θ : ℝ => θ^2) Filter.atTop Filter.atTop :=
+        Filter.tendsto_pow_atTop (by norm_num : 2 ≠ 0)
+      have hm : Filter.Tendsto (fun θ : ℝ => (β / 2) * θ^2) Filter.atTop Filter.atTop :=
+        Filter.Tendsto.const_mul_atTop (by positivity) hs
+      convert (Filter.tendsto_neg_atTop_atBot.comp hm) using 1
+      funext θ
+      simp only [Function.comp_apply]
+      ring
+    have hexp0 : Filter.Tendsto (fun θ : ℝ => Real.exp (-β * θ^2 / 2)) Filter.atTop (nhds 0) :=
+      Real.tendsto_exp_atBot.comp harg
+    simpa using hexp0.const_mul C
+  have hlt : ∃ θ : ℝ, C * Real.exp (-β * θ^2 / 2) < Real.exp (-β) := by
+    have hev : ∀ᶠ θ : ℝ in Filter.atTop, C * Real.exp (-β * θ^2 / 2) < Real.exp (-β) :=
+      Filter.Tendsto.eventually_lt hdecay tendsto_const_nhds (Real.exp_pos (-β))
+    exact hev.exists
+  rcases hlt with ⟨θ, hlt⟩
+  have hle : Real.exp (β * Real.cos θ) ≤ C * Real.exp (-β * θ^2 / 2) := h θ
+  have hlo : Real.exp (-β) ≤ Real.exp (β * Real.cos θ) := hlower θ
+  nlinarith
+
 end QM
