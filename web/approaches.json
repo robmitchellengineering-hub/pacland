@@ -7,7 +7,7 @@
       "routes": [
         {
           "name": "block-spin / animals bound",
-          "next": "Arrow C: the uniform cluster convergence ⟹ the block-spin contraction rate e^(−(12π²/11)β) (the rgContraction — the measure-concentration step, the mass gap's core)",
+          "next": "Arrow C (the missing object): the lattice Yang–Mills measure μ_β = e^(−β S(U)) dU and the block-spin RG average T β (blockSpin composed with the odd-link integration). The metric half (blockSpin 1-Lipschitz) and cluster half (uniform Σ|w(Γ)| ≤ |V|·(2n)(Δ+1)^(2(n−1))·|ρ|ⁿ) and scale half (c = 12π²/11) are proved; the contraction |T β U − T β V| ≤ e^(−(12π²/11)β)·|U−V| is the mass gap and needs μ_β + the RG average, not more animal rungs.",
           "state": "attempted",
           "rungs": [
             "Connected.exists_isTree_le (Mathlib): a connected graph has a spanning tree T ≤ G (IsTree T)",
