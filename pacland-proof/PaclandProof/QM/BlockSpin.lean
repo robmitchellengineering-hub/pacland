@@ -48,4 +48,13 @@ theorem blockSpin_lipschitz {E : Type*} [SeminormedCommGroup E]
   dsimp [blockSpin]
   exact dist_mul_mul_le (U (2 * j)) (U (2 * j + 1)) (V (2 * j)) (V (2 * j + 1))
 
+/-- **The block-spin contracts a uniform fine-field distance by `2`** — if the two fine links are each
+within `D` of each other, the coarse link is within `2D`. This is the coarse-graining contraction per
+step (the `2` is the number of links per block); the exponential `e^(−cβ)` rate is the further measure-
+concentration step, not this pointwise bound. -/
+theorem blockSpin_contracts_two {E : Type*} [SeminormedCommGroup E]
+    (U V : ℕ → E) (j : ℕ) (D : ℝ) (hU : dist (U (2 * j)) (V (2 * j)) ≤ D) (hV : dist (U (2 * j + 1)) (V (2 * j + 1)) ≤ D) :
+    dist (blockSpin U j) (blockSpin V j) ≤ 2 * D := by
+  exact (blockSpin_lipschitz U V j).trans (by linarith)
+
 end QM

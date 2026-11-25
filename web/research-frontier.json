@@ -172,7 +172,8 @@
     "block_spin_contraction_su2",
     "animals_majorant_summable",
     "animals_majorant_tour_summable",
-    "blockSpin_lipschitz"
+    "blockSpin_lipschitz",
+    "blockSpin_contracts_two"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
