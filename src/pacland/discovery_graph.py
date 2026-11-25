@@ -10,8 +10,14 @@ graph of the mass-gap campaign.
 """
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
+
+#: The canonical on-disk store — SEXTANT reads this on startup and writes it on every validated
+#: discovery, so the graph survives across campaigns and sessions (the recursive self-improvement).
+GRAPH_FILE = Path.home() / ".dsh" / "sextant-graph.json"
 
 # --- The node kinds: the eight stages a discovery walks through -------------------------------
 NODE_KINDS = (
@@ -153,6 +159,41 @@ class DiscoveryGraph:
                        "evidence": e.evidence} for e in self.edges],
             "rejections": self.rejections,
         }
+
+    def save(self, path: str | Path | None = None) -> Path:
+        """Persist the graph to the canonical store (``~/.dsh/sextant-graph.json`` by default)."""
+        p = Path(path) if path is not None else GRAPH_FILE
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(self.to_dict(), indent=2), encoding="utf-8")
+        return p
+
+    @classmethod
+    def load(cls, path: str | Path | None = None) -> "DiscoveryGraph":
+        """Load the canonical store. An absent store starts empty (the seed is applied separately)."""
+        p = Path(path) if path is not None else GRAPH_FILE
+        g = cls()
+        if not p.exists():
+            return g
+        d = json.loads(p.read_text(encoding="utf-8"))
+        for i, n in d.get("nodes", {}).items():
+            g.add_node(i, n["kind"], n["name"], n.get("what", ""), **n.get("evidence", {}))
+        for e in d.get("edges", []):
+            g.add_edge(e["src"], e["dst"], e["relation"], e.get("evidence", ""))
+        return g
+
+    def reusable_context(self) -> str:
+        """The plain-English context the engine feeds back into the prompt: what mechanisms exist
+        (reuse these) and what hypotheses are pending (do not re-propose these)."""
+        mechanisms = [n for n in self.nodes.values() if n.kind == "reusable-mechanism"]
+        pending = self.pending_hypotheses()
+        parts = []
+        if mechanisms:
+            parts.append("Reusable mechanisms already discovered (reuse, do not re-derive):")
+            parts += [f"  - {m.name}: {m.what}" for m in mechanisms]
+        if pending:
+            parts.append("Transfer hypotheses pending (do not re-propose — verify instead):")
+            parts += [f"  - {self.nodes[e.dst].name}: {self.nodes[e.dst].what}" for e in pending]
+        return "\n".join(parts)
 
 
 # --- The seed graph: the mass-gap campaign, wired ----------------------------------------------

@@ -41,6 +41,18 @@ MEMORY = REPO_ROOT / "runs" / "discovery-memory.jsonl"
 REJECTED = REPO_ROOT / "runs" / "rejected.jsonl"
 
 
+def _graph():
+    """The canonical knowledge graph — the single machine-readable store SEXTANT reads on startup
+    and writes on every validated discovery. Seeded once with the mass-gap campaign, then it grows
+    across campaigns (the recursive self-improvement loop)."""
+    from pacland.discovery_graph import DiscoveryGraph, seed_mass_gap
+    g = DiscoveryGraph.load()
+    if not g.nodes:
+        g = seed_mass_gap()
+        g.save()
+    return g
+
+
 def _load_memory() -> list[dict]:
     """The verified-discovery memory: one JSON object per line (problem, statement, falsifier, proof)."""
     if not MEMORY.exists():
@@ -66,6 +78,13 @@ def _append_memory(problem: str, statement: str, falsifier: str, proof: dict | N
             "proof": (proof or {}).get("lean", "") if proof else "",
             "ts": datetime.now(timezone.utc).isoformat(),
         }) + "\n")
+    # Also add it to the canonical knowledge graph, so the mechanism is reusable next campaign.
+    g = _graph()
+    g.add_node(f"thm-{slug(statement)[:64]}", "verified-theorem", statement,
+               f"verified discovery for {problem}",
+               theorem=(proof or {}).get("lean", "") if proof else "",
+               falsifier=falsifier)
+    g.save()
 
 
 def _load_rejected() -> list[dict]:
@@ -103,6 +122,11 @@ def _append_rejected(problem: str, statement: str, reason: str) -> None:
         reason=reason,
         produced_by="runner",
     )
+    # Record the wall in the knowledge graph so the dead end is never re-derived.
+    g = _graph()
+    g.add_node(f"wall-{slug(statement)[:64]}", "new-evidence", statement,
+               f"rejected direction: {reason}", reason=reason)
+    g.save()
 
 
 def _memory_prefix(problem: str, n: int = 4) -> str:
@@ -118,6 +142,12 @@ def _memory_prefix(problem: str, n: int = 4) -> str:
     failed = registry.claims("failed")
     gated = registry.claims("gated-out")
     parts: list[str] = []
+
+    # The canonical knowledge graph first: the reusable mechanisms to exploit and the pending
+    # transfer hypotheses to verify (not re-propose) — the recursive self-improvement feed.
+    graph_ctx = _graph().reusable_context()
+    if graph_ctx:
+        parts.append(graph_ctx)
 
     def _stmt(c: dict) -> str:
         return c.get("payload", {}).get("statement", "")
