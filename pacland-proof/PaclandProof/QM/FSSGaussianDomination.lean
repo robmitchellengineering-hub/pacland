@@ -253,6 +253,19 @@ theorem su2_running_mass_fss_bound {E : Type*} [NormedAddCommGroup E] [InnerProd
     ⟪f, Θ f⟫_ℝ ≤ ⟪f, (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) f⟫_ℝ / J := by
   exact fss_join Θ (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) J f hpos hsym hJ
 
+/-- **The running `hsym` discharge** — the FP symbol with the running mass factors as
+`J = 2(1−cos k) + m(β)²`: the Laplacian's symbol `2(1−cos k)` (from `hL`) plus the mass term `m(β)²`
+(the identity's symbol). This is the explicit step that closes Rung 3's `hsym` — the kinetic operator
+`L + m(β)²·id` has the momentum-space symbol the FSS free propagator `1/(2J)` uses, volume-uniform. -/
+theorem running_hsym {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (L : E →ₗ[ℝ] E) (f : E) (k mβ : ℝ)
+    (hL : ⟪f, L f⟫_ℝ = 2 * (1 - Real.cos k) * ⟪f, f⟫_ℝ) :
+    ⟪f, (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) f⟫_ℝ = (2 * (1 - Real.cos k) + mβ ^ 2) * ⟪f, f⟫_ℝ := by
+  simp only [LinearMap.add_apply, LinearMap.smul_apply]
+  change ⟪f, L f + mβ ^ 2 • f⟫_ℝ = (2 * (1 - Real.cos k) + mβ ^ 2) * ⟪f, f⟫_ℝ
+  rw [inner_add_right, real_inner_smul_right, hL, real_inner_self_eq_norm_sq]
+  ring_nf
+
 /-- The Wilson kernel `K(i,j) = exp(2β·cos(θᵢ−θⱼ))` — the reflected correlation of the SU(2) Gibbs
 measure (the free case). Its positivity (`QM.wilson_kernel_posdef`) is the OS3 reflection positivity. -/
 def wilsonKernel {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j : Fin m) : ℝ :=
