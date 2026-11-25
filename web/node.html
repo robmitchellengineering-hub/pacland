@@ -89,6 +89,20 @@ theorem your_theorem : … := by
     </div>
     <div id="proveOut" class="mono"></div>
   </section>
+
+  <section>
+    <h2>The discovery loop <span class="muted">(the engine — identify / prove / generate / validate)</span></h2>
+    <div class="muted" style="font-size:12px">Drives the research engine over the guarded frontier:
+      <code>identify</code> lists the open obligations, <code>prove</code> runs the Lean kernel and reads its goal state,
+      <code>generate</code> asks the LLM for a novel approach, <code>validate</code> runs the full tower + guarded tests.</div>
+    <div class="row">
+      <button onclick="runDiscovery('list')">identify</button>
+      <button onclick="runDiscovery('prove')">prove (kernel)</button>
+      <button class="ghost" onclick="runDiscovery('generate')">generate (LLM)</button>
+      <button class="ghost" onclick="runDiscovery('validate')">validate</button>
+    </div>
+    <div id="discoveryOut" class="mono"></div>
+  </section>
 </main>
 <script>
 let state = { claims: [], hypotheses: [] };
@@ -101,6 +115,18 @@ async function load() {
   renderQuests();
 }
 function glyph(v) { return v === 'FORCED' ? '◼' : v === 'FREE' ? '◻' : '⊘'; }
+
+async function runDiscovery(flag) {
+  const out = document.getElementById('discoveryOut');
+  out.textContent = 'running ' + flag + ' … (the LLM/kernel steps can take a minute)';
+  try {
+    const r = await fetch('/api/discovery?flag=' + flag);
+    const d = await r.json();
+    out.textContent = d.result;
+  } catch (e) {
+    out.textContent = 'the node is not reachable — run `python -m pacland.sextant_node` first (' + e + ')';
+  }
+}
 
 function renderClaims() {
   const el = document.getElementById('claims');

@@ -265,6 +265,27 @@ flowchart TB
     </div>
   </section>
 
+  <section id="frontier">
+    <p class="eyebrow">The research frontier — live</p>
+    <h2>Proved, open, and failed — one view</h2>
+    <div class="callout">
+      <p><strong>Root obligation:</strong> <span id="fr-root">loading…</span></p>
+    </div>
+    <h3>Proved — the kernel-checked layer</h3>
+    <ul id="fr-proved" class="claimlist"></ul>
+    <h3>Open obligations — the remaining rungs</h3>
+    <ul id="fr-obligations" class="claimlist"></ul>
+    <h3>Approaches — the routes in, and the next step</h3>
+    <ul id="fr-approaches" class="claimlist"></ul>
+    <h3>Evidence — the falsifier runs</h3>
+    <ul id="fr-evidence" class="claimlist"></ul>
+    <h3>Attempted proofs — the engine's Lean attempts</h3>
+    <ul id="fr-attempts" class="claimlist"></ul>
+    <h3>Rejected approaches — what the walls taught</h3>
+    <ul id="fr-rejections" class="claimlist"></ul>
+    <p class="small">Sourced from <code>research-frontier.json</code>, <code>approaches.json</code>, <code>evidence.json</code> and <code>rejections.json</code> — the same data the drift test guards, so this page cannot silently diverge from the accounting.</p>
+  </section>
+
   <section id="cross-field">
     <p class="eyebrow">Major feature — cross-field discovery</p>
     <h2>The cross-field engine, front and centre</h2>
@@ -336,6 +357,39 @@ sextant-node        # the headless node at http://127.0.0.1:8090</code></pre>
 
 </div>
 <script>
+// The live frontier — render the generated frontier-view.json (priority 4)
+fetch('frontier-view.json').then(r => r.json()).then(d => {
+  const root = document.getElementById('fr-root');
+  if (root) root.textContent = d.root_obligation;
+  const proved = document.getElementById('fr-proved');
+  if (proved) {
+    const lemmas = (d.proved_layer || []).map(n => `<li>${n}</li>`).join('');
+    const transports = (d.transports || []).map(t =>
+      `<li><strong>${t.name}</strong> — if ${t.hypothesis} then mass gap <span class="mini">PROVED</span></li>`).join('');
+    proved.innerHTML = lemmas + transports;
+  }
+  const obs = document.getElementById('fr-obligations');
+  if (obs) obs.innerHTML = d.obligations.map(o =>
+    `<li><strong>${o.name}</strong> — ${o.rung} <span class="mini">OPEN</span></li>`).join('');
+  const ap = document.getElementById('fr-approaches');
+  if (ap) ap.innerHTML = d.obligations.map(o =>
+    `<li><strong>${o.name}</strong>: ${(o.routes || []).map(r => `${r.state === 'attempted' ? '●' : '○'} ${r.name} → ${r.next}`).join(' · ')}</li>`).join('');
+  const ev = document.getElementById('fr-evidence');
+  if (ev) {
+    const runs = d.obligations.flatMap(o => (o.evidence || []).map(r => ({...r, obligation: o.name})));
+    ev.innerHTML = runs.length ? runs.map(r =>
+      `<li>${r.obligation} — <span class="mini">${r.status}</span> ${r.evidence} <span class="mini">@${r.commit}</span></li>`).join('') :
+      '<li class="small">no recorded evidence yet — run <code>python -m pacland.discovery --record</code></li>';
+  }
+  const rej = document.getElementById('fr-rejections');
+  if (rej) rej.innerHTML = d.rejections.map(r =>
+    `<li><strong>${r.name}</strong> — ${r.wall}. <em>Failed:</em> ${r.why_failed}. <span class="mini">won → ${r.workaround}</span></li>`).join('');
+  const att = document.getElementById('fr-attempts');
+  if (att) att.innerHTML = (d.attempts || []).map(a =>
+    `<li>${a.theorem} @ ${a.at.slice(0,10)} — <span class="mini">${a.result ? 'error' : 'builds clean'}</span></li>`).join('') ||
+    '<li class="small">no proof attempts yet — run <code>python -m pacland.discovery --construct</code></li>';
+}).catch(() => {});
+
 const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕', IRREDUCIBLE:'◐' };
 const CLAIMS = [
  { id:'chsh', v:'FORCED', th:'QM.Tsirelson', claim:'no quantum state violates the CHSH inequality beyond 2√2', falsifier:'a state exceeding 2√2', oracle:'quantum-simulated + kernel-checked', ev:'simulated CHSH = 2.828427 = 2√2 — nothing exceeds it',

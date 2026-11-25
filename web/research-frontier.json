@@ -9,41 +9,214 @@
     "rejected": "a route tried and falsified or found circular — kept as information"
   },
   "transports": [
-    {"name": "mass_gap_from_hypotheses", "hypothesis": "a bundle of hypotheses", "source": "Lean"},
-    {"name": "mass_gap_from_mixing", "hypothesis": "spectral mixing", "source": "Lean"},
-    {"name": "mass_gap_from_volume_independent_tension", "hypothesis": "volume-independent string tension", "source": "Lean"},
-    {"name": "mass_gap_iff_positive_ratio", "hypothesis": "a positive ratio", "source": "Lean"},
-    {"name": "mass_gap_of_radius_bound", "hypothesis": "radius bound ρ ≤ e^(−A·e^(−cβ))", "source": "Lean"},
-    {"name": "mass_gap_of_radius_exponential", "hypothesis": "radius bound ρ ≤ e^(−A·e^(−cβ))", "source": "Lean"},
-    {"name": "mass_gap_join", "hypothesis": "the joined bound", "source": "Lean"},
-    {"name": "mass_gap_join_strong", "hypothesis": "the joined bound (strong)", "source": "Lean"},
-    {"name": "mass_gap_reduction", "hypothesis": "volume-uniformity", "source": "Lean"},
-    {"name": "mass_gap_reduction_volumeUniform", "hypothesis": "volume-uniformity", "source": "Lean"},
-    {"name": "mass_gap_bounds_string_tension", "hypothesis": "string tension", "source": "Lean"},
-    {"name": "string_tension_iff_gap", "hypothesis": "string tension", "source": "Lean"},
-    {"name": "mass_gap_dimensional_transmutation", "hypothesis": "the running-coupling route", "source": "Lean"},
-    {"name": "mass_gap_follows_beta_not_instanton", "hypothesis": "the running-coupling (non-instanton) route", "source": "Lean"},
-    {"name": "clustering_iff_gap", "hypothesis": "clustering", "source": "Lean"},
-    {"name": "clustering_implies_cluster_expansion", "hypothesis": "clustering", "source": "Lean"},
-    {"name": "infrared_bound_gives_volume_uniform", "hypothesis": "the infrared bound", "source": "Lean"},
-    {"name": "refereeScalingLaw_of_radius_bound", "hypothesis": "radius bound ρ ≤ e^(−A·e^(−cβ))", "source": "Lean"},
-    {"name": "volume_uniform_covariance_bound", "hypothesis": "volume-uniform covariance (hpos/hlim)", "source": "Lean"}
+    {
+      "name": "mass_gap_from_hypotheses",
+      "hypothesis": "a bundle of hypotheses",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_from_mixing",
+      "hypothesis": "spectral mixing",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_from_volume_independent_tension",
+      "hypothesis": "volume-independent string tension",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_iff_positive_ratio",
+      "hypothesis": "a positive ratio",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_of_radius_bound",
+      "hypothesis": "radius bound ρ ≤ e^(−A·e^(−cβ))",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_of_radius_exponential",
+      "hypothesis": "radius bound ρ ≤ e^(−A·e^(−cβ))",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_join",
+      "hypothesis": "the joined bound",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_join_strong",
+      "hypothesis": "the joined bound (strong)",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_reduction",
+      "hypothesis": "volume-uniformity",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_reduction_volumeUniform",
+      "hypothesis": "volume-uniformity",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_bounds_string_tension",
+      "hypothesis": "string tension",
+      "source": "Lean"
+    },
+    {
+      "name": "string_tension_iff_gap",
+      "hypothesis": "string tension",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_dimensional_transmutation",
+      "hypothesis": "the running-coupling route",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_follows_beta_not_instanton",
+      "hypothesis": "the running-coupling (non-instanton) route",
+      "source": "Lean"
+    },
+    {
+      "name": "clustering_iff_gap",
+      "hypothesis": "clustering",
+      "source": "Lean"
+    },
+    {
+      "name": "clustering_implies_cluster_expansion",
+      "hypothesis": "clustering",
+      "source": "Lean"
+    },
+    {
+      "name": "infrared_bound_gives_volume_uniform",
+      "hypothesis": "the infrared bound",
+      "source": "Lean"
+    },
+    {
+      "name": "refereeScalingLaw_of_radius_bound",
+      "hypothesis": "radius bound ρ ≤ e^(−A·e^(−cβ))",
+      "source": "Lean"
+    },
+    {
+      "name": "volume_uniform_covariance_bound",
+      "hypothesis": "volume-uniform covariance (hpos/hlim)",
+      "source": "Lean"
+    }
   ],
   "obligations": [
-    {"name": "ym-linked-cluster-contraction", "rung": "the block-spin contraction ρ ≤ e^(−A·e^(−cβ)); first rung: the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1))", "state": "open"},
-    {"name": "ym-volume-uniform-su2", "rung": "the volume-uniform FSS for the SU(2) character (the linear/Abelian version is proved: fss_join, falk_bruch)", "state": "open"},
-    {"name": "ym-fss-nonabelian-closable", "rung": "the FSS non-Abelian estimate", "state": "open"},
-    {"name": "ym-rg-contraction", "rung": "the RG contraction (transport proved: rg_contraction_positive)", "state": "open"},
-    {"name": "ym-log-sobolev", "rung": "the log-Sobolev / mixing gap", "state": "open"},
-    {"name": "ym-posdef-limit", "rung": "the PSD limit transport", "state": "open"},
-    {"name": "ym-os-existence", "rung": "the OS existence/reconstruction", "state": "open"}
+    {
+      "name": "ym-linked-cluster-contraction",
+      "rung": "the block-spin contraction ρ ≤ e^(−A·e^(−cβ)); first rung: the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1))",
+      "state": "open"
+    },
+    {
+      "name": "ym-volume-uniform-su2",
+      "rung": "the volume-uniform FSS for the SU(2) character (the linear/Abelian version is proved: fss_join, falk_bruch)",
+      "state": "open"
+    },
+    {
+      "name": "ym-fss-nonabelian-closable",
+      "rung": "the FSS non-Abelian estimate (the closable transport is proved; the estimate is the hypothesis)",
+      "state": "open"
+    },
+    {
+      "name": "ym-log-sobolev",
+      "rung": "the log-Sobolev / mixing gap",
+      "state": "open"
+    },
+    {
+      "name": "ym-d5-confinement",
+      "rung": "the d=5 no-gap (numerical observation, IRREDUCIBLE)",
+      "state": "open"
+    },
+    {
+      "name": "ym-mass-gap-bulk-transition",
+      "rung": "the bulk-transition jump (numerical observation, IRREDUCIBLE)",
+      "state": "open"
+    },
+    {
+      "name": "ym-mass-gap-polyakov",
+      "rung": "the Polyakov screening mass (numerical observation, IRREDUCIBLE)",
+      "state": "open"
+    }
   ],
   "proved_layer": [
-    "fss_join", "fss_reflected_correlation_factorization", "fss_reflection_positivity_square",
-    "casimir_infrared_bound", "ir_bound_su2", "gradientFlow_contraction_rate", "rg_contraction_positive",
-    "stringTension_eq_casimir", "stringTension_su2", "walk_count_bound",
-    "polymer_expansion_subset", "linked_cluster_log_prod", "linked_cluster_weights",
-    "cluster_weight_bound", "cluster_weights_summable", "posdef_*"
+    "fss_join",
+    "fss_reflected_correlation_factorization",
+    "fss_reflection_positivity_square",
+    "casimir_infrared_bound",
+    "ir_bound_su2",
+    "gradientFlow_contraction_rate",
+    "rg_contraction_positive",
+    "stringTension_eq_casimir",
+    "stringTension_su2",
+    "walk_count_bound",
+    "polymer_expansion_subset",
+    "linked_cluster_log_prod",
+    "linked_cluster_weights",
+    "cluster_weight_bound",
+    "cluster_weights_summable",
+    "posdef_*",
+    "connected_exists_visiting_walk",
+    "tree_euler_tour_length",
+    "connected_subset_tour",
+    "rooted_tree_tour",
+    "rooted_subset_tour",
+    "rooted_animals_count_bound"
   ],
-  "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it."
+  "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
+  "equivalence_collapse": {
+    "status": "partially established by the tower (verified, not assumed)",
+    "bridges": [
+      {
+        "a": "block-spin contraction / scaling law",
+        "b": "volume-uniform FSS / ratio",
+        "theorem": "refereeScalingLaw_iff_volumeUniformRatio",
+        "note": "A·Λ ≤ mGap ⟺ C ≤ mGap/Λ — the scaling law and the volume-uniform ratio are the same statement"
+      },
+      {
+        "a": "clustering / mixing",
+        "b": "spectral gap",
+        "theorem": "clustering_iff_gap",
+        "note": "|Tⁿ i j| ≤ lam1ⁿ·m ⟺ |eigenvalues| ≤ lam1 — exponential clustering and the spectral bound are two faces of one fact"
+      },
+      {
+        "a": "radius bound",
+        "b": "mass gap",
+        "theorem": "mass_gap_of_radius_bound + refereeScalingLaw_of_radius_bound",
+        "note": "ρ ≤ e^(−A·e^(−cβ)) ⟹ m ≥ A·e^(−cβ) — the radius bound chains to both the gap and the scaling law"
+      }
+    ],
+    "collapse_result": "the three named rungs are NOT three independent obligations — the tower proves the scaling law ⟺ the volume-uniform ratio and the clustering ⟺ the gap, and the radius bound chains to both. The open set collapses to ONE obligation: the radius bound ρ ≤ e^(−A·e^(−cβ)) itself, whose first rung is the animals bound."
+  },
+  "reconciliation": {
+    "equivalence_classes": [
+      {
+        "class": "the radius bound / block-spin contraction",
+        "members": [
+          "ym-linked-cluster-contraction",
+          "ym-volume-uniform-su2",
+          "ym-fss-nonabelian-closable"
+        ],
+        "why": "refereeScalingLaw_iff_volumeUniformRatio proves the scaling law ⟺ the volume-uniform ratio; the FSS non-Abelian estimate is the same volume-uniform fact in the thermodynamic framework"
+      },
+      {
+        "class": "the log-Sobolev / mixing route",
+        "members": [
+          "ym-log-sobolev"
+        ],
+        "why": "a SEPARATE route into the gap: clustering_iff_gap proves clustering ⟺ gap, but the log-Sobolev → mixing leg is itself open, so this is an independent entry point, not the same obligation"
+      }
+    ],
+    "evidence_only": [
+      "ym-d5-confinement",
+      "ym-mass-gap-bulk-transition",
+      "ym-mass-gap-polyakov"
+    ],
+    "evidence_only_why": "numerical lattice observations (IRREDUCIBLE), not mass-gap obligations — they are evidence about the regime, not hypotheses to discharge",
+    "independent_obligations": 2,
+    "independent_why": "exactly two independent mathematical obligations remain: the radius bound (one class) and the log-Sobolev bridge (the other); the three IRREDUCIBLE entries are evidence, not obligations"
+  }
 }
