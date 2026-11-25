@@ -63,7 +63,8 @@
             "sin_sq_pi_sub — the Weyl density's reflection-invariance sin²(π−θ) = sin²θ (the OS3 factorization input)",
             "weyl_reflection_invariant — the Weyl measure's reflection-invariance ∫f(π−θ)sin²θ = ∫f(θ)sin²θ (the OS3 factorization input)",
             "os3_measure_positivity — the measure-theoretic OS3, conditional on the factorization ∫f·(f∘Θ)dμ = (∫f dμ₊)²",
-            "reflection_factorization — the Fubini split ∫ g(x)g(y) d(μ⊗ν) = (∫ g dμ)(∫ g dν) (the OS3 factorization)"
+            "reflection_factorization — the Fubini split ∫ g(x)g(y) d(μ⊗ν) = (∫ g dμ)(∫ g dν) (the OS3 factorization)",
+            "os3_weyl_positivity — the concrete OS3 for the symmetric Weyl product: ∫g(x)g(y)d(ν⊗ν) = (∫g dν)² ≥ 0"
           ]
         },
         {

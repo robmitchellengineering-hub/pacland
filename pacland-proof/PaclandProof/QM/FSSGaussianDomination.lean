@@ -714,6 +714,16 @@ theorem reflection_factorization {ι : Type*} [MeasurableSpace ι] (ν ρ : Meas
     _ = (∫ x : ι, g x ∂ν) * (∫ y : ι, g y ∂ρ) := by
             exact MeasureTheory.integral_mul_const (μ := ν) (∫ y : ι, g y ∂ρ) g
 
+/-- **The concrete OS3 for the symmetric Weyl product** — with `μ₊ = μ₋ = ν` (the reflection-invariant
+measure), the factorization gives `∫ g(x)·g(y) d(ν⊗ν) = (∫ g dν)² ≥ 0`. This is the measure-theoretic
+reflection positivity, the concrete `hpos` the FSS chain needs. -/
+theorem os3_weyl_positivity {ι : Type*} [MeasurableSpace ι] (ν : MeasureTheory.Measure ι) (g : ι → ℝ)
+    [MeasureTheory.SFinite ν]
+    (hint : MeasureTheory.Integrable (fun z : ι × ι => g z.1 * g z.2) (ν.prod ν)) :
+    0 ≤ ∫ θ : ι × ι, g θ.1 * g θ.2 ∂(ν.prod ν) := by
+  rw [reflection_factorization ν ν g hint]
+  exact mul_self_nonneg (∫ x : ι, g x ∂ν)
+
 end FSSGaussianDomination
 
 end
