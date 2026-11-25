@@ -3175,6 +3175,13 @@
    "title": "rate_wall.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/register-harness.py",
+   "kind": "script",
+   "path": "scripts/register-harness.py",
+   "summary": "Register the SEXTANT MCP server with Claude Code and Cursor.",
+   "title": "register-harness.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/render_pdf.py",
    "kind": "script",
    "path": "scripts/render_pdf.py",
