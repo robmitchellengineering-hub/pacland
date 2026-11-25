@@ -3,6 +3,8 @@ import PaclandProof.QM.HeatKernel
 import PaclandProof.QM.AsymptoticFreedom
 import PaclandProof.QM.ClusterExpansion
 
+set_option maxHeartbeats 2000000
+
 /-!
 # The full 4D lattice gauge-field configuration space and its reflection symmetry
 
@@ -277,5 +279,54 @@ theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
               (Fintype.card_coe (s := Finset.filter (fun x => G.Adj u x) Finset.univ))
       _ ≤ G.maxDegree * G.maxDegree ^ n := Nat.mul_le_mul_right _ (G.degree_le_maxDegree u)
       _ = G.maxDegree ^ (n + 1) := by rw [pow_succ']
+
+/-- **The animals-weight series converges** — the size-class weight `(Δ+1)^(2n) · |ρ|ⁿ` is the geometric
+series in `(Δ+1)² |ρ|`, so it is summable exactly when `(Δ+1)² |ρ| < 1`. This chains the animals bound's
+`(Δ+1)^(2n)` growth against the cluster activity's `|ρ|ⁿ` decay — the small-field convergence of the
+linked-cluster expansion for an arbitrary graph of max degree `Δ`. -/
+theorem animals_weight_summable (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Summable (fun n : ℕ => ((Δ : ℝ) + 1)^(2*n) * |ρ|^n) := by
+  have ha : abs (((Δ : ℝ) + 1)^2 * abs ρ) < 1 := by
+    calc
+      abs (((Δ : ℝ) + 1)^2 * abs ρ) = ((Δ : ℝ) + 1)^2 * abs ρ := by
+        rw [abs_mul, abs_of_nonneg (sq_nonneg ((Δ : ℝ) + 1)), abs_of_nonneg (abs_nonneg ρ)]
+      _ = abs ρ * ((Δ : ℝ) + 1)^2 := by ring
+      _ < 1 := h
+  have hgeom : Summable (fun n : ℕ => (((Δ : ℝ) + 1)^2 * abs ρ)^n) :=
+    summable_geometric_iff_norm_lt_one.mpr (by simpa [Real.norm_eq_abs] using ha)
+  convert hgeom using 1
+  ext n
+  rw [mul_pow, pow_mul]
+
+/-- **The actual animals majorant converges** — the size-class count carries the `2n` factor (the
+polynomial growth), so the real weighted majorant is `2n·((Δ+1)²|ρ|)ⁿ`, and `Σ n·aⁿ` converges for
+`|a| < 1` (polynomial-times-geometric). This is the missing link: the geometric series alone did not
+bound the `2n`-weighted count. -/
+theorem animals_majorant_summable (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Summable (fun n : ℕ => 2 * (n : ℝ) * (((Δ : ℝ) + 1)^2 * |ρ|)^n) := by
+  have ha : ‖((Δ : ℝ) + 1)^2 * abs ρ‖ < 1 := by
+    rw [Real.norm_eq_abs]
+    calc
+      abs (((Δ : ℝ) + 1)^2 * abs ρ) = ((Δ : ℝ) + 1)^2 * abs ρ := by
+        rw [abs_mul, abs_of_nonneg (sq_nonneg ((Δ : ℝ) + 1)), abs_of_nonneg (abs_nonneg ρ)]
+      _ = abs ρ * ((Δ : ℝ) + 1)^2 := by ring
+      _ < 1 := h
+  have hpow : Summable (fun n : ℕ => (n : ℝ)^1 * (((Δ : ℝ) + 1)^2 * abs ρ)^n) :=
+    summable_pow_mul_geometric_of_norm_lt_one 1 ha
+  simpa [pow_one, mul_assoc] using hpow.mul_left 2
+
+/-- **The tour-length majorant converges** — the exact animals count uses the Euler-tour exponent
+`2(n−1)` (not `2n`), and `(Δ+1)^(2(n−1)) ≤ (Δ+1)^(2n)` for `Δ+1 ≥ 1`, so the dominating `2n`-majorant's
+summability implies this one. This is the exact weighted majorant from `rooted_animals_count_bound_gen`. -/
+theorem animals_majorant_tour_summable (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Summable (fun n : ℕ => (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |ρ|^n) := by
+  refine Summable.of_nonneg_of_le
+    (fun n => by positivity)
+    (fun n => ?_) (animals_majorant_summable Δ ρ h)
+  have hle : ((Δ : ℝ) + 1)^(2*(n-1)) ≤ ((Δ : ℝ) + 1)^(2*n) := by
+    exact_mod_cast (Nat.pow_le_pow_right (Nat.succ_le_succ (Nat.zero_le Δ)) (by omega : 2*(n-1) ≤ 2*n))
+  simpa [mul_assoc, mul_pow, pow_mul] using
+    (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hle (pow_nonneg (abs_nonneg ρ) n))
+      (mul_nonneg zero_le_two (Nat.cast_nonneg n)))
 
 end QM
