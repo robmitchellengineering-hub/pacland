@@ -227,6 +227,20 @@ theorem su2_momentum_space_fss_bound {E : Type*} [NormedAddCommGroup E] [InnerPr
   field_simp [hLpos.ne', hJ.ne']
   exact hmul
 
+/-- **The cross-synthesis: the running mass enters the FSS chain** — the weak-coupling scale
+`e^(−(12π²/11)β)` is folded into the FSS infrared bound by replacing the fixed Casimir `2` with the
+running mass `m(β) = 2·e^(−(12π²/11)β)` in the kinetic operator `L + m(β)²·id`. The `fss_join` is agnostic
+to the mass, so the SAME volume-uniform chain (reflection Cauchy–Schwarz → the free propagator) holds with
+the running mass. This is the unification of the FSS Gaussian domination (proved) and the asymptotic-
+freedom scale (`c = 12π²/11`) — the two mechanisms are one bound on the one operator. -/
+theorem su2_running_mass_fss_bound {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (Θ : E →ₗᵢ[ℝ] E) (L : E →ₗ[ℝ] E) (f : E) (J β : ℝ)
+    (mβ : ℝ) (hmβ : mβ = 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β))
+    (hpos : 0 ≤ ⟪f, Θ f⟫_ℝ)
+    (hsym : ⟪f, (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) f⟫_ℝ = J * ⟪f, f⟫_ℝ) (hJ : 0 < J) :
+    ⟪f, Θ f⟫_ℝ ≤ ⟪f, (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) f⟫_ℝ / J := by
+  exact fss_join Θ (L + mβ ^ 2 • (1 : E →ₗ[ℝ] E)) J f hpos hsym hJ
+
 /-- The Wilson kernel `K(i,j) = exp(2β·cos(θᵢ−θⱼ))` — the reflected correlation of the SU(2) Gibbs
 measure (the free case). Its positivity (`QM.wilson_kernel_posdef`) is the OS3 reflection positivity. -/
 def wilsonKernel {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j : Fin m) : ℝ :=

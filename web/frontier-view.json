@@ -43,7 +43,8 @@
     "collectivePartition_pos",
     "blockSpin_average_pos",
     "singlePlaquettePartition_le",
-    "strong_coupling_iterate_contracts"
+    "strong_coupling_iterate_contracts",
+    "su2_running_mass_fss_bound"
   ],
   "transports": [
     {
@@ -184,7 +185,8 @@
             "blockSpin_average_pos — the block-spin RG average of the single-plaquette weight ∫₀^π e^(β cos(θ₁+θ₂)) sin²θ₂ dθ₂ > 0 (the renormalised density's positivity)",
             "singlePlaquettePartition_le — Z(β) ≤ e^β·π/2 (the renormalised weight is dominated by the free case, the contraction's normalisation bound)",
             "strong_coupling_iterate_contracts — the n-fold block-spin contraction e^(−nκ) → 0 (the RG iteration's strong-coupling decay)",
-            "heat_kernel_gaussian_not_uniform — FALSIFIES mg-gd-001: e^(β cos θ) is not dominated by a Gaussian C·e^(−βθ²/2) uniformly (the heat-kernel Gaussianization is weak-coupling only)"
+            "heat_kernel_gaussian_not_uniform — FALSIFIES mg-gd-001: e^(β cos θ) is not dominated by a Gaussian C·e^(−βθ²/2) uniformly (the heat-kernel Gaussianization is weak-coupling only)",
+            "su2_running_mass_fss_bound — cross-synthesis: the FSS chain is mass-agnostic, so the running mass m(β)=2·e^(−(12π²/11)β) enters the SAME volume-uniform infrared bound"
           ]
         },
         {
