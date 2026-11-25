@@ -187,19 +187,36 @@ def attempt() -> str:
 KERNEL = "rob@100.73.60.26"
 
 
+def _kernel_build(target: str, timeout: int = 300):
+    """Run `lake build <target>` — the SINGLE configurable execution mechanism. By default it builds in
+    the LOCAL checkout (`ROOT/pacland-proof`); set `SEXTANT_KERNEL` to an SSH host to build remotely
+    instead. Returns the CompletedProcess; callers inspect `.returncode` / `.stdout` / `.stderr`."""
+    import subprocess
+    cmd = ('export PATH="$HOME/.elan/bin:$PATH"; cd ' + str(ROOT / "pacland-proof") +
+           f' && lake build {target} 2>&1')
+    host = os.environ.get("SEXTANT_KERNEL", "")
+    if host:
+        return subprocess.run(
+            ['ssh', '-i', os.path.expanduser('~/.ssh/pacland-rog-agent'), '-o', 'StrictHostKeyChecking=no',
+             host, cmd], capture_output=True, text=True, timeout=timeout)
+    return subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=timeout)
+
+
+def _goal_lines(stdout: str, limit: int = 40) -> str:
+    """The error / goal-state lines from a build log (the part the retry loop reads)."""
+    return "\n".join(l for l in stdout.splitlines() if "error" in l or "⊢" in l)[: limit]
+
+
 def prove() -> str:
     """The 'construct proofs' stage: run the Lean kernel on the target file and read back the actual
     goal state, so the engine retries from the kernel's error rather than guessing."""
-    import subprocess
-    cmd = ('export PATH="$HOME/.elan/bin:$PATH"; cd /tmp/pacland-kc/pacland-proof && '
-           'lake build PaclandProof.QM.AnimalsBound 2>&1 | grep -E "error|⊢" | head -40')
     try:
-        proc = subprocess.run(
-            ['ssh', '-i', os.path.expanduser('~/.ssh/pacland-rog-agent'), '-o', 'StrictHostKeyChecking=no',
-             KERNEL, cmd], capture_output=True, text=True, timeout=180)
-    except subprocess.TimeoutExpired:
-        return "the kernel timed out (180s)"
-    out = proc.stdout.strip()
+        proc = _kernel_build("PaclandProof.QM.AnimalsBound")
+    except Exception as exc:  # noqa: BLE001 — the kernel is one of several executors
+        return f"the kernel raised {type(exc).__name__}: {exc}"
+    out = _goal_lines(proc.stdout)
+    if proc.returncode != 0 and not out:
+        return f"the kernel failed (exit {proc.returncode}):\n" + proc.stdout[-500:]
     if not out:
         return "the kernel reports: AnimalsBound builds clean — no goal remaining"
     return "the kernel reports:\n" + out
@@ -223,7 +240,7 @@ def generate() -> str:
         "Give the candidate approach as: (1) the mechanism, (2) the first lemma to prove, (3) why it is "
         "different from the known routes. Be concrete and short."
     )
-    key = open(os.path.expanduser("~/.dsh/deepseek-api-key")).read().strip()
+    key = _llm_key()
     req = urllib.request.Request(
         os.environ.get("SEXTANT_LLM_ENDPOINT", "https://api.deepseek.com/v1") + "/chat/completions",
         data=json.dumps({
@@ -241,10 +258,19 @@ def generate() -> str:
         return f"the LLM call failed: {type(exc).__name__}: {exc}"
 
 
+def _llm_key() -> str:
+    """The API key: `SEXTANT_LLM_KEY` if set, else the DeepSeek key file. The env var is the documented
+    wire; the file is the local fallback so a checkout without the env still works."""
+    env = os.environ.get("SEXTANT_LLM_KEY")
+    if env:
+        return env
+    return open(os.path.expanduser("~/.dsh/deepseek-api-key")).read().strip()
+
+
 def _llm(prompt: str, temperature: float = 0.3) -> str:
     """One deepseek-v4-pro completion; returns the raw content text (raises on failure)."""
     import urllib.request
-    key = open(os.path.expanduser("~/.dsh/deepseek-api-key")).read().strip()
+    key = _llm_key()
     req = urllib.request.Request(
         os.environ.get("SEXTANT_LLM_ENDPOINT", "https://api.deepseek.com/v1") + "/chat/completions",
         data=json.dumps({
@@ -302,13 +328,11 @@ def construct() -> str:
         "import Mathlib\nimport PaclandProof.QM.FullLattice\n\nnamespace QM\n"
         + code + "\n\nend QM\n"
     )
-    cmd = ('export PATH="$HOME/.elan/bin:$PATH"; cd ' + str(ROOT / "pacland-proof") +
-           ' && lake build PaclandProof.QM.AnimalsBoundAttempt 2>&1 | grep -E "error|⊢" | head -40')
     try:
-        proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=300)
-    except subprocess.TimeoutExpired:
-        return "kernel timed out (300s)"
-    out = proc.stdout.strip()
+        proc = _kernel_build("PaclandProof.QM.AnimalsBoundAttempt")
+    except Exception as exc:  # noqa: BLE001
+        return f"the kernel raised {type(exc).__name__}: {exc}"
+    out = _goal_lines(proc.stdout)
     # record the attempt (the "attempted proofs" data the interface renders), success or failure
     import datetime
     attempts_path = ROOT / "web" / "attempts.json"
@@ -361,22 +385,28 @@ def tactic() -> str:
 
 
 def build_evidence() -> dict:
-    """The AUTHORITATIVE verification evidence: run the actual build and capture the commit SHA, the Lean
-    version, the theorem names, and the result — never inferred from a previous run."""
+    """The AUTHORITATIVE verification evidence: run the actual build and capture the commit SHA, the dirty
+    state, the Lean version, the EXACT command, the FULL build log (stdout + stderr), the exit code, and the
+    full theorem list — never inferred from a previous run."""
     import subprocess
     commit = subprocess.run("git rev-parse HEAD", shell=True, capture_output=True, text=True,
                             cwd=ROOT).stdout.strip()
+    dirty = subprocess.run("git status --porcelain", shell=True, capture_output=True, text=True,
+                           cwd=ROOT).stdout.strip()
     lean = subprocess.run('export PATH="$HOME/.elan/bin:$PATH"; cd pacland-proof && lake env lean --version',
                           shell=True, capture_output=True, text=True, cwd=ROOT).stdout.strip()
-    build = subprocess.run('export PATH="$HOME/.elan/bin:$PATH"; cd pacland-proof && lake build PaclandProof 2>&1 | tail -3',
-                           shell=True, capture_output=True, text=True, cwd=ROOT, timeout=900)
+    build_cmd = 'export PATH="$HOME/.elan/bin:$PATH"; cd pacland-proof && lake build PaclandProof 2>&1'
+    build = subprocess.run(build_cmd, shell=True, capture_output=True, text=True, cwd=ROOT, timeout=900)
     theorems = subprocess.run(
         "grep -rhoE 'theorem [a-zA-Z0-9_]+' pacland-proof/PaclandProof/QM/*.lean | sed 's/theorem //' | sort -u",
         shell=True, capture_output=True, text=True, cwd=ROOT).stdout.strip()
     return {
         "commit": commit,
+        "dirty": dirty.split("\n") if dirty else [],
         "lean_version": lean.strip(),
-        "build_result": build.stdout.strip(),
+        "command": build_cmd,
+        "build_log": build.stdout,
+        "build_stderr": build.stderr,
         "build_exit": build.returncode,
         "theorems": theorems.split("\n") if theorems else [],
     }
@@ -384,24 +414,37 @@ def build_evidence() -> dict:
 
 def validate() -> str:
     """The 'independently validate' stage: a SEPARATE check distinct from the construction's single-file
-    kernel run — the whole tower build plus the guarded test suite, with the authoritative evidence
-    (commit SHA, Lean version, theorem names, result) captured and written to web/build-evidence.json."""
+    kernel run — the whole tower build plus the guarded test suite, with the FULL authoritative evidence
+    (commit, dirty state, Lean version, exact command, full build log, exit code, theorem list, test
+    output) written to web/build-evidence.json. `ok` is false unless both the build and tests exit 0, so
+    a failed validation cannot be reported as successful."""
     import subprocess
     ev = build_evidence()
     tests = subprocess.run(
-        'PYTHONPATH=src python3 -m pytest tests/test_site_index.py tests/test_research_frontier.py -q 2>&1 | tail -1',
+        'PYTHONPATH=src python3 -m pytest tests/test_site_index.py tests/test_research_frontier.py -q 2>&1',
         shell=True, capture_output=True, text=True, cwd=ROOT, timeout=300)
+    ok = ev["build_exit"] == 0 and tests.returncode == 0
     (ROOT / "web" / "build-evidence.json").write_text(json.dumps({
-        "schema": "sextant-build-evidence", "commit": ev["commit"], "lean_version": ev["lean_version"],
-        "build_result": ev["build_result"], "build_exit": ev["build_exit"],
-        "theorem_count": len(ev["theorems"]), "tests": tests.stdout.strip(),
+        "schema": "sextant-build-evidence",
+        "commit": ev["commit"],
+        "dirty": ev["dirty"],
+        "lean_version": ev["lean_version"],
+        "command": ev["command"],
+        "build_log": ev["build_log"],
+        "build_stderr": ev["build_stderr"],
+        "build_exit": ev["build_exit"],
+        "theorems": ev["theorems"],
+        "tests": tests.stdout,
+        "tests_exit": tests.returncode,
+        "ok": ok,
     }, indent=2))
     return ("independent validation (executed, not inferred):\n"
             f"  commit:       {ev['commit']}\n"
+            f"  dirty:        {len(ev['dirty'])} uncommitted path(s)\n"
             f"  lean:         {ev['lean_version']}\n"
-            f"  build:        {ev['build_result']}\n"
-            f"  theorems:     {len(ev['theorems'])} names captured\n"
-            f"  guarded tests: {tests.stdout.strip()}\n"
+            f"  build exit:   {ev['build_exit']} (log {len(ev['build_log'])} chars, {len(ev['theorems'])} theorems)\n"
+            f"  tests exit:   {tests.returncode}\n"
+            f"  OK:           {ok}\n"
             "  → web/build-evidence.json")
 
 
@@ -520,13 +563,13 @@ def loop(n: int = 3) -> str:
         scratch.write_text(
             "import Mathlib\nimport PaclandProof.QM.FullLattice\n\nnamespace QM\n"
             + body + "\n\nend QM\n")
-        cmd = ('export PATH="$HOME/.elan/bin:$PATH"; cd ' + str(ROOT / "pacland-proof") +
-               ' && lake build PaclandProof.QM.AnimalsBoundAttempt 2>&1 | grep -E "error" | head -20')
         try:
-            r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=300)
-        except subprocess.TimeoutExpired:
-            return f"iteration {i+1}: the kernel timed out (300s)"
-        last_errs = r.stdout.strip()
+            r = _kernel_build("PaclandProof.QM.AnimalsBoundAttempt")
+        except Exception as exc:  # noqa: BLE001
+            return f"iteration {i+1}: the kernel raised {type(exc).__name__}: {exc}"
+        last_errs = _goal_lines(r.stdout, 20)
+        if r.returncode != 0 and not last_errs:
+            last_errs = r.stdout[-500:]
         if not last_errs:
             return f"iteration {i+1}: the kernel ACCEPTS — builds clean (no error)"
         code = _llm(
