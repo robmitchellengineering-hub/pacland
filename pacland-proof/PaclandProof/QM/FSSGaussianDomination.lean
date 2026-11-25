@@ -354,6 +354,32 @@ noncomputable def wilsonLaplacian {m : ℕ} [NeZero m] : (Fin m → ℝ) →ₗ[
     simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
     ring
 
+/-- **The Laplacian's quadratic form is the Dirichlet form** — `⟪f, Lf⟫ = Σᵢ fᵢ(2fᵢ − fᵢ₊₁ − fᵢ₋₁)
+= Σᵢ (fᵢ₊₁ − fᵢ)²` on the periodic lattice. The proof telescopes: `fᵢ(2fᵢ − fᵢ₊₁ − fᵢ₋₁)
+= fᵢ(fᵢ − fᵢ₋₁) − fᵢ(fᵢ₊₁ − fᵢ)`, and the cyclic shift `i ↦ i − 1` turns the first sum into
+`Σ fᵢ₊₁(fᵢ₊₁ − fᵢ)`, so the two combine to `Σ (fᵢ₊₁ − fᵢ)²`. -/
+theorem wilson_laplacian_dirichlet {m : ℕ} [NeZero m] (f : Fin m → ℝ) :
+    (∑ i : Fin m, f i * (wilsonLaplacian f) i) = ∑ i : Fin m, (f (i + 1) - f i)^2 := by
+  simp only [wilsonLaplacian, LinearMap.coe_mk, AddHom.coe_mk]
+  have hshift : (∑ i : Fin m, f i * (f i - f (i - 1))) = ∑ i : Fin m, f (i + 1) * (f (i + 1) - f i) := by
+    simpa using (Finset.sum_equiv (Equiv.addRight (-1 : Fin m)) (by intro i; simp)
+      (by intro i hi; simp [sub_eq_add_neg]))
+  calc
+    (∑ i : Fin m, f i * (2 * f i - f (i + 1) - f (i - 1)))
+        = (∑ i : Fin m, (f i * (f i - f (i - 1)) - f i * (f (i + 1) - f i))) := by
+            apply Finset.sum_congr rfl
+            intro i _
+            ring
+    _ = (∑ i : Fin m, f i * (f i - f (i - 1))) - (∑ i : Fin m, f i * (f (i + 1) - f i)) := by
+            rw [Finset.sum_sub_distrib]
+    _ = (∑ i : Fin m, f (i + 1) * (f (i + 1) - f i)) - (∑ i : Fin m, f i * (f (i + 1) - f i)) := by
+            rw [hshift]
+    _ = ∑ i : Fin m, (f (i + 1) - f i)^2 := by
+            rw [← Finset.sum_sub_distrib]
+            apply Finset.sum_congr rfl
+            intro i _
+            ring
+
 /-- **The connection `hΘ`** (the reflection → kernel connection, proved structurally). The reflected
 inner product `⟪f, Θ f⟫` (the ℓ² pairing `∑ j, f j · (Θ f) j`) equals the Wilson kernel's quadratic form
 `Σᵢⱼ fᵢ fⱼ exp(2β·cos(θᵢ−θⱼ))`. This is the `hΘ` hypothesis of the OS closure, discharged by the
