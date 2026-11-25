@@ -103,6 +103,18 @@ theorem fp_symbol_su2 (k : ℝ) :
     2 * (1 - Real.cos k) + 2 = 2 * (2 - Real.cos k) := by
   ring
 
+/-- **The running FP symbol is positive** — the symbol `J(k,β) = 2(1−cos k) + m(β)²` with the running
+mass `m(β) = 2·e^(−(12π²/11)β)` is strictly positive: the Laplacian term `2(1−cos k) ≥ 0` and the mass
+term `m(β)² > 0` (`running_mass_pos`). This is the `hJ > 0` input that closes the FSS infrared bound's
+free propagator `1/(2J)` — the volume-uniform positivity the mass gap's continuum survival needs. -/
+theorem fp_symbol_running_pos (k β : ℝ) :
+    0 < 2 * (1 - Real.cos k) + (2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β))^2 := by
+  have hle : 0 ≤ 2 * (1 - Real.cos k) := by
+    have hcos : Real.cos k ≤ 1 := (abs_le.mp (Real.abs_cos_le_one k)).2
+    nlinarith
+  have hpos : 0 < (2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β))^2 := by positivity
+  nlinarith
+
 /-- **Reflection positivity of a bilinear form (the Osterwalder–Schrader axiom).** A bilinear form
 `B` is reflection-positive w.r.t. the reflection `Θ` when `B(f, Θf) ≥ 0` for all `f` — the OS3 axiom the
 FSS infrared bound rests on. -/
