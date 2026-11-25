@@ -70,7 +70,8 @@
             "mode_reflection_positivity — the momentum mode χ_k has hpos: 0 ≤ Σ χ_k(i)·χ_k(−i) = Σ χ_k(i)² (the spectral bridge between one-side hpos and the mode hsym)",
             "fss_ir_bound_mode — the momentum-mode FSS bound with hpos/hsym/hJ/hLpos all discharged (Rung 1 complete)",
             "mass_gap_scaling_from_mass — the referee scaling law for any mβ = 2·e^(−(12π²/11)β) (Rung 2 scaling-law part)",
-            "mass_gap_from_lower_bound — the Rung 2 final connective: a mass-gap lower bound ⇒ refereeScalingLaw (reduces the open item to the single spectral-gap lower bound 1−λ₁(β) ≥ 2·e^(−(12π²/11)β))"
+            "mass_gap_from_lower_bound — the Rung 2 final connective: a mass-gap lower bound ⇒ refereeScalingLaw (reduces the open item to the single spectral-gap lower bound 1−λ₁(β) ≥ 2·e^(−(12π²/11)β))",
+            "one_sub_exp_ge_half — the spectral-gap core 1−e^(−x) ≥ x/2 on [0,1] (turns λ₁ ≤ e^(−mβ) into the gap 1−λ₁ ≥ mβ/2)"
           ]
         },
         {

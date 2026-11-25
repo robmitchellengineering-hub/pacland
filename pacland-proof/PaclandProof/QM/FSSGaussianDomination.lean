@@ -782,6 +782,24 @@ theorem mass_gap_from_lower_bound (mGap : ℝ → ℝ)
   intro β hβ
   exact hlower β hβ
 
+/-- **The spectral-gap core inequality** — `1 − e^(−x) ≥ x/2` for `0 ≤ x ≤ 1`, the transfer-matrix
+second-eigenvalue bound `λ₁ ≤ e^(−mβ)` turned into the gap `1 − λ₁ ≥ mβ/2`. Proved via `e^x ≥ 1 + x`
+(the tangent, from `Real.one_sub_le_exp_neg`) and the chord estimate `(1 − x/2)(1 + x) ≥ 1` on `[0,1]`. -/
+theorem one_sub_exp_ge_half (x : ℝ) (hx : 0 ≤ x) (hx1 : x ≤ 1) :
+    x / 2 ≤ 1 - Real.exp (-x) := by
+  have hexp : 1 + x ≤ Real.exp x := by
+    simpa using (Real.one_sub_le_exp_neg (-x))
+  have hpos : 0 ≤ 1 - x / 2 := by linarith
+  have hineq : 1 ≤ (1 - x / 2) * Real.exp x := by
+    have hprod : 1 ≤ (1 - x / 2) * (1 + x) := by
+      nlinarith [mul_nonneg hx (by linarith : 0 ≤ 1 - x)]
+    nlinarith [hprod, hexp, hpos]
+  rw [Real.exp_neg]
+  have hle : 1 / Real.exp x ≤ 1 - x / 2 := by
+    rw [div_le_iff₀ (by positivity : 0 < Real.exp x)]
+    exact hineq
+  simpa [one_div] using (by nlinarith [hle] : x / 2 ≤ 1 - 1 / Real.exp x)
+
 /-- **The Weyl density is reflection-invariant** — `sin²(π − θ) = sin²θ`, the symmetry of the
 single-plaquette Weyl measure density under the lattice reflection `θ ↦ π − θ`. This is the input to the
 measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dν)²`. -/
