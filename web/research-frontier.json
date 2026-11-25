@@ -185,7 +185,9 @@
     "blockSpin_average_pos",
     "singlePlaquettePartition_le",
     "strong_coupling_iterate_contracts",
-    "su2_running_mass_fss_bound"
+    "su2_running_mass_fss_bound",
+    "running_mass_pos",
+    "running_mass_decay"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
