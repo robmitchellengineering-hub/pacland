@@ -28,6 +28,7 @@ from pacland import phantom  # noqa: E402
 from pacland import sextant  # noqa: E402
 from pacland import hypotheses  # noqa: E402
 from pacland import runner  # noqa: E402
+from pacland import discovery  # noqa: E402
 
 REPO_ROOT = _SRC.parent  # .../pacland
 NODE_HTML = REPO_ROOT / "web" / "node.html"
@@ -158,6 +159,21 @@ class Handler(BaseHTTPRequestHandler):
             if name not in sextant.CATALOG:
                 return self._json({"error": f"unknown claim '{name}'"}, 404)
             return self._json(_verify(name))
+        if path == "/api/discovery":
+            flag = query.get("flag", ["list"])[0]
+            fn = {
+                "list": discovery.list_open,
+                "search": discovery.search,
+                "approaches": discovery.approaches,
+                "attempt": discovery.attempt,
+                "prove": discovery.prove,
+                "generate": discovery.generate,
+                "refine": discovery.refine,
+                "validate": discovery.validate,
+            }.get(flag)
+            if fn is None:
+                return self._json({"error": f"unknown discovery flag '{flag}'"}, 404)
+            return self._json({"flag": flag, "result": fn()})
         return self._json({"error": "not found"}, 404)
 
     def do_POST(self) -> None:  # noqa: N802
