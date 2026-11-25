@@ -39,4 +39,13 @@ theorem blockSpin_preserves_holonomy (U : ℕ → G) (n : ℕ) :
     dsimp [blockSpin]
     group
 
+/-- **The block-spin map is 1-Lipschitz in the metric group** — the distance between two coarse links is
+bounded by the sum of the distances between the two fine links they are built from. This is the metric
+input that a contraction estimate for the decimation map starts from. -/
+theorem blockSpin_lipschitz {E : Type*} [SeminormedCommGroup E]
+    (U V : ℕ → E) (j : ℕ) :
+    dist (blockSpin U j) (blockSpin V j) ≤ dist (U (2 * j)) (V (2 * j)) + dist (U (2 * j + 1)) (V (2 * j + 1)) := by
+  dsimp [blockSpin]
+  exact dist_mul_mul_le (U (2 * j)) (U (2 * j + 1)) (V (2 * j)) (V (2 * j + 1))
+
 end QM

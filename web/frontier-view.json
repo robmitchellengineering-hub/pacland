@@ -30,7 +30,8 @@
     "animals_weight_summable",
     "block_spin_contraction_su2",
     "animals_majorant_summable",
-    "animals_majorant_tour_summable"
+    "animals_majorant_tour_summable",
+    "blockSpin_lipschitz"
   ],
   "transports": [
     {
@@ -137,7 +138,7 @@
       "routes": [
         {
           "name": "block-spin / animals bound",
-          "next": "the ACTUAL block-spin map's contraction (rgContraction: |T β x − T β y| ≤ e^(−Δ β)·|x−y|) remains the open radius bound — the mass gap's core",
+          "next": "the contraction rate: bound the block-spin's distance by e^(−cβ)·(the fine-field distance), chaining the Lipschitz + the cluster expansion's convergence (animals_majorant_tour_summable) into the running coupling c = 12π²/11",
           "state": "attempted",
           "rungs": [
             "Connected.exists_isTree_le (Mathlib): a connected graph has a spanning tree T ≤ G (IsTree T)",
@@ -157,7 +158,8 @@
             "animals_weight_summable — Σ_n (Δ+1)^(2n) |ρ|^n converges when (Δ+1)^2 |ρ| < 1 (the small-field cluster-expansion convergence)",
             "block_spin_contraction_su2 — the block-spin contraction rate carries the SU(2) scale 2·e^(−(12π²/11)β) (rgContractionMassGap = su2_mass_gap_join)",
             "animals_majorant_summable — the actual 2n-weighted majorant Σ_n 2n·((Δ+1)²|ρ|)^n converges (polynomial-times-geometric), closing the (2n)-factor gap",
-            "animals_majorant_tour_summable — the EXACT tour-length majorant Σ_n (2n)(Δ+1)^(2(n−1))·|ρ|^n converges (dominated by the 2n-majorant)"
+            "animals_majorant_tour_summable — the EXACT tour-length majorant Σ_n (2n)(Δ+1)^(2(n−1))·|ρ|^n converges (dominated by the 2n-majorant)",
+            "blockSpin_lipschitz — the block-spin (decimation) map is 1-Lipschitz in the metric group: dist of products ≤ sum of factor distances"
           ]
         },
         {
