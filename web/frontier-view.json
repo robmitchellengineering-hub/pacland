@@ -54,7 +54,8 @@
     "running_mass_eq_confinement_scale",
     "su2_running_mass_momentum_bound",
     "wilsonLaplacian",
-    "wilson_laplacian_dirichlet"
+    "wilson_laplacian_dirichlet",
+    "wilson_laplacian_nonneg"
   ],
   "transports": [
     {
@@ -204,7 +205,8 @@
             "running_mass_eq_confinement_scale — the running mass IS the confinement scale: Λ = 2·e^(−(12π²/11)β) with μ=2 and g=1/√β (the transmutation derives the mass)",
             "su2_running_mass_momentum_bound — Rung 3 assembly: the normalized two-point ≤ 1/J with the running mass (the FSS infrared bound closed around m(β))",
             "wilsonLaplacian — the concrete lattice Laplacian (Lf)ᵢ = 2fᵢ − fᵢ₊₁ − fᵢ₋₁ on Fin m → ℝ (the kinetic operator the hsym discharges onto)",
-            "wilson_laplacian_dirichlet — the Laplacian's quadratic form is the Dirichlet form Σ(fᵢ₊₁−fᵢ)² (the hL discharge's first half)"
+            "wilson_laplacian_dirichlet — the Laplacian's quadratic form is the Dirichlet form Σ(fᵢ₊₁−fᵢ)² (the hL discharge's first half)",
+            "wilson_laplacian_nonneg — the Laplacian is PSD (Σ(fᵢ₊₁−fᵢ)² ≥ 0), the hLpos L-part"
           ]
         },
         {

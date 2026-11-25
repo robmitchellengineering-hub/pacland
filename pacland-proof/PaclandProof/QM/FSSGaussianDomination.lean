@@ -380,6 +380,14 @@ theorem wilson_laplacian_dirichlet {m : ℕ} [NeZero m] (f : Fin m → ℝ) :
             intro i _
             ring
 
+/-- **The Laplacian is positive-semidefinite** — `⟪f, Lf⟫ = Σ (fᵢ₊₁ − fᵢ)² ≥ 0`, the Dirichlet form's
+positivity (the kinetic operator's spectral half). This is the `hLpos`'s `L`-part: the FP operator
+`L + m(β)²·id` is positive by this plus the positive mass term. -/
+theorem wilson_laplacian_nonneg {m : ℕ} [NeZero m] (f : Fin m → ℝ) :
+    0 ≤ ∑ i : Fin m, f i * (wilsonLaplacian f) i := by
+  rw [wilson_laplacian_dirichlet f]
+  exact Finset.sum_nonneg (fun i _ => sq_nonneg (f (i + 1) - f i))
+
 /-- **The connection `hΘ`** (the reflection → kernel connection, proved structurally). The reflected
 inner product `⟪f, Θ f⟫` (the ℓ² pairing `∑ j, f j · (Θ f) j`) equals the Wilson kernel's quadratic form
 `Σᵢⱼ fᵢ fⱼ exp(2β·cos(θᵢ−θⱼ))`. This is the `hΘ` hypothesis of the OS closure, discharged by the
