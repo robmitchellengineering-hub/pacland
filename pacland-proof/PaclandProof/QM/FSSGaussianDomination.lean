@@ -337,6 +337,23 @@ noncomputable def wilsonReflection {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) :
     simp_rw [mul_assoc]
     rw [Finset.mul_sum]
 
+/-- **The lattice Laplacian on the periodic lattice** — the second difference
+`(Lf)ᵢ = 2fᵢ − fᵢ₊₁ − fᵢ₋₁` on `Fin m → ℝ`. Its quadratic form is the Dirichlet form `Σ (fᵢ₊₁ − fᵢ)²`,
+whose Fourier symbol is `2(1−cos k)` (`laplacian_symbol_1d`). This is the concrete kinetic operator the
+FSS chain's `hsym` discharges onto. -/
+noncomputable def wilsonLaplacian {m : ℕ} [NeZero m] : (Fin m → ℝ) →ₗ[ℝ] (Fin m → ℝ) where
+  toFun f := fun i => 2 * f i - f (i + 1) - f (i - 1)
+  map_add' := by
+    intro f g
+    funext i
+    simp only [Pi.add_apply]
+    ring
+  map_smul' := by
+    intro a f
+    funext i
+    simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
+    ring
+
 /-- **The connection `hΘ`** (the reflection → kernel connection, proved structurally). The reflected
 inner product `⟪f, Θ f⟫` (the ℓ² pairing `∑ j, f j · (Θ f) j`) equals the Wilson kernel's quadratic form
 `Σᵢⱼ fᵢ fⱼ exp(2β·cos(θᵢ−θⱼ))`. This is the `hΘ` hypothesis of the OS closure, discharged by the
