@@ -197,14 +197,16 @@ def _kernel_build(target: str, timeout: int = 300):
     host = os.environ.get("SEXTANT_KERNEL", "")
     if host:
         return subprocess.run(
-            ['ssh', '-i', os.path.expanduser('~/.ssh/pacland-rog-agent'), '-o', 'StrictHostKeyChecking=no',
-             host, cmd], capture_output=True, text=True, timeout=timeout)
+            ['ssh', '-i', os.path.expanduser('~/.ssh/pacland-rog-agent'), host, cmd],
+            capture_output=True, text=True, timeout=timeout)
     return subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=timeout)
 
 
 def _goal_lines(stdout: str, limit: int = 40) -> str:
-    """The error / goal-state lines from a build log (the part the retry loop reads)."""
-    return "\n".join(l for l in stdout.splitlines() if "error" in l or "⊢" in l)[: limit]
+    """The error / goal-state lines from a build log (the part the retry loop reads). Slices LINES,
+    not characters."""
+    lines = [l for l in stdout.splitlines() if "error" in l or "⊢" in l]
+    return "\n".join(lines[: limit])
 
 
 def prove() -> str:
@@ -353,13 +355,11 @@ def tactic() -> str:
     """The tactic-level retry (AlphaProof/LeanDojo shape): read the kernel's first goal state from the
     scratch attempt and ask the LLM for the NEXT tactic that closes it, rather than a whole-file rewrite."""
     import subprocess
-    cmd = ('export PATH="$HOME/.elan/bin:$PATH"; cd ' + str(ROOT / "pacland-proof") +
-           ' && lake build PaclandProof.QM.AnimalsBoundAttempt 2>&1 | grep -E "error|⊢" | head -30')
     try:
-        proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=300)
-    except subprocess.TimeoutExpired:
-        return "the local kernel timed out (300s)"
-    goal = proc.stdout.strip()
+        proc = _kernel_build("PaclandProof.QM.AnimalsBoundAttempt")
+    except Exception as exc:  # noqa: BLE001
+        return f"the kernel raised {type(exc).__name__}: {exc}"
+    goal = _goal_lines(proc.stdout, 30)
     if not goal:
         return "no goal state — the scratch attempt builds clean"
     # simple retrieval (LeanDojo-style): for each unknown identifier in the error, grep the tower +
@@ -438,6 +438,10 @@ def validate() -> str:
         "tests_exit": tests.returncode,
         "ok": ok,
     }, indent=2))
+    # regenerate the canonical view so the site never shows stale verification data
+    import subprocess as _sp
+    _sp.run([sys.executable, str(ROOT / "scripts" / "build_frontier_view.py")],
+            capture_output=True, text=True, cwd=ROOT, timeout=120)
     return ("independent validation (executed, not inferred):\n"
             f"  commit:       {ev['commit']}\n"
             f"  dirty:        {len(ev['dirty'])} uncommitted path(s)\n"
@@ -445,20 +449,18 @@ def validate() -> str:
             f"  build exit:   {ev['build_exit']} (log {len(ev['build_log'])} chars, {len(ev['theorems'])} theorems)\n"
             f"  tests exit:   {tests.returncode}\n"
             f"  OK:           {ok}\n"
-            "  → web/build-evidence.json")
+            "  → web/build-evidence.json + regenerated web/frontier-view.json")
 
 
 def beam(n: int = 3) -> str:
     """The beam-search proposal half: propose N different candidate tactics for the current goal, so the
     engine (or a human) picks the one the kernel accepts instead of trusting a single sample."""
     import subprocess
-    cmd = ('export PATH="$HOME/.elan/bin:$PATH"; cd ' + str(ROOT / "pacland-proof") +
-           ' && lake build PaclandProof.QM.AnimalsBoundAttempt 2>&1 | grep -E "error|⊢" | head -30')
     try:
-        proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=300)
-    except subprocess.TimeoutExpired:
-        return "the local kernel timed out (300s)"
-    goal = proc.stdout.strip()
+        proc = _kernel_build("PaclandProof.QM.AnimalsBoundAttempt")
+    except Exception as exc:  # noqa: BLE001
+        return f"the kernel raised {type(exc).__name__}: {exc}"
+    goal = _goal_lines(proc.stdout, 30)
     if not goal:
         return "no goal state — the scratch attempt builds clean"
     import re
@@ -491,58 +493,45 @@ def beam_filter(n: int = 3) -> str:
     import re
     scratch = ROOT / "pacland-proof" / "PaclandProof" / "QM" / "AnimalsBoundAttempt.lean"
     base = scratch.read_text()
-    cmd = ('export PATH="$HOME/.elan/bin:$PATH"; cd ' + str(ROOT / "pacland-proof") +
-           ' && lake build PaclandProof.QM.AnimalsBoundAttempt 2>&1 | grep -c "error:"')
     candidates = []
-    for i in range(n):
-        # reuse the retrieval-grounded prompt, asking for a DIFFERENT minimal fix
-        goal = subprocess.run(
-            'export PATH="$HOME/.elan/bin:$PATH"; cd ' + str(ROOT / "pacland-proof") +
-            ' && lake build PaclandProof.QM.AnimalsBoundAttempt 2>&1 | grep -E "error" | head -12',
-            shell=True, capture_output=True, text=True, timeout=300).stdout.strip()
-        prompt = (
-            "The Lean kernel reports these errors on the tree-length-bound attempt:\n\n" + goal + "\n\n"
-            "Give a MINIMAL fix as ONE line to insert at the top of the file (e.g. an `open SimpleGraph`, "
-            f"a namespace qualifier, or a `set_option`). Only the line, no prose. (Sample {i+1}/{n}, different.)"
-        )
-        candidates.append(_llm(prompt, temperature=0.6).strip().split("\n")[0])
-    results = []
-    for cand in candidates:
-        scratch.write_text(base.replace("namespace QM\n", "namespace QM\n" + cand + "\n", 1))
-        r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=300)
-        try:
-            errs = int(r.stdout.strip())
-        except ValueError:
-            errs = -1
-        results.append((cand[:70], errs))
-    scratch.write_text(base)
-    results.sort(key=lambda x: x[1])
-    return "candidate fixes, ranked by the kernel's error count (fewer is better):\n" + \
-        "\n".join(f"  {errs} errors — {cand}" for cand, errs in results)
+    try:
+        for i in range(n):
+            goal = _goal_lines(_kernel_build("PaclandProof.QM.AnimalsBoundAttempt").stdout, 12)
+            prompt = (
+                "The Lean kernel reports these errors on the tree-length-bound attempt:\n\n" + goal + "\n\n"
+                "Give a MINIMAL fix as ONE line to insert at the top of the file (e.g. an `open SimpleGraph`, "
+                f"a namespace qualifier, or a `set_option`). Only the line, no prose. (Sample {i+1}/{n}, different.)"
+            )
+            candidates.append(_llm(prompt, temperature=0.6).strip().split("\n")[0])
+        results = []
+        for cand in candidates:
+            scratch.write_text(base.replace("namespace QM\n", "namespace QM\n" + cand + "\n", 1))
+            r = _kernel_build("PaclandProof.QM.AnimalsBoundAttempt")
+            errs = r.stdout.count("error:")
+            results.append((cand[:70], errs))
+        results.sort(key=lambda x: x[1])
+        return "candidate fixes, ranked by the kernel's error count (fewer is better):\n" + \
+            "\n".join(f"  {errs} errors — {cand}" for cand, errs in results)
+    finally:
+        scratch.write_text(base)
 
 
 def hammer() -> str:
     """The ATP hammer: try the deterministic tactics (aesop / grind / simp / omega) on a mechanical goal
     and report which closes it — the sound tactic engine that needs no LLM for the easy subgoals."""
-    import subprocess
     scratch = ROOT / "pacland-proof" / "PaclandProof" / "QM" / "Hammer.lean"
     results = []
-    for tactic in ["aesop", "grind", "simp", "omega"]:
-        scratch.write_text(
-            "import Mathlib\nnamespace QM\n"
-            f"example (n : ℕ) : 1 ≤ n + 1 := by {tactic}\n"
-            "end QM\n"
-        )
-        r = subprocess.run(
-            'export PATH="$HOME/.elan/bin:$PATH"; cd ' + str(ROOT / "pacland-proof") +
-            ' && lake build PaclandProof.QM.Hammer 2>&1 | grep -c "error:"',
-            shell=True, capture_output=True, text=True, timeout=300)
-        try:
-            errs = int(r.stdout.strip())
-        except ValueError:
-            errs = -1
-        results.append((tactic, errs == 0))
-    scratch.unlink(missing_ok=True)
+    try:
+        for tactic in ["aesop", "grind", "simp", "omega"]:
+            scratch.write_text(
+                "import Mathlib\nnamespace QM\n"
+                f"example (n : ℕ) : 1 ≤ n + 1 := by {tactic}\n"
+                "end QM\n"
+            )
+            r = _kernel_build("PaclandProof.QM.Hammer")
+            results.append((tactic, r.stdout.count("error:") == 0))
+    finally:
+        scratch.unlink(missing_ok=True)
     return "the hammer on `1 ≤ n + 1` (a mechanical goal):\n" + \
         "\n".join(f"  {t}: {'closed ✓' if ok else 'failed'}" for t, ok in results)
 
