@@ -178,7 +178,8 @@
     "connected_clusters_count_bound",
     "full_cluster_weights_summable",
     "su2_poincare_gap",
-    "strong_coupling_contracts"
+    "strong_coupling_contracts",
+    "wilson_weight_bound"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

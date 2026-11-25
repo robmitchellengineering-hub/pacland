@@ -53,4 +53,20 @@ theorem su2_character_weyl_bound (j : ℕ) (θ : ℝ) :
     ring_nf at hfinal ⊢
     exact hfinal
 
+/-- **The single-plaquette Wilson weight is pinned in `[e^(−β), e^β]`** — the torus weight
+`e^(β·cos θ)` (the `Re Tr U = cos θ` diagonal) is bounded by its oscillation `cos θ ∈ [−1,1]`:
+`e^(−β) ≤ e^(β cos θ) ≤ e^β` for `β ≥ 0`. This is the measure-density bound that feeds the
+contraction's oscillation (`1 − e^(−2β)`) and the block-spin's coupling-dependence. -/
+theorem wilson_weight_bound (β θ : ℝ) (hβ : 0 ≤ β) :
+    Real.exp (-β) ≤ Real.exp (β * Real.cos θ) ∧ Real.exp (β * Real.cos θ) ≤ Real.exp β := by
+  have hcos : |Real.cos θ| ≤ 1 := Real.abs_cos_le_one θ
+  have hcos_le : Real.cos θ ≤ 1 := (abs_le.mp hcos).2
+  have hcos_ge : -1 ≤ Real.cos θ := (abs_le.mp hcos).1
+  have h1 : β * Real.cos θ ≤ β := by
+    simpa using (mul_le_mul_of_nonneg_left hcos_le hβ)
+  have h2 : -β ≤ β * Real.cos θ := by
+    have : β * (-1) ≤ β * Real.cos θ := mul_le_mul_of_nonneg_left hcos_ge hβ
+    simpa using this
+  exact ⟨Real.exp_le_exp.mpr h2, Real.exp_le_exp.mpr h1⟩
+
 end QM
