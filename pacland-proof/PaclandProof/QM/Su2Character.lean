@@ -69,4 +69,26 @@ theorem wilson_weight_bound (β θ : ℝ) (hβ : 0 ≤ β) :
     simpa using this
   exact ⟨Real.exp_le_exp.mpr h2, Real.exp_le_exp.mpr h1⟩
 
+/-- **The single-plaquette partition function** — the SU(2) 1-plaquette measure's normalisation
+`Z(β) = ∫₀^π e^(β·cos θ)·sin²θ dθ` (the Weyl measure `sin²θ dθ` on the torus `θ ∈ [0,π]`, the
+`Re Tr U = cos θ` diagonal). This is the first concrete object of the Yang–Mills measure `μ_β`. -/
+noncomputable def singlePlaquettePartition (β : ℝ) : ℝ :=
+  ∫ θ in (0 : ℝ)..Real.pi, Real.exp (β * Real.cos θ) * (Real.sin θ)^2
+
+/-- **The partition function is positive** — the integrand `e^(β cos θ)·sin²θ > 0` on the torus
+(positive at `θ = π/2`), so the measure's normalisation is non-degenerate: the SU(2) 1-plaquette
+measure is a genuine probability measure for every coupling `β`. -/
+theorem singlePlaquettePartition_pos (β : ℝ) : 0 < singlePlaquettePartition β := by
+  dsimp [singlePlaquettePartition]
+  refine intervalIntegral.integral_pos Real.pi_pos ?_ ?_ ?_
+  · fun_prop
+  · intro θ hθ
+    exact mul_nonneg (Real.exp_pos _).le (sq_nonneg (Real.sin θ))
+  · refine ⟨Real.pi / 2, ?_, ?_⟩
+    · exact ⟨by positivity, by linarith [Real.pi_pos]⟩
+    · have hcos : Real.cos (Real.pi / 2) = 0 := Real.cos_pi_div_two
+      have hsin : Real.sin (Real.pi / 2) = 1 := Real.sin_pi_div_two
+      rw [hcos, hsin]
+      norm_num
+
 end QM
