@@ -125,6 +125,47 @@ theorem cos_fin_periodic (k m : ℕ) [NeZero m] (i : Fin m) :
   rw [Real.cos_nat_mul_two_pi, sin_nat_mul_two_pi]
   simp
 
+/-- **The cyclic Fourier mode's periodicity (the `i−1` direction)** — the modular `(i−1)` on `Fin m`
+evaluates the cosine at `2πk·((i−1).val)/m`, which equals `2πk·(i.val−1)/m` by `2π`-periodicity (the
+left wrap is a multiple of `2π`). This is the left-shift companion to `cos_fin_periodic`. -/
+theorem cos_fin_periodic_sub (k m : ℕ) [NeZero m] (i : Fin m) :
+    Real.cos (2 * Real.pi * (k : ℝ) * ((i - 1).val : ℝ) / m)
+      = Real.cos (2 * Real.pi * (k : ℝ) * ((i.val : ℝ) - 1) / m) := by
+  rw [Fin.val_sub]
+  have hdecomp : (2 * Real.pi * (k : ℝ) * ((i.val : ℝ) - 1) / m)
+      = 2 * Real.pi * ((k : ℝ) * (((m - 1 + i.val) / m : ℕ) : ℝ)) + 2 * Real.pi * (k : ℝ) * (((m - 1 + i.val) % m : ℕ) : ℝ) / m - 2 * Real.pi * (k : ℝ) := by
+    have hm1 : 1 ≤ m := Nat.succ_le_of_lt (Nat.pos_of_neZero m)
+    have hid : ((i.val : ℝ) - 1 + (m : ℝ)) = ((m - 1 + i.val : ℕ) : ℝ) := by
+      rw [Nat.cast_add, Nat.cast_sub hm1]
+      ring
+    have hdivR : ((m - 1 + i.val : ℕ) : ℝ) = (m : ℝ) * (((m - 1 + i.val) / m : ℕ) : ℝ) + (((m - 1 + i.val) % m : ℕ) : ℝ) := by
+      exact_mod_cast (Nat.div_add_mod (m - 1 + i.val) m).symm
+    rw [show ((i.val : ℝ) - 1) = ((i.val : ℝ) - 1 + (m : ℝ)) - (m : ℝ) by ring]
+    rw [hid]
+    rw [hdivR]
+    field_simp [show (m : ℝ) ≠ 0 by exact_mod_cast (NeZero.ne m)]
+  rw [hdecomp]
+  rw [sub_eq_add_neg]
+  rw [Real.cos_add]
+  rw [Real.cos_neg, Real.sin_neg]
+  rw [show 2 * Real.pi * (k : ℝ) = ((k : ℕ) : ℝ) * (2 * Real.pi) by ring]
+  rw [Real.cos_nat_mul_two_pi, sin_nat_mul_two_pi]
+  rw [show 2 * Real.pi * ((k : ℝ) * (((m - 1 + i.val) / m : ℕ) : ℝ)) = (((k * ((m - 1 + i.val) / m) : ℕ) : ℝ) * (2 * Real.pi)) by
+    rw [Nat.cast_mul]
+    ring]
+  rw [Real.cos_add]
+  rw [Real.cos_nat_mul_two_pi, sin_nat_mul_two_pi]
+  have hmod : (m - 1 % m + i.val) % m = (m - 1 + i.val) % m := by
+    by_cases hm : 1 < m
+    · rw [Nat.mod_eq_of_lt hm]
+    · have hm1 : m = 1 := by omega
+      subst m
+      have hi : i.val = 0 := by
+        have hlt : i.val < 1 := i.isLt
+        omega
+      simp [hi]
+  rw [hmod]
+
 /-- **The full Faddeev–Popov symbol for SU(2).** The Laplacian's symbol `2(1 − cos k)` plus the Casimir
 gap `2` is `2(2 − cos k)`. This is the denominator `J(k)` of the free propagator `1/(2J(k))` — the
 momentum-space IR bound with the non-Abelian gap built in. -/
@@ -416,6 +457,29 @@ theorem wilson_laplacian_nonneg {m : ℕ} [NeZero m] (f : Fin m → ℝ) :
     0 ≤ ∑ i : Fin m, f i * (wilsonLaplacian f) i := by
   rw [wilson_laplacian_dirichlet f]
   exact Finset.sum_nonneg (fun i _ => sq_nonneg (f (i + 1) - f i))
+
+/-- **The cyclic Fourier symbol (the `hL` discharge, conditional on the two periodicities).** For the
+cyclic mode `fᵢ = cos(2πk·i/m)`, the Laplacian's quadratic form is `⟪f, Lf⟫ = 2(1−cos(2πk/m))·⟪f,f⟫`:
+the pointwise symbol `laplacian_symbol_1d` with `k → 2πk/m`, after the two modular periodicities
+(`hplus`, `hminus`) absorb the `(i+1)`/`(i−1)` wraps. This discharges the FSS chain's `hL` hypothesis. -/
+theorem cyclic_fourier_hL (k m : ℕ) [NeZero m]
+    (hplus : ∀ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * ((i + 1).val : ℝ) / m) = Real.cos (2 * Real.pi * (k : ℝ) * ((i.val : ℝ) + 1) / m))
+    (hminus : ∀ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * ((i - 1).val : ℝ) / m) = Real.cos (2 * Real.pi * (k : ℝ) * ((i.val : ℝ) - 1) / m)) :
+    (∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m) * (wilsonLaplacian (fun i => Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m)) i))
+      = 2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) * (∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m)^2) := by
+  simp only [wilsonLaplacian, LinearMap.coe_mk, AddHom.coe_mk, Pi.add_apply]
+  calc
+    (∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m) * (2 * Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m) - Real.cos (2 * Real.pi * (k : ℝ) * ((i + 1).val : ℝ) / m) - Real.cos (2 * Real.pi * (k : ℝ) * ((i - 1).val : ℝ) / m)))
+        = (∑ i : Fin m, 2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) * Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m)^2) := by
+            apply Finset.sum_congr rfl
+            intro i _
+            rw [hplus i, hminus i]
+            have hlin : 2 * Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m) - Real.cos (2 * Real.pi * (k : ℝ) * ((i.val : ℝ) + 1) / m) - Real.cos (2 * Real.pi * (k : ℝ) * ((i.val : ℝ) - 1) / m) = 2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) * Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m) := by
+              simpa [div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using (laplacian_symbol_1d (2 * Real.pi * (k : ℝ) / m) ((i.val : ℝ)))
+            rw [hlin]
+            ring
+    _ = 2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) * (∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m)^2) := by
+            rw [Finset.mul_sum]
 
 /-- **The connection `hΘ`** (the reflection → kernel connection, proved structurally). The reflected
 inner product `⟪f, Θ f⟫` (the ℓ² pairing `∑ j, f j · (Θ f) j`) equals the Wilson kernel's quadratic form

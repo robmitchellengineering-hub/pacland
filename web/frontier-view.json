@@ -57,7 +57,8 @@
     "wilson_laplacian_dirichlet",
     "wilson_laplacian_nonneg",
     "sin_nat_mul_two_pi",
-    "cos_fin_periodic"
+    "cos_fin_periodic",
+    "cyclic_fourier_hL"
   ],
   "transports": [
     {
@@ -209,7 +210,8 @@
             "wilsonLaplacian — the concrete lattice Laplacian (Lf)ᵢ = 2fᵢ − fᵢ₊₁ − fᵢ₋₁ on Fin m → ℝ (the kinetic operator the hsym discharges onto)",
             "wilson_laplacian_dirichlet — the Laplacian's quadratic form is the Dirichlet form Σ(fᵢ₊₁−fᵢ)² (the hL discharge's first half)",
             "wilson_laplacian_nonneg — the Laplacian is PSD (Σ(fᵢ₊₁−fᵢ)² ≥ 0), the hLpos L-part",
-            "sin_nat_mul_two_pi + cos_fin_periodic — the cyclic Fourier facts (sin(2πn)=0 and the modular periodicity), the first two of the three DFT inputs"
+            "sin_nat_mul_two_pi + cos_fin_periodic — the cyclic Fourier facts (sin(2πn)=0 and the modular periodicity), the first two of the three DFT inputs",
+            "cyclic_fourier_hL — the cyclic Fourier symbol ⟪f,Lf⟫ = 2(1−cos(2πk/m))·⟪f,f⟫ (the hL discharge, conditional on the two periodicities)"
           ]
         },
         {

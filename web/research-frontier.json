@@ -198,7 +198,8 @@
     "wilson_laplacian_dirichlet",
     "wilson_laplacian_nonneg",
     "sin_nat_mul_two_pi",
-    "cos_fin_periodic"
+    "cos_fin_periodic",
+    "cyclic_fourier_hL"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
