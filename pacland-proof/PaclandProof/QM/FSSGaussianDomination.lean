@@ -855,6 +855,25 @@ theorem energy_ge_mass (k mβ : ℝ) (hmβ : 0 ≤ mβ) :
   have hsqrt : Real.sqrt (mβ^2) ≤ Real.sqrt (k^2 + mβ^2) := Real.sqrt_le_sqrt hle
   rwa [Real.sqrt_sq hmβ] at hsqrt
 
+/-- **The full eigenvalue-bound assembly (Step A's last connective)** — the lattice dispersion
+`E = √(2(1−cos k) + mβ²)` and the transfer-matrix identification `λ = e^(−E)` imply the second-eigenvalue
+bound `λ ≤ e^(−mβ)`. This is the dispersion relation in its lattice form: the mass `mβ` lower-bounds the
+energy, so the eigenvalue is bounded by `e^(−mβ)`. -/
+theorem hlam_assembly (k mβ lam E : ℝ) (hmβ : 0 ≤ mβ)
+    (hE : E = Real.sqrt (2 * (1 - Real.cos k) + mβ^2))
+    (hlam : lam = Real.exp (-E)) :
+    lam ≤ Real.exp (-mβ) := by
+  have hEge : mβ ≤ E := by
+    rw [hE]
+    have hcos : 0 ≤ 1 - Real.cos k := by
+      have hc : Real.cos k ≤ 1 := (abs_le.mp (Real.abs_cos_le_one k)).2
+      linarith
+    have hle : mβ^2 ≤ 2 * (1 - Real.cos k) + mβ^2 := by
+      nlinarith [mul_nonneg (by norm_num : 0 ≤ (2 : ℝ)) hcos]
+    have hsqrt : Real.sqrt (mβ^2) ≤ Real.sqrt (2 * (1 - Real.cos k) + mβ^2) := Real.sqrt_le_sqrt hle
+    rwa [Real.sqrt_sq hmβ] at hsqrt
+  exact eigenvalue_le_exp_neg_mass E mβ lam hEge hlam
+
 /-- **The gap lower bound on [0,2]** — `1 − e^(−x) ≥ x/4` for `0 ≤ x ≤ 2`: for `x ≤ 1` use
 `one_sub_exp_ge_half` (gives `x/2`), and for `1 ≤ x ≤ 2` use `1 − e^(−1) ≥ 1/2 ≥ x/4` (the monotonicity
 plus `2 ≤ e`). This is the small-`β` constant the referee scaling law needs when `mβ = 2·e^(−cβ) ≤ 2`. -/
