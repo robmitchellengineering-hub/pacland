@@ -277,6 +277,13 @@
    "title": "SEXTANT \u2014 User Manual"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-MEDICAL.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-MEDICAL.md",
+   "summary": "SEXTANT does not guess \u2014 it verifies. You hand it a research claim (\"this treatment works\", \"this molecule is a drug candidate\", \"these two diseases share a mechanism\"), and it tells you\u2026",
+   "title": "SEXTANT \u2014 a verified research and discovery tool, for medicine"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-PROOF-TIERS.md",
    "kind": "doc",
    "path": "docs/SEXTANT-PROOF-TIERS.md",
