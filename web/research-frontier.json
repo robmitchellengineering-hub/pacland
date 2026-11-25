@@ -212,7 +212,10 @@
     "os3_measure_positivity",
     "reflection_factorization",
     "os3_weyl_positivity",
-    "lpReflection"
+    "lpReflection",
+    "latticeReflection_inner",
+    "fss_hpos_one_sided",
+    "fss_ir_bound_geometric_one_sided"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

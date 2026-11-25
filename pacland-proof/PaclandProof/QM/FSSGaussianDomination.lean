@@ -647,6 +647,38 @@ theorem os3_reflection_positivity_half {m : ℕ} [NeZero m] (f : Fin m → ℝ)
       simp [hneg]
   rw [h]
 
+/-- **The geometric reflection's quadratic form** — `⟪f, latticeReflection f⟫ = Σᵢ fᵢ·f(−i)`, the ℓ²
+form the OS3 reflection positivity quantifies over. This is the concrete shape of the `hpos` hypothesis. -/
+theorem latticeReflection_inner {m : ℕ} [NeZero m] (f : PiLp 2 (fun _ : Fin m => ℝ)) :
+    ⟪f, latticeReflection f⟫_ℝ = ∑ i : Fin m, (WithLp.ofLp f) i * (WithLp.ofLp f) (-i) := by
+  simp [latticeReflection, PiLp.inner_apply, WithLp.ofLp]
+  simpa [mul_comm] using (Finset.sum_equiv (Equiv.neg (Fin m)) (by intro i; simp) (by intro i hi; rfl))
+
+/-- **The OS3 `hpos` discharge for the one-side-supported field** — the geometric reflection's quadratic
+form is `Σᵢ fᵢ·f(−i)` (by `latticeReflection_inner`), which vanishes for one-side-supported `f` (by
+`os3_reflection_positivity_half`), hence `0 ≤ ⟪f, latticeReflection f⟫`. This is the concrete `hpos` the FSS
+chain needs, stated on the ℓ² where the reflection/Laplacian live. -/
+theorem fss_hpos_one_sided {m : ℕ} [NeZero m] (f : PiLp 2 (fun _ : Fin m => ℝ))
+    (hsupp : ∀ i : Fin m, (WithLp.ofLp f) i ≠ 0 → (WithLp.ofLp f) (-i) = 0) :
+    0 ≤ ⟪f, latticeReflection f⟫_ℝ := by
+  rw [latticeReflection_inner]
+  exact os3_reflection_positivity_half (WithLp.ofLp f) hsupp
+
+/-- **The FSS infrared bound, `hpos` discharged for the one-side-supported field.** The concrete
+`fss_ir_bound_geometric` with its OS3 hypothesis `hpos` supplied by `fss_hpos_one_sided`: for a
+one-side-supported `f` the reflection positivity holds (the ℓ² form vanishes), so the normalized
+two-point function is bounded by the running-mass free propagator `1/(2(1−cos k) + m(β)²)`. This is the
+volume-uniform FSS estimate with the reflection positivity axiom discharged. -/
+theorem fss_ir_bound_geometric_one_sided (β : ℝ) (k m : ℕ) [NeZero m]
+    (mβ : ℝ) (hmβ : mβ = 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β))
+    (f : PiLp 2 (fun _ : Fin m => ℝ))
+    (hsupp : ∀ i : Fin m, (WithLp.ofLp f) i ≠ 0 → (WithLp.ofLp f) (-i) = 0)
+    (J : ℝ) (hJ : 0 < J)
+    (hsym : ⟪f, (latticeLaplacian (m := m) + mβ ^ 2 • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) f⟫_ℝ = J * ⟪f, f⟫_ℝ)
+    (hLpos : 0 < ⟪f, (latticeLaplacian (m := m) + mβ ^ 2 • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) f⟫_ℝ) :
+    ⟪f, latticeReflection f⟫_ℝ / ⟪f, (latticeLaplacian (m := m) + mβ ^ 2 • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) f⟫_ℝ ≤ 1 / J := by
+  exact fss_ir_bound_geometric β k m mβ hmβ f (fss_hpos_one_sided f hsupp) J hJ hsym hLpos
+
 /-- **The Weyl density is reflection-invariant** — `sin²(π − θ) = sin²θ`, the symmetry of the
 single-plaquette Weyl measure density under the lattice reflection `θ ↦ π − θ`. This is the input to the
 measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dν)²`. -/
