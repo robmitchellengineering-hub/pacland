@@ -1915,6 +1915,13 @@
    "title": "bmv_sim.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build-binary.sh",
+   "kind": "script",
+   "path": "scripts/build-binary.sh",
+   "summary": "Build the double-clickable SEXTANT binaries with PyInstaller (macOS/Linux).",
+   "title": "build-binary.sh"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",
@@ -2046,6 +2053,13 @@
    "path": "scripts/check_padgett_claims.py",
    "summary": "An outside claim, put through the same machine: Jason Padgett's \"asymmetric prime\" interference.",
    "title": "check_padgett_claims.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check_state_drift.py",
+   "kind": "script",
+   "path": "scripts/check_state_drift.py",
+   "summary": "Regenerate the live-state files and fail (exit 1) if the committed copy drifted.",
+   "title": "check_state_drift.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/chemistry_certification_demo.py",
