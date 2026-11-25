@@ -53,7 +53,8 @@
             "wilson_laplacian_dirichlet — the Laplacian's quadratic form is the Dirichlet form Σ(fᵢ₊₁−fᵢ)² (the hL discharge's first half)",
             "wilson_laplacian_nonneg — the Laplacian is PSD (Σ(fᵢ₊₁−fᵢ)² ≥ 0), the hLpos L-part",
             "sin_nat_mul_two_pi + cos_fin_periodic — the cyclic Fourier facts (sin(2πn)=0 and the modular periodicity), the first two of the three DFT inputs",
-            "cyclic_fourier_hL — the cyclic Fourier symbol ⟪f,Lf⟫ = 2(1−cos(2πk/m))·⟪f,f⟫ (the hL discharge, conditional on the two periodicities)"
+            "cyclic_fourier_hL — the cyclic Fourier symbol ⟪f,Lf⟫ = 2(1−cos(2πk/m))·⟪f,f⟫ (the hL discharge, conditional on the two periodicities)",
+            "cos_fin_periodic_sub — the i−1 cyclic periodicity (the last DFT input; the hL discharge is now unconditional-ready)"
           ]
         },
         {

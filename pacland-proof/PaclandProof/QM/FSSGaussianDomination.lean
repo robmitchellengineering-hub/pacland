@@ -155,16 +155,13 @@ theorem cos_fin_periodic_sub (k m : ℕ) [NeZero m] (i : Fin m) :
     ring]
   rw [Real.cos_add]
   rw [Real.cos_nat_mul_two_pi, sin_nat_mul_two_pi]
-  have hmod : (m - 1 % m + i.val) % m = (m - 1 + i.val) % m := by
-    by_cases hm : 1 < m
-    · rw [Nat.mod_eq_of_lt hm]
-    · have hm1 : m = 1 := by omega
-      subst m
-      have hi : i.val = 0 := by
-        have hlt : i.val < 1 := i.isLt
-        omega
-      simp [hi]
-  rw [hmod]
+  by_cases hm : 1 < m
+  · simp [Nat.mod_eq_of_lt hm]
+  · have hm_eq : m = 1 := by
+      have hpos : 0 < m := Nat.pos_of_neZero m
+      omega
+    subst m
+    simp
 
 /-- **The full Faddeev–Popov symbol for SU(2).** The Laplacian's symbol `2(1 − cos k)` plus the Casimir
 gap `2` is `2(2 − cos k)`. This is the denominator `J(k)` of the free propagator `1/(2J(k))` — the
