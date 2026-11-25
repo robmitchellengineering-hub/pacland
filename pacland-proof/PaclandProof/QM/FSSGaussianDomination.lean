@@ -487,6 +487,14 @@ theorem cyclic_fourier_hL_uncond (k m : ℕ) [NeZero m] :
       = 2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) * (∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m)^2) := by
   exact cyclic_fourier_hL k m (fun i => cos_fin_periodic k m i) (fun i => cos_fin_periodic_sub k m i)
 
+/-- **The cyclic mode's norm is positive** — `⟪f,f⟫ = Σ cos²(2πk·i/m) > 0` for `k ≠ 0` (the mode is not
+the zero function: the `i = 0` term is `cos² 0 = 1`). This is the `hLpos` positivity input for the
+concrete FSS instantiation. -/
+theorem cyclic_mode_norm_pos (k m : ℕ) [NeZero m] (hk : k ≠ 0) :
+    0 < ∑ i : Fin m, Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m)^2 := by
+  refine Finset.sum_pos' (fun i _ => sq_nonneg (Real.cos (2 * Real.pi * (k : ℝ) * (i.val : ℝ) / m))) ?_
+  exact ⟨0, Finset.mem_univ 0, by simp [Real.cos_zero]⟩
+
 /-- **The connection `hΘ`** (the reflection → kernel connection, proved structurally). The reflected
 inner product `⟪f, Θ f⟫` (the ℓ² pairing `∑ j, f j · (Θ f) j`) equals the Wilson kernel's quadratic form
 `Σᵢⱼ fᵢ fⱼ exp(2β·cos(θᵢ−θⱼ))`. This is the `hΘ` hypothesis of the OS closure, discharged by the
