@@ -21,7 +21,7 @@ class TestDiscoveryGraph(unittest.TestCase):
         g = DiscoveryGraph()
         g.add_node("a", "reusable-mechanism", "A")
         g.add_node("b", "transfer-hypothesis", "B")
-        edge = g.add_edge("a", "b", "transfers-to", "")
+        edge = g.add_edge("a", "b", "transfers-to", {})
         self.assertIsNone(edge)
         self.assertEqual(len(g.edges), 0)
         self.assertEqual(len(g.rejections), 1)
@@ -30,14 +30,46 @@ class TestDiscoveryGraph(unittest.TestCase):
         g = DiscoveryGraph()
         g.add_node("a", "reusable-mechanism", "A")
         g.add_node("b", "transfer-hypothesis", "B")
-        edge = g.add_edge("a", "b", "transfers-to", "target + falsifier")
+        edge = g.add_edge("a", "b", "transfers-to",
+                          {"target": "condensed matter", "falsifier": "no gap"})
         self.assertIsNotNone(edge)
         self.assertEqual(len(g.edges), 1)
+
+    def test_edge_with_wrong_evidence_is_rejected(self):
+        # transfers-to needs BOTH target and falsifier — a target alone fails the validator
+        g = DiscoveryGraph()
+        g.add_node("a", "reusable-mechanism", "A")
+        g.add_node("b", "transfer-hypothesis", "B")
+        edge = g.add_edge("a", "b", "transfers-to", {"target": "condensed matter"})
+        self.assertIsNone(edge)
+        self.assertEqual(len(g.edges), 0)
+
+    def test_edge_rejects_wrong_type_pair(self):
+        # proves needs verified-theorem -> original-result, not mechanism -> hypothesis
+        g = DiscoveryGraph()
+        g.add_node("a", "reusable-mechanism", "A")
+        g.add_node("b", "transfer-hypothesis", "B")
+        edge = g.add_edge("a", "b", "proves", {"theorem": "t", "sorry_free": True})
+        self.assertIsNone(edge)
+        self.assertEqual(len(g.rejections), 1)
+
+    def test_pending_follows_the_full_chain(self):
+        # a hypothesis with a verified-in edge on its application is NOT pending
+        g = DiscoveryGraph()
+        g.add_node("m", "reusable-mechanism", "M")
+        g.add_node("h", "transfer-hypothesis", "H")
+        g.add_node("app", "proposed-application", "APP")
+        g.add_node("dest", "destination-verification", "DEST")
+        g.add_edge("m", "h", "transfers-to", {"target": "X", "falsifier": "Y"})
+        g.add_edge("h", "app", "applies-in", {"verifier": "V"})
+        g.add_edge("app", "dest", "verified-in", {"passed": True})
+        self.assertEqual(g.pending_hypotheses(), [])
+        self.assertEqual(g.verified_hypotheses(), ["h"])
 
     def test_edge_endpoints_must_exist(self):
         g = DiscoveryGraph()
         with self.assertRaises(KeyError):
-            g.add_edge("a", "b", "transfers-to", "evidence")
+            g.add_edge("a", "b", "transfers-to", {})
 
     def test_seed_graph_is_wired(self):
         g = seed_mass_gap()

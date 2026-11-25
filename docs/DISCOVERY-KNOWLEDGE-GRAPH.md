@@ -21,6 +21,7 @@ stages is a relationship. The stages:
 | 2 | `verified-theorem` | the kernel-checked source theorem | `clustering_iff_gap` (Lean, no `sorry`) |
 | 3 | `methodology-discovery` | the reusable technique that did the work | "the transfer-matrix spectral bridge" |
 | 4 | `reusable-mechanism` | the mechanism, in plain English | "locate a gap in a spectrum via positivity" |
+| 4b | `open-obligation` | the frontier: the thing still to prove | "the volume-uniform cluster bound" |
 | 5 | `transfer-hypothesis` | "this could apply to X" | "could locate a gap in the Anderson model" |
 | 6 | `proposed-application` | the named discipline / field | condensed-matter spectral theory |
 | 7 | `destination-verification` | the independent verifier that fired | the Anderson-model spectral gap check |
@@ -31,13 +32,18 @@ stages is a relationship. The stages:
 | relation | direction | meaning |
 |---|---|---|
 | `proves` | `verified-theorem` → `original-result` | the checked theorem establishes the result |
+| `yields` | `verified-theorem` → `methodology-discovery` | the theorem's proof yields the reusable technique |
 | `extracts` | `methodology-discovery` → `reusable-mechanism` | the technique is distilled to its mechanism |
 | `transfers-to` | `reusable-mechanism` → `transfer-hypothesis` | the mechanism is hypothesised to transfer |
 | `applies-in` | `transfer-hypothesis` → `proposed-application` | the hypothesis targets a named field |
 | `verified-in` | `proposed-application` → `destination-verification` | the destination's verifier confirms it |
 | `assumes` | `verified-theorem` → `new-evidence` | the theorem's assumptions and limits |
 | `generalizes` | `reusable-mechanism` → `verified-theorem` | the mechanism is the general form |
+| `directly-applies-to` | `reusable-mechanism` → `open-obligation` | the mechanism directly advances the frontier (no unification needed) |
 | `refutes` | `new-evidence` → `transfer-hypothesis` | a wall: the hypothesis is falsified |
+
+Each relation **enforces its endpoint node kinds**: an edge whose source or destination is the wrong
+kind is rejected. (This is the type gate, in `src/pacland/discovery_graph.py`.)
 
 ## The process — the seven steps that add a discovery
 
@@ -62,14 +68,16 @@ graph only where the evidence is met:
 
 | relation | evidence that must exist before the edge is added |
 |---|---|
-| `proves` | `lake build` green, no `sorry`, the theorem name |
-| `extracts` | the mechanism is stated in plain English and tracked to the theorem |
-| `transfers-to` | the hypothesis names a target **and** a falsifier |
-| `applies-in` | the destination discipline's verifier is named |
-| `verified-in` | the destination verifier **fired and passed** |
-| `assumes` | the assumption is stated and tracked |
-| `generalizes` | the general statement and the theorem-as-special-case are both given |
-| `refutes` | the falsifier fired (the counterexample is recorded) |
+| `proves` | `lake build` green, no `sorry`, the theorem name (validator: `theorem` + `sorry_free=True`) |
+| `yields` | the technique is named (validator: `technique`) |
+| `extracts` | the mechanism is stated in plain English and tracked to the theorem (validator: `mechanism` + `tracked_to`) |
+| `transfers-to` | the hypothesis names a target **and** a falsifier (validator: `target` + `falsifier`) |
+| `applies-in` | the destination discipline's verifier is named (validator: `verifier`) |
+| `verified-in` | the destination verifier **fired and passed** (validator: `passed=True`) |
+| `assumes` | the assumption is stated and tracked (validator: `assumption`) |
+| `generalizes` | the general statement and the theorem-as-special-case are both given (validator: `general` + `special_case`) |
+| `directly-applies-to` | the mechanism is the one the frontier's proof runs on (validator: `mechanism`) |
+| `refutes` | the falsifier fired (the counterexample is recorded) (validator: `counterexample`) |
 
 This is what "the graph grows by validated methods" means concretely: a `transfers-to` edge without a
 falsifier, or a `verified-in` edge without a passed run, is rejected at the gate.
