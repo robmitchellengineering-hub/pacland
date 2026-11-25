@@ -39,7 +39,8 @@
     "su2_poincare_gap",
     "strong_coupling_contracts",
     "wilson_weight_bound",
-    "singlePlaquettePartition_pos"
+    "singlePlaquettePartition_pos",
+    "collectivePartition_pos"
   ],
   "transports": [
     {
@@ -175,7 +176,8 @@
             "su2_poincare_gap — the SU(2) 1-plaquette spectral gap 1/κ = 1/(β(c−(1+c)e^(−2β))) from the log-Sobolev (the contraction's strong-coupling input)",
             "strong_coupling_contracts — the SU(2) strong-coupling contraction rate e^(−κ) < 1 (κ = β(c−(1+c)e^(−2β)) > 0), the transfer operator's finite-β contraction",
             "wilson_weight_bound — the single-plaquette Wilson weight e^(β cos θ) ∈ [e^(−β), e^β] (the measure density's oscillation, the contraction's coupling-dependence)",
-            "singlePlaquettePartition_pos — the SU(2) 1-plaquette partition function Z(β)=∫₀^π e^(β cos θ) sin²θ dθ > 0 (the measure μ_β's non-degenerate normalisation)"
+            "singlePlaquettePartition_pos — the SU(2) 1-plaquette partition function Z(β)=∫₀^π e^(β cos θ) sin²θ dθ > 0 (the measure μ_β's non-degenerate normalisation)",
+            "collectivePartition_pos — the full-lattice collective partition function ∫₀^π e^(−βm(1−cos θ)) sin²θ dθ > 0 (the full-lattice μ_β normalisation, collective mode)"
           ]
         },
         {
