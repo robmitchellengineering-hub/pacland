@@ -3,6 +3,8 @@ import PaclandProof.QM.HeatKernel
 import PaclandProof.QM.AsymptoticFreedom
 import PaclandProof.QM.ClusterExpansion
 
+set_option maxHeartbeats 2000000
+
 /-!
 # The full 4D lattice gauge-field configuration space and its reflection symmetry
 
@@ -295,5 +297,22 @@ theorem animals_weight_summable (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 
   convert hgeom using 1
   ext n
   rw [mul_pow, pow_mul]
+
+/-- **The actual animals majorant converges** — the size-class count carries the `2n` factor (the
+polynomial growth), so the real weighted majorant is `2n·((Δ+1)²|ρ|)ⁿ`, and `Σ n·aⁿ` converges for
+`|a| < 1` (polynomial-times-geometric). This is the missing link: the geometric series alone did not
+bound the `2n`-weighted count. -/
+theorem animals_majorant_summable (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Summable (fun n : ℕ => 2 * (n : ℝ) * (((Δ : ℝ) + 1)^2 * |ρ|)^n) := by
+  have ha : ‖((Δ : ℝ) + 1)^2 * abs ρ‖ < 1 := by
+    rw [Real.norm_eq_abs]
+    calc
+      abs (((Δ : ℝ) + 1)^2 * abs ρ) = ((Δ : ℝ) + 1)^2 * abs ρ := by
+        rw [abs_mul, abs_of_nonneg (sq_nonneg ((Δ : ℝ) + 1)), abs_of_nonneg (abs_nonneg ρ)]
+      _ = abs ρ * ((Δ : ℝ) + 1)^2 := by ring
+      _ < 1 := h
+  have hpow : Summable (fun n : ℕ => (n : ℝ)^1 * (((Δ : ℝ) + 1)^2 * abs ρ)^n) :=
+    summable_pow_mul_geometric_of_norm_lt_one 1 ha
+  simpa [pow_one, mul_assoc] using hpow.mul_left 2
 
 end QM
