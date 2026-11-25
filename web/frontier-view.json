@@ -80,7 +80,8 @@
     "momentumMode",
     "mode_hL",
     "fss_ir_bound_mode",
-    "mass_gap_scaling_from_mass"
+    "mass_gap_scaling_from_mass",
+    "mass_gap_from_lower_bound"
   ],
   "transports": [
     {
@@ -249,7 +250,8 @@
             "fss_ir_bound_geometric_one_sided — the FSS bound with hpos DISCHARGED for the one-side-supported f (latticeReflection_inner + fss_hpos_one_sided)",
             "mode_reflection_positivity — the momentum mode χ_k has hpos: 0 ≤ Σ χ_k(i)·χ_k(−i) = Σ χ_k(i)² (the spectral bridge between one-side hpos and the mode hsym)",
             "fss_ir_bound_mode — the momentum-mode FSS bound with hpos/hsym/hJ/hLpos all discharged (Rung 1 complete)",
-            "mass_gap_scaling_from_mass — the referee scaling law for any mβ = 2·e^(−(12π²/11)β) (Rung 2 scaling-law part)"
+            "mass_gap_scaling_from_mass — the referee scaling law for any mβ = 2·e^(−(12π²/11)β) (Rung 2 scaling-law part)",
+            "mass_gap_from_lower_bound — the Rung 2 final connective: a mass-gap lower bound ⇒ refereeScalingLaw (reduces the open item to the single spectral-gap lower bound 1−λ₁(β) ≥ 2·e^(−(12π²/11)β))"
           ]
         },
         {

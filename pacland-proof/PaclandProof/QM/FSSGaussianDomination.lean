@@ -771,6 +771,17 @@ theorem mass_gap_scaling_from_mass (mβ : ℝ → ℝ)
   intro β hβ
   rw [hmβ β hβ]
 
+/-- **A mass-gap lower bound yields the referee scaling law** — if the mass gap `mGap β` is bounded below
+by `2·e^(−(12π²/11)β)` for all `β > 0`, then `refereeScalingLaw mGap` holds (with `A = 2`). This is the
+final connective of Rung 2: the spectral-gap lower bound `1 − λ₁(β) ≥ 2·e^(−(12π²/11)β)` is the one
+remaining input, and this theorem turns that input into the scaling law the mass gap needs. -/
+theorem mass_gap_from_lower_bound (mGap : ℝ → ℝ)
+    (hlower : ∀ β : ℝ, 0 < β → 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) ≤ mGap β) :
+    QM.refereeScalingLaw mGap := by
+  refine ⟨2, by norm_num, ?_⟩
+  intro β hβ
+  exact hlower β hβ
+
 /-- **The Weyl density is reflection-invariant** — `sin²(π − θ) = sin²θ`, the symmetry of the
 single-plaquette Weyl measure density under the lattice reflection `θ ↦ π − θ`. This is the input to the
 measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dν)²`. -/
