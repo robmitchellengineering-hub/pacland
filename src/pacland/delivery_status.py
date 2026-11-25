@@ -9,7 +9,6 @@ Regenerate the committed snapshot with ``python3 scripts/build_delivery_status.p
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
@@ -54,5 +53,4 @@ def live_status() -> dict:
             "present": present,
             "missing": missing,
         }
-    out["_checked_at"] = datetime.now(timezone.utc).isoformat()
     return out
