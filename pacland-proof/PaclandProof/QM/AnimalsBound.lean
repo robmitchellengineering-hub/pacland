@@ -410,4 +410,98 @@ theorem rooted_connected_subset_tour_gen {V : Type u} [Fintype V] [DecidableEq V
       simpa [SimpleGraph.Walk.length_append] using this
     omega
 
+theorem rooted_animals_count_bound_gen {V : Type u} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj] [Fintype G.edgeSet]
+    (r : V) (Δ : ℕ) (hΔ : G.maxDegree ≤ Δ) (n : ℕ) :
+    ((Finset.univ.filter (fun S : Finset V => r ∈ S ∧ (G.induce (S : Set V)).Connected ∧ S.card = n)).card : ℕ)
+      ≤ (2*n) * (Δ+1)^(2*(n-1)) := by
+  classical
+  let T : Finset (Finset V) :=
+    Finset.univ.filter (fun S : Finset V => r ∈ S ∧ (G.induce (S : Set V)).Connected ∧ S.card = n)
+  let tour (S : Finset V) (hconn : (G.induce (S : Set V)).Connected) (hr : r ∈ S) : G.Walk r r :=
+    Classical.choose (rooted_connected_subset_tour_gen G S hconn r hr)
+  let W : Finset (G.Walk r r) :=
+    (Finset.range (2*(n-1)+1)).biUnion (fun L => G.finsetWalkLength L r r)
+  by_cases hn0 : n = 0
+  · subst n
+    have hT : T.card = 0 := by
+      by_contra h
+      have hnon : T.Nonempty := Finset.card_pos.mp (Nat.pos_of_ne_zero h)
+      obtain ⟨S, hS⟩ := hnon
+      have hcard0 : S.card = 0 := (Finset.mem_filter.mp hS).2.2.2
+      have hS0 : S = ∅ := Finset.card_eq_zero.mp hcard0
+      have hr : r ∈ S := (Finset.mem_filter.mp hS).2.1
+      simpa [hS0] using hr
+    rw [hT]
+    simp
+  · have mem_spec : ∀ S : {S : Finset V // S ∈ T},
+        r ∈ S.1 ∧ (G.induce (S.1 : Set V)).Connected ∧ S.1.card = n := by
+      intro S
+      exact (Finset.mem_filter.mp S.property).2
+    have hinj : Function.Injective (fun S : {S : Finset V // S ∈ T} => tour S.1 (mem_spec S).2.1 (mem_spec S).1) := by
+      intro S₁ S₂ hw
+      apply Subtype.ext
+      apply Finset.ext
+      intro x
+      have h₁ : x ∈ (tour S₁.1 (mem_spec S₁).2.1 (mem_spec S₁).1).support ↔ x ∈ S₁.1 :=
+        (Classical.choose_spec (rooted_connected_subset_tour_gen G S₁.1 (mem_spec S₁).2.1 r (mem_spec S₁).1)).1 x
+      have h₂ : x ∈ (tour S₂.1 (mem_spec S₂).2.1 (mem_spec S₂).1).support ↔ x ∈ S₂.1 :=
+        (Classical.choose_spec (rooted_connected_subset_tour_gen G S₂.1 (mem_spec S₂).2.1 r (mem_spec S₂).1)).1 x
+      have hsupp : (tour S₁.1 (mem_spec S₁).2.1 (mem_spec S₁).1).support =
+                   (tour S₂.1 (mem_spec S₂).2.1 (mem_spec S₂).1).support := by simpa [hw]
+      rw [hsupp] at h₁
+      exact h₁.symm.trans h₂
+    let f : Finset V → G.Walk r r := fun S =>
+      if hS : S ∈ T then tour S (mem_spec ⟨S, hS⟩).2.1 (mem_spec ⟨S, hS⟩).1 else SimpleGraph.Walk.nil
+    have hcard : T.card ≤ W.card := Finset.card_le_card_of_injOn f
+      (by
+        intro a ha
+        simp only [f]
+        split_ifs with hS
+        · have hlen : (tour a (mem_spec ⟨a, hS⟩).2.1 (mem_spec ⟨a, hS⟩).1).length ≤ 2*(n-1) := by
+            have := (Classical.choose_spec (rooted_connected_subset_tour_gen G a (mem_spec ⟨a, hS⟩).2.1 r (mem_spec ⟨a, hS⟩).1)).2
+            simpa [tour, (mem_spec ⟨a, hS⟩).2.2] using this
+          have hlt : (tour a (mem_spec ⟨a, hS⟩).2.1 (mem_spec ⟨a, hS⟩).1).length < 2*(n-1)+1 := by omega
+          exact Finset.mem_biUnion.mpr ⟨(tour a (mem_spec ⟨a, hS⟩).2.1 (mem_spec ⟨a, hS⟩).1).length,
+            by simpa using hlt, by simpa [G.mem_finsetWalkLength_iff]⟩
+        · exfalso; exact hS ha)
+      (by
+        intro a ha b hb h
+        have hfa : f a = tour a (mem_spec ⟨a, ha⟩).2.1 (mem_spec ⟨a, ha⟩).1 := by
+          dsimp [f]
+          exact dif_pos ha
+        have hfb : f b = tour b (mem_spec ⟨b, hb⟩).2.1 (mem_spec ⟨b, hb⟩).1 := by
+          dsimp [f]
+          exact dif_pos hb
+        have hf : tour a (mem_spec ⟨a, ha⟩).2.1 (mem_spec ⟨a, ha⟩).1 =
+                  tour b (mem_spec ⟨b, hb⟩).2.1 (mem_spec ⟨b, hb⟩).1 := by
+          rw [hfa, hfb] at h
+          exact h
+        have ha' : a ∈ T := by simpa using ha
+        have hb' : b ∈ T := by simpa using hb
+        exact (congrArg Subtype.val (@hinj (Subtype.mk a ha') (Subtype.mk b hb') hf)))
+    have hW : W.card ≤ ∑ L ∈ Finset.range (2*(n-1)+1), (G.finsetWalkLength L r r).card := by
+      dsimp [W]
+      exact Finset.card_biUnion_le
+    have hsum : (∑ L ∈ Finset.range (2*(n-1)+1), (G.finsetWalkLength L r r).card)
+                ≤ (2*n) * (Δ+1)^(2*(n-1)) := by
+      have hΔ1 : 1 ≤ Δ+1 := Nat.succ_le_succ (Nat.zero_le Δ)
+      have hle : ∀ L ∈ Finset.range (2*(n-1)+1), (G.finsetWalkLength L r r).card ≤ (Δ+1)^(2*(n-1)) := by
+        intro L hL
+        have hLb : L ≤ 2*(n-1) := by simpa using hL
+        have hw : (G.finsetWalkLength L r r).card ≤ G.maxDegree ^ L := walk_count_bound G r r L
+        have hΔL : G.maxDegree ^ L ≤ Δ ^ L := Nat.pow_le_pow_left hΔ L
+        have hΔL' : Δ ^ L ≤ (Δ+1) ^ L := Nat.pow_le_pow_left (Nat.le_succ Δ) L
+        have hLΔ : (Δ+1) ^ L ≤ (Δ+1) ^ (2*(n-1)) := pow_le_pow_right' hΔ1 hLb
+        exact (hw.trans hΔL).trans (hΔL'.trans hLΔ)
+      exact (Finset.sum_le_sum hle).trans (by
+        have hle2 : (Finset.range (2*(n-1)+1)).card ≤ 2*n := by
+          simp only [Finset.card_range]
+          omega
+        calc
+          (∑ _L ∈ Finset.range (2*(n-1)+1), (Δ+1)^(2*(n-1))) = (Finset.range (2*(n-1)+1)).card * (Δ+1)^(2*(n-1)) := by simp
+          _ ≤ (2*n) * (Δ+1)^(2*(n-1)) := Nat.mul_le_mul_right _ hle2)
+    exact hcard.trans (hW.trans hsum)
+
+
 end QM
