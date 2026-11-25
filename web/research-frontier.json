@@ -164,7 +164,8 @@
     "connected_subset_tour",
     "rooted_tree_tour",
     "rooted_subset_tour",
-    "rooted_animals_count_bound"
+    "rooted_animals_count_bound",
+    "connected_subset_tour_gen"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

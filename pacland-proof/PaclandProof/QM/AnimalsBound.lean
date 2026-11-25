@@ -328,4 +328,32 @@ theorem rooted_animals_count_bound {V : Type u} [Fintype V] [DecidableEq V]
           _ ≤ (2*n) * (Δ+1)^(2*(n-1)) := Nat.mul_le_mul_right _ hle2)
     exact hcard.trans (hW.trans hsum)
 
+/-- **A connected induced subset of an ARBITRARY finite graph has a tour** — the spanning-tree
+reduction: `Connected.exists_isTree_le` gives a spanning tree `T ≤ G.induce S`, whose Euler tour lifts to
+`G.induce S` (the subgraph inclusion) and then to `G` (the subtype embedding), length `≤ 2·(|S|−1)`. -/
+theorem connected_subset_tour_gen {V : Type u} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) [DecidableRel G.Adj] [Fintype G.edgeSet]
+    (S : Finset V) (hconn : (G.induce (S : Set V)).Connected) (hS : S.Nonempty) :
+    ∃ r : V, ∃ w : G.Walk r r, (∀ x ∈ S, x ∈ w.support) ∧ w.length ≤ 2 * (S.card - 1) := by
+  classical
+  obtain ⟨T, hTle, hTtree⟩ := hconn.exists_isTree_le
+  haveI : Nonempty (S : Set V) := ⟨⟨hS.choose, hS.choose_spec⟩⟩
+  obtain ⟨v, w, hw, hl⟩ := tree_euler_tour_length T hTtree
+  let fT : T →g (G.induce (S : Set V)) :=
+    { toFun := fun v => v, map_rel' := by intro a b hab; exact hTle hab }
+  let wlift : (G.induce (S : Set V)).Walk v v := w.map fT
+  let f : (G.induce (S : Set V)) →g G :=
+    { toFun := fun v => (v : V), map_rel' := by intro a b h; simpa using h }
+  let wG : G.Walk (v : V) (v : V) := wlift.map f
+  refine ⟨(v : V), wG, ?_, ?_⟩
+  · intro x hx
+    dsimp [wG, wlift]
+    rw [SimpleGraph.Walk.support_map, SimpleGraph.Walk.support_map]
+    exact List.mem_map_of_mem (f := ⇑f) (List.mem_map_of_mem (f := ⇑fT) (hw ⟨x, hx⟩))
+  · dsimp [wG, wlift]
+    rw [SimpleGraph.Walk.length_map, SimpleGraph.Walk.length_map]
+    have hcard : Fintype.card (S : Set V) = S.card := by simp [Fintype.card_coe]
+    rw [hcard] at hl
+    exact hl
+
 end QM
