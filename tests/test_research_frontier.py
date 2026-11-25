@@ -37,6 +37,33 @@ def test_frontier_schema_valid():
     assert isinstance(d["transports"], list) and isinstance(d["obligations"], list)
 
 
+def test_no_duplicate_keys_in_catalog():
+    """Python silently overwrites duplicate dict keys — exactly the drift the schema must forbid.
+    Attribute each 'tier' occurrence to its enclosing entry by source position, and fail on repeats."""
+    import bisect
+    import re
+    src = (ROOT / "src" / "pacland" / "sextant.py").read_text()
+    entries = list(re.finditer(r'"([a-z0-9-]+)": \{', src))
+    tiers = list(re.finditer(r'"tier":', src))
+    starts = [e.start() for e in entries]
+    counts: dict = {}
+    for t in tiers:
+        idx = bisect.bisect_right(starts, t.start()) - 1
+        name = entries[idx].group(1)
+        counts[name] = counts.get(name, 0) + 1
+    dupes = {k: v for k, v in counts.items() if v > 1}
+    assert not dupes, f"entries with duplicate 'tier' keys: {dupes}"
+
+
+def test_frontier_view_generated():
+    """The website/engine view must be generated from the schema, not hand-edited."""
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from build_frontier_view import build
+    committed = json.loads((ROOT / "web" / "frontier-view.json").read_text())
+    assert committed == build(), "web/frontier-view.json is stale — run scripts/build_frontier_view.py"
+
+
 def test_every_ym_claim_has_a_tier():
     cat = _catalog()
     missing = [n for n, e in cat.items() if n.startswith("ym-") and e.get("tier") not in VALID_TIERS]

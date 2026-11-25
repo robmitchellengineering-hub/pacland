@@ -158,7 +158,13 @@
     "linked_cluster_weights",
     "cluster_weight_bound",
     "cluster_weights_summable",
-    "posdef_*"
+    "posdef_*",
+    "connected_exists_visiting_walk",
+    "tree_euler_tour_length",
+    "connected_subset_tour",
+    "rooted_tree_tour",
+    "rooted_subset_tour",
+    "rooted_animals_count_bound"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
@@ -184,5 +190,33 @@
       }
     ],
     "collapse_result": "the three named rungs are NOT three independent obligations — the tower proves the scaling law ⟺ the volume-uniform ratio and the clustering ⟺ the gap, and the radius bound chains to both. The open set collapses to ONE obligation: the radius bound ρ ≤ e^(−A·e^(−cβ)) itself, whose first rung is the animals bound."
+  },
+  "reconciliation": {
+    "equivalence_classes": [
+      {
+        "class": "the radius bound / block-spin contraction",
+        "members": [
+          "ym-linked-cluster-contraction",
+          "ym-volume-uniform-su2",
+          "ym-fss-nonabelian-closable"
+        ],
+        "why": "refereeScalingLaw_iff_volumeUniformRatio proves the scaling law ⟺ the volume-uniform ratio; the FSS non-Abelian estimate is the same volume-uniform fact in the thermodynamic framework"
+      },
+      {
+        "class": "the log-Sobolev / mixing route",
+        "members": [
+          "ym-log-sobolev"
+        ],
+        "why": "a SEPARATE route into the gap: clustering_iff_gap proves clustering ⟺ gap, but the log-Sobolev → mixing leg is itself open, so this is an independent entry point, not the same obligation"
+      }
+    ],
+    "evidence_only": [
+      "ym-d5-confinement",
+      "ym-mass-gap-bulk-transition",
+      "ym-mass-gap-polyakov"
+    ],
+    "evidence_only_why": "numerical lattice observations (IRREDUCIBLE), not mass-gap obligations — they are evidence about the regime, not hypotheses to discharge",
+    "independent_obligations": 2,
+    "independent_why": "exactly two independent mathematical obligations remain: the radius bound (one class) and the log-Sobolev bridge (the other); the three IRREDUCIBLE entries are evidence, not obligations"
   }
 }
