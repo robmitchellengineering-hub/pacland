@@ -53,16 +53,18 @@ So a year later you can read back *what the machine actually did*, not just the 
 - Its verdict is as good as the evidence you give it. No measured endpoint, no verification — and it
   says so, rather than pretending.
 
-## How to use it (no programming needed)
+## How to use it (no programming needed — with one honest caveat)
 
-1. **Read the live explainer** (the same system, in browser form) — the human-readable front page of
-   the verdict engine and the discovery map.
-2. **Ask a claim.** The tool has a plain question-and-answer surface: type (or click) a claim, and it
-   returns the verdict (FORCED / FREE / IMPOSSIBLE / IRREDUCIBLE) plus the evidence and the proof.
-3. **Contribute a discovery.** There is a "contribute" flow where you record a research finding, a
-   dead end, or an assumption — and the tool files it into the growing knowledge graph.
-4. **Point it at your own AI.** If you already use an AI assistant, you can hook it in as the idea
-   generator; SEXTANT remains the verifier that checks what it proposes.
+1. **Read the explainer pages** (browser, read-only). The public site describes the verdict engine,
+   the discovery map, and the worked examples — but it is *explanatory*, not a live engine you can
+   query.
+2. **Ask a claim** — this currently needs the tool running, which today means a developer runs
+   `python -m pacland.sextant_node` and hands you the page it serves. The double-clickable version
+   for a non-programmer is the next delivery step (the container), not yet shipped.
+3. **Contribute a discovery** — the same: a recorded finding, dead end, or assumption, filed into the
+   growing knowledge graph.
+4. **Point it at your own AI** — hook in an assistant you already use as the idea generator; SEXTANT
+   stays the verifier that checks what it proposes.
 
 ## The one-line pitch to give a colleague
 
