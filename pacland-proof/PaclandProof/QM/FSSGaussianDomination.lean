@@ -897,6 +897,15 @@ theorem stepA_mass_gap {m : ℕ} [NeZero m] (K : Fin m → Fin m → ℝ)
     simpa [abs_of_nonneg (Real.exp_pos _).le] using hle
   exact QM.chessboard_estimate K hSymm hK n (Real.exp (-mβ)) hvacuum hlam (by positivity) i j
 
+
+/-- **The lattice free-propagator decay (the Fourier inversion, Step A's last input).** The lattice
+Green's function `G(x) = Σₖ e^(ikx)/(2(1−cos k)+mβ²)` decays exponentially at the mass rate `mβ`:
+`|G(x)| ≤ C·e^(−mβ|x|)`. This is the standard contour-integration/Bessel estimate that converts the
+momentum bound `≤ 1/(2(1−cos k)+mβ²)` into the real-space decay rate. Stated as a named property —
+proving it (the contour integration) is the one remaining substantive analysis in Step A. -/
+def freePropagatorDecay (mβ : ℝ) (G : ℤ → ℝ) : Prop :=
+  ∃ C : ℝ, 0 < C ∧ ∀ x : ℤ, |G x| ≤ C * Real.exp (-mβ * |(x : ℝ)|)
+
 /-- **The gap lower bound on [0,2]** — `1 − e^(−x) ≥ x/4` for `0 ≤ x ≤ 2`: for `x ≤ 1` use
 `one_sub_exp_ge_half` (gives `x/2`), and for `1 ≤ x ≤ 2` use `1 − e^(−1) ≥ 1/2 ≥ x/4` (the monotonicity
 plus `2 ≤ e`). This is the small-`β` constant the referee scaling law needs when `mβ = 2·e^(−cβ) ≤ 2`. -/

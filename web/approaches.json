@@ -78,7 +78,8 @@
             "mass_gap_finite_volume — the finite-volume exponential clustering (chessboard_estimate with λₖ ≤ e^(−mβ)), conditional only on the eigenvalue bound hlam",
             "eigenvalue_le_exp_neg_mass + energy_ge_mass — the dispersion lemmas reducing the eigenvalue bound to λ = e^(−E), E = √(k²+mβ²) ≥ mβ",
             "hlam_assembly — the dispersion relation E=√(2(1−cos k)+mβ²), λ=e^(−E) gives the eigenvalue bound λ ≤ e^(−mβ) (Step A last connective)",
-            "stepA_mass_gap — the complete finite-volume mass gap (chessboard estimate from the dispersion), conditional only on the OS transfer-matrix identification eigenvalues k = e^(−E k)"
+            "stepA_mass_gap — the complete finite-volume mass gap (chessboard estimate from the dispersion), conditional only on the OS transfer-matrix identification eigenvalues k = e^(−E k)",
+            "freePropagatorDecay — the named lattice free-propagator exponential-decay property (the Fourier inversion conclusion, the remaining Step A input)"
           ]
         },
         {
