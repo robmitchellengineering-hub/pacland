@@ -1915,6 +1915,13 @@
    "title": "build_discovery_extra.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_frontier_view.py",
+   "kind": "script",
+   "path": "scripts/build_frontier_view.py",
+   "summary": "Generate `web/frontier-view.json` \u2014 the consolidated node-schema view.",
+   "title": "build_frontier_view.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_peft_dataset.py",
    "kind": "script",
    "path": "scripts/build_peft_dataset.py",

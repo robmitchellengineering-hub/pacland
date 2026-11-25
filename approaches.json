@@ -5,20 +5,53 @@
     {
       "name": "ym-linked-cluster-contraction",
       "routes": [
-        {"name": "block-spin / animals bound", "next": "prove #{connected clusters of size n} ≤ Δ^(2(n−1)) — the spanning-tree / Euler-tour injection on top of walk_count_bound (proved)", "state": "attempted"},
-        {"name": "volume-uniform FSS", "next": "prove the non-Abelian FSS estimate for the SU(2) character (the linear/Abelian version is proved: fss_join, falk_bruch)", "state": "available", "note": "equivalent to the block-spin route via refereeScalingLaw_iff_volumeUniformRatio"}
+        {
+          "name": "block-spin / animals bound",
+          "next": "the animals bound is now PROVED; the next rung is the linked-cluster expansion's cluster-weight sum, chaining the animals bound to the block-spin contraction ρ ≤ e^(−A·e^(−cβ))",
+          "state": "attempted",
+          "rungs": [
+            "Connected.exists_isTree_le (Mathlib): a connected graph has a spanning tree T ≤ G (IsTree T)",
+            "IsTree.existsUnique_path (Mathlib): a tree has a unique path between any two vertices",
+            "EULER TOUR (NOT in Mathlib): a tree on n vertices has a walk of length 2(n−1) visiting all n vertices (each edge traversed twice)",
+            "injection connected-subset → Euler-tour walk, then walk_count_bound gives #{clusters of size n} ≤ Δ^(2(n−1))"
+          ],
+          "proved": [
+            "connected_exists_visiting_walk — a connected graph has a walk visiting every vertex (the Euler tour's existence, kernel-checked)",
+            "tree_euler_tour_length — a tree has a closed walk visiting every vertex with length ≤ 2(n−1) (kernel-checked)",
+            "connected_subset_tour — a connected induced subset S has a closed walk visiting all of S with length ≤ 2(|S|−1)",
+            "rooted_tree_tour — a tree has a closed walk from any prescribed root r visiting every vertex, length ≤ 2(n−1)",
+            "rooted_subset_tour — a rooted connected subset S has a closed walk from r visiting all of S, length ≤ 2(|S|−1)",
+            "rooted_animals_count_bound — #{rooted connected clusters of size n} ≤ (2n)(Δ+1)^(2(n−1)) via the S↦tour injection + walk_count_bound"
+          ]
+        },
+        {
+          "name": "volume-uniform FSS",
+          "next": "prove the non-Abelian FSS estimate for the SU(2) character (the linear/Abelian version is proved: fss_join, falk_bruch)",
+          "state": "available",
+          "note": "equivalent to the block-spin route via refereeScalingLaw_iff_volumeUniformRatio"
+        }
       ]
     },
     {
       "name": "ym-log-sobolev",
       "routes": [
-        {"name": "log-Sobolev → mixing → clustering", "next": "prove the log-Sobolev → mixing bridge, then chain clustering_iff_gap to the spectral gap", "state": "available", "note": "the clustering ⟺ gap bridge is already proved (clustering_iff_gap); the log-Sobolev → mixing leg is the open bit"}
+        {
+          "name": "log-Sobolev → mixing → clustering",
+          "next": "prove the log-Sobolev → mixing bridge, then chain clustering_iff_gap to the spectral gap",
+          "state": "available",
+          "note": "the clustering ⟺ gap bridge is already proved (clustering_iff_gap); the log-Sobolev → mixing leg is the open bit"
+        }
       ]
     },
     {
       "name": "ym-volume-uniform-su2",
       "routes": [
-        {"name": "non-Abelian FSS", "next": "the SU(2) character two-point function dominated by the free propagator, uniform in the volume", "state": "available", "note": "same obligation as the block-spin contraction (refereeScalingLaw_iff_volumeUniformRatio)"}
+        {
+          "name": "non-Abelian FSS",
+          "next": "the SU(2) character two-point function dominated by the free propagator, uniform in the volume",
+          "state": "available",
+          "note": "same obligation as the block-spin contraction (refereeScalingLaw_iff_volumeUniformRatio)"
+        }
       ]
     }
   ]
