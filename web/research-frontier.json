@@ -202,7 +202,8 @@
     "cyclic_fourier_hL",
     "cos_fin_periodic_sub",
     "cyclic_fourier_hL_uncond",
-    "cyclic_mode_norm_pos"
+    "cyclic_mode_norm_pos",
+    "latticeReflection"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

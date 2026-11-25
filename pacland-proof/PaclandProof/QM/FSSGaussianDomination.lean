@@ -567,6 +567,38 @@ theorem reflected_correlation_os3 {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (hβ
     0 ≤ reflectedCorrelation (fun i j => wilsonKernel θ β i j) f f := by
   simpa [reflectedCorrelation, wilsonKernel] using (QM.wilson_kernel_posdef θ β hβ f)
 
+/-- **The geometric lattice reflection (the OS reflection)** — `f ↦ f ∘ (−·)` on the ℓ² space
+`PiLp 2 (Fin m → ℝ)`, the involution `i ↦ −i`. This IS a linear isometry (the `falk_bruch` `Θ : E →ₗᵢ[ℝ] E`),
+distinct from `wilsonReflection` (the kernel). -/
+noncomputable def latticeReflection {m : ℕ} [NeZero m] :
+    (PiLp 2 (fun _ : Fin m => ℝ)) →ₗᵢ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)) where
+  toLinearMap := {
+    toFun f := (WithLp.equiv 2 (Fin m → ℝ)).symm (fun i => WithLp.ofLp f (-i))
+    map_add' := by
+      intro f g
+      ext i
+      simp [WithLp.ofLp]
+    map_smul' := by
+      intro a f
+      ext i
+      simp [WithLp.ofLp]
+  }
+  norm_map' := by
+    intro f
+    have hsq : ‖(WithLp.equiv 2 (Fin m → ℝ)).symm (fun i => WithLp.ofLp f (-i))‖^2 = ‖f‖^2 := by
+      rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq]
+      simp only [PiLp.inner_apply, WithLp.ofLp]
+      simpa using (Finset.sum_equiv (Equiv.neg (Fin m)) (by intro i; simp) (by intro i hi; rfl))
+    have hnn : 0 ≤ ‖(WithLp.equiv 2 (Fin m → ℝ)).symm (fun i => WithLp.ofLp f (-i))‖ := norm_nonneg _
+    have hnn' : 0 ≤ ‖f‖ := norm_nonneg _
+    rcases (sq_eq_sq_iff_eq_or_eq_neg.mp hsq) with h | h
+    · exact h
+    · have hle : ‖f‖ ≤ 0 := by nlinarith
+      have hzero : ‖f‖ = 0 := le_antisymm hle hnn'
+      rw [hzero] at h
+      rw [hzero]
+      simpa using h
+
 end FSSGaussianDomination
 
 end
