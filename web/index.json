@@ -67,6 +67,13 @@
    "title": "Discovery harvest \u2014 transfer-matrix methodologies and renormalisation schemes"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-KNOWLEDGE-GRAPH.md",
+   "kind": "doc",
+   "path": "docs/DISCOVERY-KNOWLEDGE-GRAPH.md",
+   "summary": "machine can reason about what it learned and reuse it.\" This file is the schema for the graph: the node types, the relationship types, the process that adds them, and the evidence each\u2026",
+   "title": "The discovery knowledge graph \u2014 nodes with relationships, not a notebook"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-PROCESS.md",
    "kind": "doc",
    "path": "docs/DISCOVERY-PROCESS.md",
@@ -156,6 +163,13 @@
    "path": "docs/MASTER-RESEARCH.md",
    "summary": "The single source of truth for the mass-gap program. It states the one metric, names the exact assumptions still doing the heavy lifting, separates the four competing tracks, gives each an\u2026",
    "title": "SEXTANT \u2014 Master Research Document"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/METHODOLOGY-DISCOVERIES.md",
+   "kind": "doc",
+   "path": "docs/METHODOLOGY-DISCOVERIES.md",
+   "summary": "us something. The journey is usually the richer science. A final theorem is one sentence; the techniques that produced it transfer to the next fifty problems. If the machine only records\u2026",
+   "title": "Methodology discoveries \u2014 the explainer and tracker"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MILESTONE-3-CANDIDATES.md",
@@ -3915,6 +3929,13 @@
    "path": "PACLAND-oracles-plain-speak.pdf",
    "summary": "explainer PDF",
    "title": "oracles plain speak"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-physics-explainer.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-physics-explainer.pdf",
+   "summary": "explainer PDF",
+   "title": "physics explainer"
   },
   {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf",
