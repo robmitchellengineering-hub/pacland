@@ -7,7 +7,7 @@
       "routes": [
         {
           "name": "block-spin / animals bound",
-          "next": "Arrow B: the size-class summability ⟹ the cluster expansion converges uniformly in the volume (Σ_{Γ connected} |w(Γ)| < ∞ uniform); then Arrow C: uniform convergence ⟹ the contraction rate e^(−(12π²/11)β)",
+          "next": "Arrow B second half: the full cluster-weight sum Σ_{Γ connected} |w(Γ)| ≤ |V|·(the rooted bound), hence the free-energy-per-vertex converges uniformly; then Arrow C: the uniform convergence ⟹ the contraction rate e^(−(12π²/11)β)",
           "state": "attempted",
           "rungs": [
             "Connected.exists_isTree_le (Mathlib): a connected graph has a spanning tree T ≤ G (IsTree T)",
@@ -30,7 +30,8 @@
             "animals_majorant_tour_summable — the EXACT tour-length majorant Σ_n (2n)(Δ+1)^(2(n−1))·|ρ|^n converges (dominated by the 2n-majorant)",
             "blockSpin_lipschitz — the block-spin (decimation) map is 1-Lipschitz in the metric group: dist of products ≤ sum of factor distances",
             "blockSpin_contracts_two — a uniform fine-field distance D contracts to 2D per block (the coarse-graining step; the e^(−cβ) rate is the further measure step)",
-            "rooted_cluster_weights_summable — Arrow A: the animal bound gives Σ_n #{rooted clusters of size n}·|ρ|^n < ∞ (dominated by the tour-length majorant)"
+            "rooted_cluster_weights_summable — Arrow A: the animal bound gives Σ_n #{rooted clusters of size n}·|ρ|^n < ∞ (dominated by the tour-length majorant)",
+            "connected_clusters_count_bound — Arrow B first half: #{connected n-subsets} ≤ |V|·(2n)(Δ+1)^(2(n−1)), the volume-dependence the uniform statement factors out"
           ]
         },
         {

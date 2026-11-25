@@ -520,4 +520,53 @@ theorem rooted_cluster_weights_summable {V : Type u} [Fintype V] [DecidableEq V]
     rooted_animals_count_bound_gen G r Δ hΔ n
   exact mul_le_mul_of_nonneg_right (by exact_mod_cast hcount) (pow_nonneg (abs_nonneg ρ) n)
 
+/-- **Arrow B (first half): the full connected-cluster count is volume-bounded** — each connected
+subset of size `n ≥ 1` is rooted at its minimum element, so the number of connected `n`-subsets is at
+most the number of rooted ones summed over `V`, hence `≤ |V|·(2n)(Δ+1)^(2(n−1))`. -/
+theorem connected_clusters_count_bound {V : Type u} [Fintype V] [DecidableEq V] [LinearOrder V]
+    (G : SimpleGraph V) [DecidableRel G.Adj] [Fintype G.edgeSet]
+    (Δ : ℕ) (hΔ : G.maxDegree ≤ Δ) (n : ℕ) (hn : 1 ≤ n) :
+    ((Finset.univ.filter (fun S : Finset V => (G.induce (S : Set V)).Connected ∧ S.card = n)).card : ℕ)
+      ≤ (Fintype.card V) * (2*n) * (Δ+1)^(2*(n-1)) := by
+  classical
+  let T : Finset (Finset V) :=
+    Finset.univ.filter (fun S : Finset V => (G.induce (S : Set V)).Connected ∧ S.card = n)
+  let rooted (r : V) : Finset (Finset V) :=
+    Finset.univ.filter (fun S : Finset V => r ∈ S ∧ (G.induce (S : Set V)).Connected ∧ S.card = n)
+  have hnonempty : ∀ S ∈ T, S.Nonempty := by
+    intro S hS
+    exact Finset.card_pos.mp (by rw [(Finset.mem_filter.mp hS).2.2]; omega)
+  have hminspec : ∀ S : {S : Finset V // S ∈ T}, S.1.min' (hnonempty S.1 S.2) ∈ S.1 := by
+    intro S
+    exact Finset.min'_mem S.1 (hnonempty S.1 S.2)
+  let f : {S : Finset V // S ∈ T} → Σ r : V, {S : Finset V // S ∈ rooted r} := fun S =>
+    Sigma.mk (S.1.min' (hnonempty S.1 S.2))
+      (Subtype.mk S.1 (by
+        dsimp [rooted]
+        exact Finset.mem_filter.mpr ⟨Finset.mem_univ S.1, ⟨hminspec S, (Finset.mem_filter.mp S.2).2.1, (Finset.mem_filter.mp S.2).2.2⟩⟩))
+  have hfinj : Function.Injective f := by
+    intro S₁ S₂ h
+    have hS : S₁.1 = S₂.1 := by
+      have h2 : (f S₁).2.1 = (f S₂).2.1 := congrArg (fun x : Σ r : V, {S : Finset V // S ∈ rooted r} => x.2.1) h
+      simpa [f] using h2
+    exact Subtype.ext hS
+  have hcard : Fintype.card {S : Finset V // S ∈ T} ≤ Fintype.card (Σ r : V, {S : Finset V // S ∈ rooted r}) :=
+    Fintype.card_le_of_injective f hfinj
+  have hsigma : Fintype.card (Σ r : V, {S : Finset V // S ∈ rooted r}) ≤ (Fintype.card V) * (2*n) * (Δ+1)^(2*(n-1)) := by
+    rw [Fintype.card_sigma]
+    calc
+      (∑ r : V, Fintype.card {S : Finset V // S ∈ rooted r}) ≤ ∑ r : V, (2*n) * (Δ+1)^(2*(n-1)) := by
+        refine Finset.sum_le_sum (fun r _ => ?_)
+        rw [Fintype.card_coe]
+        dsimp [rooted]
+        exact rooted_animals_count_bound_gen G r Δ hΔ n
+      _ = (Fintype.card V) * (2*n) * (Δ+1)^(2*(n-1)) := by
+        simp [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_assoc, mul_comm, mul_left_comm]
+  calc
+    ((Finset.univ.filter (fun S : Finset V => (G.induce (S : Set V)).Connected ∧ S.card = n)).card : ℕ)
+      = T.card := rfl
+    _ = Fintype.card {S : Finset V // S ∈ T} := (Fintype.card_coe T).symm
+    _ ≤ Fintype.card (Σ r : V, {S : Finset V // S ∈ rooted r}) := hcard
+    _ ≤ (Fintype.card V) * (2*n) * (Δ+1)^(2*(n-1)) := hsigma
+
 end QM
