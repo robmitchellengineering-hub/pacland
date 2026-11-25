@@ -57,4 +57,20 @@ theorem blockSpin_contracts_two {E : Type*} [SeminormedCommGroup E]
     dist (blockSpin U j) (blockSpin V j) ≤ 2 * D := by
   exact (blockSpin_lipschitz U V j).trans (by linarith)
 
+/-- **The block-spin RG average's weight is positive** — integrating the odd-link `θ₂` out of the
+single-plaquette weight `e^(β·cos(θ₁+θ₂))` (the `Re Tr U(2j)·U(2j+1) = cos(θ₁+θ₂)` torus diagonal)
+against the Weyl measure `sin²θ₂ dθ₂` stays strictly positive. This is the RG step's renormalised
+density — the block-spin average of `μ_β` is a genuine positive weight for every coupling. -/
+theorem blockSpin_average_pos (β θ₁ : ℝ) :
+    0 < ∫ θ₂ in (0 : ℝ)..Real.pi, Real.exp (β * Real.cos (θ₁ + θ₂)) * (Real.sin θ₂)^2 := by
+  refine intervalIntegral.integral_pos Real.pi_pos ?_ ?_ ?_
+  · exact (by continuity : Continuous (fun θ₂ : ℝ => Real.exp (β * Real.cos (θ₁ + θ₂)) * (Real.sin θ₂)^2)).continuousOn
+  · intro θ₂ hθ₂
+    exact mul_nonneg (Real.exp_pos _).le (sq_nonneg (Real.sin θ₂))
+  · refine ⟨Real.pi / 2, ?_, ?_⟩
+    · exact ⟨by positivity, by linarith [Real.pi_pos]⟩
+    · rw [Real.sin_pi_div_two]
+      norm_num
+      exact Real.exp_pos _
+
 end QM
