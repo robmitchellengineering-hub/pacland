@@ -38,7 +38,8 @@
             "wilson_weight_bound — the single-plaquette Wilson weight e^(β cos θ) ∈ [e^(−β), e^β] (the measure density's oscillation, the contraction's coupling-dependence)",
             "singlePlaquettePartition_pos — the SU(2) 1-plaquette partition function Z(β)=∫₀^π e^(β cos θ) sin²θ dθ > 0 (the measure μ_β's non-degenerate normalisation)",
             "collectivePartition_pos — the full-lattice collective partition function ∫₀^π e^(−βm(1−cos θ)) sin²θ dθ > 0 (the full-lattice μ_β normalisation, collective mode)",
-            "blockSpin_average_pos — the block-spin RG average of the single-plaquette weight ∫₀^π e^(β cos(θ₁+θ₂)) sin²θ₂ dθ₂ > 0 (the renormalised density's positivity)"
+            "blockSpin_average_pos — the block-spin RG average of the single-plaquette weight ∫₀^π e^(β cos(θ₁+θ₂)) sin²θ₂ dθ₂ > 0 (the renormalised density's positivity)",
+            "singlePlaquettePartition_le — Z(β) ≤ e^β·π/2 (the renormalised weight is dominated by the free case, the contraction's normalisation bound)"
           ]
         },
         {

@@ -91,4 +91,28 @@ theorem singlePlaquettePartition_pos (β : ℝ) : 0 < singlePlaquettePartition �
       rw [hcos, hsin]
       norm_num
 
+/-- **The partition function is bounded by the free (uniform) weight** — `Z(β) ≤ e^β · π/2`, since
+`cos θ ≤ 1` gives `e^(β cos θ) ≤ e^β` and `∫₀^π sin²θ dθ = π/2`. This is the measure's normalisation bound
+that feeds the contraction: the renormalised weight is dominated by the free case, so the coupling's
+effect is a bounded factor `e^β`. -/
+theorem singlePlaquettePartition_le (β : ℝ) (hβ : 0 ≤ β) :
+    singlePlaquettePartition β ≤ Real.exp β * (Real.pi / 2) := by
+  dsimp [singlePlaquettePartition]
+  calc
+    ∫ θ in (0 : ℝ)..Real.pi, Real.exp (β * Real.cos θ) * (Real.sin θ)^2
+      ≤ ∫ θ in (0 : ℝ)..Real.pi, Real.exp β * (Real.sin θ)^2 := by
+        exact intervalIntegral.integral_mono_on (le_of_lt Real.pi_pos)
+          (by exact (by continuity : Continuous (fun θ : ℝ => Real.exp (β * Real.cos θ) * (Real.sin θ)^2)).intervalIntegrable 0 Real.pi)
+          (by exact (by continuity : Continuous (fun θ : ℝ => Real.exp β * (Real.sin θ)^2)).intervalIntegrable 0 Real.pi)
+          (by intro θ hθ
+              have hcos : Real.cos θ ≤ 1 := (abs_le.mp (Real.abs_cos_le_one θ)).2
+              exact mul_le_mul_of_nonneg_right
+                (Real.exp_le_exp.mpr (by simpa using (mul_le_mul_of_nonneg_left hcos hβ)))
+                (sq_nonneg (Real.sin θ)))
+    _ = Real.exp β * (Real.pi / 2) := by
+      rw [intervalIntegral.integral_const_mul]
+      rw [integral_sin_sq]
+      rw [Real.sin_zero, Real.cos_zero, Real.sin_pi, Real.cos_pi]
+      norm_num
+
 end QM
