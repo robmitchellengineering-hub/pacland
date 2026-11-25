@@ -1,14 +1,11 @@
 # Tool Sextant — the delivery plan (both forms)
 
-> **Live-state note (last verified 2026-11-25).** This file is a snapshot; the two status cells that
-> used to read "to build" / "still training" are stale. The truth now:
-> - the **supervisor** is built — `src/pacland/supervisor.py` (P2): `identify_missing_lemmas`,
->   `failed_approaches`, `choose_next_frontier`, `supervisor_report`. What remains is the thin daemon
->   wrapper that calls it in a loop, not the decision logic.
-> - the **model** is trained and in use — `qwen2.5-discovery`; see `docs/SEXTANT-ASSESSMENT-LOG.md`
->   R1.12 ("the small trained model"). It is small and does not yet propose genuine cross-field links,
->   which is a *limitation*, not a training gate.
-> Before trusting any status cell below, read the code / the assessment log — not this table.
+> **Live-state note (last verified 2026-11-25).** The status table below is a *snapshot* — the live
+> truth is generated from the code: `python3 scripts/build_delivery_status.py` → `web/delivery-status.json`,
+> and `tests/test_delivery_status.py` fails if this doc marks a built component as "to build" /
+> "still training". Read `web/delivery-status.json`, not this table. The two cells that used to read
+> "to build" / "still training" were stale: the supervisor is built (`src/pacland/supervisor.py`,
+> P2) and the model is trained and in use (`qwen2.5-discovery`, `SEXTANT-ASSESSMENT-LOG.md` R1.12).
 
 The thing being shipped is the **discovery engine** — the whole autonomous loop — as one self-contained
 tool, in two delivery forms. This is the plan Rob confirmed ("both is the answer").

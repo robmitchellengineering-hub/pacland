@@ -1,0 +1,50 @@
+{
+  "discovery-loop": {
+    "built": true,
+    "present": [
+      "src/pacland/runner.py",
+      "src/pacland/hypotheses.py",
+      "src/pacland/belief.py",
+      "src/pacland/challenges.py",
+      "src/pacland/benchmarks.py"
+    ],
+    "missing": []
+  },
+  "falsifiers": {
+    "built": true,
+    "present": [
+      "src/pacland/sextant.py",
+      "src/pacland/phantom.py"
+    ],
+    "missing": []
+  },
+  "proof-engine": {
+    "built": true,
+    "present": [
+      "pacland-proof/PaclandProof/QM/BakryEmery.lean"
+    ],
+    "missing": []
+  },
+  "knowledge-graph": {
+    "built": true,
+    "present": [
+      "src/pacland/discovery_graph.py"
+    ],
+    "missing": []
+  },
+  "supervisor": {
+    "built": true,
+    "present": [
+      "src/pacland/supervisor.py"
+    ],
+    "missing": []
+  },
+  "model-wired": {
+    "built": true,
+    "present": [
+      "src/pacland/benchmarks.py"
+    ],
+    "missing": []
+  },
+  "_checked_at": "2026-11-25T12:30:16.011853+00:00"
+}

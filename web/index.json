@@ -1922,6 +1922,13 @@
    "title": "build_climate_charts.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_delivery_status.py",
+   "kind": "script",
+   "path": "scripts/build_delivery_status.py",
+   "summary": "Generate the committed live status snapshot (web/delivery-status.json).",
+   "title": "build_delivery_status.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_discovery_extra.py",
    "kind": "script",
    "path": "scripts/build_discovery_extra.py",
