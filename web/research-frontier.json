@@ -226,7 +226,8 @@
     "one_sub_exp_ge_half",
     "spectral_gap_from_lam1",
     "one_sub_exp_ge_quarter",
-    "spectral_gap_pos"
+    "spectral_gap_pos",
+    "mass_gap_finite_volume"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

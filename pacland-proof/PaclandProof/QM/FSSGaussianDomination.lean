@@ -819,6 +819,23 @@ theorem spectral_gap_pos (mβ lam1 : ℝ) (hmβ : 0 < mβ) (hlam : lam1 = Real.e
   have h : Real.exp (-mβ) < 1 := (Real.exp_lt_one_iff).mpr (by linarith)
   linarith
 
+/-- **The finite-volume mass gap (Step A) — exponential clustering from the mass rate.** The
+transfer-matrix chessboard estimate (`chessboard_estimate`) with the second-eigenvalue bound
+`|λₖ| ≤ e^(−mβ)` (the mass rate): the correlation decays entrywise as `e^(−mβ n)·m` toward the vacuum
+projection. This is the KNOWN finite-volume constructive-QFT theorem — the FSS conclusion — with the
+single remaining input `hlam` (the eigenvalue bound `λ₁ ≤ e^(−mβ)` from the FSS momentum estimate). -/
+theorem mass_gap_finite_volume {m : ℕ} [NeZero m] (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : QM.PosDefKernel K)
+    (hvacuum : (QM.transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues 0 = 1)
+    (mβ : ℝ) (hmβ : 0 < mβ)
+    (hlam : ∀ k, k ≠ 0 → |(QM.transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ Real.exp (-mβ))
+    (n : ℕ) (i j : Fin m) :
+    |((QM.transferMatrix K)^n) i j
+      - (((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ))
+            (QM.transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+          (Matrix.diagonal (fun k => if k = 0 then 1 else 0))) i j| ≤ (Real.exp (-mβ))^n * (m : ℝ) := by
+  exact QM.chessboard_estimate K hSymm hK n (Real.exp (-mβ)) hvacuum hlam (by positivity) i j
+
 /-- **The gap lower bound on [0,2]** — `1 − e^(−x) ≥ x/4` for `0 ≤ x ≤ 2`: for `x ≤ 1` use
 `one_sub_exp_ge_half` (gives `x/2`), and for `1 ≤ x ≤ 2` use `1 − e^(−1) ≥ 1/2 ≥ x/4` (the monotonicity
 plus `2 ≤ e`). This is the small-`β` constant the referee scaling law needs when `mβ = 2·e^(−cβ) ≤ 2`. -/

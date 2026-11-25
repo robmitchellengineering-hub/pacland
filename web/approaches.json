@@ -74,7 +74,8 @@
             "one_sub_exp_ge_half — the spectral-gap core 1−e^(−x) ≥ x/2 on [0,1] (turns λ₁ ≤ e^(−mβ) into the gap 1−λ₁ ≥ mβ/2)",
             "spectral_gap_from_lam1 — the eigenvalue bound λ₁ ≤ e^(−mβ) implies the gap 1−λ₁ ≥ mβ/2 (the spectral-gap connective)",
             "one_sub_exp_ge_quarter — the gap lower bound 1−e^(−x) ≥ x/4 on [0,2] (the small-β constant for the referee scaling law)",
-            "spectral_gap_pos — the finite-volume spectral gap 0 < 1−λ₁ from λ₁ = e^(−mβ) and mβ > 0 (Step A positivity)"
+            "spectral_gap_pos — the finite-volume spectral gap 0 < 1−λ₁ from λ₁ = e^(−mβ) and mβ > 0 (Step A positivity)",
+            "mass_gap_finite_volume — the finite-volume exponential clustering (chessboard_estimate with λₖ ≤ e^(−mβ)), conditional only on the eigenvalue bound hlam"
           ]
         },
         {
