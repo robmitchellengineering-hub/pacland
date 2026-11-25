@@ -334,7 +334,7 @@ reduction: `Connected.exists_isTree_le` gives a spanning tree `T ≤ G.induce S`
 theorem connected_subset_tour_gen {V : Type u} [Fintype V] [DecidableEq V]
     (G : SimpleGraph V) [DecidableRel G.Adj] [Fintype G.edgeSet]
     (S : Finset V) (hconn : (G.induce (S : Set V)).Connected) (hS : S.Nonempty) :
-    ∃ r : V, ∃ w : G.Walk r r, (∀ x ∈ S, x ∈ w.support) ∧ w.length ≤ 2 * (S.card - 1) := by
+    ∃ r : V, ∃ w : G.Walk r r, (∀ x, x ∈ w.support ↔ x ∈ S) ∧ w.length ≤ 2 * (S.card - 1) := by
   classical
   obtain ⟨T, hTle, hTtree⟩ := hconn.exists_isTree_le
   haveI : Nonempty (S : Set V) := ⟨⟨hS.choose, hS.choose_spec⟩⟩
@@ -346,10 +346,18 @@ theorem connected_subset_tour_gen {V : Type u} [Fintype V] [DecidableEq V]
     { toFun := fun v => (v : V), map_rel' := by intro a b h; simpa using h }
   let wG : G.Walk (v : V) (v : V) := wlift.map f
   refine ⟨(v : V), wG, ?_, ?_⟩
-  · intro x hx
-    dsimp [wG, wlift]
-    rw [SimpleGraph.Walk.support_map, SimpleGraph.Walk.support_map]
-    exact List.mem_map_of_mem (f := ⇑f) (List.mem_map_of_mem (f := ⇑fT) (hw ⟨x, hx⟩))
+  · intro x
+    constructor
+    · intro hx
+      dsimp [wG, wlift] at hx
+      rw [SimpleGraph.Walk.support_map, SimpleGraph.Walk.support_map] at hx
+      obtain ⟨s, _hs, hfs⟩ := List.mem_map.mp hx
+      have hs1 : s.1 = x := by simpa [f] using hfs
+      simpa [hs1] using s.2
+    · intro hx
+      dsimp [wG, wlift]
+      rw [SimpleGraph.Walk.support_map, SimpleGraph.Walk.support_map]
+      exact List.mem_map_of_mem (f := ⇑f) (List.mem_map_of_mem (f := ⇑fT) (hw ⟨x, hx⟩))
   · dsimp [wG, wlift]
     rw [SimpleGraph.Walk.length_map, SimpleGraph.Walk.length_map]
     have hcard : Fintype.card (S : Set V) = S.card := by simp [Fintype.card_coe]
