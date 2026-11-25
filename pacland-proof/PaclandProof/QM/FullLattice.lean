@@ -278,4 +278,22 @@ theorem walk_count_bound {V : Type*} [Fintype V] [DecidableEq V]
       _ ≤ G.maxDegree * G.maxDegree ^ n := Nat.mul_le_mul_right _ (G.degree_le_maxDegree u)
       _ = G.maxDegree ^ (n + 1) := by rw [pow_succ']
 
+/-- **The animals-weight series converges** — the size-class weight `(Δ+1)^(2n) · |ρ|ⁿ` is the geometric
+series in `(Δ+1)² |ρ|`, so it is summable exactly when `(Δ+1)² |ρ| < 1`. This chains the animals bound's
+`(Δ+1)^(2n)` growth against the cluster activity's `|ρ|ⁿ` decay — the small-field convergence of the
+linked-cluster expansion for an arbitrary graph of max degree `Δ`. -/
+theorem animals_weight_summable (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Summable (fun n : ℕ => ((Δ : ℝ) + 1)^(2*n) * |ρ|^n) := by
+  have ha : abs (((Δ : ℝ) + 1)^2 * abs ρ) < 1 := by
+    calc
+      abs (((Δ : ℝ) + 1)^2 * abs ρ) = ((Δ : ℝ) + 1)^2 * abs ρ := by
+        rw [abs_mul, abs_of_nonneg (sq_nonneg ((Δ : ℝ) + 1)), abs_of_nonneg (abs_nonneg ρ)]
+      _ = abs ρ * ((Δ : ℝ) + 1)^2 := by ring
+      _ < 1 := h
+  have hgeom : Summable (fun n : ℕ => (((Δ : ℝ) + 1)^2 * abs ρ)^n) :=
+    summable_geometric_iff_norm_lt_one.mpr (by simpa [Real.norm_eq_abs] using ha)
+  convert hgeom using 1
+  ext n
+  rw [mul_pow, pow_mul]
+
 end QM
