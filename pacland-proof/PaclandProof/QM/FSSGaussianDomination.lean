@@ -759,6 +759,18 @@ theorem fss_ir_bound_mode (β : ℝ) (k m : ℕ) [NeZero m] (hk : k ≠ 0)
     exact mul_pos hJ hnorm
   exact fss_ir_bound_geometric β k m mβ hmβ (momentumMode k m) hpos (2 * (1 - Real.cos (2 * Real.pi * (k : ℝ) / m)) + mβ ^ 2) hJ hsym hLpos
 
+/-- **The running mass supplies the referee scaling law** — for any mass function equal to the
+confinement scale `2·e^(−(12π²/11)β)`, the referee scaling law `refereeScalingLaw mβ` holds with `A = 2`.
+This is the Rung 2 scaling-law statement the mass gap needs (the `su2_mass_gap_join` for an arbitrary
+`mβ` agreeing with the running mass). The spectral-gap identification (that the FSS propagator mass `mβ`
+is the transfer-matrix spectral gap) is the separate, still-open connective. -/
+theorem mass_gap_scaling_from_mass (mβ : ℝ → ℝ)
+    (hmβ : ∀ β : ℝ, 0 < β → mβ β = 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β)) :
+    QM.refereeScalingLaw mβ := by
+  refine ⟨2, by norm_num, ?_⟩
+  intro β hβ
+  rw [hmβ β hβ]
+
 /-- **The Weyl density is reflection-invariant** — `sin²(π − θ) = sin²θ`, the symmetry of the
 single-plaquette Weyl measure density under the lattice reflection `θ ↦ π − θ`. This is the input to the
 measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dν)²`. -/
