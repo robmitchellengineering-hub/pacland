@@ -810,6 +810,15 @@ theorem spectral_gap_from_lam1 (mβ lam1 : ℝ) (hmβ : 0 ≤ mβ) (hmβ1 : mβ 
   have h : mβ / 2 ≤ 1 - Real.exp (-mβ) := one_sub_exp_ge_half mβ hmβ hmβ1
   nlinarith [h, hlam]
 
+/-- **The finite-volume spectral gap is positive** — if the transfer-matrix second eigenvalue is
+`λ₁ = e^(−mβ)` (the mass rate) and the mass is positive, then the gap `0 < 1 − λ₁` holds. This is the
+finite-volume mass-gap statement: the positivity of the gap follows from the mass's positivity. -/
+theorem spectral_gap_pos (mβ lam1 : ℝ) (hmβ : 0 < mβ) (hlam : lam1 = Real.exp (-mβ)) :
+    0 < 1 - lam1 := by
+  rw [hlam]
+  have h : Real.exp (-mβ) < 1 := (Real.exp_lt_one_iff).mpr (by linarith)
+  linarith
+
 /-- **The gap lower bound on [0,2]** — `1 − e^(−x) ≥ x/4` for `0 ≤ x ≤ 2`: for `x ≤ 1` use
 `one_sub_exp_ge_half` (gives `x/2`), and for `1 ≤ x ≤ 2` use `1 − e^(−1) ≥ 1/2 ≥ x/4` (the monotonicity
 plus `2 ≤ e`). This is the small-`β` constant the referee scaling law needs when `mβ = 2·e^(−cβ) ≤ 2`. -/
