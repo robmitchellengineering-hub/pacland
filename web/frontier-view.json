@@ -29,7 +29,8 @@
     "rooted_connected_subset_tour_gen",
     "animals_weight_summable",
     "block_spin_contraction_su2",
-    "animals_majorant_summable"
+    "animals_majorant_summable",
+    "animals_majorant_tour_summable"
   ],
   "transports": [
     {
@@ -155,7 +156,8 @@
             "rooted_animals_count_bound_gen — #{rooted connected clusters of size n} ≤ (2n)(Δ+1)^(2(n−1)) for an ARBITRARY finite graph (the spanning-tree reduction)",
             "animals_weight_summable — Σ_n (Δ+1)^(2n) |ρ|^n converges when (Δ+1)^2 |ρ| < 1 (the small-field cluster-expansion convergence)",
             "block_spin_contraction_su2 — the block-spin contraction rate carries the SU(2) scale 2·e^(−(12π²/11)β) (rgContractionMassGap = su2_mass_gap_join)",
-            "animals_majorant_summable — the actual 2n-weighted majorant Σ_n 2n·((Δ+1)²|ρ|)^n converges (polynomial-times-geometric), closing the (2n)-factor gap"
+            "animals_majorant_summable — the actual 2n-weighted majorant Σ_n 2n·((Δ+1)²|ρ|)^n converges (polynomial-times-geometric), closing the (2n)-factor gap",
+            "animals_majorant_tour_summable — the EXACT tour-length majorant Σ_n (2n)(Δ+1)^(2(n−1))·|ρ|^n converges (dominated by the 2n-majorant)"
           ]
         },
         {

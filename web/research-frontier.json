@@ -170,7 +170,8 @@
     "rooted_connected_subset_tour_gen",
     "animals_weight_summable",
     "block_spin_contraction_su2",
-    "animals_majorant_summable"
+    "animals_majorant_summable",
+    "animals_majorant_tour_summable"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

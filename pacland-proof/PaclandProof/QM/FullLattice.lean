@@ -315,4 +315,18 @@ theorem animals_majorant_summable (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) 
     summable_pow_mul_geometric_of_norm_lt_one 1 ha
   simpa [pow_one, mul_assoc] using hpow.mul_left 2
 
+/-- **The tour-length majorant converges** — the exact animals count uses the Euler-tour exponent
+`2(n−1)` (not `2n`), and `(Δ+1)^(2(n−1)) ≤ (Δ+1)^(2n)` for `Δ+1 ≥ 1`, so the dominating `2n`-majorant's
+summability implies this one. This is the exact weighted majorant from `rooted_animals_count_bound_gen`. -/
+theorem animals_majorant_tour_summable (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Summable (fun n : ℕ => (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |ρ|^n) := by
+  refine Summable.of_nonneg_of_le
+    (fun n => by positivity)
+    (fun n => ?_) (animals_majorant_summable Δ ρ h)
+  have hle : ((Δ : ℝ) + 1)^(2*(n-1)) ≤ ((Δ : ℝ) + 1)^(2*n) := by
+    exact_mod_cast (Nat.pow_le_pow_right (Nat.succ_le_succ (Nat.zero_le Δ)) (by omega : 2*(n-1) ≤ 2*n))
+  simpa [mul_assoc, mul_pow, pow_mul] using
+    (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hle (pow_nonneg (abs_nonneg ρ) n))
+      (mul_nonneg zero_le_two (Nat.cast_nonneg n)))
+
 end QM
