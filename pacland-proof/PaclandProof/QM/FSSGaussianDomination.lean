@@ -697,6 +697,23 @@ theorem os3_measure_positivity {ι : Type*} [MeasurableSpace ι] (μ ν : Measur
   rw [hfact]
   exact sq_nonneg _
 
+/-- **The reflection factorization (Fubini across the reflection plane)** — the product measure's
+expectation of `g(x)·g(y)` splits as `(∫ g dν)·(∫ g dρ)`. This is the measure-theoretic content that,
+combined with reflection-invariance `∫ g dρ = ∫ g dν`, gives `⟨f,Θf⟩ = (∫ f dν)²` and hence OS3. -/
+theorem reflection_factorization {ι : Type*} [MeasurableSpace ι] (ν ρ : MeasureTheory.Measure ι) (g : ι → ℝ)
+    [MeasureTheory.SFinite ν] [MeasureTheory.SFinite ρ]
+    (hint : MeasureTheory.Integrable (fun z : ι × ι => g z.1 * g z.2) (ν.prod ρ)) :
+    (∫ x : ι × ι, g x.1 * g x.2 ∂(ν.prod ρ)) = (∫ x : ι, g x ∂ν) * (∫ x : ι, g x ∂ρ) := by
+  rw [MeasureTheory.integral_prod (fun z : ι × ι => g z.1 * g z.2) hint]
+  calc
+    (∫ x : ι, ∫ y : ι, g x * g y ∂ρ ∂ν)
+        = ∫ x : ι, g x * (∫ y : ι, g y ∂ρ) ∂ν := by
+            apply MeasureTheory.integral_congr_ae
+            filter_upwards with x
+            exact MeasureTheory.integral_const_mul (μ := ρ) (g x) g
+    _ = (∫ x : ι, g x ∂ν) * (∫ y : ι, g y ∂ρ) := by
+            exact MeasureTheory.integral_mul_const (μ := ν) (∫ y : ι, g y ∂ρ) g
+
 end FSSGaussianDomination
 
 end
