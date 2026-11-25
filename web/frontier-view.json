@@ -62,7 +62,9 @@
     "cos_fin_periodic_sub",
     "cyclic_fourier_hL_uncond",
     "cyclic_mode_norm_pos",
-    "latticeReflection"
+    "latticeReflection",
+    "latticeLaplacian",
+    "fss_ir_bound_geometric"
   ],
   "transports": [
     {
@@ -219,7 +221,8 @@
             "cos_fin_periodic_sub — the i−1 cyclic periodicity (the last DFT input; the hL discharge is now unconditional-ready)",
             "cyclic_fourier_hL_uncond — the unconditional hL discharge: ⟪f,Lf⟫ = 2(1−cos(2πk/m))·⟪f,f⟫ for the cyclic mode",
             "cyclic_mode_norm_pos — the cyclic mode's norm Σ cos² > 0 (the hLpos input)",
-            "latticeReflection — the geometric reflection f ↦ f∘(−·) is a linear isometry on PiLp 2 (the falk_bruch Θ)"
+            "latticeReflection — the geometric reflection f ↦ f∘(−·) is a linear isometry on PiLp 2 (the falk_bruch Θ)",
+            "latticeLaplacian + fss_ir_bound_geometric — the concrete FSS infrared bound instantiated to Θ=latticeReflection, L=latticeLaplacian, conditional only on the OS3 hpos"
           ]
         },
         {

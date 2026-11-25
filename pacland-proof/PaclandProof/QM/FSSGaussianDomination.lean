@@ -599,6 +599,36 @@ noncomputable def latticeReflection {m : ℕ} [NeZero m] :
       rw [hzero]
       simpa using h
 
+/-- **The lattice Laplacian on the ℓ² space** — `wilsonLaplacian` lifted to `PiLp 2 (Fin m → ℝ)`. -/
+noncomputable def latticeLaplacian {m : ℕ} [NeZero m] :
+    (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)) where
+  toFun f := (WithLp.equiv 2 (Fin m → ℝ)).symm (wilsonLaplacian (WithLp.ofLp f))
+  map_add' := by
+    intro f g
+    ext i
+    simp [WithLp.ofLp, wilsonLaplacian, LinearMap.coe_mk, AddHom.coe_mk, Pi.add_apply]
+    ring
+  map_smul' := by
+    intro a f
+    ext i
+    simp [WithLp.ofLp, wilsonLaplacian, LinearMap.coe_mk, AddHom.coe_mk, Pi.smul_apply, smul_eq_mul]
+
+/-- **The FSS infrared bound for the geometric reflection, conditional on OS3.** The concrete
+`su2_running_mass_momentum_bound` instantiated to `Θ = latticeReflection` and `L = latticeLaplacian` on
+`PiLp 2`, with the running mass `m(β) = 2·e^(−(12π²/11)β)`. The only remaining hypothesis is `hpos`, the
+OS3 reflection positivity (the physical reflection-positivity axiom). -/
+theorem fss_ir_bound_geometric (β : ℝ) (k m : ℕ) [NeZero m]
+    (mβ : ℝ) (hmβ : mβ = 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β))
+    (f : PiLp 2 (fun _ : Fin m => ℝ))
+    (hpos : 0 ≤ ⟪f, latticeReflection f⟫_ℝ)
+    (J : ℝ) (hJ : 0 < J)
+    (hsym : ⟪f, (latticeLaplacian (m := m) + mβ ^ 2 • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) f⟫_ℝ = J * ⟪f, f⟫_ℝ)
+    (hLpos : 0 < ⟪f, (latticeLaplacian (m := m) + mβ ^ 2 • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) f⟫_ℝ) :
+    ⟪f, latticeReflection f⟫_ℝ / ⟪f, (latticeLaplacian (m := m) + mβ ^ 2 • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) f⟫_ℝ ≤ 1 / J := by
+  let M := (PiLp 2 (fun _ : Fin m => ℝ))
+  have hL : M →ₗ[ℝ] M := latticeLaplacian + mβ ^ 2 • (1 : M →ₗ[ℝ] M)
+  exact su2_running_mass_momentum_bound latticeReflection latticeLaplacian f J β mβ hmβ hpos hsym hJ hLpos
+
 end FSSGaussianDomination
 
 end
