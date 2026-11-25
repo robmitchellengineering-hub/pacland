@@ -43,7 +43,8 @@
             "strong_coupling_iterate_contracts — the n-fold block-spin contraction e^(−nκ) → 0 (the RG iteration's strong-coupling decay)",
             "heat_kernel_gaussian_not_uniform — FALSIFIES mg-gd-001: e^(β cos θ) is not dominated by a Gaussian C·e^(−βθ²/2) uniformly (the heat-kernel Gaussianization is weak-coupling only)",
             "su2_running_mass_fss_bound — cross-synthesis: the FSS chain is mass-agnostic, so the running mass m(β)=2·e^(−(12π²/11)β) enters the SAME volume-uniform infrared bound",
-            "running_mass_pos + running_mass_decay — m(β)=2·e^(−(12π²/11)β) > 0 at every β and → 0 as β → ∞ (the weak-coupling running scale)"
+            "running_mass_pos + running_mass_decay — m(β)=2·e^(−(12π²/11)β) > 0 at every β and → 0 as β → ∞ (the weak-coupling running scale)",
+            "betaFunctionCoefficient_two + su2ConfinementScale_eq — the dimensional transmutation Λ = μ·e^(−(12π²/11)/g²) with b₀ = 11/(24π²)"
           ]
         },
         {

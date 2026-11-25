@@ -100,6 +100,24 @@ theorem su2_exponent : asymptoticFreedomExponent 2 = 12 * Real.pi ^ 2 / 11 := by
   field_simp
   ring
 
+/-- **The SU(2) one-loop beta coefficient**: `b₀ = 11/(24π²)` (the `N = 2` case of `11N/(48π²)`).
+This is the concrete coefficient the dimensional transmutation `Λ = μ·e^(−1/(2b₀g²))` uses. -/
+theorem betaFunctionCoefficient_two : betaFunctionCoefficient 2 = 11 / (24 * Real.pi ^ 2) := by
+  dsimp [betaFunctionCoefficient]
+  ring
+
+/-- **The SU(2) confinement scale (the dimensional transmutation)** — `Λ(g) = μ·e^(−(12π²/11)/g²)`,
+the scale where the running coupling diverges. This is the transmutation: the dimensionless coupling `g`
+and the UV scale `μ` combine into the single physical scale `Λ`, whose exponent is `c = 12π²/11`
+(`su2_exponent`). The mass gap runs as this scale. -/
+def su2ConfinementScale (μ g : ℝ) : ℝ := μ * Real.exp (-asymptoticFreedomExponent 2 / g^2)
+
+/-- The SU(2) confinement scale carries the physical exponent: `Λ = μ·e^(−(12π²/11)/g²)`. -/
+theorem su2ConfinementScale_eq (μ g : ℝ) :
+    su2ConfinementScale μ g = μ * Real.exp (-(12 * Real.pi ^ 2 / 11) / g^2) := by
+  dsimp [su2ConfinementScale]
+  rw [su2_exponent]
+
 /-- **The collective (full-lattice) instanton weight**: the winding-1 collective instanton has the
 weight `e^{−cβ}` with the SU(2) exponent `c = 12π²/11` — the physical asymptotic-freedom scale that
 the toy `e^{−β}` (PR #530) generalizes to. -/
