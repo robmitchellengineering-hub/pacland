@@ -836,6 +836,25 @@ theorem mass_gap_finite_volume {m : ℕ} [NeZero m] (K : Fin m → Fin m → ℝ
           (Matrix.diagonal (fun k => if k = 0 then 1 else 0))) i j| ≤ (Real.exp (-mβ))^n * (m : ℝ) := by
   exact QM.chessboard_estimate K hSymm hK n (Real.exp (-mβ)) hvacuum hlam (by positivity) i j
 
+/-- **The eigenvalue bound from the energy dispersion** — if the transfer-matrix eigenvalue is
+`λ = e^(−E)` and the energy is bounded below by the mass (`mβ ≤ E`), then `λ ≤ e^(−mβ)`. This is the
+monotonicity of `exp` turning the relativistic dispersion `E ≥ mβ` into the second-eigenvalue bound
+`λ₁ ≤ e^(−mβ)` — the single remaining input to `mass_gap_finite_volume`. -/
+theorem eigenvalue_le_exp_neg_mass (E mβ lam : ℝ) (hE : mβ ≤ E) (hlam : lam = Real.exp (-E)) :
+    lam ≤ Real.exp (-mβ) := by
+  rw [hlam]
+  exact Real.exp_le_exp.mpr (by linarith)
+
+/-- **The relativistic energy is bounded below by the mass** — `mβ ≤ √(k² + mβ²)` for `mβ ≥ 0`,
+the dispersion relation's lower bound (the energy `√(k² + mβ²)` is at least the rest mass `mβ`). This is
+the last ingredient of the eigenvalue bound: combined with `eigenvalue_le_exp_neg_mass`, it gives
+`λ = e^(−E) ≤ e^(−mβ)` for `E = √(k² + mβ²)`. -/
+theorem energy_ge_mass (k mβ : ℝ) (hmβ : 0 ≤ mβ) :
+    mβ ≤ Real.sqrt (k^2 + mβ^2) := by
+  have hle : mβ^2 ≤ k^2 + mβ^2 := by nlinarith [sq_nonneg k]
+  have hsqrt : Real.sqrt (mβ^2) ≤ Real.sqrt (k^2 + mβ^2) := Real.sqrt_le_sqrt hle
+  rwa [Real.sqrt_sq hmβ] at hsqrt
+
 /-- **The gap lower bound on [0,2]** — `1 − e^(−x) ≥ x/4` for `0 ≤ x ≤ 2`: for `x ≤ 1` use
 `one_sub_exp_ge_half` (gives `x/2`), and for `1 ≤ x ≤ 2` use `1 − e^(−1) ≥ 1/2 ≥ x/4` (the monotonicity
 plus `2 ≤ e`). This is the small-`β` constant the referee scaling law needs when `mβ = 2·e^(−cβ) ≤ 2`. -/

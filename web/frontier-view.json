@@ -86,7 +86,9 @@
     "spectral_gap_from_lam1",
     "one_sub_exp_ge_quarter",
     "spectral_gap_pos",
-    "mass_gap_finite_volume"
+    "mass_gap_finite_volume",
+    "eigenvalue_le_exp_neg_mass",
+    "energy_ge_mass"
   ],
   "transports": [
     {
@@ -261,7 +263,8 @@
             "spectral_gap_from_lam1 — the eigenvalue bound λ₁ ≤ e^(−mβ) implies the gap 1−λ₁ ≥ mβ/2 (the spectral-gap connective)",
             "one_sub_exp_ge_quarter — the gap lower bound 1−e^(−x) ≥ x/4 on [0,2] (the small-β constant for the referee scaling law)",
             "spectral_gap_pos — the finite-volume spectral gap 0 < 1−λ₁ from λ₁ = e^(−mβ) and mβ > 0 (Step A positivity)",
-            "mass_gap_finite_volume — the finite-volume exponential clustering (chessboard_estimate with λₖ ≤ e^(−mβ)), conditional only on the eigenvalue bound hlam"
+            "mass_gap_finite_volume — the finite-volume exponential clustering (chessboard_estimate with λₖ ≤ e^(−mβ)), conditional only on the eigenvalue bound hlam",
+            "eigenvalue_le_exp_neg_mass + energy_ge_mass — the dispersion lemmas reducing the eigenvalue bound to λ = e^(−E), E = √(k²+mβ²) ≥ mβ"
           ]
         },
         {
