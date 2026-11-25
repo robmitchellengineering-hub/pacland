@@ -855,6 +855,19 @@ theorem energy_ge_mass (k mβ : ℝ) (hmβ : 0 ≤ mβ) :
   have hsqrt : Real.sqrt (mβ^2) ≤ Real.sqrt (k^2 + mβ^2) := Real.sqrt_le_sqrt hle
   rwa [Real.sqrt_sq hmβ] at hsqrt
 
+/-- **The lattice dispersion lower bound** — `mβ ≤ √(2(1−cos k) + mβ²)` for `mβ ≥ 0`: the lattice energy
+`√(2(1−cos k)+mβ²)` (the free propagator's pole, the lattice relativistic dispersion) is at least the rest
+mass `mβ`. This is the lattice form of `energy_ge_mass`, the dispersion input to the eigenvalue bound. -/
+theorem energy_ge_mass_lattice (k mβ : ℝ) (hmβ : 0 ≤ mβ) :
+    mβ ≤ Real.sqrt (2 * (1 - Real.cos k) + mβ^2) := by
+  have hcos : 0 ≤ 1 - Real.cos k := by
+    have hc : Real.cos k ≤ 1 := (abs_le.mp (Real.abs_cos_le_one k)).2
+    linarith
+  have hle : mβ^2 ≤ 2 * (1 - Real.cos k) + mβ^2 := by
+    nlinarith [mul_nonneg (by norm_num : 0 ≤ (2 : ℝ)) hcos]
+  have hsqrt : Real.sqrt (mβ^2) ≤ Real.sqrt (2 * (1 - Real.cos k) + mβ^2) := Real.sqrt_le_sqrt hle
+  rwa [Real.sqrt_sq hmβ] at hsqrt
+
 /-- **The full eigenvalue-bound assembly (Step A's last connective)** — the lattice dispersion
 `E = √(2(1−cos k) + mβ²)` and the transfer-matrix identification `λ = e^(−E)` imply the second-eigenvalue
 bound `λ ≤ e^(−mβ)`. This is the dispersion relation in its lattice form: the mass `mβ` lower-bounds the
