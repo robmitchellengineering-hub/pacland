@@ -810,6 +810,29 @@ theorem spectral_gap_from_lam1 (mβ lam1 : ℝ) (hmβ : 0 ≤ mβ) (hmβ1 : mβ 
   have h : mβ / 2 ≤ 1 - Real.exp (-mβ) := one_sub_exp_ge_half mβ hmβ hmβ1
   nlinarith [h, hlam]
 
+/-- **The gap lower bound on [0,2]** — `1 − e^(−x) ≥ x/4` for `0 ≤ x ≤ 2`: for `x ≤ 1` use
+`one_sub_exp_ge_half` (gives `x/2`), and for `1 ≤ x ≤ 2` use `1 − e^(−1) ≥ 1/2 ≥ x/4` (the monotonicity
+plus `2 ≤ e`). This is the small-`β` constant the referee scaling law needs when `mβ = 2·e^(−cβ) ≤ 2`. -/
+theorem one_sub_exp_ge_quarter (x : ℝ) (hx : 0 ≤ x) (hx2 : x ≤ 2) :
+    x / 4 ≤ 1 - Real.exp (-x) := by
+  by_cases hx1 : x ≤ 1
+  · have h : x / 2 ≤ 1 - Real.exp (-x) := one_sub_exp_ge_half x hx hx1
+    nlinarith
+  · have hx1' : 1 ≤ x := le_of_not_ge hx1
+    have hmono : 1 - Real.exp (-1) ≤ 1 - Real.exp (-x) := by
+      have hne : Real.exp (-x) ≤ Real.exp (-1) := Real.exp_le_exp.mpr (by linarith)
+      linarith
+    have he : Real.exp (-1) ≤ 1 / 2 := by
+      rw [Real.exp_neg]
+      have h2e : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.exp_one_gt_d9]
+      have hdiv : 1 / Real.exp 1 ≤ 1 / 2 := by
+        rw [div_le_iff₀ (by positivity : 0 < Real.exp 1)]
+        nlinarith [h2e]
+      simpa [one_div] using hdiv
+    have hhalf : 1 / 2 ≤ 1 - Real.exp (-1) := by linarith
+    have hx4 : x / 4 ≤ 1 / 2 := by linarith
+    nlinarith [hmono, hhalf, hx4]
+
 /-- **The Weyl density is reflection-invariant** — `sin²(π − θ) = sin²θ`, the symmetry of the
 single-plaquette Weyl measure density under the lattice reflection `θ ↦ π − θ`. This is the input to the
 measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dν)²`. -/

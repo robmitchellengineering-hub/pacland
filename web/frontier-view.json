@@ -83,7 +83,8 @@
     "mass_gap_scaling_from_mass",
     "mass_gap_from_lower_bound",
     "one_sub_exp_ge_half",
-    "spectral_gap_from_lam1"
+    "spectral_gap_from_lam1",
+    "one_sub_exp_ge_quarter"
   ],
   "transports": [
     {
@@ -255,7 +256,8 @@
             "mass_gap_scaling_from_mass — the referee scaling law for any mβ = 2·e^(−(12π²/11)β) (Rung 2 scaling-law part)",
             "mass_gap_from_lower_bound — the Rung 2 final connective: a mass-gap lower bound ⇒ refereeScalingLaw (reduces the open item to the single spectral-gap lower bound 1−λ₁(β) ≥ 2·e^(−(12π²/11)β))",
             "one_sub_exp_ge_half — the spectral-gap core 1−e^(−x) ≥ x/2 on [0,1] (turns λ₁ ≤ e^(−mβ) into the gap 1−λ₁ ≥ mβ/2)",
-            "spectral_gap_from_lam1 — the eigenvalue bound λ₁ ≤ e^(−mβ) implies the gap 1−λ₁ ≥ mβ/2 (the spectral-gap connective)"
+            "spectral_gap_from_lam1 — the eigenvalue bound λ₁ ≤ e^(−mβ) implies the gap 1−λ₁ ≥ mβ/2 (the spectral-gap connective)",
+            "one_sub_exp_ge_quarter — the gap lower bound 1−e^(−x) ≥ x/4 on [0,2] (the small-β constant for the referee scaling law)"
           ]
         },
         {
