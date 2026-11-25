@@ -60,7 +60,8 @@
             "latticeReflection — the geometric reflection f ↦ f∘(−·) is a linear isometry on PiLp 2 (the falk_bruch Θ)",
             "latticeLaplacian + fss_ir_bound_geometric — the concrete FSS infrared bound instantiated to Θ=latticeReflection, L=latticeLaplacian, conditional only on the OS3 hpos",
             "os3_reflection_positivity_half — the OS3 reflection positivity for a one-side-supported field (the ℓ² content of the axiom)",
-            "sin_sq_pi_sub — the Weyl density's reflection-invariance sin²(π−θ) = sin²θ (the OS3 factorization input)"
+            "sin_sq_pi_sub — the Weyl density's reflection-invariance sin²(π−θ) = sin²θ (the OS3 factorization input)",
+            "weyl_reflection_invariant — the Weyl measure's reflection-invariance ∫f(π−θ)sin²θ = ∫f(θ)sin²θ (the OS3 factorization input)"
           ]
         },
         {

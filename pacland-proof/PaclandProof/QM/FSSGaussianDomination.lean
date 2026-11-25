@@ -653,6 +653,40 @@ measure-theoretic OS3 factorization `⟨f, Θf⟩ = (∫ f dμ₊)²`. -/
 theorem sin_sq_pi_sub (θ : ℝ) : Real.sin (Real.pi - θ)^2 = Real.sin θ^2 := by
   rw [Real.sin_pi_sub]
 
+/-- **The Weyl density's reflection-invariance** — `∫₀^π f(π−θ)·sin²θ dθ = ∫₀^π f θ·sin²θ dθ`, via the
+substitutions `θ ↦ θ+π` (shift) and `θ ↦ −θ` (reversal), using `sin²`'s symmetry. This is the
+measure-theoretic reflection-invariance the OS3 factorization `⟨f,Θf⟩ = (∫ f dμ₊)²` uses. -/
+theorem weyl_reflection_invariant (f : ℝ → ℝ) :
+    (∫ θ in (0)..Real.pi, f (Real.pi - θ) * Real.sin θ ^ 2) = ∫ θ in (0)..Real.pi, f θ * Real.sin θ ^ 2 := by
+  have hcomp := intervalIntegral.integral_comp_sub_right (a := 0) (b := Real.pi) (fun x => f (-x) * Real.sin x ^ 2) Real.pi
+  have hneg := intervalIntegral.integral_comp_neg (a := -(Real.pi)) (b := 0) (fun x => f x * Real.sin x ^ 2)
+  calc
+    (∫ θ in (0)..Real.pi, f (Real.pi - θ) * Real.sin θ ^ 2)
+        = ∫ θ in (0)..Real.pi, f (-(θ - Real.pi)) * Real.sin (θ - Real.pi) ^ 2 := by
+            apply intervalIntegral.integral_congr
+            intro θ hθ
+            change f (Real.pi - θ) * Real.sin θ ^ 2 = f (-(θ - Real.pi)) * Real.sin (θ - Real.pi) ^ 2
+            have h1 : Real.pi - θ = -(θ - Real.pi) := by ring
+            rw [h1]
+            have h2 : Real.sin θ ^ 2 = Real.sin (θ - Real.pi) ^ 2 := by
+              have hs : Real.sin (θ - Real.pi) = -Real.sin θ := by
+                rw [show θ - Real.pi = -(Real.pi - θ) by ring]
+                rw [Real.sin_neg, Real.sin_pi_sub]
+              rw [hs]
+              ring
+            rw [h2]
+    _ = ∫ θ in (-(Real.pi))..0, f (-θ) * Real.sin θ ^ 2 := by
+            simpa using hcomp
+    _ = ∫ θ in (0)..Real.pi, f θ * Real.sin θ ^ 2 := by
+            have hsin : (∫ θ in (-(Real.pi))..0, f (-θ) * Real.sin θ ^ 2) = ∫ θ in (-(Real.pi))..0, f (-θ) * Real.sin (-θ) ^ 2 := by
+              apply intervalIntegral.integral_congr
+              intro θ hθ
+              change f (-θ) * Real.sin θ ^ 2 = f (-θ) * Real.sin (-θ) ^ 2
+              rw [show Real.sin θ ^ 2 = Real.sin (-θ) ^ 2 by rw [Real.sin_neg]; ring]
+            rw [hsin]
+            rw [hneg]
+            simp
+
 end FSSGaussianDomination
 
 end
