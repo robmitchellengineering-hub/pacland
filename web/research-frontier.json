@@ -211,7 +211,8 @@
     "weyl_reflection_invariant",
     "os3_measure_positivity",
     "reflection_factorization",
-    "os3_weyl_positivity"
+    "os3_weyl_positivity",
+    "lpReflection"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

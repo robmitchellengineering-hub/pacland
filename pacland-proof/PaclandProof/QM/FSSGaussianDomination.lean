@@ -724,6 +724,27 @@ theorem os3_weyl_positivity {ι : Type*} [MeasurableSpace ι] (ν : MeasureTheor
   rw [reflection_factorization ν ν g hint]
   exact mul_self_nonneg (∫ x : ι, g x ∂ν)
 
+/-- **The geometric reflection on the measure L² space** — `f ↦ f ∘ θ` for a measure-preserving
+involution `θ`, a linear isometry on `Lp ℝ 2 ν` (the `fss_join` `Θ : E →ₗᵢ[ℝ] E` on the measure space). -/
+noncomputable def lpReflection {ι : Type*} [MeasurableSpace ι] (ν : MeasureTheory.Measure ι) (θ : ι ≃ ι)
+    (hθ : MeasureTheory.MeasurePreserving θ ν ν) :
+    (MeasureTheory.Lp ℝ 2 ν) →ₗᵢ[ℝ] (MeasureTheory.Lp ℝ 2 ν) where
+  toLinearMap := {
+    toFun g := (MeasureTheory.Lp.compMeasurePreserving θ hθ) g
+    map_add' := (MeasureTheory.Lp.compMeasurePreserving θ hθ).map_add
+    map_smul' := by
+      intro a g
+      apply MeasureTheory.Lp.ext
+      refine (MeasureTheory.Lp.coeFn_compMeasurePreserving (a • g) hθ).trans ?_
+      refine (show ↑↑(a • g) ∘ θ =ᵐ[ν] (a • ↑↑g) ∘ θ from hθ.quasiMeasurePreserving.ae (MeasureTheory.Lp.coeFn_smul a g)).trans ?_
+      refine (show (a • (↑↑g : ι → ℝ)) ∘ θ =ᵐ[ν] a • ((↑↑g : ι → ℝ) ∘ θ) from Filter.Eventually.of_forall (fun x => by rfl)).trans ?_
+      refine ((MeasureTheory.Lp.coeFn_compMeasurePreserving g hθ).const_smul a).symm.trans ?_
+      exact (MeasureTheory.Lp.coeFn_smul a ((MeasureTheory.Lp.compMeasurePreserving θ hθ) g)).symm
+  }
+  norm_map' := by
+    intro g
+    exact MeasureTheory.Lp.norm_compMeasurePreserving g hθ
+
 end FSSGaussianDomination
 
 end

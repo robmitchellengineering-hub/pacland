@@ -70,7 +70,8 @@
     "weyl_reflection_invariant",
     "os3_measure_positivity",
     "reflection_factorization",
-    "os3_weyl_positivity"
+    "os3_weyl_positivity",
+    "lpReflection"
   ],
   "transports": [
     {
@@ -234,7 +235,8 @@
             "weyl_reflection_invariant — the Weyl measure's reflection-invariance ∫f(π−θ)sin²θ = ∫f(θ)sin²θ (the OS3 factorization input)",
             "os3_measure_positivity — the measure-theoretic OS3, conditional on the factorization ∫f·(f∘Θ)dμ = (∫f dμ₊)²",
             "reflection_factorization — the Fubini split ∫ g(x)g(y) d(μ⊗ν) = (∫ g dμ)(∫ g dν) (the OS3 factorization)",
-            "os3_weyl_positivity — the concrete OS3 for the symmetric Weyl product: ∫g(x)g(y)d(ν⊗ν) = (∫g dν)² ≥ 0"
+            "os3_weyl_positivity — the concrete OS3 for the symmetric Weyl product: ∫g(x)g(y)d(ν⊗ν) = (∫g dν)² ≥ 0",
+            "lpReflection — the geometric reflection f ↦ f∘θ is a linear isometry on Lp ℝ 2 ν (the FSS Θ on the measure L² space)"
           ]
         },
         {
