@@ -211,4 +211,21 @@ theorem strong_coupling_contracts {β c : ℝ} (hβ : 0 < β) (hc : 0 < c)
     Real.exp_lt_exp.mpr hneg
   simpa [Real.exp_zero] using hexp
 
+/-- **The block-spin iteration contracts to zero** — iterating the strong-coupling contraction `e^(−κ)`
+`n` times gives `e^(−nκ) → 0`, since `κ > 0` forces `−nκ → −∞`. This is the RG iteration's decay: the
+block-spin map's `n`-fold composition drives the field to the trivial fixed point, the strong-coupling
+mass gap's exponential decay in the number of RG steps. -/
+theorem strong_coupling_iterate_contracts {β c : ℝ} (hβ : 0 < β) (hc : 0 < c)
+    (h : Real.exp (-2 * β) < c * (1 - Real.exp (-2 * β))) :
+    Filter.Tendsto (fun n : ℕ => Real.exp (-(n : ℝ) * (β * (c - (1 + c) * Real.exp (-2 * β))))) Filter.atTop (nhds 0) := by
+  have hκ : 0 < β * (c - (1 + c) * Real.exp (-2 * β)) :=
+    effective_curvature_positive β c hβ hc h
+  have ht : Filter.Tendsto (fun n : ℕ => -(n : ℝ) * (β * (c - (1 + c) * Real.exp (-2 * β)))) Filter.atTop Filter.atBot := by
+    have hneg : Filter.Tendsto (fun n : ℕ => -(n : ℝ)) Filter.atTop Filter.atBot :=
+      Filter.tendsto_neg_atTop_atBot.comp tendsto_natCast_atTop_atTop
+    have hconst : Filter.Tendsto (fun n : ℕ => (β * (c - (1 + c) * Real.exp (-2 * β))) * -(n : ℝ)) Filter.atTop Filter.atBot :=
+      Filter.Tendsto.const_mul_atBot hκ hneg
+    simpa only [mul_comm, mul_assoc] using hconst
+  exact Real.tendsto_exp_atBot.comp ht
+
 end QM
