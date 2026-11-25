@@ -1,0 +1,287 @@
+{
+  "schema": "sextant-frontier-view",
+  "root_obligation": "The SU(2) two-point function (of the trace observable) is dominated by the free propagator, uniformly in the volume and in the decimation scale — the single fact that makes the finite Casimir gap 2 survive the thermodynamic and continuum limits with the running-coupling exponent c = 12π²/11.",
+  "proved_layer": [
+    "fss_join",
+    "fss_reflected_correlation_factorization",
+    "fss_reflection_positivity_square",
+    "casimir_infrared_bound",
+    "ir_bound_su2",
+    "gradientFlow_contraction_rate",
+    "rg_contraction_positive",
+    "stringTension_eq_casimir",
+    "stringTension_su2",
+    "walk_count_bound",
+    "polymer_expansion_subset",
+    "linked_cluster_log_prod",
+    "linked_cluster_weights",
+    "cluster_weight_bound",
+    "cluster_weights_summable",
+    "posdef_*",
+    "connected_exists_visiting_walk",
+    "tree_euler_tour_length",
+    "connected_subset_tour",
+    "rooted_tree_tour",
+    "rooted_subset_tour",
+    "rooted_animals_count_bound",
+    "connected_subset_tour_gen",
+    "rooted_animals_count_bound_gen",
+    "rooted_connected_subset_tour_gen",
+    "animals_weight_summable",
+    "block_spin_contraction_su2",
+    "animals_majorant_summable",
+    "animals_majorant_tour_summable",
+    "blockSpin_lipschitz",
+    "blockSpin_contracts_two"
+  ],
+  "transports": [
+    {
+      "name": "mass_gap_from_hypotheses",
+      "hypothesis": "a bundle of hypotheses",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_from_mixing",
+      "hypothesis": "spectral mixing",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_from_volume_independent_tension",
+      "hypothesis": "volume-independent string tension",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_iff_positive_ratio",
+      "hypothesis": "a positive ratio",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_of_radius_bound",
+      "hypothesis": "radius bound ρ ≤ e^(−A·e^(−cβ))",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_of_radius_exponential",
+      "hypothesis": "radius bound ρ ≤ e^(−A·e^(−cβ))",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_join",
+      "hypothesis": "the joined bound",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_join_strong",
+      "hypothesis": "the joined bound (strong)",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_reduction",
+      "hypothesis": "volume-uniformity",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_reduction_volumeUniform",
+      "hypothesis": "volume-uniformity",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_bounds_string_tension",
+      "hypothesis": "string tension",
+      "source": "Lean"
+    },
+    {
+      "name": "string_tension_iff_gap",
+      "hypothesis": "string tension",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_dimensional_transmutation",
+      "hypothesis": "the running-coupling route",
+      "source": "Lean"
+    },
+    {
+      "name": "mass_gap_follows_beta_not_instanton",
+      "hypothesis": "the running-coupling (non-instanton) route",
+      "source": "Lean"
+    },
+    {
+      "name": "clustering_iff_gap",
+      "hypothesis": "clustering",
+      "source": "Lean"
+    },
+    {
+      "name": "clustering_implies_cluster_expansion",
+      "hypothesis": "clustering",
+      "source": "Lean"
+    },
+    {
+      "name": "infrared_bound_gives_volume_uniform",
+      "hypothesis": "the infrared bound",
+      "source": "Lean"
+    },
+    {
+      "name": "refereeScalingLaw_of_radius_bound",
+      "hypothesis": "radius bound ρ ≤ e^(−A·e^(−cβ))",
+      "source": "Lean"
+    },
+    {
+      "name": "volume_uniform_covariance_bound",
+      "hypothesis": "volume-uniform covariance (hpos/hlim)",
+      "source": "Lean"
+    }
+  ],
+  "obligations": [
+    {
+      "name": "ym-linked-cluster-contraction",
+      "state": "open",
+      "rung": "the block-spin contraction ρ ≤ e^(−A·e^(−cβ)); first rung: the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1))",
+      "routes": [
+        {
+          "name": "block-spin / animals bound",
+          "next": "the contraction rate: bound the block-spin's distance by e^(−cβ)·(the fine-field distance), chaining the Lipschitz + the cluster expansion's convergence (animals_majorant_tour_summable) into the running coupling c = 12π²/11",
+          "state": "attempted",
+          "rungs": [
+            "Connected.exists_isTree_le (Mathlib): a connected graph has a spanning tree T ≤ G (IsTree T)",
+            "IsTree.existsUnique_path (Mathlib): a tree has a unique path between any two vertices",
+            "EULER TOUR (NOT in Mathlib): a tree on n vertices has a walk of length 2(n−1) visiting all n vertices (each edge traversed twice)",
+            "injection connected-subset → Euler-tour walk, then walk_count_bound gives #{clusters of size n} ≤ Δ^(2(n−1))"
+          ],
+          "proved": [
+            "connected_exists_visiting_walk — a connected graph has a walk visiting every vertex (the Euler tour's existence, kernel-checked)",
+            "tree_euler_tour_length — a tree has a closed walk visiting every vertex with length ≤ 2(n−1) (kernel-checked)",
+            "connected_subset_tour — a connected induced subset S has a closed walk visiting all of S with length ≤ 2(|S|−1)",
+            "rooted_tree_tour — a tree has a closed walk from any prescribed root r visiting every vertex, length ≤ 2(n−1)",
+            "rooted_subset_tour — a rooted connected subset S has a closed walk from r visiting all of S, length ≤ 2(|S|−1)",
+            "rooted_animals_count_bound — #{rooted connected clusters of size n} ≤ (2n)(Δ+1)^(2(n−1)) via the S↦tour injection + walk_count_bound",
+            "connected_subset_tour_gen — a connected induced subset of an ARBITRARY finite graph has a tour, length ≤ 2(|S|−1) (spanning-tree reduction)",
+            "rooted_animals_count_bound_gen — #{rooted connected clusters of size n} ≤ (2n)(Δ+1)^(2(n−1)) for an ARBITRARY finite graph (the spanning-tree reduction)",
+            "animals_weight_summable — Σ_n (Δ+1)^(2n) |ρ|^n converges when (Δ+1)^2 |ρ| < 1 (the small-field cluster-expansion convergence)",
+            "block_spin_contraction_su2 — the block-spin contraction rate carries the SU(2) scale 2·e^(−(12π²/11)β) (rgContractionMassGap = su2_mass_gap_join)",
+            "animals_majorant_summable — the actual 2n-weighted majorant Σ_n 2n·((Δ+1)²|ρ|)^n converges (polynomial-times-geometric), closing the (2n)-factor gap",
+            "animals_majorant_tour_summable — the EXACT tour-length majorant Σ_n (2n)(Δ+1)^(2(n−1))·|ρ|^n converges (dominated by the 2n-majorant)",
+            "blockSpin_lipschitz — the block-spin (decimation) map is 1-Lipschitz in the metric group: dist of products ≤ sum of factor distances",
+            "blockSpin_contracts_two — a uniform fine-field distance D contracts to 2D per block (the coarse-graining step; the e^(−cβ) rate is the further measure step)"
+          ]
+        },
+        {
+          "name": "volume-uniform FSS",
+          "next": "prove the non-Abelian FSS estimate for the SU(2) character (the linear/Abelian version is proved: fss_join, falk_bruch)",
+          "state": "available",
+          "note": "equivalent to the block-spin route via refereeScalingLaw_iff_volumeUniformRatio"
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "name": "ym-volume-uniform-su2",
+      "state": "open",
+      "rung": "the volume-uniform FSS for the SU(2) character (the linear/Abelian version is proved: fss_join, falk_bruch)",
+      "routes": [
+        {
+          "name": "non-Abelian FSS",
+          "next": "the SU(2) character two-point function dominated by the free propagator, uniform in the volume",
+          "state": "available",
+          "note": "same obligation as the block-spin contraction (refereeScalingLaw_iff_volumeUniformRatio)"
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "name": "ym-fss-nonabelian-closable",
+      "state": "open",
+      "rung": "the FSS non-Abelian estimate (the closable transport is proved; the estimate is the hypothesis)",
+      "routes": [],
+      "evidence": []
+    },
+    {
+      "name": "ym-log-sobolev",
+      "state": "open",
+      "rung": "the log-Sobolev / mixing gap",
+      "routes": [
+        {
+          "name": "log-Sobolev → mixing → clustering",
+          "next": "prove the log-Sobolev → mixing bridge, then chain clustering_iff_gap to the spectral gap",
+          "state": "available",
+          "note": "the clustering ⟺ gap bridge is already proved (clustering_iff_gap); the log-Sobolev → mixing leg is the open bit"
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "name": "ym-d5-confinement",
+      "state": "open",
+      "rung": "the d=5 no-gap (numerical observation, IRREDUCIBLE)",
+      "routes": [],
+      "evidence": []
+    },
+    {
+      "name": "ym-mass-gap-bulk-transition",
+      "state": "open",
+      "rung": "the bulk-transition jump (numerical observation, IRREDUCIBLE)",
+      "routes": [],
+      "evidence": []
+    },
+    {
+      "name": "ym-mass-gap-polyakov",
+      "state": "open",
+      "rung": "the Polyakov screening mass (numerical observation, IRREDUCIBLE)",
+      "routes": [],
+      "evidence": []
+    }
+  ],
+  "rejections": [
+    {
+      "name": "su2-compactness-heine-borel",
+      "wall": "SU(2) compactness + Haar via Heine-Borel / PositiveCompacts",
+      "why_failed": "Mathlib has no CompactSpace/PositiveCompacts instance for Matrix.specialUnitaryGroup (Fin 2) ℂ",
+      "workaround": "Measure.toSphere on Metric.sphere (0 : ℂ × ℂ) 1 — S³ = SU(2), avoiding the compactness wall",
+      "source": "FullLattice.lean"
+    },
+    {
+      "name": "specialUnitaryGroup-as-group",
+      "wall": "treating specialUnitaryGroup as a Group (the group tactic)",
+      "why_failed": "specialUnitaryGroup is a Submonoid, not a Group; the inverse lives in the Subgroup",
+      "workaround": "associativity-only Monoid form, not group",
+      "source": "FullLattice.lean"
+    },
+    {
+      "name": "bigoperators-in-binder",
+      "wall": "∏ p in s BigOperators notation",
+      "why_failed": "parse error on the 'in' binder",
+      "workaround": "∏ p ∈ s (the ∈ binder)",
+      "source": "FullLattice.lean"
+    },
+    {
+      "name": "prod-insert-subset-identity",
+      "wall": "Finset.prod_insert in the subset identity ∏(1+ρ)=Σ_S ∏ρ",
+      "why_failed": "metavariable / wrong occurrence — rw couldn't target ∏ p ∈ insert a x",
+      "workaround": "show B = C + apply sum_congr rfl + intro + explicit pointwise prod_insert",
+      "source": "FullLattice.lean (polymer_expansion_subset)"
+    },
+    {
+      "name": "neighborset-subtype-walk-count",
+      "wall": "G.neighborSet as a type in the walks-count bound",
+      "why_failed": "G.neighborSet : V → Set V is not a type; the sum over it needs the subtype",
+      "workaround": "explicit {w : V // w ∈ G.neighborSet u} + Fintype.card_coe (Finset.filter (Adj u) univ)",
+      "source": "FullLattice.lean (walk_count_bound)"
+    },
+    {
+      "name": "reduction-milestone-framing",
+      "wall": "re-labelling the same open rung as a new 'reduction' milestone",
+      "why_failed": "the ~80 mass-gap framings are one wall, restated; the framing disguised non-progress as progress",
+      "workaround": "the accounting graph + the three states (proved-lemma / proved-transport / open-obligation)",
+      "source": "docs/MASS-GAP-ACCOUNTING.md"
+    }
+  ],
+  "attempts": [],
+  "build_evidence": {
+    "commit": "a372fbefde48e532d58a85bb7da633d5c45dce1b",
+    "dirty": [],
+    "lean_version": "Lean (version 4.35.0, x86_64-apple-darwin24.6.0, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+    "build_exit": 0,
+    "tests_exit": 0,
+    "theorem_count": 493,
+    "ok": true
+  }
+}

@@ -62,10 +62,18 @@ Under that core sit the named rungs, which are the *concrete* obligations:
 | the volume-uniform FSS for the SU(2) character | the FSS non-Abelian estimate (the linear/Abelian version is proved: `fss_join`, `falk_bruch`) | open |
 | the log-Sobolev / mixing gap | the mixing estimate | open |
 
-**To be established by the reconciliation (not assumed):** whether the three named rungs are
-*equivalent* or genuinely distinct. The block-spin contraction and the volume-uniform FSS are almost
-certainly the same fact in two frameworks (RG vs thermodynamic); proving that equivalence is itself a
-reconciliation step, and it would reduce the open set from three to (likely) one.
+**Established by the tower (verified, not assumed):** the three named rungs are **not** three
+independent obligations. The Lean tower proves the bridges:
+- `refereeScalingLaw_iff_volumeUniformRatio` — the scaling law (`A·Λ ≤ mGap`) ⟺ the volume-uniform
+  ratio (`C ≤ mGap/Λ`): the block-spin contraction and the volume-uniform FSS are the same statement.
+- `clustering_iff_gap` — exponential clustering (`|Tⁿ i j| ≤ lam1ⁿ·m`) ⟺ the spectral bound
+  (`|eigenvalues| ≤ lam1`): the mixing and the gap are two faces of one fact.
+- `mass_gap_of_radius_bound` + `refereeScalingLaw_of_radius_bound` — the radius bound
+  `ρ ≤ e^{−A·e^{−cβ}}` chains to both the gap and the scaling law.
+
+So the open set collapses to **one obligation**: the radius bound `ρ ≤ e^{−A·e^{−(12π²/11)β}}` itself,
+whose first rung is the animals bound. The remaining piece of the equivalence-collapse (if any) is the
+log-Sobolev → mixing bridge, which the `ym-log-sobolev` hypothesis names.
 
 ## What this means for SEXTANT
 

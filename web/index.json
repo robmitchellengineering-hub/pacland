@@ -249,6 +249,13 @@
    "title": "SEXTANT \u2014 the cross-field verified-discovery system (revision 2)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-KNOWLEDGE-ARCHITECTURE.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-KNOWLEDGE-ARCHITECTURE.md",
+   "summary": "Priority 1 gave us the accounting; priority 2 makes it the single source of truth the rest of the machine reads. Today the knowledge is scattered across sextant.py (claims), index.json\u2026",
+   "title": "SEXTANT knowledge architecture \u2014 one schema, four consumers (priority 2)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-MANUAL.md",
    "kind": "doc",
    "path": "docs/SEXTANT-MANUAL.md",
@@ -1906,6 +1913,13 @@
    "path": "scripts/build_discovery_extra.py",
    "summary": "Generate more DISGUISED real-physics discovery examples to thicken the discovery skill.",
    "title": "build_discovery_extra.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_frontier_view.py",
+   "kind": "script",
+   "path": "scripts/build_frontier_view.py",
+   "summary": "Generate `web/frontier-view.json` \u2014 the consolidated node-schema view.",
+   "title": "build_frontier_view.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_peft_dataset.py",

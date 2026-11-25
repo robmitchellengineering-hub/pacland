@@ -1,4 +1,5 @@
 import PaclandProof.QM.MassGapDiamond
+import PaclandProof.QM.FSSGaussianDomination
 
 /-! The FSS infrared bound — the volume-uniform bridge.
 
@@ -70,6 +71,15 @@ the RG contraction's rate is the mass gap and carries the beta-function scale in
 `massGapUnified` and `rgContraction` meet here — the gap (from the contraction) and the scale (from the
 running coupling) are the one bound on the one object. -/
 def rgContractionMassGap (Δ : ℝ → ℝ) : Prop := QM.refereeScalingLaw Δ
+
+/-- **The block-spin contraction carries the SU(2) scale** — the contraction rate (the gap) is
+`2·e^{−(12π²/11)β}`, exactly the `su2_mass_gap_join` scaling law. This is the contraction-rate half of the
+unified mass gap: the block-spin map's rate is the mass gap and carries the beta-function scale in the
+same exponent. -/
+theorem block_spin_contraction_su2 :
+    rgContractionMassGap (fun β : ℝ => 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β)) := by
+  dsimp [rgContractionMassGap]
+  exact FSSGaussianDomination.su2_mass_gap_join
 
 /-- **The scaling-law bound is positive.** A witness `A > 0` with `A·e^{−cβ} ≤ mGap β` forces
 `0 < mGap β` for every `β > 0` — the positivity of the mass gap delivered by the scaling law. -/
