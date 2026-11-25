@@ -239,5 +239,6 @@
     "independent_obligations": 2,
     "independent_why": "exactly two independent mathematical obligations remain: the radius bound (one class) and the log-Sobolev bridge (the other); the three IRREDUCIBLE entries are evidence, not obligations",
     "missing_object_2026-11": "the rgContraction's T : ℝ→ℝ→ℝ is a placeholder; the real block-spin map acts on link configurations V→G and the e^(−(12π²/11)β) contraction is the measure-concentration of the Yang–Mills measure μ_β (blockSpin is 1-Lipschitz, NOT contracting). The missing object is μ_β + the block-spin RG average; proving its contraction IS the mass gap."
-  }
+  },
+  "method_constraint": "NO infinite-dimensional computation: the finite-volume UNIFORM bound carries to the thermodynamic/continuum limit. Prove the mass gap via a volume-uniform estimate (the FSS infrared bound / Gaussian domination), never by computing the infinite lattice or the continuum operator's spectrum directly. The final rung is the non-Abelian Gaussian domination (reflection-positivity → chessboard → Gaussian for the trace observables), volume-uniform — see docs/INFINITE-DIMENSIONAL-ISSUE.md."
 }

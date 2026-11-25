@@ -329,4 +329,19 @@ theorem animals_majorant_tour_summable (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : 
     (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hle (pow_nonneg (abs_nonneg ρ) n))
       (mul_nonneg zero_le_two (Nat.cast_nonneg n)))
 
+/-- **The quadratic RG contraction (volume-uniform)** — the cluster-expansion condition
+`(Δ+1)²|ρ| < 1` is self-improving: the renormalised activity `|ρ|²(Δ+1)⁴` is the *square* of
+`|ρ|(Δ+1)²`, so `|ρ|²(Δ+1)⁴ < 1` follows. This is the RG step's contraction, and it depends only on
+`(Δ, ρ)` — never on the lattice volume — so the iteration below carries to the thermodynamic limit
+without computing the infinite lattice. -/
+theorem rg_quadratic_contraction (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    |ρ|^2 * ((Δ : ℝ) + 1)^4 < 1 := by
+  have ha : 0 ≤ |ρ| * ((Δ : ℝ) + 1)^2 := mul_nonneg (abs_nonneg ρ) (sq_nonneg ((Δ : ℝ) + 1))
+  have hle1 : |ρ| * ((Δ : ℝ) + 1)^2 ≤ 1 := le_of_lt h
+  have hsqle : (|ρ| * ((Δ : ℝ) + 1)^2)^2 ≤ |ρ| * ((Δ : ℝ) + 1)^2 := by
+    nlinarith [mul_le_mul_of_nonneg_right hle1 ha]
+  have hsq : (|ρ| * ((Δ : ℝ) + 1)^2)^2 < 1 := hsqle.trans_lt h
+  convert hsq using 1
+  ring_nf
+
 end QM
