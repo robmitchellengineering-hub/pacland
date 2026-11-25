@@ -67,6 +67,13 @@
    "title": "Discovery harvest \u2014 transfer-matrix methodologies and renormalisation schemes"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-KNOWLEDGE-GRAPH.md",
+   "kind": "doc",
+   "path": "docs/DISCOVERY-KNOWLEDGE-GRAPH.md",
+   "summary": "machine can reason about what it learned and reuse it.\" This file is the schema for the graph: the node types, the relationship types, the process that adds them, and the evidence each\u2026",
+   "title": "The discovery knowledge graph \u2014 nodes with relationships, not a notebook"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-PROCESS.md",
    "kind": "doc",
    "path": "docs/DISCOVERY-PROCESS.md",
@@ -3852,6 +3859,13 @@
    "path": "PACLAND-oracles-plain-speak.pdf",
    "summary": "explainer PDF",
    "title": "oracles plain speak"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-physics-explainer.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-physics-explainer.pdf",
+   "summary": "explainer PDF",
+   "title": "physics explainer"
   },
   {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf",
