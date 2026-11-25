@@ -28,6 +28,20 @@ def build() -> dict:
     ev = json.loads(ev_path.read_text()) if ev_path.exists() else {"runs": []}
     att_path = ROOT / "web" / "attempts.json"
     attempts = json.loads(att_path.read_text()).get("attempts", []) if att_path.exists() else []
+    bev_path = ROOT / "web" / "build-evidence.json"
+    bev = json.loads(bev_path.read_text()) if bev_path.exists() else None
+
+    build_evidence = None
+    if bev is not None:
+        build_evidence = {
+            "commit": bev.get("commit"),
+            "dirty": bev.get("dirty", []),
+            "lean_version": bev.get("lean_version"),
+            "build_exit": bev.get("build_exit"),
+            "tests_exit": bev.get("tests_exit"),
+            "theorem_count": len(bev.get("theorems", [])),
+            "ok": bev.get("ok"),
+        }
 
     approaches_by_name = {o["name"]: o.get("routes", []) for o in ap["obligations"]}
     evidence_by_name: dict = {}
@@ -53,6 +67,7 @@ def build() -> dict:
         "obligations": obligations,
         "rejections": rej.get("rejections", []),
         "attempts": attempts,
+        "build_evidence": build_evidence,
     }
 
 

@@ -120,6 +120,7 @@ section, .field, .out, .callout { scroll-margin-top: 24px; }
   font:700 .66rem/1.6 ui-monospace,SFMono-Regular,monospace; letter-spacing:.09em; text-transform:uppercase;
   vertical-align:1px; }
 .badge.green { color:var(--sx-green); border-color:rgba(115,214,160,.45); background:rgba(115,214,160,.10); }
+.badge.red { color:#ff8a8a; border-color:rgba(255,122,122,.45); background:rgba(255,122,122,.10); }
 @media (max-width: 760px) {
   .wrap { width: min(100% - 28px, 680px); padding-top: 18px; }
   .grid { grid-template-columns: 1fr; }
@@ -279,6 +280,8 @@ flowchart TB
     <ul id="fr-approaches" class="claimlist"></ul>
     <h3>Evidence — the falsifier runs</h3>
     <ul id="fr-evidence" class="claimlist"></ul>
+    <h3>Build evidence — the authoritative kernel check</h3>
+    <div id="fr-build-evidence" class="mono small"></div>
     <h3>Attempted proofs — the engine's Lean attempts</h3>
     <ul id="fr-attempts" class="claimlist"></ul>
     <h3>Rejected approaches — what the walls taught</h3>
@@ -386,8 +389,16 @@ fetch('frontier-view.json').then(r => r.json()).then(d => {
     `<li><strong>${r.name}</strong> — ${r.wall}. <em>Failed:</em> ${r.why_failed}. <span class="mini">won → ${r.workaround}</span></li>`).join('');
   const att = document.getElementById('fr-attempts');
   if (att) att.innerHTML = (d.attempts || []).map(a =>
-    `<li>${a.theorem} @ ${a.at.slice(0,10)} — <span class="mini">${a.result ? 'error' : 'builds clean'}</span></li>`).join('') ||
+    `<li>${a.theorem} @ ${a.at.slice(0,10)} — <span class="mini">${a.result === 'builds clean' ? 'builds clean' : 'error'}</span></li>`).join('') ||
     '<li class="small">no proof attempts yet — run <code>python -m pacland.discovery --construct</code></li>';
+  const bev = document.getElementById('fr-build-evidence');
+  if (bev) {
+    const b = d.build_evidence;
+    bev.innerHTML = b
+      ? `<span class="badge ${b.ok ? 'green' : 'red'}">${b.ok ? 'verified' : 'FAILED'}</span>
+         <span class="mini">${b.dirty && b.dirty.length ? 'STALE (' + b.dirty.length + ' uncommitted)' : 'current'} · build exit ${b.build_exit} · tests exit ${b.tests_exit} · ${b.theorem_count} theorems · Lean ${b.lean_version} · commit ${b.commit ? b.commit.slice(0,7) : '?'}</span>`
+      : '<span class="small">no build evidence yet — run <code>python -m pacland.discovery --validate</code></span>';
+  }
 }).catch(() => {});
 
 const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕', IRREDUCIBLE:'◐' };
