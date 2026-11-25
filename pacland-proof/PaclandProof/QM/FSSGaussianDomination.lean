@@ -96,6 +96,35 @@ theorem laplacian_symbol_1d (k i : ℝ) :
     ring
   linarith
 
+/-- **`sin(2πn) = 0`** — the sine vanishes at every multiple of `2π`, from its `2π`-periodicity and
+`sin 0 = 0`. This is the missing half of the `cos_add`/`sin_add` periodicity split the cyclic Fourier
+step needs (Mathlib has `cos_nat_mul_two_pi` but not this). -/
+theorem sin_nat_mul_two_pi (n : ℕ) : Real.sin ((n : ℝ) * (2 * Real.pi)) = 0 := by
+  simpa using ((Real.sin_periodic.nat_mul n).eq.trans Real.sin_zero)
+
+/-- **The cyclic Fourier mode's periodicity** — the modular `(i+1)` on `Fin m` evaluates the cosine at
+`2πk·((i.val+1) % m)/m`, which equals `2πk·(i.val+1)/m` by the `2π`-periodicity (the wrap is a multiple of
+`2π`). This is the step that turns the linear `laplacian_symbol_1d` into the cyclic symbol
+`2(1−cos(2πk/m))`. -/
+theorem cos_fin_periodic (k m : ℕ) [NeZero m] (i : Fin m) :
+    Real.cos (2 * Real.pi * (k : ℝ) * ((i + 1).val : ℝ) / m)
+      = Real.cos (2 * Real.pi * (k : ℝ) * ((i.val : ℝ) + 1) / m) := by
+  rw [Fin.val_add]
+  have hdecomp : (2 * Real.pi * (k : ℝ) * ((i.val : ℝ) + 1) / m)
+      = 2 * Real.pi * ((k : ℝ) * (((i.val + 1) / m : ℕ) : ℝ)) + 2 * Real.pi * (k : ℝ) * (((i.val + 1) % m : ℕ) : ℝ) / m := by
+    have hdivR : ((i.val + 1 : ℕ) : ℝ) = (m : ℝ) * (((i.val + 1) / m : ℕ) : ℝ) + (((i.val + 1) % m : ℕ) : ℝ) := by
+      exact_mod_cast (Nat.div_add_mod (i.val + 1) m).symm
+    rw [show ((i.val : ℝ) + 1) = ((i.val + 1 : ℕ) : ℝ) by norm_num]
+    rw [hdivR]
+    field_simp [show (m : ℝ) ≠ 0 by exact_mod_cast (NeZero.ne m)]
+  rw [hdecomp]
+  rw [Real.cos_add]
+  rw [show 2 * Real.pi * ((k : ℝ) * (((i.val + 1) / m : ℕ) : ℝ)) = (((k * ((i.val + 1) / m) : ℕ) : ℝ) * (2 * Real.pi)) by
+    rw [Nat.cast_mul]
+    ring]
+  rw [Real.cos_nat_mul_two_pi, sin_nat_mul_two_pi]
+  simp
+
 /-- **The full Faddeev–Popov symbol for SU(2).** The Laplacian's symbol `2(1 − cos k)` plus the Casimir
 gap `2` is `2(2 − cos k)`. This is the denominator `J(k)` of the free propagator `1/(2J(k))` — the
 momentum-space IR bound with the non-Abelian gap built in. -/
