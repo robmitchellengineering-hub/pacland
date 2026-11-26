@@ -87,3 +87,11 @@ but the goal is `IntervalIntegrable (fun θ => 2 * ∑' n, (f n) θ) volume 0 π
 `tsum`'s pointwise coercion `(∑' n, f n) θ = ∑' n, (f n) θ` (`ContinuousMap.summable_apply hsum`)
 + `Pi.smul_apply`; `simpa [coe_smul, Pi.smul_apply, summable_apply hsum]` doesn't fire it — try
 `IntervalIntegrable.congr` with a `funext` + `ContinuousMap.summable_apply hsum θ`'s `.tsum_eq`.
+
+## Last-lemma status (round 44)
+`tsum_apply hsum` (the pointwise coercion `(∑' n, f n) θ = ∑' n, (f n) θ`) needs the typeclass
+`IsAddApply C(ℝ,ℝ) ℝ ℝ`, which is NOT synthesized for `C(ℝ,ℝ)`. So the final bullet must use
+`intervalIntegral.intervalIntegrable_congr` (or `IntegrableOn.congr`) + `filter_upwards` +
+`ContinuousMap.summable_apply hsum θ` (which gives `Summable (fun n => (f n) θ)`), then prove the
+pointwise equality `(∑' n, f n) θ = ∑' n, (f n) θ` by `tsum` uniqueness instead of `tsum_apply`.
+This is the ONLY remaining line in `integral_exp_cos_eq_pi_mul_besselI_zero`.
