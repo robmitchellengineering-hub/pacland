@@ -858,4 +858,63 @@ theorem besselI_one_eq_integral (x : ℝ) (hx : 0 ≤ x) :
   rw [hmain]
   field_simp [hπ]
 
+
+set_option maxHeartbeats 1600000 in
+/-- **`I₀(x) − I₁(x) ≥ 1/2 − 1/π`** for `x ≥ 0` — the constant mass-gap coefficient. -/
+theorem besselI_sub_le (x : ℝ) (hx : 0 ≤ x) : (1 / 2 : ℝ) - 1 / Real.pi ≤ besselI 0 x - besselI 1 x := by
+  have hI0 := integral_exp_cos_eq_pi_mul_besselI_zero x hx
+  have hI1 := besselI_one_eq_integral x hx
+  have hI0' : besselI 0 x = (1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) := by
+    rw [hI0]
+    field_simp [Real.pi_ne_zero]
+  have hsub : besselI 0 x - besselI 1 x =
+      (1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * (1 - Real.cos θ) := by
+    rw [hI0', hI1]
+    rw [← mul_sub]
+    rw [← intervalIntegral.integral_sub]
+    · congr 1
+      exact intervalIntegral.integral_congr (fun θ _ => by ring)
+    · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ))).intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) Real.pi
+    · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.cos θ)).intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) Real.pi
+  have hlower : (Real.pi : ℝ) / 2 - 1 ≤ ∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * (1 - Real.cos θ) := by
+    have hnonneg : 0 ≤ ∫ θ in (Real.pi / 2)..Real.pi, Real.exp (x * Real.cos θ) * (1 - Real.cos θ) := by
+      refine intervalIntegral.integral_nonneg (μ := MeasureTheory.volume) (a := Real.pi / 2) (b := Real.pi) (by nlinarith [Real.pi_pos]) (fun θ hθ => by
+        have hcos : Real.cos θ ≤ 1 := Real.cos_le_one θ
+        have h1 : 0 ≤ 1 - Real.cos θ := by linarith
+        exact mul_nonneg (Real.exp_pos (x * Real.cos θ)).le h1)
+    have hsplit : (∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * (1 - Real.cos θ)) =
+        (∫ θ in (0 : ℝ)..(Real.pi / 2), Real.exp (x * Real.cos θ) * (1 - Real.cos θ)) +
+          (∫ θ in (Real.pi / 2)..Real.pi, Real.exp (x * Real.cos θ) * (1 - Real.cos θ)) := by
+      rw [intervalIntegral.integral_add_adjacent_intervals]
+      · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * (1 - Real.cos θ))).intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) (Real.pi / 2)
+      · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * (1 - Real.cos θ))).intervalIntegrable (μ := MeasureTheory.volume) (Real.pi / 2) Real.pi
+    have hhalf : (∫ θ in (0 : ℝ)..(Real.pi / 2), (1 - Real.cos θ)) ≤
+        ∫ θ in (0 : ℝ)..(Real.pi / 2), Real.exp (x * Real.cos θ) * (1 - Real.cos θ) := by
+      refine intervalIntegral.integral_mono_on (by nlinarith [Real.pi_pos]) ?_ ?_ ?_
+      · exact (by fun_prop : Continuous (fun θ : ℝ => (1 - Real.cos θ))).intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) (Real.pi / 2)
+      · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * (1 - Real.cos θ))).intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) (Real.pi / 2)
+      · intro θ hθ
+        have hcos : 0 ≤ Real.cos θ := by
+          have hθ' : θ ∈ Set.Icc (0 : ℝ) (Real.pi / 2) := hθ
+          refine Real.cos_nonneg_of_mem_Icc ⟨by linarith [hθ'.1, Real.pi_pos], hθ'.2⟩
+        have hxcos : 0 ≤ x * Real.cos θ := mul_nonneg hx hcos
+        have hone : 1 ≤ Real.exp (x * Real.cos θ) := by simpa using (Real.one_le_exp hxcos)
+        have h1 : 0 ≤ 1 - Real.cos θ := by linarith [Real.cos_le_one θ]
+        exact (one_mul (1 - Real.cos θ)).symm.trans_le (mul_le_mul_of_nonneg_right hone h1)
+    have hbase : (∫ θ in (0 : ℝ)..(Real.pi / 2), (1 - Real.cos θ)) = (Real.pi : ℝ) / 2 - 1 := by
+      rw [intervalIntegral.integral_sub]
+      · rw [intervalIntegral.integral_const, integral_cos]
+        rw [Real.sin_pi_div_two, Real.sin_zero]
+        ring
+      · exact (by fun_prop : Continuous (fun θ : ℝ => (1 : ℝ))).intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) (Real.pi / 2)
+      · exact (by fun_prop : Continuous (fun θ : ℝ => Real.cos θ)).intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) (Real.pi / 2)
+    rw [hsplit]
+    have h1 : (Real.pi : ℝ) / 2 - 1 ≤ ∫ θ in (0 : ℝ)..(Real.pi / 2), Real.exp (x * Real.cos θ) * (1 - Real.cos θ) := by
+      rw [← hbase]
+      exact hhalf
+    linarith [h1, hnonneg]
+  rw [hsub]
+  rw [show (1 / 2 : ℝ) - 1 / Real.pi = (1 / Real.pi) * ((Real.pi : ℝ) / 2 - 1) by field_simp [Real.pi_ne_zero]]
+  exact mul_le_mul_of_nonneg_left hlower (le_of_lt (div_pos (by norm_num) Real.pi_pos))
+
 end QM
