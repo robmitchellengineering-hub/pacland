@@ -1971,6 +1971,13 @@
    "title": "build_peft_dataset.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_proof_graph.py",
+   "kind": "script",
+   "path": "scripts/build_proof_graph.py",
+   "summary": "Generate web/proof-graph.mmd \u2014 the mermaid proof dependency graph, from the frontier data.",
+   "title": "build_proof_graph.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_sextant_claims.py",
    "kind": "script",
    "path": "scripts/build_sextant_claims.py",
