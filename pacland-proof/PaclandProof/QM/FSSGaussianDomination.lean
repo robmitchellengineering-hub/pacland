@@ -1310,6 +1310,53 @@ theorem transferMatrixCLM_symmetric {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) :
 
 
 
+
+/-- **The transfer matrix's inner product equals its quadratic form** — `⟪T f, f⟫ = Σᵢⱼ fᵢ fⱼ K(i,j)`. -/
+theorem transfer_inner_eq_quadratic {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (f : PiLp 2 (fun _ : Fin m => ℝ)) :
+    ⟪transferMatrixCLM θ β f, f⟫_ℝ = ∑ i : Fin m, ∑ j : Fin m, WithLp.ofLp f i * WithLp.ofLp f j * wilsonKernel θ β i j := by
+  simp [transferMatrixCLM, transferMatrixLinearMap, wilsonReflection, PiLp.inner_apply, WithLp.ofLp]
+  simp [Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  simp [mul_comm, mul_left_comm, mul_assoc]
+
+/-- **The transfer matrix's spectral radius is monotone in the volume** — `‖T_V‖ ≤ ‖T_{V+1}‖`. -/
+theorem transfer_norm_monotone {V : ℕ}
+    (θ : Fin V → ℝ) (θ' : Fin (V+1) → ℝ) (β : ℝ)
+    (hθ : ∀ i : Fin V, θ' (Fin.castAdd 1 i) = θ i) :
+    ‖transferMatrixCLM θ β‖ ≤ ‖transferMatrixCLM θ' β‖ := by
+  refine norm_le_norm_of_isometry_quadratic (T := transferMatrixCLM θ β) (S := transferMatrixCLM θ' β) ?_ ?_ ?_ ?_
+  · exact transferMatrixCLM_symmetric θ β
+  · exact transferMatrixCLM_symmetric θ' β
+  · exact (zeroExtendSucc (V := V))
+  · intro f
+    rw [ContinuousLinearMap.reApplyInnerSelf_apply]
+    rw [transfer_inner_eq_quadratic θ β f]
+    rw [ContinuousLinearMap.reApplyInnerSelf_apply]
+    rw [transfer_inner_eq_quadratic θ' β (zeroExtendSucc f)]
+    rw [← wilson_quadratic_zeroExtend θ θ' β hθ (WithLp.ofLp f)]
+    simp [zeroExtendSucc]
+
+/-- **The mass gap is antitone in the volume** — `1 − ‖T_{V+1}‖ ≤ 1 − ‖T_V‖`. -/
+theorem gap_antitone_of_transfer_norm_monotone {V : ℕ}
+    (θ : Fin V → ℝ) (θ' : Fin (V+1) → ℝ) (β : ℝ)
+    (hθ : ∀ i : Fin V, θ' (Fin.castAdd 1 i) = θ i) :
+    1 - ‖transferMatrixCLM θ' β‖ ≤ 1 - ‖transferMatrixCLM θ β‖ := by
+  exact sub_le_sub_left (transfer_norm_monotone θ θ' β hθ) 1
+
+/-- **The energy = the negative log of the transfer-matrix eigenvalue** — the OS reconstruction `T = e^(−H)`'s
+definitional content: the Hamiltonian is the generator `H = −log T`, so the energy `E = −log λ`. PINS the
+`λ = e^(−E)` input as a definition. -/
+noncomputable def transferEnergy (lam : ℝ) : ℝ := -Real.log lam
+
+/-- **The eigenvalue = the exponential of the negative energy** — `λ = e^(−E)` with `E = −log λ`, from
+`Real.exp_log`. This is the `λ = e^(−E)` identification, proved as the `exp`/`log` inverse (the OS
+reconstruction's `T = e^(−H)` definitional content). -/
+theorem transfer_eigenvalue_eq_exp_neg_energy (lam : ℝ) (hlam : 0 < lam) :
+    lam = Real.exp (-transferEnergy lam) := by
+  rw [transferEnergy]
+  rw [neg_neg]
+  exact (Real.exp_log hlam).symm
+
 end FSSGaussianDomination
 
 end

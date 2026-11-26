@@ -113,7 +113,9 @@
     "transferMatrixCLM_symmetric",
     "transfer_inner_eq_quadratic",
     "transfer_norm_monotone",
-    "gap_antitone_of_transfer_norm_monotone"
+    "gap_antitone_of_transfer_norm_monotone",
+    "transferEnergy",
+    "transfer_eigenvalue_eq_exp_neg_energy"
   ],
   "transports": [
     {

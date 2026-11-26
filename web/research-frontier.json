@@ -254,7 +254,9 @@
     "transferMatrixCLM_symmetric",
     "transfer_inner_eq_quadratic",
     "transfer_norm_monotone",
-    "gap_antitone_of_transfer_norm_monotone"
+    "gap_antitone_of_transfer_norm_monotone",
+    "transferEnergy",
+    "transfer_eigenvalue_eq_exp_neg_energy"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
