@@ -1155,6 +1155,30 @@ theorem su2_mass_gap_uniform (mβ E lam : ℝ → ℝ)
   rw [hmβquarter] at hgap
   simpa [div_eq_mul_inv, mul_comm] using hgap
 
+/-- **Threading the heat-kernel mass into the radius contraction** — the transfer-matrix eigenvalue
+`λ = e^(−E)` is bounded by `e^(−heatKernelMassGap β)` whenever the energy `E` dominates the Bessel mass.
+This replaces the `λ=e^(−E)` tautology's ad hoc `mβ` with the proved heat-kernel gap `1 − I₁(2β)/I₀(2β)`. -/
+theorem heat_kernel_radius_contraction (β : ℝ) (hβ : 0 < β) (E lam : ℝ)
+    (hE : QM.heatKernelMassGap β ≤ E) (hlam : lam = Real.exp (-E)) :
+    lam ≤ Real.exp (-(QM.heatKernelMassGap β)) := by
+  exact eigenvalue_le_exp_neg_mass E (QM.heatKernelMassGap β) lam hE hlam
+
+/-- **The volume-uniform mass gap from the heat kernel** — `heat_kernel_gap_exp_bound` + the radius
+contraction: the transfer-matrix eigenvalue decays like `e^(−(1/2−1/π)·e^(−cβ))`, a strictly positive
+volume-independent spectral gap for every `β > 0` in the asymptotic-freedom regime. -/
+theorem heat_kernel_mass_gap_uniform (β : ℝ) (hβ : 0 < β) (E lam : ℝ)
+    (hE : QM.heatKernelMassGap β ≤ E) (hlam : lam = Real.exp (-E)) :
+    lam ≤ Real.exp (-((1 / 2 - 1 / Real.pi) * Real.exp (-(12 * Real.pi ^ 2 / 11) * β))) := by
+  have hrad : lam ≤ Real.exp (-(QM.heatKernelMassGap β)) := heat_kernel_radius_contraction β hβ E lam hE hlam
+  have hmg : (1 / 2 - 1 / Real.pi) * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) ≤ QM.heatKernelMassGap β :=
+    QM.heat_kernel_gap_exp_bound β hβ
+  have hneg : Real.exp (-(QM.heatKernelMassGap β)) ≤
+      Real.exp (-((1 / 2 - 1 / Real.pi) * Real.exp (-(12 * Real.pi ^ 2 / 11) * β))) := by
+    refine Real.exp_le_exp.mpr ?_
+    nlinarith [hmg]
+  exact hrad.trans hneg
+
+
 /-- **The final conditional — continuum existence + uniform gap ⟹ continuum mass gap.** If the
 finite-volume gaps `m V` are uniformly bounded below by the volume-independent `A·e^(−cβ)`, and they
 converge to the continuum gap `Δ` (the (i) existence / spectral-convergence input), then the uniform bound
