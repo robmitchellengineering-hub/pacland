@@ -1104,4 +1104,36 @@ theorem heat_kernel_eigenfunction_cos (β θ : ℝ) (hβ : 0 ≤ β) :
   · exact (by fun_prop : Continuous (fun x : ℝ => Real.exp (2 * β * Real.cos x) * (Real.cos x * Real.cos θ))).intervalIntegrable (μ := MeasureTheory.volume) (0:ℝ) (2 * Real.pi)
   · exact (by fun_prop : Continuous (fun x : ℝ => Real.exp (2 * β * Real.cos x) * (Real.sin x * Real.sin θ))).intervalIntegrable (μ := MeasureTheory.volume) (0:ℝ) (2 * Real.pi)
 
+
+/-- **The vacuum eigenvalue** — `∫₀^{2π} e^{x·cos θ} dθ = 2π·I₀(x)`, the constant `1` is an eigenfunction
+of the heat kernel with eigenvalue `2π·I₀(x)` (the `[0,2π]` form of `integral_exp_cos_eq_pi_mul_besselI_zero`). -/
+theorem integral_exp_cos_two_pi (x : ℝ) (hx : 0 ≤ x) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi), Real.exp (x * Real.cos θ)) = 2 * Real.pi * besselI 0 x := by
+  have hsplit : (∫ θ in (0:ℝ)..(2 * Real.pi), Real.exp (x * Real.cos θ))
+      = (∫ θ in (0:ℝ)..Real.pi, Real.exp (x * Real.cos θ)) + (∫ θ in Real.pi..(2 * Real.pi), Real.exp (x * Real.cos θ)) := by
+    rw [← intervalIntegral.integral_add_adjacent_intervals]
+    · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ))).intervalIntegrable (μ := MeasureTheory.volume) (0:ℝ) Real.pi
+    · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ))).intervalIntegrable (μ := MeasureTheory.volume) Real.pi (2 * Real.pi)
+  have hsecond : (∫ θ in Real.pi..(2 * Real.pi), Real.exp (x * Real.cos θ)) = (∫ θ in (0:ℝ)..Real.pi, Real.exp (x * Real.cos θ)) := by
+    have hcomp := intervalIntegral.integral_comp_sub_left (f := fun θ : ℝ => Real.exp (x * Real.cos θ)) (d := 2 * Real.pi) (a := (0:ℝ)) (b := Real.pi)
+    rw [show 2 * Real.pi - Real.pi = Real.pi by ring, show 2 * Real.pi - (0:ℝ) = 2 * Real.pi by ring] at hcomp
+    rw [hcomp.symm]
+    rw [intervalIntegral.integral_congr (fun θ _ => by
+      change Real.exp (x * Real.cos (2 * Real.pi - θ)) = Real.exp (x * Real.cos θ)
+      have hc : Real.cos (2 * Real.pi - θ) = Real.cos θ := by rw [Real.cos_sub]; simp [Real.sin_two_pi, Real.cos_two_pi]
+      rw [hc])]
+  have hfirst : (∫ θ in (0:ℝ)..Real.pi, Real.exp (x * Real.cos θ)) = Real.pi * besselI 0 x := by
+    exact integral_exp_cos_eq_pi_mul_besselI_zero x hx
+  rw [hsplit, hsecond, hfirst]
+  ring
+
+/-- **The spectral identification `λ₁ = I₁(2β)/I₀(2β)`** — the heat kernel's first-excited eigenvalue
+(the Bessel ratio). The eigenfunction lemma (`heat_kernel_eigenfunction_cos`) gives `cos θ` eigenvalue
+`2π·I₁(2β)` and `integral_exp_cos_two_pi` gives the vacuum `1` eigenvalue `2π·I₀(2β)`, so the second
+eigenvalue normalized by the vacuum is the Bessel ratio. -/
+theorem heat_kernel_spectral_identification (β : ℝ) (hβ : 0 < β) :
+    (2 * Real.pi * besselI 1 (2 * β)) / (2 * Real.pi * besselI 0 (2 * β)) = besselI 1 (2 * β) / besselI 0 (2 * β) := by
+  have hpos : 0 < besselI 0 (2 * β) := besselI_pos (by positivity : 0 < 2 * β)
+  field_simp [hpos.ne']
+
 end QM
