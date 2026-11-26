@@ -552,4 +552,11 @@ theorem su2_character_orthogonality_diag {n : ℕ} :
             rw [hconst, hcos]
             norm_num
 
+
+/-- **The heat-kernel mass gap** — the normalized spectral gap `1 − I₁(2β)/I₀(2β)` of the SU(2) transfer
+matrix (the Wilson heat kernel). This is the PHYSICAL mass gap: the first-excited eigenvalue `I₁/I₀` below
+the vacuum `I₀/I₀ = 1`, replacing the pinned `λ = e^(−E)` tautology with the actual Bessel ratio. -/
+noncomputable def heatKernelMassGap (β : ℝ) : ℝ := 1 - besselI 1 (2 * β) / besselI 0 (2 * β)
+
+
 end QM
