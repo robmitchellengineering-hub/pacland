@@ -559,6 +559,22 @@ def main(argv: list[str] | None = None) -> int:
         from pacland import qec
 
         return qec.main(argv[1:])
+    if argv[0] == "frontier":
+        from pacland import frontier
+
+        print(frontier.frontier_status())
+        print()
+        for t in frontier.TRAPS:
+            print(f"TRAP [{t['name']}]: {t['symptom']}")
+        return 0
+    if argv[0] == "check":
+        from pacland import frontier
+
+        if len(argv) < 2:
+            print("usage: sextant check <move description>", file=sys.stderr)
+            return 2
+        print(frontier.check_move(" ".join(argv[1:])))
+        return 0
     name = argv[0]
     if name not in CATALOG:
         print(f"unknown claim '{name}'. known: {', '.join(CATALOG)}", file=sys.stderr)
