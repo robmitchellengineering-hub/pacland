@@ -411,7 +411,7 @@ fetch('frontier-view.json').then(r => r.json()).then(d => {
 }).catch(() => {});
 
 const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕', IRREDUCIBLE:'◐' };
-const CLAIMS = [
+const SEED = [
  { id:'chsh', v:'FORCED', th:'QM.Tsirelson', claim:'no quantum state violates the CHSH inequality beyond 2√2', falsifier:'a state exceeding 2√2', oracle:'quantum-simulated + kernel-checked', ev:'simulated CHSH = 2.828427 = 2√2 — nothing exceeds it',
    plain:"The quantum world can beat classical physics by a hair — 2√2, and not a hair more. That ceiling is not a measurement, it's a theorem we machine-checked: the universe has a hard limit on how much quantum beats classical. The gap between the classical wall (2) and the quantum maximum (2√2) is the 'quantum advantage', quantified exactly." },
  { id:'bell-classical', v:'FORCED', th:'QM.CHSH (Bell)', claim:'no local-hidden-variable theory violates CHSH beyond 2', falsifier:'a classical strategy exceeding 2', oracle:'quantum-simulated + kernel-checked', ev:'max classical = 2.0 — the wall holds',
@@ -553,6 +553,28 @@ const catsEl = document.getElementById('cats');
 const catdesc = document.getElementById('catdesc');
 let activeCat = 'all';
 
+// The claims come from web/claims.json (generated from the registry), merged with the hand-written
+// plain-English + evidence blurbs in SEED — so the page cannot drift from the 56-claim catalog.
+let CLAIMS = [];
+fetch('claims.json').then(r => r.json()).then(d => {
+  const seed = Object.fromEntries(SEED.map(c => [c.id, c]));
+  CLAIMS = d.claims.map(c => {
+    const s = seed[c.id] || {};
+    return { ...c, v: c.verdict, th: c.theorem, plain: s.plain || c.claim, ev: s.ev || c.theorem };
+  });
+  renderCats();
+  renderList('');
+  // the dynamic count must run AFTER the fetch resolves, not at parse time
+  const el = document.getElementById('claimcount');
+  if (el) {
+    const sim = CLAIMS.filter(c => /quantum-simulated/.test(c.oracle)).length;
+    el.textContent = CLAIMS.length + ' claims in the live registry (snapshot ' + new Date().toISOString().slice(0, 10) + ') · ' + sim + ' carry a live simulated oracle — each claim\'s own proof/evidence column says what is checked vs tested';
+  }
+}).catch(e => {
+  const list = document.getElementById('list');
+  if (list) list.innerHTML = '<li class="claim">claims.json failed to load (' + e.message + ')</li>';
+});
+
 function renderCats() {
   catsEl.innerHTML = '';
   [['all', 'All fields']].concat(Object.entries(CATS).map(([k,v]) => [k, v.label])).forEach(([k, label]) => {
@@ -649,20 +671,11 @@ function renderFields() {
 }
 
 q.addEventListener('input', () => renderList(q.value.trim().toLowerCase()));
-renderCats();
 catdesc.textContent = 'Every claim, across all four fields. Pick a field, or search.';
-renderList('');
 renderFields();
 </script>
 <script>
-// honest, dynamic counts — never a hard-coded stale number in the page copy
-(function () {
-  var el = document.getElementById('claimcount');
-  if (el) {
-    var sim = CLAIMS.filter(function (c) { return /quantum-simulated/.test(c.oracle); }).length;
-    el.textContent = CLAIMS.length + ' claims in the live registry (snapshot ' + new Date().toISOString().slice(0,10) + ') · ' + sim + ' carry a live simulated oracle — each claim\'s own proof/evidence column says what is checked vs tested';
-  }
-})();
+// (the dynamic claim count now updates inside the fetch — no parse-time IIFE)
 </script>
 </body>
 </html>

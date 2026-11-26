@@ -1,0 +1,632 @@
+{
+  "claims": [
+    {
+      "id": "adm",
+      "verdict": "FORCED",
+      "theorem": "Gravity.ADMConstraints.admConstraints",
+      "claim": "QG's forced content is the constraint system {\u0124 = G\u00b7\u03c0\u03c0 \u2212 R, \u0124a = \u2207\u00b7\u03c0}",
+      "falsifier": "a third independent constraint",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "anomaly-cancellation",
+      "verdict": "FORCED",
+      "theorem": "SM.Anomaly.anomaly_cancellation",
+      "claim": "the SM's five anomaly coefficients vanish",
+      "falsifier": "a nonzero anomaly coefficient",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "bell-classical",
+      "verdict": "FORCED",
+      "theorem": "QM.CHSH (Bell)",
+      "claim": "no local-hidden-variable theory violates CHSH beyond 2",
+      "falsifier": "a classical strategy exceeding 2",
+      "oracle": [
+        "quantum-simulated (Phantom)",
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "bianchi",
+      "verdict": "FORCED",
+      "theorem": "Gravity.QG.einstein_divergence_free",
+      "claim": "the Einstein tensor is divergence-free (\u2207\u00b7G = 0)",
+      "falsifier": "a metric with \u2207\u00b7G \u2260 0",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "black-hole-entropy",
+      "verdict": "FORCED",
+      "theorem": "QM.MERA.srank_maximally_entangled + QM.MERA.areaLaw_rank (the area law specialised to the horizon cut: S = A/4G)",
+      "claim": "no region's entanglement entropy exceeds its horizon area \u2014 S \u2264 A/4G, and the black hole saturates it",
+      "falsifier": "a state whose horizon entanglement exceeds A/4G",
+      "oracle": [
+        "quantum-simulated (Phantom)",
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "black-hole-unitarity",
+      "verdict": "FORCED",
+      "theorem": "QM.NoCloning + QM.NoBroadcasting (linearity + unitarity forbid information loss)",
+      "claim": "black hole evaporation is unitary \u2014 the information is never lost, only re-encoded in the radiation's entanglement",
+      "falsifier": "a non-unitary (information-losing) evaporation map",
+      "oracle": [
+        "quantum-simulated (Phantom)",
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "born-rule",
+      "verdict": "FORCED",
+      "theorem": "Gleason (Foundations/GleasonBridge)",
+      "claim": "the Born rule is the unique non-contextual probability rule",
+      "falsifier": "a second non-contextual probability rule",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "chsh",
+      "verdict": "FORCED",
+      "theorem": "QM.Tsirelson",
+      "claim": "no quantum state violates the CHSH inequality beyond 2\u221a2",
+      "falsifier": "a state exceeding 2\u221a2",
+      "oracle": [
+        "quantum-simulated (Phantom/Stim)",
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "clifford-polynomial",
+      "verdict": "FORCED",
+      "theorem": "QM.Stabilizer.clifford_normalizes_pauli",
+      "claim": "Clifford/stabilizer circuits are classically simulable in polynomial time",
+      "falsifier": "a T-gate circuit blowing past 2^n",
+      "oracle": [
+        "kernel-checked (Lean)",
+        "quantum-simulated (Phantom/Stim)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "code-ame52",
+      "verdict": "FORCED",
+      "theorem": "QM.PerfectTensor.code_state_ame52",
+      "claim": "the [[5,1,3]] code state (logical Z fixed) is AME(5,2) \u2014 every 2-qubit reduction is maximally mixed",
+      "falsifier": "a weight \u2264 2 element of the fixed-state stabilizer group (code stabilizers + Z_L)",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "completeness",
+      "verdict": "FORCED",
+      "theorem": "Transitivity.transitivity_n1 + Transitivity.symp_iff_det_eq_one",
+      "claim": "no exact invariant selector can single out a vacuum (the tadpole is complete)",
+      "falsifier": "a second exact, duality-invariant selector",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "concentration-gap",
+      "verdict": "FORCED",
+      "theorem": "QM.BakryEmery (\u0393\u2082-calculus \u2192 spectral gap) + QM.LogSobolev",
+      "claim": "the spectral gap of a Markov generator is the exponential concentration rate of its invariant measure around its dominant state",
+      "falsifier": "a generator whose invariant measure concentrates faster or slower than its spectral gap",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "constraint-first",
+      "verdict": "FORCED",
+      "theorem": "DegreeOne.no_linear_invariant_n1 + DegreeThree.no_cubic_invariant + DegreeFour.quartic_is_N_sq",
+      "claim": "every duality-invariant exact polynomial in the flux is a function of the tadpole",
+      "falsifier": "an invariant polynomial that is not a function of F\u1d40JH",
+      "oracle": [
+        "kernel-checked (Lean)",
+        "exact symbolic (sympy)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "coupling-free",
+      "verdict": "FREE",
+      "theorem": "Gravity.QG.coupling_free",
+      "claim": "the gravitational coupling G is not derived",
+      "falsifier": "a derivation of G from the forced halves",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "dirac",
+      "verdict": "FORCED",
+      "theorem": "Gravity.Dirac.dirac_antisymmetric",
+      "claim": "the ADM constraints close under the Dirac (hypersurface-deformation) algebra",
+      "falsifier": "a constraint algebra that fails to close",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "entanglement-area",
+      "verdict": "FORCED",
+      "theorem": "QM.MERA.srank_maximally_entangled (entanglement = D^m EXACTLY) + QM.MERA.areaLaw_rank + QM.MERA.bondConfigurations",
+      "claim": "entanglement across a cut is bounded by the cut area D^m",
+      "falsifier": "entanglement exceeding D^m",
+      "oracle": [
+        "kernel-checked (Lean)",
+        "quantum-simulated (Phantom/Quimb)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "gauge-orbit-quotient",
+      "verdict": "FORCED",
+      "theorem": "QM.GaugeOrbit (conjugacy-invariant trace) + QM.AxialGauge (global gauge fixing)",
+      "claim": "running the spectral machinery on the gauge-invariant quotient removes the unphysical flat directions",
+      "falsifier": "a quotient that fails to remove the gauge flat directions (a residual Gribov copy)",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "generation-free",
+      "verdict": "FREE",
+      "theorem": "SM.Generation.anomaly_homogeneous",
+      "claim": "the generation number N_gen is not fixed by anomaly cancellation",
+      "falsifier": "an anomaly condition fixing N_gen",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "gravity-quantum",
+      "verdict": "FORCED",
+      "theorem": "QM.Entanglement + QM.NoCloning + Gleason",
+      "claim": "the gravitational coupling must be quantum, not classical",
+      "falsifier": "a consistent classical (LOCC) coupling",
+      "oracle": [
+        "quantum-simulated (Phantom)",
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "happ-perfect-tensor",
+      "verdict": "FORCED",
+      "theorem": "QM.PerfectTensor.happy_is_perfect_tensor",
+      "claim": "the 5-qubit [[5,1,3]] code coupled to a reference qubit is a perfect tensor (AME(6,3)) \u2014 every 3-qubit subsystem is maximally mixed",
+      "falsifier": "a 3-qubit subsystem of the HaPPY hexagon carrying a stabilizer (a weight \u2264 3 group element)",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "hypercharge-uniqueness",
+      "verdict": "FORCED",
+      "theorem": "SM.Hypercharge.hypercharge_uniqueness",
+      "claim": "the SM anomaly conditions force the hypercharges uniquely (up to scale + u\u2194d)",
+      "falsifier": "a second anomaly-free hypercharge assignment",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "locc-no-entanglement",
+      "verdict": "IMPOSSIBLE",
+      "theorem": "QM.Entanglement (local_channel_preserves_separable)",
+      "claim": "a classical (LOCC) channel cannot create entanglement",
+      "falsifier": "a classical channel entangling two systems",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "lovelock",
+      "verdict": "FORCED",
+      "theorem": "Gravity.Lovelock.lovelock_divergence",
+      "claim": "the Einstein equation is the unique divergence-free 2-tensor theory in 4D",
+      "falsifier": "a second divergence-free gravity theory",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "matchgate-seed",
+      "verdict": "FORCED",
+      "theorem": "QM.Matchgate.det_antisymm_sign + QM.Matchgate.pfaffian2_sq_eq_det + QM.Matchgate.pfaffian4_sq_eq_det + QM.Matchgate.pfaffian6_sq_eq_det + QM.Matchgate.det_antisymm_odd_eq_zero + QM.PfaffianRec.pfaffian_rec_2 + QM.PfaffianRec.pfaffian_rec_4 + QM.PfaffianRec.pfaffian_sq_eq_det_2 + QM.PfaffianRec.pfaffian_sq_eq_det_4 + QM.PfaffianRec.pfaffian_transform_2",
+      "claim": "matchgate amplitudes are Pfaffians \u2014 the full even/odd split kernel-checked (2\u00d72 and 4\u00d74 Pf\u00b2 = det, odd-dim det = 0)",
+      "falsifier": "a 2\u00d72 matchgate whose amplitude is not its Pfaffian, or a nonzero odd-dimensional antisymmetric determinant",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "mera-hyperbolic",
+      "verdict": "FORCED",
+      "theorem": "QM.Hyperbolic.treeDist_four_point + QM.MERA.causalConeDoubles + QM.MERA.ballVolumeExponential + QM.MERA.logDepthForced + QM.MERA.meraEmergence + QM.Hyperbolic.treeToH2",
+      "claim": "the MERA causal cone is a discrete hyperbolic space (Gromov 0-hyperbolic)",
+      "falsifier": "a four-point violation of the 0-hyperbolicity condition, or sub-exponential volume growth",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "mermin",
+      "verdict": "IMPOSSIBLE",
+      "theorem": "QM.Mermin (mermin_no_value_assignment)",
+      "claim": "no non-contextual \u00b11 assignment to the Mermin square exists",
+      "falsifier": "a non-contextual \u00b11 assignment",
+      "oracle": [
+        "quantum-simulated (Phantom)",
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "mitchell-uniqueness",
+      "verdict": "FORCED",
+      "theorem": "Mitchell.mitchell_uniqueness_n1 + General.mitchell_uniqueness",
+      "claim": "the D3 tadpole F\u1d40JH is the unique bilinear symplectic invariant of the flux",
+      "falsifier": "a second bilinear symplectic invariant of the flux",
+      "oracle": [
+        "kernel-checked (Lean)",
+        "exact symbolic (sympy)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "mode-sum-exponent",
+      "verdict": "FORCED",
+      "theorem": "QM.AsymptoticFreedom + QM.FullLatticeLyapunov (the collective soft mode)",
+      "claim": "a non-perturbative exponent that is a sum over soft modes equals the beta-function coefficient (c = 1/(2b\u2080))",
+      "falsifier": "a mode-sum exponent that does not match the beta-function coefficient",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "no-broadcasting",
+      "verdict": "IMPOSSIBLE",
+      "theorem": "QM.NoBroadcasting",
+      "claim": "no machine broadcasts an arbitrary mixed state (M \u21a6 M\u2297M is not linear)",
+      "falsifier": "a linear broadcasting map",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "no-cloning",
+      "verdict": "IMPOSSIBLE",
+      "theorem": "QM.NoCloning",
+      "claim": "no machine clones an arbitrary quantum state",
+      "falsifier": "a universal cloner",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "pbr",
+      "verdict": "FORCED",
+      "theorem": "QM.PBR (pbr_two_copy_independent)",
+      "claim": "distinct pure states cannot share a \u03c8-epistemic ontic overlap",
+      "falsifier": "two distinct states with overlapping ontic support",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "perfect-code-distance",
+      "verdict": "FORCED",
+      "theorem": "QM.PerfectTensor.code_min_weight",
+      "claim": "the 5-qubit [[5,1,3]] code has distance \u2265 3 \u2014 no single- or two-qubit subsystem carries a stabilizer",
+      "falsifier": "a weight \u2264 2 element of the code stabilizer group",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "pr-box",
+      "verdict": "FORCED",
+      "theorem": "Foundations.PRBox.prbox_chsh",
+      "claim": "the PR box saturates the non-signaling CHSH bound at 4",
+      "falsifier": "a non-signaling box exceeding CHSH = 4",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "sm-index",
+      "verdict": "FORCED",
+      "theorem": "SM.Index.index_free + SM.Index.index_protected + SM.Index.chi_even",
+      "claim": "N_gen is a protected topological index (|\u03c7|/2 in the heterotic class)",
+      "falsifier": "an anomaly that un-protects the index",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "the-19",
+      "verdict": "FREE",
+      "theorem": "SM.ParameterCount",
+      "claim": "the SM has 19 free parameters (orbit-space dimension)",
+      "falsifier": "a relation collapsing more than 2 of the 19 correctly",
+      "oracle": [
+        "kernel-checked (Lean)",
+        "exact symbolic (sympy)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "wang-criterion",
+      "verdict": "FORCED",
+      "theorem": "QM.WangCriterion (Lyapunov-weighted Poincar\u00e9) + QM.LogSobolev (log-Sobolev \u27f9 spectral gap)",
+      "claim": "a positive spectral gap survives a measure-negligible negative-curvature region, when a Lyapunov drift forces return to the dominant state",
+      "falsifier": "a measure-negligible negative-curvature region that still collapses the gap (no Lyapunov return)",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "wdw",
+      "verdict": "FORCED",
+      "theorem": "Gravity.WheelerDeWitt.wdw_equation",
+      "claim": "physical states satisfy the Wheeler\u2013DeWitt equation \u0124|\u03c8\u27e9 = 0",
+      "falsifier": "a physical state not in ker \u0124",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": null
+    },
+    {
+      "id": "ym-casimir-gap",
+      "verdict": "FORCED",
+      "theorem": "QM.MassGapDiamond.casimir_su2 + faddeevPopov_constant_mode_gap + massive_laplacian_gap + FSSGaussianDomination.ir_bound_su2 (scaffold: \u2014 the known Casimir, kernel-checked)",
+      "claim": "the SU(2) Faddeev\u2013Popov operator has a finite-dimensional spectral gap = 2 (the Casimir \u03a3\u1d62 e\u1d62\u00d7(e\u1d62\u00d7v) = \u22122v), so the non-Abelian commutator gives a positive gap at every finite volume",
+      "falsifier": "a finite-volume FP operator with spectral gap \u2264 0 (the Abelian u1_coulomb_tension_zero case, or the horizon collapsing the gap)",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": "lemma"
+    },
+    {
+      "id": "ym-continuum-uniform",
+      "verdict": "FORCED",
+      "theorem": "QM.HeatKernel.spacing_uniform_mass_gap (0 < A\u00b7e^{\u2212c\u03b2}, spacing-independent) + spacing_uniform_monotone (the bound is strictly decreasing in \u03b2, the running) \u2014 the continuum limit is replaced by the uniform bound, no per-spacing computation",
+      "claim": "the mass-gap lower bound A\u00b7e^{\u2212c\u03b2} is uniform in the lattice spacing (a spacing-independent positive constant), so the a\u21920 continuum limit preserves the gap",
+      "falsifier": "a mass-gap lower bound that collapses as the lattice spacing a \u2192 0 (the continuum limit killing the gap)",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": "conditional"
+    },
+    {
+      "id": "ym-d5-confinement",
+      "verdict": "IRREDUCIBLE",
+      "theorem": "none \u2014 computational, not closed-form (the IRREDUCIBLE class)",
+      "claim": "five-dimensional SU(2) Yang-Mills is confining (the string tension stays nonzero and does not run to zero as \u03b2 grows) \u2014 a nonzero string tension is evidence for confinement, NOT a proof that d=5 has no spectral mass gap (confinement and a mass gap are distinct statements)",
+      "falsifier": "the d=5 string tension decreasing toward zero across \u03b2 (deconfinement)",
+      "oracle": [
+        "lattice (d=5 SU(2) string tension, \u03b2=2.0\u20133.2)"
+      ],
+      "tier": "conditional"
+    },
+    {
+      "id": "ym-finite-truncation-posdef",
+      "verdict": "FORCED",
+      "theorem": "PaclandProof.QM.PosDefKernel.posdef_sum + posdef_smul (kernel-checked) \u2014 PSD closed under finite non-negative sums and scaling",
+      "claim": "the finite truncation \u03a3_{m\u2264N} (2\u03b2)\u1d50/m!\u00b7(cos \u03b8\u1d62)\u1d50(cos \u03b8\u2c7c)\u1d50 is positive-definite \u2014 a finite non-negative (for \u03b2 \u2265 0) sum of rank-one kernels",
+      "falsifier": "a finite non-negative combination of PSD kernels that is not PSD (impossible \u2014 the closure)",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": "lemma"
+    },
+    {
+      "id": "ym-fss-linear",
+      "verdict": "FORCED",
+      "theorem": "FSSGaussianDomination.falk_bruch + character_orthonormal + laplacian_symbol_1d + fss_join (scaffold: \u2014 the known Fr\u00f6hlich\u2013Simon\u2013Spencer linear theorem, kernel-checked)",
+      "claim": "the linear/Abelian FSS infrared bound holds: reflection positivity \u2192 the two-point function \u2264 the free propagator (the Falk\u2013Bruch \u2192 sum-over-reflection-planes \u2192 Gaussian chain)",
+      "falsifier": "a reflection-positive linear model whose two-point function exceeds the free propagator",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": "chain"
+    },
+    {
+      "id": "ym-fss-nonabelian-closable",
+      "verdict": "FORCED",
+      "theorem": "QM.FSSGaussianDomination.wilson_reflection_connection (the h\u0398 by construction \u2014 \u27eaf,\u0398f\u27eb = \u03a3\u1d62\u2c7c f\u1d62f\u2c7c exp(2\u03b2\u00b7cos(\u03b8\u1d62\u2212\u03b8\u2c7c)) via Fubini, no gauge-group integral) + wilson_reflection_positivity (0 \u2264 \u27eaf,\u0398f\u27eb via QM.wilson_kernel_posdef) + wilson_reflection_self_adjoint + volume_uniform_covariance_bound (the thermodynamic-limit step) + reflection_positivity_covariance_bound (the abstract Cauchy-Schwarz for the isometry reflection)",
+      "claim": "the character-rigidity (Tr U = \u03a3_r \u03c7_r) + Weyl-bound (|\u03c7_r| \u2264 dim r) lever closes the non-Abelian FSS rung \u2014 the character covariance bound \u27e8\u03c7, \u0398\u03c7\u27e9 \u2264 \u27e8\u03c7, \u03c7\u27e9 holds volume-uniform (the ratio \u2264 1 as N grows)",
+      "falsifier": "a character reflected-correlation \u27e8\u03c7, \u0398\u03c7\u27e9 exceeding the variance \u27e8\u03c7, \u03c7\u27e9 (ratio > 1), or the ratio creeping toward 1 as N grows (gap-closing)",
+      "oracle": [
+        "lattice (SU(2) plaquette-trace reflected correlator, verify_fss_character_lever)"
+      ],
+      "tier": "conditional"
+    },
+    {
+      "id": "ym-h-theta-measure-kernel",
+      "verdict": "FORCED",
+      "theorem": "QM.Bessel.jacobi_anger_real + wilson_heat_kernel_chebyshev/rank_one + hTheta_character_orthogonality_ne/norm/mean (Chebyshev T) + su2_character_orthogonality_ne/diag (Chebyshev U sin, full SU(2)) + besselI_pos + wilson_kernel_posdef + reflection_positivity_covariance_bound + QM.FullLattice (wilsonPlaquette/wilsonAction on Matrix.specialUnitaryGroup, wilson_trace_reflection_invariant, full_wilson_action_reflection_symmetric, fss_reflected_correlation_factorization, full_lattice_transfer_posdef, haar_measure_positivity, full_lattice_os3_haar, full_lattice_mass_gap_uniform, gibbs_weight_reflection_symmetric, asymptotic_freedom_exponent_pos, gibbsMeasure, su2Haar (S\u00b3 round measure via Measure.toSphere), su2WilsonAction, su2WilsonAction_reflection_symmetric, latticeHaar (Measure.pi)) \u2014 the Peter-Weyl route + the full-lattice structural chain + the physical SU(2) measure substrate",
+      "claim": "the measure\u2192kernel connection h\u0398 \u2014 the geometric time-reversal \u0398 (an isometry, defined by its action on Wilson loops) has its reflected correlation equal to the Wilson kernel's quadratic form \u03a3\u1d62\u2c7c f\u1d62 f\u2c7c exp(2\u03b2\u00b7cos(\u03b8\u1d62\u2212\u03b8\u2c7c)), discharged by the reflection's geometric definition, not a computed group integral",
+      "falsifier": "a reflected correlation that fails to equal the Wilson kernel's quadratic form, or a non-positive reflected correlation",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": "chain"
+    },
+    {
+      "id": "ym-linked-cluster-contraction",
+      "verdict": "IRREDUCIBLE",
+      "theorem": "none \u2014 the open hypothesis (the mass-gap reduction's single input). The transport is proved: refereeScalingLaw_of_radius_bound (\u03c1 \u2264 e^{\u2212A\u00b7e^{\u2212c\u03b2}} \u27f9 m \u2265 A\u00b7e^{\u2212c\u03b2}) + volume_uniform_covariance_bound + wightman_limit_stable. The full single-cluster layer toward H is proved: clusterActivity/smallness/convergence + polymer_expansion_subset + linked_cluster_log_prod + linked_cluster_weights + cluster_weight_bound + cluster_weights_summable + walk_count_bound (#(walks length n) \u2264 maxDegree\u207f, the animals estimate's first lemma). The next unproved rung is the animals bound #{connected clusters of size n} \u2264 \u0394^{2(n\u22121)} (spanning tree + Euler tour).",
+      "claim": "the linked-cluster contraction H \u2014 the concrete SU(2) Gibbs measure's transfer-matrix spectral radius contracts under blockSpinSU2 to \u03c1(\u03b2) \u2264 e^{\u2212A\u00b7e^{\u2212(12\u03c0\u00b2/11)\u03b2}} (the single remaining hypothesis of the mass-gap reduction, docs/MASS-GAP-REDUCTION.md)",
+      "falsifier": "a numeric counterexample: the block-spin propagator NOT contracting to \u03c1(\u03b2) \u2264 e^{\u2212A\u00b7e^{\u2212c\u03b2}} across scales (the decimated two-point function failing to decay by the contraction rate)",
+      "oracle": [
+        "lattice (block-spin propagator decay, \u03b2 scan)"
+      ],
+      "tier": "conditional"
+    },
+    {
+      "id": "ym-log-sobolev",
+      "verdict": "FORCED",
+      "theorem": "QM.BakryEmeryLSI.su2_log_sobolev + su2_log_sobolev_constant + bakryEmery_logSobolev (the log-Sobolev constant 2/\u03ba is positive, with \u03ba = the integrated curvature \u03b2\u00b7(c \u2212 (1+c)e^{\u22122\u03b2}) \u2014 derived structurally from the Bakry\u2013\u00c9mery entropy method, no per-\u03b2 computation)",
+      "claim": "the FMR-gauge-fixed Yang-Mills measure satisfies a log-Sobolev inequality with constant C ~ 1/\u03bb_min(FP), so the spectral gap is positive iff \u03bb_min stays bounded away from zero",
+      "falsifier": "the log-Sobolev constant blowing up as \u03bb_min(FP) \u2192 0 (the horizon)",
+      "oracle": [
+        "lattice (FP spectrum \u2192 log-Sobolev constant, lattice_ghost.py)"
+      ],
+      "tier": "conditional"
+    },
+    {
+      "id": "ym-mass-gap-bulk-transition",
+      "verdict": "IRREDUCIBLE",
+      "theorem": "none \u2014 computational, not closed-form (the IRREDUCIBLE class)",
+      "claim": "the SU(2) bulk transition (a jump in the lattice plaquette/order parameter) persists to larger lattices, so the confined phase is a genuine phase, not a small-volume artifact \u2014 note: the implementation is SU(2) (lattice_ym_su2), not SU(3)",
+      "falsifier": "the transition jump vanishing as the lattice grows (a finite-volume artifact)",
+      "oracle": [
+        "lattice (SU(2) bulk-transition falsifier, \u03b2=1.8\u20132.6, N=4,6)"
+      ],
+      "tier": "identity"
+    },
+    {
+      "id": "ym-mass-gap-polyakov",
+      "verdict": "IRREDUCIBLE",
+      "theorem": "none \u2014 computational, not closed-form (the IRREDUCIBLE class)",
+      "claim": "SU(3) Yang-Mills at finite temperature has a positive screening mass (the Polyakov correlator clusters exponentially, so the mass gap does not collapse at finite T)",
+      "falsifier": "a Polyakov screening mass \u2264 0 (a divergent correlation length)",
+      "oracle": [
+        "lattice (SU(3) Polyakov correlator, N_t=2, N_s=6)"
+      ],
+      "tier": "identity"
+    },
+    {
+      "id": "ym-mass-gap-running-coupling",
+      "verdict": "FORCED",
+      "theorem": "QM.HeatKernel.string_tension_runs + string_tension_positive + determinant_gives_exponent (the inverse scale e^{\u2212c\u03b2} is strictly decreasing in \u03b2 and strictly positive \u2014 the running, derived from the beta function's exponent)",
+      "claim": "the SU(2) string tension \u03c3(\u03b2) (the Polyakov-loop mass proxy) runs with the coupling \u2014 it decreases as \u03b2 grows, reaching the asymptotic-freedom scale e^{\u2212c\u03b2}",
+      "falsifier": "a string tension that fails to decrease as \u03b2 grows (no running), or that collapses to zero",
+      "oracle": [
+        "lattice (SU(2) Polyakov string tension, verify_mass_gap_running_coupling)"
+      ],
+      "tier": "lemma"
+    },
+    {
+      "id": "ym-orbifold-curvature",
+      "verdict": "FORCED",
+      "theorem": "QM.GradientFlow.orbit_curvature_integrated_gap + effective_curvature_positive + QM.OrbitCurvature.orbit_curvature_beta_uniform (the pointwise ceiling is measure-suppressed, so the integrated curvature is \u03b2-uniform positive \u2014 no per-\u03b2 pointwise computation)",
+      "claim": "the Yang-Mills measure on the gauge-orbit quotient has Bakry-\u00c9mery curvature K \u2265 \u03bb_min(FP), so it has a spectral gap iff \u03bb_min(FP) stays uniformly positive (no Gribov-horizon collapse)",
+      "falsifier": "\u03bb_min(FP) \u2192 0 in the continuum / at the FMR boundary (the Gribov horizon), which would refute uniform positive curvature",
+      "oracle": [
+        "lattice (FP operator spectrum, lattice_ghost.py)"
+      ],
+      "tier": "lemma"
+    },
+    {
+      "id": "ym-os-existence",
+      "verdict": "FORCED",
+      "theorem": "QM.OSAxioms.os_reconstruction_full (PosDefKernel K \u27f9 WightmanHilbert + WightmanMassGap) + clay_assembly_final (WightmanHilbert + 0 < physicalMass via spacing_uniform_exact) + QM.FSSGaussianDomination.wilson_reflection_positivity (the OS3 input) + wilson_reflection_self_adjoint (the OS2 input)",
+      "claim": "the OS reconstruction \u2014 the Wilson kernel's PSD (OS3) + the reflection symmetry (OS2, wilson_reflection_self_adjoint) reconstruct the Wightman Hilbert space and the mass gap via os_reconstruction_full",
+      "falsifier": "a positive-definite kernel that fails to yield a Wightman Hilbert space, or a spacing-uniform mass that collapses",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": "conditional"
+    },
+    {
+      "id": "ym-posdef-limit",
+      "verdict": "FORCED",
+      "theorem": "PaclandProof.QM.PosDefKernel.posdef_of_tendsto (kernel-checked) \u2014 the finite sum over Fin m commutes with the pointwise Tendsto, so the limit of PSD is PSD",
+      "claim": "the pointwise limit of positive-definite kernels is positive-definite \u2014 \u03a3 c\u1d62 c\u2c7c K(i,j) = lim_N \u03a3 c\u1d62 c\u2c7c K_N(i,j) \u2265 0 (the finite sum commutes with the limit)",
+      "falsifier": "a sequence of PSD kernels whose pointwise limit is not PSD (impossible \u2014 the finite-sum/limit commutation)",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": "conditional"
+    },
+    {
+      "id": "ym-rank-one-posdef",
+      "verdict": "FORCED",
+      "theorem": "PaclandProof.QM.FSSGaussianDomination.cos_kernel_posdef (kernel-checked) \u2014 the cos kernel's |\u03a3 c\u1d62 e^{i\u03b8\u1d62}|\u00b2 factorization",
+      "claim": "the rank-one kernel f(\u03b8\u1d62)\u00b7f(\u03b8\u2c7c) is positive-definite \u2014 \u03a3 c\u1d62 c\u2c7c f(\u03b8\u1d62)f(\u03b8\u2c7c) = |\u03a3 c\u1d62 f(\u03b8\u1d62)|\u00b2 \u2265 0 (the direct factorization, no infinite sum)",
+      "falsifier": "coefficients c with |\u03a3 c\u1d62 f(\u03b8\u1d62)|\u00b2 < 0 (impossible \u2014 a square)",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": "lemma"
+    },
+    {
+      "id": "ym-rg-contraction",
+      "verdict": "FORCED",
+      "theorem": "QM.GradientFlow.rg_contraction_positive + effective_rate_below_one + flow_rate_gap_lower_bound (the effective RG rate (1 \u2212 t\u00b7\u03b2\u00b7c) + e^{\u22122\u03b2} < 1, a positive contraction, so the gap is the contraction rate)",
+      "claim": "one block-spin renormalisation-group step contracts the Yang-Mills measure (a positive RG contraction coefficient), so the mass gap is the RG contraction rate",
+      "falsifier": "the RG contraction coefficient \u2192 1 (no contraction) at the horizon or in the continuum",
+      "oracle": [
+        "lattice (block-spin RG flow, to be built)"
+      ],
+      "tier": "conditional"
+    },
+    {
+      "id": "ym-running-coupling",
+      "verdict": "FORCED",
+      "theorem": "QM.HeatKernel.determinant_gives_exponent (scaffold: \u2014 the heat-kernel scale, kernel-checked)",
+      "claim": "the running-coupling exponent c = 12\u03c0\u00b2/11 is derived from the beta function (the heat-kernel determinant det P = e^{\u2212Tr log P}, a\u2082 \u221d b\u2080)",
+      "falsifier": "a beta function with b\u2080 \u2264 0 (no asymptotic freedom), which would kill the exponent",
+      "oracle": [
+        "kernel-checked (Lean)"
+      ],
+      "tier": "lemma"
+    },
+    {
+      "id": "ym-volume-uniform-su2",
+      "verdict": "FREE",
+      "theorem": "none \u2014 the open Clay rung (the non-Abelian reflection-positivity estimate, not yet kernel-checked)",
+      "claim": "the SU(2) character (the trace Tr U = \u03a3_r \u03c7_r) satisfies the volume-uniform FSS infrared bound \u2014 the finite Casimir gap 2 survives the thermodynamic + continuum limit, giving m(\u03b2) \u2265 A\u00b7e^{\u2212c\u03b2}",
+      "falsifier": "a volume-uniform SU(2) character two-point function exceeding the free propagator, or the finite Casimir gap collapsing in the thermodynamic limit",
+      "oracle": [
+        "lattice (SU(2) character correlator, verify_volume_uniform_su2)",
+        "kernel-checked (Lean) \u2014 NOT YET"
+      ],
+      "tier": "conditional"
+    }
+  ]
+}
