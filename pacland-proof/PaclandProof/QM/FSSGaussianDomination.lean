@@ -961,6 +961,15 @@ theorem su2_character_volume_uniform_fss {m : ℕ} [NeZero m] (θ : Fin m → �
     simpa [wilsonKernel] using (QM.wilson_kernel_posdef θ β hβ (WithLp.ofLp χ))
   exact su2_momentum_space_fss_bound latticeReflection (latticeLaplacian (m := m)) χ J hpos hsym hJ hLpos
 
+/-- **The transfer-matrix factorization (the honest hΘ).** The reflected correlation of a measure
+across the reflection `Θ` equals the kernel `K`'s quadratic form: `∫ f(θ)·f(Θθ) dμ = Σᵢⱼ fᵢfⱼ K(i,j)`.
+This is the measure→kernel connection the structural join needs — the Gibbs measure's reflected correlation
+factorizes to the Wilson-kernel quadratic form. It is the open measure-theoretic estimate (NOT the algebraic
+`fss_reflected_correlation_factorization`, which is the square `(Σ f·w)² = Σᵢⱼ fᵢwᵢfⱼwⱼ`). -/
+def transferFactorization {ι : Type*} [MeasurableSpace ι] [Fintype ι] (μ : MeasureTheory.Measure ι)
+    (Θ : ι → ι) (K : ι → ι → ℝ) : Prop :=
+  ∀ f : ι → ℝ, (∫ x, f x * f (Θ x) ∂μ) = ∑ i, ∑ j, f i * f j * K i j
+
 /-- **The explicit lattice free propagator satisfies the decay** — the Green's function
 `G(x) = e^(−γ|x|)/(2 sinh γ)` (with `cosh γ = 1 + mβ²/2`, so `γ = arcosh(1 + mβ²/2)`) satisfies
 `freePropagatorDecay γ G` with `C = 1/(2 sinh γ)`. This is the Fourier inversion's conclusion: the lattice
