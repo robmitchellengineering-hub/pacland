@@ -1252,6 +1252,48 @@ noncomputable def zeroExtendSucc {V : ℕ} :
       rw [hzero]
       simpa using h
 
+/-- **The `if (j < V)` filter over `Fin (V+1)` is the sum over `Fin V` via `castSucc`.** -/
+theorem sum_ite_castSucc {V : ℕ} (g : Fin (V+1) → ℝ) :
+    (∑ j : Fin (V+1), (if h : (j : ℕ) < V then g j else 0)) = ∑ j : Fin V, g (Fin.castSucc j) := by
+  rw [Fin.sum_univ_castSucc]
+  simp only [Fin.castSucc, Fin.last, Fin.val_last, Fin.val_castSucc]
+  simp
+
+/-- **The Wilson quadratic form is preserved by the zero-extension.** -/
+theorem wilson_quadratic_zeroExtend {V : ℕ}
+    (θ : Fin V → ℝ) (θ' : Fin (V+1) → ℝ) (β : ℝ)
+    (hθ : ∀ i : Fin V, θ' (Fin.castAdd 1 i) = θ i)
+    (f : Fin V → ℝ) :
+    (∑ i : Fin (V+1), ∑ j : Fin (V+1),
+      (if hi : (i : ℕ) < V then f ⟨i, hi⟩ else 0) * (if hj : (j : ℕ) < V then f ⟨j, hj⟩ else 0) * wilsonKernel θ' β i j)
+    = (∑ i : Fin V, ∑ j : Fin V, f i * f j * wilsonKernel θ β i j) := by
+  simp_rw [Fin.sum_univ_castSucc]
+  simp only [Fin.castSucc, Fin.last, Fin.val_last, Fin.val_castSucc, wilsonKernel]
+  simp
+  congr 1
+  funext i
+  congr 1
+  funext j
+  rw [hθ i, hθ j]
+
+/-- **The transfer matrix as a linear map on the ℓ² space** — the Wilson kernel lifted to `PiLp 2`. -/
+noncomputable def transferMatrixLinearMap {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) :
+    (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)) where
+  toFun f := (WithLp.equiv 2 (Fin m → ℝ)).symm (wilsonReflection θ β (WithLp.ofLp f))
+  map_add' := by
+    intro f g
+    ext i
+    simp [WithLp.ofLp, wilsonReflection, LinearMap.coe_mk, AddHom.coe_mk, Pi.add_apply, add_mul, Finset.sum_add_distrib]
+  map_smul' := by
+    intro a f
+    ext i
+    simp [WithLp.ofLp, wilsonReflection, LinearMap.coe_mk, AddHom.coe_mk, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
+
+/-- **The transfer matrix as a continuous linear map** — the finite-dimensional linear map is continuous. -/
+noncomputable def transferMatrixCLM {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) :
+    (PiLp 2 (fun _ : Fin m => ℝ)) →L[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)) :=
+  (transferMatrixLinearMap θ β).toContinuousLinearMap
+
 
 end FSSGaussianDomination
 
