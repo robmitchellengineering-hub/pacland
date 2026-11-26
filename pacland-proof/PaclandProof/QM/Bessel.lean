@@ -730,4 +730,32 @@ theorem besselI_zero_le_exp (x : ℝ) (hx : 0 ≤ x) : besselI 0 x ≤ Real.exp 
       exact Real.exp_le_exp.mpr (by simpa using (mul_le_mul_of_nonneg_left (Real.cos_le_one θ) hx : x * Real.cos θ ≤ x * 1))
   nlinarith [hI0, hle, hconst, Real.pi_pos]
 
+
+/-- **`∫₀^π cos((n+1)θ) cos θ dθ = π/2` if `n = 0`, else `0`** — the first Fourier orthogonality. -/
+lemma integral_cos_succ_mul_cos (n : ℕ) :
+    ∫ θ in (0 : ℝ)..Real.pi, Real.cos ((n + 1 : ℝ) * θ) * Real.cos θ =
+      if n = 0 then Real.pi / 2 else 0 := by
+  have hprod : ∀ θ : ℝ, Real.cos ((n + 1 : ℝ) * θ) * Real.cos θ =
+      (Real.cos (((n : ℝ) + 2) * θ) + Real.cos ((n : ℝ) * θ)) / 2 := by
+    intro θ
+    have h1 : Real.cos (((n : ℝ) + 2) * θ) = Real.cos ((n + 1 : ℝ) * θ) * Real.cos θ - Real.sin ((n + 1 : ℝ) * θ) * Real.sin θ := by
+      rw [show ((n : ℝ) + 2) * θ = (n + 1 : ℝ) * θ + θ by ring]
+      exact Real.cos_add ((n + 1 : ℝ) * θ) θ
+    have h2 : Real.cos ((n : ℝ) * θ) = Real.cos ((n + 1 : ℝ) * θ) * Real.cos θ + Real.sin ((n + 1 : ℝ) * θ) * Real.sin θ := by
+      rw [show (n : ℝ) * θ = (n + 1 : ℝ) * θ - θ by ring]
+      exact Real.cos_sub ((n + 1 : ℝ) * θ) θ
+    nlinarith
+  simp_rw [hprod]
+  rw [intervalIntegral.integral_div, intervalIntegral.integral_add]
+  · by_cases hn : n = 0
+    · subst n
+      simp [integral_cos_n_zero, intervalIntegral.integral_const, sub_zero, smul_eq_mul]
+    · have hplus : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (((n : ℝ) + 2) * θ) = 0 := by
+        simpa [Nat.cast_add, Nat.cast_ofNat] using integral_cos_n_zero (n + 2) (by omega)
+      have hminus : ∫ θ in (0 : ℝ)..Real.pi, Real.cos ((n : ℝ) * θ) = 0 := by
+        simpa using integral_cos_n_zero n hn
+      simp [hplus, hminus, hn]
+  · exact (Real.continuous_cos.comp (continuous_const.mul continuous_id)).intervalIntegrable (0 : ℝ) Real.pi
+  · exact (Real.continuous_cos.comp (continuous_const.mul continuous_id)).intervalIntegrable (0 : ℝ) Real.pi
+
 end QM
