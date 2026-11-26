@@ -1214,6 +1214,44 @@ theorem norm_le_norm_of_isometry_quadratic
   rw [hray]
   exact S.rayleighQuotient_le_norm (ι f)
 
+/-- **The one-step zero-extension isometry** — the ℓ² space on `Fin V` embeds isometrically into
+`Fin (V+1)` by extending by zero on the last coordinate. This is the compression embedding whose
+quadratic-form preservation gives the transfer matrix's volume-monotonicity `λ₁(V) ≤ λ₁(V+1)`. -/
+noncomputable def zeroExtendSucc {V : ℕ} :
+    (PiLp 2 (fun _ : Fin V => ℝ)) →ₗᵢ[ℝ] (PiLp 2 (fun _ : Fin (V+1) => ℝ)) where
+  toLinearMap := {
+    toFun f := (WithLp.equiv 2 (Fin (V+1) → ℝ)).symm (fun i => if h : (i : ℕ) < V then WithLp.ofLp f ⟨i, h⟩ else 0)
+    map_add' := by
+      intro f g
+      ext i
+      by_cases h : (i : ℕ) < V
+      · simp [h, WithLp.ofLp]
+      · simp [h]
+    map_smul' := by
+      intro a f
+      ext i
+      by_cases h : (i : ℕ) < V
+      · simp [h, WithLp.ofLp]
+      · simp [h]
+  }
+  norm_map' := by
+    intro f
+    have hsq : ‖(WithLp.equiv 2 (Fin (V+1) → ℝ)).symm (fun i => if h : (i : ℕ) < V then WithLp.ofLp f ⟨i, h⟩ else 0)‖^2 = ‖f‖^2 := by
+      rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq]
+      simp only [PiLp.inner_apply, WithLp.ofLp]
+      rw [Fin.sum_univ_castSucc]
+      simp only [Fin.castSucc, Fin.last, Fin.val_last, Fin.val_castSucc]
+      simp
+    have hnn : 0 ≤ ‖(WithLp.equiv 2 (Fin (V+1) → ℝ)).symm (fun i => if h : (i : ℕ) < V then WithLp.ofLp f ⟨i, h⟩ else 0)‖ := norm_nonneg _
+    have hnn' : 0 ≤ ‖f‖ := norm_nonneg _
+    rcases (sq_eq_sq_iff_eq_or_eq_neg.mp hsq) with h | h
+    · exact h
+    · have hle : ‖f‖ ≤ 0 := by nlinarith
+      have hzero : ‖f‖ = 0 := le_antisymm hle hnn'
+      rw [hzero] at h
+      rw [hzero]
+      simpa using h
+
 
 end FSSGaussianDomination
 

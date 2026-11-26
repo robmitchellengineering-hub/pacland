@@ -245,7 +245,8 @@
     "continuum_mass_gap",
     "unique_limit_of_antitone_subseq",
     "continuum_mass_gap_of_uniform_antitone",
-    "norm_le_norm_of_isometry_quadratic"
+    "norm_le_norm_of_isometry_quadratic",
+    "zeroExtendSucc"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
