@@ -474,6 +474,17 @@ CATALOG: dict[str, dict] = {    "chsh": {
         "why": "the OS reconstruction is proved STRUCTURALLY: the Wilson kernel's PSD (wilson_kernel_posdef) is the OS3 input, wilson_reflection_self_adjoint is the OS2 symmetry, and os_reconstruction_full turns them into the Wightman Hilbert space + the mass gap. The honest Clay boundary (per the clay_assembly_final docstring) is the FULL continuum existence + the non-perturbative spectral gap Δ > 0 in 4D — the finite-lattice Wightman reconstruction is forced, the continuum existence remains open.",
     },
 
+    "ym-existence-openai-external": {
+        "claim": "EXTERNAL (OpenAI 2026-10-28, under review): a relativistic QFT satisfying the Wightman axioms constructed as a scaling limit of 4D Wilson lattice gauge theory (any simple compact gauge group) — the continuum EXISTENCE half of the Clay problem, via Balaban's multiscale RG",
+        "simulate": None,
+        "theorem": "EXTERNAL Lean (NOT in our tower): github.com/yang-mills-group/OpenAI-YM-20261028 — Solution.lean proves YangMills.jointExistence; Construction.lean proves YangMills.constructed. Gross committee rebuilt: Lean 4.32.0, ~9,470 modules, 0 errors, no sorry, no added axioms (only propext / Classical.choice / Quot.sound).",
+        "falsifier": "subsequential-limit ambiguity (uniqueness of the infinite-volume limit NOT proved); no continuum probability measure; no mass gap",
+        "oracle": ["external Lean (OpenAI repo, not imported into pacland)"],
+        "verdict": "FREE",
+        "tier": "reference",
+        "why": "supplies (part of) the hconv input to continuum_mass_gap — but only SUBSEQUENTIALLY (uniqueness of the infinite-volume limit not proved), so it does not by itself feed the carry-through. The mass gap is explicitly NOT claimed. Provisional Gross-committee judgment only; no journal peer review, no Clay ruling. Not imported into pacland (separate Mathlib, incompatible tower).",
+    },
+
 }
 
 VERDICT_GLYPH = {"FORCED": "●", "FREE": "○", "IMPOSSIBLE": "✕", "IRREDUCIBLE": "◐"}
