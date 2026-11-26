@@ -598,4 +598,62 @@ theorem integral_cos_n_zero (n : ℕ) (hn : n ≠ 0) :
   have hne : (n : ℝ) ≠ 0 := by exact_mod_cast hn
   simp [hne, Real.sin_int_mul_pi]
 
+
+/-- The series `∑' k, x^(2k)/k!` equals `exp(x²)` (the exponential's even part). -/
+lemma tsum_pow_two_mul_div_factorial (x : ℝ) :
+    (∑' k : ℕ, x ^ (2 * k) / (k.factorial : ℝ)) = Real.exp (x ^ 2) := by
+  rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum_div]
+  apply tsum_congr
+  intro k
+  rw [← pow_mul]
+
+/-- **Bessel upper bound** — `I_n(x) ≤ (x/2)^n/n! · exp((x/2)²)` for `x ≥ 0` (the `(k+n)! ≥ n!` termwise
+comparison). This is the dominated-convergence input that makes the Bessel series summable. -/
+lemma besselI_le_exp_bound (n : ℕ) {x : ℝ} (hx : 0 ≤ x) :
+    besselI n x ≤ (x / 2) ^ n / (n.factorial : ℝ) * Real.exp ((x / 2) ^ 2) := by
+  dsimp [besselI]
+  have hx2 : 0 ≤ x / 2 := div_nonneg hx (by norm_num)
+  have hterm : ∀ k : ℕ,
+      (x / 2) ^ (2 * k + n) / ((k.factorial : ℝ) * (k + n).factorial) ≤
+        ((x / 2) ^ n / (n.factorial : ℝ)) * ((x / 2) ^ (2 * k) / (k.factorial : ℝ)) := by
+    intro k
+    have hfact : (n.factorial : ℝ) ≤ (k + n).factorial := by
+      exact_mod_cast (Nat.factorial_le (Nat.le_add_left n k))
+    have hden : (k.factorial : ℝ) * (n.factorial : ℝ) ≤ (k.factorial : ℝ) * (k + n).factorial :=
+      mul_le_mul_of_nonneg_left hfact (Nat.cast_nonneg (k.factorial))
+    calc
+      (x / 2) ^ (2 * k + n) / ((k.factorial : ℝ) * (k + n).factorial)
+          ≤ (x / 2) ^ (2 * k + n) / ((k.factorial : ℝ) * (n.factorial : ℝ)) := by
+            exact div_le_div_of_nonneg_left (pow_nonneg hx2 _) (by positivity) hden
+      _ = ((x / 2) ^ n / (n.factorial : ℝ)) * ((x / 2) ^ (2 * k) / (k.factorial : ℝ)) := by
+            rw [pow_add]
+            ring
+  have hsum1 : Summable (fun k : ℕ =>
+      (x / 2) ^ (2 * k + n) / ((k.factorial : ℝ) * (k + n).factorial)) :=
+    besselI_summable_of_nonneg n hx
+  have hsum2 : Summable (fun k : ℕ =>
+      ((x / 2) ^ n / (n.factorial : ℝ)) * ((x / 2) ^ (2 * k) / (k.factorial : ℝ))) := by
+    have h : Summable (fun k : ℕ => (x / 2) ^ (2 * k) / (k.factorial : ℝ)) := by
+      simpa [pow_mul] using (Real.summable_pow_div_factorial ((x / 2) ^ 2))
+    exact h.mul_left ((x / 2) ^ n / (n.factorial : ℝ))
+  calc
+    besselI n x = ∑' k : ℕ, (x / 2) ^ (2 * k + n) / ((k.factorial : ℝ) * (k + n).factorial) := rfl
+    _ ≤ ∑' k : ℕ, ((x / 2) ^ n / (n.factorial : ℝ)) * ((x / 2) ^ (2 * k) / (k.factorial : ℝ)) := by
+        exact hsum1.tsum_le_tsum hterm hsum2
+    _ = ((x / 2) ^ n / (n.factorial : ℝ)) * ∑' k : ℕ, (x / 2) ^ (2 * k) / (k.factorial : ℝ) := by
+        rw [tsum_mul_left]
+    _ = ((x / 2) ^ n / (n.factorial : ℝ)) * Real.exp ((x / 2) ^ 2) := by
+        rw [tsum_pow_two_mul_div_factorial]
+
+/-- **The Bessel sequence is summable** — `Σ_n I_n(x) < ∞` for `x ≥ 0` (the dominated-convergence input). -/
+lemma besselI_summable {x : ℝ} (hx : 0 ≤ x) : Summable (fun n : ℕ => besselI n x) := by
+  have hbase : Summable (fun n : ℕ =>
+      (x / 2) ^ n / (n.factorial : ℝ) * Real.exp ((x / 2) ^ 2)) :=
+    (Real.summable_pow_div_factorial (x / 2)).mul_right (Real.exp ((x / 2) ^ 2))
+  refine hbase.of_nonneg_of_le ?_ ?_
+  · intro n
+    exact besselI_nonneg hx
+  · intro n
+    exact besselI_le_exp_bound n hx
+
 end QM
