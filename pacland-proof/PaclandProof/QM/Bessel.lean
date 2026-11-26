@@ -959,4 +959,16 @@ theorem heat_kernel_gap_exp_bound (β : ℝ) (hβ : 0 < β) :
     mul_le_mul_of_nonneg_right hfinal (le_of_lt (Real.exp_pos (-(12 * Real.pi ^ 2 / 11) * β)))
   simpa [← Real.exp_add, mul_assoc, mul_comm, mul_left_comm] using hfinal'
 
+
+/-- **Positivity of the mass gap** (`I₁ < I₀`): `0 < heatKernelMassGap β` for `β > 0`. -/
+theorem heat_kernel_spectral_gap (β : ℝ) (hβ : 0 < β) : 0 < heatKernelMassGap β := by
+  have hsub : (1 / 2 : ℝ) - 1 / Real.pi ≤ besselI 0 (2 * β) - besselI 1 (2 * β) := besselI_sub_le (2 * β) (by positivity)
+  have hI0pos : 0 < besselI 0 (2 * β) := besselI_pos (by positivity)
+  have hpos : (0 : ℝ) < 1 / 2 - 1 / Real.pi := by
+    rw [sub_pos]
+    exact one_div_lt_one_div_of_lt (by norm_num) (by nlinarith [Real.pi_gt_three])
+  dsimp [heatKernelMassGap]
+  field_simp [hI0pos.ne']
+  exact div_pos (lt_of_lt_of_le hpos hsub) hI0pos
+
 end QM
