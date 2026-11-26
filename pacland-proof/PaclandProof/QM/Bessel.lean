@@ -715,4 +715,19 @@ theorem integral_exp_cos_eq_pi_mul_besselI_zero (x : ℝ) (hx : 0 ≤ x) :
   · exact (intervalIntegrable_const : IntervalIntegrable (fun _ : ℝ => besselI 0 x) MeasureTheory.volume (0 : ℝ) Real.pi)
   · exact htailint
 
+
+set_option maxHeartbeats 1600000 in
+/-- **`I₀(x) ≤ eˣ`** for `x ≥ 0` — from the integral representation and `cos θ ≤ 1`. -/
+theorem besselI_zero_le_exp (x : ℝ) (hx : 0 ≤ x) : besselI 0 x ≤ Real.exp x := by
+  have hI0 := integral_exp_cos_eq_pi_mul_besselI_zero x hx
+  have hconst : (∫ θ in (0 : ℝ)..Real.pi, Real.exp x) = Real.pi * Real.exp x := by
+    simpa only [intervalIntegral.integral_const, sub_zero, smul_eq_mul]
+  have hle : (∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ)) ≤ ∫ θ in (0 : ℝ)..Real.pi, Real.exp x := by
+    refine intervalIntegral.integral_mono_on (le_of_lt Real.pi_pos) ?_ ?_ ?_
+    · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ))).intervalIntegrable (0 : ℝ) Real.pi
+    · exact (continuous_const : Continuous (fun _ : ℝ => Real.exp x)).intervalIntegrable (0 : ℝ) Real.pi
+    · intro θ hθ
+      exact Real.exp_le_exp.mpr (by simpa using (mul_le_mul_of_nonneg_left (Real.cos_le_one θ) hx : x * Real.cos θ ≤ x * 1))
+  nlinarith [hI0, hle, hconst, Real.pi_pos]
+
 end QM
