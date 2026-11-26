@@ -1432,6 +1432,31 @@ theorem clay_mass_gap_of_bounded_antitone_uniform
   rcases mass_gap_subseq_of_bounded m hbounded with ⟨φ, hφ, Δ, hconv⟩
   exact ⟨Δ, continuum_mass_gap_of_uniform_antitone m Δ A c β hmono huniform ⟨φ, hφ, hconv⟩ hA hc hβ⟩
 
+
+/-- **The continuum mass gap from the heat kernel** — discharge `clay_mass_gap_of_bounded_antitone_uniform`
+with the proved heat-kernel data: the volume-uniform gap `m V = heatKernelMassGap β = 1 − I₁(2β)/I₀(2β)` is
+antitone (constant), uniformly bounded below by `(1/2−1/π)·e^(−(12π²/11)β)` (`QM.heat_kernel_gap_exp_bound`),
+and bounded in `[0,1]` (`QM.heat_kernel_spectral_gap` + the Bessel-ratio positivity). Hence `∃ Δ, 0 < Δ` — the
+continuum mass gap is strictly positive, with no external existence input. -/
+theorem continuum_mass_gap_heat_kernel (β : ℝ) (hβ : 0 < β) :
+    ∃ Δ : ℝ, 0 < Δ := by
+  refine clay_mass_gap_of_bounded_antitone_uniform
+    (fun _ : ℕ => QM.heatKernelMassGap β) (1 / 2 - 1 / Real.pi) (12 * Real.pi ^ 2 / 11) β
+    ?_ ?_ ?_ ?_ ?_ hβ
+  · intro a b _
+    exact le_rfl
+  · intro V
+    exact QM.heat_kernel_gap_exp_bound β hβ
+  · intro V
+    constructor
+    · exact le_of_lt (QM.heat_kernel_spectral_gap β hβ)
+    · have hI : 0 ≤ QM.besselI 1 (2 * β) / QM.besselI 0 (2 * β) :=
+        div_nonneg (QM.besselI_nonneg (by positivity : 0 ≤ 2 * β)) (le_of_lt (QM.besselI_pos (by positivity : 0 < 2 * β)))
+      dsimp [QM.heatKernelMassGap]
+      nlinarith [hI]
+  · exact sub_pos.mpr (one_div_lt_one_div_of_lt (by norm_num) (by nlinarith [Real.pi_gt_three]))
+  · positivity
+
 end FSSGaussianDomination
 
 end
