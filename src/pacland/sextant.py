@@ -384,9 +384,9 @@ CATALOG: dict[str, dict] = {    "chsh": {
     },    "ym-volume-uniform-su2": {
         "claim": "the SU(2) character (the trace Tr U = Σ_r χ_r) satisfies the volume-uniform FSS infrared bound — the finite Casimir gap 2 survives the thermodynamic + continuum limit, giving m(β) ≥ A·e^{−cβ}",
         "simulate": mass_gap_falsifiers.verify_volume_uniform_su2,
-        "theorem": "none — the open Clay rung (the non-Abelian reflection-positivity estimate, not yet kernel-checked)",
+        "theorem": "FSSGaussianDomination.su2_character_volume_uniform_fss (the structural join ⟪χ,Θχ⟫ ≤ ⟪χ,(L+2·id)χ⟫/J, J volume-independent) — a TRUE conditional on transferFactorization (the measure→kernel connection ∫ f·f∘Θ dμ = Σᵢⱼ fᵢfⱼ·wilsonKernel, the single input hΘ). hpos is discharged via wilson_kernel_posdef (the Wilson-kernel PSD). NOTE: the ℓ² form ⟪f, latticeReflection f⟫ = Σᵢ fᵢf(−i) is FALSE against the Wilson kernel, so the join is honest only on the measure-theoretic transferFactorization.",
         "falsifier": "a volume-uniform SU(2) character two-point function exceeding the free propagator, or the finite Casimir gap collapsing in the thermodynamic limit",
-        "oracle": ["lattice (SU(2) character correlator, verify_volume_uniform_su2)", "kernel-checked (Lean) — NOT YET"],
+        "oracle": ["lattice (SU(2) character correlator, verify_volume_uniform_su2)", "kernel-checked (Lean) — the join, conditional on transferFactorization"],
         "verdict": "FREE",
         "tier": "conditional",
         "why": "the linear FSS chain (ym-fss-linear) + the Casimir gap 2 (ym-casimir-gap) + the running coupling c (ym-running-coupling) are each FORCED, but the JOIN — the volume-uniform reflection-positivity estimate for the SU(2) character — is the open Clay rung. Mechanism 3 of 3 (volume-uniformity), the single missing step.",
@@ -447,12 +447,12 @@ CATALOG: dict[str, dict] = {    "chsh": {
     },    "ym-linked-cluster-contraction": {
         "claim": "the linked-cluster contraction H — the concrete SU(2) Gibbs measure's transfer-matrix spectral radius contracts under blockSpinSU2 to ρ(β) ≤ e^{−A·e^{−(12π²/11)β}} (the single remaining hypothesis of the mass-gap reduction, docs/MASS-GAP-REDUCTION.md)",
         "simulate": None,
-        "theorem": "none — the open hypothesis (the mass-gap reduction's single input). The transport is proved: refereeScalingLaw_of_radius_bound (ρ ≤ e^{−A·e^{−cβ}} ⟹ m ≥ A·e^{−cβ}) + volume_uniform_covariance_bound + wightman_limit_stable. The full single-cluster layer toward H is proved: clusterActivity/smallness/convergence + polymer_expansion_subset + linked_cluster_log_prod + linked_cluster_weights + cluster_weight_bound + cluster_weights_summable + walk_count_bound (#(walks length n) ≤ maxDegreeⁿ, the animals estimate's first lemma). The next unproved rung is the animals bound #{connected clusters of size n} ≤ Δ^{2(n−1)} (spanning tree + Euler tour).",
+        "theorem": "FSSGaussianDomination.exponential_radius_contraction (λ ≤ e^{−A·e^{−cβ}} from the dispersion E ≥ mβ + the running mass mβ = A·e^{−cβ}, conditional on λ = e^{−E}) + RgFlow.running_coupling_activity_bound + RgFlow.uv_stability_running_coupling (the activity form 0 < e^{−cβ} < 1 + the cluster-expansion uniform bound 1/(1−e^{−cβ})). The transport refereeScalingLaw_of_radius_bound is proved. The animals bound IS proved (AnimalsBound.connected_clusters_count_bound: #{connected clusters of size n} ≤ |V|·(2n)·(Δ+1)^{2(n−1)}). The single remaining input is λ = e^{−E} (the OS reconstruction T = e^{−H}, the measure→kernel identification).",
         "falsifier": "a numeric counterexample: the block-spin propagator NOT contracting to ρ(β) ≤ e^{−A·e^{−cβ}} across scales (the decimated two-point function failing to decay by the contraction rate)",
         "oracle": ["lattice (block-spin propagator decay, β scan)"],
         "verdict": "IRREDUCIBLE",
         "tier": "conditional",
-        "task": "formalize the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1)) (the spanning-tree / Euler-tour injection on top of walk_count_bound), then the block-spin contraction of the two-point function to ρ(β) ≤ e^(−A·e^(−cβ))",
+        "task": "DONE: the animals bound is proved (connected_clusters_count_bound). REMAINING: prove λ = e^{−E} (the OS reconstruction T = e^{−H}, the measure→kernel identification) to close the exponential radius contraction.",
         "why": "the block-spin propagator's contraction is the single remaining measure-theoretic estimate (the Balaban-style linked-cluster). Everything above and below H is proved and kernel-checked; H is the open real-analysis rung, not a structural rearrangement.",
     },    "ym-continuum-uniform": {
         "claim": "the mass-gap lower bound A·e^{−cβ} is uniform in the lattice spacing (a spacing-independent positive constant), so the a→0 continuum limit preserves the gap",
