@@ -14,6 +14,8 @@ namespace FSSGaussianDomination
 
 open Real
 
+open ContinuousLinearMap
+
 /-- **The Cauchy–Schwarz inequality** — the standard Mathlib result `real_inner_mul_inner_self_le` on the
 ℓ² space, stated in the dot-product form. -/
 def cauchy_schwarz_statement {n : ℕ} (f g : Fin n → ℝ) : Prop :=
@@ -1190,6 +1192,27 @@ theorem continuum_mass_gap_of_uniform_antitone
     0 < Δ := by
   have hconv : Filter.Tendsto m Filter.atTop (nhds Δ) := unique_limit_of_antitone_subseq hmono hsubseq
   exact continuum_mass_gap m Δ A c β huniform hconv hA hc hβ
+
+/-- **Step 1 (abstract): operator-norm monotonicity under an isometric embedding.** If a symmetric
+operator `T` on `E` embeds isometrically into a symmetric operator `S` on `F` preserving the quadratic form
+(`reApplyInnerSelf`), then `‖T‖ ≤ ‖S‖` — the smaller space's spectral radius does not exceed the larger's.
+This is the variational monotonicity (Rayleigh quotient) that makes the mass gap antitone in the volume. -/
+theorem norm_le_norm_of_isometry_quadratic
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    (T : E →L[ℝ] E) (S : F →L[ℝ] F)
+    (hT : T.IsSymmetric) (hS : S.IsSymmetric)
+    (ι : E →ₗᵢ[ℝ] F)
+    (hquad : ∀ f : E, T.reApplyInnerSelf f = S.reApplyInnerSelf (ι f)) :
+    ‖T‖ ≤ ‖S‖ := by
+  rw [T.norm_eq_iSup_rayleighQuotient hT]
+  refine ciSup_le ?_
+  intro f
+  have hray : T.rayleighQuotient f = S.rayleighQuotient (ι f) := by
+    change T.reApplyInnerSelf f / ‖(f : E)‖ ^ 2 = S.reApplyInnerSelf (ι f) / ‖(ι f : F)‖ ^ 2
+    rw [hquad f, LinearIsometry.norm_map ι f]
+  rw [hray]
+  exact S.rayleighQuotient_le_norm (ι f)
 
 
 end FSSGaussianDomination

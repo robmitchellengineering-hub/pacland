@@ -103,7 +103,8 @@
     "su2_mass_gap_uniform",
     "continuum_mass_gap",
     "unique_limit_of_antitone_subseq",
-    "continuum_mass_gap_of_uniform_antitone"
+    "continuum_mass_gap_of_uniform_antitone",
+    "norm_le_norm_of_isometry_quadratic"
   ],
   "transports": [
     {
