@@ -35,3 +35,22 @@ theorem integral_exp_cos_eq_pi_mul_besselI_zero (x : ℝ) (hx : 0 ≤ x) :
 2. **intervalIntegrable_const**: `integral_add` needs `IntervalIntegrable (fun _ => c) MeasureTheory.volume (0:ℝ) Real.pi`. The `{c}` implicit isn't inferred — use `(intervalIntegrable_const (c := besselI 0 x) : IntervalIntegrable (fun _ : ℝ => besselI 0 x) MeasureTheory.volume (0 : ℝ) Real.pi)` (and analogously for the `2Σ` term, or via `continuous …).intervalIntegrable`).
 
 Everything else in the file compiles; the tower is green at 9047 jobs with this lemma absent.
+
+## KEY BREAKTHROUGH (round 36) — the htail is CLOSED
+The `Σ ∫ cos((i+1)θ) = 0` step that blocked ~15 rounds was the `Nat.cast` normalization. Fix:
+
+```lean
+have hzero : ∀ i : ℕ, (∫ θ in (0:ℝ)..Real.pi, (f i) θ) = 0 := by
+  intro i
+  dsimp [f]
+  rw [intervalIntegral.integral_const_mul]
+  set_option maxHeartbeats 800000 in
+  have h : ∫ x in (0:ℝ)..Real.pi, Real.cos (((i + 1 : ℕ) : ℝ) * x) = 0 := integral_cos_n_zero (i + 1) (by omega)
+  simp [Nat.cast_add, Nat.cast_one]
+  right
+  simpa using h
+```
+
+So `integral_exp_cos_eq_pi_mul_besselI_zero` compiles up to TWO remaining errors:
+1. `tsum_intervalIntegral_eq_of_summable_norm`'s `f` arg (use `@... ℕ ℝ _ _ (0:ℝ) Real.pi _ f hf_sum` — but the `f` is `ℕ → C(ℝ,ℝ)` and it's being matched to `hf_sum`; try the `@` form or `have ht := ...`).
+2. `integral_add`'s `hg : IntervalIntegrable (fun θ => 2·Σ besselI·cos) volume 0 π` — prove via `ContinuousMap.summable_of_locally_summable_norm (F := f) (fun K => …)` to get `Summable f`, then `(∑' n, f n).continuous.intervalIntegrable`, with a `change` to rewrite `2·Σ besselI·cos = 2 • (∑' n, f n)`.
