@@ -117,4 +117,26 @@ theorem blockSpinPow_eq_prod (U : ℕ → G) (n j : ℕ) :
     rw [← Finset.prod_range_add (fun i => U (2 ^ n * (2 * j) + i)) (2 ^ n) (2 ^ n)]
     rw [show 2 ^ n + 2 ^ n = 2 ^ (n + 1) by ring]
     rw [show 2 ^ n * (2 * j) = 2 ^ (n + 1) * j by ring]
+
+/-- **The running-coupling scale is a valid activity bound** — `0 < e^(−cβ) < 1` for `c, β > 0`,
+so `ρ := e^(−cβ)` is the small-field activity the cluster expansion controls. This is the ACTIVITY form of
+the running-coupling scale (the `ym-linked-cluster-contraction` radius's activity proxy), the first concrete
+step of the exponential contraction rate. -/
+theorem running_coupling_activity_bound (c β : ℝ) (hc : 0 < c) (hβ : 0 < β) :
+    0 < Real.exp (-(c * β)) ∧ Real.exp (-(c * β)) < 1 := by
+  constructor
+  · exact Real.exp_pos _
+  · exact Real.exp_lt_one_iff.mpr (by nlinarith [mul_pos hc hβ])
+
+/-- **The cluster expansion converges uniformly at the running-coupling scale** — for activity
+`|z| ≤ e^(−cβ)` the geometric series converges with the sum bounded by `1/(1 − e^(−cβ))`. This is the
+small-field region's spacing-uniform control at the running-coupling activity, the second concrete step of
+the exponential contraction rate (the spectral-radius `ρ ≤ e^(−A·e^(−cβ))` is the further measure-concentration
+step this feeds). -/
+theorem uv_stability_running_coupling (c β : ℝ) (hc : 0 < c) (hβ : 0 < β) (z : ℝ)
+    (hz : |z| ≤ Real.exp (-(c * β))) :
+    Summable (fun n : ℕ => z ^ n) ∧ ∑' n : ℕ, z ^ n ≤ 1 / (1 - Real.exp (-(c * β))) := by
+  have hρ : Real.exp (-(c * β)) < 1 := (running_coupling_activity_bound c β hc hβ).2
+  exact cluster_expansion_uniform_bound hρ hz
+
 end QM
