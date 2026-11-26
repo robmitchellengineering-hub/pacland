@@ -112,7 +112,8 @@
     "transferMatrixCLM",
     "transferMatrixCLM_symmetric",
     "transfer_inner_eq_quadratic",
-    "transfer_norm_monotone"
+    "transfer_norm_monotone",
+    "gap_antitone_of_transfer_norm_monotone"
   ],
   "transports": [
     {
