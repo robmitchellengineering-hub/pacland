@@ -277,6 +277,13 @@
    "title": "SEXTANT \u2014 User Manual"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-MEDICAL.md",
+   "kind": "doc",
+   "path": "docs/SEXTANT-MEDICAL.md",
+   "summary": "SEXTANT does not guess \u2014 it verifies. You hand it a research claim (\"this treatment works\", \"this molecule is a drug candidate\", \"these two diseases share a mechanism\"), and it tells you\u2026",
+   "title": "SEXTANT \u2014 a verified research and discovery tool, for medicine"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/SEXTANT-PROOF-TIERS.md",
    "kind": "doc",
    "path": "docs/SEXTANT-PROOF-TIERS.md",
@@ -1908,6 +1915,20 @@
    "title": "bmv_sim.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build-binary.sh",
+   "kind": "script",
+   "path": "scripts/build-binary.sh",
+   "summary": "Build the double-clickable SEXTANT binaries with PyInstaller (macOS/Linux).",
+   "title": "build-binary.sh"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_claims.py",
+   "kind": "script",
+   "path": "scripts/build_claims.py",
+   "summary": "Generate web/claims.json from the sextant.py CATALOG \u2014 the single source of truth.",
+   "title": "build_claims.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",
@@ -1920,6 +1941,13 @@
    "path": "scripts/build_climate_charts.py",
    "summary": "Build the climate figure page \u2014 charts drawn from the checked-in data.",
    "title": "build_climate_charts.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_delivery_status.py",
+   "kind": "script",
+   "path": "scripts/build_delivery_status.py",
+   "summary": "Generate the committed live status snapshot (web/delivery-status.json).",
+   "title": "build_delivery_status.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_discovery_extra.py",
@@ -1941,6 +1969,13 @@
    "path": "scripts/build_peft_dataset.py",
    "summary": "Build the PEFT instruction dataset from the benchmark's (pre-state -> jump) pairs.",
    "title": "build_peft_dataset.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_proof_graph.py",
+   "kind": "script",
+   "path": "scripts/build_proof_graph.py",
+   "summary": "Generate web/proof-graph.mmd \u2014 the mermaid proof dependency graph, from the frontier data.",
+   "title": "build_proof_graph.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_sextant_claims.py",
@@ -2034,11 +2069,25 @@
    "title": "check_padgett_claims.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/check_state_drift.py",
+   "kind": "script",
+   "path": "scripts/check_state_drift.py",
+   "summary": "Regenerate the live-state files and fail (exit 1) if the committed copy drifted.",
+   "title": "check_state_drift.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/chemistry_certification_demo.py",
    "kind": "script",
    "path": "scripts/chemistry_certification_demo.py",
    "summary": "The certified-chemistry demo \u2014 a DMRG ground-state energy with a sufficiency proof.",
    "title": "chemistry_certification_demo.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/churn.py",
+   "kind": "script",
+   "path": "scripts/churn.py",
+   "summary": "churn \u2014 the autonomous verification-driven search loop.",
+   "title": "churn.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/churn_driver.py",
@@ -3159,6 +3208,13 @@
    "path": "scripts/rate_wall.py",
    "summary": "The rate wall \u2014 where the sampler loses candidates as h12 grows.",
    "title": "rate_wall.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/register-harness.py",
+   "kind": "script",
+   "path": "scripts/register-harness.py",
+   "summary": "Register the SEXTANT MCP server with Claude Code and Cursor.",
+   "title": "register-harness.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/render_pdf.py",

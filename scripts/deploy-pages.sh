@@ -33,6 +33,7 @@ trap 'git -C "$ROOT" worktree remove --force "$WT" 2>/dev/null || true' EXIT
 changed=0
 # *.html AND *.json: the find page fetches index.json, so shipping the page without the
 # data reproduces the bug the vision review caught ("index.json failed to load").
+shopt -s nullglob
 for f in "$ROOT"/web/*.html "$ROOT"/web/*.json "$ROOT"/web/*.css; do
   name="$(basename "$f")"
   if ! cmp -s "$f" "$WT/$name"; then

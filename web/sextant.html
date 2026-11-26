@@ -24,7 +24,9 @@
   --sx-shadow: 0 18px 60px rgba(0,0,0,.28);
 }
 html { scroll-behavior: smooth; }
+*, *::before, *::after { box-sizing: border-box; }
 body {
+  margin: 0;
   color: var(--sx-text);
   background:
     radial-gradient(ellipse at 78% 4%, rgba(39,125,154,.18), transparent 34rem),
@@ -69,7 +71,13 @@ h3 { font-size: 1.12rem; }
 .callout { border-left: 3px solid var(--sx-cyan); padding: 18px 22px; }
 .callout.does-not { border-left-color: var(--sx-amber); }
 .callout p { color: #c7d5e3; }
-.grid { grid-template-columns: minmax(240px, .78fr) minmax(0, 1.6fr); gap: 20px; }
+.grid { display: grid; grid-template-columns: minmax(240px, .78fr) minmax(0, 1.6fr); gap: 20px; margin: 24px 0; }
+.side { display: flex; flex-direction: column; gap: 8px; }
+.cats { display: flex; flex-wrap: wrap; gap: 8px; }
+.searchbox { width: 100%; }
+.claimlist { list-style: none; padding: 0; margin: 0; }
+.claimlist li { display: flex; gap: 8px; align-items: baseline; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
 .searchbox, input, textarea, select {
   color: var(--sx-text); background: #0a1320; border: 1px solid var(--sx-line);
   border-radius: 11px; padding: 12px 14px; font: inherit;
@@ -108,7 +116,8 @@ h3 { font-size: 1.12rem; }
 .verdict-IRREDUCIBLE { color: var(--sx-amber); }
 code { color: #bceef4; background: rgba(98,215,232,.08); border-radius: 5px; padding: .12em .38em; }
 pre { background: #050a11 !important; border: 1px solid var(--sx-line); border-radius: 14px; padding: 18px !important; }
-.actions { gap: 10px; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 18px 0 0; }
+.headline .actions { max-width: none; justify-content: center; }
 .small { font-size: .84rem; }
 section, .field, .out, .callout { scroll-margin-top: 24px; }
 .chips { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 4px; }
@@ -218,39 +227,7 @@ section, .field, .out, .callout { scroll-margin-top: 24px; }
       <p><strong>Lean build:</strong> <span class="badge green">green</span> <code>lake build PaclandProof</code> compiles at <code>21f45a18</code> — <strong>9172 jobs</strong>, no <code>sorry</code>/<code>admit</code>/<code>axiom</code>, checked on the meshed Lean kernel (pacland-rog).</p>
       <p><strong>Five tiers:</strong> identity → lemma → chain → conditional → result. Every arrow below is a checked dependency; the red node is the open hypothesis <strong>H</strong>, the only thing between a proved conditional and the result.</p>
     </div>
-    <pre class="mermaid">
-flowchart TB
-  subgraph T1["TIER 1 · identity"]
-    I1["polymer_expansion_subset<br/>∏(1+ρ) = Σ_S ∏ρ"]
-  end
-  subgraph T2["TIER 2 · lemma"]
-    L1["walk_count_bound<br/>#(walks of length n) ≤ Δⁿ"]
-    L2["cluster_weight_bound<br/>|weight| ≤ |ρ|ⁿ⁺¹"]
-    L3["cluster_activity_abs_lt_one<br/>|ρ| < 1"]
-  end
-  subgraph T3["TIER 3 · chain"]
-    C1["single-cluster cluster expansion<br/>subset → log-prod → Taylor weights → decay → summability"]
-  end
-  subgraph T4["TIER 4 · conditional"]
-    C2["refereeScalingLaw_of_radius_bound<br/>ρ ≤ e^(−A·e^(−cβ)) ⟹ m ≥ A·e^(−cβ)"]
-    C3["volume_uniform_covariance_bound + wightman_limit_stable<br/>(the N→∞ and a→0 transports)"]
-  end
-  subgraph T5["TIER 5 · result"]
-    R1["Yang–Mills mass gap<br/>m(β) ≥ A·e^(−(12π²/11)β)"]
-  end
-  H["H · the linked-cluster contraction<br/>ρ(β) ≤ e^(−A·e^(−cβ))<br/>the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1))<br/>— OPEN"]:::open
-
-  I1 --> C1
-  L1 --> C1
-  L2 --> C1
-  L3 --> C1
-  C1 --> C2
-  H --> C2
-  C2 --> R1
-  C3 --> R1
-
-  classDef open fill:#ff8585,stroke:#ff8585,color:#080d16,font-weight:700
-    </pre>
+    <pre class="mermaid" id="proofgraph"></pre>
   </section>
 
   <section id="three-way">
@@ -402,7 +379,7 @@ fetch('frontier-view.json').then(r => r.json()).then(d => {
 }).catch(() => {});
 
 const G = { FORCED:'●', FREE:'○', IMPOSSIBLE:'✕', IRREDUCIBLE:'◐' };
-const CLAIMS = [
+const SEED = [
  { id:'chsh', v:'FORCED', th:'QM.Tsirelson', claim:'no quantum state violates the CHSH inequality beyond 2√2', falsifier:'a state exceeding 2√2', oracle:'quantum-simulated + kernel-checked', ev:'simulated CHSH = 2.828427 = 2√2 — nothing exceeds it',
    plain:"The quantum world can beat classical physics by a hair — 2√2, and not a hair more. That ceiling is not a measurement, it's a theorem we machine-checked: the universe has a hard limit on how much quantum beats classical. The gap between the classical wall (2) and the quantum maximum (2√2) is the 'quantum advantage', quantified exactly." },
  { id:'bell-classical', v:'FORCED', th:'QM.CHSH (Bell)', claim:'no local-hidden-variable theory violates CHSH beyond 2', falsifier:'a classical strategy exceeding 2', oracle:'quantum-simulated + kernel-checked', ev:'max classical = 2.0 — the wall holds',
@@ -544,6 +521,38 @@ const catsEl = document.getElementById('cats');
 const catdesc = document.getElementById('catdesc');
 let activeCat = 'all';
 
+// The claims come from web/claims.json (generated from the registry), merged with the hand-written
+// plain-English + evidence blurbs in SEED — so the page cannot drift from the 56-claim catalog.
+let CLAIMS = [];
+fetch('claims.json').then(r => r.json()).then(d => {
+  const seed = Object.fromEntries(SEED.map(c => [c.id, c]));
+  CLAIMS = d.claims.map(c => {
+    const s = seed[c.id] || {};
+    return { ...c, v: c.verdict, th: c.theorem, plain: s.plain || c.claim, ev: s.ev || c.theorem };
+  });
+  renderCats();
+  renderList('');
+  // the dynamic count must run AFTER the fetch resolves, not at parse time
+  const el = document.getElementById('claimcount');
+  if (el) {
+    const sim = CLAIMS.filter(c => /quantum-simulated/.test(c.oracle)).length;
+    el.textContent = CLAIMS.length + ' claims in the live registry (snapshot ' + new Date().toISOString().slice(0, 10) + ') · ' + sim + ' carry a live simulated oracle — each claim\'s own proof/evidence column says what is checked vs tested';
+  }
+}).catch(e => {
+  const list = document.getElementById('list');
+  if (list) list.innerHTML = '<li class="claim">claims.json failed to load (' + e.message + ')</li>';
+});
+
+// The proof dependency graph — fetched from the generated proof-graph.mmd, so it cannot drift.
+fetch('proof-graph.mmd').then(r => r.text()).then(t => {
+  const el = document.getElementById('proofgraph');
+  if (el && t.trim()) {
+    el.textContent = t.trim();
+    el.removeAttribute('data-processed');
+    if (window.mermaid) mermaid.run({ nodes: [el] });
+  }
+});
+
 function renderCats() {
   catsEl.innerHTML = '';
   [['all', 'All fields']].concat(Object.entries(CATS).map(([k,v]) => [k, v.label])).forEach(([k, label]) => {
@@ -640,20 +649,11 @@ function renderFields() {
 }
 
 q.addEventListener('input', () => renderList(q.value.trim().toLowerCase()));
-renderCats();
 catdesc.textContent = 'Every claim, across all four fields. Pick a field, or search.';
-renderList('');
 renderFields();
 </script>
 <script>
-// honest, dynamic counts — never a hard-coded stale number in the page copy
-(function () {
-  var el = document.getElementById('claimcount');
-  if (el) {
-    var sim = CLAIMS.filter(function (c) { return /quantum-simulated/.test(c.oracle); }).length;
-    el.textContent = CLAIMS.length + ' claims in the live registry (snapshot ' + new Date().toISOString().slice(0,10) + ') · ' + sim + ' carry a live simulated oracle — each claim\'s own proof/evidence column says what is checked vs tested';
-  }
-})();
+// (the dynamic claim count now updates inside the fetch — no parse-time IIFE)
 </script>
 </body>
 </html>

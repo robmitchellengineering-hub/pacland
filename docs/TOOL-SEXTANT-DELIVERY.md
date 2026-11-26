@@ -1,5 +1,12 @@
 # Tool Sextant — the delivery plan (both forms)
 
+> **Live-state note (last verified 2026-11-25).** The status table below is a *snapshot* — the live
+> truth is generated from the code: `python3 scripts/build_delivery_status.py` → `web/delivery-status.json`,
+> and `tests/test_delivery_status.py` fails if this doc marks a built component as "to build" /
+> "still training". Read `web/delivery-status.json`, not this table. The two cells that used to read
+> "to build" / "still training" were stale: the supervisor is built (`src/pacland/supervisor.py`,
+> P2) and the model is trained and in use (`qwen2.5-discovery`, `SEXTANT-ASSESSMENT-LOG.md` R1.12).
+
 The thing being shipped is the **discovery engine** — the whole autonomous loop — as one self-contained
 tool, in two delivery forms. This is the plan Rob confirmed ("both is the answer").
 
@@ -9,9 +16,9 @@ tool, in two delivery forms. This is the plan Rob confirmed ("both is the answer
 |---|---|---|
 | discovery loop | `runner` / `hypotheses` / `belief` / `challenges` / `benchmarks` (Python) | built |
 | falsifiers | SEXTANT + Phantom (`numpy`/`stim`/`quimb`) | built |
-| proof engine | Elan + Mathlib + the 107 `.lean` proofs | built (toolchain to bundle) |
-| trained LLM | `qwen2.5-discovery` GGUF + llama.cpp/Ollama | **training not finished** — the gate |
-| supervisor | a daemon that runs the loop autonomously (radar→generate→falsify→prove→record→learn→repeat) | **to build** |
+| proof engine | Elan + Mathlib + the `.lean` proofs | built (toolchain to bundle) |
+| trained LLM | `qwen2.5-discovery` GGUF + llama.cpp/Ollama | **trained + in use** (small — R1.12) |
+| supervisor | `supervisor.py` (P2) — the decision layer; the daemon wrapper is the thin remaining piece | **built** |
 
 ## The two forms
 
@@ -27,17 +34,18 @@ tool, in two delivery forms. This is the plan Rob confirmed ("both is the answer
 | 1 | the **supervisor daemon** — close the loop end-to-end, one run | it generates, falsifies, and kernel-checks a survivor without a human |
 | 2 | the **container** — bundle Python + Lean + Mathlib + llama.cpp + the model | `pull && run` reproduces phase 1 on a clean machine |
 | 3 | the **MorpheOS** form — bake the same system into the OS image | boot-and-run reproduces phase 1 |
-| 4 | the **model** — drop the trained GGUF in when training finishes | discovery uses the bundled model, no remote call |
+| 4 | the **model** — ship the trained GGUF | discovery uses the bundled model, no remote call |
 
 ## The two hard parts, named
 
 - **Bundling the Lean toolchain** (Elan + Mathlib) into a reproducible image is the heaviest piece — it
   is not pip-installable and Mathlib is large.
-- **The trained model** is the schedule gate: until training finishes, the bundle ships with the loop +
-  falsifiers + prover, and the generator runs on whatever model is present; the trained GGUF drops in at
-  phase 4 without a rebuild.
+- **The thin daemon wrapper** is the remaining code piece: a loop that calls `supervisor.choose_next_frontier`
+  → `runner` (generate/falsify/record) → repeat, writing to the knowledge graph. The decision logic is
+  built; the wrapper that runs it continuously is not yet.
 
 ## The honest dependency
 
-The whole thing can be built *except* the trained model, which is still training. Phases 1–3 do not wait
-on it; phase 4 is a drop-in. So the build can start now and the model lands when it lands.
+The decision layer (supervisor) and the generator model both exist. What is left is packaging (Lean +
+Mathlib into a reproducible image) and the daemon wrapper. The model is small and proposes weak
+cross-field links today, but that is a quality issue, not a missing dependency.
