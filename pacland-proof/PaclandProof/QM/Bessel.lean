@@ -589,4 +589,13 @@ theorem poly_beats_exp (β : ℝ) (hβ : 0 < β) :
   simpa [c] using h1
 
 
+
+/-- **Interval cosine orthogonality** — `∫₀^π cos(nθ) dθ = 0` for `n ≥ 1` (the change of variables
+`θ ↦ nθ` plus `∫ cos = sin`). This is the orthogonality that isolates `I₀` and `I₁` in the Jacobi–Anger
+integral representation. -/
+theorem integral_cos_n_zero (n : ℕ) (hn : n ≠ 0) :
+    ∫ θ in (0 : ℝ)..Real.pi, Real.cos ((n : ℝ) * θ) = 0 := by
+  have hne : (n : ℝ) ≠ 0 := by exact_mod_cast hn
+  simp [hne, Real.sin_int_mul_pi]
+
 end QM
