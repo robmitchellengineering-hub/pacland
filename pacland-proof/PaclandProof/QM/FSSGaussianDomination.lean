@@ -985,6 +985,33 @@ theorem su2_character_volume_uniform_fss {m : ℕ} [NeZero m] (θ : Fin m → �
     simpa [wilsonKernel] using (QM.wilson_kernel_posdef θ β hβ (WithLp.ofLp χ))
   exact su2_momentum_space_fss_bound latticeReflection (latticeLaplacian (m := m)) χ J hpos hsym hJ hLpos
 
+/-- **The `hΘ` hypothesis is FALSE as stated (kernel-checked).** The geometric site reflection
+(`i ↦ −i`, giving `⟪χ, Θχ⟫ = Σᵢ χᵢ·χ(−i)` by `latticeReflection_inner`) is NOT the gauge-angle Wilson
+kernel (`exp(2β cos(θᵢ−θⱼ))`). For `m = 1` the reflection is the identity so the left side is `χ₀²`, while
+the kernel form is `χ₀²·exp(2β)`, and `exp(2β) ≠ 1` for `β > 0`. This is the label-inflation trap: the honest
+input is the measure→kernel `transferFactorization`, not this ℓ² site/angle equality. -/
+theorem hTheta_false (β : ℝ) (hβ : 0 < β) :
+    ¬ (∀ (θ : Fin 1 → ℝ) (χ : PiLp 2 (fun _ : Fin 1 => ℝ)),
+      ⟪χ, latticeReflection χ⟫_ℝ =
+        ∑ i : Fin 1, ∑ j : Fin 1, (WithLp.ofLp χ) i * (WithLp.ofLp χ) j * wilsonKernel θ β i j) := by
+  intro h
+  let χ : PiLp 2 (fun _ : Fin 1 => ℝ) := (WithLp.equiv 2 (Fin 1 → ℝ)).symm (fun _ => 1)
+  let θ : Fin 1 → ℝ := fun _ => 0
+  have hχ : ⟪χ, latticeReflection χ⟫_ℝ = 1 := by
+    rw [latticeReflection_inner]
+    simp [χ]
+  have hw : (∑ i : Fin 1, ∑ j : Fin 1, (WithLp.ofLp χ) i * (WithLp.ofLp χ) j * wilsonKernel θ β i j)
+      = Real.exp (2 * β) := by
+    simp [χ, θ, wilsonKernel, WithLp.ofLp, Real.cos_zero]
+  have hinst := h θ χ
+  rw [hχ, hw] at hinst
+  have hne : (1 : ℝ) ≠ Real.exp (2 * β) := by
+    intro heq
+    have hlt : (1 : ℝ) < Real.exp (2 * β) := by
+      simpa [Real.exp_zero] using ((Real.exp_lt_exp).mpr (by positivity : (0 : ℝ) < 2 * β))
+    exact (ne_of_lt hlt) heq
+  exact hne hinst
+
 /-- **The transfer-matrix factorization (the honest hΘ).** The reflected correlation of a measure
 across the reflection `Θ` equals the kernel `K`'s quadratic form: `∫ f(θ)·f(Θθ) dμ = Σᵢⱼ fᵢfⱼ K(i,j)`.
 This is the measure→kernel connection the structural join needs — the Gibbs measure's reflected correlation
