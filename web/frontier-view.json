@@ -99,7 +99,8 @@
     "running_coupling_activity_bound",
     "uv_stability_running_coupling",
     "exponential_radius_contraction",
-    "wilsonTransferMatrix"
+    "wilsonTransferMatrix",
+    "su2_mass_gap_uniform"
   ],
   "transports": [
     {

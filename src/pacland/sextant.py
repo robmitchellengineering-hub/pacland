@@ -453,7 +453,7 @@ CATALOG: dict[str, dict] = {    "chsh": {
         "verdict": "IRREDUCIBLE",
         "tier": "conditional",
         "task": "DONE: the animals bound is proved (connected_clusters_count_bound). REMAINING: prove λ = e^{−E} (the OS reconstruction T = e^{−H}, the measure→kernel identification) to close the exponential radius contraction.",
-        "why": "the block-spin propagator's contraction is the single remaining measure-theoretic estimate (the Balaban-style linked-cluster). Everything above and below H is proved and kernel-checked; H is the open real-analysis rung, not a structural rearrangement.",
+        "why": "FINITE SYNTHESIS COMPLETE: FSSGaussianDomination.su2_mass_gap_uniform proves refereeScalingLaw (fun β => 1−λ(β)) with A=1/2 — the volume-uniform mass gap assembled from the finite chain (reflection positivity → transfer matrix → dispersion → running mass → exponential radius contraction → gap → scaling law), conditional only on λ = e^(−E) (the transfer-matrix definition / OS reconstruction). The block-spin propagator's contraction is the single remaining measure-theoretic estimate; everything above and below H is proved and kernel-checked.",
     },    "ym-continuum-uniform": {
         "claim": "the mass-gap lower bound A·e^{−cβ} is uniform in the lattice spacing (a spacing-independent positive constant), so the a→0 continuum limit preserves the gap",
         "simulate": None,

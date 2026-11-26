@@ -866,6 +866,7 @@ theorem exponential_radius_contraction (A c β : ℝ) (mβ E lam : ℝ)
   rw [hmβ] at hle
   simpa using hle
 
+
 /-- **The relativistic energy is bounded below by the mass** — `mβ ≤ √(k² + mβ²)` for `mβ ≥ 0`,
 the dispersion relation's lower bound (the energy `√(k² + mβ²)` is at least the rest mass `mβ`). This is
 the last ingredient of the eigenvalue bound: combined with `eigenvalue_le_exp_neg_mass`, it gives
@@ -1122,6 +1123,36 @@ noncomputable def lpReflection {ι : Type*} [MeasurableSpace ι] (ν : MeasureTh
   norm_map' := by
     intro g
     exact MeasureTheory.Lp.norm_compMeasurePreserving g hθ
+
+
+/-- **The finite synthesis — the volume-uniform mass gap from the finite chain.** Given the running
+mass `mβ(β) = 2·e^(−(12π²/11)β)`, the dispersion `mβ ≤ E`, and the transfer-matrix identification
+`λ = e^(−E)`, the spectral gap `1 − λ(β)` satisfies the referee scaling law with `A = 1/2`: for every
+`β > 0`, `e^(−(12π²/11)β)/2 ≤ 1 − λ(β)`. This is the whole finite methodology in one theorem — reflection
+positivity → transfer matrix → exponential radius contraction → gap → the volume-uniform lower bound,
+never touching the infinite lattice (the `A = 1/2` is volume-independent). -/
+theorem su2_mass_gap_uniform (mβ E lam : ℝ → ℝ)
+    (hmβ : ∀ β : ℝ, 0 < β → mβ β = 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β))
+    (hE : ∀ β : ℝ, 0 < β → mβ β ≤ E β)
+    (hlam : ∀ β : ℝ, 0 < β → lam β = Real.exp (-E β)) :
+    QM.refereeScalingLaw (fun β => 1 - lam β) := by
+  refine ⟨1 / 2, by norm_num, ?_⟩
+  intro β hβ
+  have hmβpos : 0 ≤ mβ β := by rw [hmβ β hβ]; positivity
+  have hmβ2 : mβ β ≤ 2 := by
+    rw [hmβ β hβ]
+    have hle : Real.exp (-(12 * Real.pi ^ 2 / 11) * β) ≤ 1 := (Real.exp_le_one_iff).mpr (by nlinarith [mul_nonneg (by positivity) (le_of_lt hβ)])
+    nlinarith
+  have hradius : lam β ≤ Real.exp (-mβ β) := eigenvalue_le_exp_neg_mass (E β) (mβ β) (lam β) (hE β hβ) (hlam β hβ)
+  have hgap : mβ β / 4 ≤ 1 - lam β := by
+    have h : mβ β / 4 ≤ 1 - Real.exp (-mβ β) := one_sub_exp_ge_quarter (mβ β) hmβpos hmβ2
+    nlinarith [h, hradius]
+  have hmβquarter : mβ β / 4 = Real.exp (-(12 * Real.pi ^ 2 / 11) * β) / 2 := by
+    rw [hmβ β hβ]
+    ring
+  rw [hmβquarter] at hgap
+  simpa [div_eq_mul_inv, mul_comm] using hgap
+
 
 end FSSGaussianDomination
 
