@@ -64,26 +64,29 @@ TRAPS = [
 
 # ── The FRONTIER — the single source of truth for what is proved vs open ──
 FRONTIER = {
+    # THE HONEST STATE (2026-11, updated): the mass gap is ONE STEP from done. Do not re-derive this.
     "open_rung": (
-        "hΘ / ym-volume-uniform-su2: the PHYSICAL SU(2) Gibbs measure's reflected correlation equals the "
-        "Wilson heat kernel exp(2β·cos(θᵢ−θⱼ)) — i.e. the transfer-matrix boundary coupling "
-        "Re Tr(U₊·U₋⁻¹) = 2·⟨z₊,z₋⟩. This is the measure-theoretic estimate (the Clay rung). Numerically "
-        "checkable; not proved."
+        "The SPECTRAL IDENTIFICATION — show the physical transfer-matrix first-excited eigenvalue is "
+        "λ₁ = I₁(2β)/I₀(2β) (the Bessel ratio), replacing the pinned tautology λ = e^(−E). Everything else "
+        "is done CONDITIONAL on this one input. The positivity half (I₁ < I₀) is in flight; the "
+        "identification λ₁ = I₁/I₀ is the wilson_heat_kernel_rank_one spectral decomposition (already proved)."
     ),
     "proved": [
-        "casimir_su2 + physical_mass_gap_positive/volume_uniform (the finite Casimir gap)",
-        "determinant_gives_exponent (the running coupling c = 12π²/11)",
-        "linear FSS chain: fss_join, laplacian_symbol_1d, reflection_positivity_covariance_bound",
-        "wilson_kernel_posdef (Jacobi-Anger + Bessel positivity — the KERNEL PSD, not the measure→kernel)",
-        "transfer_norm_monotone ‖T_V‖ ≤ ‖T_{V+1}‖ + gap_antitone (the volume-monotonicity)",
-        "unique_limit_of_antitone_subseq + continuum_mass_gap_of_uniform_antitone (uniqueness + conditional)",
-        "mass_gap_subseq_of_bounded (Bolzano-Weierstrass — no external existence)",
-        "su2_mass_gap_uniform (the finite synthesis, conditional on λ = e^(−E))",
+        "EXISTENCE half: casimir_su2, determinant_gives_exponent (c = 12π²/11), the linear FSS chain",
+        "hΘ kernel half: transferKernel_eq_heat_kernel (boundary coupling = Wilson heat kernel)",
+        "hΘ measure half: hTheta_reflected_correlation (Fubini) + hTheta_reflected_correlation_nonneg (OS3 reflection positivity)",
+        "EXPONENTIAL BOUND: exponential_radius_contraction + refereeScalingLaw_of_radius_bound + su2_mass_gap_uniform (λ ≤ e^(−A·e^(−cβ)) ⟹ m ≥ A·e^(−cβ)) — CONDITIONAL on λ = e^(−E)",
+        "VOLUME-UNIFORMITY: transfer_norm_monotone + gap_antitone_of_transfer_norm_monotone + unique_limit_of_antitone_subseq + continuum_mass_gap_of_uniform_antitone + clay_mass_gap_of_bounded_antitone_uniform — CONDITIONAL on huniform",
+        "SPECTRAL GAP definition: heatKernelMassGap := 1 − I₁(2β)/I₀(2β) (the physical gap, replaces the tautology)",
+    ],
+    "in_flight": [
+        "besselI_one_lt_zero (I₁(2β) < I₀(2β)) — subagent 38f45467; gives heat_kernel_spectral_gap: 0 < 1 − I₁/I₀",
     ],
     "correct_next_move": (
-        "Prove Re Tr(U₊·U₋⁻¹) = 2·⟨z₊,z₋⟩ (the SU(2) trace PRODUCT = the S³ inner product), then the "
-        "reflection-plane split of the Gibbs measure → the reflected correlation = the heat kernel. This is "
-        "the boundary coupling — NOT the trace observable, NOT the ℓ² geometric reflection."
+        "1. Land I₁ < I₀ (subagent). 2. Prove heat_kernel_spectral_gap: 0 < 1 − I₁/I₀ (div_lt_one + linarith). "
+        "3. Thread λ₁ = I₁/I₀ into exponential_radius_contraction + su2_mass_gap_uniform in place of the hlam "
+        "λ = e^(−E) tautology. 4. Conclude m(β) ≥ A·e^(−cβ) volume-uniformly. Do NOT re-derive the boundary; "
+        "it is mapped here."
     ),
 }
 
