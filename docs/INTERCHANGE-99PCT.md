@@ -103,3 +103,14 @@ goals, each closed by `MeasureTheory.IntegrableOn.congr_fun` + `Set.EqOn` + the 
 `(∑' n, f n) θ = ∑' n, (f n) θ` via `(hsum.hasSum.map_apply θ).tsum_eq.symm` (avoids the
 `IsAddApply`-gated `tsum_apply`). The `EqOn` proof is: `dsimp [f]` then `simp [ContinuousMap.coe_smul, Pi.smul_apply, smul_eq_mul, hθ]`, with `measurableSet_Ioc` for the `MeasurableSet` hypothesis.
 This is the ONLY remaining line in `integral_exp_cos_eq_pi_mul_besselI_zero`.
+
+## besselI_one_eq_integral ~95% (round 52)
+The I₁ Jacobi–Anger is CLOSED up to the LAST `integral_add` bullet (the `hg` for `(2·Σ besselI·cos)·cos θ`).
+Working pieces: `hg_sum` (norm bound via Real.norm_eq_abs + trans_eq), `hI0` (∫ I₀·cos = 0), `htail`
+(via simp_rw [mul_assoc, ← tsum_mul_right], @tsum_intervalIntegral_eq_of_summable_norm, integral_cos_succ_mul_cos,
+tsum_eq_single 0), the `show (∀ θ, (I₀+2Σ)·cos = I₀·cos + 2Σ·cos) from fun θ => add_mul (a:=…)(b:=…)(c:=…)` to avoid
+add_mul's over-distribution, and `rw [hmain]` (forward) + `field_simp [hπ]`.
+
+Remaining: the `hg : IntervalIntegrable (fun θ => (2·Σ besselI·cos)·cos θ) volume 0 π` — prove like the interchange's
+htailint: `ContinuousMap.summable_of_locally_summable_norm (F := g) (fun K => …)` to get `Summable g`, then
+`change IntervalIntegrable ⇑((2:ℝ) • (∑' n, g n)) volume 0 π; exact ((2:ℝ) • (∑' n, g n)).continuous.intervalIntegrable 0 π`.
