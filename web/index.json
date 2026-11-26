@@ -2083,6 +2083,13 @@
    "title": "chemistry_certification_demo.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/churn.py",
+   "kind": "script",
+   "path": "scripts/churn.py",
+   "summary": "churn \u2014 the autonomous verification-driven search loop.",
+   "title": "churn.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/churn_driver.py",
    "kind": "script",
    "path": "scripts/churn_driver.py",

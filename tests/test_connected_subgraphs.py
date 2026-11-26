@@ -5,6 +5,7 @@ from pacland.cross_field.connected_subgraphs import (
     animals_bound,
     count_connected,
     graph_families,
+    rooted_tree_bound,
     sharper_bound,
     verify,
 )
@@ -16,6 +17,18 @@ class TestSharperAnimalsBound(unittest.TestCase):
         self.assertEqual(r["sharper_bound_failures"], 0,
                          "the sharper bound failed on a tested graph")
         self.assertEqual(r["original_bound_failures"], 0)
+
+    def test_rooted_tree_bound_holds_and_is_tightest(self):
+        r = verify()
+        self.assertEqual(r["rooted_tree_failures"], 0,
+                         "the rooted-tree bound failed on a tested graph")
+        # pointwise: rooted-tree <= sharper <= original, for every (V, n, Δ)
+        from pacland.cross_field.connected_subgraphs import max_degree
+        for _name, (V, edges) in graph_families():
+            D = max_degree(V, edges)
+            for n in (1, 2, 3, 4, 5):
+                self.assertLessEqual(rooted_tree_bound(V, n, D), sharper_bound(V, n, D))
+                self.assertLessEqual(sharper_bound(V, n, D), animals_bound(V, n, D))
 
     def test_sharper_is_tighter_than_original(self):
         # on a path, the sharper bound sits between the exact count and the original bound
