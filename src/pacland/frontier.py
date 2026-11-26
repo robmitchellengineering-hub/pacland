@@ -83,14 +83,16 @@ FRONTIER = {
         "besselI_one_lt_zero (I₁(2β) < I₀(2β)) — subagent 38f45467; gives heat_kernel_spectral_gap: 0 < 1 − I₁/I₀",
     ],
     "correct_next_move": (
-        "CORRECTED bounds (verified 2026-11): the TRUE sharp bounds are I₁/I₀ ≤ 2x/(2x+1) and "
-        "1/(4β+1) ≤ 1 − I₁(2β)/I₀(2β). The OLD x/(x+1) and 1/(4β) are FALSE (x=2: 0.698 > 0.667; "
-        "β=0.25: gap 0.758 < 1). Steps: (1) land I₁/I₀ ≤ 2x/(2x+1) [subagent 72edca45] → heat_kernel_spectral_gap "
-        "0 < 1−I₁/I₀ and heat_kernel_gap_poly_bound 1/(4β+1) ≤ gap; (2) poly_beats_exp DONE (committed cff766d8): "
-        "(1/2)·e^(−cβ) ≤ 1/(4β+1); (3) ASSEMBLE heatKernelMassGap_lower_bound: (1/2)·e^(−cβ) ≤ heatKernelMassGap β "
-        "= linarith(poly_beats_exp, heat_kernel_gap_poly_bound); (4) thread heatKernelMassGap into "
-        "su2_mass_gap_uniform in place of λ=e^(−E). Do NOT re-derive the boundary or re-attempt the FALSE 1/(4β)."
+        "KEY: the ∫/Σ interchange uses the BOCHNER MeasureTheory.integral_tsum_of_summable_integral_norm "
+        "(hF_int : ∀i, Integrable (F i) μ) (hF_sum : Summable fun i ↦ ∫ ‖F i‖ ∂μ) — NOT the ENNReal "
+        "integral_tsum. The remaining fiddly errors in integral_exp_cos_eq_pi_mul_besselI_zero: (a) the "
+        "integral_const + Real.volume_Ioc needs .toReal/simp for ∫ c = c·π; (b) integral_congr_ae + "
+        "filter_upwards with θ; rw [jacobi_anger_real x θ]; (c) the AEStronglyMeasurable for integral_add "
+        "uses (continuous ...).aestronglyMeasurable.restrict (μ := volume) (s := Ioc 0 π); (d) the hF_sum "
+        "uses Summable.of_nonneg_of_le with ∫ ‖Iₙ₊₁·cos‖ ≤ Iₙ₊₁·π (x≥0, |cos|≤1) + besselI_summable. "
+        "All four errors are pinned; the interchange has resisted 19 rounds + 6 subagents but is PROVABLE.",
     ),
+
 }
 
 def check_move(description: str) -> str:
