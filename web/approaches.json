@@ -84,7 +84,8 @@
             "stepA_theorem — the complete finite-volume mass gap (exponential clustering + spectral gap), conditional only on the OS identification eigenvalues k = e^(−E k)",
             "su2_character_volume_uniform_fss — the structural join: FSS bound for the SU(2) character, hpos via wilson_kernel_posdef, with hΘ (geometric⇔kernel) the single remaining input",
             "transferFactorization — the named measure→kernel connection (the honest hΘ: ∫ f·f∘Θ dμ = Σᵢⱼ fᵢfⱼ K(i,j))",
-            "running_coupling_activity_bound + uv_stability_running_coupling — the running-coupling activity e^(−cβ) and the cluster expansion uniform bound at that scale (the first concrete steps of the exponential rate)"
+            "running_coupling_activity_bound + uv_stability_running_coupling — the running-coupling activity e^(−cβ) and the cluster expansion uniform bound at that scale (the first concrete steps of the exponential rate)",
+            "exponential_radius_contraction — the block-spin propagator exponential rate λ ≤ e^(−A·e^(−cβ)), assembled from the dispersion + running mass, conditional only on the transfer-matrix identification λ = e^(−E)"
           ]
         },
         {

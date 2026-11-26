@@ -238,7 +238,8 @@
     "su2_character_volume_uniform_fss",
     "transferFactorization",
     "running_coupling_activity_bound",
-    "uv_stability_running_coupling"
+    "uv_stability_running_coupling",
+    "exponential_radius_contraction"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

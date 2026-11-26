@@ -845,6 +845,18 @@ theorem eigenvalue_le_exp_neg_mass (E mβ lam : ℝ) (hE : mβ ≤ E) (hlam : la
   rw [hlam]
   exact Real.exp_le_exp.mpr (by linarith)
 
+/-- **The exponential radius contraction** — the transfer-matrix eigenvalue `λ = e^(−E)` with the
+dispersion `mβ ≤ E` and the running mass `mβ = A·e^(−cβ)` satisfies `λ ≤ e^(−A·e^(−cβ))`. This is the
+block-spin propagator's exponential contraction at the running-coupling rate — the `ym-linked-cluster-contraction`
+radius bound, assembled from the proved dispersion (`eigenvalue_le_exp_neg_mass`) + the running mass. The
+single input is the transfer-matrix identification `λ = e^(−E)` (the standard `T = e^(−H)`). -/
+theorem exponential_radius_contraction (A c β : ℝ) (mβ E lam : ℝ)
+    (hmβ : mβ = A * Real.exp (-c * β)) (hE : mβ ≤ E) (hlam : lam = Real.exp (-E)) :
+    lam ≤ Real.exp (-(A * Real.exp (-c * β))) := by
+  have hle : lam ≤ Real.exp (-mβ) := eigenvalue_le_exp_neg_mass E mβ lam hE hlam
+  rw [hmβ] at hle
+  simpa using hle
+
 /-- **The relativistic energy is bounded below by the mass** — `mβ ≤ √(k² + mβ²)` for `mβ ≥ 0`,
 the dispersion relation's lower bound (the energy `√(k² + mβ²)` is at least the rest mass `mβ`). This is
 the last ingredient of the eigenvalue bound: combined with `eigenvalue_le_exp_neg_mass`, it gives
