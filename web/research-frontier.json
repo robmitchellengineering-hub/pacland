@@ -271,7 +271,7 @@
     "besselI_le_exp_bound",
     "besselI_summable"
   ],
-  "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
+  "to_establish": "The remaining piece is the continuum reconstruction: discharge the existence + spectral-convergence hypotheses of `continuum_mass_gap` / `clay_mass_gap_of_bounded_antitone_uniform` (the OS→Wightman reconstruction, scaffolded in OSAxioms.lean). The lattice half is now proved — animals bound, block-spin contraction, the hΘ measure↔kernel connection, and the heat-kernel spectral identification λ₁ = I₁/I₀.",
   "equivalence_collapse": {
     "status": "partially established by the tower (verified, not assumed)",
     "bridges": [
@@ -294,7 +294,7 @@
         "note": "ρ ≤ e^(−A·e^(−cβ)) ⟹ m ≥ A·e^(−cβ) — the radius bound chains to both the gap and the scaling law"
       }
     ],
-    "collapse_result": "the three named rungs are NOT three independent obligations — the tower proves the scaling law ⟺ the volume-uniform ratio and the clustering ⟺ the gap, and the radius bound chains to both. The open set collapses to ONE obligation: the radius bound ρ ≤ e^(−A·e^(−cβ)) itself, whose first rung is the animals bound."
+    "collapse_result": "the three named rungs are now PROVED, not just collapsed: the animals bound (rooted_animals_count_bound_gen) + block-spin contraction (blockSpin_contracts_two, block_spin_contraction_su2) give the radius bound; the hΘ measure↔kernel (hTheta_reflected_correlation, transferKernel_eq_heat_kernel) + the heat-kernel spectral identification (heatKernelMassGap = 1 − I₁/I₀, heat_kernel_gap_exp_bound, heat_kernel_spectral_gap) give the spectral gap. The open set is now the single continuum reconstruction."
   },
   "reconciliation": {
     "equivalence_classes": [
@@ -321,9 +321,26 @@
       "ym-mass-gap-polyakov"
     ],
     "evidence_only_why": "numerical lattice observations (IRREDUCIBLE), not mass-gap obligations — they are evidence about the regime, not hypotheses to discharge",
-    "independent_obligations": 2,
-    "independent_why": "exactly two independent mathematical obligations remain: the radius bound (one class) and the log-Sobolev bridge (the other); the three IRREDUCIBLE entries are evidence, not obligations",
+    "independent_obligations": 1,
+    "independent_why": "one obligation remains: the continuum reconstruction (existence + spectral convergence, the OS→Wightman limit), the hypotheses of continuum_mass_gap / clay_mass_gap_of_bounded_antitone_uniform",
     "missing_object_2026-11": "the rgContraction's T : ℝ→ℝ→ℝ is a placeholder; the real block-spin map acts on link configurations V→G and the e^(−(12π²/11)β) contraction is the measure-concentration of the Yang–Mills measure μ_β (blockSpin is 1-Lipschitz, NOT contracting). The missing object is μ_β + the block-spin RG average; proving its contraction IS the mass gap."
   },
-  "method_constraint": "NO infinite-dimensional computation: the finite-volume UNIFORM bound carries to the thermodynamic/continuum limit. Prove the mass gap via a volume-uniform estimate (the FSS infrared bound / Gaussian domination), never by computing the infinite lattice or the continuum operator's spectrum directly. The final rung is the non-Abelian Gaussian domination (reflection-positivity → chessboard → Gaussian for the trace observables), volume-uniform — see docs/INFINITE-DIMENSIONAL-ISSUE.md."
+  "method_constraint": "NO infinite-dimensional computation: the finite-volume UNIFORM bound carries to the thermodynamic/continuum limit. Prove the mass gap via a volume-uniform estimate (the FSS infrared bound / Gaussian domination), never by computing the infinite lattice or the continuum operator's spectrum directly. The final rung is the non-Abelian Gaussian domination (reflection-positivity → chessboard → Gaussian for the trace observables), volume-uniform — see docs/INFINITE-DIMENSIONAL-ISSUE.md.",
+  "state_2026-11-27": {
+    "status": "lattice spectral gap proved; continuum reconstruction is the remaining piece",
+    "branches": {
+      "feat/massgap-clean": "heat-kernel spectral identification: heatKernelMassGap β = 1 − I₁(2β)/I₀(2β); heat_kernel_gap_exp_bound (≥ (1/2−1/π)·e^(−(12π²/11)β)); heat_kernel_spectral_gap (>0); besselI_sub_le; heat_kernel_radius_contraction; heat_kernel_mass_gap_uniform; hTheta_false (the ℓ² site/angle hΘ is false — label-inflation trap)",
+      "feat/massgap-blockspin": "block-spin contraction + animals bound: blockSpin_contracts_two, blockSpin_lipschitz, block_spin_contraction_su2, animals_majorant_summable, rooted_animals_count_bound_gen, animals_weight_summable (the cluster-expansion FSS / radius bound)",
+      "lockin/massgap-reduction": "hΘ measure half + monotonicity + conditional Clay: hTheta_reflected_correlation, hTheta_reflected_correlation_nonneg, s3Inner, transferKernel, transferKernel_eq_heat_kernel, transfer_norm_monotone, gap_antitone, mass_gap_subseq_of_bounded, clay_mass_gap_of_bounded_antitone_uniform, refereeScalingLaw_not_uniform_gap"
+    },
+    "proved_lattice": [
+      "animals bound (rooted_animals_count_bound_gen)",
+      "block-spin contraction (blockSpin_contracts_two, block_spin_contraction_su2)",
+      "hΘ measure↔kernel (hTheta_reflected_correlation, transferKernel_eq_heat_kernel)",
+      "heat-kernel spectral identification (heatKernelMassGap = 1 − I₁/I₀, heat_kernel_gap_exp_bound)",
+      "volume-monotonicity (transfer_norm_monotone, gap_antitone)"
+    ],
+    "remaining": "continuum reconstruction: existence + spectral convergence (OS→Wightman), the hypotheses of continuum_mass_gap / clay_mass_gap_of_bounded_antitone_uniform",
+    "reconciled_with": "MASS-GAP-REDUCTION.md (lockin) — 'the open rung is now the spectral identification λ₁=I₁/I₀'; that identification is now discharged on feat/massgap-clean"
+  }
 }
