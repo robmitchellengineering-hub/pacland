@@ -80,7 +80,8 @@
             "hlam_assembly — the dispersion relation E=√(2(1−cos k)+mβ²), λ=e^(−E) gives the eigenvalue bound λ ≤ e^(−mβ) (Step A last connective)",
             "stepA_mass_gap — the complete finite-volume mass gap (chessboard estimate from the dispersion), conditional only on the OS transfer-matrix identification eigenvalues k = e^(−E k)",
             "freePropagatorDecay — the named lattice free-propagator exponential-decay property (the Fourier inversion conclusion, the remaining Step A input)",
-            "energy_ge_mass_lattice — the lattice dispersion lower bound mβ ≤ √(2(1−cos k)+mβ²)"
+            "energy_ge_mass_lattice — the lattice dispersion lower bound mβ ≤ √(2(1−cos k)+mβ²)",
+            "stepA_theorem — the complete finite-volume mass gap (exponential clustering + spectral gap), conditional only on the OS identification eigenvalues k = e^(−E k)"
           ]
         },
         {

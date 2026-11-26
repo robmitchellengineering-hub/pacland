@@ -233,7 +233,8 @@
     "hlam_assembly",
     "stepA_mass_gap",
     "freePropagatorDecay",
-    "energy_ge_mass_lattice"
+    "energy_ge_mass_lattice",
+    "stepA_theorem"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {

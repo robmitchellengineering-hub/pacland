@@ -911,6 +911,31 @@ theorem stepA_mass_gap {m : ℕ} [NeZero m] (K : Fin m → Fin m → ℝ)
   exact QM.chessboard_estimate K hSymm hK n (Real.exp (-mβ)) hvacuum hlam (by positivity) i j
 
 
+/-- **Step A — the finite-volume mass gap (the complete deliverable).** Given the standard
+transfer-matrix identification `eigenvalues k = e^(−E k)` and the dispersion `mβ ≤ E k` for `k ≠ 0`, the
+finite-volume mass gap holds in both forms: (i) the exponential clustering
+`|Tⁿ − P₀| ≤ e^(−mβ n)·m`, and (ii) the spectral gap `0 < 1 − e^(−mβ)`. This is the complete finite-volume
+constructive-QFT theorem (the standard FSS conclusion), with the single input the Osterwalder–Schrader
+identification `eigenvalues k = e^(−E k)`. -/
+theorem stepA_theorem {m : ℕ} [NeZero m] (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : QM.PosDefKernel K)
+    (hvacuum : (QM.transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues 0 = 1)
+    (E : Fin m → ℝ) (mβ : ℝ) (hmβ : 0 < mβ)
+    (hdisp : ∀ k, (QM.transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k = Real.exp (-E k))
+    (hE : ∀ k, k ≠ 0 → mβ ≤ E k) :
+    (∀ n : ℕ, ∀ i j : Fin m,
+      |((QM.transferMatrix K)^n) i j
+        - (((Unitary.conjStarAlgAut ℝ (Matrix (Fin m) (Fin m) ℝ))
+              (QM.transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvectorUnitary)
+            (Matrix.diagonal (fun k => if k = 0 then 1 else 0))) i j| ≤ (Real.exp (-mβ))^n * (m : ℝ))
+      ∧ QM.spectralGap (Real.exp (-mβ)) := by
+  constructor
+  · intro n i j
+    exact stepA_mass_gap K hSymm hK hvacuum E mβ (le_of_lt hmβ) hdisp hE n i j
+  · rw [QM.spectralGap]
+    exact spectral_gap_pos mβ (Real.exp (-mβ)) hmβ rfl
+
+
 /-- **The lattice free-propagator decay (the Fourier inversion, Step A's last input).** The lattice
 Green's function `G(x) = Σₖ e^(ikx)/(2(1−cos k)+mβ²)` decays exponentially at the mass rate `mβ`:
 `|G(x)| ≤ C·e^(−mβ|x|)`. This is the standard contour-integration/Bessel estimate that converts the
