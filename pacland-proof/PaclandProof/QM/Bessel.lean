@@ -969,6 +969,6 @@ theorem heat_kernel_spectral_gap (β : ℝ) (hβ : 0 < β) : 0 < heatKernelMassG
     exact one_div_lt_one_div_of_lt (by norm_num) (by nlinarith [Real.pi_gt_three])
   dsimp [heatKernelMassGap]
   field_simp [hI0pos.ne']
-  exact div_pos (lt_of_lt_of_le hpos hsub) hI0pos
+  simpa using (lt_of_lt_of_le hpos hsub)
 
 end QM
