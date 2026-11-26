@@ -114,3 +114,13 @@ add_mul's over-distribution, and `rw [hmain]` (forward) + `field_simp [hπ]`.
 Remaining: the `hg : IntervalIntegrable (fun θ => (2·Σ besselI·cos)·cos θ) volume 0 π` — prove like the interchange's
 htailint: `ContinuousMap.summable_of_locally_summable_norm (F := g) (fun K => …)` to get `Summable g`, then
 `change IntervalIntegrable ⇑((2:ℝ) • (∑' n, g n)) volume 0 π; exact ((2:ℝ) • (∑' n, g n)).continuous.intervalIntegrable 0 π`.
+
+## besselI_sub_le ~99% (rounds 56–62)
+All of `besselI_sub_le` closes except two terminal orientation details:
+1. `h2 : ∫₁ ≤ ∫₁ + ∫₂` — `le_add_of_nonneg_right hnonneg`/`nlinarith [hnonneg]` produce `∫₁ ≤ ∫₂ + ∫₁`
+   (the `add_comm` order); needs the `a` resolved via the type ascription + `simpa [add_comm]`.
+2. The final `mul_le_mul_of_nonneg_left hlower (by positivity)` reports "No goals" — the `0 ≤ 1/π`
+   witness is already discharged by the preceding `field_simp`, so drop the `by positivity`.
+
+Everything else (hI0', hsub, hnonneg, hsplit, hhalf, hbase) is proven. Then:
+- `heat_kernel_gap_exp_bound`: (1/2 − 1/π)·e^(−(12π²/11)β) ≤ heatKernelMassGap β via besselI_sub_le(2β) + besselI_zero_le_exp(2β) + poly_beats_exp.
