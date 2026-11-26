@@ -54,3 +54,17 @@ have hzero : ∀ i : ℕ, (∫ θ in (0:ℝ)..Real.pi, (f i) θ) = 0 := by
 So `integral_exp_cos_eq_pi_mul_besselI_zero` compiles up to TWO remaining errors:
 1. `tsum_intervalIntegral_eq_of_summable_norm`'s `f` arg (use `@... ℕ ℝ _ _ (0:ℝ) Real.pi _ f hf_sum` — but the `f` is `ℕ → C(ℝ,ℝ)` and it's being matched to `hf_sum`; try the `@` form or `have ht := ...`).
 2. `integral_add`'s `hg : IntervalIntegrable (fun θ => 2·Σ besselI·cos) volume 0 π` — prove via `ContinuousMap.summable_of_locally_summable_norm (F := f) (fun K => …)` to get `Summable f`, then `(∑' n, f n).continuous.intervalIntegrable`, with a `change` to rewrite `2·Σ besselI·cos = 2 • (∑' n, f n)`.
+
+## ROOT CAUSE of the last error (round 42, VERIFIED)
+`set_option maxHeartbeats 1600000` clears the `whnf` timeout, and the real error surfaces:
+`failed to synthesize instance SeminormedAddCommGroup C(ℝ, ℝ)`.
+
+The `ContinuousMap`'s norm/SeminormedAddCommGroup requires a COMPACT domain, but `ℝ` is not compact.
+So `Summable f` for `f : ℕ → C(ℝ, ℝ)` is ILL-DEFINED — that is why the `whnf`/typeclass resolution
+spins. The `hf_sum` route works because it uses `(f n).restrict (uIcc 0 π) : C(uIcc 0 π, ℝ)` (COMPACT).
+
+FIX: the 2Σ integrability must NOT go through `Summable f` on `C(ℝ, ℝ)`. Instead use the
+`hasSum_intervalIntegral_of_summable_norm` dominated-convergence (its `bound_integrable` is
+`intervalIntegrable_const` for the constant sup-norm dominator), or restate `f : ℕ → C(uIcc 0 π, ℝ)`
+and reconcile `Continuous.intervalIntegrable` (which wants `ℝ → E`) via `ContinuousMap.continuous`
++ the `uIcc`→`ℝ` subtype coercion.
