@@ -131,6 +131,7 @@ measure. This avoids the compactness proof: the S³ measure is defined directly,
 noncomputable def su2Haar : MeasureTheory.Measure (Metric.sphere (0 : ℂ × ℂ) 1) :=
   MeasureTheory.Measure.toSphere (MeasureTheory.volume : MeasureTheory.Measure (ℂ × ℂ))
 
+
 /-- **The SU(2) Wilson action on the S³** — the holonomy trace `1 − Re Tr U` for the SU(2) element
 `[[a, −conj b], [b, conj a]]`, whose trace is `2·Re a`: `S(a, b) = 1 − 2·Re a`. This is the specific
 `wilsonPlaquette` in the S³ parametrization of SU(2). -/
@@ -367,5 +368,32 @@ theorem transferKernel_eq_heat_kernel (β : ℝ) (z w : Metric.sphere (0 : ℂ �
   ring_nf
   rw [Real.exp_add]
 
+
+
+/-- **The reflection-plane split (the `hΘ` measure half).** The reflected correlation of the two-slice
+product measure (the Fubini across the reflection plane) equals the iterated integral against the
+transfer-matrix kernel. -/
+theorem hTheta_reflected_correlation (β : ℝ) (g : Metric.sphere (0 : ℂ × ℂ) 1 → ℝ)
+    [MeasureTheory.SFinite su2Haar]
+    (hg : MeasureTheory.Integrable (fun p : (Metric.sphere (0 : ℂ × ℂ) 1) × (Metric.sphere (0 : ℂ × ℂ) 1) =>
+      g p.1 * g p.2 * transferKernel β p.1 p.2) (su2Haar.prod su2Haar)) :
+    (∫ p : (Metric.sphere (0 : ℂ × ℂ) 1) × (Metric.sphere (0 : ℂ × ℂ) 1),
+        g p.1 * g p.2 * transferKernel β p.1 p.2 ∂(su2Haar.prod su2Haar))
+      = ∫ z₀ : Metric.sphere (0 : ℂ × ℂ) 1, ∫ z₁ : Metric.sphere (0 : ℂ × ℂ) 1,
+        g z₀ * g z₁ * transferKernel β z₀ z₁ ∂su2Haar ∂su2Haar := by
+  rw [MeasureTheory.integral_prod (fun p => g p.1 * g p.2 * transferKernel β p.1 p.2) hg]
+
+/-- **The reflected correlation is non-negative** — the measure-theoretic reflection positivity: the
+transfer-matrix kernel `transferKernel` is positive (the heat kernel), so the reflected correlation of a
+non-negative field is non-negative. -/
+theorem hTheta_reflected_correlation_nonneg (β : ℝ) (g : Metric.sphere (0 : ℂ × ℂ) 1 → ℝ)
+    (hg : ∀ z, 0 ≤ g z) :
+    0 ≤ ∫ z₀ : Metric.sphere (0 : ℂ × ℂ) 1, ∫ z₁ : Metric.sphere (0 : ℂ × ℂ) 1,
+        g z₀ * g z₁ * transferKernel β z₀ z₁ ∂su2Haar ∂su2Haar := by
+  have hpos : ∀ z₀ z₁, 0 ≤ g z₀ * g z₁ * transferKernel β z₀ z₁ := by
+    intro z₀ z₁
+    rw [transferKernel]
+    exact mul_nonneg (mul_nonneg (hg z₀) (hg z₁)) (Real.exp_pos _).le
+  exact MeasureTheory.integral_nonneg (by intro z₀; exact MeasureTheory.integral_nonneg (by intro z₁; exact hpos z₀ z₁))
 
 end QM

@@ -121,7 +121,9 @@
     "frontier-trap-registry",
     "s3Inner",
     "transferKernel",
-    "transferKernel_eq_heat_kernel"
+    "transferKernel_eq_heat_kernel",
+    "hTheta_reflected_correlation",
+    "hTheta_reflected_correlation_nonneg"
   ],
   "transports": [
     {
