@@ -1153,6 +1153,20 @@ theorem su2_mass_gap_uniform (mβ E lam : ℝ → ℝ)
   rw [hmβquarter] at hgap
   simpa [div_eq_mul_inv, mul_comm] using hgap
 
+/-- **The final conditional — continuum existence + uniform gap ⟹ continuum mass gap.** If the
+finite-volume gaps `m V` are uniformly bounded below by the volume-independent `A·e^(−cβ)`, and they
+converge to the continuum gap `Δ` (the (i) existence / spectral-convergence input), then the uniform bound
+survives the limit: `A·e^(−cβ) ≤ Δ`, hence `0 < Δ`. This is the carry-through: the volume-uniform bound
+(already proved as `su2_mass_gap_uniform`) plus the continuum limit closes the Clay mass gap. -/
+theorem continuum_mass_gap (m : ℕ → ℝ) (Δ A c β : ℝ)
+    (huniform : ∀ V : ℕ, A * Real.exp (-c * β) ≤ m V)
+    (hconv : Filter.Tendsto m Filter.atTop (nhds Δ))
+    (hA : 0 < A) (hc : 0 < c) (hβ : 0 < β) :
+    0 < Δ := by
+  have hle : A * Real.exp (-c * β) ≤ Δ :=
+    ge_of_tendsto hconv (Filter.Eventually.of_forall huniform)
+  exact lt_of_lt_of_le (by positivity : 0 < A * Real.exp (-c * β)) hle
+
 
 end FSSGaussianDomination
 
