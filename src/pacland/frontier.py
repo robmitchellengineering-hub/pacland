@@ -83,10 +83,13 @@ FRONTIER = {
         "besselI_one_lt_zero (I₁(2β) < I₀(2β)) — subagent 38f45467; gives heat_kernel_spectral_gap: 0 < 1 − I₁/I₀",
     ],
     "correct_next_move": (
-        "1. Land I₁ < I₀ (subagent). 2. Prove heat_kernel_spectral_gap: 0 < 1 − I₁/I₀ (div_lt_one + linarith). "
-        "3. Thread λ₁ = I₁/I₀ into exponential_radius_contraction + su2_mass_gap_uniform in place of the hlam "
-        "λ = e^(−E) tautology. 4. Conclude m(β) ≥ A·e^(−cβ) volume-uniformly. Do NOT re-derive the boundary; "
-        "it is mapped here."
+        "CORRECTED bounds (verified 2026-11): the TRUE sharp bounds are I₁/I₀ ≤ 2x/(2x+1) and "
+        "1/(4β+1) ≤ 1 − I₁(2β)/I₀(2β). The OLD x/(x+1) and 1/(4β) are FALSE (x=2: 0.698 > 0.667; "
+        "β=0.25: gap 0.758 < 1). Steps: (1) land I₁/I₀ ≤ 2x/(2x+1) [subagent 72edca45] → heat_kernel_spectral_gap "
+        "0 < 1−I₁/I₀ and heat_kernel_gap_poly_bound 1/(4β+1) ≤ gap; (2) poly_beats_exp DONE (committed cff766d8): "
+        "(1/2)·e^(−cβ) ≤ 1/(4β+1); (3) ASSEMBLE heatKernelMassGap_lower_bound: (1/2)·e^(−cβ) ≤ heatKernelMassGap β "
+        "= linarith(poly_beats_exp, heat_kernel_gap_poly_bound); (4) thread heatKernelMassGap into "
+        "su2_mass_gap_uniform in place of λ=e^(−E). Do NOT re-derive the boundary or re-attempt the FALSE 1/(4β)."
     ),
 }
 
