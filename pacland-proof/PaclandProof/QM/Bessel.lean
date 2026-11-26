@@ -1038,4 +1038,70 @@ theorem integral_exp_cos_mul_sin_two_pi (x : ℝ) :
   rw [hsplit, hsecond]
   ring
 
+
+/-- **The `2π`-periodicity of the heat-kernel integrand** — `∫₀^{2π} e^{2β cos(θ−x)} cos x = ∫_θ^{θ+2π} …`. -/
+theorem heat_kernel_integral_two_pi_periodic (β θ : ℝ) :
+    (∫ x in (0:ℝ)..(2 * Real.pi), Real.exp (2 * β * Real.cos (θ - x)) * Real.cos x)
+      = (∫ x in θ..(θ + 2 * Real.pi), Real.exp (2 * β * Real.cos (θ - x)) * Real.cos x) := by
+  let F : ℝ → ℝ := fun y => Real.exp (2 * β * Real.cos (θ - y)) * Real.cos y
+  have hFcont : Continuous F := by dsimp [F]; fun_prop
+  have hsplit : (∫ x in θ..(θ + 2 * Real.pi), F x)
+      = (∫ x in θ..(2 * Real.pi), F x) + (∫ x in (2 * Real.pi)..(θ + 2 * Real.pi), F x) := by
+    rw [← intervalIntegral.integral_add_adjacent_intervals]
+    · exact hFcont.intervalIntegrable (μ := MeasureTheory.volume) θ (2 * Real.pi)
+    · exact hFcont.intervalIntegrable (μ := MeasureTheory.volume) (2 * Real.pi) (θ + 2 * Real.pi)
+  have htail : (∫ x in (2 * Real.pi)..(θ + 2 * Real.pi), F x) = (∫ x in (0:ℝ)..θ, F x) := by
+    have hcomp := intervalIntegral.integral_comp_add_right (f := F) (d := 2 * Real.pi) (a := (0:ℝ)) (b := θ)
+    rw [show (0:ℝ) + 2 * Real.pi = 2 * Real.pi by ring, show θ + 2 * Real.pi = θ + 2 * Real.pi by ring] at hcomp
+    rw [hcomp.symm]
+    rw [intervalIntegral.integral_congr (fun x _ => by
+      change F (x + 2 * Real.pi) = F x
+      dsimp [F]
+      have h1 : Real.cos (x + 2 * Real.pi) = Real.cos x := by rw [Real.cos_add]; simp [Real.sin_two_pi, Real.cos_two_pi]
+      have h2 : Real.cos (θ - (x + 2 * Real.pi)) = Real.cos (θ - x) := by
+        rw [show θ - (x + 2 * Real.pi) = (θ - x) - 2 * Real.pi by ring]
+        rw [Real.cos_sub]; simp [Real.sin_two_pi, Real.cos_two_pi]
+      rw [h1, h2])]
+  have hfront : (∫ x in θ..(2 * Real.pi), F x) = (∫ x in (0:ℝ)..(2 * Real.pi), F x) - (∫ x in (0:ℝ)..θ, F x) := by
+    have h : (∫ x in (0:ℝ)..θ, F x) + (∫ x in θ..(2 * Real.pi), F x) = (∫ x in (0:ℝ)..(2 * Real.pi), F x) := by
+      rw [intervalIntegral.integral_add_adjacent_intervals]
+      · exact hFcont.intervalIntegrable (μ := MeasureTheory.volume) (0:ℝ) θ
+      · exact hFcont.intervalIntegrable (μ := MeasureTheory.volume) θ (2 * Real.pi)
+    nlinarith [h]
+  rw [hsplit, htail, hfront]
+  ring
+
+
+/-- **The heat-kernel eigenfunction lemma (the spectral identification)** — `∫₀^{2π} e^{2β·cos(θ−θ′)}·cos θ′ dθ′ = 2π·I₁(2β)·cos θ`, so `cos θ` is an eigenfunction of the Wilson heat kernel with eigenvalue `2π·I₁(2β)`; normalized by the vacuum `2π·I₀(2β)` this is `λ₁ = I₁(2β)/I₀(2β)`. -/
+theorem heat_kernel_eigenfunction_cos (β θ : ℝ) (hβ : 0 ≤ β) :
+    (∫ x in (0:ℝ)..(2 * Real.pi), Real.exp (2 * β * Real.cos (θ - x)) * Real.cos x)
+      = 2 * Real.pi * besselI 1 (2 * β) * Real.cos θ := by
+  rw [heat_kernel_integral_two_pi_periodic β θ]
+  have hshift := intervalIntegral.integral_comp_add_right
+    (f := fun x : ℝ => Real.exp (2 * β * Real.cos (θ - x)) * Real.cos x) (d := θ)
+    (a := (0:ℝ)) (b := 2 * Real.pi)
+  have hstep : (∫ x in θ..(θ + 2 * Real.pi), Real.exp (2 * β * Real.cos (θ - x)) * Real.cos x)
+      = (∫ x in (0:ℝ)..(2 * Real.pi), Real.exp (2 * β * Real.cos (θ - (x + θ))) * Real.cos (x + θ)) := by
+    simpa [add_comm, zero_add] using hshift.symm
+  rw [hstep]
+  rw [intervalIntegral.integral_congr (fun x _ => by
+    change Real.exp (2 * β * Real.cos (θ - (x + θ))) * Real.cos (x + θ)
+      = Real.exp (2 * β * Real.cos x) * Real.cos (x + θ)
+    have hc : Real.cos (θ - (x + θ)) = Real.cos x := by
+      rw [show θ - (x + θ) = -x by ring]
+      rw [Real.cos_neg]
+    rw [hc])]
+  rw [intervalIntegral.integral_congr (fun x _ => by
+    change Real.exp (2 * β * Real.cos x) * Real.cos (x + θ)
+      = Real.exp (2 * β * Real.cos x) * (Real.cos x * Real.cos θ - Real.sin x * Real.sin θ)
+    rw [Real.cos_add])]
+  rw [intervalIntegral.integral_congr (fun x _ => by rw [mul_sub])]
+  rw [intervalIntegral.integral_sub]
+  · simp_rw [← mul_assoc]
+    rw [intervalIntegral.integral_mul_const, intervalIntegral.integral_mul_const]
+    rw [integral_exp_cos_mul_cos_two_pi (2 * β) (mul_nonneg (by norm_num) hβ), integral_exp_cos_mul_sin_two_pi (2 * β)]
+    ring
+  · exact (by fun_prop : Continuous (fun x : ℝ => Real.exp (2 * β * Real.cos x) * (Real.cos x * Real.cos θ))).intervalIntegrable (μ := MeasureTheory.volume) (0:ℝ) (2 * Real.pi)
+  · exact (by fun_prop : Continuous (fun x : ℝ => Real.exp (2 * β * Real.cos x) * (Real.sin x * Real.sin θ))).intervalIntegrable (μ := MeasureTheory.volume) (0:ℝ) (2 * Real.pi)
+
 end QM
