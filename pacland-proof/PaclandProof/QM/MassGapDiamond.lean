@@ -529,6 +529,49 @@ volume-uniformity is the extra statement that survives the continuum limit. -/
 theorem mass_gap_reduction_volumeUniform (gap : ℕ → ℝ) (h : volumeUniformGap gap) :
     ∃ Δ : ℝ, 0 < Δ ∧ ∀ m : ℕ, 0 < m → Δ ≤ gap m := h
 
+/-- **The reduction is sufficient, not the gap itself.** `refereeScalingLaw` gives only the
+*decaying* lower bound `A·e^{−(12π²/11)β}` — it vanishes as `β → ∞`, so it is NOT a uniform lattice
+gap `∃ Δ > 0, ∀ β > 0, Δ ≤ mGap β`. A uniformly-positive lattice gap is strictly stronger. The
+reduction's real content is the *physical* (dimensionless) gap `mGap(β)·e^{(12π²/11)β} ≥ A`, carried
+by the machine + the volume-uniform limit, not a fixed lattice gap. -/
+theorem refereeScalingLaw_not_uniform_gap :
+    ∃ mGap : ℝ → ℝ,
+      refereeScalingLaw mGap ∧ ¬ (∃ Δ : ℝ, 0 < Δ ∧ ∀ β : ℝ, 0 < β → Δ ≤ mGap β) := by
+  let c : ℝ := 12 * Real.pi ^ 2 / 11
+  let mGap : ℝ → ℝ := fun β => Real.exp (-c * β)
+  refine ⟨mGap, ?_, ?_⟩
+  · -- refereeScalingLaw mGap holds with A = 1
+    refine ⟨1, by norm_num, ?_⟩
+    intro β hβ
+    simp [mGap, c]
+  · -- no uniform lower bound: for any Δ > 0 there is a β with e^(−cβ) < Δ
+    intro h
+    rcases h with ⟨Δ, hΔ0, hΔ⟩
+    have hcpos : 0 < c := by
+      have hpi2pos : 0 < Real.pi ^ 2 := sq_pos_of_ne_zero Real.pi_ne_zero
+      positivity
+    have hec_pos : 0 < Real.exp (-c) := Real.exp_pos (-c)
+    have hec_lt_one : Real.exp (-c) < 1 := by
+      rw [Real.exp_lt_one_iff]
+      exact neg_lt_zero.mpr hcpos
+    rcases exists_pow_lt_of_lt_one hΔ0 hec_lt_one with ⟨n, hn⟩
+    have hβ : 0 < ((n + 1 : ℕ) : ℝ) := Nat.cast_pos.mpr (Nat.succ_pos n)
+    have hk_lt : Real.exp (-c) ^ (n + 1) < Δ := by
+      calc
+        Real.exp (-c) ^ (n + 1) = Real.exp (-c) ^ n * Real.exp (-c) := by rw [pow_succ]
+        _ < Δ * Real.exp (-c) := mul_lt_mul_of_pos_right hn hec_pos
+        _ < Δ := by
+          have h1 : Δ * Real.exp (-c) < Δ * 1 := mul_lt_mul_of_pos_left hec_lt_one hΔ0
+          simpa using h1
+    have h_exp_pow : Real.exp (-c * ((n + 1 : ℕ) : ℝ)) = Real.exp (-c) ^ (n + 1) := by
+      rw [mul_comm (-c) (((n + 1 : ℕ) : ℝ))]
+      exact Real.exp_nat_mul (-c) (n + 1)
+    have hlt : mGap ((n + 1 : ℕ) : ℝ) < Δ := by
+      dsimp [mGap]
+      rw [h_exp_pow]
+      exact hk_lt
+    exact (not_le.mpr hlt) (hΔ ((n + 1 : ℕ) : ℝ) hβ)
+
 /-- **The row unitarity.** For a unitary `U`, each row is a unit vector: `Σₖ Uᵢₖ² = 1`. -/
 lemma unitary_row_norm {m : ℕ} (U : unitary (Matrix (Fin m) (Fin m) ℝ)) (i : Fin m) :
     ∑ k : Fin m, ((↑U : Matrix (Fin m) (Fin m) ℝ) i k)^2 = 1 := by
