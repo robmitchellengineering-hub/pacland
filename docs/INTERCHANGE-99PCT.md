@@ -95,3 +95,11 @@ but the goal is `IntervalIntegrable (fun θ => 2 * ∑' n, (f n) θ) volume 0 π
 `ContinuousMap.summable_apply hsum θ` (which gives `Summable (fun n => (f n) θ)`), then prove the
 pointwise equality `(∑' n, f n) θ = ∑' n, (f n) θ` by `tsum` uniqueness instead of `tsum_apply`.
 This is the ONLY remaining line in `integral_exp_cos_eq_pi_mul_besselI_zero`.
+
+## Last-lemma refinement (round 45)
+`IntervalIntegrable f μ a b` is DEFINED as `IntegrableOn f (Ioc a b) μ ∧ IntegrableOn f (Ioc b a) μ`
+(a CONJUNCTION over `Set.Ioc`, not `Set.uIoc`). So the final bullet splits into two `IntegrableOn`
+goals, each closed by `MeasureTheory.IntegrableOn.congr_fun` + `Set.EqOn` + the pointwise
+`(∑' n, f n) θ = ∑' n, (f n) θ` via `(hsum.hasSum.map_apply θ).tsum_eq.symm` (avoids the
+`IsAddApply`-gated `tsum_apply`). The `EqOn` proof is: `dsimp [f]` then `simp [ContinuousMap.coe_smul, Pi.smul_apply, smul_eq_mul, hθ]`, with `measurableSet_Ioc` for the `MeasurableSet` hypothesis.
+This is the ONLY remaining line in `integral_exp_cos_eq_pi_mul_besselI_zero`.
