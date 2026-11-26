@@ -356,6 +356,15 @@ measure (the free case). Its positivity (`QM.wilson_kernel_posdef`) is the OS3 r
 def wilsonKernel {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j : Fin m) : ℝ :=
   Real.exp (2 * β * Real.cos (θ i - θ j))
 
+/-- **The transfer matrix IS the Wilson kernel** — `T(i,j) = exp(2β·cos(θᵢ−θⱼ))`, the boundary
+coupling of the Gibbs measure across the reflection plane. This is the DEFINITION of the transfer matrix
+(the OS reconstruction `T = e^(−H)` in its finite-lattice form), NOT a theorem: the Wilson-kernel entry is
+what the reflected correlation factorizes through. The `transferFactorization` hypothesis states exactly this
+identification, so the honest open estimate is *this definition matching the Gibbs reflected correlation*,
+not a further algebraic lemma. -/
+def wilsonTransferMatrix {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) : Matrix (Fin m) (Fin m) ℝ :=
+  fun i j => wilsonKernel θ β i j
+
 /-- The Wilson kernel is symmetric: `K(i,j) = K(j,i)` (cos is even). This is the OS2 reflection
 symmetry the reflection self-adjointness (`wilson_reflection_self_adjoint`) rests on. -/
 theorem wilson_kernel_symmetric {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) (i j : Fin m) :
