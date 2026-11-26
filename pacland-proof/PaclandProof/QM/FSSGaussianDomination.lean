@@ -1357,6 +1357,30 @@ theorem transfer_eigenvalue_eq_exp_neg_energy (lam : ℝ) (hlam : 0 < lam) :
   rw [neg_neg]
   exact (Real.exp_log hlam).symm
 
+
+/-- **The bounded mass-gap sequence has a convergent subsequence (Bolzano–Weierstrass).** Since the gap
+`m V ∈ [0,1]` is bounded, the compact `[0,1]` gives a subsequence `m (φ n) → Δ`. This discharges the `hsubseq`
+input without any external existence assumption. -/
+theorem mass_gap_subseq_of_bounded (m : ℕ → ℝ) (hm : ∀ V : ℕ, m V ∈ Set.Icc (0 : ℝ) 1) :
+    ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ Δ : ℝ, Filter.Tendsto (fun n => m (φ n)) Filter.atTop (nhds Δ) := by
+  have hbdd : Bornology.IsBounded (Set.Icc (0 : ℝ) 1) := Metric.isBounded_Icc 0 1
+  rcases tendsto_subseq_of_bounded hbdd hm with ⟨Δ, hΔ, φ, hφ, hconv⟩
+  exact ⟨φ, hφ, Δ, hconv⟩
+
+/-- **The continuum mass gap, from boundedness + antitone + uniform bound** — no external existence input.
+The gap is bounded (in `[0,1]`), antitone in the volume, and uniformly bounded below by `A·e^(−cβ)`; Bolzano–
+Weierstrass gives the subsequential limit, the antitone gives uniqueness, and the uniform bound survives — so
+`∃ Δ, 0 < Δ`. -/
+theorem clay_mass_gap_of_bounded_antitone_uniform
+    (m : ℕ → ℝ) (A c β : ℝ)
+    (hmono : Antitone m)
+    (huniform : ∀ V : ℕ, A * Real.exp (-c * β) ≤ m V)
+    (hbounded : ∀ V : ℕ, m V ∈ Set.Icc (0 : ℝ) 1)
+    (hA : 0 < A) (hc : 0 < c) (hβ : 0 < β) :
+    ∃ Δ : ℝ, 0 < Δ := by
+  rcases mass_gap_subseq_of_bounded m hbounded with ⟨φ, hφ, Δ, hconv⟩
+  exact ⟨Δ, continuum_mass_gap_of_uniform_antitone m Δ A c β hmono huniform ⟨φ, hφ, hconv⟩ hA hc hβ⟩
+
 end FSSGaussianDomination
 
 end
