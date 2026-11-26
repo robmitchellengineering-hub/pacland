@@ -68,3 +68,22 @@ FIX: the 2Σ integrability must NOT go through `Summable f` on `C(ℝ, ℝ)`. In
 `intervalIntegrable_const` for the constant sup-norm dominator), or restate `f : ℕ → C(uIcc 0 π, ℝ)`
 and reconcile `Continuous.intervalIntegrable` (which wants `ℝ → E`) via `ContinuousMap.continuous`
 + the `uIcc`→`ℝ` subtype coercion.
+
+## ~99.99% — the Summable-f route is SOLVED (round 43)
+The `whnf` timeout's real cause: `C(ℝ,ℝ)` has no `SeminormedAddCommGroup` (ℝ not compact), so
+`Summable.of_norm_bounded` on `f : ℕ → C(ℝ,ℝ)` was ill-typed. The FIX that works:
+
+```lean
+have hsum : Summable f := by
+  refine ContinuousMap.summable_of_locally_summable_norm (F := f) (fun K => ?_)  -- compact-open Summable, works for LocallyCompactSpace ℝ
+  refine Summable.of_nonneg_of_le (fun n => norm_nonneg _) (fun n => ?_) ((besselI_summable hx).comp_injective Nat.succ_injective)
+  · exact (ContinuousMap.norm_le ((f n).restrict K) (C := besselI (n+1) x) (besselI_nonneg (n := n+1) hx)).mpr (fun θ => …)
+```
+Key: `ContinuousMap.norm_le` takes `f` as its FIRST EXPLICIT (positional), not a named `(f := …)`.
+
+**Only remaining error:** the last `IntervalIntegrable` bullet:
+`((2:ℝ) • (∑' n, f n)).continuous.intervalIntegrable` gives `IntervalIntegrable (2 • ⇑(∑' n, f n)) volume 0 π`,
+but the goal is `IntervalIntegrable (fun θ => 2 * ∑' n, (f n) θ) volume 0 π`. The gap is the
+`tsum`'s pointwise coercion `(∑' n, f n) θ = ∑' n, (f n) θ` (`ContinuousMap.summable_apply hsum`)
++ `Pi.smul_apply`; `simpa [coe_smul, Pi.smul_apply, summable_apply hsum]` doesn't fire it — try
+`IntervalIntegrable.congr` with a `funext` + `ContinuousMap.summable_apply hsum θ`'s `.tsum_eq`.
