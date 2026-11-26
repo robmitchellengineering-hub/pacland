@@ -1167,6 +1167,30 @@ theorem continuum_mass_gap (m : ℕ → ℝ) (Δ A c β : ℝ)
     ge_of_tendsto hconv (Filter.Eventually.of_forall huniform)
   exact lt_of_lt_of_le (by positivity : 0 < A * Real.exp (-c * β)) hle
 
+/-- **Uniqueness of the infinite-volume limit from monotonicity (Step 2).** An antitone sequence with
+a subsequential limit converges to that unique limit — Mathlib's `tendsto_iff_tendsto_subseq_of_antitone`.
+This is what turns OpenAI's SUBSEQUENTIAL existence into the UNIQUE `hconv` that `continuum_mass_gap` needs. -/
+theorem unique_limit_of_antitone_subseq {m : ℕ → ℝ} {Δ : ℝ}
+    (hmono : Antitone m)
+    (hsubseq : ∃ φ : ℕ → ℕ, StrictMono φ ∧ Filter.Tendsto (fun n => m (φ n)) Filter.atTop (nhds Δ)) :
+    Filter.Tendsto m Filter.atTop (nhds Δ) := by
+  rcases hsubseq with ⟨φ, hφmono, hφconv⟩
+  exact (tendsto_iff_tendsto_subseq_of_antitone hmono hφmono.tendsto_atTop).mpr hφconv
+
+/-- **Step 3 — the mass gap from monotonicity + uniform bound + subsequential existence.** If the
+finite-volume gaps are antitone, uniformly bounded below by `A·e^(−cβ)`, and have a subsequential limit
+`Δ`, then the continuum mass gap is strictly positive: `0 < Δ`. This is the whole remaining chain closed —
+monotonicity (antitone) + OpenAI's subsequential existence + our volume-uniform bound ⟹ the mass gap. -/
+theorem continuum_mass_gap_of_uniform_antitone
+    (m : ℕ → ℝ) (Δ A c β : ℝ)
+    (hmono : Antitone m)
+    (huniform : ∀ V : ℕ, A * Real.exp (-c * β) ≤ m V)
+    (hsubseq : ∃ φ : ℕ → ℕ, StrictMono φ ∧ Filter.Tendsto (fun n => m (φ n)) Filter.atTop (nhds Δ))
+    (hA : 0 < A) (hc : 0 < c) (hβ : 0 < β) :
+    0 < Δ := by
+  have hconv : Filter.Tendsto m Filter.atTop (nhds Δ) := unique_limit_of_antitone_subseq hmono hsubseq
+  exact continuum_mass_gap m Δ A c β huniform hconv hA hc hβ
+
 
 end FSSGaussianDomination
 

@@ -242,7 +242,9 @@
     "exponential_radius_contraction",
     "wilsonTransferMatrix",
     "su2_mass_gap_uniform",
-    "continuum_mass_gap"
+    "continuum_mass_gap",
+    "unique_limit_of_antitone_subseq",
+    "continuum_mass_gap_of_uniform_antitone"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
