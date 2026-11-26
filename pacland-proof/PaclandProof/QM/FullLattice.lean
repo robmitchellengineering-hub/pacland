@@ -344,4 +344,28 @@ theorem rg_quadratic_contraction (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) +
   convert hsq using 1
   ring_nf
 
+
+/-- **The S³ inner product (the SU(2) trace product's real part).** For SU(2) elements parametrized by the
+S³ points `z = (a, b)`, `w = (c, d)`, the trace of the product `U_z · U_w⁻¹` has real part
+`2·Re(a·conj c + b·conj d)` — twice the S³ (ℂ² Hermitian) inner product. This is the boundary coupling:
+the shared plaquette across the reflection plane. -/
+noncomputable def s3Inner (z w : Metric.sphere (0 : ℂ × ℂ) 1) : ℝ :=
+  (z.1.1 * star w.1.1 + z.1.2 * star w.1.2).re
+
+/-- **The transfer-matrix kernel (the boundary coupling's Boltzmann factor).** The plaquette shared across
+the reflection plane has the action `1 − 2·⟨z,w⟩`, so its Boltzmann weight is `exp(−β(1 − 2·⟨z,w⟩))`
+= `exp(−β)·exp(2β·⟨z,w⟩)` — the Wilson heat kernel (up to the constant `exp(−β)`). -/
+noncomputable def transferKernel (β : ℝ) (z w : Metric.sphere (0 : ℂ × ℂ) 1) : ℝ :=
+  Real.exp (-β * (1 - 2 * s3Inner z w))
+
+/-- **The transfer-matrix kernel IS the heat kernel.** `exp(−β(1−2·⟨z,w⟩)) = exp(−β)·exp(2β·⟨z,w⟩)`, the
+Wilson heat kernel in the S³ inner product. This is the boundary coupling = the Wilson kernel (the
+`hΘ` pairing), now stated on the physical S³ measure substrate. -/
+theorem transferKernel_eq_heat_kernel (β : ℝ) (z w : Metric.sphere (0 : ℂ × ℂ) 1) :
+    transferKernel β z w = Real.exp (-β) * Real.exp (2 * β * s3Inner z w) := by
+  rw [transferKernel]
+  ring_nf
+  rw [Real.exp_add]
+
+
 end QM

@@ -259,7 +259,10 @@
     "transfer_eigenvalue_eq_exp_neg_energy",
     "mass_gap_subseq_of_bounded",
     "clay_mass_gap_of_bounded_antitone_uniform",
-    "frontier-trap-registry"
+    "frontier-trap-registry",
+    "s3Inner",
+    "transferKernel",
+    "transferKernel_eq_heat_kernel"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
