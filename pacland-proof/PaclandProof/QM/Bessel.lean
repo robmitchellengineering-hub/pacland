@@ -758,4 +758,104 @@ lemma integral_cos_succ_mul_cos (n : ℕ) :
   · exact (Real.continuous_cos.comp (continuous_const.mul continuous_id)).intervalIntegrable (0 : ℝ) Real.pi
   · exact (Real.continuous_cos.comp (continuous_const.mul continuous_id)).intervalIntegrable (0 : ℝ) Real.pi
 
+
+set_option maxHeartbeats 1600000 in
+/-- **Jacobi–Anger for `I₁`**: `I₁(x) = (1/π)∫₀^π e^(x·cos θ)·cos θ dθ` (for `x ≥ 0`). -/
+theorem besselI_one_eq_integral (x : ℝ) (hx : 0 ≤ x) :
+    besselI 1 x = (1 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.cos θ := by
+  let g : ℕ → C(ℝ, ℝ) := fun n => ⟨fun θ => besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ) * Real.cos θ, by
+    exact (continuous_const.mul (Real.continuous_cos.comp (continuous_const.mul continuous_id))).mul Real.continuous_cos⟩
+  have hg_sum : Summable (fun n => ‖(g n).restrict (⟨Set.uIcc (0 : ℝ) Real.pi, isCompact_uIcc⟩ : TopologicalSpace.Compacts ℝ)‖) := by
+    refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) (by simpa [Nat.succ_eq_add_one] using (besselI_summable hx).comp_injective Nat.succ_injective)
+    · apply norm_nonneg
+    · exact (ContinuousMap.norm_le ((g n).restrict (⟨Set.uIcc (0 : ℝ) Real.pi, isCompact_uIcc⟩ : TopologicalSpace.Compacts ℝ)) (C := besselI (n + 1) x) (besselI_nonneg (n := n + 1) hx)).mpr (fun θ => by
+        dsimp [g]
+        have h1 : ‖besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)‖ ≤ besselI (n + 1) x := by
+          calc ‖besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)‖
+              ≤ besselI (n + 1) x * ‖Real.cos ((n + 1 : ℝ) * θ)‖ := by
+                  simpa [Real.norm_of_nonneg (besselI_nonneg (n := n + 1) hx)] using (norm_mul_le (besselI (n + 1) x) (Real.cos ((n + 1 : ℝ) * θ)))
+              _ ≤ besselI (n + 1) x := by
+                  rw [Real.norm_eq_abs]
+                  exact (mul_le_mul_of_nonneg_left (Real.abs_cos_le_one ((n + 1 : ℝ) * θ)) (besselI_nonneg (n := n + 1) hx)).trans_eq (by ring)
+        have h2 : ‖Real.cos θ‖ ≤ 1 := by
+          rw [Real.norm_eq_abs]
+          exact Real.abs_cos_le_one θ
+        calc ‖besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ) * Real.cos θ‖
+            = ‖besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)‖ * ‖Real.cos θ‖ := norm_mul _ _
+            _ ≤ besselI (n + 1) x * 1 := mul_le_mul h1 h2 (norm_nonneg _) (besselI_nonneg (n := n + 1) hx)
+            _ = besselI (n + 1) x := by ring)
+  have hsumg : Summable g := by
+    refine ContinuousMap.summable_of_locally_summable_norm (F := g) (fun K => ?_)
+    refine Summable.of_nonneg_of_le (fun n => norm_nonneg _) (fun n => ?_) ((besselI_summable hx).comp_injective Nat.succ_injective)
+    · exact (ContinuousMap.norm_le ((g n).restrict K) (C := besselI (n + 1) x) (besselI_nonneg (n := n + 1) hx)).mpr (fun θ => by
+        dsimp [g]
+        have h1 : ‖besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)‖ ≤ besselI (n + 1) x := by
+          calc ‖besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)‖
+              ≤ besselI (n + 1) x * ‖Real.cos ((n + 1 : ℝ) * θ)‖ := by
+                  simpa [Real.norm_of_nonneg (besselI_nonneg (n := n + 1) hx)] using (norm_mul_le (besselI (n + 1) x) (Real.cos ((n + 1 : ℝ) * θ)))
+              _ ≤ besselI (n + 1) x := by
+                  rw [Real.norm_eq_abs]
+                  exact (mul_le_mul_of_nonneg_left (Real.abs_cos_le_one ((n + 1 : ℝ) * θ)) (besselI_nonneg (n := n + 1) hx)).trans_eq (by ring)
+        have h2 : ‖Real.cos θ‖ ≤ 1 := by
+          rw [Real.norm_eq_abs]
+          exact Real.abs_cos_le_one θ
+        calc ‖besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ) * Real.cos θ‖
+            = ‖besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)‖ * ‖Real.cos θ‖ := norm_mul _ _
+            _ ≤ besselI (n + 1) x * 1 := mul_le_mul h1 h2 (norm_nonneg _) (besselI_nonneg (n := n + 1) hx)
+            _ = besselI (n + 1) x := by ring)
+  have hgtsum : ∀ θ : ℝ, (∑' n, g n) θ = ∑' n, (g n) θ := fun θ =>
+    (hsumg.hasSum.map (g := @ContinuousMap.evalCLM ℝ _ ℝ ℝ _ _ _ _ _ _ θ) (hg := (@ContinuousMap.evalCLM ℝ _ ℝ ℝ _ _ _ _ _ _ θ).cont)).tsum_eq.symm
+  have hgint : IntervalIntegrable (fun θ => (2 * ∑' n : ℕ, besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)) * Real.cos θ) MeasureTheory.volume (0 : ℝ) Real.pi := by
+    refine ⟨?_, ?_⟩
+    · refine MeasureTheory.IntegrableOn.congr_fun (((2 : ℝ) • (∑' n, g n)).continuous.intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) Real.pi).1 ?_ measurableSet_Ioc
+      intro θ hθ
+      rw [ContinuousMap.smul_apply, smul_eq_mul]
+      rw [hgtsum θ]
+      dsimp [g]
+      conv_rhs => rw [mul_assoc]
+      rw [← tsum_mul_right]
+    · refine MeasureTheory.IntegrableOn.congr_fun (((2 : ℝ) • (∑' n, g n)).continuous.intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) Real.pi).2 ?_ measurableSet_Ioc
+      intro θ hθ
+      rw [ContinuousMap.smul_apply, smul_eq_mul]
+      rw [hgtsum θ]
+      dsimp [g]
+      conv_rhs => rw [mul_assoc]
+      rw [← tsum_mul_right]
+  have hmain : (∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.cos θ) = Real.pi * besselI 1 x := by
+    simp_rw [jacobi_anger_real]
+    simp_rw [show (∀ θ : ℝ, (besselI 0 x + 2 * ∑' n : ℕ, besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)) * Real.cos θ =
+        besselI 0 x * Real.cos θ + (2 * ∑' n : ℕ, besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)) * Real.cos θ) from fun θ => add_mul (a := besselI 0 x) (b := 2 * ∑' n : ℕ, besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)) (c := Real.cos θ)]
+    rw [intervalIntegral.integral_add]
+    · have hI0 : (∫ θ in (0 : ℝ)..Real.pi, besselI 0 x * Real.cos θ) = 0 := by
+        rw [intervalIntegral.integral_const_mul]
+        have hc : ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ = 0 := by
+          simpa using integral_cos_n_zero 1 (by norm_num)
+        rw [hc]
+        simp
+      have htail : (∫ θ in (0 : ℝ)..Real.pi, (2 * ∑' n : ℕ, besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * θ)) * Real.cos θ) = Real.pi * besselI 1 x := by
+        simp_rw [mul_assoc]
+        simp_rw [← tsum_mul_right]
+        change (∫ θ in (0 : ℝ)..Real.pi, (2 * ∑' n : ℕ, (g n) θ)) = Real.pi * besselI 1 x
+        rw [intervalIntegral.integral_const_mul]
+        have ht := @intervalIntegral.tsum_intervalIntegral_eq_of_summable_norm ℕ ℝ _ _ (0 : ℝ) Real.pi _ g hg_sum
+        rw [← ht]
+        have hterm : ∀ n : ℕ, (∫ θ in (0 : ℝ)..Real.pi, (g n) θ) = besselI (n + 1) x * (if n = 0 then Real.pi / 2 else 0) := by
+          intro n
+          dsimp [g]
+          simp_rw [mul_assoc]
+          rw [intervalIntegral.integral_const_mul]
+          rw [integral_cos_succ_mul_cos n]
+        simp_rw [hterm]
+        rw [tsum_eq_single 0]
+        · norm_num [Nat.cast_one]
+          ring
+        · intro b hb
+          simp [hb]
+      rw [hI0, htail, zero_add]
+    · exact ((continuous_const : Continuous (fun _ : ℝ => besselI 0 x)).mul Real.continuous_cos).intervalIntegrable (μ := MeasureTheory.volume) (0 : ℝ) Real.pi
+    · exact hgint
+  have hπ : Real.pi ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  rw [hmain]
+  field_simp [hπ]
+
 end QM
