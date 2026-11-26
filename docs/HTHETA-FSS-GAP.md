@@ -71,3 +71,25 @@ prove for the product measure.
    after discretization, via the Jacobi–Anger character expansion (the `Bessel.lean` machinery).
 3. Prove the general `freePropagatorDecay` (contour integration) if the explicit `freePropagatorDecay_holds`
    is insufficient for the final `massGapTwoMechanisms` threading.
+
+## CORRECTION (goal-96cf78c1, round 1) — the eigenfunction lemma must be on [0,2π], not [0,π]
+
+The flat `∫₀^π e^{2β·cos(θ−θ′)}·cos θ′ dθ′ = π·I₁(2β)·cos θ` is **FALSE**: on [0,π] the cos and sin modes
+mix (`∫₀^π cos(2θ)sin θ = −2/3 ≠ 0`), so `cos θ` is NOT an eigenfunction of the flat-[0,π] operator.
+
+The CORRECT, provable statement is the full-circle [0,2π] (translation-invariant / Toeplitz) version:
+
+> `∫₀^{2π} e^{2β·cos(θ−θ′)}·cos θ′ dθ′ = 2π·I₁(2β)·cos θ`
+> `∫₀^{2π} e^{2β·cos(θ−θ′)}·1 dθ′ = 2π·I₀(2β)`  (the vacuum)
+
+so the first-excited eigenvalue relative to the vacuum is `I₁(2β)/I₀(2β)` = the spectral identification.
+
+Proof plan (all with existing Bessel machinery):
+1. `∫₀^{2π} e^{x·cos θ}·cos θ dθ = 2π·I₁(x)` — from `besselI_one_eq_integral` (`∫₀^π e^{x cos θ}cos θ = π·I₁(x)`)
+   + evenness of `e^{x cos θ}cos θ` (the [π,2π] half mirrors [0,π]).
+2. `∫₀^{2π} e^{x·cos θ}·sin θ dθ = 0` — oddness of `sinh(x cos θ)sin θ` about θ=π/2.
+3. Shift θ′ ↦ θ′+θ (2π-periodicity): `cos(θ−θ′) → cos(θ′)` and `cos θ′ → cos(θ′+θ) = cos θ cos θ′ − sin θ sin θ′`,
+   then apply (1) and (2). Result: `2π·I₁(2β)·cos θ`.
+
+So the spectral identification λ₁ = I₁/I₀ is discharged by the [0,2π] eigenfunction lemma + the vacuum
+eigenvalue (∫₀^{2π} e^{2β cos θ} = 2π·I₀(2β), from `integral_exp_cos_eq_pi_mul_besselI_zero` ×2).
