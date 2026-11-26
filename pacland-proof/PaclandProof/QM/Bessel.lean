@@ -917,4 +917,46 @@ theorem besselI_sub_le (x : ℝ) (hx : 0 ≤ x) : (1 / 2 : ℝ) - 1 / Real.pi �
   rw [show (1 / 2 : ℝ) - 1 / Real.pi = (1 / Real.pi) * ((Real.pi : ℝ) / 2 - 1) by field_simp [Real.pi_ne_zero]]
   exact mul_le_mul_of_nonneg_left hlower (le_of_lt (div_pos (by norm_num) Real.pi_pos))
 
+
+set_option maxHeartbeats 1600000 in
+/-- **The mass-gap exponential bound**: `heatKernelMassGap β ≥ (1/2 − 1/π)·e^(−(12π²/11)β)`. -/
+theorem heat_kernel_gap_exp_bound (β : ℝ) (hβ : 0 < β) :
+    (1 / 2 - 1 / Real.pi) * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) ≤ heatKernelMassGap β := by
+  have hsub : (1 / 2 : ℝ) - 1 / Real.pi ≤ besselI 0 (2 * β) - besselI 1 (2 * β) := besselI_sub_le (2 * β) (by positivity)
+  have hI0pos : 0 < besselI 0 (2 * β) := besselI_pos (by positivity)
+  have hI0le : besselI 0 (2 * β) ≤ Real.exp (2 * β) := besselI_zero_le_exp (2 * β) (by positivity)
+  have hpos : (0 : ℝ) < 1 / 2 - 1 / Real.pi := by
+    rw [sub_pos]
+    exact one_div_lt_one_div_of_lt (by norm_num) (by nlinarith [Real.pi_gt_three])
+  have hgap : heatKernelMassGap β = (besselI 0 (2 * β) - besselI 1 (2 * β)) / besselI 0 (2 * β) := by
+    dsimp [heatKernelMassGap]
+    field_simp [hI0pos.ne']
+  have hbound : (1 / 2 : ℝ) - 1 / Real.pi ≤ heatKernelMassGap β * Real.exp (2 * β) := by
+    rw [hgap]
+    rw [div_mul_eq_mul_div]
+    have hratio : 1 ≤ Real.exp (2 * β) / besselI 0 (2 * β) := by
+      exact (one_le_div hI0pos).mpr hI0le
+    have hdiff_nonneg : 0 ≤ besselI 0 (2 * β) - besselI 1 (2 * β) := by linarith [hsub, hpos]
+    have h2 : besselI 0 (2 * β) - besselI 1 (2 * β) ≤
+        (besselI 0 (2 * β) - besselI 1 (2 * β)) * Real.exp (2 * β) / besselI 0 (2 * β) := by
+      have h2' : besselI 0 (2 * β) - besselI 1 (2 * β) ≤
+          (besselI 0 (2 * β) - besselI 1 (2 * β)) * (Real.exp (2 * β) / besselI 0 (2 * β)) := by
+        conv_lhs => rw [← mul_one (besselI 0 (2 * β) - besselI 1 (2 * β))]
+        exact mul_le_mul_of_nonneg_left hratio hdiff_nonneg
+      simpa [mul_div_assoc] using h2'
+    exact hsub.trans h2
+  have hc : (2 : ℝ) ≤ 12 * Real.pi ^ 2 / 11 := by
+    have hpi : (3 : ℝ) < Real.pi := Real.pi_gt_three
+    nlinarith [hpi]
+  have hfinal : (1 / 2 : ℝ) - 1 / Real.pi ≤ heatKernelMassGap β * Real.exp (12 * Real.pi ^ 2 / 11 * β) := by
+    have hexple : Real.exp (2 * β) ≤ Real.exp (12 * Real.pi ^ 2 / 11 * β) := Real.exp_le_exp.mpr (by nlinarith [mul_le_mul_of_nonneg_right hc (le_of_lt hβ)])
+    have hgap_nonneg : 0 ≤ heatKernelMassGap β := by
+      rw [hgap]
+      exact div_nonneg (by linarith [hsub, hpos]) (le_of_lt hI0pos)
+    nlinarith [hbound, mul_le_mul_of_nonneg_left hexple hgap_nonneg]
+  have hfinal' : ((1 / 2 : ℝ) - 1 / Real.pi) * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) ≤
+      heatKernelMassGap β * Real.exp (12 * Real.pi ^ 2 / 11 * β) * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) :=
+    mul_le_mul_of_nonneg_right hfinal (le_of_lt (Real.exp_pos (-(12 * Real.pi ^ 2 / 11) * β)))
+  simpa [← Real.exp_add, mul_assoc, mul_comm, mul_left_comm] using hfinal'
+
 end QM
