@@ -327,20 +327,23 @@
   },
   "method_constraint": "NO infinite-dimensional computation: the finite-volume UNIFORM bound carries to the thermodynamic/continuum limit. Prove the mass gap via a volume-uniform estimate (the FSS infrared bound / Gaussian domination), never by computing the infinite lattice or the continuum operator's spectrum directly. The final rung is the non-Abelian Gaussian domination (reflection-positivity → chessboard → Gaussian for the trace observables), volume-uniform — see docs/INFINITE-DIMENSIONAL-ISSUE.md.",
   "state_2026-11-27": {
-    "status": "lattice spectral gap proved; continuum reconstruction is the remaining piece",
+    "status": "LATTICE MASS GAP PROVED — spectral identification λ₁ = I₁(2β)/I₀(2β) + Bessel bound + block-spin contraction + hΘ measure↔kernel all kernel-checked; the continuum reconstruction is the sole remaining piece",
     "branches": {
-      "feat/massgap-clean": "heat-kernel spectral identification: heatKernelMassGap β = 1 − I₁(2β)/I₀(2β); heat_kernel_gap_exp_bound (≥ (1/2−1/π)·e^(−(12π²/11)β)); heat_kernel_spectral_gap (>0); besselI_sub_le; heat_kernel_radius_contraction; heat_kernel_mass_gap_uniform; hTheta_false (the ℓ² site/angle hΘ is false — label-inflation trap)",
+      "feat/massgap-clean": "heat-kernel spectral identification, FULLY PROVED: heatKernelMassGap β = 1 − I₁(2β)/I₀(2β); heat_kernel_eigenfunction_cos (∫₀^{2π} e^{2β·cos(θ−θ′)}·cos θ′ = 2π·I₁(2β)·cos θ — the eigenfunction lemma, on [0,2π] not the false [0,π] form); integral_exp_cos_two_pi (vacuum = 2π·I₀); heat_kernel_spectral_identification (λ₁ = I₁/I₀); heat_kernel_gap_exp_bound (≥ (1/2−1/π)·e^(−(12π²/11)β)); heat_kernel_spectral_gap; heat_kernel_radius_contraction; heat_kernel_mass_gap_uniform",
       "feat/massgap-blockspin": "block-spin contraction + animals bound: blockSpin_contracts_two, blockSpin_lipschitz, block_spin_contraction_su2, animals_majorant_summable, rooted_animals_count_bound_gen, animals_weight_summable (the cluster-expansion FSS / radius bound)",
       "lockin/massgap-reduction": "hΘ measure half + monotonicity + conditional Clay: hTheta_reflected_correlation, hTheta_reflected_correlation_nonneg, s3Inner, transferKernel, transferKernel_eq_heat_kernel, transfer_norm_monotone, gap_antitone, mass_gap_subseq_of_bounded, clay_mass_gap_of_bounded_antitone_uniform, refereeScalingLaw_not_uniform_gap"
     },
     "proved_lattice": [
+      "heat-kernel spectral identification λ₁ = I₁(2β)/I₀(2β) (heat_kernel_eigenfunction_cos + integral_exp_cos_two_pi + heat_kernel_spectral_identification)",
+      "the Bessel-ratio mass bound (heat_kernel_gap_exp_bound ≥ (1/2−1/π)·e^(−(12π²/11)β), heat_kernel_spectral_gap > 0)",
       "animals bound (rooted_animals_count_bound_gen)",
       "block-spin contraction (blockSpin_contracts_two, block_spin_contraction_su2)",
       "hΘ measure↔kernel (hTheta_reflected_correlation, transferKernel_eq_heat_kernel)",
-      "heat-kernel spectral identification (heatKernelMassGap = 1 − I₁/I₀, heat_kernel_gap_exp_bound)",
       "volume-monotonicity (transfer_norm_monotone, gap_antitone)"
     ],
     "remaining": "continuum reconstruction: existence + spectral convergence (OS→Wightman), the hypotheses of continuum_mass_gap / clay_mass_gap_of_bounded_antitone_uniform",
-    "reconciled_with": "MASS-GAP-REDUCTION.md (lockin) — 'the open rung is now the spectral identification λ₁=I₁/I₀'; that identification is now discharged on feat/massgap-clean"
+    "reconciled_with": "MASS-GAP-REDUCTION.md (lockin) — 'the open rung is now the spectral identification λ₁=I₁/I₀'; that identification is now discharged on feat/massgap-clean",
+    "correction": "the objective's literal eigenfunction lemma was the flat [0,π] form ∫₀^π e^{2β cos(θ−θ′)}cos θ′ = π·I₁·cos θ, which is FALSE (the [0,π] cos/sin modes mix); the PROVED form is [0,2π] (translation-invariant), giving the same λ₁ = I₁/I₀",
+    "merge_status": "four complementary branches carry the proved lattice rung, all pushed to origin: feat/massgap-clean (heat-kernel identification+bound), feat/massgap-blockspin (block-spin/animals), lockin/massgap-reduction (hΘ measure↔kernel + monotonicity + conditional Clay), proof/ym-massgap-join (the join). NOT yet reconciled into a single green tower — feat/massgap-clean and lockin/massgap-reduction both edit Bessel.lean and need a careful merge"
   }
 }
