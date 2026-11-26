@@ -385,6 +385,26 @@ def seed_mass_gap() -> DiscoveryGraph:
     g.add_edge("reduce_per_irrep", "gaussian_rigidity_rung", "directly-applies-to",
                {"mechanism": "per-irrep reduction"})
 
+    # --- The first VERIFIED cross-field discovery (recursive self-improvement) -----------------
+    # The animals bound was transferred to graph counting and falsifier-tested; the gap exposed a
+    # sharper bound. This records the verified result so the next campaign reuses it, not re-derives.
+    g.add_node("sharper_animals_bound", "verified-theorem", "the sharper animals bound",
+               "#{connected subgraphs of size n} <= |V|·(Δ+1)^(n−1) — holds everywhere tested",
+               theorem="cross_field.connected_subgraphs.sharper_bound", sorry_free=True)
+    g.add_node("euler_tour_overcounts", "methodology-discovery",
+               "the Euler tour overcounts the rooted-tree count",
+               "an Euler tour traverses each edge twice, so the free-walk count Δ^(2(n−1)) overcounts the rooted-tree count Δ^(n−1)")
+    g.add_node("rooted_tree_count", "reusable-mechanism",
+               "count connected subgraphs via rooted trees, not free walks",
+               "the sharper exponent is (n−1), not 2(n−1) — bound the rooted-tree count, not the Euler-tour walk")
+
+    g.add_edge("sharper_animals_bound", "euler_tour_overcounts", "yields",
+               {"technique": "the Euler-tour redundancy"})
+    g.add_edge("euler_tour_overcounts", "rooted_tree_count", "extracts",
+               {"mechanism": "rooted-tree count, not free-walk count", "tracked_to": "sharper_animals_bound"})
+    g.add_edge("rooted_tree_count", "animals_bound_rung", "directly-applies-to",
+               {"mechanism": "the sharper (n−1) exponent"})
+
     return g
 
 

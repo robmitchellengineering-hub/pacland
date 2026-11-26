@@ -73,15 +73,15 @@ class TestDiscoveryGraph(unittest.TestCase):
 
     def test_seed_graph_is_wired(self):
         g = seed_mass_gap()
-        self.assertEqual(len(g.nodes), 18)
-        self.assertEqual(len(g.edges), 15)
+        self.assertEqual(len(g.nodes), 21)
+        self.assertEqual(len(g.edges), 18)
         # the transfer hypotheses are pending — no destination has been verified yet
         self.assertEqual(len(g.pending_hypotheses()), 4)
 
     def test_directly_useful_vs_cross_field(self):
         g = seed_mass_gap()
         self.assertEqual(set(g.directly_useful_mechanisms()),
-                         {"count_via_rooted_trees", "reduce_per_irrep"})
+                         {"count_via_rooted_trees", "reduce_per_irrep", "rooted_tree_count"})
         self.assertEqual(g.non_directly_useful_mechanisms(),
                          ["locate_gap_via_positivity"])
 
