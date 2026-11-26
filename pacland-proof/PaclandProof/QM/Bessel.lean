@@ -971,4 +971,71 @@ theorem heat_kernel_spectral_gap (β : ℝ) (hβ : 0 < β) : 0 < heatKernelMassG
   field_simp [hI0pos.ne']
   simpa using (lt_of_lt_of_le hpos hsub)
 
+
+/-- **The full-circle `I₁` integral representation** — `∫₀^{2π} e^{x·cos θ}·cos θ dθ = 2π·I₁(x)`. The
+integrand `e^{x cos θ}cos θ` is symmetric about `π` (`cos(2π−θ) = cos θ`), so the `[π,2π]` half mirrors
+`[0,π]`, which is `π·I₁(x)` by `besselI_one_eq_integral`. -/
+theorem integral_exp_cos_mul_cos_two_pi (x : ℝ) (hx : 0 ≤ x) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi), Real.exp (x * Real.cos θ) * Real.cos θ) = 2 * Real.pi * besselI 1 x := by
+  have hsplit : (∫ θ in (0:ℝ)..(2 * Real.pi), Real.exp (x * Real.cos θ) * Real.cos θ)
+      = (∫ θ in (0:ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.cos θ)
+        + (∫ θ in Real.pi..(2 * Real.pi), Real.exp (x * Real.cos θ) * Real.cos θ) := by
+    rw [← intervalIntegral.integral_add_adjacent_intervals]
+    · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.cos θ)).intervalIntegrable (μ := MeasureTheory.volume) (0:ℝ) Real.pi
+    · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.cos θ)).intervalIntegrable (μ := MeasureTheory.volume) Real.pi (2 * Real.pi)
+  have hsecond : (∫ θ in Real.pi..(2 * Real.pi), Real.exp (x * Real.cos θ) * Real.cos θ)
+      = (∫ θ in (0:ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.cos θ) := by
+    have hcomp := intervalIntegral.integral_comp_sub_left
+      (f := fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.cos θ) (d := 2 * Real.pi)
+      (a := (0:ℝ)) (b := Real.pi)
+    rw [show 2 * Real.pi - Real.pi = Real.pi by ring, show 2 * Real.pi - (0:ℝ) = 2 * Real.pi by ring] at hcomp
+    rw [hcomp.symm]
+    apply intervalIntegral.integral_congr
+    intro θ hθ
+    have hcos : Real.cos (2 * Real.pi - θ) = Real.cos θ := by
+      rw [Real.cos_sub]
+      simp [Real.sin_two_pi, Real.cos_two_pi]
+    change Real.exp (x * Real.cos (2 * Real.pi - θ)) * Real.cos (2 * Real.pi - θ)
+      = Real.exp (x * Real.cos θ) * Real.cos θ
+    rw [hcos]
+  have hfirst : (∫ θ in (0:ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.cos θ) = Real.pi * besselI 1 x := by
+    have h := besselI_one_eq_integral x hx
+    field_simp [Real.pi_ne_zero] at h
+    simpa [mul_comm] using h.symm
+  rw [hsplit, hsecond, hfirst]
+  ring
+
+
+/-- **The full-circle `sin` integral vanishes** — `∫₀^{2π} e^{x·cos θ}·sin θ dθ = 0`, by the oddness of
+`e^{x cos θ}sin θ` about `π` (under `θ ↦ 2π − θ` the integrand changes sign). -/
+theorem integral_exp_cos_mul_sin_two_pi (x : ℝ) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi), Real.exp (x * Real.cos θ) * Real.sin θ) = 0 := by
+  have hsplit : (∫ θ in (0:ℝ)..(2 * Real.pi), Real.exp (x * Real.cos θ) * Real.sin θ)
+      = (∫ θ in (0:ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.sin θ)
+        + (∫ θ in Real.pi..(2 * Real.pi), Real.exp (x * Real.cos θ) * Real.sin θ) := by
+    rw [← intervalIntegral.integral_add_adjacent_intervals]
+    · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.sin θ)).intervalIntegrable (μ := MeasureTheory.volume) (0:ℝ) Real.pi
+    · exact (by fun_prop : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.sin θ)).intervalIntegrable (μ := MeasureTheory.volume) Real.pi (2 * Real.pi)
+  have hsecond : (∫ θ in Real.pi..(2 * Real.pi), Real.exp (x * Real.cos θ) * Real.sin θ)
+      = - (∫ θ in (0:ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.sin θ) := by
+    have hcomp := intervalIntegral.integral_comp_sub_left
+      (f := fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.sin θ) (d := 2 * Real.pi)
+      (a := (0:ℝ)) (b := Real.pi)
+    rw [show 2 * Real.pi - Real.pi = Real.pi by ring, show 2 * Real.pi - (0:ℝ) = 2 * Real.pi by ring] at hcomp
+    rw [hcomp.symm]
+    rw [intervalIntegral.integral_congr (fun θ _ => by
+      change Real.exp (x * Real.cos (2 * Real.pi - θ)) * Real.sin (2 * Real.pi - θ)
+        = - (Real.exp (x * Real.cos θ) * Real.sin θ)
+      have hsin : Real.sin (2 * Real.pi - θ) = - Real.sin θ := by
+        rw [Real.sin_sub]
+        simp [Real.sin_two_pi, Real.cos_two_pi]
+      have hcos : Real.cos (2 * Real.pi - θ) = Real.cos θ := by
+        rw [Real.cos_sub]
+        simp [Real.sin_two_pi, Real.cos_two_pi]
+      rw [hsin, hcos]
+      ring)]
+    rw [intervalIntegral.integral_neg]
+  rw [hsplit, hsecond]
+  ring
+
 end QM
