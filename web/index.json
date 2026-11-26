@@ -1922,6 +1922,13 @@
    "title": "build-binary.sh"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_claims.py",
+   "kind": "script",
+   "path": "scripts/build_claims.py",
+   "summary": "Generate web/claims.json from the sextant.py CATALOG \u2014 the single source of truth.",
+   "title": "build_claims.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/build_climate_3d.py",
    "kind": "script",
    "path": "scripts/build_climate_3d.py",
