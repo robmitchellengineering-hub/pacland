@@ -70,11 +70,17 @@ Their hypothesis is **H** above. So the Clay problem is reduced to:
 > **H** — the Balaban-style linked-cluster estimate: the concrete `gibbsMeasure`/`blockSpinSU2`
 > propagator contracts to `ρ(β) ≤ e^{−A·e^{−(12π²/11)β}}`.
 
-The next (and now precise) unproved rung toward H is the **lattice-animals bound**:
+## UPDATE (2026-11-26) — the animals bound is PROVED, and the open rung has moved again
 
-> `#{connected clusters of size n} ≤ Δ^{2(n−1)}` — a connected subset of `n` vertices has a spanning
-> tree of `n−1` edges whose Euler/DFS tour is a walk of length `2(n−1)`; combined with
-> `walk_count_bound` (proved) this gives `#{animals} ≤ Δ^{2(n−1)}`.
+The lattice-animals rung that used to sit here is **done** — `QM.AnimalsBound` carries the full
+chain, kernel-checked no `sorry`: `rooted_animals_count_bound` / `rooted_animals_count_bound_gen`
+(the sharp `(n−1)` rooted-tree exponent) and `connected_clusters_count_bound`.
 
-This is the one genuine combinatorial/real-analysis estimate left before the block-spin contraction,
-and it is the open mathematics of the Millennium problem.
+More recent work has moved the frontier *past* the animals estimate. As of `fe215aa2` the mass gap
+is **"one step from done"**: the `λ = e^{−E}` tautology was replaced by the concrete **spectral
+identification `λ₁ = I₁(2β)/I₀(2β)`** (the Bessel ratio), and the exponential bound (`poly_beats_exp`)
+plus the volume-uniformity are proved **conditional on that identification**.
+
+So the current single open step is the **spectral identification `λ₁ = I₁/I₀`** — concrete and
+falsifiable (a single β where the Bessel ratio mis-predicts the transfer eigenvalue refutes it) —
+which is the open mathematics of the Millennium problem, now reduced to one analytic identity.
