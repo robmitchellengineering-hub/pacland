@@ -1294,6 +1294,21 @@ noncomputable def transferMatrixCLM {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) :
     (PiLp 2 (fun _ : Fin m => ℝ)) →L[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)) :=
   (transferMatrixLinearMap θ β).toContinuousLinearMap
 
+/-- **The transfer matrix is symmetric** — `⟪T f, g⟫ = ⟪f, T g⟫` from `wilson_kernel_symmetric`. -/
+theorem transferMatrixCLM_symmetric {m : ℕ} (θ : Fin m → ℝ) (β : ℝ) :
+    (transferMatrixCLM θ β).IsSymmetric := by
+  intro f g
+  simp [transferMatrixCLM, transferMatrixLinearMap, wilsonReflection, PiLp.inner_apply, WithLp.ofLp]
+  simp [Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  congr 1
+  funext i
+  congr 1
+  funext j
+  rw [wilson_kernel_symmetric θ β j i]
+  ring
+
+
 
 end FSSGaussianDomination
 

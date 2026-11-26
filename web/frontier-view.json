@@ -109,7 +109,8 @@
     "wilson_quadratic_zeroExtend",
     "sum_ite_castSucc",
     "transferMatrixLinearMap",
-    "transferMatrixCLM"
+    "transferMatrixCLM",
+    "transferMatrixCLM_symmetric"
   ],
   "transports": [
     {

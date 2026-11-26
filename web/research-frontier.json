@@ -250,7 +250,8 @@
     "wilson_quadratic_zeroExtend",
     "sum_ite_castSucc",
     "transferMatrixLinearMap",
-    "transferMatrixCLM"
+    "transferMatrixCLM",
+    "transferMatrixCLM_symmetric"
   ],
   "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
   "equivalence_collapse": {
