@@ -110,7 +110,9 @@
     "sum_ite_castSucc",
     "transferMatrixLinearMap",
     "transferMatrixCLM",
-    "transferMatrixCLM_symmetric"
+    "transferMatrixCLM_symmetric",
+    "transfer_inner_eq_quadratic",
+    "transfer_norm_monotone"
   ],
   "transports": [
     {
