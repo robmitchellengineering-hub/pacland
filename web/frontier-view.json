@@ -105,7 +105,8 @@
     "unique_limit_of_antitone_subseq",
     "continuum_mass_gap_of_uniform_antitone",
     "norm_le_norm_of_isometry_quadratic",
-    "zeroExtendSucc"
+    "zeroExtendSucc",
+    "wilson_quadratic_zeroExtend"
   ],
   "transports": [
     {
