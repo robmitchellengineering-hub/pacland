@@ -558,5 +558,35 @@ matrix (the Wilson heat kernel). This is the PHYSICAL mass gap: the first-excite
 the vacuum `I₀/I₀ = 1`, replacing the pinned `λ = e^(−E)` tautology with the actual Bessel ratio. -/
 noncomputable def heatKernelMassGap (β : ℝ) : ℝ := 1 - besselI 1 (2 * β) / besselI 0 (2 * β)
 
+/-- **The polynomial beats the exponential (corrected)** — `(1/2)·e^(−cβ) ≤ 1/(4β+1)` for `c = 12π²/11`
+and all `β > 0`. This is step (3): the mass-gap lower bound `(1/2)·e^(−cβ)` is below the TRUE Bessel-ratio
+polynomial bound `1/(4β+1)` (the corrected form — `1/(4β)` was FALSE for small β). Uses `1+x ≤ e^x`
+(`Real.add_one_le_exp`) and `c ≥ 4` so `4β+1 ≤ e^(4β) ≤ e^(cβ)`. -/
+theorem poly_beats_exp (β : ℝ) (hβ : 0 < β) :
+    (1 / 2) * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) ≤ 1 / (4 * β + 1) := by
+  let c : ℝ := 12 * Real.pi ^ 2 / 11
+  have hc4 : (4 : ℝ) ≤ c := by
+    dsimp [c]
+    have hpi : (3 : ℝ) < Real.pi := Real.pi_gt_three
+    have hpi0 : (0 : ℝ) < Real.pi := Real.pi_pos
+    nlinarith [hpi, hpi0]
+  have hge : 4 * β + 1 ≤ Real.exp (c * β) := by
+    have h1 : 4 * β + 1 ≤ Real.exp (4 * β) := Real.add_one_le_exp (4 * β)
+    have h2 : Real.exp (4 * β) ≤ Real.exp (c * β) := Real.exp_le_exp.mpr (by nlinarith [mul_le_mul_of_nonneg_right hc4 (le_of_lt hβ)])
+    linarith
+  have hbound : (4 * β + 1) * Real.exp (-c * β) ≤ 1 := by
+    have hexp : Real.exp (-c * β) = (Real.exp (c * β))⁻¹ := by
+      rw [neg_mul, Real.exp_neg]
+    rw [hexp, ← div_eq_mul_inv]
+    exact (div_le_one (Real.exp_pos _)).mpr hge
+  have h1 : (1 / 2) * Real.exp (-c * β) * (4 * β + 1) ≤ 1 := by
+    calc
+      (1 / 2) * Real.exp (-c * β) * (4 * β + 1) = (1 / 2) * ((4 * β + 1) * Real.exp (-c * β)) := by ring
+      _ ≤ (1 / 2) * 1 := mul_le_mul_of_nonneg_left hbound (by norm_num)
+      _ ≤ 1 := by norm_num
+  have hden : (0 : ℝ) < 4 * β + 1 := by positivity
+  rw [le_div_iff₀ hden]
+  simpa [c] using h1
+
 
 end QM
