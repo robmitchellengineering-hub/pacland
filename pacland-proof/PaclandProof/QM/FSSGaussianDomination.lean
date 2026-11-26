@@ -944,6 +944,23 @@ proving it (the contour integration) is the one remaining substantive analysis i
 def freePropagatorDecay (mβ : ℝ) (G : ℤ → ℝ) : Prop :=
   ∃ C : ℝ, 0 < C ∧ ∀ x : ℤ, |G x| ≤ C * Real.exp (-mβ * |(x : ℝ)|)
 
+/-- **The volume-uniform SU(2)-character FSS join (the open Clay rung, stated honestly).** For a
+one-side field `χ` on the ℓ², if the geometric reflection's correlation equals the Wilson kernel's quadratic
+form (`hΘ`), then the Wilson-kernel PSD (`wilson_kernel_posdef`) supplies the OS3 `hpos`, and the FSS join
+gives `⟪χ,Θχ⟫ ≤ ⟪χ,(L+2·id)χ⟫/J` with `J` volume-independent. The single remaining input is `hΘ` — the
+genunine geometric-reflection ⇔ Wilson-kernel connection (NOT the kernel reflection's definition, which is
+the label-inflation trap). -/
+theorem su2_character_volume_uniform_fss {m : ℕ} [NeZero m] (θ : Fin m → ℝ) (β : ℝ) (hβ : 0 ≤ β)
+    (χ : PiLp 2 (fun _ : Fin m => ℝ)) (J : ℝ) (hJ : 0 < J)
+    (hΘ : ⟪χ, latticeReflection χ⟫_ℝ = ∑ i : Fin m, ∑ j : Fin m, (WithLp.ofLp χ) i * (WithLp.ofLp χ) j * wilsonKernel θ β i j)
+    (hsym : ⟪χ, (latticeLaplacian (m := m) + (2 : ℝ) • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) χ⟫_ℝ = J * ⟪χ, χ⟫_ℝ)
+    (hLpos : 0 < ⟪χ, (latticeLaplacian (m := m) + (2 : ℝ) • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) χ⟫_ℝ) :
+    ⟪χ, latticeReflection χ⟫_ℝ / ⟪χ, (latticeLaplacian (m := m) + (2 : ℝ) • (1 : (PiLp 2 (fun _ : Fin m => ℝ)) →ₗ[ℝ] (PiLp 2 (fun _ : Fin m => ℝ)))) χ⟫_ℝ ≤ 1 / J := by
+  have hpos : 0 ≤ ⟪χ, latticeReflection χ⟫_ℝ := by
+    rw [hΘ]
+    simpa [wilsonKernel] using (QM.wilson_kernel_posdef θ β hβ (WithLp.ofLp χ))
+  exact su2_momentum_space_fss_bound latticeReflection (latticeLaplacian (m := m)) χ J hpos hsym hJ hLpos
+
 /-- **The explicit lattice free propagator satisfies the decay** — the Green's function
 `G(x) = e^(−γ|x|)/(2 sinh γ)` (with `cosh γ = 1 + mβ²/2`, so `γ = arcosh(1 + mβ²/2)`) satisfies
 `freePropagatorDecay γ G` with `C = 1/(2 sinh γ)`. This is the Fourier inversion's conclusion: the lattice
