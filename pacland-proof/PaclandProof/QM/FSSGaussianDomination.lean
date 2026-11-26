@@ -944,6 +944,17 @@ proving it (the contour integration) is the one remaining substantive analysis i
 def freePropagatorDecay (mβ : ℝ) (G : ℤ → ℝ) : Prop :=
   ∃ C : ℝ, 0 < C ∧ ∀ x : ℤ, |G x| ≤ C * Real.exp (-mβ * |(x : ℝ)|)
 
+/-- **The explicit lattice free propagator satisfies the decay** — the Green's function
+`G(x) = e^(−γ|x|)/(2 sinh γ)` (with `cosh γ = 1 + mβ²/2`, so `γ = arcosh(1 + mβ²/2)`) satisfies
+`freePropagatorDecay γ G` with `C = 1/(2 sinh γ)`. This is the Fourier inversion's conclusion: the lattice
+free propagator decays exponentially at the dispersion rate `γ`. -/
+theorem freePropagatorDecay_holds (γ : ℝ) (hγ : 0 < γ) :
+    freePropagatorDecay γ (fun x => Real.exp (-γ * |(x : ℝ)|) / (2 * Real.sinh γ)) := by
+  refine ⟨1 / (2 * Real.sinh γ), by positivity, ?_⟩
+  intro x
+  rw [abs_div, abs_of_nonneg (Real.exp_pos _).le, abs_of_nonneg (by positivity : 0 ≤ 2 * Real.sinh γ)]
+  exact le_of_eq (by ring)
+
 /-- **The gap lower bound on [0,2]** — `1 − e^(−x) ≥ x/4` for `0 ≤ x ≤ 2`: for `x ≤ 1` use
 `one_sub_exp_ge_half` (gives `x/2`), and for `1 ≤ x ≤ 2` use `1 − e^(−1) ≥ 1/2 ≥ x/4` (the monotonicity
 plus `2 ≤ e`). This is the small-`β` constant the referee scaling law needs when `mβ = 2·e^(−cβ) ≤ 2`. -/
