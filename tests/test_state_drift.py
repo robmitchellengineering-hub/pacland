@@ -27,6 +27,13 @@ class TestStateDrift(unittest.TestCase):
             ids, set(sextant.CATALOG),
             "web/claims.json is stale — run `python3 scripts/build_claims.py` and commit the result")
 
+    def test_proof_graph_matches_the_frontier(self):
+        from pacland.proof_graph import build
+        committed = (REPO / "web" / "proof-graph.mmd").read_text(encoding="utf-8")
+        self.assertEqual(
+            committed, build(),
+            "web/proof-graph.mmd is stale — run `python3 scripts/build_proof_graph.py` and commit")
+
 
 if __name__ == "__main__":
     unittest.main()

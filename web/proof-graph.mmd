@@ -1,0 +1,57 @@
+flowchart TB
+  subgraph TP["TIER 2-3 · proved (kernel-checked)"]
+    P0["fss_join"]
+    P1["fss_reflected_correlation_factorization"]
+    P2["fss_reflection_positivity_square"]
+    P3["casimir_infrared_bound"]
+    P4["ir_bound_su2"]
+    P5["gradientFlow_contraction_rate"]
+    P6["rg_contraction_positive"]
+    P7["stringTension_eq_casimir"]
+    P8["stringTension_su2"]
+    P9["walk_count_bound"]
+    P10["polymer_expansion_subset"]
+    P11["linked_cluster_log_prod"]
+  end
+  subgraph TT["TIER 4 · conditional (proved-transport)"]
+    T0["mass_gap_from_hypotheses<br/>a bundle of hypotheses"]
+    T1["mass_gap_from_mixing<br/>spectral mixing"]
+    T2["mass_gap_from_volume_independent_tension<br/>volume-independent string tension"]
+    T3["mass_gap_iff_positive_ratio<br/>a positive ratio"]
+    T4["mass_gap_of_radius_bound<br/>radius bound ρ ≤ e^(−A·e^(−cβ))"]
+    T5["mass_gap_of_radius_exponential<br/>radius bound ρ ≤ e^(−A·e^(−cβ))"]
+    T6["mass_gap_join<br/>the joined bound"]
+    T7["mass_gap_join_strong<br/>the joined bound (strong)"]
+    T8["mass_gap_reduction<br/>volume-uniformity"]
+    T9["mass_gap_reduction_volumeUniform<br/>volume-uniformity"]
+    T10["mass_gap_bounds_string_tension<br/>string tension"]
+    T11["string_tension_iff_gap<br/>string tension"]
+  end
+  H0["ym-linked-cluster-contraction<br/>the block-spin contraction ρ ≤ e^(−A·e^(−cβ)); first rung: the animals — OPEN"]:::open
+  H1["ym-volume-uniform-su2<br/>the volume-uniform FSS for the SU(2) character (the linear/Abelian ver — OPEN"]:::open
+  H2["ym-fss-nonabelian-closable<br/>the FSS non-Abelian estimate (the closable transport is proved; the es — OPEN"]:::open
+  H3["ym-log-sobolev<br/>the log-Sobolev / mixing gap — OPEN"]:::open
+  H4["ym-d5-confinement<br/>the d=5 no-gap (numerical observation, IRREDUCIBLE) — OPEN"]:::open
+  H5["ym-mass-gap-bulk-transition<br/>the bulk-transition jump (numerical observation, IRREDUCIBLE) — OPEN"]:::open
+  H6["ym-mass-gap-polyakov<br/>the Polyakov screening mass (numerical observation, IRREDUCIBLE) — OPEN"]:::open
+  R["Yang–Mills mass gap<br/>The SU(2) two-point function (of the trace observable) is dominated by the free propagator"]
+  T0 --> R
+  T1 --> R
+  T2 --> R
+  T3 --> R
+  T4 --> R
+  T5 --> R
+  T6 --> R
+  T7 --> R
+  T8 --> R
+  T9 --> R
+  T10 --> R
+  T11 --> R
+  H0 --> R
+  H1 --> R
+  H2 --> R
+  H3 --> R
+  H4 --> R
+  H5 --> R
+  H6 --> R
+  classDef open fill:#ff8585,stroke:#ff8585,color:#080d16,font-weight:700
