@@ -786,4 +786,35 @@ theorem besselI1_continuousOn_Icc (b : ℝ) (hb : 0 ≤ b) :
         exact div_le_div_of_nonneg_right hpow (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)))
   simpa [f, besselI] using htsum
 
+/-- **The Amos sign analysis** (algebraic core of the barrier): if `r` satisfies the Riccati
+`r′ = 1 − r² − r/x` and the barrier `f = (x+1/2)·r − x ≥ 0` (i.e. `r ≥ x/(x+1/2)`), then the derivative
+`f′ = r + (x+1/2)·r′ − 1` is strictly negative. Indeed `f′ = (x−1/2) − r/(2x) − (x+1/2)·r²` is strictly
+decreasing in `r`, and at the boundary `r = x/(x+1/2)` it equals `−3/(2(2x+1)) < 0`. -/
+theorem amos_sign {x r r' : ℝ} (hx : 0 < x) (hr : 0 < r)
+    (hriccati : r' = 1 - r ^ 2 - r / x) (hf : 0 ≤ (x + 1 / 2) * r - x) :
+    r + (x + 1 / 2) * r' - 1 < 0 := by
+  have hx2 : 0 < x + 1 / 2 := by nlinarith
+  have hrle : x / (x + 1 / 2) ≤ r := by
+    exact (div_le_iff₀ hx2).mpr (by nlinarith [hf])
+  have hderiv : r + (x + 1 / 2) * r' - 1 = (x - 1 / 2) - r / (2 * x) - (x + 1 / 2) * r ^ 2 := by
+    rw [hriccati]
+    field_simp [ne_of_gt hx]
+    ring
+  have hdec : (x - 1 / 2) - r / (2 * x) - (x + 1 / 2) * r ^ 2
+      ≤ (x - 1 / 2) - (x / (x + 1 / 2)) / (2 * x) - (x + 1 / 2) * (x / (x + 1 / 2)) ^ 2 := by
+    have h1 : (x / (x + 1 / 2)) / (2 * x) ≤ r / (2 * x) := by
+      exact div_le_div_of_nonneg_right hrle (by positivity : 0 ≤ 2 * x)
+    have h2 : (x + 1 / 2) * (x / (x + 1 / 2)) ^ 2 ≤ (x + 1 / 2) * r ^ 2 := by
+      have hrnonneg : 0 ≤ r := le_of_lt hr
+      have hxr : 0 ≤ x / (x + 1 / 2) := div_nonneg (le_of_lt hx) (le_of_lt hx2)
+      have hsq : (x / (x + 1 / 2)) ^ 2 ≤ r ^ 2 := by
+        exact sq_le_sq.mpr (by rw [abs_of_nonneg hxr, abs_of_nonneg hrnonneg]; exact hrle)
+      exact mul_le_mul_of_nonneg_left hsq (by nlinarith)
+    nlinarith
+  rw [hderiv]
+  have hbound : (x - 1 / 2) - (x / (x + 1 / 2)) / (2 * x) - (x + 1 / 2) * (x / (x + 1 / 2)) ^ 2 < 0 := by
+    field_simp [ne_of_gt hx, ne_of_gt hx2]
+    nlinarith [hx]
+  nlinarith
+
 end QM
