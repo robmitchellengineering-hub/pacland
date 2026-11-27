@@ -817,4 +817,131 @@ theorem amos_sign {x r r' : ℝ} (hx : 0 < x) (hr : 0 < r)
     nlinarith [hx]
   nlinarith
 
+/-- `I₁` is continuous on every symmetric `[−b,b]` (`b ≥ 0`) — the Bessel series converges locally
+uniformly, bounded by `(b/2)^(2k+1)/(k!(k+1)!)` on `[−b,b]`. -/
+theorem besselI1_continuousOn_symm (b : ℝ) (hb : 0 ≤ b) :
+    ContinuousOn (fun x => besselI 1 x) (Set.Icc (-b) b) := by
+  let f : ℕ → ℝ → ℝ := fun k x => (x / 2) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial)
+  have htsum : ContinuousOn (fun x => ∑' k, f k x) (Set.Icc (-b) b) :=
+    continuousOn_tsum
+      (fun k => (by fun_prop : ContinuousOn (f k) (Set.Icc (-b) b)))
+      (besselI_summable_of_nonneg 1 hb)
+      (by
+        intro k x hx
+        have hxle : |x| ≤ b := abs_le.mpr ⟨(Set.mem_Icc.mp hx).1, (Set.mem_Icc.mp hx).2⟩
+        have hx2 : |x / 2| ≤ b / 2 := by
+          rw [abs_div, abs_of_nonneg (by norm_num : 0 ≤ (2 : ℝ))]
+          exact div_le_div_of_nonneg_right hxle (by norm_num)
+        have hpow : |(x / 2) ^ (2 * k + 1)| ≤ (b / 2) ^ (2 * k + 1) := by
+          rw [abs_pow]
+          exact pow_le_pow_left₀ (abs_nonneg _) hx2 (2 * k + 1)
+        dsimp [f]
+        rw [abs_div]
+        rw [abs_of_nonneg (by positivity : 0 ≤ (k.factorial : ℝ) * ((k + 1).factorial : ℝ))]
+        exact div_le_div_of_nonneg_right hpow (by positivity : 0 ≤ (k.factorial : ℝ) * ((k + 1).factorial : ℝ)))
+  simpa [f, besselI] using htsum
+
+/-- `I₁` is continuous on all of ℝ — `besselI1_hasDerivAt` away from 0, and continuity at 0 from the
+symmetric-interval bound. -/
+theorem besselI1_continuous : Continuous (fun x => besselI 1 x) := by
+  rw [continuous_iff_continuousAt]
+  intro x
+  by_cases hx0 : x = 0
+  · subst x
+    exact (besselI1_continuousOn_symm 1 (by norm_num)).continuousAt
+      (Icc_mem_nhds (by norm_num : (-1 : ℝ) < 0) (by norm_num : (0 : ℝ) < 1))
+  · exact (besselI1_hasDerivAt x hx0).continuousAt
+
+/-- `I₀(x) > 0` for all `x` — positive for `x > 0`, equals 1 at 0, even for `x < 0`. -/
+theorem besselI0_pos_all (x : ℝ) : 0 < besselI 0 x := by
+  by_cases hx0 : x = 0
+  · subst x
+    rw [besselI_zero_zero]
+    norm_num
+  · have hx : 0 < |x| := abs_pos.mpr hx0
+    have heven : besselI 0 x = besselI 0 (|x|) := by
+      dsimp [besselI]
+      congr 1
+      funext k
+      have h : (x / 2) ^ (2 * k) = (|x| / 2) ^ (2 * k) := by
+        rw [pow_mul (x / 2) 2 k, pow_mul (|x| / 2) 2 k]
+        congr 1
+        rw [div_pow, div_pow, sq_abs]
+      simpa [h]
+    rw [heven]
+    exact besselI_pos hx
+
+/-- `r = I₁/I₀` is continuous on all ℝ. -/
+theorem bessel_ratio_continuous : Continuous (fun x => besselI 1 x / besselI 0 x) := by
+  exact besselI1_continuous.div besselI0_continuous (fun x => ne_of_gt (besselI0_pos_all x))
+
+/-- `r(0) = I₁(0)/I₀(0) = 0/1 = 0`. -/
+theorem bessel_ratio_zero : besselI 1 0 / besselI 0 0 = 0 := by
+  rw [besselI_one_zero, besselI_zero_zero]
+  norm_num
+
+/-- **The Amos bound**: `I₁(x)/I₀(x) ≤ x/(x+1/2)` for `x ≥ 0`. The Riccati `r′ = 1 − r/x − r²` and the
+no-crossing barrier `f(t) = (t+1/2)·r(t) − t` (with `f(0) = 0` and `f ≥ 0 ⟹ f′ < 0` by `amos_sign`). -/
+theorem besselI_one_div_besselI_zero_le_x_div_x_add_half (x : ℝ) (hx : 0 ≤ x) :
+    besselI 1 x / besselI 0 x ≤ x / (x + 1 / 2) := by
+  let f : ℝ → ℝ := fun t => (t + 1 / 2) * (besselI 1 t / besselI 0 t) - t
+  have hf0 : f 0 = 0 := by
+    dsimp [f]
+    rw [bessel_ratio_zero]
+    norm_num
+  have hf_cont : Continuous f := by
+    dsimp [f]
+    exact ((continuous_id.add continuous_const).mul bessel_ratio_continuous).sub continuous_id
+  have hf_deriv_explicit : ∀ t, 0 < t → HasDerivAt f
+      (besselI 1 t / besselI 0 t + (t + 1 / 2) * (1 - (besselI 1 t / besselI 0 t) / t - (besselI 1 t / besselI 0 t) ^ 2) - 1) t := by
+    intro t ht
+    dsimp [f]
+    have hlin : HasDerivAt (fun s : ℝ => s + 1 / 2) 1 t := (hasDerivAt_id t).add_const (1 / 2 : ℝ)
+    have hmul := hlin.mul (bessel_ratio_hasDerivAt t ht)
+    have hsub := hmul.sub (hasDerivAt_id t)
+    change HasDerivAt f (1 * (besselI 1 t / besselI 0 t) + (t + 1 / 2) * (1 - (besselI 1 t / besselI 0 t) / t - (besselI 1 t / besselI 0 t) ^ 2) - 1) t at hsub
+    convert hsub using 1
+    ring_nf
+  have hf_deriv : ∀ t, 0 < t → HasDerivAt f (deriv f t) t := fun t ht => (hf_deriv_explicit t ht).congr_deriv (hf_deriv_explicit t ht).deriv.symm
+  have hsign : ∀ t, 0 < t → 0 ≤ f t → deriv f t < 0 := by
+    intro t ht hf_nonneg
+    have hrpos : 0 < besselI 1 t / besselI 0 t := div_pos (besselI_pos ht) (besselI0_pos_all t)
+    have hdf : deriv f t = besselI 1 t / besselI 0 t + (t + 1 / 2) * (1 - (besselI 1 t / besselI 0 t) / t - (besselI 1 t / besselI 0 t) ^ 2) - 1 :=
+      (hf_deriv_explicit t ht).deriv
+    have hsign' := amos_sign (x := t) (r := besselI 1 t / besselI 0 t)
+      (r' := 1 - (besselI 1 t / besselI 0 t) / t - (besselI 1 t / besselI 0 t) ^ 2)
+      ht hrpos (by ring) (by simpa [f] using hf_nonneg)
+    rwa [hdf]
+  have hbar : ∀ t, 0 ≤ t → f t ≤ 0 :=
+    no_crossing_barrier hf_cont hf_deriv hsign hf0
+  have hfx : f x ≤ 0 := hbar x hx
+  dsimp [f] at hfx
+  have hx2 : 0 < x + 1 / 2 := by nlinarith [hx]
+  have : (x + 1 / 2) * (besselI 1 x / besselI 0 x) ≤ x := by nlinarith [hfx]
+  exact (le_div_iff₀ hx2).2 (by simpa [mul_comm] using this)
+
+/-- **The sharp polynomial bound**: `heatKernelMassGap β = 1 − I₁(2β)/I₀(2β) ≥ 1/(4β+1)` — the Amos
+bound `I₁/I₀ ≤ x/(x+1/2)` at `x = 2β` gives `I₁(2β)/I₀(2β) ≤ 2β/(2β+1/2)`, hence the gap is at least
+`1 − 2β/(2β+1/2) = 1/(4β+1)`. -/
+theorem heat_kernel_gap_poly (β : ℝ) (hβ : 0 < β) :
+    1 / (4 * β + 1) ≤ heatKernelMassGap β := by
+  have hx : 0 ≤ 2 * β := by positivity
+  have hamos := besselI_one_div_besselI_zero_le_x_div_x_add_half (2 * β) hx
+  have hx2 : 0 < 2 * β + 1 / 2 := by positivity
+  have hbound : besselI 1 (2 * β) / besselI 0 (2 * β) ≤ (2 * β) / (2 * β + 1 / 2) := by
+    simpa using hamos
+  have hsub : 1 - (2 * β) / (2 * β + 1 / 2) = 1 / (4 * β + 1) := by
+    field_simp [ne_of_gt hx2]
+    ring
+  dsimp [heatKernelMassGap]
+  rw [← hsub]
+  exact sub_le_sub_left hbound 1
+
+/-- **The sharp coefficient `A = 1/2`**: `heatKernelMassGap β ≥ (1/2)·e^(−(12π²/11)β)` — the sharp
+polynomial bound `1/(4β+1) ≤ gap` combined with `poly_beats_exp` (`(1/2)e^(−cβ) ≤ 1/(4β+1)`). This
+upgrades the mass-gap coefficient from `1/2−1/π` to the sharp `1/2`. -/
+theorem heat_kernel_gap_sharp (β : ℝ) (hβ : 0 < β) :
+    (1 / 2) * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) ≤ heatKernelMassGap β := by
+  exact le_trans (poly_beats_exp β hβ) (heat_kernel_gap_poly β hβ)
+
 end QM
