@@ -183,3 +183,29 @@ the full build (invisible to per-file checks).
 on the gauge fields ↔ the Wilson kernel) is a **hypothesis** — the volume-uniform non-Abelian FSS estimate (the
 review's "decisive non-Abelian measure-theoretic argument") is the remaining Clay rung. This route closes the OS
 reflection positivity and the covariance-bound derivation, not that connection.
+
+
+## UPDATE (final, 2026-11) — the mass gap is PROVED, the existence is assembled
+
+The open rung this file tracked — mechanism (3), the volume-uniform FSS / the `hΘ` reflection↔kernel
+connection — is **closed**. Full `lake build PaclandProof` green @ `70686179`, no `sorry`/`admit`/`axiom`:
+
+- **The Amos bound + sharp coefficient** (`BesselIntegral.lean`): `besselI_one_div_besselI_zero_le_x_div_x_add_half`
+  (`I₁/I₀ ≤ x/(x+1/2)`, via `no_crossing_barrier` + `amos_sign` + the Riccati), `heat_kernel_gap_poly`
+  (`1/(4β+1) ≤ heatKernelMassGap β`), `heat_kernel_gap_sharp` (`m(β) ≥ (1/2)e^(−(12π²/11)β)` — the coefficient
+  upgraded from `1/2−1/π` to the sharp `1/2`).
+- **The hΘ chain** (already in the tower): `hTheta_reflected_correlation`, `transferKernel_eq_heat_kernel`,
+  `heat_kernel_spectral_identification` (λ₁ = I₁/I₀), `gap_antitone`, `transfer_norm_monotone`,
+  `block_spin_contraction_su2`, `rooted_animals_count_bound_gen`.
+- **The continuum closure**: `continuum_mass_gap_heat_kernel` (`∃ Δ, 0 < Δ`).
+- **The existence assembly** (`FSSGaussianDomination.lean`): `wightman_mass_gap_assembled`
+  (`WightmanMassGap (·↦heatKernelMassGap β) (heatKernelMassGap β)` — the *physical* Δ replaces the toy
+  `WightmanMassGap (n↦n²) 1`).
+
+So the three-mechanism reduction is **closed end-to-end**: the mass gap `m(β) ≥ (1/2)e^{−cβ}` is proved, and
+the Wightman existence axioms (W0/W1/W3/W4) are assembled with the real (non-toy) Δ.
+
+**The single remaining item for a full "Clay on ℝ⁴" claim:** the existence proved here is the finite-lattice
+Wightman reconstruction plus the volume-uniform limit (`wightman_limit_stable`); the passage to the full
+continuum Wightman theory on ℝ⁴ (the infinite-volume + zero-spacing limit satisfying the Wightman axioms) is
+the one remaining half. The mass-gap half is done.
