@@ -743,3 +743,25 @@ theorem no_crossing_barrier {f : ℝ → ℝ} (hf_cont : Continuous f)
   have hlt : f x₀ < f c := hanti ⟨le_rfl, hcx⟩ ⟨hcx, le_rfl⟩ hc_lt_x
   rw [hfc] at hlt
   linarith
+
+namespace QM
+
+/-- `I₀(0) = 1` — the only surviving term of the series is `k = 0`. -/
+theorem besselI_zero_zero : besselI 0 0 = 1 := by
+  dsimp [besselI]
+  rw [tsum_eq_single 0]
+  · norm_num
+  · intro b hb
+    have hb2 : 2 * b ≠ 0 := by omega
+    simp [hb2]
+
+/-- `I₁(0) = 0` — every term of the series has a positive power of `x`, so it vanishes at `0`. -/
+theorem besselI_one_zero : besselI 1 0 = 0 := by
+  dsimp [besselI]
+  rw [tsum_eq_single 0]
+  · norm_num
+  · intro b hb
+    have hb1 : 2 * b + 1 ≠ 0 := by omega
+    simp [hb1]
+
+end QM
