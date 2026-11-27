@@ -209,3 +209,26 @@ the Wightman existence axioms (W0/W1/W3/W4) are assembled with the real (non-toy
 Wightman reconstruction plus the volume-uniform limit (`wightman_limit_stable`); the passage to the full
 continuum Wightman theory on ℝ⁴ (the infinite-volume + zero-spacing limit satisfying the Wightman axioms) is
 the one remaining half. The mass-gap half is done.
+
+
+## UPDATE (2026-11-27, continuum-passage arc) — step 1 convergence chain landed (10 rungs)
+
+The continuum (zero-lattice-spacing) passage begins. Its **step 1** — the infinite-volume limit of the full
+correlation functions via the cluster/polymer expansion — now has the convergence chain proved, kernel-checked
+(full `lake build PaclandProof` green, no `sorry`/`admit`/`axiom`):
+
+- **Convergence machinery**: `cluster_expansion_tendsto` (the cluster-weight majorant's partial sums converge),
+  `exp_of_summable_tendsto` (full = exp(connected), continuity of `exp` + `hasSum.tendsto_sum_nat`),
+  `su2_mayer_series_converges` (any activity `≤ λ₁ⁿ` is summable, tied to the proved gap λ₁ = I₁/I₀ < 1),
+  `su2_log_gap_pos` (`c = −log(I₁/I₀) > 0`).
+- **Concrete activity + estimate**: `cluster_activity_condition` (`|ρ|·(Δ+1)² < 1` at `ρ = e^(−cβ)`, the
+  asymptotic-freedom scale), `plaquette_activity_bound` (`|e^(−S_p) − 1| ≤ 2S_p` via `Real.abs_exp_sub_one_le`),
+  `plaquette_activity_small_field` (`≤ βθ²`, via `one_sub_cos_le_sq_div_two_all`), `small_field_cutoff`
+  (`βθ² ≤ e^(−cβ) ⟺ θ ≤ e^(−cβ/2)/√β`), `large_field_weight_bound` (`e^(−β(1−cos θ)) ≤ e^(−βδ)`), and the
+  polymer core `cluster_weight_prod_bound` (`|∏_{i∈Γ} a_i| ≤ ρ^{|Γ|}`).
+
+**Honest boundary (unchanged in substance):** this is the *convergence* half of step 1. The *measure-theoretic*
+step — the concrete cluster weights `φ(Γ)` of the SU(2) Wilson/Gibbs measure and the RG small/large-field
+decomposition that makes `|φ(Γ)| ≤ ρ^{|Γ|}` hold for the actual weights — is still open, and beyond it the
+`a → 0` continuum limit and the OS→Wightman reconstruction on ℝ⁴. The mass gap (sharp A = 1/2) and the
+finite-lattice existence remain proved; the continuum existence on ℝ⁴ is the open half.
