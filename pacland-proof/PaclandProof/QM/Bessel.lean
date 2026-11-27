@@ -759,6 +759,43 @@ lemma integral_cos_succ_mul_cos (n : ℕ) :
   · exact (Real.continuous_cos.comp (continuous_const.mul continuous_id)).intervalIntegrable (0 : ℝ) Real.pi
 
 
+lemma integral_cos_succ_mul_cos_two (n : ℕ) :
+    ∫ θ in (0 : ℝ)..Real.pi, Real.cos ((n + 1 : ℝ) * θ) * Real.cos (2 * θ) =
+      if n = 1 then Real.pi / 2 else 0 := by
+  have hprod : ∀ θ : ℝ, Real.cos ((n + 1 : ℝ) * θ) * Real.cos (2 * θ) =
+      (Real.cos (((n : ℝ) + 3) * θ) + Real.cos (((n : ℤ) - 1) * θ)) / 2 := by
+    intro θ
+    have h1 : Real.cos (((n : ℝ) + 3) * θ) =
+        Real.cos ((n + 1 : ℝ) * θ) * Real.cos (2 * θ) - Real.sin ((n + 1 : ℝ) * θ) * Real.sin (2 * θ) := by
+      rw [show ((n : ℝ) + 3) * θ = (n + 1 : ℝ) * θ + 2 * θ by ring]
+      exact Real.cos_add ((n + 1 : ℝ) * θ) (2 * θ)
+    have h2 : Real.cos (((n : ℤ) - 1) * θ) =
+        Real.cos ((n + 1 : ℝ) * θ) * Real.cos (2 * θ) + Real.sin ((n + 1 : ℝ) * θ) * Real.sin (2 * θ) := by
+      rw [show (((n : ℤ) - 1 : ℝ)) * θ = (n + 1 : ℝ) * θ - 2 * θ by
+        norm_num
+        push_cast
+        ring]
+      exact Real.cos_sub ((n + 1 : ℝ) * θ) (2 * θ)
+    nlinarith
+  simp_rw [hprod]
+  rw [intervalIntegral.integral_div, intervalIntegral.integral_add]
+  · by_cases hn : n = 1
+    · subst n
+      norm_num at hprod ⊢
+      simpa using (Real.sin_nat_mul_pi 4)
+    · have hplus : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (((n : ℝ) + 3) * θ) = 0 := by
+        simpa [Nat.cast_add, Nat.cast_ofNat] using integral_cos_n_zero (n + 3) (by omega)
+      have hz : (n : ℤ) - 1 ≠ 0 := by
+        intro h
+        have : (n : ℤ) = 1 := by omega
+        norm_num at this
+        exact hn (by exact_mod_cast this)
+      simp [hplus, hn]
+      simpa using integral_cos_of_ne_zero_int (k := (n : ℤ) - 1) hz
+  · exact (Real.continuous_cos.comp (continuous_const.mul continuous_id)).intervalIntegrable (0 : ℝ) Real.pi
+  · exact (Real.continuous_cos.comp (continuous_const.mul continuous_id)).intervalIntegrable (0 : ℝ) Real.pi
+
+
 set_option maxHeartbeats 1600000 in
 /-- **Jacobi–Anger for `I₁`**: `I₁(x) = (1/π)∫₀^π e^(x·cos θ)·cos θ dθ` (for `x ≥ 0`). -/
 theorem besselI_one_eq_integral (x : ℝ) (hx : 0 ≤ x) :
