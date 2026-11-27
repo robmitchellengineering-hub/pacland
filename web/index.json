@@ -154,7 +154,7 @@
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-PAPER.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-PAPER.md",
-   "summary": "green, 9173 jobs, no sorry/admit/axiom). The continuum mass gap is proved in the volume-uniform bound form (\u2203 \u0394 > 0). The full 4D Yang\u2013Mills existence (the other half of the Clay problem)\u2026",
+   "summary": "green, 9173 jobs, no sorry/admit/axiom), with the sharp coefficient A = 1/2. The continuum mass gap is proved in the volume-uniform bound form (\u2203 \u0394 > 0). The connected-correlation\u2026",
    "title": "The SU(2) lattice Yang\u2013Mills mass gap \u2014 a kernel-checked reduction and its closure"
   },
   {
@@ -3866,6 +3866,13 @@
    "path": "scripts/zenodo_upload_massgap.py",
    "summary": "Upload the Yang-Mills mass-gap reduction paper to Zenodo.",
    "title": "zenodo_upload_massgap.py"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_massgap_sharp.py",
+   "kind": "script",
+   "path": "scripts/zenodo_upload_massgap_sharp.py",
+   "summary": "Upload the PROVED lattice SU(2) Yang-Mills mass gap to Zenodo (sharp A = 1/2).",
+   "title": "zenodo_upload_massgap_sharp.py"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_qg.py",

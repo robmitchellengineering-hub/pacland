@@ -232,3 +232,23 @@ step — the concrete cluster weights `φ(Γ)` of the SU(2) Wilson/Gibbs measure
 decomposition that makes `|φ(Γ)| ≤ ρ^{|Γ|}` hold for the actual weights — is still open, and beyond it the
 `a → 0` continuum limit and the OS→Wightman reconstruction on ℝ⁴. The mass gap (sharp A = 1/2) and the
 finite-lattice existence remain proved; the continuum existence on ℝ⁴ is the open half.
+
+
+## UPDATE (2026-11-27, measure-theoretic arc) — the concrete cluster weight + polymer estimate (rungs 11–15)
+
+The measure-theoretic step's first deliverable — the CONCRETE SU(2) cluster weight and its polymer-expansion
+estimate — is now proved, kernel-checked (full `lake build PaclandProof` green, no `sorry`/`admit`/`axiom`):
+
+- **Cluster-weight bound** (`RgFlow.lean`): `su2_cluster_weight_bound` (the real `φ(Γ) = ∏(e^(−β(1−cos θᵢ)) − 1)`
+  ≤ `∏ 2β(1−cos θᵢ)`), `su2_cluster_weight_small_field` (**`|φ(Γ)| ≤ (e^(−cβ))^|Γ|`** — the sharp polymer
+  estimate in the small-field region with cutoff `βθᵢ² ≤ e^(−cβ)`), plus `prod_le_prod_of_le_nonneg` (the
+  `∏f ≤ ∏g` induction `gcongr` kept over-decomposing).
+- **Size-class summability** (`THooftRenormalizability.lean`): `size_n_cluster_weight_bound` (size-`n` total
+  weight ≤ animals count · ρⁿ) and `size_n_cluster_weight_summable` (the size-class series converges, via
+  `full_cluster_weights_summable`) — the polymer expansion converges.
+- **Algebraic core** (`RgFlow.lean`): `wilson_product_expansion` (`∏(1+a_p) = Σ_{A⊆P} ∏_A a_p`, via
+  `Finset.prod_add`).
+
+**Honest remaining (unchanged):** the connected-components clustering (the subset sum → polymer sum bijection),
+the small/large-field region decomposition of the SU(2) measure, the `a → 0` continuum limit, the
+OS→Wightman reconstruction on ℝ⁴, and the gap-survival theorem. Those are the open Clay existence half.
