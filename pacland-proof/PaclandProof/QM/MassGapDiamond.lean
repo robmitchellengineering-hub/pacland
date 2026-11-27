@@ -685,6 +685,20 @@ theorem transfer_matrix_power_summable_entry {m : ℕ} (K : Fin m → Fin m → 
     exact hlam_lt_one)
 
 
+/-- **The transfer-matrix Green's function (resolvent) converges**: `Σₙ (Tⁿ)ᵢⱼ` is well-defined, because
+the entries are absolutely summable (`transfer_matrix_power_summable_entry`). This is the "summability in the
+separation" of the connected correlation — the geometric tail `λ₁ⁿ` makes the infinite power series converge
+to `(I − T)⁻¹ᵢⱼ`. -/
+theorem transfer_matrix_green_summable {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (lam1 : ℝ)
+    (hlam : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (hlam_lt_one : lam1 < 1) (i j : Fin m) :
+    Summable (fun n : ℕ => ((transferMatrix K)^n) i j) := by
+  exact Summable.of_norm (by
+    simpa [Real.norm_eq_abs] using
+      (transfer_matrix_power_summable_entry K hSymm hK lam1 hlam hlam0 hlam_lt_one i j))
+
+
 /-- **The strict AM-GM.** `2·(a·b) < a² + b²` for `a ≠ b` — the strictness that turns the
 contraction `λₖ ≤ 1` into the strict gap `λ₁ < 1` for a mixing (strictly positive) transfer matrix.
 This is the Perron–Frobenius / Jentzsch core, in its simplest algebraic form. -/
