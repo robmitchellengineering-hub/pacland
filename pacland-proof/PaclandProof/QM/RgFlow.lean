@@ -139,4 +139,29 @@ theorem uv_stability_running_coupling (c β : ℝ) (hc : 0 < c) (hβ : 0 < β) (
   have hρ : Real.exp (-(c * β)) < 1 := (running_coupling_activity_bound c β hc hβ).2
   exact cluster_expansion_uniform_bound hρ hz
 
+/-- **The concrete SU(2) cluster-expansion convergence condition**: the running-coupling activity
+`ρ = e^(−cβ)` satisfies the summability condition `|ρ|·(Δ+1)² < 1` (the hypothesis of
+`full_cluster_weights_summable`) exactly when `cβ > 2·log(Δ+1)` — i.e. for `β` above the asymptotic-freedom
+scale. This ties the cluster expansion's convergence to the running-coupling activity. -/
+theorem cluster_activity_condition (c Δ β : ℝ) (hc : 0 < c) (hΔ : 0 ≤ Δ)
+    (hβ : 2 * Real.log (Δ + 1) / c < β) :
+    |Real.exp (-(c * β))| * (Δ + 1)^2 < 1 := by
+  have hexp_pos : 0 < Real.exp (-(c * β)) := Real.exp_pos _
+  rw [abs_of_pos hexp_pos]
+  have hΔ1 : 0 < Δ + 1 := by nlinarith [hΔ]
+  have hcβ : 2 * Real.log (Δ + 1) < c * β := by
+    have h' := (div_lt_iff₀ hc).mp hβ
+    nlinarith [h']
+  have hpow : (Δ + 1)^2 = Real.exp (2 * Real.log (Δ + 1)) := by
+    rw [← Real.exp_log (sq_pos_of_ne_zero (ne_of_gt hΔ1))]
+    rw [Real.log_pow (Δ + 1) 2]
+    norm_num
+  have hmul : Real.exp (-(c * β)) * (Δ + 1)^2 = Real.exp (2 * Real.log (Δ + 1) - c * β) := by
+    rw [hpow]
+    rw [← Real.exp_add]
+    ring_nf
+  rw [hmul]
+  have harg : 2 * Real.log (Δ + 1) - c * β < 0 := by nlinarith [hcβ]
+  exact Real.exp_lt_one_iff.mpr harg
+
 end QM
