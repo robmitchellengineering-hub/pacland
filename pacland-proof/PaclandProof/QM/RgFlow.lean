@@ -208,4 +208,35 @@ theorem plaquette_activity_small_field (β θ : ℝ) (hβ : 0 ≤ β) (hθ : β 
       _ ≤ β * (θ ^ 2) := by
         exact mul_le_mul_of_nonneg_left (by nlinarith [hcos]) hβ
   exact le_trans hact hmul
+/-- **The small-field cutoff**: for `β, c, θ > 0`, the small-field activity condition `β·θ² ≤ e^(−cβ)` is
+equivalent to the cutoff `θ ≤ e^(−cβ/2)/√β`. This is the region restriction that turns the pointwise
+small-field bound `|e^(−S_p) − 1| ≤ βθ²` into a small-field set on which the cluster expansion converges. -/
+theorem small_field_cutoff (c β θ : ℝ) (hc : 0 < c) (hβ : 0 < β) (hθ : 0 ≤ θ) :
+    β * θ ^ 2 ≤ Real.exp (-(c * β)) ↔ θ ≤ Real.exp (-(c * β) / 2) / Real.sqrt β := by
+  have hsq_id : (Real.exp (-(c * β) / 2) / Real.sqrt β)^2 = Real.exp (-(c * β)) / β := by
+    rw [div_pow]
+    have hexp2 : (Real.exp (-(c * β) / 2))^2 = Real.exp (-(c * β)) := by
+      rw [← Real.exp_nat_mul (-(c * β) / 2) 2]
+      congr 1
+      ring
+    rw [hexp2, Real.sq_sqrt (le_of_lt hβ)]
+  constructor
+  · intro h
+    have hdiv : θ ^ 2 ≤ Real.exp (-(c * β)) / β := by
+      exact (le_div_iff₀ hβ).mpr (by simpa [mul_comm] using h)
+    have hsq : θ ^ 2 ≤ (Real.exp (-(c * β) / 2) / Real.sqrt β)^2 := by
+      rwa [hsq_id]
+    have habs : |θ| ≤ |Real.exp (-(c * β) / 2) / Real.sqrt β| := sq_le_sq.mp hsq
+    have hpos : 0 ≤ Real.exp (-(c * β) / 2) / Real.sqrt β :=
+      div_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _)
+    simpa [abs_of_nonneg hθ, abs_of_nonneg hpos] using habs
+  · intro h
+    have hsq : θ ^ 2 ≤ (Real.exp (-(c * β) / 2) / Real.sqrt β)^2 := by
+      have hpos : 0 ≤ Real.exp (-(c * β) / 2) / Real.sqrt β :=
+        div_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _)
+      exact sq_le_sq.mpr (by simpa [abs_of_nonneg hθ, abs_of_nonneg hpos] using h)
+    have hdiv : θ ^ 2 ≤ Real.exp (-(c * β)) / β := by
+      rwa [hsq_id] at hsq
+    simpa [mul_comm] using (le_div_iff₀ hβ).mp hdiv
+
 
