@@ -669,6 +669,22 @@ theorem transferMatrix_power_decay_uniform {m : ℕ} (K : Fin m → Fin m → �
     _ ≤ lam1^n * 1 := by exact mul_le_mul_of_nonneg_left (unitary_row_sum_abs_le_one U i j) (pow_nonneg hlam0 n)
     _ = lam1^n := by ring
 
+/-- **The transfer-matrix power entries are summable in `n`**: for a PSD symmetric transfer kernel with
+all eigenvalues bounded by `λ₁ < 1`, the entries `(Tⁿ)ᵢⱼ` decay geometrically (`|(Tⁿ)ᵢⱼ| ≤ λ₁ⁿ` via
+`transferMatrix_power_decay_uniform`), so `Σₙ |(Tⁿ)ᵢⱼ| < ∞`. This is the geometric-tail control for the
+connected correlation's thermodynamic-limit convergence. -/
+theorem transfer_matrix_power_summable_entry {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (lam1 : ℝ)
+    (hlam : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (hlam_lt_one : lam1 < 1) (i j : Fin m) :
+    Summable (fun n : ℕ => |((transferMatrix K)^n) i j|) := by
+  refine Summable.of_nonneg_of_le (fun n => abs_nonneg _)
+    (fun n => transferMatrix_power_decay_uniform K hSymm hK n lam1 hlam hlam0 i j) ?_
+  exact summable_geometric_of_norm_lt_one (by
+    rw [Real.norm_eq_abs, abs_of_nonneg hlam0]
+    exact hlam_lt_one)
+
+
 /-- **The strict AM-GM.** `2·(a·b) < a² + b²` for `a ≠ b` — the strictness that turns the
 contraction `λₖ ≤ 1` into the strict gap `λ₁ < 1` for a mixing (strictly positive) transfer matrix.
 This is the Perron–Frobenius / Jentzsch core, in its simplest algebraic form. -/
