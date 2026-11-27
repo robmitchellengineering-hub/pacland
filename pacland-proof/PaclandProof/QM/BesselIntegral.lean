@@ -764,4 +764,26 @@ theorem besselI_one_zero : besselI 1 0 = 0 := by
     have hb1 : 2 * b + 1 ≠ 0 := by omega
     simp [hb1]
 
+/-- `I₁` is continuous on every `[0,b]` (`b ≥ 0`) — the Bessel series converges locally uniformly,
+with the `k`-th term bounded by `(b/2)^(2k+1)/(k!(k+1)!)` (summable by `besselI_summable_of_nonneg`). -/
+theorem besselI1_continuousOn_Icc (b : ℝ) (hb : 0 ≤ b) :
+    ContinuousOn (fun x => besselI 1 x) (Set.Icc 0 b) := by
+  let f : ℕ → ℝ → ℝ := fun k x => (x / 2) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial)
+  have htsum : ContinuousOn (fun x => ∑' k, f k x) (Set.Icc 0 b) :=
+    continuousOn_tsum
+      (fun k => (by fun_prop : ContinuousOn (f k) (Set.Icc 0 b)))
+      (besselI_summable_of_nonneg 1 hb)
+      (by
+        intro k x hx
+        have hx0 : 0 ≤ x := hx.1
+        have hxb : x ≤ b := hx.2
+        have hx2 : 0 ≤ x / 2 := div_nonneg hx0 (by norm_num)
+        have hx2b : x / 2 ≤ b / 2 := div_le_div_of_nonneg_right hxb (by norm_num)
+        have hpow : (x / 2) ^ (2 * k + 1) ≤ (b / 2) ^ (2 * k + 1) :=
+          pow_le_pow_left₀ hx2 hx2b (2 * k + 1)
+        dsimp [f]
+        rw [abs_of_nonneg (div_nonneg (pow_nonneg hx2 _) (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)))]
+        exact div_le_div_of_nonneg_right hpow (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)))
+  simpa [f, besselI] using htsum
+
 end QM
