@@ -164,4 +164,17 @@ theorem cluster_activity_condition (c Δ β : ℝ) (hc : 0 < c) (hΔ : 0 ≤ Δ)
   have harg : 2 * Real.log (Δ + 1) - c * β < 0 := by nlinarith [hcβ]
   exact Real.exp_lt_one_iff.mpr harg
 
+/-- **The single-plaquette activity bound** (the core of the small-field cluster expansion): for the
+SU(2) plaquette action `S_p = β·(1 − cos θ)`, the activity `|e^(−S_p) − 1|` is bounded by `2·β·(1 − cos θ)`
+in the small-field region `β·(1 − cos θ) ≤ 1` (`Real.abs_exp_sub_one_le` with `x = −β(1−cos θ)`). This is the
+measure-theoretic estimate's first rung: the plaquette weight's deviation from 1 is controlled by the action
+deviation, uniformly. -/
+theorem plaquette_activity_bound (β θ : ℝ) (hβ : 0 ≤ β) (hθ : β * (1 - Real.cos θ) ≤ 1) :
+    |Real.exp (-(β * (1 - Real.cos θ))) - 1| ≤ 2 * β * (1 - Real.cos θ) := by
+  have hnonneg : 0 ≤ β * (1 - Real.cos θ) :=
+    mul_nonneg hβ (sub_nonneg.mpr (Real.cos_le_one θ))
+  have hx : |-(β * (1 - Real.cos θ))| ≤ 1 := by
+    rwa [abs_neg, abs_of_nonneg hnonneg]
+  simpa [abs_neg, abs_of_nonneg hnonneg, mul_assoc] using Real.abs_exp_sub_one_le hx
+
 end QM
