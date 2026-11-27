@@ -944,4 +944,19 @@ theorem heat_kernel_gap_sharp (β : ℝ) (hβ : 0 < β) :
     (1 / 2) * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) ≤ heatKernelMassGap β := by
   exact le_trans (poly_beats_exp β hβ) (heat_kernel_gap_poly β hβ)
 
+/-- **The transfer-matrix decay is summable**: `λ₁ = I₁(2β)/I₀(2β) < 1` (the spectral gap
+`heat_kernel_spectral_gap` gives `0 < 1 − λ₁`), so the geometric series `Σₙ λ₁ⁿ` converges — the
+foundation for the connected correlation's thermodynamic-limit convergence (the double sum
+`Σᵢⱼ χᵢχⱼ (T^|i−j|)ᵢⱼ` is controlled by the geometric tail). -/
+theorem transfer_matrix_power_summable (β : ℝ) (hβ : 0 < β) :
+    Summable (fun n : ℕ => (besselI 1 (2 * β) / besselI 0 (2 * β)) ^ n) := by
+  have hgap : 0 < 1 - besselI 1 (2 * β) / besselI 0 (2 * β) := heat_kernel_spectral_gap β hβ
+  have hlam_lt_one : besselI 1 (2 * β) / besselI 0 (2 * β) < 1 := by nlinarith [hgap]
+  have hlam_nonneg : 0 ≤ besselI 1 (2 * β) / besselI 0 (2 * β) :=
+    div_nonneg (besselI_nonneg (by positivity : 0 ≤ 2 * β)) (le_of_lt (besselI_pos (by positivity : 0 < 2 * β)))
+  have hnorm : |besselI 1 (2 * β) / besselI 0 (2 * β)| < 1 := by
+    rw [abs_of_nonneg hlam_nonneg]
+    exact hlam_lt_one
+  exact summable_geometric_of_norm_lt_one hnorm
+
 end QM
