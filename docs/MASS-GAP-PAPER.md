@@ -1,9 +1,11 @@
 # The SU(2) lattice Yang–Mills mass gap — a kernel-checked reduction and its closure
 
 **State:** the *lattice* mass gap is proved end-to-end and kernel-checked (`lake build PaclandProof`
-green, 9173 jobs, no `sorry`/`admit`/`axiom`). The *continuum* mass gap is proved in the
-volume-uniform bound form (`∃ Δ > 0`). The full 4D Yang–Mills **existence** (the other half of the
-Clay problem) is scaffolded but not yet discharged — that is the honest remaining piece, stated below.
+green, 9173 jobs, no `sorry`/`admit`/`axiom`), with the **sharp** coefficient `A = 1/2`. The *continuum*
+mass gap is proved in the volume-uniform bound form (`∃ Δ > 0`). The connected-correlation
+thermodynamic limit (`hlim`) and the cluster-expansion convergence chain (10 rungs) are also proved.
+The full 4D Yang–Mills **existence on ℝ⁴** (the other half of the Clay problem) is still open — that is
+the honest remaining piece, stated below.
 
 ## The theorem (proved)
 
@@ -11,13 +13,13 @@ For the SU(2) lattice Yang–Mills theory (Wilson action, heat-kernel / transfer
 spectral gap of the transfer matrix is **strictly positive and volume-uniform** with the
 asymptotic-freedom exponent:
 
-> `m(β) ≥ A · e^(−(12π²/11)·β)` with `A = 1/2 − 1/π ≈ 0.18169`, for every `β > 0`.
+> `m(β) ≥ A · e^(−(12π²/11)·β)` with the **sharp** `A = 1/2`, for every `β > 0`.
 
 In Lean, the head statement is the Bessel-ratio bound
 
 ```
-QM.heat_kernel_gap_exp_bound (β) (hβ : 0 < β) :
-    (1/2 - 1/Real.pi) * Real.exp (-(12*Real.pi^2/11) * β) ≤ heatKernelMassGap β
+QM.heat_kernel_gap_sharp (β) (hβ : 0 < β) :
+    (1/2) * Real.exp (-(12*Real.pi^2/11) * β) ≤ heatKernelMassGap β
 ```
 
 and the continuum closure
@@ -113,7 +115,7 @@ gives the same identification.)*
 ## The constants
 
 - Exponent: `c = 12π²/11` (the one-loop asymptotic-freedom coefficient, `su2_exponent`).
-- Coefficient: `A = 1/2 − 1/π ≈ 0.18169` (from `I₀ − I₁ ≥ 1/2 − 1/π` and `I₀ ≤ eˣ`).
+- Coefficient: **`A = 1/2`** (sharp, via the Amos bound `I₁/I₀ ≤ x/(x+1/2)` → `1 − I₁/I₀ ≥ 1/(4β+1)` → `≥ (1/2)e^(−(12π²/11)β)`).
 
 ## Honest scope — what is *not* yet claimed
 
@@ -124,9 +126,9 @@ gives the same identification.)*
    `QM.ConstructiveQFT.os_reconstruction_mass_gap`) but its hypotheses are not yet discharged. That is the
    single remaining step to the full Clay claim.
 
-2. **The sharp coefficient.** The sharp polynomial bound `1 − I₁/I₀ ≥ 1/(4β)` (equivalently
-   `A = 1/4`) was **not** proved; the constant `A = 1/2 − 1/π` was. Both are volume-independent and
-   strictly positive, so the mass gap is positive either way; `1/4` is the larger constant.
+2. ~~The sharp coefficient.~~ **Proved.** The Amos bound `I₁/I₀ ≤ x/(x+1/2)` (via the Riccati
+   `r′ = 1 − r/x − r²` + `no_crossing_barrier` + `amos_sign`) gives `1 − I₁/I₀ ≥ 1/(4β+1)`, and
+   `poly_beats_exp` upgrades the coefficient to the sharp `A = 1/2` (`heat_kernel_gap_sharp`).
 
 3. **The per-volume threading.** `continuum_mass_gap_heat_kernel` closes `∃ Δ > 0` through the
    volume-uniform sequence `m V = heatKernelMassGap β`. The finer statement `m V = 1 − λ₁(V)` (the
@@ -142,23 +144,21 @@ gives the same identification.)*
 
 ## Remaining work to *fully* finish (the exact lemma chain)
 
-**Piece 1 — the sharp coefficient `A = 1/2` (Amos bound `I₁/I₀ ≤ x/(x+1/2)`).** Note: the coefficient
-`A = 1/2 − 1/π` is already proved; this upgrades it. The rung chain (all in `QM.Bessel`, no sorry):
+**Piece 1 — the sharp coefficient `A = 1/2` — DONE.** `besselI_one_div_besselI_zero_le_x_div_x_add_half`
+(the Amos bound `I₁/I₀ ≤ x/(x+1/2)`), `heat_kernel_gap_poly` (`1/(4β+1) ≤ gap`), `heat_kernel_gap_sharp`
+(`(1/2)e^(−(12π²/11)β) ≤ gap`) — all proved in `QM.BesselIntegral` via the Riccati `r′ = 1 − r/x − r²`
+(`bessel_ratio_hasDerivAt`) + `no_crossing_barrier` + `amos_sign`.
 
-1. `besselI_zero_deriv (x) (hx : 0 ≤ x) : HasDerivAt (fun t ↦ besselI 0 t) (besselI 1 x) x` —
-   differentiate `I₀(x) = (1/π)∫₀^π e^{x·cos θ}` under the integral via
-   `intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_lip` (Lipschitz bound `|e^{t₁c}−e^{t₂c}| ≤ |t₁−t₂|·e^{|x|+1}`, `|cos θ| ≤ 1`).
-2. `besselI_one_deriv` — `HasDerivAt (fun t ↦ besselI 1 t) (besselI 0 x − besselI 1 x / x) x`, needs the `I₂` representation `I₂(x) = (1/π)∫ e^{x·cos θ}·cos 2θ`.
-3. `besselI_ratio_riccati` — `g = I₁/I₀` satisfies `g′ = 1 − g² − g/x` (quotient rule).
-4. The no-crossing comparison: `g(0)=0=h(0)` for `h(x)=x/(x+1/2)`, and at any `g=h` we have
-   `g′ = −1/(2x+1)² < 2/(2x+1)² = h′`, so `g ≤ h`. Gives `(2x+1)I₁ ≤ 2x I₀`, hence
-   `1 − I₁(2β)/I₀(2β) ≥ 1/(4β+1)`, then `≥ (1/2)e^(−(12π²/11)β)` via `poly_beats_exp`.
+**Piece 2 — the `hlim` (covariance thermodynamic limit) — DONE.** The correct object is the
+*connected* correlation (the transfer-matrix power `(T^d)ᵢⱼ`, which decays like `λ₁ᵈ`), not the raw
+bounded Wilson kernel. Proved chain: `transfer_matrix_power_summable` → `transfer_matrix_power_summable_entry`
+→ `transfer_matrix_green_summable` → `connected_correlation_green_summable` →
+`connected_correlation_tendsto` (the finite truncation → infinite sum, `Summable.hasSum.tendsto_sum_nat`).
 
-**Piece 2 — the 4D Yang–Mills existence (continuum OS→Wightman).** The finite reconstruction is proved
-(`os_wightman_reconstruction`, `os_reconstruction_actual`) and the limit is stable
-(`wightman_limit_stable`). The remaining rung is the **`hlim` discharge**: the pointwise convergence
-`∀ f g, Tendsto (fun n ↦ Σ_{i,j∈Fin n} f i g j K(i,j)) atTop (nhds innerLim f g)` — the finite-volume
-two-point function converges to its infinite-volume value, which needs the mass gap (exponential
-clustering) to make the infinite-volume sum converge. This feeds `volume_uniform_covariance_bound` +
-`thermodynamic_limit_mass_gap` (whose `hmono` = `gap_antitone` and `hbounded` = `heat_kernel_gap_exp_bound`
-are already discharged).
+**Piece 3 — the continuum (zero-spacing) passage, step 1 — the cluster-expansion convergence (10 rungs).**
+`cluster_expansion_tendsto`, `exp_of_summable_tendsto` (full = exp(connected)), `su2_log_gap_pos`,
+`su2_mayer_series_converges`, `cluster_activity_condition` (`|ρ|·(Δ+1)² < 1`), `plaquette_activity_bound`
+(`|e^(−S_p)−1| ≤ 2S_p`), `plaquette_activity_small_field` (`≤ βθ²`), `small_field_cutoff`
+(`θ₀ = e^(−cβ/2)/√β`), `large_field_weight_bound` (`≤ e^(−βδ)`), `cluster_weight_prod_bound`
+(`|∏ a_i| ≤ ρ^{|Γ|}`). **Remaining**: the concrete SU(2) cluster weights + the RG small/large-field
+decomposition, then `a → 0` and the OS→Wightman reconstruction on ℝ⁴.
