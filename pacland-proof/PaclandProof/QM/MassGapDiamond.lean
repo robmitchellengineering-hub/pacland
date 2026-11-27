@@ -699,6 +699,41 @@ theorem transfer_matrix_green_summable {m : ℕ} (K : Fin m → Fin m → ℝ)
       (transfer_matrix_power_summable_entry K hSymm hK lam1 hlam hlam0 hlam_lt_one i j))
 
 
+/-- **The connected-correlation Green's function is summable in the separation `d`**: the double sum
+`Σ_d Σᵢⱼ χᵢχⱼ (T^d)ᵢⱼ` converges, because `|(T^d)ᵢⱼ| ≤ λ₁^d` (the volume-uniform transfer-matrix decay) gives
+`|Σᵢⱼ χᵢχⱼ (T^d)ᵢⱼ| ≤ C·λ₁^d` for the finite constant `C = Σᵢⱼ |χᵢ||χⱼ|`, and `Σ_d λ₁^d < ∞`. -/
+theorem connected_correlation_green_summable {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (lam1 : ℝ)
+    (hlam : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (hlam_lt_one : lam1 < 1) (χ : Fin m → ℝ) :
+    Summable (fun d : ℕ => ∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j) := by
+  let C : ℝ := ∑ i : Fin m, ∑ j : Fin m, |χ i| * |χ j|
+  have hbdd : ∀ d : ℕ, ‖∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j‖ ≤ C * lam1^d := by
+    intro d
+    calc
+      ‖∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j‖
+          = |∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j| := by rw [Real.norm_eq_abs]
+      _ ≤ ∑ i : Fin m, ∑ j : Fin m, |χ i * χ j * ((transferMatrix K)^d) i j| := by
+          exact le_trans (Finset.abs_sum_le_sum_abs (fun i => ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j) Finset.univ)
+            (Finset.sum_le_sum (fun i _ => Finset.abs_sum_le_sum_abs (fun j => χ i * χ j * ((transferMatrix K)^d) i j) Finset.univ))
+      _ = ∑ i : Fin m, ∑ j : Fin m, |χ i| * |χ j| * |((transferMatrix K)^d) i j| := by
+          simp [abs_mul, mul_assoc]
+      _ ≤ ∑ i : Fin m, ∑ j : Fin m, |χ i| * |χ j| * lam1^d := by
+          apply Finset.sum_le_sum
+          intro i _
+          apply Finset.sum_le_sum
+          intro j _
+          exact mul_le_mul_of_nonneg_left (transferMatrix_power_decay_uniform K hSymm hK d lam1 hlam hlam0 i j)
+            (mul_nonneg (abs_nonneg _) (abs_nonneg _))
+      _ = C * lam1^d := by
+          simp [C, Finset.mul_sum, mul_comm, mul_assoc, mul_left_comm]
+  have hsum : Summable (fun d : ℕ => C * lam1^d) := by
+    exact (summable_geometric_of_norm_lt_one (by
+      rw [Real.norm_eq_abs, abs_of_nonneg hlam0]
+      exact hlam_lt_one)).mul_left C
+  exact Summable.of_norm_bounded hsum hbdd
+
+
 /-- **The strict AM-GM.** `2·(a·b) < a² + b²` for `a ≠ b` — the strictness that turns the
 contraction `λₖ ≤ 1` into the strict gap `λ₁ < 1` for a mixing (strictly positive) transfer matrix.
 This is the Perron–Frobenius / Jentzsch core, in its simplest algebraic form. -/
