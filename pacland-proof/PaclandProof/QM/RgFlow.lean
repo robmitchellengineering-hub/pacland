@@ -308,4 +308,21 @@ theorem su2_cluster_weight_small_field {ι : Type u} (β c : ℝ) (hβ : 0 ≤ �
       _ = (Real.exp (-(c * β)))^Γ.card := Finset.prod_const _
   exact le_trans h1 h23
 
+/-- **The Wilson product expansion** (the algebraic core of the polymer expansion): the product of
+`(1 + a_p)` over the plaquettes `P` expands as the sum over all subsets `A ⊆ P` of the product of the
+activities over `A`. This is `∏_{p∈P} (1 + a_p) = Σ_{A⊆P} ∏_{p∈A} a_p` — the identity the cluster/polymer
+expansion is built on, via `Finset.prod_add`. -/
+theorem wilson_product_expansion {ι : Type u} [DecidableEq ι] (a : ι → ℝ) (P : Finset ι) :
+    ∏ p ∈ P, (1 + a p) = ∑ A ∈ P.powerset, ∏ p ∈ A, a p := by
+  calc
+    ∏ p ∈ P, (1 + a p) = ∏ p ∈ P, (a p + 1) := by
+      apply Finset.prod_congr rfl
+      intro p hp
+      ring
+    _ = ∑ A ∈ P.powerset, (∏ p ∈ A, a p) * ∏ p ∈ P \ A, (1 : ℝ) := Finset.prod_add a (fun _ => 1) P
+    _ = ∑ A ∈ P.powerset, ∏ p ∈ A, a p := by
+      apply Finset.sum_congr rfl
+      intro A hA
+      simp
+
 end QM
