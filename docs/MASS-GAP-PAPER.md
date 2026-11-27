@@ -139,3 +139,26 @@ gives the same identification.)*
 - Branch: `feat/massgap-clean` (contains the consolidation of all four mass-gap lines:
   heat-kernel identification + block-spin/animals + hΘ/monotonicity + the join).
 - No `sorry` / `admit` / `axiom` anywhere in `pacland-proof/PaclandProof/QM`.
+
+## Remaining work to *fully* finish (the exact lemma chain)
+
+**Piece 1 — the sharp coefficient `A = 1/2` (Amos bound `I₁/I₀ ≤ x/(x+1/2)`).** Note: the coefficient
+`A = 1/2 − 1/π` is already proved; this upgrades it. The rung chain (all in `QM.Bessel`, no sorry):
+
+1. `besselI_zero_deriv (x) (hx : 0 ≤ x) : HasDerivAt (fun t ↦ besselI 0 t) (besselI 1 x) x` —
+   differentiate `I₀(x) = (1/π)∫₀^π e^{x·cos θ}` under the integral via
+   `intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_lip` (Lipschitz bound `|e^{t₁c}−e^{t₂c}| ≤ |t₁−t₂|·e^{|x|+1}`, `|cos θ| ≤ 1`).
+2. `besselI_one_deriv` — `HasDerivAt (fun t ↦ besselI 1 t) (besselI 0 x − besselI 1 x / x) x`, needs the `I₂` representation `I₂(x) = (1/π)∫ e^{x·cos θ}·cos 2θ`.
+3. `besselI_ratio_riccati` — `g = I₁/I₀` satisfies `g′ = 1 − g² − g/x` (quotient rule).
+4. The no-crossing comparison: `g(0)=0=h(0)` for `h(x)=x/(x+1/2)`, and at any `g=h` we have
+   `g′ = −1/(2x+1)² < 2/(2x+1)² = h′`, so `g ≤ h`. Gives `(2x+1)I₁ ≤ 2x I₀`, hence
+   `1 − I₁(2β)/I₀(2β) ≥ 1/(4β+1)`, then `≥ (1/2)e^(−(12π²/11)β)` via `poly_beats_exp`.
+
+**Piece 2 — the 4D Yang–Mills existence (continuum OS→Wightman).** The finite reconstruction is proved
+(`os_wightman_reconstruction`, `os_reconstruction_actual`) and the limit is stable
+(`wightman_limit_stable`). The remaining rung is the **`hlim` discharge**: the pointwise convergence
+`∀ f g, Tendsto (fun n ↦ Σ_{i,j∈Fin n} f i g j K(i,j)) atTop (nhds innerLim f g)` — the finite-volume
+two-point function converges to its infinite-volume value, which needs the mass gap (exponential
+clustering) to make the infinite-volume sum converge. This feeds `volume_uniform_covariance_bound` +
+`thermodynamic_limit_mass_gap` (whose `hmono` = `gap_antitone` and `hbounded` = `heat_kernel_gap_exp_bound`
+are already discharged).
