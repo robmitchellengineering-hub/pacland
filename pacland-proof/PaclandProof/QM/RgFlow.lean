@@ -249,4 +249,16 @@ theorem large_field_weight_bound (β δ θ : ℝ) (hβ : 0 ≤ β) (hδ : δ ≤
   have hneg : -(β * (1 - Real.cos θ)) ≤ -(β * δ) := by nlinarith [hmul]
   exact Real.exp_le_exp.mpr hneg
 
+/-- **The concrete SU(2) cluster-weight bound** (the measure-theoretic step's first rung): the actual
+cluster weight `φ(Γ) = ∏_{i∈Γ} (e^(−β(1−cos θᵢ)) − 1)` is bounded by the product of the action deviations
+`∏ 2β(1−cos θᵢ)`, in the small-field region `β(1−cos θᵢ) ≤ 1` (combining `plaquette_activity_bound` pointwise
+with the product comparison via `Finset.abs_prod` + `gcongr`). This is the real SU(2) cluster weight — the
+product of per-plaquette activities — not an abstract `a`. -/
+theorem su2_cluster_weight_bound {ι : Type u} (β : ℝ) (hβ : 0 ≤ β) (θ : ι → ℝ) (Γ : Finset ι)
+    (hθ : ∀ i ∈ Γ, β * (1 - Real.cos (θ i)) ≤ 1) :
+    |∏ i ∈ Γ, (Real.exp (-(β * (1 - Real.cos (θ i)))) - 1)| ≤ ∏ i ∈ Γ, (2 * β * (1 - Real.cos (θ i))) := by
+  rw [Finset.abs_prod Γ (fun i => Real.exp (-(β * (1 - Real.cos (θ i)))) - 1)]
+  gcongr with i hi
+  exact plaquette_activity_bound β (θ i) hβ (hθ i hi)
+
 
