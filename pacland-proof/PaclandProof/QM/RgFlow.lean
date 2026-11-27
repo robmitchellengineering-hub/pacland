@@ -177,4 +177,35 @@ theorem plaquette_activity_bound (β θ : ℝ) (hβ : 0 ≤ β) (hθ : β * (1 -
     rwa [abs_neg, abs_of_nonneg hnonneg]
   simpa [abs_neg, abs_of_nonneg hnonneg, mul_assoc] using Real.abs_exp_sub_one_le hx
 
-end QM
+/-- **The small-field action estimate** `1 − cos θ ≤ θ²/2` (for all `θ`): via `1 − cos θ = 2·sin²(θ/2)`
+(the half-angle) and `|sin x| ≤ |x|`. This turns the plaquette action deviation into the small-field quadratic,
+giving the cutoff `β·(1−cos θ) ≤ β·θ²/2`. (Named to avoid the `0 ≤ x`-hypothesis version in HyperbolicPlane.) -/
+theorem one_sub_cos_le_sq_div_two_all (θ : ℝ) :
+    1 - Real.cos θ ≤ θ ^ 2 / 2 := by
+  have h1 : 1 - Real.cos θ = 2 * (Real.sin (θ / 2))^2 := by
+    have hcos : Real.cos θ = 2 * Real.cos (θ / 2)^2 - 1 := by
+      conv_lhs => rw [show θ = 2 * (θ / 2) by ring]
+      exact Real.cos_two_mul (θ / 2)
+    rw [hcos]
+    rw [Real.sin_sq (θ / 2)]
+    ring
+  rw [h1]
+  have hsq : (Real.sin (θ / 2))^2 ≤ (θ / 2)^2 := by
+    exact sq_le_sq.mpr (Real.abs_sin_le_abs (x := θ / 2))
+  nlinarith [hsq]
+
+/-- **The small-field plaquette activity bound**: combining `plaquette_activity_bound` with
+`one_sub_cos_le_sq_div_two_all`, in the small-field region `β·(1−cos θ) ≤ 1` the activity satisfies
+`|e^(−β(1−cos θ)) − 1| ≤ β·θ²`. This is the concrete small-field activity bound the cluster expansion
+controls. -/
+theorem plaquette_activity_small_field (β θ : ℝ) (hβ : 0 ≤ β) (hθ : β * (1 - Real.cos θ) ≤ 1) :
+    |Real.exp (-(β * (1 - Real.cos θ))) - 1| ≤ β * θ ^ 2 := by
+  have hact := plaquette_activity_bound β θ hβ hθ
+  have hcos := one_sub_cos_le_sq_div_two_all θ
+  have hmul : 2 * β * (1 - Real.cos θ) ≤ β * θ ^ 2 := by
+    calc
+      2 * β * (1 - Real.cos θ) = β * (2 * (1 - Real.cos θ)) := by ring
+      _ ≤ β * (θ ^ 2) := by
+        exact mul_le_mul_of_nonneg_left (by nlinarith [hcos]) hβ
+  exact le_trans hact hmul
+
