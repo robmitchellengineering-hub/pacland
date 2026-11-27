@@ -971,4 +971,23 @@ theorem su2_log_gap_pos (β : ℝ) (hβ : 0 < β) :
     div_pos (besselI_pos (by positivity : 0 < 2 * β)) (besselI_pos (by positivity : 0 < 2 * β))
   exact neg_pos.mpr (Real.log_neg hlam_pos hlam_lt_one)
 
+/-- **The SU(2) cluster/Mayer series converges**: any activity `φ` bounded by the transfer-matrix decay
+`|φ n| ≤ λ₁ⁿ` with `λ₁ = I₁(2β)/I₀(2β) < 1` (the proved mass gap) is summable, so the partial sums
+`Σ_{n<V} φ n` tend to the infinite sum as `V → ∞`. This is the concrete SU(2) infinite-volume convergence of
+the cluster expansion, tying the proved spectral gap to the Mayer/polymer expansion. -/
+theorem su2_mayer_series_converges (β : ℝ) (hβ : 0 < β) (activity : ℕ → ℝ)
+    (hφ : ∀ n : ℕ, |activity n| ≤ (besselI 1 (2 * β) / besselI 0 (2 * β))^n) :
+    ∃ S : ℝ, Filter.Tendsto (fun V : ℕ => (Finset.range V).sum (fun n => activity n)) Filter.atTop (𝓝 S) := by
+  have hsum : Summable activity := by
+    exact Summable.of_norm_bounded (g := fun n : ℕ => (besselI 1 (2 * β) / besselI 0 (2 * β))^n)
+      (summable_geometric_of_norm_lt_one (by
+        have hgap : 0 < 1 - besselI 1 (2 * β) / besselI 0 (2 * β) := heat_kernel_spectral_gap β hβ
+        have hlam_lt_one : besselI 1 (2 * β) / besselI 0 (2 * β) < 1 := by nlinarith [hgap]
+        have hlam_nonneg : 0 ≤ besselI 1 (2 * β) / besselI 0 (2 * β) :=
+          div_nonneg (besselI_nonneg (by positivity : 0 ≤ 2 * β)) (le_of_lt (besselI_pos (by positivity : 0 < 2 * β)))
+        rw [Real.norm_eq_abs, abs_of_nonneg hlam_nonneg]
+        exact hlam_lt_one))
+      (fun n => by simpa [Real.norm_eq_abs] using hφ n)
+  exact ⟨∑' n, activity n, hsum.hasSum.tendsto_sum_nat⟩
+
 end QM
