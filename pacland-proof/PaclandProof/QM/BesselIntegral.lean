@@ -959,4 +959,16 @@ theorem transfer_matrix_power_summable (β : ℝ) (hβ : 0 < β) :
     exact hlam_lt_one
   exact summable_geometric_of_norm_lt_one hnorm
 
+/-- **The SU(2) log mass gap is positive**: `c = −log(I₁(2β)/I₀(2β)) > 0` — the concrete `c` in the
+cluster-expansion convergence `mayer_series_converges`. Equivalent to the spectral gap `0 < 1 − I₁/I₀`
+(`heat_kernel_spectral_gap`) via `log λ₁ < 0 ⟺ λ₁ < 1` for `λ₁ ∈ (0,1)`. This is the concrete activity-decay
+rate `exp(−c·n)` for the SU(2) cluster weights. -/
+theorem su2_log_gap_pos (β : ℝ) (hβ : 0 < β) :
+    0 < -Real.log (besselI 1 (2 * β) / besselI 0 (2 * β)) := by
+  have hgap : 0 < 1 - besselI 1 (2 * β) / besselI 0 (2 * β) := heat_kernel_spectral_gap β hβ
+  have hlam_lt_one : besselI 1 (2 * β) / besselI 0 (2 * β) < 1 := by nlinarith [hgap]
+  have hlam_pos : 0 < besselI 1 (2 * β) / besselI 0 (2 * β) :=
+    div_pos (besselI_pos (by positivity : 0 < 2 * β)) (besselI_pos (by positivity : 0 < 2 * β))
+  exact neg_pos.mpr (Real.log_neg hlam_pos hlam_lt_one)
+
 end QM
