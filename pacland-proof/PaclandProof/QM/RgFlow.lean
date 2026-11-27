@@ -239,4 +239,14 @@ theorem small_field_cutoff (c β θ : ℝ) (hc : 0 < c) (hβ : 0 < β) (hθ : 0 
       rwa [hsq_id] at hsq
     simpa [mul_comm] using (le_div_iff₀ hβ).mp hdiv
 
+/-- **The large-field weight bound**: for a fixed cutoff `δ > 0`, in the large-field region
+`1 − cos θ ≥ δ` the plaquette weight satisfies `e^(−β(1−cos θ)) ≤ e^(−βδ)` — exponentially small in `β`.
+This is the pointwise core of the large-field estimate: the region where the plaquette deviates from the
+trivial connection by at least `δ` contributes weight `≤ e^(−βδ)`. -/
+theorem large_field_weight_bound (β δ θ : ℝ) (hβ : 0 ≤ β) (hδ : δ ≤ 1 - Real.cos θ) :
+    Real.exp (-(β * (1 - Real.cos θ))) ≤ Real.exp (-(β * δ)) := by
+  have hmul : β * δ ≤ β * (1 - Real.cos θ) := mul_le_mul_of_nonneg_left hδ hβ
+  have hneg : -(β * (1 - Real.cos θ)) ≤ -(β * δ) := by nlinarith [hmul]
+  exact Real.exp_le_exp.mpr hneg
+
 
