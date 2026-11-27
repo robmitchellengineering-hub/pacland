@@ -578,4 +578,16 @@ theorem full_cluster_weights_summable {V : Type u} [Fintype V] [DecidableEq V]
     Summable (fun n : ℕ => (Fintype.card V : ℝ) * (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |ρ|^n) := by
   simpa [mul_assoc] using (animals_majorant_tour_summable Δ ρ h).mul_left (Fintype.card V : ℝ)
 
+/-- **The infinite-volume cluster expansion converges**: the partial sums `Σ_{n<N}` of the cluster-weight
+majorant tend to the infinite sum `Σ'_n` as `N → ∞` (`full_cluster_weights_summable` + `hasSum.tendsto_sum_nat`).
+This is the finite→infinite-volume convergence of the polymer/cluster expansion — the weights are summable
+(`|ρ|·(Δ+1)² < 1`), so the infinite-volume correlation functions are well-defined. -/
+theorem cluster_expansion_tendsto {V : Type u} [Fintype V] [DecidableEq V]
+    (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Filter.Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N,
+        (Fintype.card V : ℝ) * (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |ρ|^n)
+      Filter.atTop (nhds (∑' n : ℕ,
+        (Fintype.card V : ℝ) * (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |ρ|^n)) := by
+  exact (full_cluster_weights_summable Δ ρ h).hasSum.tendsto_sum_nat
+
 end QM
