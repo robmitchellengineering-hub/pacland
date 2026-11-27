@@ -87,4 +87,39 @@ theorem size_n_cluster_weight_bound {V : Type u} [Fintype V] [DecidableEq V] [Li
               (by exact_mod_cast (connected_clusters_count_bound G Δ hΔ n hn))
               (pow_nonneg (Real.exp_pos _).le n)
 
+/-- **The size-class cluster-weight series is summable** (the polymer-expansion convergence): the sequence
+`n ↦ Σ_{S connected, |S|=n} |φ(S)|` is summable, because each size class is bounded by the animals-count majorant
+(`size_n_cluster_weight_bound`) and that majorant is geometric-summable (`full_cluster_weights_summable`). -/
+theorem size_n_cluster_weight_summable {V : Type u} [Fintype V] [DecidableEq V] [LinearOrder V]
+    (G : SimpleGraph V) [DecidableRel G.Adj] [Fintype G.edgeSet]
+    (Δ : ℕ) (hΔ : G.maxDegree ≤ Δ) (β c : ℝ) (hβ : 0 ≤ β) (hc : 0 < c) (θ : V → ℝ)
+    (hθ : ∀ i, β * (1 - Real.cos (θ i)) ≤ 1)
+    (hcut : ∀ i, β * (θ i)^2 ≤ Real.exp (-(c * β)))
+    (hconv : |Real.exp (-(c * β))| * ((Δ : ℝ) + 1)^2 < 1) :
+    Summable (fun n : ℕ => ∑ S ∈ Finset.univ.filter
+      (fun S : Finset V => (G.induce (S : Set V)).Connected ∧ S.card = n),
+      |∏ i ∈ S, (Real.exp (-(β * (1 - Real.cos (θ i)))) - 1)|) := by
+  refine Summable.of_norm_bounded
+    (g := fun n : ℕ => (Fintype.card V : ℝ) * (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |Real.exp (-(c * β))|^n)
+    (full_cluster_weights_summable Δ (Real.exp (-(c * β))) hconv) ?_
+  intro n
+  have hnonneg : 0 ≤ (∑ S ∈ Finset.univ.filter (fun S : Finset V => (G.induce (S : Set V)).Connected ∧ S.card = n), |∏ i ∈ S, (Real.exp (-(β * (1 - Real.cos (θ i)))) - 1)|) :=
+    Finset.sum_nonneg (fun S _ => abs_nonneg _)
+  rw [Real.norm_eq_abs, abs_of_nonneg hnonneg]
+  by_cases hn : n = 0
+  · subst n
+    have hfilter : (Finset.univ.filter (fun S : Finset V => (G.induce (S : Set V)).Connected ∧ S.card = 0)) = ∅ := by
+      rw [Finset.filter_eq_empty_iff]
+      intro S hS h
+      have hconn : (G.induce (S : Set V)).Connected := h.1
+      have hnonempty : S.Nonempty :=
+        ⟨(Classical.choice hconn.nonempty).1, (Classical.choice hconn.nonempty).2⟩
+      have hcard_pos : 0 < S.card := Finset.card_pos.mpr hnonempty
+      omega
+    rw [hfilter]
+    norm_num
+  · have hn' : 1 ≤ n := Nat.succ_le_of_lt (Nat.pos_of_ne_zero hn)
+    rw [abs_of_pos (Real.exp_pos _)]
+    exact (size_n_cluster_weight_bound G Δ hΔ β c hβ hc θ hθ hcut n hn')
+
 end QM
