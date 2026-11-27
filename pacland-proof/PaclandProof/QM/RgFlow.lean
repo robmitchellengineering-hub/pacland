@@ -262,3 +262,50 @@ theorem su2_cluster_weight_bound {ι : Type u} (β : ℝ) (hβ : 0 ≤ β) (θ :
   exact plaquette_activity_bound β (θ i) hβ (hθ i hi)
 
 
+/-- **The concrete SU(2) cluster-weight bound** `|φ(Γ)| ≤ (e^(−cβ))^|Γ|` (the measure-theoretic step's
+second rung): in the small-field region `β(1−cos θᵢ) ≤ 1` with the cutoff `βθᵢ² ≤ e^(−cβ)`, the real cluster
+weight `φ(Γ) = ∏ (e^(−β(1−cos θᵢ)) − 1)` is bounded by the activity to the cluster size. This is the
+polymer-expansion estimate for the actual SU(2) per-plaquette activity — combining `su2_cluster_weight_bound`,
+the small-field quadratic `one_sub_cos_le_sq_div_two_all`, and the cutoff, then `Finset.prod_const`. -/
+lemma prod_le_prod_of_le_nonneg {ι : Type u} (s : Finset ι) (f g : ι → ℝ)
+    (h0 : ∀ i ∈ s, 0 ≤ f i) (hle : ∀ i ∈ s, f i ≤ g i) :
+    (∏ i ∈ s, f i) ≤ ∏ i ∈ s, g i := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert a s' ha ih =>
+      rw [Finset.prod_insert ha, Finset.prod_insert ha]
+      refine mul_le_mul (hle a (Finset.mem_insert_self a s')) (ih ?_ ?_) ?_ ?_
+      · intro i hi
+        exact h0 i (Finset.mem_insert_of_mem hi)
+      · intro i hi
+        exact hle i (Finset.mem_insert_of_mem hi)
+      · exact Finset.prod_nonneg (fun i hi => h0 i (Finset.mem_insert_of_mem hi))
+      · exact le_trans (h0 a (Finset.mem_insert_self a s')) (hle a (Finset.mem_insert_self a s'))
+
+theorem su2_cluster_weight_small_field {ι : Type u} (β c : ℝ) (hβ : 0 ≤ β) (hc : 0 < c) (θ : ι → ℝ) (Γ : Finset ι)
+    (hθ : ∀ i ∈ Γ, β * (1 - Real.cos (θ i)) ≤ 1)
+    (hcut : ∀ i ∈ Γ, β * (θ i)^2 ≤ Real.exp (-(c * β))) :
+    |∏ i ∈ Γ, (Real.exp (-(β * (1 - Real.cos (θ i)))) - 1)| ≤ (Real.exp (-(c * β)))^Γ.card := by
+  have h1 : |∏ i ∈ Γ, (Real.exp (-(β * (1 - Real.cos (θ i)))) - 1)| ≤ ∏ i ∈ Γ, 2 * β * (1 - Real.cos (θ i)) :=
+    su2_cluster_weight_bound β hβ θ Γ hθ
+  have hquad : ∀ i ∈ Γ, 2 * β * (1 - Real.cos (θ i)) ≤ β * (θ i)^2 := by
+    intro i hi
+    have hcos : 1 - Real.cos (θ i) ≤ (θ i)^2 / 2 := one_sub_cos_le_sq_div_two_all (θ i)
+    calc
+      2 * β * (1 - Real.cos (θ i)) = β * (2 * (1 - Real.cos (θ i))) := by ring
+      _ ≤ β * (θ i)^2 := mul_le_mul_of_nonneg_left (by nlinarith [hcos]) hβ
+  have h0quad : ∀ i ∈ Γ, 0 ≤ 2 * β * (1 - Real.cos (θ i)) := by
+    intro i hi
+    exact mul_nonneg (mul_nonneg (by norm_num) hβ) (sub_nonneg.mpr (Real.cos_le_one (θ i)))
+  have h23 : (∏ i ∈ Γ, 2 * β * (1 - Real.cos (θ i))) ≤ (Real.exp (-(c * β)))^Γ.card := by
+    calc
+      ∏ i ∈ Γ, 2 * β * (1 - Real.cos (θ i)) ≤ ∏ i ∈ Γ, β * (θ i)^2 :=
+        prod_le_prod_of_le_nonneg Γ (fun i => 2 * β * (1 - Real.cos (θ i))) (fun i => β * (θ i)^2) h0quad hquad
+      _ ≤ ∏ i ∈ Γ, Real.exp (-(c * β)) :=
+        prod_le_prod_of_le_nonneg Γ (fun i => β * (θ i)^2) (fun i => Real.exp (-(c * β)))
+          (fun i hi => mul_nonneg hβ (sq_nonneg (θ i))) hcut
+      _ = (Real.exp (-(c * β)))^Γ.card := Finset.prod_const _
+  exact le_trans h1 h23
+
+end QM
