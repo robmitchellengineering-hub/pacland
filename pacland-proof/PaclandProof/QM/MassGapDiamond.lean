@@ -734,6 +734,20 @@ theorem connected_correlation_green_summable {m : ℕ} (K : Fin m → Fin m → 
   exact Summable.of_norm_bounded hsum hbdd
 
 
+/-- **The connected-correlation thermodynamic limit (`hlim` for the connected object)**: the finite
+truncation `Σ_{d<N} Σᵢⱼ χᵢχⱼ (T^d)ᵢⱼ` converges to the infinite sum `Σ'_d Σᵢⱼ χᵢχⱼ (T^d)ᵢⱼ` as `N → ∞`
+(`Summable.hasSum` + `HasSum.tendsto_sum_nat`). This is the honest finite→infinite convergence — the
+connected correlation, not the raw bounded kernel — and it is the `hlim` shape that
+`volume_uniform_covariance_bound` needs. -/
+theorem connected_correlation_tendsto {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (lam1 : ℝ)
+    (hlam : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (hlam_lt_one : lam1 < 1) (χ : Fin m → ℝ) :
+    Filter.Tendsto (fun N : ℕ => ∑ d ∈ Finset.range N, ∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j)
+      Filter.atTop (nhds (∑' d : ℕ, ∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j)) := by
+  exact (connected_correlation_green_summable K hSymm hK lam1 hlam hlam0 hlam_lt_one χ).hasSum.tendsto_sum_nat
+
+
 /-- **The strict AM-GM.** `2·(a·b) < a² + b²` for `a ≠ b` — the strictness that turns the
 contraction `λₖ ≤ 1` into the strict gap `λ₁ < 1` for a mixing (strictly positive) transfer matrix.
 This is the Perron–Frobenius / Jentzsch core, in its simplest algebraic form. -/
