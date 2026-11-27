@@ -590,4 +590,18 @@ theorem cluster_expansion_tendsto {V : Type u} [Fintype V] [DecidableEq V]
         (Fintype.card V : ℝ) * (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |ρ|^n)) := by
   exact (full_cluster_weights_summable Δ ρ h).hasSum.tendsto_sum_nat
 
+/-- **The cluster-weight product bound** (the core of the polymer expansion): if each activity `|a i| ≤ ρ`, then the
+cluster weight `φ(Γ) = ∏_{i ∈ Γ} a i` satisfies `|φ(Γ)| ≤ ρ^|Γ|`. This is the standard polymer-expansion
+estimate — the product of per-plaquette activities over a cluster is bounded by the activity to the cluster
+size, which (with the animals-count bound) yields the summability of the full cluster-weight series. -/
+theorem cluster_weight_prod_bound {ι : Type u} [Fintype ι] (a : ι → ℝ) (ρ : ℝ) (hρ : 0 ≤ ρ)
+    (ha : ∀ i, |a i| ≤ ρ) (Γ : Finset ι) :
+    |∏ i ∈ Γ, a i| ≤ ρ ^ Γ.card := by
+  rw [Finset.abs_prod Γ a]
+  calc
+    ∏ i ∈ Γ, |a i| ≤ ∏ _i ∈ Γ, ρ := by
+      gcongr
+      exact ha _
+    _ = ρ ^ Γ.card := Finset.prod_const ρ
+
 end QM
