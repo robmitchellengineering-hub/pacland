@@ -412,4 +412,59 @@ theorem su2_cos_moment_ne_two {n : ℕ} (hn : n ≠ 0) (hn2 : n ≠ 2) :
   · exact (by continuity : Continuous (fun θ : ℝ => Real.cos ((n : ℝ) * θ))).intervalIntegrable 0 Real.pi
   · exact (by continuity : Continuous (fun θ : ℝ => Real.cos ((n : ℝ) * θ) * Real.cos (2 * θ))).intervalIntegrable 0 Real.pi
 
+/-- **The shifted `cos(2θ₁)` projection of a cosine mode**: `∫₀^π cos((n+1)(θ₁+θ₂))·cos(2θ₁) dθ₁ =
+cos((n+1)θ₂)·(π/2 if n=1 else 0) − sin((n+1)θ₂)·(1/(2(n+3))·(1−(−1)^{n+3}) + 1/(2(n−1))·(1−(−1)^{n−1}))`.
+The addition formula + `integral_cos_succ_mul_cos_two` (the cos part) + the product-to-sum + `integral_sin_nat`
+(the sin part). This is the termwise-integration primitive for the block-spin average's cosine projection. -/
+theorem integral_cos_succ_mul_cos_two_shift (n : ℕ) (θ₂ : ℝ) :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, Real.cos ((n + 1 : ℝ) * (θ₁ + θ₂)) * Real.cos (2 * θ₁)
+      = Real.cos ((n + 1 : ℝ) * θ₂) * (if n = 1 then Real.pi / 2 else 0)
+        - Real.sin ((n + 1 : ℝ) * θ₂) * ((1 - (-1 : ℝ) ^ (n + 3)) / (2 * (n + 3)) + (1 - (-1 : ℝ) ^ (n - 1)) / (2 * (n - 1))) := by
+  have hadd : ∀ θ₁ : ℝ, Real.cos ((n + 1 : ℝ) * (θ₁ + θ₂))
+      = Real.cos ((n + 1 : ℝ) * θ₁) * Real.cos ((n + 1 : ℝ) * θ₂) - Real.sin ((n + 1 : ℝ) * θ₁) * Real.sin ((n + 1 : ℝ) * θ₂) := by
+    intro θ₁
+    rw [mul_add]
+    exact Real.cos_add ((n + 1 : ℝ) * θ₁) ((n + 1 : ℝ) * θ₂)
+  have hcongr : (fun θ₁ : ℝ => Real.cos ((n + 1 : ℝ) * (θ₁ + θ₂)) * Real.cos (2 * θ₁))
+      = fun θ₁ : ℝ => Real.cos ((n + 1 : ℝ) * θ₁) * Real.cos ((n + 1 : ℝ) * θ₂) * Real.cos (2 * θ₁)
+          - Real.sin ((n + 1 : ℝ) * θ₁) * Real.sin ((n + 1 : ℝ) * θ₂) * Real.cos (2 * θ₁) := by
+    funext θ₁
+    rw [hadd θ₁]
+    ring
+  have hcos : ∫ θ₁ in (0 : ℝ)..Real.pi, Real.cos ((n + 1 : ℝ) * θ₁) * Real.cos ((n + 1 : ℝ) * θ₂) * Real.cos (2 * θ₁)
+      = Real.cos ((n + 1 : ℝ) * θ₂) * (if n = 1 then Real.pi / 2 else 0) := by
+    rw [intervalIntegral.integral_congr (fun θ₁ _ => by ring : ∀ θ₁, Real.cos ((n + 1 : ℝ) * θ₁) * Real.cos ((n + 1 : ℝ) * θ₂) * Real.cos (2 * θ₁) = Real.cos ((n + 1 : ℝ) * θ₂) * (Real.cos ((n + 1 : ℝ) * θ₁) * Real.cos (2 * θ₁)))]
+    rw [intervalIntegral.integral_const_mul]
+    rw [integral_cos_succ_mul_cos_two n]
+  have hsin : ∫ θ₁ in (0 : ℝ)..Real.pi, Real.sin ((n + 1 : ℝ) * θ₁) * Real.sin ((n + 1 : ℝ) * θ₂) * Real.cos (2 * θ₁)
+      = Real.sin ((n + 1 : ℝ) * θ₂) * ((1 - (-1 : ℝ) ^ (n + 3)) / (2 * (n + 3)) + (1 - (-1 : ℝ) ^ (n - 1)) / (2 * (n - 1))) := by
+    rw [intervalIntegral.integral_congr (fun θ₁ _ => by ring : ∀ θ₁, Real.sin ((n + 1 : ℝ) * θ₁) * Real.sin ((n + 1 : ℝ) * θ₂) * Real.cos (2 * θ₁) = Real.sin ((n + 1 : ℝ) * θ₂) * (Real.sin ((n + 1 : ℝ) * θ₁) * Real.cos (2 * θ₁)))]
+    rw [intervalIntegral.integral_const_mul]
+    -- ∫ sin((n+1)θ)cos(2θ) = 1/2(∫sin((n+3)θ) + ∫sin((n−1)θ))
+    have hprod : ∀ θ : ℝ, Real.sin ((n + 1 : ℝ) * θ) * Real.cos (2 * θ)
+        = (Real.sin ((n + 3 : ℝ) * θ) + Real.sin ((n - 1 : ℝ) * θ)) / 2 := by
+      intro θ
+      have hsum : Real.sin ((n + 1 : ℝ) * θ + 2 * θ) + Real.sin ((n + 1 : ℝ) * θ - 2 * θ)
+          = 2 * (Real.sin ((n + 1 : ℝ) * θ) * Real.cos (2 * θ)) := by
+        nlinarith [Real.sin_add ((n + 1 : ℝ) * θ) (2 * θ), Real.sin_sub ((n + 1 : ℝ) * θ) (2 * θ)]
+      have harg1 : (n + 1 : ℝ) * θ + 2 * θ = (n + 3 : ℝ) * θ := by ring
+      have harg2 : (n + 1 : ℝ) * θ - 2 * θ = ((n : ℤ) - 1 : ℝ) * θ := by norm_num; ring
+      rw [harg1] at hsum
+      rw [show (n + 1 : ℝ) * θ - 2 * θ = ((n : ℝ) - 1) * θ by ring] at hsum
+      nlinarith [hsum]
+    rw [intervalIntegral.integral_congr (fun θ _ => hprod θ)]
+    rw [intervalIntegral.integral_div, intervalIntegral.integral_add]
+    · have h3 := integral_sin_nat (n := n + 3) (by omega)
+      have hn1 := integral_sin_nat (n := n - 1) (by omega : n - 1 ≠ 0)
+      rw [h3, hn1]
+      ring
+    · exact (by continuity : Continuous (fun θ : ℝ => Real.sin ((n + 3 : ℝ) * θ))).intervalIntegrable 0 Real.pi
+    · exact (by continuity : Continuous (fun θ : ℝ => Real.sin (((n : ℝ) - 1) * θ))).intervalIntegrable 0 Real.pi
+  rw [hcongr]
+  rw [intervalIntegral.integral_sub]
+  · rw [hcos, hsin]
+    ring
+  · exact (by continuity : Continuous (fun θ₁ : ℝ => Real.cos ((n + 1 : ℝ) * θ₁) * Real.cos ((n + 1 : ℝ) * θ₂) * Real.cos (2 * θ₁))).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ₁ : ℝ => Real.sin ((n + 1 : ℝ) * θ₁) * Real.sin ((n + 1 : ℝ) * θ₂) * Real.cos (2 * θ₁))).intervalIntegrable 0 Real.pi
+
 
