@@ -1360,4 +1360,24 @@ theorem integral_sin_four : ∫ θ in (0 : ℝ)..Real.pi, (Real.sin θ)^4 = 3 * 
   · exact (by continuity : Continuous (fun θ : ℝ => (1 / 4 : ℝ) * Real.cos (4 * θ))).intervalIntegrable 0 Real.pi
   · exact (by continuity : Continuous (fun θ : ℝ => (1 / 2 : ℝ) * Real.cos (2 * θ))).intervalIntegrable 0 Real.pi
 
+/-- **The S³ direction moment `∫ x₁² = 1/4`**: the normalized S³ round-measure integral of `x₁² = sin²θ₁·cos²θ₂`.
+Via the product-separable Fubini: `(1/(2π²))·2π·(2/3)·(3π/8) = 1/4`. The diagonal direction moment for the general
+pseudoreality `∫U₂BU₂ = (B−Tr(B)I)/2`. -/
+theorem su2_direction_moment_x1_sq :
+    (1 / (2 * Real.pi ^ 2)) * ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Real.sin θ₁)^2 * (Real.cos θ₂)^2 * (Real.sin θ₁)^2 * Real.sin θ₂ = 1 / 4 := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_const_mul))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_const))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => by ring))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => by
+    rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+    rw [integral_cos_sq_sin]
+    ring)]
+  rw [intervalIntegral.integral_const_mul]
+  rw [integral_sin_four]
+  field_simp [Real.pi_ne_zero]
+  ring
+
 
