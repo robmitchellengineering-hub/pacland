@@ -396,4 +396,21 @@ theorem hTheta_reflected_correlation_nonneg (β : ℝ) (g : Metric.sphere (0 : �
     exact mul_nonneg (mul_nonneg (hg z₀) (hg z₁)) (Real.exp_pos _).le
   exact MeasureTheory.integral_nonneg (by intro z₀; exact MeasureTheory.integral_nonneg (by intro z₁; exact hpos z₀ z₁))
 
+/-- **The 2×2 adjugate identity**: `adj(U) = Tr(U)·I − U` (via `Matrix.adjugate_fin_two`). -/
+theorem su2_adjugate_eq_trace_sub (U : Matrix (Fin 2) (Fin 2) ℂ) :
+    Matrix.adjugate U = Matrix.trace U • (1 : Matrix (Fin 2) (Fin 2) ℂ) - U := by
+  rw [Matrix.adjugate_fin_two U]
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [Matrix.trace, Matrix.one_apply_eq, smul_eq_mul]
+
+/-- **The SU(2) trace identity**: `Tr(UV) + Tr(U⁻¹V) = Tr(U)·Tr(V)` for 2×2 matrices with `det U = 1`. Via
+`U⁻¹ = adj(U)` (`Matrix.inv_def` + `hdet`) and the adjugate identity `adj(U) = Tr(U)·I − U`. The key for the
+SU(2) n=1 character convolution `∫ χ₁(U₂A)χ₁(U₂B) dU₂ = χ₁(AB⁻¹)/2`. -/
+theorem su2_trace_identity (U V : Matrix (Fin 2) (Fin 2) ℂ) (hdet : U.det = 1) :
+    Matrix.trace (U * V) + Matrix.trace (U⁻¹ * V) = Matrix.trace U * Matrix.trace V := by
+  rw [Matrix.inv_def U, hdet]
+  simp
+  rw [su2_adjugate_eq_trace_sub U]
+  simp [Matrix.trace_sub, Matrix.trace_smul, sub_mul, Matrix.one_mul, smul_eq_mul]
+
 end QM
