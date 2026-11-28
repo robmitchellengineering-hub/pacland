@@ -749,4 +749,39 @@ theorem weyl_character_coefficient {n : ℕ} (x : ℝ) (hx : 0 < x) (hn : 1 ≤ 
   · exact (by continuity : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.cos ((n : ℝ) * θ))).intervalIntegrable 0 Real.pi
   · exact (by continuity : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.cos ((n + 2 : ℝ) * θ))).intervalIntegrable 0 Real.pi
 
+/-- **The derivative series is summable**: `Summable (fun n => (n+1)·Iₙ₊₁(x))` for `x ≥ 0`. From the recurrence
+`(n+1)Iₙ₊₁ = (x/2)(Iₙ − Iₙ₊₂) ≤ (x/2)Iₙ` (since `Iₙ₊₂ ≥ 0`), so it is dominated by `(x/2)·Σ Iₙ`, which is summable
+(`besselI_summable`). This is the summability hypothesis of `hasDerivAt_tsum` — the key input for the Weyl
+character formula's termwise differentiation. -/
+theorem besselI_mul_succ_summable (x : ℝ) (hx : 0 ≤ x) :
+    Summable (fun n : ℕ => (n + 1 : ℝ) * besselI (n + 1) x) := by
+  by_cases hx0 : x = 0
+  · subst x
+    have hzero : ∀ n, (n + 1 : ℝ) * besselI (n + 1) 0 = 0 := by
+      intro n
+      have hI : besselI (n + 1) 0 = 0 := by
+        dsimp [besselI]
+        have h : (fun m : ℕ => (0 / 2 : ℝ) ^ (2 * m + (n + 1)) / ((m.factorial : ℝ) * (m + (n + 1)).factorial)) = fun _ => 0 := by
+          funext m
+          rw [zero_div]
+          rw [zero_pow (by omega : 2 * m + (n + 1) ≠ 0)]
+          simp
+        rw [h]
+        exact tsum_zero
+      rw [hI]
+      ring
+    simpa [hzero] using (summable_zero : Summable (fun _ : ℕ => (0 : ℝ)))
+  · have hxpos : 0 < x := lt_of_le_of_ne hx (Ne.symm hx0)
+    have hle : ∀ n, (n + 1 : ℝ) * besselI (n + 1) x ≤ (x / 2) * besselI n x := by
+      intro n
+      have hrec := bessel_recurrence_general (n := n) (x := x) hxpos
+      have hnonneg : 0 ≤ besselI (n + 2) x := besselI_nonneg (n := n + 2) hx
+      have hsub : besselI n x - besselI (n + 2) x ≤ besselI n x := by nlinarith [hnonneg]
+      calc
+        (n + 1 : ℝ) * besselI (n + 1) x = (x / 2) * (besselI n x - besselI (n + 2) x) := by
+          rw [← hrec]
+          ring
+        _ ≤ (x / 2) * besselI n x := mul_le_mul_of_nonneg_left hsub (by positivity)
+    exact Summable.of_nonneg_of_le (fun n => by positivity) hle ((besselI_summable hx).const_mul (x / 2))
+
 
