@@ -1285,4 +1285,57 @@ theorem bessel_turan_weighted_sum (x : ℝ) (hx : 0 < x) :
       field_simp [ne_of_gt hx]
       ring
 
+/-- **The Bessel-square product formula**: `I₁(x)² = Σₙ (x/2)^{2n+2}·(2n+2)!/(n!(n+2)!(n+1)!²)` — the Cauchy
+product of the two `I₁` series, whose inner sum is the Chu–Vandermonde identity `bessel_chu_vandermonde_real`.
+This is the series form that makes the sharp upper bound's coefficient positivity manifest. -/
+theorem besselI_one_sq_eq_series (x : ℝ) (hx : 0 ≤ x) :
+    besselI 1 x ^ 2 = ∑' n : ℕ, (x / 2) ^ (2 * n + 2) *
+      ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) * ((n + 2).factorial : ℝ) * ((n + 1).factorial : ℝ) ^ 2) := by
+  let a : ℕ → ℝ := fun k => (x / 2) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial)
+  have hbessel : besselI 1 x = ∑' k, a k := by
+    dsimp [besselI, a]
+  have ha : Summable a := by
+    dsimp [a]
+    simpa using besselI_summable_of_nonneg 1 hx
+  have hfg : Summable (fun z : ℕ × ℕ => a z.1 * a z.2) := by
+    exact ha.mul ha
+  have hcauchy := ha.tsum_mul_tsum_eq_tsum_sum_antidiagonal ha hfg
+  rw [hbessel, hcauchy]
+  apply tsum_congr
+  intro n
+  -- inner sum over the antidiagonal = (x/2)^(2n+2) * (2n+2)!/(n!(n+2)!(n+1)!^2)
+  have hanti : (∑ kl ∈ Finset.Nat.antidiagonal n, a kl.1 * a kl.2) =
+      (x / 2) ^ (2 * n + 2) * ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) * ((n + 2).factorial : ℝ) * ((n + 1).factorial : ℝ) ^ 2) := by
+    dsimp [a]
+    rw [← Finset.sum_mul]
+    -- factor out (x/2)^(2n+2): each term has (x/2)^(2(kl.1+kl.2)+2) = (x/2)^(2n+2)
+    have hfactor : ∀ kl ∈ Finset.Nat.antidiagonal n,
+        (x / 2) ^ (2 * kl.1 + 1) / ((kl.1.factorial : ℝ) * (kl.1 + 1).factorial) *
+          ((x / 2) ^ (2 * kl.2 + 1) / ((kl.2.factorial : ℝ) * (kl.2 + 1).factorial)) =
+        (x / 2) ^ (2 * n + 2) / ((kl.1.factorial : ℝ) * (kl.1 + 1).factorial * (kl.2.factorial : ℝ) * (kl.2 + 1).factorial) := by
+      intro kl hkl
+      have hsum : kl.1 + kl.2 = n := (Finset.Nat.mem_antidiagonal.mp hkl).2.symm
+      have hpow : 2 * kl.1 + 1 + (2 * kl.2 + 1) = 2 * n + 2 := by omega
+      rw [mul_div_mul_comm, ← pow_add]
+      rw [hpow]
+      ring_nf
+    calc
+      (∑ kl ∈ Finset.Nat.antidiagonal n, (x / 2) ^ (2 * kl.1 + 1) / ((kl.1.factorial : ℝ) * (kl.1 + 1).factorial) *
+          ((x / 2) ^ (2 * kl.2 + 1) / ((kl.2.factorial : ℝ) * (kl.2 + 1).factorial)))
+        = ∑ kl ∈ Finset.Nat.antidiagonal n, (x / 2) ^ (2 * n + 2) / ((kl.1.factorial : ℝ) * (kl.1 + 1).factorial * (kl.2.factorial : ℝ) * (kl.2 + 1).factorial) := by
+            exact Finset.sum_congr rfl (fun kl hkl => hfactor kl hkl)
+      _ = (x / 2) ^ (2 * n + 2) * (∑ kl ∈ Finset.Nat.antidiagonal n, 1 / ((kl.1.factorial : ℝ) * (kl.1 + 1).factorial * (kl.2.factorial : ℝ) * (kl.2 + 1).factorial)) := by
+            rw [← Finset.sum_mul]; simp_rw [← div_eq_mul_inv]; rw [Finset.mul_sum]; ring_nf
+      _ = (x / 2) ^ (2 * n + 2) * ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) * ((n + 2).factorial : ℝ) * ((n + 1).factorial : ℝ) ^ 2) := by
+            congr 1
+            -- the inner sum equals the Chu-Vandermonde (convert antidiagonal to range)
+            rw [← bessel_chu_vandermonde_real n]
+            rw [Finset.sum_antidiagonal_eq_sum_range_succ (fun i j => (1 : ℝ) / ((i.factorial : ℝ) * (i + 1).factorial * (j.factorial : ℝ) * (j + 1).factorial))]
+            refine Finset.sum_congr rfl (fun i hi => ?_)
+            rw [Finset.mem_range_succ_iff] at hi
+            have : n - i + 1 = n - i + 1 := rfl
+            congr 1
+            ring_nf
+  rw [hanti]
+
 end QM
