@@ -389,4 +389,14 @@ theorem small_field_cutoff_tendsto_zero (c : ℝ) (hc : 0 < c) :
   have hmul := hexp.mul hinv
   simpa [div_eq_mul_inv] using hmul
 
+/-- **The large-field region's total measure contribution vanishes in the continuum limit**: for a fixed
+cutoff `δ > 0`, the large-field region `{θ : δ ≤ 1 − cos θ}` contributes weight `e^(−β(1−cos θ)) ≤ e^(−βδ)`
+(`large_field_weight_bound`), so its total measure is bounded by `e^(−βδ)·(π/2)` (the Weyl normalization
+`su2_weyl_measure_normalized`), and this `→ 0`. The large-field (compactness-controlled) region is
+exponentially suppressed as `β → ∞`. -/
+theorem large_field_measure_tendsto_zero (δ : ℝ) (hδ : 0 < δ) :
+    Filter.Tendsto (fun β : ℝ => Real.exp (-(β * δ)) * (Real.pi / 2)) Filter.atTop (nhds 0) := by
+  have h := running_coupling_activity_tendsto_zero δ hδ
+  simpa [mul_comm, mul_left_comm, mul_assoc] using h.const_mul (Real.pi / 2)
+
 end QM
