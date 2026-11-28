@@ -1714,4 +1714,69 @@ theorem su2_volume_nested :
   rw [integral_sin_sq_half]
   ring
 
+/-- **The `∫ Tr(U₂AU₂B)` integral**: `∫∫∫ Tr(U₂AU₂B)·sin²θ₁·sin θ₂ = Tr(A·(π²·(B−Tr(B)I)))` — the trace
+cyclicity, the `Tr(A·)` linearity (via `ContinuousLinearMap.integral_comp_comm`), and `su2_conj_integral`. -/
+theorem su2_trace_conj_AB_integral (A B : Matrix (Fin 2) (Fin 2) ℂ) :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A * su2SphereQuaternion θ₁ θ₂ φ * B) * (Real.sin θ₁)^2 * Real.sin θ₂
+      = Matrix.trace (A * (Real.pi ^ 2 • (B - Matrix.trace B • (1 : Matrix (Fin 2) (Fin 2) ℂ)))) := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_congr (fun φ _ => by
+      rw [Matrix.mul_assoc]
+      rw [Matrix.trace_mul_comm]
+      ring)))]
+  -- now the integrand is Tr(A·(U₂BU₂))·(sin²θ₁ sin θ₂); pull Tr(A·) out
+  rw [← ContinuousLinearMap.integral_comp_comm]
+  · -- the outer θ₁ integral: pull Tr(A·) out again
+    rw [← ContinuousLinearMap.integral_comp_comm]
+    · rw [← ContinuousLinearMap.integral_comp_comm]
+      · rw [su2_conj_integral B]
+        simp [Matrix.trace_smul, Matrix.trace_sub, Matrix.trace_one, Matrix.mul_smul, Matrix.mul_sub]
+        ring
+      · exact (by fun_prop : ContinuousLinearMap (Matrix (Fin 2) (Fin 2) ℂ) ℂ)
+    · exact (by fun_prop : ContinuousLinearMap (Matrix (Fin 2) (Fin 2) ℂ) ℂ)
+  · exact (by fun_prop : ContinuousLinearMap (Matrix (Fin 2) (Fin 2) ℂ) ℂ)
+
+/-- **The n=1 character convolution**: `∫ χ₁(U₂A)·χ₁(U₂B) dU₂ = χ₁(A⁻¹B)/2` (normalized round measure), for
+`A ∈ SU(2)`. The clean coupling-advance primitive for the block-spin RG step. -/
+theorem su2_char_conv_n1 (A B : Matrix (Fin 2) (Fin 2) ℂ) (hA : A.det = 1) :
+    (1 / (2 * Real.pi ^ 2) : ℂ) • ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A) * Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * B)) * (Real.sin θ₁)^2 * Real.sin θ₂
+      = Matrix.trace (A⁻¹ * B) / 2 := by
+  calc
+    (1 / (2 * Real.pi ^ 2) : ℂ) • ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A) * Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * B)) * (Real.sin θ₁)^2 * Real.sin θ₂
+      = (1 / (2 * Real.pi ^ 2) : ℂ) • ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A * su2SphereQuaternion θ₁ θ₂ φ * B) + Matrix.trace (A⁻¹ * B)) * (Real.sin θ₁)^2 * Real.sin θ₂ := by
+          rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+            intervalIntegral.integral_congr (fun φ _ => by rw [su2_trace_conv_identity θ₁ θ₂ φ A B hA])))]
+    _ = (1 / (2 * Real.pi ^ 2) : ℂ) • (∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A * su2SphereQuaternion θ₁ θ₂ φ * B) * (Real.sin θ₁)^2 * Real.sin θ₂
+        + ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        Matrix.trace (A⁻¹ * B) * (Real.sin θ₁)^2 * Real.sin θ₂) := by
+          rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_add))]
+          · rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_add)]
+            · rw [intervalIntegral.integral_add]
+            · exact (by continuity : Continuous (fun θ₂ : ℝ => Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A * su2SphereQuaternion θ₁ θ₂ φ * B) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+            · exact (by continuity : Continuous (fun θ₂ : ℝ => Matrix.trace (A⁻¹ * B) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+          · exact (by continuity : Continuous (fun θ₂ : ℝ => Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A * su2SphereQuaternion θ₁ θ₂ φ * B) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+          · exact (by continuity : Continuous (fun θ₂ : ℝ => Matrix.trace (A⁻¹ * B) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+    _ = (1 / (2 * Real.pi ^ 2) : ℂ) • (Matrix.trace (A * (Real.pi ^ 2 • (B - Matrix.trace B • (1 : Matrix (Fin 2) (Fin 2) ℂ)))) + Matrix.trace (A⁻¹ * B) * (2 * Real.pi ^ 2)) := by
+          rw [su2_trace_conj_AB_integral A B]
+          congr 1
+          rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_congr (fun φ _ => by ring)))]
+          rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_const_mul))]
+          rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_const_mul)]
+          rw [intervalIntegral.integral_const_mul]
+          rw [su2_volume_nested]
+    _ = Matrix.trace (A⁻¹ * B) / 2 := by
+          rw [show Matrix.trace (A * (Real.pi ^ 2 • (B - Matrix.trace B • (1 : Matrix (Fin 2) (Fin 2) ℂ)))) = Real.pi ^ 2 * (Matrix.trace (A * B) - Matrix.trace A * Matrix.trace B) by
+            simp [Matrix.trace_smul, Matrix.trace_sub, Matrix.mul_smul, Matrix.mul_sub, Matrix.trace_mul, Matrix.trace_one, Matrix.mul_one]
+            ring]
+          rw [show Matrix.trace (A * B) - Matrix.trace A * Matrix.trace B = -Matrix.trace (A⁻¹ * B) by
+            have h := su2_trace_identity A B hA
+            linarith]
+          field_simp [Real.pi_ne_zero]
+          ring
+
 
