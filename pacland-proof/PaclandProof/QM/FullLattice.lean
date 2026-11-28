@@ -665,4 +665,24 @@ theorem su2_pauli_conj_sum (B : Matrix (Fin 2) (Fin 2) ℂ) :
   <;> simp [complex_I_sq]
   <;> ring
 
+/-- **The trace form of the quaternion conjugation**: `Tr(V·B·V) = (x₀²−|x⃗|²)·Tr(B) + 2i·x₀·Tr(X·B)` (via the trace
+cyclicity `Tr(V·B·V) = Tr(V²·B)` and `V² = (x₀²−|x⃗|²)·I + 2i·x₀·X`). The scalar route to the trace form
+`∫Tr(U₂BU₂) = −Tr(B)/2` of the general pseudoreality. -/
+theorem su2_quaternion_conj_trace (x₀ : ℝ) (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    Matrix.trace (su2Quaternion x₀ x * B * su2Quaternion x₀ x) =
+      (((x₀ ^ 2 - (x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2) : ℝ) : ℂ) * Matrix.trace B)
+        + (2 * x₀ : ℂ) * Complex.I * Matrix.trace (su2PauliVec x * B) := by
+  rw [Matrix.mul_assoc]
+  rw [Matrix.trace_mul_comm]
+  rw [Matrix.mul_assoc]
+  rw [← pow_two]
+  rw [su2_quaternion_sq]
+  rw [mul_add]
+  rw [Matrix.mul_smul, Matrix.mul_smul]
+  rw [Matrix.mul_one]
+  rw [Matrix.trace_add, Matrix.trace_smul, Matrix.trace_smul]
+  simp [Matrix.trace_one, smul_eq_mul]
+  rw [Matrix.trace_mul_comm]
+  ring
+
 end QM
