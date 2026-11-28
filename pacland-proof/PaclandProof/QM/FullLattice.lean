@@ -754,4 +754,9 @@ theorem su2_sphere_det_one (θ₁ θ₂ φ : ℝ) : (su2SphereQuaternion θ₁ �
   rw [Complex.ofReal_inj]
   nlinarith [su2_sphere_norm_sq θ₁ θ₂ φ, Real.sin_sq_add_cos_sq θ₁]
 
+/-- **The sphere inverse cancellation**: `V⁻¹·V = 1` for the SU(2) sphere quaternion (det = 1). -/
+theorem su2_sphere_inv_mul_self (θ₁ θ₂ φ : ℝ) :
+    (su2SphereQuaternion θ₁ θ₂ φ)⁻¹ * su2SphereQuaternion θ₁ θ₂ φ = 1 := by
+  rw [Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr (by rw [su2_sphere_det_one]; norm_num))]
+
 end QM
