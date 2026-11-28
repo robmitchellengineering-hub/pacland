@@ -366,4 +366,50 @@ theorem su2_sin_odd_moment {m : ℕ} (hm : 1 ≤ m) :
     ring
   · exact (by continuity : Continuous (fun θ : ℝ => Real.sin ((2 * m + 1 : ℝ) * θ))).intervalIntegrable 0 Real.pi
   · exact (by continuity : Continuous (fun θ : ℝ => Real.sin ((2 * m + 1 : ℝ) * θ) * Real.cos (2 * θ))).intervalIntegrable 0 Real.pi
+/-- **The `cos(nθ)` Weyl moment vanishes for `n ≠ 0, 2`**: `∫₀^π cos(nθ)·sin²θ dθ = 0`. With `su2_cos_two_moment`
+(the `n = 2` value `−π/4`), this isolates the only nonzero cos moment — the block-spin average's character
+convolution has a single cosine term `−(π/2)·I₂(β)·cos(2θ₁)`. -/
+theorem su2_cos_moment_ne_two {n : ℕ} (hn : n ≠ 0) (hn2 : n ≠ 2) :
+    ∫ θ in (0 : ℝ)..Real.pi, Real.cos ((n : ℝ) * θ) * (Real.sin θ)^2 = 0 := by
+  have hsin2 : ∀ θ : ℝ, (Real.sin θ)^2 = (1 - Real.cos (2 * θ)) / 2 := by
+    intro θ
+    rw [Real.sin_sq_eq_half_sub]
+    ring_nf
+  have hcongr : (fun θ : ℝ => Real.cos ((n : ℝ) * θ) * (Real.sin θ)^2)
+      = fun θ : ℝ => (Real.cos ((n : ℝ) * θ) - Real.cos ((n : ℝ) * θ) * Real.cos (2 * θ)) / 2 := by
+    funext θ
+    rw [hsin2 θ]
+    ring
+  have hcosn : ∫ θ in (0 : ℝ)..Real.pi, Real.cos ((n : ℝ) * θ) = 0 :=
+    integral_cos_of_ne_zero hn
+  have hcosncos2 : ∫ θ in (0 : ℝ)..Real.pi, Real.cos ((n : ℝ) * θ) * Real.cos (2 * θ) = 0 := by
+    have hprod : ∀ θ : ℝ, Real.cos ((n : ℝ) * θ) * Real.cos (2 * θ)
+        = (Real.cos (((n + 2 : ℕ) : ℝ) * θ) + Real.cos (((n - 2 : ℕ) : ℝ) * θ)) / 2 := by
+      intro θ
+      have hsum : Real.cos ((n : ℝ) * θ + 2 * θ) + Real.cos ((n : ℝ) * θ - 2 * θ)
+          = 2 * (Real.cos ((n : ℝ) * θ) * Real.cos (2 * θ)) := by
+        nlinarith [Real.cos_add ((n : ℝ) * θ) (2 * θ), Real.cos_sub ((n : ℝ) * θ) (2 * θ)]
+      have harg1 : (n : ℝ) * θ + 2 * θ = ((n + 2 : ℕ) : ℝ) * θ := by
+        norm_num [Nat.cast_add]; ring
+      have harg2 : (n : ℝ) * θ - 2 * θ = ((n - 2 : ℕ) : ℝ) * θ := by
+        norm_num [Nat.cast_sub (by omega : 2 ≤ n)]; ring
+      rw [harg1, harg2] at hsum
+      nlinarith [hsum]
+    rw [intervalIntegral.integral_congr (fun θ _ => hprod θ)]
+    rw [intervalIntegral.integral_div]
+    rw [intervalIntegral.integral_add]
+    · have hn2' : n + 2 ≠ 0 := by omega
+      have hn0' : n - 2 ≠ 0 := by omega
+      rw [integral_cos_of_ne_zero hn2', integral_cos_of_ne_zero hn0']
+      norm_num
+    · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (((n + 2 : ℕ) : ℝ) * θ))).intervalIntegrable 0 Real.pi
+    · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (((n - 2 : ℕ) : ℝ) * θ))).intervalIntegrable 0 Real.pi
+  rw [hcongr]
+  rw [intervalIntegral.integral_div]
+  rw [intervalIntegral.integral_sub]
+  · rw [hcosn, hcosncos2]
+    norm_num
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.cos ((n : ℝ) * θ))).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.cos ((n : ℝ) * θ) * Real.cos (2 * θ))).intervalIntegrable 0 Real.pi
+
 
