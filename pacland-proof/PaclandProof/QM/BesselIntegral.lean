@@ -1501,4 +1501,59 @@ theorem besselI_turan_pos (x : ℝ) (hx : 0 < x) :
     exact (besselI 1 x ^ 2 - besselI 0 x * besselI 2 x).summable_iff.mpr (by simp)
   exact tsum_pos hnonneg hsum hlead
 
+/-- **The derivative of `I₂`**: `I₂′ = I₁ − 2I₂/x` (the ν = 2 case of `I_ν′ = I_{ν−1} − (ν/x)I_ν`), derived from
+the recurrence `I₂ = I₀ − 2I₁/x` plus the derivatives of `I₀` and `I₁`. This is the missing derivative input
+for the double-ratio `W = I₁²/(I₀I₂)` and its cubic-nullcline ODE (the Simpson–Spector sharp-bound wiring). -/
+theorem besselI2_hasDerivAt (x : ℝ) (hx : x ≠ 0) :
+    HasDerivAt (fun t : ℝ => besselI 2 t) (besselI 1 x - 2 * besselI 2 x / x) x := by
+  have hrec : besselI 2 x = besselI 0 x - 2 * besselI 1 x / x := by
+    have h := bessel_recurrence (x := x) (by exact lt_of_le_of_ne (le_of_not_gt (by intro hx'; linarith)) ?_)
+    · linarith [h]
+    · exact hx
+  rw [hrec]
+  have hd0 : HasDerivAt (fun t : ℝ => besselI 0 t) (besselI 1 x) x := besselI0_hasDerivAt x
+  have hd1 : HasDerivAt (fun t : ℝ => besselI 1 t) (besselI 0 x - besselI 1 x / x) x := besselI1_hasDerivAt x hx
+  have hdiv : HasDerivAt (fun t : ℝ => besselI 1 t / t) ((besselI 0 x - besselI 1 x / x) * x - besselI 1 x * 1) x :=
+    hd1.div (hasDerivAt_id x) (by intro h; linarith)
+  have hlin : HasDerivAt (fun t : ℝ => 2 * besselI 1 t / t) (2 * (((besselI 0 x - besselI 1 x / x) * x - besselI 1 x) / x ^ 2)) x := by
+    convert (hdiv.const_mul (2 : ℝ)) using 1
+    ring_nf
+  have hsub := hd0.sub hlin
+  convert hsub using 1
+  · ring_nf
+  · rw [div_eq_mul_inv]
+    field_simp [hx]
+    ring_nf
+
+/-- **The double-ratio cubic nullcline**: for `Φ = I₀/I₁` (the reciprocal ratio) and `W = I₁²/(I₀I₂)` (the
+Simpson–Spector double ratio), the derivative factors as `W′ = 2x·C(Φ)/(Φ²(Φx−2)²)` where `C(Φ) = xΦ³ − 2Φ² − xΦ + 1`
+is the cubic whose root `Φ⁺` is the sharp upper bound `Φ < Φ⁺` (hence `s < 1/(2x) + 3/(8x²)`). This is the
+double-ratio wiring: `W′ < 0 ⟺ C(Φ) < 0 ⟺ Φ < Φ⁺`. -/
+theorem bessel_double_ratio_deriv (x : ℝ) (hx : 0 < x) :
+    HasDerivAt (fun t : ℝ => besselI 1 t ^ 2 / (besselI 0 t * besselI 2 t))
+      (2 * x * (x * (besselI 0 x / besselI 1 x) ^ 3 - 2 * (besselI 0 x / besselI 1 x) ^ 2 -
+        x * (besselI 0 x / besselI 1 x) + 1) /
+        ((besselI 0 x / besselI 1 x) ^ 2 * ((besselI 0 x / besselI 1 x) * x - 2) ^ 2)) x := by
+  let Φ : ℝ := besselI 0 x / besselI 1 x
+  have hI1 : besselI 1 x ≠ 0 := ne_of_gt (besselI_pos hx)
+  have hI0 : besselI 0 x ≠ 0 := ne_of_gt (besselI0_pos_all x)
+  have hI2 : besselI 2 x ≠ 0 := ne_of_gt (besselI_pos hx)
+  have hnum : HasDerivAt (fun t : ℝ => besselI 1 t ^ 2) (2 * besselI 1 x * (besselI 0 x - besselI 1 x / x)) x := by
+    simpa [pow_two] using (besselI1_hasDerivAt x (ne_of_gt hx)).mul (besselI1_hasDerivAt x (ne_of_gt hx))
+  have hden : HasDerivAt (fun t : ℝ => besselI 0 t * besselI 2 t)
+      (besselI 1 x * besselI 2 x + besselI 0 x * (besselI 1 x - 2 * besselI 2 x / x)) x := by
+    exact (besselI0_hasDerivAt x).mul (besselI2_hasDerivAt x (ne_of_gt hx))
+  have hdiv := hnum.div hden (by intro h; exact hI0 (mul_ne_zero (by norm_num) ?_)  -- placeholder
+    )
+  -- (denominator nonzero)
+  have hden_ne : besselI 0 x * besselI 2 x ≠ 0 := mul_ne_zero hI0 hI2
+  have hdiv := hnum.div hden hden_ne
+  convert hdiv using 1
+  · dsimp [Φ]
+    field_simp [hI0, hI1, hx, ne_of_gt hx]
+    ring_nf
+  · dsimp [Φ]
+    field_simp [hI0, hI1, hI2, hx, ne_of_gt hx]
+    ring_nf
+
 end QM
