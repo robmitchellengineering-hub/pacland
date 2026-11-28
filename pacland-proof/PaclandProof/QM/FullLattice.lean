@@ -734,4 +734,24 @@ theorem su2_quaternion_conj (x₀ : ℝ) (x : Fin 3 → ℝ) (B : Matrix (Fin 2)
   unfold su2Quaternion
   exact su2_conj_generic (x₀ : ℂ) (su2PauliVec x) B
 
+/-- **The quaternion determinant**: `det(x₀·I + i·(x⃗·σ⃗)) = x₀² + x₁² + x₂² + x₃²` (the quaternion norm squared). -/
+theorem su2_quaternion_det (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    (su2Quaternion x₀ x).det = (x₀ : ℂ)^2 + (x 0 : ℂ)^2 + (x 1 : ℂ)^2 + (x 2 : ℂ)^2 := by
+  simp [Matrix.det_fin_two, su2Quaternion, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, Complex.ofReal_mul, Complex.ofReal_add]
+  ring_nf
+  norm_num [complex_I_sq]
+
+/-- **The sphere quaternion has det = 1** (the SU(2) condition): `x₀² + |x⃗|² = cos²θ₁ + sin²θ₁ = 1`. -/
+theorem su2_sphere_det_one (θ₁ θ₂ φ : ℝ) : (su2SphereQuaternion θ₁ θ₂ φ).det = 1 := by
+  unfold su2SphereQuaternion
+  rw [su2_quaternion_det]
+  rw [show (![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] 0) = Real.sin θ₁ * Real.cos θ₂ by rfl]
+  rw [show (![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] 1) = Real.sin θ₁ * Real.sin θ₂ * Real.cos φ by rfl]
+  rw [show (![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] 2) = Real.sin θ₁ * Real.sin θ₂ * Real.sin φ by rfl]
+  rw [← Complex.ofReal_pow, ← Complex.ofReal_pow, ← Complex.ofReal_pow, ← Complex.ofReal_pow]
+  rw [← Complex.ofReal_add, ← Complex.ofReal_add, ← Complex.ofReal_add]
+  rw [← Complex.ofReal_one]
+  rw [Complex.ofReal_inj]
+  nlinarith [su2_sphere_norm_sq θ₁ θ₂ φ, Real.sin_sq_add_cos_sq θ₁]
+
 end QM
