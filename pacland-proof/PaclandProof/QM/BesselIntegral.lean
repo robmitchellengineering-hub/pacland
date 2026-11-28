@@ -1265,4 +1265,24 @@ theorem bessel_chu_vandermonde_real (k : ℕ) :
   field_simp [show ((k + 1).factorial : ℝ) ≠ 0 by exact_mod_cast (Nat.factorial_ne_zero (k + 1))]
   ring_nf
 
+/-- **The clean reduction identity**: `I₀·(I₁²−I₀I₂) + I₂·(I₀²−I₁²) = 2I₁³/x`. Both bracketed
+differences are Turán-type (`I₁²−I₀I₂ > 0` and `I₀²−I₁² > 0`); this identity shows their weighted sum equals
+`2I₁³/x`, so the sharp-bound difference `D = I₀·(I₁²−I₀I₂) − I₂·(I₀²−I₁²)` equals `2·(I₀·(I₁²−I₀I₂) − I₁³/x)`.
+Reduces `D > 0` to `I₀·(I₁²−I₀I₂) > I₁³/x` (the single verified-positive coefficient expression). -/
+theorem bessel_turan_weighted_sum (x : ℝ) (hx : 0 < x) :
+    besselI 0 x * (besselI 1 x ^ 2 - besselI 0 x * besselI 2 x) +
+      besselI 2 x * (besselI 0 x ^ 2 - besselI 1 x ^ 2) =
+      2 * besselI 1 x ^ 3 / x := by
+  have hrec : besselI 0 x - besselI 2 x = (2 / x) * besselI 1 x := bessel_recurrence hx
+  calc
+    besselI 0 x * (besselI 1 x ^ 2 - besselI 0 x * besselI 2 x) +
+        besselI 2 x * (besselI 0 x ^ 2 - besselI 1 x ^ 2)
+        = besselI 0 x * besselI 1 x ^ 2 - besselI 0 x ^ 2 * besselI 2 x +
+            besselI 2 x * besselI 0 x ^ 2 - besselI 2 x * besselI 1 x ^ 2 := by ring
+    _ = besselI 1 x ^ 2 * (besselI 0 x - besselI 2 x) := by ring
+    _ = besselI 1 x ^ 2 * ((2 / x) * besselI 1 x) := by rw [hrec]
+    _ = 2 * besselI 1 x ^ 3 / x := by
+      field_simp [ne_of_gt hx]
+      ring
+
 end QM
