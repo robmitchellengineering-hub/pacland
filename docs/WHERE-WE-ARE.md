@@ -49,6 +49,23 @@ The sharp `β·gap → 1/4` is now **proved kernel-checked** (no `sorry`). The s
   double-ratio *monotonicity* lemma, or total-positivity/Pólya-frequency, or the `K`-Bessel
   Wronskian route).
 
+## The a→0 continuum limit (the open Clay existence half) — in progress
+
+The mass-gap side is complete (lattice gap sharp A=1/2, gap-survival Δ_phys > 0, sharp β·gap → 1/4). The
+remaining Clay half is the continuum EXISTENCE on ℝ⁴. The a→0 goal has landed 5 kernel-checked rungs
+(branch feat/massgap-clean):
+
+1. `running_coupling_activity_tendsto_zero` — the cluster activity e^(−cβ) → 0.
+2. `physical_correlation_length_diverges` — e^(cβ)/gap → atTop (the correlation length diverges in physical units).
+3. `cluster_expansion_bound_tendsto_one` — the geometric bound 1/(1−e^(−cβ)) → 1.
+4. `rescaled_two_point_converges` — the rescaled correlation e^(−(β·gap)·t) → e^(−t/4) (mass 1/4).
+5. `cluster_weight_majorant_tendsto_zero` — the total cluster-weight majorant r/(1−r)² → 0.
+
+These are the foundations + the exponential-envelope assembly. The DEEP open core remains: the small/large-field
+region decomposition of the SU(2) measure, the a→0 convergence of the FULL gauge-invariant Schwinger functions
+(not just the mass-gap envelope), and the OS→Wightman reconstruction on ℝ⁴ (beyond the finite-lattice
+`os_reconstruction_actual`).
+
 ## The next real step (the open Clay half)
 
 The mass-gap side is now complete: lattice gap (sharp `A = 1/2`), gap-survival `Δ_phys > 0`, and the
