@@ -344,4 +344,20 @@ theorem running_coupling_activity_tendsto_zero (c : ℝ) (hc : 0 < c) :
     nlinarith
   exact Real.tendsto_exp_atBot.comp hlin
 
+/-- **The cluster-expansion bound converges to `1` in the continuum limit**: `Tendsto (fun β => 1/(1 − e^(−cβ)))
+atTop (nhds 1)`. As the running-coupling activity `e^(−cβ) → 0`, the geometric-series bound `1/(1 − e^(−cβ))`
+that controls the small-field cluster expansion tends to `1` — the spacing-uniform control the a→0 limit needs:
+the cluster expansion's total weight is asymptotically exactly `1`, uniformly in the scale. -/
+theorem cluster_expansion_bound_tendsto_one (c : ℝ) (hc : 0 < c) :
+    Filter.Tendsto (fun β : ℝ => 1 / (1 - Real.exp (-(c * β)))) Filter.atTop (nhds 1) := by
+  have hact := running_coupling_activity_tendsto_zero c hc
+  have hcont : Filter.Tendsto (fun x : ℝ => (1 - x)⁻¹) (nhds 0) (nhds 1) := by
+    have hden : Filter.Tendsto (fun x : ℝ => 1 - x) (nhds 0) (nhds 1) := by
+      simpa using (tendsto_const_nhds.sub Filter.tendsto_id : Filter.Tendsto (fun x : ℝ => (1 : ℝ) - x) (nhds 0) (nhds ((1 : ℝ) - 0)))
+    have hinv := hden.inv₀ (by norm_num : (1 : ℝ) ≠ 0)
+    simpa using hinv
+  have hcomp := hcont.comp hact
+  change Filter.Tendsto (fun β : ℝ => (1 - Real.exp (-(c * β)))⁻¹) Filter.atTop (nhds 1) at hcomp
+  simpa [one_div] using hcomp
+
 end QM
