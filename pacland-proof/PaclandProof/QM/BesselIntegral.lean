@@ -1061,4 +1061,64 @@ theorem physical_mass_lower_bound_tendsto :
     tendsto_const_nhds.add tendsto_inv_atTop_zero
   exact (continuousAt_inv₀ (by norm_num : (4 : ℝ) ≠ 0)).tendsto.comp h1
 
+/-- **The lower-barrier sign**: for `g = x − (x+3)·r`, the derivative `g′ = 1 − r − (x+3)r′` is negative
+on `g ≥ 0` (`r ≤ x/(x+3)`). The Riccati gives `g′ = −x − 2 − r + (x+3)r² + (x+3)r/x`, increasing in `r`, with
+value `−(5x+3)/(x+3) < 0` at the boundary `r = x/(x+3)`. -/
+theorem bessel_ratio_lower_sign {x r r' : ℝ} (hx : 0 < x) (hr : 0 < r)
+    (hriccati : r' = 1 - r ^ 2 - r / x) (hg : 0 ≤ x - (x + 3) * r) :
+    1 - r - (x + 3) * r' < 0 := by
+  have hx3 : 0 < x + 3 := by nlinarith
+  have hrle : r ≤ x / (x + 3) := by
+    exact (div_le_iff₀ hx3).mp (by nlinarith [hg])
+  have hbound : (x + 3) * r ≤ x := by nlinarith [hrle]
+  rw [hriccati]
+  ring_nf
+  have hb2 : (x + 3) * r ^ 2 ≤ x * r := by
+    calc
+      (x + 3) * r ^ 2 = r * ((x + 3) * r) := by ring
+      _ ≤ r * x := mul_le_mul_of_nonneg_left hbound (le_of_lt hr)
+  have hb3 : (x + 3) * r / x ≤ 1 := (div_le_one hx).mpr hbound
+  nlinarith [hb2, hb3, hr, hx]
+
+/-- **The lower bound on the Bessel ratio**: `x/(x+3) ≤ I₁(x)/I₀(x)` for `x ≥ 0` — the Riccati no-crossing
+with the barrier `x − (x+3)r`. This gives the pointwise seed `s(1) = 1 − I₁(1)/I₀(1) ≤ 3/4` for the sharp
+upper-barrier argument. -/
+theorem bessel_ratio_ge_x_div_x_add_three (x : ℝ) (hx : 0 ≤ x) :
+    x / (x + 3) ≤ besselI 1 x / besselI 0 x := by
+  let f : ℝ → ℝ := fun t => t - (t + 3) * (besselI 1 t / besselI 0 t)
+  have hf0 : f 0 = 0 := by
+    dsimp [f]
+    rw [bessel_ratio_zero]
+    norm_num
+  have hf_cont : Continuous f := by
+    dsimp [f]
+    exact continuous_id.sub ((continuous_id.add_const (3 : ℝ)).mul bessel_ratio_continuous)
+  have hf_deriv_explicit : ∀ t, 0 < t → HasDerivAt f
+      (1 - (besselI 1 t / besselI 0 t) - (t + 3) * (1 - (besselI 1 t / besselI 0 t) / t - (besselI 1 t / besselI 0 t) ^ 2)) t := by
+    intro t ht
+    dsimp [f]
+    have hlin : HasDerivAt (fun s : ℝ => s + 3) 1 t := (hasDerivAt_id t).add_const (3 : ℝ)
+    have hmul := hlin.mul (bessel_ratio_hasDerivAt t ht)
+    have hsub := (hasDerivAt_id t).sub hmul
+    change HasDerivAt f (1 - (besselI 1 t / besselI 0 t) - (t + 3) * (1 - (besselI 1 t / besselI 0 t) / t - (besselI 1 t / besselI 0 t) ^ 2)) t at hsub
+    convert hsub using 1
+    ring_nf
+  have hf_deriv : ∀ t, 0 < t → HasDerivAt f (deriv f t) t := fun t ht => (hf_deriv_explicit t ht).congr_deriv (hf_deriv_explicit t ht).deriv.symm
+  have hsign : ∀ t, 0 < t → 0 ≤ f t → deriv f t < 0 := by
+    intro t ht hf_nonneg
+    have hrpos : 0 < besselI 1 t / besselI 0 t := div_pos (besselI_pos ht) (besselI0_pos_all t)
+    have hdf : deriv f t = 1 - (besselI 1 t / besselI 0 t) - (t + 3) * (1 - (besselI 1 t / besselI 0 t) / t - (besselI 1 t / besselI 0 t) ^ 2) :=
+      (hf_deriv_explicit t ht).deriv
+    have hsign' := bessel_ratio_lower_sign (x := t) (r := besselI 1 t / besselI 0 t)
+      (r' := 1 - (besselI 1 t / besselI 0 t) / t - (besselI 1 t / besselI 0 t) ^ 2)
+      ht hrpos (by ring) (by simpa [f] using hf_nonneg)
+    rwa [hdf]
+  have hbar : ∀ t, 0 ≤ t → f t ≤ 0 :=
+    no_crossing_barrier hf_cont hf_deriv hsign hf0
+  have hfx : f x ≤ 0 := hbar x hx
+  dsimp [f] at hfx
+  have hx3 : 0 < x + 3 := by nlinarith
+  have : x ≤ (x + 3) * (besselI 1 x / besselI 0 x) := by nlinarith [hfx]
+  exact (le_div_iff₀ hx3).2 (by simpa [mul_comm] using this)
+
 end QM
