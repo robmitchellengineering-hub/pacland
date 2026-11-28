@@ -918,4 +918,52 @@ theorem su2_char_conv_one (θ_A θ_B : ℝ) :
   · exact (by continuity : Continuous (fun θ₂ : ℝ => Real.cos (θ_A - θ_B) * (Real.sin θ₂)^2)).intervalIntegrable 0 Real.pi
   · exact (by continuity : Continuous (fun θ₂ : ℝ => Real.cos (θ_A + θ_B + 2 * θ₂) * (Real.sin θ₂)^2)).intervalIntegrable 0 Real.pi
 
+/-- **The φ-angle cosine orthogonality**: `∫₀^{2π} cos(φ−φ_A)·cos(φ−φ_B) dφ = π·cos(φ_A−φ_B)`. The product-to-sum
+`cos·cos = (cos(φ_A−φ_B) + cos(2φ−φ_A−φ_B))/2`, the constant integrates to `2π·cos(φ_A−φ_B)` and the full-period
+cosine vanishes. This is the φ-integration primitive for the full SU(2) character convolution (which cancels the
+torus-diagonal artifact). -/
+theorem cos_phi_orthogonality (φ_A φ_B : ℝ) :
+    ∫ φ in (0 : ℝ)..(2 * Real.pi), Real.cos (φ - φ_A) * Real.cos (φ - φ_B) = Real.pi * Real.cos (φ_A - φ_B) := by
+  have hprod : ∀ φ : ℝ, Real.cos (φ - φ_A) * Real.cos (φ - φ_B)
+      = (Real.cos (φ_A - φ_B) + Real.cos (2 * φ - φ_A - φ_B)) / 2 := by
+    intro φ
+    have hsum : Real.cos ((φ - φ_A) + (φ - φ_B)) + Real.cos ((φ - φ_A) - (φ - φ_B))
+        = 2 * (Real.cos (φ - φ_A) * Real.cos (φ - φ_B)) := by
+      nlinarith [Real.cos_add (φ - φ_A) (φ - φ_B), Real.cos_sub (φ - φ_A) (φ - φ_B)]
+    have harg1 : (φ - φ_A) + (φ - φ_B) = 2 * φ - φ_A - φ_B := by ring
+    have harg2 : (φ - φ_A) - (φ - φ_B) = φ_B - φ_A := by ring
+    rw [harg1, harg2] at hsum
+    rw [Real.cos_neg (φ_A - φ_B)] at hsum
+    have hneg : φ_B - φ_A = -(φ_A - φ_B) := by ring
+    rw [hneg, Real.cos_neg] at hsum
+    nlinarith [hsum]
+  rw [intervalIntegral.integral_congr (fun φ _ => hprod φ)]
+  rw [intervalIntegral.integral_div, intervalIntegral.integral_add]
+  · have hconst : ∫ φ in (0 : ℝ)..(2 * Real.pi), Real.cos (φ_A - φ_B) = 2 * Real.pi * Real.cos (φ_A - φ_B) := by
+      rw [intervalIntegral.integral_const]
+      ring
+    have hcos2 : ∫ φ in (0 : ℝ)..(2 * Real.pi), Real.cos (2 * φ - φ_A - φ_B) = 0 := by
+      -- full-period cosine: antiderivative sin(2φ−φ_A−φ_B)/2
+      have hderiv : ∀ φ : ℝ, HasDerivAt (fun t : ℝ => Real.sin (2 * t - φ_A - φ_B) / 2) (Real.cos (2 * φ - φ_A - φ_B)) φ := by
+        intro φ
+        have hsin : HasDerivAt (fun t : ℝ => Real.sin (2 * t - φ_A - φ_B)) (2 * Real.cos (2 * φ - φ_A - φ_B)) φ := by
+          have hlin : HasDerivAt (fun t : ℝ => 2 * t - φ_A - φ_B) 2 φ := by
+            simpa using ((hasDerivAt_const_mul 2 φ (hasDerivAt_id φ)).sub (hasDerivAt_const φ (φ_A + φ_B)))
+          exact (Real.hasDerivAt_sin (2 * φ - φ_A - φ_B)).comp φ hlin
+        simpa using hsin.const_mul (1 / 2)
+      rw [intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le (by nlinarith [Real.pi_pos]) (by continuity) (fun φ hφ => hderiv φ)]
+      have hπ : Real.sin (2 * (2 * Real.pi) - φ_A - φ_B) = Real.sin (2 * 0 - φ_A - φ_B) := by
+        -- sin(4π − c) = sin(−c), since sin is 2π-periodic
+        rw [show 2 * (2 * Real.pi) - φ_A - φ_B = (-φ_A - φ_B) + 4 * Real.pi by ring]
+        rw [Real.sin_add_int_mul_two_pi 2]
+        rw [show 2 * 0 - φ_A - φ_B = -φ_A - φ_B by ring]
+      field_simp
+      ring_nf
+      exact sub_eq_zero.mpr (congrArg (fun x => x / 2) hπ)
+    rw [hconst, hcos2]
+    field_simp [show (2 : ℝ) ≠ 0 by norm_num]
+    ring
+  · exact (by continuity : Continuous (fun _ : ℝ => Real.cos (φ_A - φ_B))).intervalIntegrable 0 (2 * Real.pi)
+  · exact (by continuity : Continuous (fun φ : ℝ => Real.cos (2 * φ - φ_A - φ_B))).intervalIntegrable 0 (2 * Real.pi)
+
 
