@@ -1204,4 +1204,23 @@ theorem bessel_ratio_inv_hasDerivAt (x : ℝ) (hx : 0 < x) :
   convert hdiv using 1
   ring_nf
 
+/-- **The Chu–Vandermonde convolution for the Bessel square**: `Σᵢ C(k+1,i)·C(k+1,i+1) = C(2k+2,k+2)`
+(the binomial form of `Σᵢ 1/(i!(i+1)!(k−i)!(k−i+1)!) = (2k+2)!/(k!(k+2)!(k+1)!²)`). This is Vandermonde's
+identity `add_choose_eq` with `m = n = k+1` plus the two symmetries `C(k+1,k−i) = C(k+1,i+1)` and
+`C(2k+2,k) = C(2k+2,k+2)`. It is the combinatorial kernel of the sharp upper bound's coefficient positivity. -/
+theorem bessel_binomial_convolution (k : ℕ) :
+    (∑ i in Finset.range (k + 1), (k + 1).choose i * (k + 1).choose (i + 1)) =
+      (2 * k + 2).choose (k + 2) := by
+  have hV : (2 * k + 2).choose k =
+      ∑ ij in Finset.Nat.antidiagonal k, (k + 1).choose ij.1 * (k + 1).choose ij.2 :=
+    Nat.add_choose_eq (k + 1) (k + 1) k
+  rw [← hV]
+  rw [Nat.choose_symm_add]
+  rw [Finset.sum_antidiagonal_eq_sum_range_succ_mk]
+  refine Finset.sum_congr rfl (fun i hi => ?_)
+  have hi' : i ≤ k := by
+    rw [Finset.mem_range_succ_iff] at hi
+    exact hi
+  rw [Nat.choose_symm_add]
+
 end QM
