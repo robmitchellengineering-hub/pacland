@@ -360,4 +360,16 @@ theorem cluster_expansion_bound_tendsto_one (c : ℝ) (hc : 0 < c) :
   change Filter.Tendsto (fun β : ℝ => (1 - Real.exp (-(c * β)))⁻¹) Filter.atTop (nhds 1) at hcomp
   simpa [one_div] using hcomp
 
+/-- **The total cluster-weight majorant vanishes in the continuum limit**: `Tendsto (fun r => r/(1−r)²) (nhds 0)
+(nhds 0)`. The geometric series `Σ n·r^n = r/(1−r)²` (the polymer expansion's total weight, up to the
+`(Δ+1)²` factor and volume constant) tends to `0` as the activity `r → 0` — so the small-field cluster
+expansion's total correction vanishes, and the partition function tends to the trivial (non-interacting) limit.
+This is the total-weight companion to `cluster_expansion_bound_tendsto_one` (the single-geometric bound → 1). -/
+theorem cluster_weight_majorant_tendsto_zero :
+    Filter.Tendsto (fun r : ℝ => r / (1 - r) ^ 2) (nhds 0) (nhds 0) := by
+  have hcont : ContinuousAt (fun r : ℝ => r / (1 - r) ^ 2) 0 := by
+    exact continuousAt_id.div ((continuous_const.sub continuous_id).pow 2).continuousAt
+      (by norm_num : ((1 : ℝ) - 0) ^ 2 ≠ 0)
+  simpa using hcont.tendsto
+
 end QM
