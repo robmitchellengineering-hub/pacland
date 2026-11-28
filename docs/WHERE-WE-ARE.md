@@ -60,6 +60,12 @@ remaining Clay half is the continuum EXISTENCE on ℝ⁴. The a→0 goal has lan
 3. `cluster_expansion_bound_tendsto_one` — the geometric bound 1/(1−e^(−cβ)) → 1.
 4. `rescaled_two_point_converges` — the rescaled correlation e^(−(β·gap)·t) → e^(−t/4) (mass 1/4).
 5. `cluster_weight_majorant_tendsto_zero` — the total cluster-weight majorant r/(1−r)² → 0.
+6–16. the measure + RG layer: `continuum_mass_gap_pos` (positive continuum mass 1/4), the Wightman W0–W4
+a→0 closure (`wightman_reconstruction_limit`, `mass_gap_limit_pos`, etc.), `small_field_cutoff_tendsto_zero`
+(the small-field region shrinks), `su2_weyl_measure_normalized` (total mass 1), `large_field_measure_tendsto_zero`
+(large-field suppressed), `blockSpin_average_bound` (the RG density is controlled), `su2_weyl_integral_heat_kernel`
+(∫ e^(x·cos)·sin² = π·I₁/x, the RG step's bridge to Bessel), and `running_coupling_ratio_tendsto_one`
+(I₁/I₀ → 1, the weak-coupling fixed point).
 
 These are the foundations + the exponential-envelope assembly. The OS→Wightman RECONSTRUCTION is now closed
 under the a→0 limit (10 rungs): `wightman_reconstruction_limit` + `wightman_covariance_limit` +
