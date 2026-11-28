@@ -993,4 +993,26 @@ theorem su2_trace_weyl_eq_zero :
   rw [su2_cos_moment_ne_two (n := 1) (by norm_num) (by norm_num)]
   norm_num
 
+/-- **The S³ moment `∫ x₀² = 1/4` in the Weyl form**: `(2/π)·∫₀^π cos²θ·sin²θ dθ = 1/4`. Via the product-to-sum
+`cos²·sin² = (1−cos(4θ))/8` and `∫ cos(4θ) = 0`. The key S³ moment that (with `∫ x₀xᵢ = 0`) gives the matrix
+pseudoreality `∫ V² dV = −I/2`. -/
+theorem su2_cos_sq_weyl_moment :
+    (2 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, (Real.cos θ)^2 * (Real.sin θ)^2 = 1 / 4 := by
+  have hprod : ∀ θ : ℝ, (Real.cos θ)^2 * (Real.sin θ)^2 = (1 - Real.cos (4 * θ)) / 8 := by
+    intro θ
+    rw [Real.cos_sq_eq_half_add, Real.sin_sq_eq_half_sub]
+    rw [show 4 * θ = 2 * (2 * θ) by ring]
+    rw [Real.cos_two_mul]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ _ => hprod θ)]
+  rw [intervalIntegral.integral_div]
+  rw [intervalIntegral.integral_const, intervalIntegral.integral_sub]
+  · have hcos4 : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (4 * θ) = 0 := by
+      simpa using integral_cos_of_ne_zero (n := 4) (by norm_num)
+    rw [hcos4]
+    field_simp [Real.pi_ne_zero]
+    ring
+  · exact (by continuity : Continuous (fun _ : ℝ => (1 : ℝ))).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (4 * θ))).intervalIntegrable 0 Real.pi
+
 
