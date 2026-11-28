@@ -563,4 +563,44 @@ theorem bessel_recurrence_general {n : ℕ} {x : ℝ} (hx : 0 < x) :
     rw [hIn1]
   · exact ha.sub hb
 
+/-- **The general cosine orthogonality**: `∫₀^π cos((k+1)θ)·cos(nθ) dθ = π/2 if `k+1 = n` else 0`. The
+product-to-sum `cos·cos = (cos(sum) + cos(diff))/2` with `integral_cos_of_ne_zero_int` (the signed difference).
+This is the primitive for the general Jacobi–Anger moment `∫ e^(x·cos)·cos(n·) = π·Iₙ` and the Weyl character formula. -/
+theorem integral_cos_succ_mul_cos_n (k n : ℕ) :
+    ∫ θ in (0 : ℝ)..Real.pi, Real.cos ((k + 1 : ℝ) * θ) * Real.cos ((n : ℝ) * θ)
+      = (if k + 1 = n then Real.pi / 2 else 0) := by
+  have hprod : ∀ θ : ℝ, Real.cos ((k + 1 : ℝ) * θ) * Real.cos ((n : ℝ) * θ)
+      = (Real.cos (((k + 1 + n : ℕ) : ℝ) * θ) + Real.cos (((k + 1 : ℤ) - n) * θ)) / 2 := by
+    intro θ
+    have hsum : Real.cos ((k + 1 : ℝ) * θ + (n : ℝ) * θ) + Real.cos ((k + 1 : ℝ) * θ - (n : ℝ) * θ)
+        = 2 * (Real.cos ((k + 1 : ℝ) * θ) * Real.cos ((n : ℝ) * θ)) := by
+      nlinarith [Real.cos_add ((k + 1 : ℝ) * θ) (n : ℝ) * θ, Real.cos_sub ((k + 1 : ℝ) * θ) ((n : ℝ) * θ)]
+    have harg1 : (k + 1 : ℝ) * θ + (n : ℝ) * θ = ((k + 1 + n : ℕ) : ℝ) * θ := by
+      norm_num [Nat.cast_add]; ring
+    have harg2 : (k + 1 : ℝ) * θ - (n : ℝ) * θ = (((k + 1 : ℤ) - n) : ℝ) * θ := by
+      norm_num [Int.cast_sub]; ring
+    rw [harg1, harg2] at hsum
+    nlinarith [hsum]
+  rw [intervalIntegral.integral_congr (fun θ _ => hprod θ)]
+  rw [intervalIntegral.integral_div, intervalIntegral.integral_add]
+  · have hsumzero : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (((k + 1 + n : ℕ) : ℝ) * θ) = 0 :=
+      integral_cos_of_ne_zero (k + 1 + n) (by omega : k + 1 + n ≠ 0)
+    have hdiff : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (((k + 1 : ℤ) - n) * θ) = (if k + 1 = n then Real.pi else 0) := by
+      by_cases hkn : (k : ℤ) + 1 = (n : ℤ)
+      · have hkn_nat : k + 1 = n := by omega
+        subst n
+        rw [show (k + 1 : ℤ) - (k + 1) = 0 by omega]
+        rw [intervalIntegral.integral_congr (fun θ _ => by norm_num)]
+        rw [intervalIntegral.integral_const]
+        norm_num
+      · have hne : (k + 1 : ℤ) - n ≠ 0 := by omega
+        rw [if_neg (by omega : k + 1 ≠ n)]
+        simpa using integral_cos_of_ne_zero_int (k + 1 : ℤ) n hne
+    rw [hsumzero, hdiff]
+    by_cases hkn : k + 1 = n
+    · simp [hkn]
+    · simp [hkn]
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (((k + 1 + n : ℕ) : ℝ) * θ))).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (((k + 1 : ℤ) - n) * θ))).intervalIntegrable 0 Real.pi
+
 
