@@ -581,4 +581,44 @@ theorem su2_sphere_sq_entry_00 (θ₁ θ₂ φ : ℝ) :
   simp [su2_sphere_norm_sq θ₁ θ₂ φ]
   ring
 
+/-- The Pauli-vector entries: `(x⃗·σ⃗)₁₁ = −x 2`, `(x⃗·σ⃗)₀₁ = x 0 − i·x 1`, `(x⃗·σ⃗)₁₀ = x 0 + i·x 1`. -/
+theorem su2_pauli_vec_entry_11 (x : Fin 3 → ℝ) : (su2PauliVec x) 1 1 = -(x 2 : ℂ) := by
+  simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, smul_eq_mul]
+
+theorem su2_pauli_vec_entry_01 (x : Fin 3 → ℝ) : (su2PauliVec x) 0 1 = (x 0 : ℂ) - Complex.I * (x 1 : ℂ) := by
+  simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, smul_eq_mul]
+  ring
+
+theorem su2_pauli_vec_entry_10 (x : Fin 3 → ℝ) : (su2PauliVec x) 1 0 = (x 0 : ℂ) + Complex.I * (x 1 : ℂ) := by
+  simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, smul_eq_mul]
+  ring
+
+/-- The quaternion square's `(1,1)` entry (generic): `(V²)₁₁ = (x₀²−|x⃗|²) − 2i·x₀·x 2`. -/
+theorem su2_quaternion_sq_entry_11 (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    ((su2Quaternion x₀ x)^2) 1 1 =
+      ((x₀ ^ 2 - (x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2) : ℝ) : ℂ) - (2 * x₀ : ℂ) * Complex.I * (x 2 : ℂ) := by
+  have h := su2_quaternion_sq x₀ x
+  have h11 := congr_fun (congr_fun h 1) 1
+  rw [h11]
+  simp [Matrix.one_apply_eq, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2_pauli_vec_entry_11]
+  ring
+
+/-- The quaternion square's `(0,1)` entry (generic): `(V²)₀₁ = 2i·x₀·(x 0 − i·x 1)`. -/
+theorem su2_quaternion_sq_entry_01 (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    ((su2Quaternion x₀ x)^2) 0 1 = (2 * x₀ : ℂ) * Complex.I * ((x 0 : ℂ) - Complex.I * (x 1 : ℂ)) := by
+  have h := su2_quaternion_sq x₀ x
+  have h01 := congr_fun (congr_fun h 0) 1
+  rw [h01]
+  simp [Matrix.one_apply_eq, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2_pauli_vec_entry_01]
+  ring
+
+/-- The quaternion square's `(1,0)` entry (generic): `(V²)₁₀ = 2i·x₀·(x 0 + i·x 1)`. -/
+theorem su2_quaternion_sq_entry_10 (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    ((su2Quaternion x₀ x)^2) 1 0 = (2 * x₀ : ℂ) * Complex.I * ((x 0 : ℂ) + Complex.I * (x 1 : ℂ)) := by
+  have h := su2_quaternion_sq x₀ x
+  have h10 := congr_fun (congr_fun h 1) 0
+  rw [h10]
+  simp [Matrix.one_apply_eq, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2_pauli_vec_entry_10]
+  ring
+
 end QM
