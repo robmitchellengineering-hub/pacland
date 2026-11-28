@@ -1714,4 +1714,27 @@ theorem su2_volume_nested :
   rw [integral_sin_sq_half]
   ring
 
+/-- **The `∫ Tr(U₂AU₂B)` integral**: `∫∫∫ Tr(U₂AU₂B)·sin²θ₁·sin θ₂ = Tr(A·(π²·(B−Tr(B)I)))` — the trace
+cyclicity, the `Tr(A·)` linearity (via `ContinuousLinearMap.integral_comp_comm`), and `su2_conj_integral`. -/
+theorem su2_trace_conj_AB_integral (A B : Matrix (Fin 2) (Fin 2) ℂ) :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A * su2SphereQuaternion θ₁ θ₂ φ * B) * (Real.sin θ₁)^2 * Real.sin θ₂
+      = Matrix.trace (A * (Real.pi ^ 2 • (B - Matrix.trace B • (1 : Matrix (Fin 2) (Fin 2) ℂ)))) := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_congr (fun φ _ => by
+      rw [Matrix.mul_assoc]
+      rw [Matrix.trace_mul_comm]
+      ring)))]
+  -- now the integrand is Tr(A·(U₂BU₂))·(sin²θ₁ sin θ₂); pull Tr(A·) out
+  rw [← ContinuousLinearMap.integral_comp_comm]
+  · -- the outer θ₁ integral: pull Tr(A·) out again
+    rw [← ContinuousLinearMap.integral_comp_comm]
+    · rw [← ContinuousLinearMap.integral_comp_comm]
+      · rw [su2_conj_integral B]
+        simp [Matrix.trace_smul, Matrix.trace_sub, Matrix.trace_one, Matrix.mul_smul, Matrix.mul_sub]
+        ring
+      · exact (by fun_prop : ContinuousLinearMap (Matrix (Fin 2) (Fin 2) ℂ) ℂ)
+    · exact (by fun_prop : ContinuousLinearMap (Matrix (Fin 2) (Fin 2) ℂ) ℂ)
+  · exact (by fun_prop : ContinuousLinearMap (Matrix (Fin 2) (Fin 2) ℂ) ℂ)
+
 
