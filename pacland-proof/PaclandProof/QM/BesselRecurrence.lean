@@ -1605,4 +1605,75 @@ theorem su2_direction_moment_x3_sq_unnorm :
   norm_num [Real.pi_pos]
   ring
 
+/-- **The X·B·X direction-moment integral**: `∫∫∫ (X·B·X)·sin²θ₁·sin θ₂ = (π²/2)·Σₐ σₐ·B·σₐ` (the diagonal
+direction moments `∫xₐ² = π²/2` survive; the off-diagonal `∫xₐxᵦ = 0` vanish). -/
+theorem su2_xbx_matrix (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B * su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]) * (Real.sin θ₁)^2 * Real.sin θ₂
+      = (Real.pi ^ 2 / 2) • (su2Pauli1 * B * su2Pauli1 + su2Pauli2 * B * su2Pauli2 + su2Pauli3 * B * su2Pauli3) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [intervalIntegral.integral_apply, Matrix.mul_apply, su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, smul_eq_mul, complex_I_sq]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_add))]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_add))]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_add))]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_add)]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_add)]
+  <;> rw [intervalIntegral.integral_add]
+  <;> rw [intervalIntegral.integral_add]
+  <;> rw [intervalIntegral.integral_add]
+  <;> rw [intervalIntegral.integral_add]
+  <;> rw [intervalIntegral.integral_add]
+  <;> rw [intervalIntegral.integral_add]
+  <;> rw [intervalIntegral.integral_add]
+  <;> rw [intervalIntegral.integral_add]
+  <;> simp [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_congr (fun φ _ => by ring)))]
+  <;> rw [su2_direction_moment_x1_sq_unnorm]
+  <;> rw [su2_direction_moment_x2_sq_unnorm]
+  <;> rw [su2_direction_moment_x3_sq_unnorm]
+  <;> rw [su2_direction_moment_x1x2_zero]
+  <;> rw [su2_direction_moment_x1x3_zero]
+  <;> rw [su2_direction_moment_x2x3_zero]
+  <;> ring
+
+/-- **The full general pseudoreality (unnormalized)**: `∫∫∫ V·B·V·sin²θ₁·sin θ₂ = π²·(B − Tr(B)·I)`. Assembles
+`su2_conj_generic` + the three matrix integrals (`su2_x0_sq_matrix`, `su2_odd_conj_matrix`, `su2_xbx_matrix`) + the
+Pauli conjugation sum. Normalized by `(1/(2π²))` this is `∫U₂BU₂ dU₂ = (B−Tr(B)I)/2`. -/
+theorem su2_conj_integral (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (su2SphereQuaternion θ₁ θ₂ φ * B * su2SphereQuaternion θ₁ θ₂ φ) * (Real.sin θ₁)^2 * Real.sin θ₂
+      = Real.pi ^ 2 • (B - Matrix.trace B • (1 : Matrix (Fin 2) (Fin 2) ℂ)) := by
+  unfold su2SphereQuaternion
+  calc
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (su2Quaternion (Real.cos θ₁) ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B * su2Quaternion (Real.cos θ₁) ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]) * (Real.sin θ₁)^2 * Real.sin θ₂
+      = ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        ((Real.cos θ₁ : ℂ) ^ 2 • B + Complex.I • (Real.cos θ₁ : ℂ) • (su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B + B * su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]) - su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B * su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]) * (Real.sin θ₁)^2 * Real.sin θ₂ := by
+      rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+        intervalIntegral.integral_congr (fun φ _ => by
+          congr 1
+          exact su2_conj_generic (Real.cos θ₁ : ℂ) (su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]) B)))]
+    _ = (Real.pi ^ 2 / 2) • B + 0 - (Real.pi ^ 2 / 2) • (su2Pauli1 * B * su2Pauli1 + su2Pauli2 * B * su2Pauli2 + su2Pauli3 * B * su2Pauli3) := by
+      rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_sub))]
+      · rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_add))]
+        · rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_add)]
+          · rw [intervalIntegral.integral_add]
+            · congr 1
+              · rw [su2_x0_sq_matrix]
+              · congr 1
+                · exact su2_odd_conj_matrix B
+                · exact su2_xbx_matrix B
+            · exact (by continuity : Continuous (fun θ₁ : ℝ => ((Real.cos θ₁ : ℂ) ^ 2 • B) * (Real.sin θ₁)^2)).intervalIntegrable 0 Real.pi
+            · exact (by continuity : Continuous (fun θ₁ : ℝ => (Complex.I • (Real.cos θ₁ : ℂ) • (su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B + B * su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ])) * (Real.sin θ₁)^2)).intervalIntegrable 0 Real.pi
+          · exact (by continuity : Continuous (fun θ₂ : ℝ => ((Real.cos θ₁ : ℂ) ^ 2 • B) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+          · exact (by continuity : Continuous (fun θ₂ : ℝ => (Complex.I • (Real.cos θ₁ : ℂ) • (su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B + B * su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ])) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+        · exact (by continuity : Continuous (fun θ₂ : ℝ => ((Real.cos θ₁ : ℂ) ^ 2 • B) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+        · exact (by continuity : Continuous (fun θ₂ : ℝ => (Complex.I • (Real.cos θ₁ : ℂ) • (su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B + B * su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]) - su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B * su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+      · exact (by continuity : Continuous (fun θ₂ : ℝ => ((Real.cos θ₁ : ℂ) ^ 2 • B) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+      · exact (by continuity : Continuous (fun θ₂ : ℝ => (Complex.I • (Real.cos θ₁ : ℂ) • (su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B + B * su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]) - su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B * su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+    _ = Real.pi ^ 2 • (B - Matrix.trace B • (1 : Matrix (Fin 2) (Fin 2) ℂ)) := by
+      rw [su2_pauli_conj_sum]
+      ext i j
+      fin_cases i <;> fin_cases j <;> simp [Matrix.sub_apply, Matrix.smul_apply, Matrix.trace, Matrix.one_apply_eq]
+      <;> ring
+
 
