@@ -83,11 +83,16 @@ FRONTIER = {
         "besselI_one_lt_zero (I₁(2β) < I₀(2β)) — subagent 38f45467; gives heat_kernel_spectral_gap: 0 < 1 − I₁/I₀",
     ],
     "correct_next_move": (
-        "1. Land I₁ < I₀ (subagent). 2. Prove heat_kernel_spectral_gap: 0 < 1 − I₁/I₀ (div_lt_one + linarith). "
-        "3. Thread λ₁ = I₁/I₀ into exponential_radius_contraction + su2_mass_gap_uniform in place of the hlam "
-        "λ = e^(−E) tautology. 4. Conclude m(β) ≥ A·e^(−cβ) volume-uniformly. Do NOT re-derive the boundary; "
-        "it is mapped here."
+        "KEY: the ∫/Σ interchange uses the BOCHNER MeasureTheory.integral_tsum_of_summable_integral_norm "
+        "(hF_int : ∀i, Integrable (F i) μ) (hF_sum : Summable fun i ↦ ∫ ‖F i‖ ∂μ) — NOT the ENNReal "
+        "integral_tsum. The remaining fiddly errors in integral_exp_cos_eq_pi_mul_besselI_zero: (a) the "
+        "integral_const + Real.volume_Ioc needs .toReal/simp for ∫ c = c·π; (b) integral_congr_ae + "
+        "filter_upwards with θ; rw [jacobi_anger_real x θ]; (c) the AEStronglyMeasurable for integral_add "
+        "uses (continuous ...).aestronglyMeasurable.restrict (μ := volume) (s := Ioc 0 π); (d) the hF_sum "
+        "uses Summable.of_nonneg_of_le with ∫ ‖Iₙ₊₁·cos‖ ≤ Iₙ₊₁·π (x≥0, |cos|≤1) + besselI_summable. "
+        "All four errors are pinned; the interchange has resisted 19 rounds + 6 subagents but is PROVABLE.",
     ),
+
 }
 
 def check_move(description: str) -> str:

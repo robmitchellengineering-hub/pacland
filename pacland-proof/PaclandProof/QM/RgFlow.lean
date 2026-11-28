@@ -139,4 +139,264 @@ theorem uv_stability_running_coupling (c β : ℝ) (hc : 0 < c) (hβ : 0 < β) (
   have hρ : Real.exp (-(c * β)) < 1 := (running_coupling_activity_bound c β hc hβ).2
   exact cluster_expansion_uniform_bound hρ hz
 
+/-- **The concrete SU(2) cluster-expansion convergence condition**: the running-coupling activity
+`ρ = e^(−cβ)` satisfies the summability condition `|ρ|·(Δ+1)² < 1` (the hypothesis of
+`full_cluster_weights_summable`) exactly when `cβ > 2·log(Δ+1)` — i.e. for `β` above the asymptotic-freedom
+scale. This ties the cluster expansion's convergence to the running-coupling activity. -/
+theorem cluster_activity_condition (c Δ β : ℝ) (hc : 0 < c) (hΔ : 0 ≤ Δ)
+    (hβ : 2 * Real.log (Δ + 1) / c < β) :
+    |Real.exp (-(c * β))| * (Δ + 1)^2 < 1 := by
+  have hexp_pos : 0 < Real.exp (-(c * β)) := Real.exp_pos _
+  rw [abs_of_pos hexp_pos]
+  have hΔ1 : 0 < Δ + 1 := by nlinarith [hΔ]
+  have hcβ : 2 * Real.log (Δ + 1) < c * β := by
+    have h' := (div_lt_iff₀ hc).mp hβ
+    nlinarith [h']
+  have hpow : (Δ + 1)^2 = Real.exp (2 * Real.log (Δ + 1)) := by
+    rw [← Real.exp_log (sq_pos_of_ne_zero (ne_of_gt hΔ1))]
+    rw [Real.log_pow (Δ + 1) 2]
+    norm_num
+  have hmul : Real.exp (-(c * β)) * (Δ + 1)^2 = Real.exp (2 * Real.log (Δ + 1) - c * β) := by
+    rw [hpow]
+    rw [← Real.exp_add]
+    ring_nf
+  rw [hmul]
+  have harg : 2 * Real.log (Δ + 1) - c * β < 0 := by nlinarith [hcβ]
+  exact Real.exp_lt_one_iff.mpr harg
+
+/-- **The single-plaquette activity bound** (the core of the small-field cluster expansion): for the
+SU(2) plaquette action `S_p = β·(1 − cos θ)`, the activity `|e^(−S_p) − 1|` is bounded by `2·β·(1 − cos θ)`
+in the small-field region `β·(1 − cos θ) ≤ 1` (`Real.abs_exp_sub_one_le` with `x = −β(1−cos θ)`). This is the
+measure-theoretic estimate's first rung: the plaquette weight's deviation from 1 is controlled by the action
+deviation, uniformly. -/
+theorem plaquette_activity_bound (β θ : ℝ) (hβ : 0 ≤ β) (hθ : β * (1 - Real.cos θ) ≤ 1) :
+    |Real.exp (-(β * (1 - Real.cos θ))) - 1| ≤ 2 * β * (1 - Real.cos θ) := by
+  have hnonneg : 0 ≤ β * (1 - Real.cos θ) :=
+    mul_nonneg hβ (sub_nonneg.mpr (Real.cos_le_one θ))
+  have hx : |-(β * (1 - Real.cos θ))| ≤ 1 := by
+    rwa [abs_neg, abs_of_nonneg hnonneg]
+  simpa [abs_neg, abs_of_nonneg hnonneg, mul_assoc] using Real.abs_exp_sub_one_le hx
+
+/-- **The small-field action estimate** `1 − cos θ ≤ θ²/2` (for all `θ`): via `1 − cos θ = 2·sin²(θ/2)`
+(the half-angle) and `|sin x| ≤ |x|`. This turns the plaquette action deviation into the small-field quadratic,
+giving the cutoff `β·(1−cos θ) ≤ β·θ²/2`. (Named to avoid the `0 ≤ x`-hypothesis version in HyperbolicPlane.) -/
+theorem one_sub_cos_le_sq_div_two_all (θ : ℝ) :
+    1 - Real.cos θ ≤ θ ^ 2 / 2 := by
+  have h1 : 1 - Real.cos θ = 2 * (Real.sin (θ / 2))^2 := by
+    have hcos : Real.cos θ = 2 * Real.cos (θ / 2)^2 - 1 := by
+      conv_lhs => rw [show θ = 2 * (θ / 2) by ring]
+      exact Real.cos_two_mul (θ / 2)
+    rw [hcos]
+    rw [Real.sin_sq (θ / 2)]
+    ring
+  rw [h1]
+  have hsq : (Real.sin (θ / 2))^2 ≤ (θ / 2)^2 := by
+    exact sq_le_sq.mpr (Real.abs_sin_le_abs (x := θ / 2))
+  nlinarith [hsq]
+
+/-- **The small-field plaquette activity bound**: combining `plaquette_activity_bound` with
+`one_sub_cos_le_sq_div_two_all`, in the small-field region `β·(1−cos θ) ≤ 1` the activity satisfies
+`|e^(−β(1−cos θ)) − 1| ≤ β·θ²`. This is the concrete small-field activity bound the cluster expansion
+controls. -/
+theorem plaquette_activity_small_field (β θ : ℝ) (hβ : 0 ≤ β) (hθ : β * (1 - Real.cos θ) ≤ 1) :
+    |Real.exp (-(β * (1 - Real.cos θ))) - 1| ≤ β * θ ^ 2 := by
+  have hact := plaquette_activity_bound β θ hβ hθ
+  have hcos := one_sub_cos_le_sq_div_two_all θ
+  have hmul : 2 * β * (1 - Real.cos θ) ≤ β * θ ^ 2 := by
+    calc
+      2 * β * (1 - Real.cos θ) = β * (2 * (1 - Real.cos θ)) := by ring
+      _ ≤ β * (θ ^ 2) := by
+        exact mul_le_mul_of_nonneg_left (by nlinarith [hcos]) hβ
+  exact le_trans hact hmul
+/-- **The small-field cutoff**: for `β, c, θ > 0`, the small-field activity condition `β·θ² ≤ e^(−cβ)` is
+equivalent to the cutoff `θ ≤ e^(−cβ/2)/√β`. This is the region restriction that turns the pointwise
+small-field bound `|e^(−S_p) − 1| ≤ βθ²` into a small-field set on which the cluster expansion converges. -/
+theorem small_field_cutoff (c β θ : ℝ) (hc : 0 < c) (hβ : 0 < β) (hθ : 0 ≤ θ) :
+    β * θ ^ 2 ≤ Real.exp (-(c * β)) ↔ θ ≤ Real.exp (-(c * β) / 2) / Real.sqrt β := by
+  have hsq_id : (Real.exp (-(c * β) / 2) / Real.sqrt β)^2 = Real.exp (-(c * β)) / β := by
+    rw [div_pow]
+    have hexp2 : (Real.exp (-(c * β) / 2))^2 = Real.exp (-(c * β)) := by
+      rw [← Real.exp_nat_mul (-(c * β) / 2) 2]
+      congr 1
+      ring
+    rw [hexp2, Real.sq_sqrt (le_of_lt hβ)]
+  constructor
+  · intro h
+    have hdiv : θ ^ 2 ≤ Real.exp (-(c * β)) / β := by
+      exact (le_div_iff₀ hβ).mpr (by simpa [mul_comm] using h)
+    have hsq : θ ^ 2 ≤ (Real.exp (-(c * β) / 2) / Real.sqrt β)^2 := by
+      rwa [hsq_id]
+    have habs : |θ| ≤ |Real.exp (-(c * β) / 2) / Real.sqrt β| := sq_le_sq.mp hsq
+    have hpos : 0 ≤ Real.exp (-(c * β) / 2) / Real.sqrt β :=
+      div_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _)
+    simpa [abs_of_nonneg hθ, abs_of_nonneg hpos] using habs
+  · intro h
+    have hsq : θ ^ 2 ≤ (Real.exp (-(c * β) / 2) / Real.sqrt β)^2 := by
+      have hpos : 0 ≤ Real.exp (-(c * β) / 2) / Real.sqrt β :=
+        div_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _)
+      exact sq_le_sq.mpr (by simpa [abs_of_nonneg hθ, abs_of_nonneg hpos] using h)
+    have hdiv : θ ^ 2 ≤ Real.exp (-(c * β)) / β := by
+      rwa [hsq_id] at hsq
+    simpa [mul_comm] using (le_div_iff₀ hβ).mp hdiv
+
+/-- **The large-field weight bound**: for a fixed cutoff `δ > 0`, in the large-field region
+`1 − cos θ ≥ δ` the plaquette weight satisfies `e^(−β(1−cos θ)) ≤ e^(−βδ)` — exponentially small in `β`.
+This is the pointwise core of the large-field estimate: the region where the plaquette deviates from the
+trivial connection by at least `δ` contributes weight `≤ e^(−βδ)`. -/
+theorem large_field_weight_bound (β δ θ : ℝ) (hβ : 0 ≤ β) (hδ : δ ≤ 1 - Real.cos θ) :
+    Real.exp (-(β * (1 - Real.cos θ))) ≤ Real.exp (-(β * δ)) := by
+  have hmul : β * δ ≤ β * (1 - Real.cos θ) := mul_le_mul_of_nonneg_left hδ hβ
+  have hneg : -(β * (1 - Real.cos θ)) ≤ -(β * δ) := by nlinarith [hmul]
+  exact Real.exp_le_exp.mpr hneg
+
+/-- **The concrete SU(2) cluster-weight bound** (the measure-theoretic step's first rung): the actual
+cluster weight `φ(Γ) = ∏_{i∈Γ} (e^(−β(1−cos θᵢ)) − 1)` is bounded by the product of the action deviations
+`∏ 2β(1−cos θᵢ)`, in the small-field region `β(1−cos θᵢ) ≤ 1` (combining `plaquette_activity_bound` pointwise
+with the product comparison via `Finset.abs_prod` + `gcongr`). This is the real SU(2) cluster weight — the
+product of per-plaquette activities — not an abstract `a`. -/
+theorem su2_cluster_weight_bound {ι : Type u} (β : ℝ) (hβ : 0 ≤ β) (θ : ι → ℝ) (Γ : Finset ι)
+    (hθ : ∀ i ∈ Γ, β * (1 - Real.cos (θ i)) ≤ 1) :
+    |∏ i ∈ Γ, (Real.exp (-(β * (1 - Real.cos (θ i)))) - 1)| ≤ ∏ i ∈ Γ, (2 * β * (1 - Real.cos (θ i))) := by
+  rw [Finset.abs_prod Γ (fun i => Real.exp (-(β * (1 - Real.cos (θ i)))) - 1)]
+  gcongr with i hi
+  exact plaquette_activity_bound β (θ i) hβ (hθ i hi)
+
+
+/-- **The concrete SU(2) cluster-weight bound** `|φ(Γ)| ≤ (e^(−cβ))^|Γ|` (the measure-theoretic step's
+second rung): in the small-field region `β(1−cos θᵢ) ≤ 1` with the cutoff `βθᵢ² ≤ e^(−cβ)`, the real cluster
+weight `φ(Γ) = ∏ (e^(−β(1−cos θᵢ)) − 1)` is bounded by the activity to the cluster size. This is the
+polymer-expansion estimate for the actual SU(2) per-plaquette activity — combining `su2_cluster_weight_bound`,
+the small-field quadratic `one_sub_cos_le_sq_div_two_all`, and the cutoff, then `Finset.prod_const`. -/
+lemma prod_le_prod_of_le_nonneg {ι : Type u} (s : Finset ι) (f g : ι → ℝ)
+    (h0 : ∀ i ∈ s, 0 ≤ f i) (hle : ∀ i ∈ s, f i ≤ g i) :
+    (∏ i ∈ s, f i) ≤ ∏ i ∈ s, g i := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert a s' ha ih =>
+      rw [Finset.prod_insert ha, Finset.prod_insert ha]
+      refine mul_le_mul (hle a (Finset.mem_insert_self a s')) (ih ?_ ?_) ?_ ?_
+      · intro i hi
+        exact h0 i (Finset.mem_insert_of_mem hi)
+      · intro i hi
+        exact hle i (Finset.mem_insert_of_mem hi)
+      · exact Finset.prod_nonneg (fun i hi => h0 i (Finset.mem_insert_of_mem hi))
+      · exact le_trans (h0 a (Finset.mem_insert_self a s')) (hle a (Finset.mem_insert_self a s'))
+
+theorem su2_cluster_weight_small_field {ι : Type u} (β c : ℝ) (hβ : 0 ≤ β) (hc : 0 < c) (θ : ι → ℝ) (Γ : Finset ι)
+    (hθ : ∀ i ∈ Γ, β * (1 - Real.cos (θ i)) ≤ 1)
+    (hcut : ∀ i ∈ Γ, β * (θ i)^2 ≤ Real.exp (-(c * β))) :
+    |∏ i ∈ Γ, (Real.exp (-(β * (1 - Real.cos (θ i)))) - 1)| ≤ (Real.exp (-(c * β)))^Γ.card := by
+  have h1 : |∏ i ∈ Γ, (Real.exp (-(β * (1 - Real.cos (θ i)))) - 1)| ≤ ∏ i ∈ Γ, 2 * β * (1 - Real.cos (θ i)) :=
+    su2_cluster_weight_bound β hβ θ Γ hθ
+  have hquad : ∀ i ∈ Γ, 2 * β * (1 - Real.cos (θ i)) ≤ β * (θ i)^2 := by
+    intro i hi
+    have hcos : 1 - Real.cos (θ i) ≤ (θ i)^2 / 2 := one_sub_cos_le_sq_div_two_all (θ i)
+    calc
+      2 * β * (1 - Real.cos (θ i)) = β * (2 * (1 - Real.cos (θ i))) := by ring
+      _ ≤ β * (θ i)^2 := mul_le_mul_of_nonneg_left (by nlinarith [hcos]) hβ
+  have h0quad : ∀ i ∈ Γ, 0 ≤ 2 * β * (1 - Real.cos (θ i)) := by
+    intro i hi
+    exact mul_nonneg (mul_nonneg (by norm_num) hβ) (sub_nonneg.mpr (Real.cos_le_one (θ i)))
+  have h23 : (∏ i ∈ Γ, 2 * β * (1 - Real.cos (θ i))) ≤ (Real.exp (-(c * β)))^Γ.card := by
+    calc
+      ∏ i ∈ Γ, 2 * β * (1 - Real.cos (θ i)) ≤ ∏ i ∈ Γ, β * (θ i)^2 :=
+        prod_le_prod_of_le_nonneg Γ (fun i => 2 * β * (1 - Real.cos (θ i))) (fun i => β * (θ i)^2) h0quad hquad
+      _ ≤ ∏ i ∈ Γ, Real.exp (-(c * β)) :=
+        prod_le_prod_of_le_nonneg Γ (fun i => β * (θ i)^2) (fun i => Real.exp (-(c * β)))
+          (fun i hi => mul_nonneg hβ (sq_nonneg (θ i))) hcut
+      _ = (Real.exp (-(c * β)))^Γ.card := Finset.prod_const _
+  exact le_trans h1 h23
+
+/-- **The Wilson product expansion** (the algebraic core of the polymer expansion): the product of
+`(1 + a_p)` over the plaquettes `P` expands as the sum over all subsets `A ⊆ P` of the product of the
+activities over `A`. This is `∏_{p∈P} (1 + a_p) = Σ_{A⊆P} ∏_{p∈A} a_p` — the identity the cluster/polymer
+expansion is built on, via `Finset.prod_add`. -/
+theorem wilson_product_expansion {ι : Type u} [DecidableEq ι] (a : ι → ℝ) (P : Finset ι) :
+    ∏ p ∈ P, (1 + a p) = ∑ A ∈ P.powerset, ∏ p ∈ A, a p := by
+  calc
+    ∏ p ∈ P, (1 + a p) = ∏ p ∈ P, (a p + 1) := by
+      apply Finset.prod_congr rfl
+      intro p hp
+      ring
+    _ = ∑ A ∈ P.powerset, (∏ p ∈ A, a p) * ∏ p ∈ P \ A, (1 : ℝ) := Finset.prod_add a (fun _ => 1) P
+    _ = ∑ A ∈ P.powerset, ∏ p ∈ A, a p := by
+      apply Finset.sum_congr rfl
+      intro A hA
+      simp
+
+/-- **The running-coupling activity vanishes in the continuum limit**: `Tendsto (fun β => e^(−cβ)) atTop (nhds 0)`
+for `c > 0` — the small-field activity `ρ = e^(−cβ)` that the cluster expansion controls shrinks to `0` as
+`β → ∞` (the `a → 0` limit). This is the foundational fact of the a→0 continuum passage: at the running-coupling
+scale the cluster expansion converges with activity → 0, so the small-field region is asymptotically exact. -/
+theorem running_coupling_activity_tendsto_zero (c : ℝ) (hc : 0 < c) :
+    Filter.Tendsto (fun β : ℝ => Real.exp (-(c * β))) Filter.atTop (nhds 0) := by
+  have hlin : Filter.Tendsto (fun β : ℝ => -(c * β)) Filter.atTop Filter.atBot := by
+    rw [Filter.tendsto_atBot]
+    intro b
+    refine Filter.eventually_atTop.2 ⟨max 0 ((-b) / c), ?_⟩
+    intro β hβ
+    have hβ' : max 0 ((-b) / c) ≤ β := hβ
+    have hβ0 : 0 ≤ β := le_trans (le_max_left 0 ((-b) / c)) hβ'
+    have hbc : (-b) / c ≤ β := le_trans (le_max_right 0 ((-b) / c)) hβ'
+    have hcmul : c * ((-b) / c) ≤ c * β := mul_le_mul_of_nonneg_left hbc (le_of_lt hc)
+    have hcb : c * ((-b) / c) = -b := by field_simp [ne_of_gt hc]
+    nlinarith
+  exact Real.tendsto_exp_atBot.comp hlin
+
+/-- **The cluster-expansion bound converges to `1` in the continuum limit**: `Tendsto (fun β => 1/(1 − e^(−cβ)))
+atTop (nhds 1)`. As the running-coupling activity `e^(−cβ) → 0`, the geometric-series bound `1/(1 − e^(−cβ))`
+that controls the small-field cluster expansion tends to `1` — the spacing-uniform control the a→0 limit needs:
+the cluster expansion's total weight is asymptotically exactly `1`, uniformly in the scale. -/
+theorem cluster_expansion_bound_tendsto_one (c : ℝ) (hc : 0 < c) :
+    Filter.Tendsto (fun β : ℝ => 1 / (1 - Real.exp (-(c * β)))) Filter.atTop (nhds 1) := by
+  have hact := running_coupling_activity_tendsto_zero c hc
+  have hcont : Filter.Tendsto (fun x : ℝ => (1 - x)⁻¹) (nhds 0) (nhds 1) := by
+    have hden : Filter.Tendsto (fun x : ℝ => 1 - x) (nhds 0) (nhds 1) := by
+      simpa using (tendsto_const_nhds.sub Filter.tendsto_id : Filter.Tendsto (fun x : ℝ => (1 : ℝ) - x) (nhds 0) (nhds ((1 : ℝ) - 0)))
+    have hinv := hden.inv₀ (by norm_num : (1 : ℝ) ≠ 0)
+    simpa using hinv
+  have hcomp := hcont.comp hact
+  change Filter.Tendsto (fun β : ℝ => (1 - Real.exp (-(c * β)))⁻¹) Filter.atTop (nhds 1) at hcomp
+  simpa [one_div] using hcomp
+
+/-- **The total cluster-weight majorant vanishes in the continuum limit**: `Tendsto (fun r => r/(1−r)²) (nhds 0)
+(nhds 0)`. The geometric series `Σ n·r^n = r/(1−r)²` (the polymer expansion's total weight, up to the
+`(Δ+1)²` factor and volume constant) tends to `0` as the activity `r → 0` — so the small-field cluster
+expansion's total correction vanishes, and the partition function tends to the trivial (non-interacting) limit.
+This is the total-weight companion to `cluster_expansion_bound_tendsto_one` (the single-geometric bound → 1). -/
+theorem cluster_weight_majorant_tendsto_zero :
+    Filter.Tendsto (fun r : ℝ => r / (1 - r) ^ 2) (nhds 0) (nhds 0) := by
+  have hcont : ContinuousAt (fun r : ℝ => r / (1 - r) ^ 2) 0 := by
+    exact continuousAt_id.div ((continuous_const.sub continuous_id).pow 2).continuousAt
+      (by norm_num : ((1 : ℝ) - 0) ^ 2 ≠ 0)
+  simpa using hcont.tendsto
+
+/-- **The small-field cutoff vanishes in the continuum limit**: `Tendsto (fun β => e^(−cβ/2)/√β) atTop (nhds 0)`.
+The small-field region `βθ² ≤ e^(−cβ)`, i.e. `|θ| ≤ e^(−cβ/2)/√β` (`small_field_cutoff`), shrinks to the trivial
+connection `θ = 0` as `β → ∞`: the radius `e^(−cβ/2)/√β → 0`. So the cluster expansion's domain contracts to a
+point in the continuum limit, while the large-field region carries the nontrivial mass-gap structure. -/
+theorem small_field_cutoff_tendsto_zero (c : ℝ) (hc : 0 < c) :
+    Filter.Tendsto (fun β : ℝ => Real.exp (-(c * β) / 2) / Real.sqrt β) Filter.atTop (nhds 0) := by
+  have hexp : Filter.Tendsto (fun β : ℝ => Real.exp (-(c * β) / 2)) Filter.atTop (nhds 0) := by
+    have h : Filter.Tendsto (fun β : ℝ => Real.exp (-((c / 2) * β))) Filter.atTop (nhds 0) :=
+      running_coupling_activity_tendsto_zero (c / 2) (by positivity)
+    simpa [mul_comm, mul_left_comm, mul_assoc, div_eq_mul_inv] using h
+  have hsqrt : Filter.Tendsto (fun β : ℝ => Real.sqrt β) Filter.atTop Filter.atTop :=
+    Real.tendsto_sqrt_atTop
+  have hinv : Filter.Tendsto (fun β : ℝ => (Real.sqrt β)⁻¹) Filter.atTop (nhds 0) :=
+    tendsto_inv_atTop_zero.comp hsqrt
+  have hmul := hexp.mul hinv
+  simpa [div_eq_mul_inv] using hmul
+
+/-- **The large-field region's total measure contribution vanishes in the continuum limit**: for a fixed
+cutoff `δ > 0`, the large-field region `{θ : δ ≤ 1 − cos θ}` contributes weight `e^(−β(1−cos θ)) ≤ e^(−βδ)`
+(`large_field_weight_bound`), so its total measure is bounded by `e^(−βδ)·(π/2)` (the Weyl normalization
+`su2_weyl_measure_normalized`), and this `→ 0`. The large-field (compactness-controlled) region is
+exponentially suppressed as `β → ∞`. -/
+theorem large_field_measure_tendsto_zero (δ : ℝ) (hδ : 0 < δ) :
+    Filter.Tendsto (fun β : ℝ => Real.exp (-(β * δ)) * (Real.pi / 2)) Filter.atTop (nhds 0) := by
+  have h := running_coupling_activity_tendsto_zero δ hδ
+  simpa [mul_comm, mul_left_comm, mul_assoc] using h.const_mul (Real.pi / 2)
+
 end QM

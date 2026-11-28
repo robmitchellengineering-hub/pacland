@@ -67,6 +67,13 @@
    "title": "Discovery harvest \u2014 transfer-matrix methodologies and renormalisation schemes"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-KNOWLEDGE-GRAPH.md",
+   "kind": "doc",
+   "path": "docs/DISCOVERY-KNOWLEDGE-GRAPH.md",
+   "summary": "machine can reason about what it learned and reuse it.\" This file is the schema for the graph: the node types, the relationship types, the process that adds them, and the evidence each\u2026",
+   "title": "The discovery knowledge graph \u2014 nodes with relationships, not a notebook"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/DISCOVERY-PROCESS.md",
    "kind": "doc",
    "path": "docs/DISCOVERY-PROCESS.md",
@@ -81,11 +88,25 @@
    "title": "The `h\u0398` pairing \u2014 what must be found, and the current candidate (2026-11)"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/HTHETA-FSS-GAP.md",
+   "kind": "doc",
+   "path": "docs/HTHETA-FSS-GAP.md",
+   "summary": "File: pacland-proof/PaclandProof/QM/FSSGaussianDomination.lean (namespace FSSGaussianDomination).",
+   "title": "The `h\u0398` FSS rung \u2014 exact state and the label-inflation trap (round 1)"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/INFINITE-DIMENSIONAL-ISSUE.md",
    "kind": "doc",
    "path": "docs/INFINITE-DIMENSIONAL-ISSUE.md",
    "summary": "the actual Faddeev\u2013Popov operator and the transfer operator act on the infinite-dimensional gauge-field space, and no finite truncation establishes their spectral properties. This file\u2026",
    "title": "The infinite-dimensional issue \u2014 what the engine must find"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/INTERCHANGE-99PCT.md",
+   "kind": "doc",
+   "path": "docs/INTERCHANGE-99PCT.md",
+   "summary": "The FULL proof that compiles up to the 2 pinned errors. Route: interval-integral tsumintervalIntegraleqofsummablenorm (no MeasureTheory/ENNReal).",
+   "title": "interchange integral_exp_cos_eq_pi_mul_besselI_zero \u2014 ~99% working proof"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/KILL-CRITERIA.md",
@@ -130,6 +151,13 @@
    "title": "The Yang\u2013Mills mass gap: a falsifier-first reduction to one open rung"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-PAPER.md",
+   "kind": "doc",
+   "path": "docs/MASS-GAP-PAPER.md",
+   "summary": "green, 9173 jobs, no sorry/admit/axiom), with the sharp coefficient A = 1/2. The continuum mass gap is proved in the volume-uniform bound form (\u2203 \u0394 > 0). The connected-correlation\u2026",
+   "title": "The SU(2) lattice Yang\u2013Mills mass gap \u2014 a kernel-checked reduction and its closure"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MASS-GAP-PROOF-PLAN.md",
    "kind": "doc",
    "path": "docs/MASS-GAP-PROOF-PLAN.md",
@@ -156,6 +184,13 @@
    "path": "docs/MASTER-RESEARCH.md",
    "summary": "The single source of truth for the mass-gap program. It states the one metric, names the exact assumptions still doing the heavy lifting, separates the four competing tracks, gives each an\u2026",
    "title": "SEXTANT \u2014 Master Research Document"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/METHODOLOGY-DISCOVERIES.md",
+   "kind": "doc",
+   "path": "docs/METHODOLOGY-DISCOVERIES.md",
+   "summary": "us something. The journey is usually the richer science. A final theorem is one sentence; the techniques that produced it transfer to the next fifty problems. If the machine only records\u2026",
+   "title": "Methodology discoveries \u2014 the explainer and tracker"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/MILESTONE-3-CANDIDATES.md",
@@ -324,6 +359,13 @@
    "path": "docs/UNIFICATION-STATUS.md",
    "summary": "One document: everything proven, everything measured, and the sharper picture they form. Status is tiered \u2014 proven (symbolic, machine-checked) vs measured (node, with a control) vs asserted\u2026",
    "title": "UNIFICATION \u2014 where we are, and the path (2026-10-23)"
+  },
+  {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/WHERE-WE-ARE.md",
+   "kind": "doc",
+   "path": "docs/WHERE-WE-ARE.md",
+   "summary": "Last updated 2026-11-28. This is the anti-drift record: the one place to read before doing more work, so we do not re-derive or over-claim.",
+   "title": "Where we are \u2014 the Yang\u2013Mills mass gap (honest state)"
   },
   {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/docs/ZENODO-PAPER.md",
@@ -3833,6 +3875,13 @@
    "title": "zenodo_upload_massgap.py"
   },
   {
+   "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_massgap_sharp.py",
+   "kind": "script",
+   "path": "scripts/zenodo_upload_massgap_sharp.py",
+   "summary": "Upload the PROVED lattice SU(2) Yang-Mills mass gap to Zenodo (sharp A = 1/2).",
+   "title": "zenodo_upload_massgap_sharp.py"
+  },
+  {
    "href": "https://github.com/robmitchellengineering-hub/pacland/blob/main/scripts/zenodo_upload_qg.py",
    "kind": "script",
    "path": "scripts/zenodo_upload_qg.py",
@@ -3915,6 +3964,13 @@
    "path": "PACLAND-oracles-plain-speak.pdf",
    "summary": "explainer PDF",
    "title": "oracles plain speak"
+  },
+  {
+   "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-physics-explainer.pdf",
+   "kind": "pdf",
+   "path": "PACLAND-physics-explainer.pdf",
+   "summary": "explainer PDF",
+   "title": "physics explainer"
   },
   {
    "href": "https://raw.githubusercontent.com/robmitchellengineering-hub/pacland/main/PACLAND-what-and-why.pdf",

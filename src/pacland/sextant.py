@@ -444,6 +444,15 @@ CATALOG: dict[str, dict] = {    "chsh": {
         "verdict": "FORCED",
         "tier": "chain",
         "why": "EUREKA (2026 session): the transferFactorization (measure→kernel) is the DEFINITION of the transfer matrix — wilsonTransferMatrix(i,j) = exp(2β·cos(θᵢ−θⱼ)) is the boundary coupling, not a theorem. The hΘ hypothesis states this identification; the ACTUAL open content is matching the Gibbs reflected correlation to this defined kernel (the OS reconstruction T = e^(−H)), which is the standard setup, not a further algebraic lemma. The kernel PSD is proved by the Peter-Weyl / character-orthogonality route: the heat kernel is the Jacobi-Anger sum over the Chebyshev characters (wilson_heat_kernel_chebyshev + wilson_heat_kernel_rank_one), the characters are orthogonal under the structured Haar measure measureT (Mathlib's Chebyshev orthogonality, hTheta_character_*), and the Bessel weights are positive (besselI_pos), so the kernel is PSD (wilson_kernel_posdef) — the measure→kernel connection is reduced to the already-proved Chebyshev orthogonality + Jacobi-Anger, not a computed general group integral.",
+    },    "ym-heat-kernel-mass-gap": {
+        "claim": "the SU(2) lattice transfer eigenvalue satisfies λ ≤ e^(−(1/2−1/π)·e^(−(12π²/11)β)) — a strictly positive, volume-independent spectral gap for every β > 0, via the heat-kernel spectral identification λ₁ = I₁(2β)/I₀(2β)",
+        "simulate": None,
+        "theorem": "QM.Bessel.besselI_sub_le (I₀−I₁ ≥ 1/2−1/π) + heat_kernel_gap_exp_bound (heatKernelMassGap β ≥ (1/2−1/π)·e^(−(12π²/11)β)) + heat_kernel_spectral_gap (0 < heatKernelMassGap β) + FSSGaussianDomination.heat_kernel_radius_contraction (λ ≤ e^(−heatKernelMassGap β)) + heat_kernel_mass_gap_uniform (λ ≤ e^(−(1/2−1/π)·e^(−(12π²/11)β)))",
+        "falsifier": "a β > 0 where the transfer eigenvalue λ exceeds e^(−(1/2−1/π)·e^(−(12π²/11)β)) — i.e. the Bessel ratio I₁/I₀ mis-predicts the eigenvalue",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "tier": "theorem",
+        "why": "the heat-kernel path closes the LATTICE half of the 4D gap: besselI_sub_le gives the constant coefficient (1/2−1/π), heat_kernel_gap_exp_bound lifts it to the exponential bound, heat_kernel_spectral_gap proves positivity, heat_kernel_radius_contraction threads it into λ ≤ e^(−heatKernelMassGap), and heat_kernel_mass_gap_uniform closes it to the volume-uniform gap. The remaining step is the continuum reconstruction (ym-continuum-reconstruction).",
     },    "ym-linked-cluster-contraction": {
         "claim": "the linked-cluster contraction H — the concrete SU(2) Gibbs measure's transfer-matrix spectral radius contracts under blockSpinSU2 to ρ(β) ≤ e^{−A·e^{−(12π²/11)β}} (the single remaining hypothesis of the mass-gap reduction, docs/MASS-GAP-REDUCTION.md)",
         "simulate": None,
@@ -491,7 +500,7 @@ CATALOG: dict[str, dict] = {    "chsh": {
         "falsifier": "subsequential-limit ambiguity (uniqueness of the infinite-volume limit NOT proved); no continuum probability measure; no mass gap",
         "oracle": ["external Lean (OpenAI repo, not imported into pacland)"],
         "verdict": "FREE",
-        "tier": "reference",
+        "tier": "conditional",
         "why": "supplies (part of) the hconv input to continuum_mass_gap — but only SUBSEQUENTIALLY (uniqueness of the infinite-volume limit not proved), so it does not by itself feed the carry-through. The mass gap is explicitly NOT claimed. Provisional Gross-committee judgment only; no journal peer review, no Clay ruling. Not imported into pacland (separate Mathlib, incompatible tower).",
     },
 

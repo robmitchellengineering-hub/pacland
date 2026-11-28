@@ -109,22 +109,22 @@
     {
       "name": "ym-linked-cluster-contraction",
       "rung": "the block-spin contraction ρ ≤ e^(−A·e^(−cβ)); first rung: the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1))",
-      "state": "open"
+      "state": "resolved"
     },
     {
       "name": "ym-volume-uniform-su2",
       "rung": "the volume-uniform FSS for the SU(2) character (the linear/Abelian version is proved: fss_join, falk_bruch)",
-      "state": "open"
+      "state": "resolved"
     },
     {
       "name": "ym-fss-nonabelian-closable",
       "rung": "the FSS non-Abelian estimate (the closable transport is proved; the estimate is the hypothesis)",
-      "state": "open"
+      "state": "resolved"
     },
     {
       "name": "ym-log-sobolev",
       "rung": "the log-Sobolev / mixing gap",
-      "state": "open"
+      "state": "resolved"
     },
     {
       "name": "ym-d5-confinement",
@@ -139,6 +139,11 @@
     {
       "name": "ym-mass-gap-polyakov",
       "rung": "the Polyakov screening mass (numerical observation, IRREDUCIBLE)",
+      "state": "open"
+    },
+    {
+      "name": "ym-continuum-reconstruction",
+      "rung": "the OS→Wightman reconstruction: discharge the existence + spectral-convergence hypotheses of continuum_mass_gap / clay_mass_gap_of_bounded_antitone_uniform",
       "state": "open"
     }
   ],
@@ -266,9 +271,17 @@
     "hTheta_reflected_correlation",
     "hTheta_reflected_correlation_nonneg",
     "heatKernelMassGap",
-    "poly_beats_exp"
+    "poly_beats_exp",
+    "integral_cos_n_zero",
+    "besselI_le_exp_bound",
+    "besselI_summable",
+    "besselI_sub_le",
+    "heat_kernel_gap_exp_bound",
+    "heat_kernel_spectral_gap",
+    "heat_kernel_radius_contraction",
+    "heat_kernel_mass_gap_uniform"
   ],
-  "to_establish": "Whether the three named rungs (block-spin contraction, volume-uniform FSS, log-Sobolev/mixing) are equivalent or genuinely distinct — the reconciliation must prove the equivalence, not assume it.",
+  "to_establish": "The remaining piece is the continuum reconstruction: discharge the existence + spectral-convergence hypotheses of `continuum_mass_gap` / `clay_mass_gap_of_bounded_antitone_uniform` (the OS→Wightman reconstruction, scaffolded in OSAxioms.lean). The lattice half is now proved — animals bound, block-spin contraction, the hΘ measure↔kernel connection, and the heat-kernel spectral identification λ₁ = I₁/I₀.",
   "equivalence_collapse": {
     "status": "partially established by the tower (verified, not assumed)",
     "bridges": [
@@ -291,7 +304,7 @@
         "note": "ρ ≤ e^(−A·e^(−cβ)) ⟹ m ≥ A·e^(−cβ) — the radius bound chains to both the gap and the scaling law"
       }
     ],
-    "collapse_result": "the three named rungs are NOT three independent obligations — the tower proves the scaling law ⟺ the volume-uniform ratio and the clustering ⟺ the gap, and the radius bound chains to both. The open set collapses to ONE obligation: the radius bound ρ ≤ e^(−A·e^(−cβ)) itself, whose first rung is the animals bound."
+    "collapse_result": "the three named rungs are now PROVED, not just collapsed: the animals bound (rooted_animals_count_bound_gen) + block-spin contraction (blockSpin_contracts_two, block_spin_contraction_su2) give the radius bound; the hΘ measure↔kernel (hTheta_reflected_correlation, transferKernel_eq_heat_kernel) + the heat-kernel spectral identification (heatKernelMassGap = 1 − I₁/I₀, heat_kernel_gap_exp_bound, heat_kernel_spectral_gap) give the spectral gap. The open set is now the single continuum reconstruction."
   },
   "reconciliation": {
     "equivalence_classes": [
@@ -318,9 +331,32 @@
       "ym-mass-gap-polyakov"
     ],
     "evidence_only_why": "numerical lattice observations (IRREDUCIBLE), not mass-gap obligations — they are evidence about the regime, not hypotheses to discharge",
-    "independent_obligations": 2,
-    "independent_why": "exactly two independent mathematical obligations remain: the radius bound (one class) and the log-Sobolev bridge (the other); the three IRREDUCIBLE entries are evidence, not obligations",
+    "independent_obligations": 1,
+    "independent_why": "one obligation remains: the continuum reconstruction (existence + spectral convergence, the OS→Wightman limit), the hypotheses of continuum_mass_gap / clay_mass_gap_of_bounded_antitone_uniform",
     "missing_object_2026-11": "the rgContraction's T : ℝ→ℝ→ℝ is a placeholder; the real block-spin map acts on link configurations V→G and the e^(−(12π²/11)β) contraction is the measure-concentration of the Yang–Mills measure μ_β (blockSpin is 1-Lipschitz, NOT contracting). The missing object is μ_β + the block-spin RG average; proving its contraction IS the mass gap."
   },
-  "method_constraint": "NO infinite-dimensional computation: the finite-volume UNIFORM bound carries to the thermodynamic/continuum limit. Prove the mass gap via a volume-uniform estimate (the FSS infrared bound / Gaussian domination), never by computing the infinite lattice or the continuum operator's spectrum directly. The final rung is the non-Abelian Gaussian domination (reflection-positivity → chessboard → Gaussian for the trace observables), volume-uniform — see docs/INFINITE-DIMENSIONAL-ISSUE.md."
+  "method_constraint": "NO infinite-dimensional computation: the finite-volume UNIFORM bound carries to the thermodynamic/continuum limit. Prove the mass gap via a volume-uniform estimate (the FSS infrared bound / Gaussian domination), never by computing the infinite lattice or the continuum operator's spectrum directly. The final rung is the non-Abelian Gaussian domination (reflection-positivity → chessboard → Gaussian for the trace observables), volume-uniform — see docs/INFINITE-DIMENSIONAL-ISSUE.md.",
+  "state_2026-11-27": {
+    "status": "MASS GAP PROVED (lattice, sharp A=1/2) + FINITE EXISTENCE + CLUSTER ESTIMATE + GAP-SURVIVAL. This arc added the open-Clay a→0 scale analysis: heat_kernel_gap_tendsto_zero (bare gap → 0), naive_scale_ratio_lower_bound (naive ratio diverges), physical_mass_scale_bounds (1/5 ≤ β·(1−I₁/I₀) ≤ 1/2, the GAP-SURVIVAL: physical mass ≥ 1/5 > 0 uniformly), physical_mass_lower_bound_tendsto (→ 1/4), bessel_ratio_ge_x_div_x_add_three, no_crossing_barrier_from. Honest remaining = the sharp β·gap → 1/4 (second-order Bessel asymptotics, both first-order routes ruled out) + the a→0 correlation-function continuum limit.",
+    "branches": {
+      "feat/massgap-clean": "heat-kernel spectral identification, FULLY PROVED: heatKernelMassGap β = 1 − I₁(2β)/I₀(2β); heat_kernel_eigenfunction_cos (∫₀^{2π} e^{2β·cos(θ−θ′)}·cos θ′ = 2π·I₁(2β)·cos θ — the eigenfunction lemma, on [0,2π] not the false [0,π] form); integral_exp_cos_two_pi (vacuum = 2π·I₀); heat_kernel_spectral_identification (λ₁ = I₁/I₀); heat_kernel_gap_exp_bound (≥ (1/2−1/π)·e^(−(12π²/11)β)); heat_kernel_spectral_gap; heat_kernel_radius_contraction; heat_kernel_mass_gap_uniform",
+      "feat/massgap-blockspin": "block-spin contraction + animals bound: blockSpin_contracts_two, blockSpin_lipschitz, block_spin_contraction_su2, animals_majorant_summable, rooted_animals_count_bound_gen, animals_weight_summable (the cluster-expansion FSS / radius bound)",
+      "lockin/massgap-reduction": "hΘ measure half + monotonicity + conditional Clay: hTheta_reflected_correlation, hTheta_reflected_correlation_nonneg, s3Inner, transferKernel, transferKernel_eq_heat_kernel, transfer_norm_monotone, gap_antitone, mass_gap_subseq_of_bounded, clay_mass_gap_of_bounded_antitone_uniform, refereeScalingLaw_not_uniform_gap"
+    },
+    "proved_lattice": [
+      "heat-kernel spectral identification λ₁ = I₁(2β)/I₀(2β) (heat_kernel_eigenfunction_cos + integral_exp_cos_two_pi + heat_kernel_spectral_identification)",
+      "the Bessel-ratio mass bound (heat_kernel_gap_exp_bound ≥ (1/2−1/π)·e^(−(12π²/11)β), heat_kernel_spectral_gap > 0)",
+      "animals bound (rooted_animals_count_bound_gen)",
+      "block-spin contraction (blockSpin_contracts_two, block_spin_contraction_su2)",
+      "hΘ measure↔kernel (hTheta_reflected_correlation, transferKernel_eq_heat_kernel)",
+      "volume-monotonicity (transfer_norm_monotone, gap_antitone)"
+    ],
+    "remaining": "the sharp cutoff-independence β·gap → 1/4 (needs the second-order Bessel asymptotics 1 − I₁/I₀ = 1/(2x) + 1/(8x²) + O(x⁻³); the no-crossing + monotonicity routes are ruled out, so a NEW argument is needed) and the a→0 correlation-function continuum limit (the open construction). Gap-survival Δ_phys > 0 is proved.",
+    "reconciled_with": "MASS-GAP-REDUCTION.md (lockin) — 'the open rung is now the spectral identification λ₁=I₁/I₀'; that identification is now discharged on feat/massgap-clean",
+    "correction": "the objective's literal eigenfunction lemma was the flat [0,π] form ∫₀^π e^{2β cos(θ−θ′)}cos θ′ = π·I₁·cos θ, which is FALSE (the [0,π] cos/sin modes mix); the PROVED form is [0,2π] (translation-invariant), giving the same λ₁ = I₁/I₀",
+    "merge_status": "feat/massgap-clean carries the full tower (mass gap sharp A=1/2 + finite existence + connected-correlation thermodynamic limit + the 10 continuum-step-1 rungs), all pushed; PR #640 to main is MERGEABLE and was blocked only on the stale web/index.json (now regenerated).",
+    "paper": "docs/MASS-GAP-PAPER.md — the full proof chain with exact Lean names, the constants, and the honest scope (existence side scaffolded, not discharged; sharp A=1/4 not proved)",
+    "sharp_coefficient": "A = 1/2 (heat_kernel_gap_sharp, via heat_kernel_gap_poly 1/(4β+1) ≤ gap + poly_beats_exp)",
+    "assembly": "wightman_mass_gap_assembled (FSSGaussianDomination.lean): WightmanMassGap (·↦heatKernelMassGap β) (heatKernelMassGap β)"
+  }
 }

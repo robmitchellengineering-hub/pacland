@@ -125,7 +125,10 @@
     "hTheta_reflected_correlation",
     "hTheta_reflected_correlation_nonneg",
     "heatKernelMassGap",
-    "poly_beats_exp"
+    "poly_beats_exp",
+    "integral_cos_n_zero",
+    "besselI_le_exp_bound",
+    "besselI_summable"
   ],
   "transports": [
     {
