@@ -99,12 +99,20 @@ the Pauli algebra `(x⃗·σ⃗)² = |x⃗|²·I`, the quaternion square `V² = 
 `Tr(V²) = 2(x₀²−|x⃗|²)`, the S³ moment `(2/π)∫cos²θ·sin²θ = 1/4`, and the φ-integration primitives
 `∫₀^{2π}cos φ = ∫₀^{2π}sin φ = 0`.
 
-The matrix pseudoreality `∫ V² dV = −I/2` is a direct assembly: the odd moment `∫ x₀xᵢ = 0` (via the full-period
-φ-integrals) kills the `2ix₀(x⃗·σ⃗)` term, and `∫x₀² = 1/4` with `x₀²+|x⃗|² = 1` gives `(1/4−3/4)·I = −I/2`. The
-remaining step is the **S³ spherical-coordinate Fubini** (the round-measure Jacobian `dV = (2/π)sin²θ dθ·(S² measure)`)
-that ties the quaternion coordinates to the Weyl integration. Then the n=1 convolution `∫ χ₁(U₂A)χ₁(U₂B) dU₂ =
-χ₁(A⁻¹B)/2`, the effective-plaquette weight `e^(x′·Tr AB⁻¹)` (coupling advance `x′ = x²·(…)`), and the multiscale
-induction.
+**The SU(2) matrix pseudoreality is PROVED (77 rungs).** `∫∫∫ V²·sin²θ₁·sin θ₂ = −π²·I`, i.e. `∫ V² dV = −I/2`
+normalized. All four quaternion-square entries, their integrals (`−π²`, `−π²`, `0`, `0` via the φ/θ₂ odd moments and
+`integral_add_const_{sin,cos}_period`), and the `Matrix.ext` assembly. The block-spin RG's clean pseudoreality primitive.
+
+**The n=1 character convolution is PROVED (113 rungs, both goal objectives complete).** `∫ χ₁(U₂A)·χ₁(U₂B) dU₂ = χ₁(A⁻¹B)/2`
+for `A ∈ SU(2)` (`su2_char_conv_n1`). Route taken: the `V·B·V = x₀²B + i·x₀(X·B+B·X) − X·B·X` expansion (cracked via a
+**generic** `X` in `su2_conj_generic`, avoiding the `vecMul`/`smul` tangle that blocked ~17 rounds), then the full
+general pseudoreality `su2_conj_integral` (`∫U₂BU₂ dU₂ = (B−Tr(B)I)/2`), the trace form `∫Tr(U₂BU₂) = −Tr(B)/2`, the
+det=1 SU(2) condition (`su2_quaternion_det` + `su2_sphere_det_one`), the inverse cancellation (`su2_sphere_inv_mul_self`),
+and the pointwise trace identity (`su2_trace_conv_identity`). This used the general pseudoreality, **not** the Haar
+left-invariance substitution.
+
+**Next:** the effective-plaquette weight `e^(x′·Tr AB⁻¹)` (coupling advance `x′ = x²·(…)`) — now clean given the n=1
+convolution — and then the multiscale (Balaban) induction.
 
 ## The next real step (the open Clay half)
 
