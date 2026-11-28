@@ -1023,4 +1023,28 @@ theorem naive_scale_ratio_lower_bound (β c : ℝ) (hc : 0 < c) (hβ : 0 < β) :
     field_simp [Real.exp_pos (c * β).ne']
   rwa [← hid]
 
+/-- **The correct scale-matching: the physical mass `β·(1 − I₁/I₀)` is finite and positive.** In the
+correct scale `1/β` (the inverse coupling, NOT the running-coupling `e^(−cβ)`), the rescaled mass is
+bounded `1/5 ≤ β·heatKernelMassGap β ≤ 1/2` for `β ≥ 1`. This is the honest content of the 't Hooft
+cutoff-independence: the physical mass lives on the `1/β` scale (where it is bounded away from 0 and ∞),
+not on the bare `1 − I₁/I₀` (which → 0) nor the naive `e^(−cβ)` (which → ∞). -/
+theorem physical_mass_scale_bounds (β : ℝ) (hβ : 1 ≤ β) :
+    1 / 5 ≤ β * heatKernelMassGap β ∧ β * heatKernelMassGap β ≤ 1 / 2 := by
+  constructor
+  · have hpoly : 1 / (4 * β + 1) ≤ heatKernelMassGap β := heat_kernel_gap_poly β (by linarith)
+    have hmul : β * (1 / (4 * β + 1)) ≤ β * heatKernelMassGap β :=
+      mul_le_mul_of_nonneg_left hpoly (by linarith)
+    have hlow : 1 / 5 ≤ β * (1 / (4 * β + 1)) := by
+      field_simp [by linarith : 4 * β + 1 ≠ 0]
+      nlinarith [hβ]
+    exact le_trans hlow hmul
+  · have hupper : heatKernelMassGap β ≤ 1 / (2 * β) := by
+      simpa [heatKernelMassGap] using bessel_activity_le_one_div_beta (2 * β) (by positivity)
+    have hmul : β * heatKernelMassGap β ≤ β * (1 / (2 * β)) :=
+      mul_le_mul_of_nonneg_left hupper (by linarith)
+    have hup : β * (1 / (2 * β)) ≤ 1 / 2 := by
+      field_simp [by linarith : β ≠ 0]
+      linarith
+    exact le_trans hmul hup
+
 end QM
