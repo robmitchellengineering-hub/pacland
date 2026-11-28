@@ -103,11 +103,16 @@ the Pauli algebra `(x⃗·σ⃗)² = |x⃗|²·I`, the quaternion square `V² = 
 normalized. All four quaternion-square entries, their integrals (`−π²`, `−π²`, `0`, `0` via the φ/θ₂ odd moments and
 `integral_add_const_{sin,cos}_period`), and the `Matrix.ext` assembly. The block-spin RG's clean pseudoreality primitive.
 
-**Next (the goal's second objective):** the n=1 character convolution `∫ χ₁(U₂A)χ₁(U₂B) dU₂ = χ₁(A⁻¹B)/2`, via the
-trace identity `Tr(U₂A)Tr(U₂B) = Tr(U₂AU₂B) + Tr(A⁻¹B)` + the substitution `V = U₂A` (`∫Tr(U₂AU₂B) = Tr(−I/2·A⁻¹B)`).
-The remaining piece is the **Haar left-invariance** `∫ f(U₂A) dU₂ = ∫ f(V) dV` (the quaternion left-multiplication's
-isometry of the S³ round measure). Then the effective-plaquette weight `e^(x′·Tr AB⁻¹)` (coupling advance `x′ = x²·(…)`),
-and the multiscale induction.
+**The n=1 character convolution is PROVED (113 rungs, both goal objectives complete).** `∫ χ₁(U₂A)·χ₁(U₂B) dU₂ = χ₁(A⁻¹B)/2`
+for `A ∈ SU(2)` (`su2_char_conv_n1`). Route taken: the `V·B·V = x₀²B + i·x₀(X·B+B·X) − X·B·X` expansion (cracked via a
+**generic** `X` in `su2_conj_generic`, avoiding the `vecMul`/`smul` tangle that blocked ~17 rounds), then the full
+general pseudoreality `su2_conj_integral` (`∫U₂BU₂ dU₂ = (B−Tr(B)I)/2`), the trace form `∫Tr(U₂BU₂) = −Tr(B)/2`, the
+det=1 SU(2) condition (`su2_quaternion_det` + `su2_sphere_det_one`), the inverse cancellation (`su2_sphere_inv_mul_self`),
+and the pointwise trace identity (`su2_trace_conv_identity`). This used the general pseudoreality, **not** the Haar
+left-invariance substitution.
+
+**Next:** the effective-plaquette weight `e^(x′·Tr AB⁻¹)` (coupling advance `x′ = x²·(…)`) — now clean given the n=1
+convolution — and then the multiscale (Balaban) induction.
 
 ## The next real step (the open Clay half)
 
