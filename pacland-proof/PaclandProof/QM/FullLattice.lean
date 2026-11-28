@@ -621,4 +621,36 @@ theorem su2_quaternion_sq_entry_10 (x₀ : ℝ) (x : Fin 3 → ℝ) :
   simp [Matrix.one_apply_eq, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2_pauli_vec_entry_10]
   ring
 
+/-- The quaternion square's `(1,1)` entry in S³ coordinates (symmetric to `(0,0)`, minus sign). -/
+theorem su2_sphere_sq_entry_11 (θ₁ θ₂ φ : ℝ) :
+    ((su2SphereQuaternion θ₁ θ₂ φ)^2) 1 1 =
+      (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) - (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * ((Real.sin θ₂ * Real.sin φ : ℝ) : ℂ) := by
+  unfold su2SphereQuaternion
+  rw [su2_quaternion_sq_entry_11]
+  simp [su2_sphere_norm_sq θ₁ θ₂ φ]
+  ring
+
+/-- The quaternion square's `(0,1)` entry in S³ coordinates: `2i·cos θ₁·sin θ₁·cos θ₂ + 2·cos θ₁·sin θ₁·sin θ₂·cos φ`. -/
+theorem su2_sphere_sq_entry_01 (θ₁ θ₂ φ : ℝ) :
+    ((su2SphereQuaternion θ₁ θ₂ φ)^2) 0 1 =
+      (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.cos θ₂ : ℝ) : ℂ)
+        + (2 : ℂ) * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.sin θ₂ * Real.cos φ : ℝ) : ℂ) := by
+  unfold su2SphereQuaternion
+  rw [su2_quaternion_sq_entry_01]
+  simp [Complex.ofReal_mul]
+  ring_nf
+  simp [complex_I_sq]
+
+/-- The quaternion square's `(1,0)` entry in S³ coordinates: `2i·cos θ₁·sin θ₁·cos θ₂ − 2·cos θ₁·sin θ₁·sin θ₂·cos φ`. -/
+theorem su2_sphere_sq_entry_10 (θ₁ θ₂ φ : ℝ) :
+    ((su2SphereQuaternion θ₁ θ₂ φ)^2) 1 0 =
+      (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.cos θ₂ : ℝ) : ℂ)
+        - (2 : ℂ) * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.sin θ₂ * Real.cos φ : ℝ) : ℂ) := by
+  unfold su2SphereQuaternion
+  rw [su2_quaternion_sq_entry_10]
+  simp [Complex.ofReal_mul]
+  ring_nf
+  simp [complex_I_sq]
+  ring
+
 end QM
