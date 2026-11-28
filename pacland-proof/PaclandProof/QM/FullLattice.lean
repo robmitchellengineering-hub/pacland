@@ -695,4 +695,14 @@ theorem su2_pauli_vec_trace_mul (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) 
   rw [Matrix.trace_add, Matrix.trace_add, Matrix.trace_smul, Matrix.trace_smul, Matrix.trace_smul]
   ring
 
+/-- **The Pauli-vector-times-matrix entry**: `((x⃗·σ⃗)·B)ᵢⱼ = Σₐ xₐ·(σₐ·B)ᵢⱼ` (the linearity, avoiding the `vecMul`
+notation). The clean decomposition for the `V·B·V` expansion. -/
+theorem su2_pauli_vec_mul_apply (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) :
+    (su2PauliVec x * B) i j = (x 0 : ℂ) * (su2Pauli1 * B) i j + (x 1 : ℂ) * (su2Pauli2 * B) i j + (x 2 : ℂ) * (su2Pauli3 * B) i j := by
+  unfold su2PauliVec
+  rw [add_mul, add_mul]
+  rw [Matrix.smul_mul, Matrix.smul_mul, Matrix.smul_mul]
+  rw [Matrix.add_apply, Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.smul_apply]
+  ring
+
 end QM
