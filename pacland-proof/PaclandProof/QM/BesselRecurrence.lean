@@ -1,5 +1,6 @@
 import Mathlib
 import PaclandProof.QM.Bessel
+import PaclandProof.QM.FullLattice
 
 noncomputable section
 
@@ -1169,5 +1170,49 @@ theorem su2_odd_moment_u3_nested :
   rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => hφ θ₁ θ₂))]
   rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => by rw [integral_sin_full_period_zero]; simp))]
   simp
+
+/-- **The φ-period helper**: `∫₀^{2π} (A + B·sin φ) dφ = A·2π` for constants `A B : ℂ` (the sin term's full-period
+integral vanishes). The clean φ-level linearity for the matrix pseudoreality's entry integral. -/
+theorem integral_add_const_sin_period (A B : ℂ) :
+    ∫ φ in (0 : ℝ)..(2 * Real.pi), (A + B * (Real.sin φ : ℂ)) = A * (2 * Real.pi : ℂ) := by
+  rw [intervalIntegral.integral_add]
+  · rw [intervalIntegral.integral_const]
+    rw [intervalIntegral.integral_const_mul]
+    rw [intervalIntegral.integral_ofReal]
+    rw [integral_sin_full_period_zero]
+    simp
+  · exact (by continuity : Continuous (fun _ : ℝ => A)).intervalIntegrable 0 (2 * Real.pi)
+  · exact (by continuity : Continuous (fun φ : ℝ => B * (Real.sin φ : ℂ))).intervalIntegrable 0 (2 * Real.pi)
+
+/-- **The matrix pseudoreality's `(0,0)` entry**: `∫∫∫ (V²)₀₀·sin²θ₁·sin θ₂ = −π²`. The trace-zero u₃ term's
+φ-integral vanishes (`integral_add_const_sin_period`), leaving the scalar coefficient (`su2_sq_scalar_nested`). -/
+theorem su2_sphere_sq_entry_00_integral :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        ((su2SphereQuaternion θ₁ θ₂ φ)^2) 0 0 * (Real.sin θ₁)^2 * Real.sin θ₂ = -(Real.pi ^ 2 : ℂ) := by
+  have hφ : ∀ θ₁ θ₂, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+      ((su2SphereQuaternion θ₁ θ₂ φ)^2) 0 0 * (Real.sin θ₁)^2 * Real.sin θ₂
+        = (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂ * (2 * Real.pi) := by
+    intro θ₁ θ₂
+    have hpoint : ∀ φ ∈ Set.uIcc (0 : ℝ) (2 * Real.pi),
+        ((su2SphereQuaternion θ₁ θ₂ φ)^2) 0 0 * (Real.sin θ₁)^2 * Real.sin θ₂
+          = ((((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂)
+            + ((2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * (Real.sin θ₂ : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂) * (Real.sin φ : ℂ) := by
+      intro φ hφin
+      rw [su2_sphere_sq_entry_00 θ₁ θ₂ φ]
+      ring_nf
+      simp [Complex.ofReal_mul]
+      ring
+    rw [intervalIntegral.integral_congr hpoint]
+    rw [integral_add_const_sin_period]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => hφ θ₁ θ₂))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => by
+    rw [intervalIntegral.integral_congr (fun θ₂ _ => by
+      rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+      rw [integral_sin_eq_two]
+      ring)]
+    rw [intervalIntegral.integral_const_mul]
+    rw [su2_sq_scalar_nested]
+    ring)]
 
 
