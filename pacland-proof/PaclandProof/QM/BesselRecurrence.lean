@@ -1215,4 +1215,116 @@ theorem su2_sphere_sq_entry_00_integral :
     rw [su2_sq_scalar_nested]
     ring)]
 
+/-- **The φ-period helper (cosine)**: `∫₀^{2π} (A + B·cos φ) dφ = A·2π` for `A B : ℂ`. -/
+theorem integral_add_const_cos_period (A B : ℂ) :
+    ∫ φ in (0 : ℝ)..(2 * Real.pi), (A + B * (Real.cos φ : ℂ)) = A * (2 * Real.pi : ℂ) := by
+  rw [intervalIntegral.integral_add]
+  · rw [intervalIntegral.integral_const]
+    rw [intervalIntegral.integral_const_mul]
+    rw [intervalIntegral.integral_ofReal]
+    rw [integral_cos_full_period_zero]
+    simp
+  · exact (by continuity : Continuous (fun _ : ℝ => A)).intervalIntegrable 0 (2 * Real.pi)
+  · exact (by continuity : Continuous (fun φ : ℝ => B * (Real.cos φ : ℂ))).intervalIntegrable 0 (2 * Real.pi)
+
+/-- **The matrix pseudoreality's `(1,1)` entry**: `∫∫∫ (V²)₁₁·sin²θ₁·sin θ₂ = −π²` (symmetric to the `(0,0)` entry). -/
+theorem su2_sphere_sq_entry_11_integral :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        ((su2SphereQuaternion θ₁ θ₂ φ)^2) 1 1 * (Real.sin θ₁)^2 * Real.sin θ₂ = -(Real.pi ^ 2 : ℂ) := by
+  have hφ : ∀ θ₁ θ₂, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+      ((su2SphereQuaternion θ₁ θ₂ φ)^2) 1 1 * (Real.sin θ₁)^2 * Real.sin θ₂
+        = (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂ * (2 * Real.pi) := by
+    intro θ₁ θ₂
+    have hpoint : ∀ φ ∈ Set.uIcc (0 : ℝ) (2 * Real.pi),
+        ((su2SphereQuaternion θ₁ θ₂ φ)^2) 1 1 * (Real.sin θ₁)^2 * Real.sin θ₂
+          = ((((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂)
+            + (-(2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * (Real.sin θ₂ : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂) * (Real.sin φ : ℂ) := by
+      intro φ hφin
+      rw [su2_sphere_sq_entry_11 θ₁ θ₂ φ]
+      ring_nf
+      simp [Complex.ofReal_mul]
+      ring
+    rw [intervalIntegral.integral_congr hpoint]
+    rw [integral_add_const_sin_period]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => hφ θ₁ θ₂))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => by
+    rw [intervalIntegral.integral_congr (fun θ₂ _ => by
+      rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+      rw [integral_sin_eq_two]
+      ring)]
+    rw [intervalIntegral.integral_const_mul]
+    rw [su2_sq_scalar_nested]
+    ring)]
+
+/-- **The matrix pseudoreality's `(0,1)` entry**: `∫∫∫ (V²)₀₁·sin²θ₁·sin θ₂ = 0` (the `cos φ` full-period and the
+`cos θ₂·sin θ₂` odd moment both vanish). -/
+theorem su2_sphere_sq_entry_01_integral :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        ((su2SphereQuaternion θ₁ θ₂ φ)^2) 0 1 * (Real.sin θ₁)^2 * Real.sin θ₂ = 0 := by
+  have hφ : ∀ θ₁ θ₂, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+      ((su2SphereQuaternion θ₁ θ₂ φ)^2) 0 1 * (Real.sin θ₁)^2 * Real.sin θ₂
+        = (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.cos θ₂ : ℝ) : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂ * (2 * Real.pi) := by
+    intro θ₁ θ₂
+    have hpoint : ∀ φ ∈ Set.uIcc (0 : ℝ) (2 * Real.pi),
+        ((su2SphereQuaternion θ₁ θ₂ φ)^2) 0 1 * (Real.sin θ₁)^2 * Real.sin θ₂
+          = ((2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.cos θ₂ : ℝ) : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂)
+            + ((2 : ℂ) * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.sin θ₂ : ℝ) : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂) * (Real.cos φ : ℂ) := by
+      intro φ hφin
+      rw [su2_sphere_sq_entry_01 θ₁ θ₂ φ]
+      ring_nf
+      simp [Complex.ofReal_mul]
+      ring
+    rw [intervalIntegral.integral_congr hpoint]
+    rw [integral_add_const_cos_period]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => hφ θ₁ θ₂))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => by
+    rw [intervalIntegral.integral_congr (fun θ₂ _ => by
+      rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+      rw [integral_cos_mul_sin_zero]
+      ring)]
+    simp)]
+
+/-- **The matrix pseudoreality's `(1,0)` entry**: `∫∫∫ (V²)₁₀·sin²θ₁·sin θ₂ = 0` (symmetric to `(0,1)`). -/
+theorem su2_sphere_sq_entry_10_integral :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        ((su2SphereQuaternion θ₁ θ₂ φ)^2) 1 0 * (Real.sin θ₁)^2 * Real.sin θ₂ = 0 := by
+  have hφ : ∀ θ₁ θ₂, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+      ((su2SphereQuaternion θ₁ θ₂ φ)^2) 1 0 * (Real.sin θ₁)^2 * Real.sin θ₂
+        = (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.cos θ₂ : ℝ) : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂ * (2 * Real.pi) := by
+    intro θ₁ θ₂
+    have hpoint : ∀ φ ∈ Set.uIcc (0 : ℝ) (2 * Real.pi),
+        ((su2SphereQuaternion θ₁ θ₂ φ)^2) 1 0 * (Real.sin θ₁)^2 * Real.sin θ₂
+          = ((2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.cos θ₂ : ℝ) : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂)
+            + (-(2 : ℂ) * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.sin θ₂ : ℝ) : ℂ) * (Real.sin θ₁)^2 * Real.sin θ₂) * (Real.cos φ : ℂ) := by
+      intro φ hφin
+      rw [su2_sphere_sq_entry_10 θ₁ θ₂ φ]
+      ring_nf
+      simp [Complex.ofReal_mul]
+      ring
+    rw [intervalIntegral.integral_congr hpoint]
+    rw [integral_add_const_cos_period]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => hφ θ₁ θ₂))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => by
+    rw [intervalIntegral.integral_congr (fun θ₂ _ => by
+      rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+      rw [integral_cos_mul_sin_zero]
+      ring)]
+    simp)]
+
+/-- **The SU(2) matrix pseudoreality (unnormalized)**: `∫∫∫ V²·sin²θ₁·sin θ₂ = −π²·I`. Since the normalized round
+measure is `(1/(2π²))·sin²θ₁·sin θ₂ dθ₁ dθ₂ dφ`, this is `∫ V² dV = −I/2`. All four entries assembled. -/
+theorem su2_sphere_sq_integral :
+    (∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (su2SphereQuaternion θ₁ θ₂ φ)^2 * (Real.sin θ₁)^2 * Real.sin θ₂)
+      = -(Real.pi ^ 2 : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [intervalIntegral.integral_apply, smul_eq_mul, Matrix.one_apply_eq]
+  · exact su2_sphere_sq_entry_00_integral
+  · exact su2_sphere_sq_entry_01_integral
+  · exact su2_sphere_sq_entry_10_integral
+  · exact su2_sphere_sq_entry_11_integral
+
 
