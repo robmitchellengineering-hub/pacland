@@ -1327,4 +1327,37 @@ theorem su2_sphere_sq_integral :
   · exact su2_sphere_sq_entry_10_integral
   · exact su2_sphere_sq_entry_11_integral
 
+/-- **The direction moment `∫ cos²θ·sin θ = 2/3`**: the θ₂-integral for the S³ direction moment `∫ x₁² = 1/4`
+(FTC `[−cos³θ/3]₀^π`). -/
+theorem integral_cos_sq_sin : ∫ θ in (0 : ℝ)..Real.pi, (Real.cos θ)^2 * Real.sin θ = 2 / 3 := by
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le (le_of_lt Real.pi_pos) (by continuity)
+    (fun θ _ => by
+      have h : HasDerivAt (fun t : ℝ => -(Real.cos t)^3 / 3) ((Real.cos θ)^2 * Real.sin θ) θ := by
+        have hcos : HasDerivAt (fun t : ℝ => (Real.cos t)^3) (3 * (Real.cos θ)^2 * (-Real.sin θ)) θ := by
+          simpa [pow_two] using (Real.hasDerivAt_cos θ).pow 3
+        simpa [pow_two, pow_succ, mul_assoc, mul_comm, mul_left_comm] using hcos.const_mul (-(1 / 3))
+      exact h)]
+  rw [Real.cos_pi, Real.cos_zero]
+  norm_num
+
+/-- **The θ₁ moment `∫ sin⁴θ = 3π/8`**: the θ₁-integral for the S³ direction moment (via `sin² = (1−cos 2θ)/2`). -/
+theorem integral_sin_four : ∫ θ in (0 : ℝ)..Real.pi, (Real.sin θ)^4 = 3 * Real.pi / 8 := by
+  rw [intervalIntegral.integral_congr (fun θ _ => by rw [Real.sin_sq_eq_half_sub]; ring_nf)]
+  rw [intervalIntegral.integral_congr (fun θ _ => by
+    rw [show (1 - Real.cos (2 * θ)) ^ 2 / 4 = (1 / 4) - (1 / 2) * Real.cos (2 * θ) + (1 / 4) * (Real.cos (2 * θ))^2 by ring_nf])]
+  rw [intervalIntegral.integral_congr (fun θ _ => by rw [Real.cos_sq_eq_half_add]; ring_nf)]
+  rw [intervalIntegral.integral_add, intervalIntegral.integral_add, intervalIntegral.integral_sub]
+  · rw [intervalIntegral.integral_const]
+    rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+    have hcos2 : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (2 * θ) = 0 := by
+      simpa using integral_cos_of_ne_zero (n := 2) (by norm_num)
+    have hcos4 : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (4 * θ) = 0 := by
+      simpa using integral_cos_of_ne_zero (n := 4) (by norm_num)
+    rw [hcos2, hcos4]
+    field_simp [Real.pi_ne_zero]
+    ring
+  · exact (by continuity : Continuous (fun _ : ℝ => (1 / 4 : ℝ))).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ : ℝ => (1 / 4 : ℝ) * Real.cos (4 * θ))).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ : ℝ => (1 / 2 : ℝ) * Real.cos (2 * θ))).intervalIntegrable 0 Real.pi
+
 
