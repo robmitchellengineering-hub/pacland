@@ -61,10 +61,14 @@ remaining Clay half is the continuum EXISTENCE on ℝ⁴. The a→0 goal has lan
 4. `rescaled_two_point_converges` — the rescaled correlation e^(−(β·gap)·t) → e^(−t/4) (mass 1/4).
 5. `cluster_weight_majorant_tendsto_zero` — the total cluster-weight majorant r/(1−r)² → 0.
 
-These are the foundations + the exponential-envelope assembly. The DEEP open core remains: the small/large-field
-region decomposition of the SU(2) measure, the a→0 convergence of the FULL gauge-invariant Schwinger functions
-(not just the mass-gap envelope), and the OS→Wightman reconstruction on ℝ⁴ (beyond the finite-lattice
-`os_reconstruction_actual`).
+These are the foundations + the exponential-envelope assembly. The OS→Wightman RECONSTRUCTION is now closed
+under the a→0 limit (10 rungs): `wightman_reconstruction_limit` + `wightman_covariance_limit` +
+`wightman_locality_limit` + `wightman_vacuum_limit` + `mass_gap_limit_pos` + `posdef_of_tendsto` — the Wightman
+axioms W0–W4 each survive pointwise limits, so the finite-lattice reconstruction carries through to the continuum.
+
+The DEEP open core that remains: the measure-theoretic small/large-field REGION DECOMPOSITION of the SU(2)
+gauge measure (Balaban's multiscale RG) and the a→0 convergence of the FULL gauge-invariant Schwinger functions
+(not just the mass-gap envelope or the reconstruction scaffold). These are the genuinely-hard existence steps.
 
 ## The next real step (the open Clay half)
 
