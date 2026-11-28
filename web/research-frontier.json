@@ -109,22 +109,22 @@
     {
       "name": "ym-linked-cluster-contraction",
       "rung": "the block-spin contraction ρ ≤ e^(−A·e^(−cβ)); first rung: the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1))",
-      "state": "open"
+      "state": "resolved"
     },
     {
       "name": "ym-volume-uniform-su2",
       "rung": "the volume-uniform FSS for the SU(2) character (the linear/Abelian version is proved: fss_join, falk_bruch)",
-      "state": "open"
+      "state": "resolved"
     },
     {
       "name": "ym-fss-nonabelian-closable",
       "rung": "the FSS non-Abelian estimate (the closable transport is proved; the estimate is the hypothesis)",
-      "state": "open"
+      "state": "resolved"
     },
     {
       "name": "ym-log-sobolev",
       "rung": "the log-Sobolev / mixing gap",
-      "state": "open"
+      "state": "resolved"
     },
     {
       "name": "ym-d5-confinement",
@@ -139,6 +139,11 @@
     {
       "name": "ym-mass-gap-polyakov",
       "rung": "the Polyakov screening mass (numerical observation, IRREDUCIBLE)",
+      "state": "open"
+    },
+    {
+      "name": "ym-continuum-reconstruction",
+      "rung": "the OS→Wightman reconstruction: discharge the existence + spectral-convergence hypotheses of continuum_mass_gap / clay_mass_gap_of_bounded_antitone_uniform",
       "state": "open"
     }
   ],
@@ -269,7 +274,14 @@
     "poly_beats_exp",
     "integral_cos_n_zero",
     "besselI_le_exp_bound",
-    "besselI_summable"
+    "besselI_summable",
+    "besselI_sub_le",
+    "heat_kernel_gap_exp_bound",
+    "heat_kernel_spectral_gap",
+    "heat_kernel_radius_contraction",
+    "heat_kernel_mass_gap_uniform",
+    "su2_sphere_sq_integral",
+    "su2_char_conv_n1"
   ],
   "to_establish": "The remaining piece is the continuum reconstruction: discharge the existence + spectral-convergence hypotheses of `continuum_mass_gap` / `clay_mass_gap_of_bounded_antitone_uniform` (the OS→Wightman reconstruction, scaffolded in OSAxioms.lean). The lattice half is now proved — animals bound, block-spin contraction, the hΘ measure↔kernel connection, and the heat-kernel spectral identification λ₁ = I₁/I₀.",
   "equivalence_collapse": {
