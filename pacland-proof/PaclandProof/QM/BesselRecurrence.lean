@@ -784,4 +784,70 @@ theorem besselI_mul_succ_summable (x : ℝ) (hx : 0 ≤ x) :
         _ ≤ (x / 2) * besselI n x := mul_le_mul_of_nonneg_left hsub (by positivity)
     exact Summable.of_nonneg_of_le (fun n => by positivity) hle ((besselI_summable hx).const_mul (x / 2))
 
+/-- **The SU(2) Weyl character formula**: `e^(x·cos θ)·sin θ = Σₙ 2(n+1)Iₙ₊₁(x)/x · sin((n+1)θ)`. Termwise
+differentiation of the Jacobi–Anger expansion (`hasDerivAt_tsum` with `besselI_mul_succ_summable`) gives
+`−x·sin θ·e^(x·cos θ) = −2·Σ (n+1)Iₙ₊₁·sin((n+1)θ)`, so `sin θ·e^(x·cos θ) = (2/x)·Σ (n+1)Iₙ₊₁·sin((n+1)θ)`. This
+is the symmetric (class-function) character expansion of the SU(2) heat kernel — the block-spin average's clean
+coupling-advance identity. -/
+theorem weyl_character_formula (x : ℝ) (hx : 0 < x) (θ : ℝ) :
+    Real.exp (x * Real.cos θ) * Real.sin θ = ∑' n : ℕ, (2 * (n + 1 : ℝ) / x) * besselI (n + 1) x * Real.sin ((n + 1 : ℝ) * θ) := by
+  have htsum : HasDerivAt (fun z : ℝ => ∑' n : ℕ, besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * z))
+      (∑' n : ℕ, -((n + 1 : ℝ) * besselI (n + 1) x) * Real.sin ((n + 1 : ℝ) * z)) θ := by
+    refine hasDerivAt_tsum (u := fun n => (n + 1 : ℝ) * besselI (n + 1) x) (besselI_mul_succ_summable x (le_of_lt hx)) ?_ ?_ ?_ θ
+    · intro n y
+      have hcos : HasDerivAt (fun z : ℝ => Real.cos ((n + 1 : ℝ) * z)) (-((n + 1 : ℝ) * Real.sin ((n + 1 : ℝ) * y))) y := by
+        simpa [mul_comm] using (Real.hasDerivAt_cos ((n + 1 : ℝ) * y)).comp y (hasDerivAt_const_mul (n + 1 : ℝ) y (hasDerivAt_id y))
+      exact hcos.const_mul (besselI (n + 1) x)
+    · intro n y
+      have hnonneg : 0 ≤ (n + 1 : ℝ) * besselI (n + 1) x := mul_nonneg (by positivity) (besselI_nonneg (n := n + 1) (le_of_lt hx))
+      rw [Real.norm_eq_abs]
+      have h : |-(n + 1 : ℝ) * besselI (n + 1) x * Real.sin ((n + 1 : ℝ) * y)| ≤ (n + 1 : ℝ) * besselI (n + 1) x := by
+        calc |-(n + 1 : ℝ) * besselI (n + 1) x * Real.sin ((n + 1 : ℝ) * y)|
+            = |(n + 1 : ℝ) * besselI (n + 1) x| * |Real.sin ((n + 1 : ℝ) * y)| := by rw [abs_mul, abs_neg]
+            _ ≤ (n + 1 : ℝ) * besselI (n + 1) x * 1 := mul_le_mul (le_of_eq (abs_of_nonneg hnonneg)) (Real.abs_sin_le_one ((n + 1 : ℝ) * y)) (abs_nonneg _) hnonneg
+            _ = (n + 1 : ℝ) * besselI (n + 1) x := by ring
+      exact h
+    · exact (besselI_summable (le_of_lt hx)).comp_injective Nat.succ_injective
+  have hexp : HasDerivAt (fun z : ℝ => Real.exp (x * Real.cos z)) (-(x * Real.sin θ) * Real.exp (x * Real.cos θ)) θ := by
+    have hcos : HasDerivAt (fun z : ℝ => x * Real.cos z) (-(x * Real.sin θ)) θ := by
+      simpa [mul_comm] using (Real.hasDerivAt_cos θ).const_mul x
+    exact (Real.hasDerivAt_exp (x * Real.cos θ)).comp θ hcos
+  have hderivR : HasDerivAt (fun z : ℝ => besselI 0 x + 2 * ∑' n : ℕ, besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * z))
+      (-2 * ∑' n : ℕ, (n + 1 : ℝ) * besselI (n + 1) x * Real.sin ((n + 1 : ℝ) * θ)) θ := by
+    have hsum := htsum.const_mul 2
+    have hconst : HasDerivAt (fun z : ℝ => besselI 0 x) 0 θ := hasDerivAt_const θ (besselI 0 x)
+    have hsum' : HasDerivAt (fun z : ℝ => 2 * ∑' n : ℕ, besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * z))
+        (2 * ∑' n : ℕ, -((n + 1 : ℝ) * besselI (n + 1) x) * Real.sin ((n + 1 : ℝ) * z)) θ := by
+      simpa using (htsum.const_mul 2)
+    convert hconst.add hsum' using 1
+    · ext z
+      ring
+    · rw [← tsum_mul_left, ← tsum_mul_left]
+      congr 1
+      ext n
+      ring
+  have hderiv_eq : -(x * Real.sin θ) * Real.exp (x * Real.cos θ) = -2 * ∑' n : ℕ, (n + 1 : ℝ) * besselI (n + 1) x * Real.sin ((n + 1 : ℝ) * θ) := by
+    have hfuneq : (fun z : ℝ => Real.exp (x * Real.cos z)) = fun z : ℝ => besselI 0 x + 2 * ∑' n : ℕ, besselI (n + 1) x * Real.cos ((n + 1 : ℝ) * z) := by
+      funext z
+      exact jacobi_anger_real x z
+    exact (hexp.congr_of_eventuallyEq (Filter.Eventually.of_forall (fun z => congr_fun hfuneq z))).deriv.trans hderivR.deriv.symm
+  -- -(x sin θ) e^{x cos θ} = -2∑ (n+1)I_{n+1} sin((n+1)θ)
+  have hpos : x * Real.sin θ * Real.exp (x * Real.cos θ) = 2 * ∑' n : ℕ, (n + 1 : ℝ) * besselI (n + 1) x * Real.sin ((n + 1 : ℝ) * θ) := by
+    nlinarith [hderiv_eq]
+  -- sin θ e^{x cos θ} = (2/x)∑ (n+1)I_{n+1} sin((n+1)θ) = ∑ (2(n+1)/x) I_{n+1} sin
+  rw [← hpos]
+  ring_nf
+  rw [mul_comm (x * Real.sin θ) (Real.exp (x * Real.cos θ))]
+  -- actually need: (x sin θ) e = x·(sin θ e), so sin θ e = (1/x)(x sin θ e)
+  have hmain : Real.exp (x * Real.cos θ) * Real.sin θ = (2 / x) * ∑' n : ℕ, (n + 1 : ℝ) * besselI (n + 1) x * Real.sin ((n + 1 : ℝ) * θ) := by
+    rw [mul_comm]
+    have hxsin : x * Real.sin θ * Real.exp (x * Real.cos θ) = x * (Real.exp (x * Real.cos θ) * Real.sin θ) := by ring
+    rw [hxsin] at hpos
+    nlinarith [hpos]
+  rw [hmain]
+  rw [← tsum_mul_left]
+  congr 1
+  ext n
+  ring
+
 
