@@ -850,4 +850,72 @@ theorem weyl_character_formula (x : ℝ) (hx : 0 < x) (θ : ℝ) :
   ext n
   ring
 
+/-- **The torus-diagonal n=1 SU(2) character convolution**: `∫₀^π cos(θ_A+θ₂)·cos(θ_B+θ₂)·sin²θ₂ dθ₂ =
+(π/4)·cos(θ_A−θ_B) − (π/8)·cos(θ_A+θ_B)`. This is the single-link building block of the two-plaquette block-spin
+integration (the odd link's `cos` appears in two plaquettes); the `cos(θ_A+θ_B)` term is the torus-diagonal
+artifact that the full SU(2) φ-integration cancels. -/
+theorem su2_char_conv_one (θ_A θ_B : ℝ) :
+    ∫ θ₂ in (0 : ℝ)..Real.pi, Real.cos (θ_A + θ₂) * Real.cos (θ_B + θ₂) * (Real.sin θ₂)^2
+      = (Real.pi / 4) * Real.cos (θ_A - θ_B) - (Real.pi / 8) * Real.cos (θ_A + θ_B) := by
+  have hprod : ∀ θ₂ : ℝ, Real.cos (θ_A + θ₂) * Real.cos (θ_B + θ₂)
+      = (Real.cos (θ_A - θ_B) + Real.cos (θ_A + θ_B + 2 * θ₂)) / 2 := by
+    intro θ₂
+    have hsum : Real.cos ((θ_A + θ₂) + (θ_B + θ₂)) + Real.cos ((θ_A + θ₂) - (θ_B + θ₂))
+        = 2 * (Real.cos (θ_A + θ₂) * Real.cos (θ_B + θ₂)) := by
+      nlinarith [Real.cos_add (θ_A + θ₂) (θ_B + θ₂), Real.cos_sub (θ_A + θ₂) (θ_B + θ₂)]
+    have harg1 : (θ_A + θ₂) + (θ_B + θ₂) = θ_A + θ_B + 2 * θ₂ := by ring
+    have harg2 : (θ_A + θ₂) - (θ_B + θ₂) = θ_A - θ_B := by ring
+    rw [harg1, harg2] at hsum
+    nlinarith [hsum]
+  have hcongr : (fun θ₂ : ℝ => Real.cos (θ_A + θ₂) * Real.cos (θ_B + θ₂) * (Real.sin θ₂)^2)
+      = fun θ₂ : ℝ => (Real.cos (θ_A - θ_B) + Real.cos (θ_A + θ_B + 2 * θ₂)) / 2 * (Real.sin θ₂)^2 := by
+    funext θ₂
+    rw [hprod θ₂]
+  rw [hcongr]
+  rw [intervalIntegral.integral_congr (fun θ₂ _ => by ring : ∀ θ₂, (Real.cos (θ_A - θ_B) + Real.cos (θ_A + θ_B + 2 * θ₂)) / 2 * (Real.sin θ₂)^2 = (Real.cos (θ_A - θ_B) * (Real.sin θ₂)^2 + Real.cos (θ_A + θ_B + 2 * θ₂) * (Real.sin θ₂)^2) / 2)]
+  rw [intervalIntegral.integral_div, intervalIntegral.integral_add]
+  · have hconst : ∫ θ₂ in (0 : ℝ)..Real.pi, Real.cos (θ_A - θ_B) * (Real.sin θ₂)^2 = Real.cos (θ_A - θ_B) * (Real.pi / 2) := by
+      rw [intervalIntegral.integral_const_mul]
+      have hnorm : ∫ θ₂ in (0 : ℝ)..Real.pi, (Real.sin θ₂)^2 = Real.pi / 2 := by
+        simpa using su2_character_orthogonality_diag (n := 0)
+      rw [hnorm]
+    have hcos2 : ∫ θ₂ in (0 : ℝ)..Real.pi, Real.cos (θ_A + θ_B + 2 * θ₂) * (Real.sin θ₂)^2
+        = Real.cos (θ_A + θ_B) * (-(Real.pi / 4)) := by
+      have hdecomp : ∀ θ₂, Real.cos (θ_A + θ_B + 2 * θ₂) = Real.cos (θ_A + θ_B) * Real.cos (2 * θ₂) - Real.sin (θ_A + θ_B) * Real.sin (2 * θ₂) := by
+        intro θ₂
+        exact Real.cos_add (θ_A + θ_B) (2 * θ₂)
+      rw [intervalIntegral.integral_congr (fun θ₂ _ => hdecomp θ₂)]
+      rw [intervalIntegral.integral_congr (fun θ₂ _ => by ring : ∀ θ₂, (Real.cos (θ_A + θ_B) * Real.cos (2 * θ₂) - Real.sin (θ_A + θ_B) * Real.sin (2 * θ₂)) * (Real.sin θ₂)^2 = Real.cos (θ_A + θ_B) * (Real.cos (2 * θ₂) * (Real.sin θ₂)^2) - Real.sin (θ_A + θ_B) * (Real.sin (2 * θ₂) * (Real.sin θ₂)^2))]
+      rw [intervalIntegral.integral_sub]
+      · rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+        rw [su2_cos_two_moment]
+        have hsin2 : ∫ θ₂ in (0 : ℝ)..Real.pi, Real.sin (2 * θ₂) * (Real.sin θ₂)^2 = 0 := by
+          -- ∫ sin(2θ) sin²θ = 0 (n=2 even)
+          have hprod2 : ∀ θ₂, Real.sin (2 * θ₂) * (Real.sin θ₂)^2 = (Real.sin (2 * θ₂) - Real.sin (2 * θ₂) * Real.cos (2 * θ₂)) / 2 := by
+            intro θ₂
+            rw [Real.sin_sq_eq_half_sub]
+            ring_nf
+          rw [intervalIntegral.integral_congr (fun θ₂ _ => hprod2 θ₂)]
+          rw [intervalIntegral.integral_div, intervalIntegral.integral_sub]
+          · have hsin : ∫ θ₂ in (0 : ℝ)..Real.pi, Real.sin (2 * θ₂) = 0 := by
+              simpa using integral_sin_nat (n := 2) (by norm_num)
+            have hsincos : ∫ θ₂ in (0 : ℝ)..Real.pi, Real.sin (2 * θ₂) * Real.cos (2 * θ₂) = 0 := by
+              rw [intervalIntegral.integral_congr (fun θ₂ _ => by rw [Real.sin_mul_cos_eq_half_sin_two_mul])]
+              -- ∫ sin(4θ)/2 = 0
+              rw [intervalIntegral.integral_div]
+              have h4 : ∫ θ₂ in (0 : ℝ)..Real.pi, Real.sin (4 * θ₂) = 0 := by
+                simpa using integral_sin_nat (n := 4) (by norm_num)
+              rw [h4]; norm_num
+            rw [hsin, hsincos]; norm_num
+          · exact (by continuity : Continuous (fun θ₂ : ℝ => Real.sin (2 * θ₂))).intervalIntegrable 0 Real.pi
+          · exact (by continuity : Continuous (fun θ₂ : ℝ => Real.sin (2 * θ₂) * Real.cos (2 * θ₂))).intervalIntegrable 0 Real.pi
+        rw [hsin2]
+        ring
+      · exact (by continuity : Continuous (fun θ₂ : ℝ => Real.cos (θ_A + θ_B) * (Real.cos (2 * θ₂) * (Real.sin θ₂)^2))).intervalIntegrable 0 Real.pi
+      · exact (by continuity : Continuous (fun θ₂ : ℝ => Real.sin (θ_A + θ_B) * (Real.sin (2 * θ₂) * (Real.sin θ₂)^2))).intervalIntegrable 0 Real.pi
+    rw [hconst, hcos2]
+    ring
+  · exact (by continuity : Continuous (fun θ₂ : ℝ => Real.cos (θ_A - θ_B) * (Real.sin θ₂)^2)).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ₂ : ℝ => Real.cos (θ_A + θ_B + 2 * θ₂) * (Real.sin θ₂)^2)).intervalIntegrable 0 Real.pi
+
 
