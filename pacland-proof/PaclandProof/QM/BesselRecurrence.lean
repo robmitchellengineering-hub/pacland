@@ -1483,4 +1483,28 @@ theorem su2_x0_sq_matrix (B : Matrix (Fin 2) (Fin 2) ℂ) :
   rw [intervalIntegral.integral_const_mul]
   rw [su2_x0_sq_nested]
 
+/-- **The odd (anti-commutator) matrix integral**: `∫∫∫ i·x₀·(X·B + B·X)·sin²θ₁·sin θ₂ = 0` — the three odd
+direction moments `∫x₀xₐ = 0` kill it. -/
+theorem su2_odd_conj_matrix (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Complex.I • (Real.cos θ₁ : ℂ) • (su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] * B + B * su2PauliVec ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ])) * (Real.sin θ₁)^2 * Real.sin θ₂ = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [intervalIntegral.integral_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+        intervalIntegral.integral_congr (fun φ _ => by
+          rw [su2_pauli_vec_mul_apply, su2_pauli_vec_mul_apply_right]
+          simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two]
+          ring)))]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_add))]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_add))]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_add))]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_add)]
+  <;> rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_add)]
+  <;> rw [intervalIntegral.integral_add]
+  <;> simp [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_congr (fun φ _ => by ring)))]
+  <;> rw [su2_odd_moment_u1_nested]
+  <;> rw [su2_odd_moment_u2_nested]
+  <;> rw [su2_odd_moment_u3_nested]
+  <;> ring
+
 
