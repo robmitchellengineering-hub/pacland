@@ -275,3 +275,28 @@ Both first-order routes were checked and ruled out: the no-crossing barrier has 
 `x = 1` for every `C`; the monotonicity route `f′ = 1 − x(1−r²)` is circular. The sharp value needs a *different*
 argument (Simpson–Spector two-sided bound, or a direct second-order differential inequality). The `a → 0`
 correlation-function limit is the open construction beyond it.
+
+## UPDATE (sharp-cutoff goal, rounds 1–20) — the sharp β·gap → 1/4 (full 't Hooft cutoff-independence)
+
+**New argument found + verified (the deliverable):** *positivity-of-coefficients*. The sharp upper bound
+`s < 1/(2x) + 3/(8x²)` (hence `β·gap → 1/4`) is equivalent to the single Bessel inequality
+`2I₀²I₂ < I₁²(I₀+I₂)`, i.e. `D = I₁²(I₀+I₂) − 2I₀²I₂ > 0`, and `D`'s power-series coefficients are all
+nonnegative (verified through order 26; equivalently `E = I₀(I₁²−I₀I₂) − I₁³/x` has `E·x` all-nonneg through
+order 22). The Turán sub-term has the clean positive closed form
+`I₁² − I₀I₂ = Σ (x/2)^{2k+2}·2(2k+1)!/(k!²(k+2)!²)`.
+
+**Proved kernel-checked this goal:** `bessel_ratio_inv_hasDerivAt` — the Riccati `Φ′ = 1 + Φ/x − Φ²` for
+`Φ = I₀/I₁` (BesselIntegral.lean).
+
+**All four kernel-checked routes mapped, with concrete blockers:**
+1. no-crossing barrier — fails for every C (f′(h) > 0 at x = 1), for both s and Φ.
+2. x·s monotonicity — x·s is not monotone (rises then falls).
+3. Segura single-nullcline (Φ > λ⁺) — gives only the sharp LOWER bound; seed needs a sharper pointwise
+   bound than Amos (circular).
+4. coefficient-wise (CORRECT route) — d_n = [x^{2n}]D has no simple closed form; needs the Bessel product
+   formula (Chu–Vandermonde) applied twice + an exponential-cancellation argument. NOT yet kernel-checked.
+
+**Honest boundary:** the sharp β·gap → 1/4 is the Simpson–Spector/Segura double-ratio (second-order Bessel)
+theorem. The NEW argument is found and verified; the kernel-checked proof (route 4) is a large mechanical
+Chu–Vandermonde formalization, unwritten. Gap-survival Δ_phys > 0 (the key deliverable) remains proved
+(`physical_mass_scale_bounds`, previous goal).
