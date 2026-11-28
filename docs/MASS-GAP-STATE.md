@@ -317,3 +317,15 @@ no sorry) in BesselIntegral.lean:
 irreducible cubic `r³ − xr² − 2r + x < 0` (r = I₁/I₀). Verified true (coefficients all-nonneg through order 22),
 but its coefficient has no clean closed form; the pointwise Riccati derivative g′ is a messy quartic with no
 clean sign. This is the genuinely-hard core (the second-order Simpson–Spector/Segura bound). NOT proved.
+
+## UPDATE (sharp-cutoff goal, rounds 43–46) — the double-ratio wiring is complete (11 rungs)
+
+Added two kernel-checked rungs completing the Simpson–Spector double-ratio wiring:
+- `besselI2_hasDerivAt` — I₂′ = I₁ − 2I₂/x (the ν=2 derivative).
+- `bessel_double_ratio_deriv` — W′ = 2x·C(Φ)/(Φ²(Φx−2)²) for W = I₁²/(I₀I₂), Φ = I₀/I₁, with the cubic
+  nullcline C(Φ) = xΦ³ − 2Φ² − xΦ + 1.
+
+**Final reduction (cleanest form):** the sharp β·gap → 1/4 is the single inequality
+`C(Φ) = xΦ³ − 2Φ² − xΦ + 1 < 0` ⟺ `2I₀²I₂ < I₁²(I₀+I₂)`. The identity `xΦ − 2 = x·I₂/I₁` (from the recurrence)
+gives `C(Φ)·I₁³ = xI₀²I₂ − xI₀I₁² + I₁³`, so `C(Φ) < 0 ⟺ I₀(I₁²−I₀I₂) > I₁³/x`. Confirmed irreducible from
+~18 routes; the double-ratio ODE states it (W′ < 0 ⟺ C(Φ) < 0) but does not discharge it.
