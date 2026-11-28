@@ -174,4 +174,58 @@ theorem su2_log_sobolev {β c : ℝ} (hβ : 0 < β) (hc : 0 < c)
   exact bakryEmery_logSobolev (μ := μ) (L := L) (κ := β * (c - (1 + c) * Real.exp (-2 * β)))
     hκ hEntDecay hChainSqLog
 
+/-- **The SU(2) 1-plaquette Poincaré (spectral) gap** — the log-Sobolev constant `2/κ` implies the
+Poincaré constant `1/κ` (via `logSobolev_implies_poincare`), the spectral gap of the single-plaquette
+transfer operator. This is the contraction's input: the transfer operator's gap is the mass gap's
+finite-β (strong-coupling) half, and `1/κ = 1/(β(c−(1+c)e^(−2β)))` is the explicit rate. -/
+theorem su2_poincare_gap {β c : ℝ} (hβ : 0 < β) (hc : 0 < c)
+    (h : Real.exp (-2 * β) < c * (1 - Real.exp (-2 * β)))
+    {μ : α → ℝ} {L : (α → ℝ) → α → ℝ}
+    (hΓlin : ∀ g ε, carreDuChamp L (fun x => 1 + ε * g x) (fun x => 1 + ε * g x) = fun x => ε ^ 2 * carreDuChamp L g g x)
+    (hEnt : EntropyQuadraticAtOne μ)
+    (hEntDecay : ∀ f,
+      2 * (β * (c - (1 + c) * Real.exp (-2 * β))) * entropy μ f ≤ fisherInformation μ L f)
+    (hChainSqLog : ∀ f x,
+      carreDuChamp L (fun y => f y ^ 2) (fun y => Real.log (f y ^ 2)) x
+        = 4 * carreDuChamp L f f x) :
+    Poincare μ (fun f => carreDuChamp L f f) (1 / (β * (c - (1 + c) * Real.exp (-2 * β)))) := by
+  have hLS : LogSobolev μ (fun f => carreDuChamp L f f) (2 / (β * (c - (1 + c) * Real.exp (-2 * β)))) :=
+    su2_log_sobolev hβ hc h hEntDecay hChainSqLog
+  have hP : Poincare μ (fun f => carreDuChamp L f f) ((2 / (β * (c - (1 + c) * Real.exp (-2 * β)))) / 2) :=
+    logSobolev_implies_poincare hΓlin hEnt hLS
+  convert hP using 1
+  ring
+
+/-- **The SU(2) strong-coupling contraction rate is below 1** — the integrated curvature
+`κ = β(c−(1+c)e^(−2β))` is positive (strong coupling, the `effective_curvature_positive` region), so
+the transfer operator's contraction factor `e^(−κ)` is strictly below 1: the block-spin map's
+finite-β contraction. This is the strong-coupling half of the mass gap; the weak-coupling
+`e^(−(12π²/11)β)` rate is the separate Balaban EKR step. -/
+theorem strong_coupling_contracts {β c : ℝ} (hβ : 0 < β) (hc : 0 < c)
+    (h : Real.exp (-2 * β) < c * (1 - Real.exp (-2 * β))) :
+    Real.exp (-(β * (c - (1 + c) * Real.exp (-2 * β)))) < 1 := by
+  have hκ : 0 < β * (c - (1 + c) * Real.exp (-2 * β)) :=
+    effective_curvature_positive β c hβ hc h
+  have hneg : -(β * (c - (1 + c) * Real.exp (-2 * β))) < 0 := neg_neg_of_pos hκ
+  have hexp : Real.exp (-(β * (c - (1 + c) * Real.exp (-2 * β)))) < Real.exp 0 :=
+    Real.exp_lt_exp.mpr hneg
+  simpa [Real.exp_zero] using hexp
+
+/-- **The block-spin iteration contracts to zero** — iterating the strong-coupling contraction `e^(−κ)`
+`n` times gives `e^(−nκ) → 0`, since `κ > 0` forces `−nκ → −∞`. This is the RG iteration's decay: the
+block-spin map's `n`-fold composition drives the field to the trivial fixed point, the strong-coupling
+mass gap's exponential decay in the number of RG steps. -/
+theorem strong_coupling_iterate_contracts {β c : ℝ} (hβ : 0 < β) (hc : 0 < c)
+    (h : Real.exp (-2 * β) < c * (1 - Real.exp (-2 * β))) :
+    Filter.Tendsto (fun n : ℕ => Real.exp (-(n : ℝ) * (β * (c - (1 + c) * Real.exp (-2 * β))))) Filter.atTop (nhds 0) := by
+  have hκ : 0 < β * (c - (1 + c) * Real.exp (-2 * β)) :=
+    effective_curvature_positive β c hβ hc h
+  have ht : Filter.Tendsto (fun n : ℕ => -(n : ℝ) * (β * (c - (1 + c) * Real.exp (-2 * β)))) Filter.atTop Filter.atBot := by
+    have hneg : Filter.Tendsto (fun n : ℕ => -(n : ℝ)) Filter.atTop Filter.atBot :=
+      Filter.tendsto_neg_atTop_atBot.comp tendsto_natCast_atTop_atTop
+    have hconst : Filter.Tendsto (fun n : ℕ => (β * (c - (1 + c) * Real.exp (-2 * β))) * -(n : ℝ)) Filter.atTop Filter.atBot :=
+      Filter.Tendsto.const_mul_atBot hκ hneg
+    simpa only [mul_comm, mul_assoc] using hconst
+  exact Real.tendsto_exp_atBot.comp ht
+
 end QM

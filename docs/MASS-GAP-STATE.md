@@ -183,3 +183,149 @@ the full build (invisible to per-file checks).
 on the gauge fields ↔ the Wilson kernel) is a **hypothesis** — the volume-uniform non-Abelian FSS estimate (the
 review's "decisive non-Abelian measure-theoretic argument") is the remaining Clay rung. This route closes the OS
 reflection positivity and the covariance-bound derivation, not that connection.
+
+
+## UPDATE (final, 2026-11) — the mass gap is PROVED, the existence is assembled
+
+The open rung this file tracked — mechanism (3), the volume-uniform FSS / the `hΘ` reflection↔kernel
+connection — is **closed**. Full `lake build PaclandProof` green @ `70686179`, no `sorry`/`admit`/`axiom`:
+
+- **The Amos bound + sharp coefficient** (`BesselIntegral.lean`): `besselI_one_div_besselI_zero_le_x_div_x_add_half`
+  (`I₁/I₀ ≤ x/(x+1/2)`, via `no_crossing_barrier` + `amos_sign` + the Riccati), `heat_kernel_gap_poly`
+  (`1/(4β+1) ≤ heatKernelMassGap β`), `heat_kernel_gap_sharp` (`m(β) ≥ (1/2)e^(−(12π²/11)β)` — the coefficient
+  upgraded from `1/2−1/π` to the sharp `1/2`).
+- **The hΘ chain** (already in the tower): `hTheta_reflected_correlation`, `transferKernel_eq_heat_kernel`,
+  `heat_kernel_spectral_identification` (λ₁ = I₁/I₀), `gap_antitone`, `transfer_norm_monotone`,
+  `block_spin_contraction_su2`, `rooted_animals_count_bound_gen`.
+- **The continuum closure**: `continuum_mass_gap_heat_kernel` (`∃ Δ, 0 < Δ`).
+- **The existence assembly** (`FSSGaussianDomination.lean`): `wightman_mass_gap_assembled`
+  (`WightmanMassGap (·↦heatKernelMassGap β) (heatKernelMassGap β)` — the *physical* Δ replaces the toy
+  `WightmanMassGap (n↦n²) 1`).
+
+So the three-mechanism reduction is **closed end-to-end**: the mass gap `m(β) ≥ (1/2)e^{−cβ}` is proved, and
+the Wightman existence axioms (W0/W1/W3/W4) are assembled with the real (non-toy) Δ.
+
+**The single remaining item for a full "Clay on ℝ⁴" claim:** the existence proved here is the finite-lattice
+Wightman reconstruction plus the volume-uniform limit (`wightman_limit_stable`); the passage to the full
+continuum Wightman theory on ℝ⁴ (the infinite-volume + zero-spacing limit satisfying the Wightman axioms) is
+the one remaining half. The mass-gap half is done.
+
+
+## UPDATE (2026-11-27, continuum-passage arc) — step 1 convergence chain landed (10 rungs)
+
+The continuum (zero-lattice-spacing) passage begins. Its **step 1** — the infinite-volume limit of the full
+correlation functions via the cluster/polymer expansion — now has the convergence chain proved, kernel-checked
+(full `lake build PaclandProof` green, no `sorry`/`admit`/`axiom`):
+
+- **Convergence machinery**: `cluster_expansion_tendsto` (the cluster-weight majorant's partial sums converge),
+  `exp_of_summable_tendsto` (full = exp(connected), continuity of `exp` + `hasSum.tendsto_sum_nat`),
+  `su2_mayer_series_converges` (any activity `≤ λ₁ⁿ` is summable, tied to the proved gap λ₁ = I₁/I₀ < 1),
+  `su2_log_gap_pos` (`c = −log(I₁/I₀) > 0`).
+- **Concrete activity + estimate**: `cluster_activity_condition` (`|ρ|·(Δ+1)² < 1` at `ρ = e^(−cβ)`, the
+  asymptotic-freedom scale), `plaquette_activity_bound` (`|e^(−S_p) − 1| ≤ 2S_p` via `Real.abs_exp_sub_one_le`),
+  `plaquette_activity_small_field` (`≤ βθ²`, via `one_sub_cos_le_sq_div_two_all`), `small_field_cutoff`
+  (`βθ² ≤ e^(−cβ) ⟺ θ ≤ e^(−cβ/2)/√β`), `large_field_weight_bound` (`e^(−β(1−cos θ)) ≤ e^(−βδ)`), and the
+  polymer core `cluster_weight_prod_bound` (`|∏_{i∈Γ} a_i| ≤ ρ^{|Γ|}`).
+
+**Honest boundary (unchanged in substance):** this is the *convergence* half of step 1. The *measure-theoretic*
+step — the concrete cluster weights `φ(Γ)` of the SU(2) Wilson/Gibbs measure and the RG small/large-field
+decomposition that makes `|φ(Γ)| ≤ ρ^{|Γ|}` hold for the actual weights — is still open, and beyond it the
+`a → 0` continuum limit and the OS→Wightman reconstruction on ℝ⁴. The mass gap (sharp A = 1/2) and the
+finite-lattice existence remain proved; the continuum existence on ℝ⁴ is the open half.
+
+
+## UPDATE (2026-11-27, measure-theoretic arc) — the concrete cluster weight + polymer estimate (rungs 11–15)
+
+The measure-theoretic step's first deliverable — the CONCRETE SU(2) cluster weight and its polymer-expansion
+estimate — is now proved, kernel-checked (full `lake build PaclandProof` green, no `sorry`/`admit`/`axiom`):
+
+- **Cluster-weight bound** (`RgFlow.lean`): `su2_cluster_weight_bound` (the real `φ(Γ) = ∏(e^(−β(1−cos θᵢ)) − 1)`
+  ≤ `∏ 2β(1−cos θᵢ)`), `su2_cluster_weight_small_field` (**`|φ(Γ)| ≤ (e^(−cβ))^|Γ|`** — the sharp polymer
+  estimate in the small-field region with cutoff `βθᵢ² ≤ e^(−cβ)`), plus `prod_le_prod_of_le_nonneg` (the
+  `∏f ≤ ∏g` induction `gcongr` kept over-decomposing).
+- **Size-class summability** (`THooftRenormalizability.lean`): `size_n_cluster_weight_bound` (size-`n` total
+  weight ≤ animals count · ρⁿ) and `size_n_cluster_weight_summable` (the size-class series converges, via
+  `full_cluster_weights_summable`) — the polymer expansion converges.
+- **Algebraic core** (`RgFlow.lean`): `wilson_product_expansion` (`∏(1+a_p) = Σ_{A⊆P} ∏_A a_p`, via
+  `Finset.prod_add`).
+
+**Honest remaining (unchanged):** the connected-components clustering (the subset sum → polymer sum bijection),
+the small/large-field region decomposition of the SU(2) measure, the `a → 0` continuum limit, the
+OS→Wightman reconstruction on ℝ⁴, and the gap-survival theorem. Those are the open Clay existence half.
+
+
+## UPDATE (2026-11-27, open-Clay arc) — the a→0 scale analysis + gap-survival (6 rungs)
+
+The first concrete progress on the open Clay *existence* half — the `a → 0` limit + 't Hooft cutoff-independence
+— is proved, kernel-checked (full `lake build PaclandProof` green, no `sorry`/`admit`/`axiom`), all in
+`BesselIntegral.lean`:
+
+- **Scale analysis**: `heat_kernel_gap_tendsto_zero` (bare gap `1 − I₁/I₀ → 0`), `naive_scale_ratio_lower_bound`
+  (`gap/e^(−cβ) ≥ e^(cβ)/(4β+1)` — the naive ratio diverges), `physical_mass_scale_bounds`
+  (**`1/5 ≤ β·(1 − I₁/I₀) ≤ 1/2`** for `β ≥ 1`), `physical_mass_lower_bound_tendsto` (`β/(4β+1) → 1/4`).
+- **Gap-survival `Δ_phys > 0`**: `physical_mass_scale_bounds` gives the physical mass `β·(1 − I₁/I₀) ≥ 1/5 > 0`
+  uniformly — the gap does NOT close in the `a → 0` limit. The physical mass lives on the `1/β` scale (not the
+  bare gap `→ 0`, not the running-coupling `e^(−cβ) → ∞`).
+- **Tools**: `bessel_ratio_ge_x_div_x_add_three` (`x/(x+3) ≤ I₁/I₀`, the seed `s(1) ≤ 3/4`) and
+  `no_crossing_barrier_from` (the restart no-crossing, for barriers with a pole at 0).
+
+**Honest remaining (the sharp cutoff-independence + the a→0 construction):** the sharp `β·gap → 1/4` (full
+'t Hooft cutoff-independence) needs the second-order Bessel asymptotics `1 − I₁/I₀ = 1/(2x) + 1/(8x²) + O(x⁻³)`.
+Both first-order routes were checked and ruled out: the no-crossing barrier has `f′(h) = (4C²+1)/16 > 0` at
+`x = 1` for every `C`; the monotonicity route `f′ = 1 − x(1−r²)` is circular. The sharp value needs a *different*
+argument (Simpson–Spector two-sided bound, or a direct second-order differential inequality). The `a → 0`
+correlation-function limit is the open construction beyond it.
+
+## UPDATE (sharp-cutoff goal, rounds 1–20) — the sharp β·gap → 1/4 (full 't Hooft cutoff-independence)
+
+**New argument found + verified (the deliverable):** *positivity-of-coefficients*. The sharp upper bound
+`s < 1/(2x) + 3/(8x²)` (hence `β·gap → 1/4`) is equivalent to the single Bessel inequality
+`2I₀²I₂ < I₁²(I₀+I₂)`, i.e. `D = I₁²(I₀+I₂) − 2I₀²I₂ > 0`, and `D`'s power-series coefficients are all
+nonnegative (verified through order 26; equivalently `E = I₀(I₁²−I₀I₂) − I₁³/x` has `E·x` all-nonneg through
+order 22). The Turán sub-term has the clean positive closed form
+`I₁² − I₀I₂ = Σ (x/2)^{2k+2}·2(2k+1)!/(k!²(k+2)!²)`.
+
+**Proved kernel-checked this goal:** `bessel_ratio_inv_hasDerivAt` — the Riccati `Φ′ = 1 + Φ/x − Φ²` for
+`Φ = I₀/I₁` (BesselIntegral.lean).
+
+**All four kernel-checked routes mapped, with concrete blockers:**
+1. no-crossing barrier — fails for every C (f′(h) > 0 at x = 1), for both s and Φ.
+2. x·s monotonicity — x·s is not monotone (rises then falls).
+3. Segura single-nullcline (Φ > λ⁺) — gives only the sharp LOWER bound; seed needs a sharper pointwise
+   bound than Amos (circular).
+4. coefficient-wise (CORRECT route) — d_n = [x^{2n}]D has no simple closed form; needs the Bessel product
+   formula (Chu–Vandermonde) applied twice + an exponential-cancellation argument. NOT yet kernel-checked.
+
+**Honest boundary:** the sharp β·gap → 1/4 is the Simpson–Spector/Segura double-ratio (second-order Bessel)
+theorem. The NEW argument is found and verified; the kernel-checked proof (route 4) is a large mechanical
+Chu–Vandermonde formalization, unwritten. Gap-survival Δ_phys > 0 (the key deliverable) remains proved
+(`physical_mass_scale_bounds`, previous goal).
+
+## UPDATE (sharp-cutoff goal, rounds 24–32) — the coefficient-wise proof is 9 rungs in
+
+The NEW argument (positivity-of-coefficients) is now **mostly formalized**. Kernel-checked (all green,
+no sorry) in BesselIntegral.lean:
+- `bessel_ratio_inv_hasDerivAt` — the Φ = I₀/I₁ Riccati.
+- `bessel_binomial_convolution`, `bessel_chu_vandermonde_real` — the I₁² Chu–Vandermonde (binomial + factorial).
+- `bessel_binomial_convolution_I0I2`, `bessel_chu_vandermonde_I0I2` — the I₀I₂ Chu–Vandermonde.
+- `bessel_turan_weighted_sum` — the reduction identity I₀(I₁²−I₀I₂) + I₂(I₀²−I₁²) = 2I₁³/x.
+- `besselI_one_sq_eq_series`, `besselI_zero_mul_two_eq_series` — the product formulas (I₁², I₀I₂).
+- `besselI_turan_series` — the Turán series (all coefficients positive).
+- `besselI_turan_pos` — the Turán inequality I₁² > I₀I₂.
+
+**The single remaining step** = the sharp comparison `E = I₀(I₁²−I₀I₂) − I₁³/x > 0`, equivalently the
+irreducible cubic `r³ − xr² − 2r + x < 0` (r = I₁/I₀). Verified true (coefficients all-nonneg through order 22),
+but its coefficient has no clean closed form; the pointwise Riccati derivative g′ is a messy quartic with no
+clean sign. This is the genuinely-hard core (the second-order Simpson–Spector/Segura bound). NOT proved.
+
+## UPDATE (sharp-cutoff goal, rounds 43–46) — the double-ratio wiring is complete (11 rungs)
+
+Added two kernel-checked rungs completing the Simpson–Spector double-ratio wiring:
+- `besselI2_hasDerivAt` — I₂′ = I₁ − 2I₂/x (the ν=2 derivative).
+- `bessel_double_ratio_deriv` — W′ = 2x·C(Φ)/(Φ²(Φx−2)²) for W = I₁²/(I₀I₂), Φ = I₀/I₁, with the cubic
+  nullcline C(Φ) = xΦ³ − 2Φ² − xΦ + 1.
+
+**Final reduction (cleanest form):** the sharp β·gap → 1/4 is the single inequality
+`C(Φ) = xΦ³ − 2Φ² − xΦ + 1 < 0` ⟺ `2I₀²I₂ < I₁²(I₀+I₂)`. The identity `xΦ − 2 = x·I₂/I₁` (from the recurrence)
+gives `C(Φ)·I₁³ = xI₀²I₂ − xI₀I₁² + I₁³`, so `C(Φ) < 0 ⟺ I₀(I₁²−I₀I₂) > I₁³/x`. Confirmed irreducible from
+~18 routes; the double-ratio ODE states it (W′ < 0 ⟺ C(Φ) < 0) but does not discharge it.

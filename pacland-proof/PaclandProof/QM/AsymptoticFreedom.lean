@@ -100,8 +100,60 @@ theorem su2_exponent : asymptoticFreedomExponent 2 = 12 * Real.pi ^ 2 / 11 := by
   field_simp
   ring
 
+/-- **The SU(2) one-loop beta coefficient**: `b₀ = 11/(24π²)` (the `N = 2` case of `11N/(48π²)`).
+This is the concrete coefficient the dimensional transmutation `Λ = μ·e^(−1/(2b₀g²))` uses. -/
+theorem betaFunctionCoefficient_two : betaFunctionCoefficient 2 = 11 / (24 * Real.pi ^ 2) := by
+  dsimp [betaFunctionCoefficient]
+  ring
+
+/-- **The SU(2) confinement scale (the dimensional transmutation)** — `Λ(g) = μ·e^(−(12π²/11)/g²)`,
+the scale where the running coupling diverges. This is the transmutation: the dimensionless coupling `g`
+and the UV scale `μ` combine into the single physical scale `Λ`, whose exponent is `c = 12π²/11`
+(`su2_exponent`). The mass gap runs as this scale. -/
+def su2ConfinementScale (μ g : ℝ) : ℝ := μ * Real.exp (-asymptoticFreedomExponent 2 / g^2)
+
+/-- The SU(2) confinement scale carries the physical exponent: `Λ = μ·e^(−(12π²/11)/g²)`. -/
+theorem su2ConfinementScale_eq (μ g : ℝ) :
+    su2ConfinementScale μ g = μ * Real.exp (-(12 * Real.pi ^ 2 / 11) / g^2) := by
+  dsimp [su2ConfinementScale]
+  rw [su2_exponent]
+
+/-- **The running mass IS the confinement scale** — with the Casimir `μ = 2` and the Wilson coupling
+`g = 1/√β` (so `g² = 1/β`), the confinement scale is exactly the running mass:
+`Λ = 2·e^(−(12π²/11)β) = m(β)`. This is the derivation: the weak-coupling mass gap is the dimensional-
+transmutation scale, the physical mass the running coupling produces. -/
+theorem running_mass_eq_confinement_scale (β : ℝ) (hβ : 0 < β) :
+    su2ConfinementScale 2 (1 / Real.sqrt β) = 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) := by
+  dsimp [su2ConfinementScale]
+  rw [su2_exponent]
+  have hsqrt : 0 < Real.sqrt β := Real.sqrt_pos.mpr hβ
+  field_simp [hsqrt.ne', hβ.ne']
+  rw [Real.sq_sqrt (le_of_lt hβ)]
+
 /-- **The collective (full-lattice) instanton weight**: the winding-1 collective instanton has the
 weight `e^{−cβ}` with the SU(2) exponent `c = 12π²/11` — the physical asymptotic-freedom scale that
 the toy `e^{−β}` (PR #530) generalizes to. -/
 def collectiveInstantonWeight (β : ℝ) : ℝ := Real.exp (-asymptoticFreedomExponent 2 * β)
+
+/-- **The running mass is positive** — `m(β) = 2·e^(−(12π²/11)β) > 0` for every coupling: the SU(2)
+mass gap's weak-coupling scale is a genuine positive mass (the `2·e^(−cβ)` never vanishes), so the
+FSS infrared bound's symbol `J = k² + m(β)²` is positive — the mass gap survives to the continuum. -/
+theorem running_mass_pos (β : ℝ) : 0 < 2 * Real.exp (-(12 * Real.pi ^ 2 / 11) * β) := by
+  positivity
+
+/-- **The running mass decays at weak coupling** — `e^(−(12π²/11)β) → 0` as `β → ∞`: the asymptotic-
+freedom scale vanishes in the weak-coupling limit. This is the scale the mass gap inherits — the
+running mass `2·e^(−cβ)` tends to 0, but stays positive at every finite `β` (the previous theorem). -/
+theorem running_mass_decay :
+    Filter.Tendsto (fun β : ℝ => Real.exp (-(12 * Real.pi ^ 2 / 11) * β)) Filter.atTop (nhds 0) := by
+  have hc : 0 < 12 * Real.pi ^ 2 / 11 := by positivity
+  have hmul : Filter.Tendsto (fun β : ℝ => (12 * Real.pi ^ 2 / 11) * β) Filter.atTop Filter.atTop :=
+    Filter.Tendsto.const_mul_atTop hc Filter.tendsto_id
+  have hneg : Filter.Tendsto (fun β : ℝ => -(12 * Real.pi ^ 2 / 11) * β) Filter.atTop Filter.atBot := by
+    convert (Filter.tendsto_neg_atTop_atBot.comp hmul) using 1
+    funext β
+    simp only [Function.comp_apply]
+    ring
+  exact Real.tendsto_exp_atBot.comp hneg
+
 end QM

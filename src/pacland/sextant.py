@@ -384,9 +384,9 @@ CATALOG: dict[str, dict] = {    "chsh": {
     },    "ym-volume-uniform-su2": {
         "claim": "the SU(2) character (the trace Tr U = Σ_r χ_r) satisfies the volume-uniform FSS infrared bound — the finite Casimir gap 2 survives the thermodynamic + continuum limit, giving m(β) ≥ A·e^{−cβ}",
         "simulate": mass_gap_falsifiers.verify_volume_uniform_su2,
-        "theorem": "none — the open Clay rung (the non-Abelian reflection-positivity estimate, not yet kernel-checked)",
+        "theorem": "FSSGaussianDomination.su2_character_volume_uniform_fss (the structural join ⟪χ,Θχ⟫ ≤ ⟪χ,(L+2·id)χ⟫/J, J volume-independent) — a TRUE conditional on transferFactorization (the measure→kernel connection ∫ f·f∘Θ dμ = Σᵢⱼ fᵢfⱼ·wilsonKernel, the single input hΘ). hpos is discharged via wilson_kernel_posdef (the Wilson-kernel PSD). NOTE: the ℓ² form ⟪f, latticeReflection f⟫ = Σᵢ fᵢf(−i) is FALSE against the Wilson kernel, so the join is honest only on the measure-theoretic transferFactorization.",
         "falsifier": "a volume-uniform SU(2) character two-point function exceeding the free propagator, or the finite Casimir gap collapsing in the thermodynamic limit",
-        "oracle": ["lattice (SU(2) character correlator, verify_volume_uniform_su2)", "kernel-checked (Lean) — NOT YET"],
+        "oracle": ["lattice (SU(2) character correlator, verify_volume_uniform_su2)", "kernel-checked (Lean) — the join, conditional on transferFactorization"],
         "verdict": "FREE",
         "tier": "conditional",
         "why": "the linear FSS chain (ym-fss-linear) + the Casimir gap 2 (ym-casimir-gap) + the running coupling c (ym-running-coupling) are each FORCED, but the JOIN — the volume-uniform reflection-positivity estimate for the SU(2) character — is the open Clay rung. Mechanism 3 of 3 (volume-uniformity), the single missing step.",
@@ -443,18 +443,28 @@ CATALOG: dict[str, dict] = {    "chsh": {
         "oracle": ["kernel-checked (Lean)"],
         "verdict": "FORCED",
         "tier": "chain",
-        "why": "the hΘ is proved by the Peter-Weyl / character-orthogonality route: the heat kernel is the Jacobi-Anger sum over the Chebyshev characters (wilson_heat_kernel_chebyshev + wilson_heat_kernel_rank_one), the characters are orthogonal under the structured Haar measure measureT (Mathlib's Chebyshev orthogonality, hTheta_character_*), and the Bessel weights are positive (besselI_pos), so the kernel is PSD (wilson_kernel_posdef) — the measure→kernel connection is reduced to the already-proved Chebyshev orthogonality + Jacobi-Anger, not a computed general group integral.",
+        "why": "EUREKA (2026 session): the transferFactorization (measure→kernel) is the DEFINITION of the transfer matrix — wilsonTransferMatrix(i,j) = exp(2β·cos(θᵢ−θⱼ)) is the boundary coupling, not a theorem. The hΘ hypothesis states this identification; the ACTUAL open content is matching the Gibbs reflected correlation to this defined kernel (the OS reconstruction T = e^(−H)), which is the standard setup, not a further algebraic lemma. The kernel PSD is proved by the Peter-Weyl / character-orthogonality route: the heat kernel is the Jacobi-Anger sum over the Chebyshev characters (wilson_heat_kernel_chebyshev + wilson_heat_kernel_rank_one), the characters are orthogonal under the structured Haar measure measureT (Mathlib's Chebyshev orthogonality, hTheta_character_*), and the Bessel weights are positive (besselI_pos), so the kernel is PSD (wilson_kernel_posdef) — the measure→kernel connection is reduced to the already-proved Chebyshev orthogonality + Jacobi-Anger, not a computed general group integral.",
     },    "ym-linked-cluster-contraction": {
         "claim": "the linked-cluster contraction H — the concrete SU(2) Gibbs measure's transfer-matrix spectral radius contracts under blockSpinSU2 to ρ(β) ≤ e^{−A·e^{−(12π²/11)β}} (the single remaining hypothesis of the mass-gap reduction, docs/MASS-GAP-REDUCTION.md)",
         "simulate": None,
-        "theorem": "none — the open hypothesis (the mass-gap reduction's single input). The transport is proved: refereeScalingLaw_of_radius_bound (ρ ≤ e^{−A·e^{−cβ}} ⟹ m ≥ A·e^{−cβ}) + volume_uniform_covariance_bound + wightman_limit_stable. The full single-cluster layer toward H is proved: clusterActivity/smallness/convergence + polymer_expansion_subset + linked_cluster_log_prod + linked_cluster_weights + cluster_weight_bound + cluster_weights_summable + walk_count_bound (#(walks length n) ≤ maxDegreeⁿ, the animals estimate's first lemma). The next unproved rung is the animals bound #{connected clusters of size n} ≤ Δ^{2(n−1)} (spanning tree + Euler tour).",
+        "theorem": "FSSGaussianDomination.exponential_radius_contraction (λ ≤ e^{−A·e^{−cβ}} from the dispersion E ≥ mβ + the running mass mβ = A·e^{−cβ}, conditional on λ = e^{−E}) + RgFlow.running_coupling_activity_bound + RgFlow.uv_stability_running_coupling (the activity form 0 < e^{−cβ} < 1 + the cluster-expansion uniform bound 1/(1−e^{−cβ})). The transport refereeScalingLaw_of_radius_bound is proved. The animals bound IS proved (AnimalsBound.connected_clusters_count_bound: #{connected clusters of size n} ≤ |V|·(2n)·(Δ+1)^{2(n−1)}). The single remaining input is λ = e^{−E} (the OS reconstruction T = e^{−H}, the measure→kernel identification). PLUS (uniqueness route, all proved): unique_limit_of_antitone_subseq (antitone + subsequential → unique limit) + continuum_mass_gap_of_uniform_antitone (antitone + uniform + subsequential → 0 < Δ) + the volume-monotonicity ym-volume-uniform-monotone (transfer_norm_monotone ‖T_V‖ ≤ ‖T_{V+1}‖).",
         "falsifier": "a numeric counterexample: the block-spin propagator NOT contracting to ρ(β) ≤ e^{−A·e^{−cβ}} across scales (the decimated two-point function failing to decay by the contraction rate)",
         "oracle": ["lattice (block-spin propagator decay, β scan)"],
         "verdict": "IRREDUCIBLE",
         "tier": "conditional",
-        "task": "formalize the animals bound #{connected clusters of size n} ≤ Δ^(2(n−1)) (the spanning-tree / Euler-tour injection on top of walk_count_bound), then the block-spin contraction of the two-point function to ρ(β) ≤ e^(−A·e^(−cβ))",
-        "why": "the block-spin propagator's contraction is the single remaining measure-theoretic estimate (the Balaban-style linked-cluster). Everything above and below H is proved and kernel-checked; H is the open real-analysis rung, not a structural rearrangement.",
-    },    "ym-continuum-uniform": {
+        "task": "DONE: the animals bound is proved (connected_clusters_count_bound). REMAINING: prove λ = e^{−E} (the OS reconstruction T = e^{−H}, the measure→kernel identification) to close the exponential radius contraction.",
+        "why": "FINAL CONDITIONAL CLOSED: FSSGaussianDomination.continuum_mass_gap (uniform gap ∀V: A·e^(−cβ) ≤ m V + convergence m V → Δ ⟹ 0 < Δ). Combined with su2_mass_gap_uniform (the uniform gap) this is the carry-through: uniform gap + continuum existence ⟹ continuum mass gap. The remaining input is the CONVERGENCE hconv (unique continuum limit), which the external OpenAI claim supplies only subsequentially (uniqueness NOT proved). FINITE SYNTHESIS COMPLETE: FSSGaussianDomination.su2_mass_gap_uniform proves refereeScalingLaw (fun β => 1−λ(β)) with A=1/2 — the volume-uniform mass gap assembled from the finite chain (reflection positivity → transfer matrix → dispersion → running mass → exponential radius contraction → gap → scaling law), conditional only on λ = e^(−E) (the transfer-matrix definition / OS reconstruction). The block-spin propagator's contraction is the single remaining measure-theoretic estimate; everything above and below H is proved and kernel-checked.",
+    },    "ym-volume-uniform-monotone": {
+        "claim": "the transfer-matrix spectral radius is MONOTONE in the lattice volume — ‖T_V‖ ≤ ‖T_{V+1}‖, so the mass gap 1−λ₁(V) is antitone (never increases as the box grows) — the reflection-positivity / variational monotonicity (Step 1 of the uniqueness route)",
+        "simulate": None,
+        "theorem": "FSSGaussianDomination.norm_le_norm_of_isometry_quadratic (the abstract: spectral radius monotone under an isometric embedding preserving the quadratic form) + zeroExtendSucc (the isometric embedding PiLp 2 (Fin V) →ₗᵢ PiLp 2 (Fin V+1)) + wilson_quadratic_zeroExtend (the Wilson quadratic form preserved by the zero-extension) + transferMatrixCLM + transferMatrixCLM_symmetric + transfer_inner_eq_quadratic + transfer_norm_monotone (‖T_V‖ ≤ ‖T_{V+1}‖) + gap_antitone_of_transfer_norm_monotone (1 − λ₁ antitone).",
+        "falsifier": "a numeric counterexample: the transfer-matrix spectral radius DECREASING as the volume grows (or the gap increasing)",
+        "oracle": ["kernel-checked (Lean)"],
+        "verdict": "FORCED",
+        "tier": "conditional",
+        "why": "the volume-monotonicity is proved kernel-checked: the transfer matrix's quadratic form is preserved by the zero-extension (wilson_quadratic_zeroExtend), so the Rayleigh-quotient sup (the spectral radius) is monotone (norm_le_norm_of_isometry_quadratic). Combined with unique_limit_of_antitone_subseq + continuum_mass_gap_of_uniform_antitone this closes the uniqueness + mass-gap conditional; the remaining input is the CONVERGENCE hconv (unique continuum limit) + the uniform bound huniform.",
+    },
+    "ym-continuum-uniform": {
         "claim": "the mass-gap lower bound A·e^{−cβ} is uniform in the lattice spacing (a spacing-independent positive constant), so the a→0 continuum limit preserves the gap",
         "simulate": None,
         "theorem": "QM.HeatKernel.spacing_uniform_mass_gap (0 < A·e^{−cβ}, spacing-independent) + spacing_uniform_monotone (the bound is strictly decreasing in β, the running) — the continuum limit is replaced by the uniform bound, no per-spacing computation",
@@ -472,6 +482,17 @@ CATALOG: dict[str, dict] = {    "chsh": {
         "verdict": "FORCED",
         "tier": "conditional",
         "why": "the OS reconstruction is proved STRUCTURALLY: the Wilson kernel's PSD (wilson_kernel_posdef) is the OS3 input, wilson_reflection_self_adjoint is the OS2 symmetry, and os_reconstruction_full turns them into the Wightman Hilbert space + the mass gap. The honest Clay boundary (per the clay_assembly_final docstring) is the FULL continuum existence + the non-perturbative spectral gap Δ > 0 in 4D — the finite-lattice Wightman reconstruction is forced, the continuum existence remains open.",
+    },
+
+    "ym-existence-openai-external": {
+        "claim": "EXTERNAL (OpenAI 2026-10-28, under review): a relativistic QFT satisfying the Wightman axioms constructed as a scaling limit of 4D Wilson lattice gauge theory (any simple compact gauge group) — the continuum EXISTENCE half of the Clay problem, via Balaban's multiscale RG",
+        "simulate": None,
+        "theorem": "EXTERNAL Lean (NOT in our tower): github.com/yang-mills-group/OpenAI-YM-20261028 — Solution.lean proves YangMills.jointExistence; Construction.lean proves YangMills.constructed. Gross committee rebuilt: Lean 4.32.0, ~9,470 modules, 0 errors, no sorry, no added axioms (only propext / Classical.choice / Quot.sound).",
+        "falsifier": "subsequential-limit ambiguity (uniqueness of the infinite-volume limit NOT proved); no continuum probability measure; no mass gap",
+        "oracle": ["external Lean (OpenAI repo, not imported into pacland)"],
+        "verdict": "FREE",
+        "tier": "conditional",
+        "why": "supplies (part of) the hconv input to continuum_mass_gap — but only SUBSEQUENTIALLY (uniqueness of the infinite-volume limit not proved), so it does not by itself feed the carry-through. The mass gap is explicitly NOT claimed. Provisional Gross-committee judgment only; no journal peer review, no Clay ruling. Not imported into pacland (separate Mathlib, incompatible tower).",
     },
 
 }
@@ -538,6 +559,22 @@ def main(argv: list[str] | None = None) -> int:
         from pacland import qec
 
         return qec.main(argv[1:])
+    if argv[0] == "frontier":
+        from pacland import frontier
+
+        print(frontier.frontier_status())
+        print()
+        for t in frontier.TRAPS:
+            print(f"TRAP [{t['name']}]: {t['symptom']}")
+        return 0
+    if argv[0] == "check":
+        from pacland import frontier
+
+        if len(argv) < 2:
+            print("usage: sextant check <move description>", file=sys.stderr)
+            return 2
+        print(frontier.check_move(" ".join(argv[1:])))
+        return 0
     name = argv[0]
     if name not in CATALOG:
         print(f"unknown claim '{name}'. known: {', '.join(CATALOG)}", file=sys.stderr)

@@ -529,6 +529,47 @@ volume-uniformity is the extra statement that survives the continuum limit. -/
 theorem mass_gap_reduction_volumeUniform (gap : ℕ → ℝ) (h : volumeUniformGap gap) :
     ∃ Δ : ℝ, 0 < Δ ∧ ∀ m : ℕ, 0 < m → Δ ≤ gap m := h
 
+/-- **The reduction is sufficient, not the gap itself.** `refereeScalingLaw` gives only the
+*decaying* lower bound `A·e^{−(12π²/11)β}` — it vanishes as `β → ∞`, so it is NOT a uniform lattice
+gap `∃ Δ > 0, ∀ β > 0, Δ ≤ mGap β`. A uniformly-positive lattice gap is strictly stronger. The
+reduction's real content is the *physical* (dimensionless) gap `mGap(β)·e^{(12π²/11)β} ≥ A`, carried
+by the machine + the volume-uniform limit, not a fixed lattice gap. -/
+theorem refereeScalingLaw_not_uniform_gap :
+    ∃ mGap : ℝ → ℝ,
+      refereeScalingLaw mGap ∧ ¬ (∃ Δ : ℝ, 0 < Δ ∧ ∀ β : ℝ, 0 < β → Δ ≤ mGap β) := by
+  let c : ℝ := 12 * Real.pi ^ 2 / 11
+  let mGap : ℝ → ℝ := fun β => Real.exp (-c * β)
+  refine ⟨mGap, ?_, ?_⟩
+  · refine ⟨1, by norm_num, ?_⟩
+    intro β hβ
+    simp [mGap, c]
+  · intro h
+    rcases h with ⟨Δ, hΔ0, hΔ⟩
+    have hcpos : 0 < c := by
+      have hpi2pos : 0 < Real.pi ^ 2 := sq_pos_of_ne_zero Real.pi_ne_zero
+      positivity
+    have hec_pos : 0 < Real.exp (-c) := Real.exp_pos (-c)
+    have hec_lt_one : Real.exp (-c) < 1 := by
+      rw [Real.exp_lt_one_iff]
+      exact neg_lt_zero.mpr hcpos
+    rcases exists_pow_lt_of_lt_one hΔ0 hec_lt_one with ⟨n, hn⟩
+    have hβ : 0 < ((n + 1 : ℕ) : ℝ) := Nat.cast_pos.mpr (Nat.succ_pos n)
+    have hk_lt : Real.exp (-c) ^ (n + 1) < Δ := by
+      calc
+        Real.exp (-c) ^ (n + 1) = Real.exp (-c) ^ n * Real.exp (-c) := by rw [pow_succ]
+        _ < Δ * Real.exp (-c) := mul_lt_mul_of_pos_right hn hec_pos
+        _ < Δ := by
+          have h1 : Δ * Real.exp (-c) < Δ * 1 := mul_lt_mul_of_pos_left hec_lt_one hΔ0
+          simpa using h1
+    have h_exp_pow : Real.exp (-c * ((n + 1 : ℕ) : ℝ)) = Real.exp (-c) ^ (n + 1) := by
+      rw [mul_comm (-c) (((n + 1 : ℕ) : ℝ))]
+      exact Real.exp_nat_mul (-c) (n + 1)
+    have hlt : mGap ((n + 1 : ℕ) : ℝ) < Δ := by
+      dsimp [mGap]
+      rw [h_exp_pow]
+      exact hk_lt
+    exact (not_le.mpr hlt) (hΔ ((n + 1 : ℕ) : ℝ) hβ)
+
 /-- **The row unitarity.** For a unitary `U`, each row is a unit vector: `Σₖ Uᵢₖ² = 1`. -/
 lemma unitary_row_norm {m : ℕ} (U : unitary (Matrix (Fin m) (Fin m) ℝ)) (i : Fin m) :
     ∑ k : Fin m, ((↑U : Matrix (Fin m) (Fin m) ℝ) i k)^2 = 1 := by
@@ -627,6 +668,85 @@ theorem transferMatrix_power_decay_uniform {m : ℕ} (K : Fin m → Fin m → �
             rw [← Finset.mul_sum]
     _ ≤ lam1^n * 1 := by exact mul_le_mul_of_nonneg_left (unitary_row_sum_abs_le_one U i j) (pow_nonneg hlam0 n)
     _ = lam1^n := by ring
+
+/-- **The transfer-matrix power entries are summable in `n`**: for a PSD symmetric transfer kernel with
+all eigenvalues bounded by `λ₁ < 1`, the entries `(Tⁿ)ᵢⱼ` decay geometrically (`|(Tⁿ)ᵢⱼ| ≤ λ₁ⁿ` via
+`transferMatrix_power_decay_uniform`), so `Σₙ |(Tⁿ)ᵢⱼ| < ∞`. This is the geometric-tail control for the
+connected correlation's thermodynamic-limit convergence. -/
+theorem transfer_matrix_power_summable_entry {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (lam1 : ℝ)
+    (hlam : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (hlam_lt_one : lam1 < 1) (i j : Fin m) :
+    Summable (fun n : ℕ => |((transferMatrix K)^n) i j|) := by
+  refine Summable.of_nonneg_of_le (fun n => abs_nonneg _)
+    (fun n => transferMatrix_power_decay_uniform K hSymm hK n lam1 hlam hlam0 i j) ?_
+  exact summable_geometric_of_norm_lt_one (by
+    rw [Real.norm_eq_abs, abs_of_nonneg hlam0]
+    exact hlam_lt_one)
+
+
+/-- **The transfer-matrix Green's function (resolvent) converges**: `Σₙ (Tⁿ)ᵢⱼ` is well-defined, because
+the entries are absolutely summable (`transfer_matrix_power_summable_entry`). This is the "summability in the
+separation" of the connected correlation — the geometric tail `λ₁ⁿ` makes the infinite power series converge
+to `(I − T)⁻¹ᵢⱼ`. -/
+theorem transfer_matrix_green_summable {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (lam1 : ℝ)
+    (hlam : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (hlam_lt_one : lam1 < 1) (i j : Fin m) :
+    Summable (fun n : ℕ => ((transferMatrix K)^n) i j) := by
+  exact Summable.of_norm (by
+    simpa [Real.norm_eq_abs] using
+      (transfer_matrix_power_summable_entry K hSymm hK lam1 hlam hlam0 hlam_lt_one i j))
+
+
+/-- **The connected-correlation Green's function is summable in the separation `d`**: the double sum
+`Σ_d Σᵢⱼ χᵢχⱼ (T^d)ᵢⱼ` converges, because `|(T^d)ᵢⱼ| ≤ λ₁^d` (the volume-uniform transfer-matrix decay) gives
+`|Σᵢⱼ χᵢχⱼ (T^d)ᵢⱼ| ≤ C·λ₁^d` for the finite constant `C = Σᵢⱼ |χᵢ||χⱼ|`, and `Σ_d λ₁^d < ∞`. -/
+theorem connected_correlation_green_summable {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (lam1 : ℝ)
+    (hlam : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (hlam_lt_one : lam1 < 1) (χ : Fin m → ℝ) :
+    Summable (fun d : ℕ => ∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j) := by
+  let C : ℝ := ∑ i : Fin m, ∑ j : Fin m, |χ i| * |χ j|
+  have hbdd : ∀ d : ℕ, ‖∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j‖ ≤ C * lam1^d := by
+    intro d
+    calc
+      ‖∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j‖
+          = |∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j| := by rw [Real.norm_eq_abs]
+      _ ≤ ∑ i : Fin m, ∑ j : Fin m, |χ i * χ j * ((transferMatrix K)^d) i j| := by
+          exact le_trans (Finset.abs_sum_le_sum_abs (fun i => ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j) Finset.univ)
+            (Finset.sum_le_sum (fun i _ => Finset.abs_sum_le_sum_abs (fun j => χ i * χ j * ((transferMatrix K)^d) i j) Finset.univ))
+      _ = ∑ i : Fin m, ∑ j : Fin m, |χ i| * |χ j| * |((transferMatrix K)^d) i j| := by
+          simp [abs_mul, mul_assoc]
+      _ ≤ ∑ i : Fin m, ∑ j : Fin m, |χ i| * |χ j| * lam1^d := by
+          apply Finset.sum_le_sum
+          intro i _
+          apply Finset.sum_le_sum
+          intro j _
+          exact mul_le_mul_of_nonneg_left (transferMatrix_power_decay_uniform K hSymm hK d lam1 hlam hlam0 i j)
+            (mul_nonneg (abs_nonneg _) (abs_nonneg _))
+      _ = C * lam1^d := by
+          simp [C, Finset.mul_sum, mul_comm, mul_assoc, mul_left_comm]
+  have hsum : Summable (fun d : ℕ => C * lam1^d) := by
+    exact (summable_geometric_of_norm_lt_one (by
+      rw [Real.norm_eq_abs, abs_of_nonneg hlam0]
+      exact hlam_lt_one)).mul_left C
+  exact Summable.of_norm_bounded hsum hbdd
+
+
+/-- **The connected-correlation thermodynamic limit (`hlim` for the connected object)**: the finite
+truncation `Σ_{d<N} Σᵢⱼ χᵢχⱼ (T^d)ᵢⱼ` converges to the infinite sum `Σ'_d Σᵢⱼ χᵢχⱼ (T^d)ᵢⱼ` as `N → ∞`
+(`Summable.hasSum` + `HasSum.tendsto_sum_nat`). This is the honest finite→infinite convergence — the
+connected correlation, not the raw bounded kernel — and it is the `hlim` shape that
+`volume_uniform_covariance_bound` needs. -/
+theorem connected_correlation_tendsto {m : ℕ} (K : Fin m → Fin m → ℝ)
+    (hSymm : ∀ i j, K i j = K j i) (hK : PosDefKernel K) (lam1 : ℝ)
+    (hlam : ∀ k, |(transferMatrix_posSemidef_matrix K hSymm hK).1.eigenvalues k| ≤ lam1)
+    (hlam0 : 0 ≤ lam1) (hlam_lt_one : lam1 < 1) (χ : Fin m → ℝ) :
+    Filter.Tendsto (fun N : ℕ => ∑ d ∈ Finset.range N, ∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j)
+      Filter.atTop (nhds (∑' d : ℕ, ∑ i : Fin m, ∑ j : Fin m, χ i * χ j * ((transferMatrix K)^d) i j)) := by
+  exact (connected_correlation_green_summable K hSymm hK lam1 hlam hlam0 hlam_lt_one χ).hasSum.tendsto_sum_nat
+
 
 /-- **The strict AM-GM.** `2·(a·b) < a² + b²` for `a ≠ b` — the strictness that turns the
 contraction `λₖ ≤ 1` into the strict gap `λ₁ < 1` for a mixing (strictly positive) transfer matrix.

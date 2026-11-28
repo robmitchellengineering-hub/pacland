@@ -131,6 +131,7 @@ measure. This avoids the compactness proof: the S³ measure is defined directly,
 noncomputable def su2Haar : MeasureTheory.Measure (Metric.sphere (0 : ℂ × ℂ) 1) :=
   MeasureTheory.Measure.toSphere (MeasureTheory.volume : MeasureTheory.Measure (ℂ × ℂ))
 
+
 /-- **The SU(2) Wilson action on the S³** — the holonomy trace `1 − Re Tr U` for the SU(2) element
 `[[a, −conj b], [b, conj a]]`, whose trace is `2·Re a`: `S(a, b) = 1 − 2·Re a`. This is the specific
 `wilsonPlaquette` in the S³ parametrization of SU(2). -/
@@ -328,5 +329,212 @@ theorem animals_majorant_tour_summable (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : 
   simpa [mul_assoc, mul_pow, pow_mul] using
     (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hle (pow_nonneg (abs_nonneg ρ) n))
       (mul_nonneg zero_le_two (Nat.cast_nonneg n)))
+
+/-- **The quadratic RG contraction (volume-uniform)** — the cluster-expansion condition
+`(Δ+1)²|ρ| < 1` is self-improving: the renormalised activity `|ρ|²(Δ+1)⁴` is the *square* of
+`|ρ|(Δ+1)²`, so `|ρ|²(Δ+1)⁴ < 1` follows. This is the RG step's contraction, and it depends only on
+`(Δ, ρ)` — never on the lattice volume — so the iteration below carries to the thermodynamic limit
+without computing the infinite lattice. -/
+theorem rg_quadratic_contraction (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    |ρ|^2 * ((Δ : ℝ) + 1)^4 < 1 := by
+  have ha : 0 ≤ |ρ| * ((Δ : ℝ) + 1)^2 := mul_nonneg (abs_nonneg ρ) (sq_nonneg ((Δ : ℝ) + 1))
+  have hle1 : |ρ| * ((Δ : ℝ) + 1)^2 ≤ 1 := le_of_lt h
+  have hsqle : (|ρ| * ((Δ : ℝ) + 1)^2)^2 ≤ |ρ| * ((Δ : ℝ) + 1)^2 := by
+    nlinarith [mul_le_mul_of_nonneg_right hle1 ha]
+  have hsq : (|ρ| * ((Δ : ℝ) + 1)^2)^2 < 1 := hsqle.trans_lt h
+  convert hsq using 1
+  ring_nf
+
+
+/-- **The S³ inner product (the SU(2) trace product's real part).** For SU(2) elements parametrized by the
+S³ points `z = (a, b)`, `w = (c, d)`, the trace of the product `U_z · U_w⁻¹` has real part
+`2·Re(a·conj c + b·conj d)` — twice the S³ (ℂ² Hermitian) inner product. This is the boundary coupling:
+the shared plaquette across the reflection plane. -/
+noncomputable def s3Inner (z w : Metric.sphere (0 : ℂ × ℂ) 1) : ℝ :=
+  (z.1.1 * star w.1.1 + z.1.2 * star w.1.2).re
+
+/-- **The transfer-matrix kernel (the boundary coupling's Boltzmann factor).** The plaquette shared across
+the reflection plane has the action `1 − 2·⟨z,w⟩`, so its Boltzmann weight is `exp(−β(1 − 2·⟨z,w⟩))`
+= `exp(−β)·exp(2β·⟨z,w⟩)` — the Wilson heat kernel (up to the constant `exp(−β)`). -/
+noncomputable def transferKernel (β : ℝ) (z w : Metric.sphere (0 : ℂ × ℂ) 1) : ℝ :=
+  Real.exp (-β * (1 - 2 * s3Inner z w))
+
+/-- **The transfer-matrix kernel IS the heat kernel.** `exp(−β(1−2·⟨z,w⟩)) = exp(−β)·exp(2β·⟨z,w⟩)`, the
+Wilson heat kernel in the S³ inner product. This is the boundary coupling = the Wilson kernel (the
+`hΘ` pairing), now stated on the physical S³ measure substrate. -/
+theorem transferKernel_eq_heat_kernel (β : ℝ) (z w : Metric.sphere (0 : ℂ × ℂ) 1) :
+    transferKernel β z w = Real.exp (-β) * Real.exp (2 * β * s3Inner z w) := by
+  rw [transferKernel]
+  ring_nf
+  rw [Real.exp_add]
+
+
+
+/-- **The reflection-plane split (the `hΘ` measure half).** The reflected correlation of the two-slice
+product measure (the Fubini across the reflection plane) equals the iterated integral against the
+transfer-matrix kernel. -/
+theorem hTheta_reflected_correlation (β : ℝ) (g : Metric.sphere (0 : ℂ × ℂ) 1 → ℝ)
+    [MeasureTheory.SFinite su2Haar]
+    (hg : MeasureTheory.Integrable (fun p : (Metric.sphere (0 : ℂ × ℂ) 1) × (Metric.sphere (0 : ℂ × ℂ) 1) =>
+      g p.1 * g p.2 * transferKernel β p.1 p.2) (su2Haar.prod su2Haar)) :
+    (∫ p : (Metric.sphere (0 : ℂ × ℂ) 1) × (Metric.sphere (0 : ℂ × ℂ) 1),
+        g p.1 * g p.2 * transferKernel β p.1 p.2 ∂(su2Haar.prod su2Haar))
+      = ∫ z₀ : Metric.sphere (0 : ℂ × ℂ) 1, ∫ z₁ : Metric.sphere (0 : ℂ × ℂ) 1,
+        g z₀ * g z₁ * transferKernel β z₀ z₁ ∂su2Haar ∂su2Haar := by
+  rw [MeasureTheory.integral_prod (fun p => g p.1 * g p.2 * transferKernel β p.1 p.2) hg]
+
+/-- **The reflected correlation is non-negative** — the measure-theoretic reflection positivity: the
+transfer-matrix kernel `transferKernel` is positive (the heat kernel), so the reflected correlation of a
+non-negative field is non-negative. -/
+theorem hTheta_reflected_correlation_nonneg (β : ℝ) (g : Metric.sphere (0 : ℂ × ℂ) 1 → ℝ)
+    (hg : ∀ z, 0 ≤ g z) :
+    0 ≤ ∫ z₀ : Metric.sphere (0 : ℂ × ℂ) 1, ∫ z₁ : Metric.sphere (0 : ℂ × ℂ) 1,
+        g z₀ * g z₁ * transferKernel β z₀ z₁ ∂su2Haar ∂su2Haar := by
+  have hpos : ∀ z₀ z₁, 0 ≤ g z₀ * g z₁ * transferKernel β z₀ z₁ := by
+    intro z₀ z₁
+    rw [transferKernel]
+    exact mul_nonneg (mul_nonneg (hg z₀) (hg z₁)) (Real.exp_pos _).le
+  exact MeasureTheory.integral_nonneg (by intro z₀; exact MeasureTheory.integral_nonneg (by intro z₁; exact hpos z₀ z₁))
+
+/-- **The 2×2 adjugate identity**: `adj(U) = Tr(U)·I − U` (via `Matrix.adjugate_fin_two`). -/
+theorem su2_adjugate_eq_trace_sub (U : Matrix (Fin 2) (Fin 2) ℂ) :
+    Matrix.adjugate U = Matrix.trace U • (1 : Matrix (Fin 2) (Fin 2) ℂ) - U := by
+  rw [Matrix.adjugate_fin_two U]
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [Matrix.trace, Matrix.one_apply_eq, smul_eq_mul]
+
+/-- **The SU(2) trace identity**: `Tr(UV) + Tr(U⁻¹V) = Tr(U)·Tr(V)` for 2×2 matrices with `det U = 1`. Via
+`U⁻¹ = adj(U)` (`Matrix.inv_def` + `hdet`) and the adjugate identity `adj(U) = Tr(U)·I − U`. The key for the
+SU(2) n=1 character convolution `∫ χ₁(U₂A)χ₁(U₂B) dU₂ = χ₁(AB⁻¹)/2`. -/
+theorem su2_trace_identity (U V : Matrix (Fin 2) (Fin 2) ℂ) (hdet : U.det = 1) :
+    Matrix.trace (U * V) + Matrix.trace (U⁻¹ * V) = Matrix.trace U * Matrix.trace V := by
+  rw [Matrix.inv_def U, hdet]
+  simp
+  rw [su2_adjugate_eq_trace_sub U]
+  simp [Matrix.trace_sub, Matrix.trace_smul, sub_mul, Matrix.one_mul, smul_eq_mul]
+
+/-- **The SU(2) Schur lemma** (the fundamental rep is irreducible): a 2×2 matrix that commutes with the Pauli
+generators `σ₃ = diag(1,−1)` and `σ₁ = [[0,1],[1,0]]` is a scalar multiple of the identity. This is the matrix-level
+lift that turns the scalar Weyl moments (`∫ Tr(V²) = −1`, `∫ Tr(U₂) = 0`) into `∫ V² dV = −I/2` and `∫ U₂ dU₂ = 0`. -/
+theorem su2_central_matrix_eq_scalar (M : Matrix (Fin 2) (Fin 2) ℂ)
+    (hσ₃ : M * !![(1 : ℂ), 0; 0, -1] = !![(1 : ℂ), 0; 0, -1] * M)
+    (hσ₁ : M * !![0, (1 : ℂ); 1, 0] = !![0, (1 : ℂ); 1, 0] * M) :
+    ∃ c : ℂ, M = c • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
+  let c : ℂ := M 0 0
+  refine ⟨c, ?_⟩
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [c, smul_eq_mul, Matrix.one_apply_eq, Matrix.mul_apply, Fin.sum_univ_two]
+  · -- M 0 1 = 0
+    have h := congr_fun (congr_fun hσ₃ 0) 1
+    simp [Matrix.mul_apply, Fin.sum_univ_two] at h
+    apply Complex.ext <;> simp
+    · have hre : -(M 0 1).re = (M 0 1).re := by simpa using congrArg Complex.re h
+      nlinarith [hre]
+    · have him : -(M 0 1).im = (M 0 1).im := by simpa using congrArg Complex.im h
+      nlinarith [him]
+  · -- M 1 0 = 0
+    have h := congr_fun (congr_fun hσ₃ 1) 0
+    simp [Matrix.mul_apply, Fin.sum_univ_two] at h
+    apply Complex.ext <;> simp
+    · have hre : (M 1 0).re = -(M 1 0).re := by simpa using congrArg Complex.re h
+      nlinarith [hre]
+    · have him : (M 1 0).im = -(M 1 0).im := by simpa using congrArg Complex.im h
+      nlinarith [him]
+  · -- M 1 1 = M 0 0
+    have h := congr_fun (congr_fun hσ₁ 0) 1
+    simp [Matrix.mul_apply, Fin.sum_univ_two] at h
+    exact h.symm
+
+/-- **The trace conjugation invariance**: `Tr(U·C·U⁻¹) = Tr(C)` for `det U = 1` — the trace cyclicity plus
+`U⁻¹·U = I`. This is the pointwise trace half of the Haar invariance that feeds the Schur lemma (making
+`∫ V² dV` central, hence scalar). -/
+theorem su2_trace_conj_invariant (U C : Matrix (Fin 2) (Fin 2) ℂ) (hU : U.det = 1) :
+    Matrix.trace (U * C * U⁻¹) = Matrix.trace C := by
+  rw [Matrix.trace_mul_comm]
+  rw [← Matrix.mul_assoc]
+  rw [Matrix.nonsing_inv_mul U (by simpa [hU] using (isUnit_one : IsUnit (1 : ℂ)))]
+  simp
+
+/-- **The Schur lemma applied to the pseudoreality**: a central 2×2 matrix with `Tr M = −1` equals `−I/2`.
+Combines `su2_central_matrix_eq_scalar` (`M = c·I`) with `Tr(c·I) = 2c = −1`. This is the matrix-level lift that
+turns the scalar `∫ Tr(V²) = −1` into `∫ V² dV = −I/2` (once the Haar invariance makes `∫ V² dV` central). -/
+theorem su2_central_matrix_trace_neg_one_eq_neg_half (M : Matrix (Fin 2) (Fin 2) ℂ)
+    (hσ₃ : M * !![(1 : ℂ), 0; 0, -1] = !![(1 : ℂ), 0; 0, -1] * M)
+    (hσ₁ : M * !![0, (1 : ℂ); 1, 0] = !![0, (1 : ℂ); 1, 0] * M)
+    (htrace : Matrix.trace M = -1) :
+    M = -(1 / 2 : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
+  rcases su2_central_matrix_eq_scalar M hσ₃ hσ₁ with ⟨c, hc⟩
+  rw [hc] at htrace
+  have h2c : c * 2 = -1 := by
+    simpa [Matrix.trace_smul, Matrix.trace_one] using htrace
+  have hc_eq : c = -(1 / 2 : ℂ) := by
+    linear_combination (1 / 2 : ℂ) * h2c
+  rw [hc, hc_eq]
+
+/-- **The SU(2) fundamental dimension**: `Tr(I) = 2`. The normalization constant of the Schur-lemma lift
+(`Tr(c·I) = 2c`). -/
+theorem su2_trace_one : Matrix.trace (1 : Matrix (Fin 2) (Fin 2) ℂ) = 2 := by
+  simp [Matrix.trace, Fin.sum_univ_two]
+
+/-- The three Pauli matrices (Hermitian, traceless, `σᵢσⱼ + σⱼσᵢ = 2δᵢⱼI`). -/
+def su2Pauli1 : Matrix (Fin 2) (Fin 2) ℂ := !![0, 1; 1, 0]
+def su2Pauli2 : Matrix (Fin 2) (Fin 2) ℂ := !![0, -Complex.I; Complex.I, 0]
+def su2Pauli3 : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, -1]
+
+/-- The traceless Hermitian combination `x₁σ₁ + x₂σ₂ + x₃σ₃` (the Lie-algebra element). -/
+def su2PauliVec (x : Fin 3 → ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  (x 0 : ℂ) • su2Pauli1 + (x 1 : ℂ) • su2Pauli2 + (x 2 : ℂ) • su2Pauli3
+
+/-- **The Pauli algebra square**: `(x⃗·σ⃗)² = |x⃗|²·I` — the key that makes the SU(2) quaternion square a scalar
+plus a trace-zero part (hence `∫ V² dV = −I/2`). -/
+theorem su2_pauli_sq (x : Fin 3 → ℝ) :
+    su2PauliVec x ^ 2 = ((x 0) ^ 2 + (x 1) ^ 2 + (x 2) ^ 2 : ℝ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, smul_eq_mul, Matrix.mul_apply, Fin.sum_univ_two, pow_two]
+  <;> ring_nf
+  <;> norm_num [pow_two, Complex.I_mul_I]
+
+/-- `Complex.I ^ 2 = −1` (via `pow_two` + `Complex.I_mul_I`). -/
+theorem complex_I_sq : Complex.I ^ 2 = -1 := by
+  rw [pow_two, Complex.I_mul_I]
+
+/-- **The Pauli tracelessness**: `Tr(x⃗·σ⃗) = 0`. The trace-zero half of the quaternion square's decomposition. -/
+theorem su2_pauli_trace_zero (x : Fin 3 → ℝ) : Matrix.trace (su2PauliVec x) = 0 := by
+  simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Matrix.trace, Fin.sum_univ_two, smul_eq_mul]
+
+/-- The SU(2) quaternion form `x₀·I + i·(x₁σ₁ + x₂σ₂ + x₃σ₃)` (a general traceless-Hermitian-perturbed unitary). -/
+def su2Quaternion (x₀ : ℝ) (x : Fin 3 → ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  (x₀ : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) + Complex.I • su2PauliVec x
+
+/-- **The SU(2) quaternion square**: `V² = (x₀² − |x⃗|²)·I + 2ix₀·(x⃗·σ⃗)`. Uses the Pauli algebra
+`(x⃗·σ⃗)² = |x⃗|²·I` (`su2_pauli_sq`) and `I² = −1`. This is the scalar-plus-trace-zero split that makes
+`∫ V² dV = −I/2` once the S³ moments `∫ x₀² = 1/4`, `∫ x₀xᵢ = 0` are supplied. -/
+theorem su2_quaternion_sq (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    su2Quaternion x₀ x ^ 2 = ((x₀ ^ 2 - (x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2) : ℝ) : ℂ) •
+      (1 : Matrix (Fin 2) (Fin 2) ℂ) + ((2 * x₀ : ℝ) : ℂ) • Complex.I • su2PauliVec x := by
+  unfold su2Quaternion
+  have hXsq := su2_pauli_sq x
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul_apply, Fin.sum_univ_two, smul_eq_mul, su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3,
+      pow_two, Complex.I_mul_I, hXsq]
+  <;> ring_nf
+  <;> simp [complex_I_sq]
+  <;> ring
+
+/-- **The quaternion trace**: `Tr(V²) = 2(x₀² − |x⃗|²)` — the trace of the quaternion square (the scalar part's
+trace, the trace-zero part vanishing). On `S³` (`x₀² + |x⃗|² = 1`) this is `2(2x₀² − 1)`, matching the Weyl
+`Tr(V²) = 2cos(2θ)` with `x₀ = cos θ`. -/
+theorem su2_quaternion_sq_trace (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    Matrix.trace (su2Quaternion x₀ x ^ 2) =
+      (2 : ℂ) * ((x₀ ^ 2 - (x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2) : ℝ) : ℂ) := by
+  rw [su2_quaternion_sq]
+  rw [Matrix.trace_add, Matrix.trace_smul]
+  simp [su2_pauli_trace_zero, Matrix.trace_one, smul_eq_mul]
+  ring
+
+
 
 end QM

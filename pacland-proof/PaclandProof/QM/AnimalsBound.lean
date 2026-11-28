@@ -520,4 +520,88 @@ theorem rooted_cluster_weights_summable {V : Type u} [Fintype V] [DecidableEq V]
     rooted_animals_count_bound_gen G r Δ hΔ n
   exact mul_le_mul_of_nonneg_right (by exact_mod_cast hcount) (pow_nonneg (abs_nonneg ρ) n)
 
+/-- **Arrow B (first half): the full connected-cluster count is volume-bounded** — each connected
+subset of size `n ≥ 1` is rooted at its minimum element, so the number of connected `n`-subsets is at
+most the number of rooted ones summed over `V`, hence `≤ |V|·(2n)(Δ+1)^(2(n−1))`. -/
+theorem connected_clusters_count_bound {V : Type u} [Fintype V] [DecidableEq V] [LinearOrder V]
+    (G : SimpleGraph V) [DecidableRel G.Adj] [Fintype G.edgeSet]
+    (Δ : ℕ) (hΔ : G.maxDegree ≤ Δ) (n : ℕ) (hn : 1 ≤ n) :
+    ((Finset.univ.filter (fun S : Finset V => (G.induce (S : Set V)).Connected ∧ S.card = n)).card : ℕ)
+      ≤ (Fintype.card V) * (2*n) * (Δ+1)^(2*(n-1)) := by
+  classical
+  let T : Finset (Finset V) :=
+    Finset.univ.filter (fun S : Finset V => (G.induce (S : Set V)).Connected ∧ S.card = n)
+  let rooted (r : V) : Finset (Finset V) :=
+    Finset.univ.filter (fun S : Finset V => r ∈ S ∧ (G.induce (S : Set V)).Connected ∧ S.card = n)
+  have hnonempty : ∀ S ∈ T, S.Nonempty := by
+    intro S hS
+    exact Finset.card_pos.mp (by rw [(Finset.mem_filter.mp hS).2.2]; omega)
+  have hminspec : ∀ S : {S : Finset V // S ∈ T}, S.1.min' (hnonempty S.1 S.2) ∈ S.1 := by
+    intro S
+    exact Finset.min'_mem S.1 (hnonempty S.1 S.2)
+  let f : {S : Finset V // S ∈ T} → Σ r : V, {S : Finset V // S ∈ rooted r} := fun S =>
+    Sigma.mk (S.1.min' (hnonempty S.1 S.2))
+      (Subtype.mk S.1 (by
+        dsimp [rooted]
+        exact Finset.mem_filter.mpr ⟨Finset.mem_univ S.1, ⟨hminspec S, (Finset.mem_filter.mp S.2).2.1, (Finset.mem_filter.mp S.2).2.2⟩⟩))
+  have hfinj : Function.Injective f := by
+    intro S₁ S₂ h
+    have hS : S₁.1 = S₂.1 := by
+      have h2 : (f S₁).2.1 = (f S₂).2.1 := congrArg (fun x : Σ r : V, {S : Finset V // S ∈ rooted r} => x.2.1) h
+      simpa [f] using h2
+    exact Subtype.ext hS
+  have hcard : Fintype.card {S : Finset V // S ∈ T} ≤ Fintype.card (Σ r : V, {S : Finset V // S ∈ rooted r}) :=
+    Fintype.card_le_of_injective f hfinj
+  have hsigma : Fintype.card (Σ r : V, {S : Finset V // S ∈ rooted r}) ≤ (Fintype.card V) * (2*n) * (Δ+1)^(2*(n-1)) := by
+    rw [Fintype.card_sigma]
+    calc
+      (∑ r : V, Fintype.card {S : Finset V // S ∈ rooted r}) ≤ ∑ r : V, (2*n) * (Δ+1)^(2*(n-1)) := by
+        refine Finset.sum_le_sum (fun r _ => ?_)
+        rw [Fintype.card_coe]
+        dsimp [rooted]
+        exact rooted_animals_count_bound_gen G r Δ hΔ n
+      _ = (Fintype.card V) * (2*n) * (Δ+1)^(2*(n-1)) := by
+        simp [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_assoc, mul_comm, mul_left_comm]
+  calc
+    ((Finset.univ.filter (fun S : Finset V => (G.induce (S : Set V)).Connected ∧ S.card = n)).card : ℕ)
+      = T.card := rfl
+    _ = Fintype.card {S : Finset V // S ∈ T} := (Fintype.card_coe T).symm
+    _ ≤ Fintype.card (Σ r : V, {S : Finset V // S ∈ rooted r}) := hcard
+    _ ≤ (Fintype.card V) * (2*n) * (Δ+1)^(2*(n-1)) := hsigma
+
+/-- **Arrow B (second half): the full cluster-weight series is volume-bounded** — the full size-class
+weight `|V|·(2n)(Δ+1)^(2(n−1))·|ρ|ⁿ` is summable when `(Δ+1)²|ρ| < 1`, i.e. the full connected-cluster
+sum `Σ_{Γ connected} |w(Γ)|` is `≤ |V|` times the rooted bound. The per-vertex factor (divide by `|V|`)
+is exactly `animals_majorant_tour_summable`'s series — a `(Δ, ρ)`-only bound, uniform in the volume. -/
+theorem full_cluster_weights_summable {V : Type u} [Fintype V] [DecidableEq V]
+    (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Summable (fun n : ℕ => (Fintype.card V : ℝ) * (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |ρ|^n) := by
+  simpa [mul_assoc] using (animals_majorant_tour_summable Δ ρ h).mul_left (Fintype.card V : ℝ)
+
+/-- **The infinite-volume cluster expansion converges**: the partial sums `Σ_{n<N}` of the cluster-weight
+majorant tend to the infinite sum `Σ'_n` as `N → ∞` (`full_cluster_weights_summable` + `hasSum.tendsto_sum_nat`).
+This is the finite→infinite-volume convergence of the polymer/cluster expansion — the weights are summable
+(`|ρ|·(Δ+1)² < 1`), so the infinite-volume correlation functions are well-defined. -/
+theorem cluster_expansion_tendsto {V : Type u} [Fintype V] [DecidableEq V]
+    (Δ : ℕ) (ρ : ℝ) (h : |ρ| * ((Δ : ℝ) + 1)^2 < 1) :
+    Filter.Tendsto (fun N : ℕ => ∑ n ∈ Finset.range N,
+        (Fintype.card V : ℝ) * (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |ρ|^n)
+      Filter.atTop (nhds (∑' n : ℕ,
+        (Fintype.card V : ℝ) * (2 * (n : ℝ)) * ((Δ : ℝ) + 1)^(2*(n-1)) * |ρ|^n)) := by
+  exact (full_cluster_weights_summable Δ ρ h).hasSum.tendsto_sum_nat
+
+/-- **The cluster-weight product bound** (the core of the polymer expansion): if each activity `|a i| ≤ ρ`, then the
+cluster weight `φ(Γ) = ∏_{i ∈ Γ} a i` satisfies `|φ(Γ)| ≤ ρ^|Γ|`. This is the standard polymer-expansion
+estimate — the product of per-plaquette activities over a cluster is bounded by the activity to the cluster
+size, which (with the animals-count bound) yields the summability of the full cluster-weight series. -/
+theorem cluster_weight_prod_bound {ι : Type u} [Fintype ι] (a : ι → ℝ) (ρ : ℝ) (hρ : 0 ≤ ρ)
+    (ha : ∀ i, |a i| ≤ ρ) (Γ : Finset ι) :
+    |∏ i ∈ Γ, a i| ≤ ρ ^ Γ.card := by
+  rw [Finset.abs_prod Γ a]
+  calc
+    ∏ i ∈ Γ, |a i| ≤ ∏ _i ∈ Γ, ρ := by
+      gcongr
+      exact ha _
+    _ = ρ ^ Γ.card := Finset.prod_const ρ
+
 end QM

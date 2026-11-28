@@ -43,4 +43,21 @@ theorem collectiveAction_eq_sum {m : ℕ} (β θ : ℝ) :
   dsimp [collectiveAction]
   rw [collective_action]
 
+/-- **The full-lattice collective partition function is positive** — the collective measure's
+normalisation `∫₀^π e^(−β·m·(1−cos θ))·sin²θ dθ` is strictly positive, since the integrand is positive
+on the torus (positive at `θ = π/2`). The full-lattice Yang–Mills measure `μ_β` (collective mode) is a
+genuine probability measure for every coupling and every lattice volume `m`. -/
+theorem collectivePartition_pos {β : ℝ} {m : ℕ} :
+    0 < ∫ θ in (0 : ℝ)..Real.pi, Real.exp (-collectiveAction β θ m) * (Real.sin θ)^2 := by
+  refine intervalIntegral.integral_pos Real.pi_pos ?_ ?_ ?_
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.exp (-collectiveAction β θ m) * (Real.sin θ)^2)).continuousOn
+  · intro θ hθ
+    exact mul_nonneg (Real.exp_pos _).le (sq_nonneg (Real.sin θ))
+  · refine ⟨Real.pi / 2, ?_, ?_⟩
+    · exact ⟨by positivity, by linarith [Real.pi_pos]⟩
+    · dsimp [collectiveAction]
+      rw [Real.cos_pi_div_two, Real.sin_pi_div_two]
+      norm_num
+      exact Real.exp_pos _
+
 end QM

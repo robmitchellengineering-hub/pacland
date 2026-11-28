@@ -53,4 +53,102 @@ theorem su2_character_weyl_bound (j : ℕ) (θ : ℝ) :
     ring_nf at hfinal ⊢
     exact hfinal
 
+/-- **The single-plaquette Wilson weight is pinned in `[e^(−β), e^β]`** — the torus weight
+`e^(β·cos θ)` (the `Re Tr U = cos θ` diagonal) is bounded by its oscillation `cos θ ∈ [−1,1]`:
+`e^(−β) ≤ e^(β cos θ) ≤ e^β` for `β ≥ 0`. This is the measure-density bound that feeds the
+contraction's oscillation (`1 − e^(−2β)`) and the block-spin's coupling-dependence. -/
+theorem wilson_weight_bound (β θ : ℝ) (hβ : 0 ≤ β) :
+    Real.exp (-β) ≤ Real.exp (β * Real.cos θ) ∧ Real.exp (β * Real.cos θ) ≤ Real.exp β := by
+  have hcos : |Real.cos θ| ≤ 1 := Real.abs_cos_le_one θ
+  have hcos_le : Real.cos θ ≤ 1 := (abs_le.mp hcos).2
+  have hcos_ge : -1 ≤ Real.cos θ := (abs_le.mp hcos).1
+  have h1 : β * Real.cos θ ≤ β := by
+    simpa using (mul_le_mul_of_nonneg_left hcos_le hβ)
+  have h2 : -β ≤ β * Real.cos θ := by
+    have : β * (-1) ≤ β * Real.cos θ := mul_le_mul_of_nonneg_left hcos_ge hβ
+    simpa using this
+  exact ⟨Real.exp_le_exp.mpr h2, Real.exp_le_exp.mpr h1⟩
+
+/-- **The single-plaquette partition function** — the SU(2) 1-plaquette measure's normalisation
+`Z(β) = ∫₀^π e^(β·cos θ)·sin²θ dθ` (the Weyl measure `sin²θ dθ` on the torus `θ ∈ [0,π]`, the
+`Re Tr U = cos θ` diagonal). This is the first concrete object of the Yang–Mills measure `μ_β`. -/
+noncomputable def singlePlaquettePartition (β : ℝ) : ℝ :=
+  ∫ θ in (0 : ℝ)..Real.pi, Real.exp (β * Real.cos θ) * (Real.sin θ)^2
+
+/-- **The partition function is positive** — the integrand `e^(β cos θ)·sin²θ > 0` on the torus
+(positive at `θ = π/2`), so the measure's normalisation is non-degenerate: the SU(2) 1-plaquette
+measure is a genuine probability measure for every coupling `β`. -/
+theorem singlePlaquettePartition_pos (β : ℝ) : 0 < singlePlaquettePartition β := by
+  dsimp [singlePlaquettePartition]
+  refine intervalIntegral.integral_pos Real.pi_pos ?_ ?_ ?_
+  · fun_prop
+  · intro θ hθ
+    exact mul_nonneg (Real.exp_pos _).le (sq_nonneg (Real.sin θ))
+  · refine ⟨Real.pi / 2, ?_, ?_⟩
+    · exact ⟨by positivity, by linarith [Real.pi_pos]⟩
+    · have hcos : Real.cos (Real.pi / 2) = 0 := Real.cos_pi_div_two
+      have hsin : Real.sin (Real.pi / 2) = 1 := Real.sin_pi_div_two
+      rw [hcos, hsin]
+      norm_num
+
+/-- **The partition function is bounded by the free (uniform) weight** — `Z(β) ≤ e^β · π/2`, since
+`cos θ ≤ 1` gives `e^(β cos θ) ≤ e^β` and `∫₀^π sin²θ dθ = π/2`. This is the measure's normalisation bound
+that feeds the contraction: the renormalised weight is dominated by the free case, so the coupling's
+effect is a bounded factor `e^β`. -/
+theorem singlePlaquettePartition_le (β : ℝ) (hβ : 0 ≤ β) :
+    singlePlaquettePartition β ≤ Real.exp β * (Real.pi / 2) := by
+  dsimp [singlePlaquettePartition]
+  calc
+    ∫ θ in (0 : ℝ)..Real.pi, Real.exp (β * Real.cos θ) * (Real.sin θ)^2
+      ≤ ∫ θ in (0 : ℝ)..Real.pi, Real.exp β * (Real.sin θ)^2 := by
+        exact intervalIntegral.integral_mono_on (le_of_lt Real.pi_pos)
+          (by exact (by continuity : Continuous (fun θ : ℝ => Real.exp (β * Real.cos θ) * (Real.sin θ)^2)).intervalIntegrable 0 Real.pi)
+          (by exact (by continuity : Continuous (fun θ : ℝ => Real.exp β * (Real.sin θ)^2)).intervalIntegrable 0 Real.pi)
+          (by intro θ hθ
+              have hcos : Real.cos θ ≤ 1 := (abs_le.mp (Real.abs_cos_le_one θ)).2
+              exact mul_le_mul_of_nonneg_right
+                (Real.exp_le_exp.mpr (by simpa using (mul_le_mul_of_nonneg_left hcos hβ)))
+                (sq_nonneg (Real.sin θ)))
+    _ = Real.exp β * (Real.pi / 2) := by
+      rw [intervalIntegral.integral_const_mul]
+      rw [integral_sin_sq]
+      rw [Real.sin_zero, Real.cos_zero, Real.sin_pi, Real.cos_pi]
+      norm_num
+
+/-- **FALSIFIER for mg-gd-001 (heat-kernel Gaussianization is not uniform)** — the SU(2) weight
+`e^(β·cos θ)` is NOT dominated by a Gaussian `C·e^(−βθ²/2)` uniformly in `θ`: the weight is bounded
+below by `e^(−β) > 0` (since `cos θ ≥ −1`), while the Gaussian tends to 0 as `θ → ∞`, so no constant
+`C` makes the domination hold for every `θ`. The heat-kernel Gaussian approximation is weak-coupling /
+small-θ only, not a uniform bound — the candidate is falsified as a *uniform* mechanism. -/
+theorem heat_kernel_gaussian_not_uniform (β : ℝ) (hβ : 0 < β) (C : ℝ) :
+    ¬ (∀ θ : ℝ, Real.exp (β * Real.cos θ) ≤ C * Real.exp (-β * θ^2 / 2)) := by
+  intro h
+  have hlower : ∀ θ : ℝ, Real.exp (-β) ≤ Real.exp (β * Real.cos θ) := by
+    intro θ
+    have hcos : -1 ≤ Real.cos θ := (abs_le.mp (Real.abs_cos_le_one θ)).1
+    have hmul : -β ≤ β * Real.cos θ := by
+      simpa using (mul_le_mul_of_nonneg_left hcos (le_of_lt hβ))
+    exact Real.exp_le_exp.mpr hmul
+  have hdecay : Filter.Tendsto (fun θ : ℝ => C * Real.exp (-β * θ^2 / 2)) Filter.atTop (nhds 0) := by
+    have harg : Filter.Tendsto (fun θ : ℝ => -β * θ^2 / 2) Filter.atTop Filter.atBot := by
+      have hs : Filter.Tendsto (fun θ : ℝ => θ^2) Filter.atTop Filter.atTop :=
+        Filter.tendsto_pow_atTop (by norm_num : 2 ≠ 0)
+      have hm : Filter.Tendsto (fun θ : ℝ => (β / 2) * θ^2) Filter.atTop Filter.atTop :=
+        Filter.Tendsto.const_mul_atTop (by positivity) hs
+      convert (Filter.tendsto_neg_atTop_atBot.comp hm) using 1
+      funext θ
+      simp only [Function.comp_apply]
+      ring
+    have hexp0 : Filter.Tendsto (fun θ : ℝ => Real.exp (-β * θ^2 / 2)) Filter.atTop (nhds 0) :=
+      Real.tendsto_exp_atBot.comp harg
+    simpa using hexp0.const_mul C
+  have hlt : ∃ θ : ℝ, C * Real.exp (-β * θ^2 / 2) < Real.exp (-β) := by
+    have hev : ∀ᶠ θ : ℝ in Filter.atTop, C * Real.exp (-β * θ^2 / 2) < Real.exp (-β) :=
+      Filter.Tendsto.eventually_lt hdecay tendsto_const_nhds (Real.exp_pos (-β))
+    exact hev.exists
+  rcases hlt with ⟨θ, hlt⟩
+  have hle : Real.exp (β * Real.cos θ) ≤ C * Real.exp (-β * θ^2 / 2) := h θ
+  have hlo : Real.exp (-β) ≤ Real.exp (β * Real.cos θ) := hlower θ
+  nlinarith
+
 end QM

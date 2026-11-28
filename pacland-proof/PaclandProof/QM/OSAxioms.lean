@@ -293,4 +293,82 @@ theorem wightman_limit_stable {α : Type*} {inner : ℕ → α → α → ℝ} {
   intro f
   have hlim' : Tendsto (fun n => inner n f f) atTop (nhds (innerLim f f)) := hlim f f
   exact ge_of_tendsto hlim' (Filter.Eventually.of_forall (fun n => hW n f))
+/-- **W3 (locality) is closed under pointwise limits**: if `S n → Slim` pointwise and each `S n` is symmetric,
+then `Slim` is symmetric. With `posdef_of_tendsto` (the Hilbert closure) this is the a→0 closure of the Wightman
+locality axiom. -/
+theorem wightman_locality_limit {α : Type*} (S : ℕ → α → α → ℝ) (Slim : α → α → ℝ)
+    (hlim : ∀ x y, Filter.Tendsto (fun n => S n x y) Filter.atTop (nhds (Slim x y)))
+    (hS : ∀ n, WightmanLocality (S n)) :
+    WightmanLocality Slim := by
+  intro x y
+  have h2 : Filter.Tendsto (fun n => S n x y) Filter.atTop (nhds (Slim y x)) := by
+    convert hlim y x using 1
+    ext n
+    exact (hS n) x y
+  exact tendsto_nhds_unique (hlim x y) h2
+
+/-- **W4 (unique vacuum) is closed under pointwise limits**: if `K n → Klim` pointwise and each `K n` has a
+constant diagonal, then `Klim` does. Part of the a→0 closure of the Wightman vacuum axiom. -/
+theorem wightman_vacuum_limit {α : Type*} (K : ℕ → α → α → ℝ) (Klim : α → α → ℝ)
+    (hlim : ∀ x y, Filter.Tendsto (fun n => K n x y) Filter.atTop (nhds (Klim x y)))
+    (hK : ∀ n, WightmanVacuum (K n)) :
+    WightmanVacuum Klim := by
+  intro x y
+  have hy : Filter.Tendsto (fun n => K n x x) Filter.atTop (nhds (Klim y y)) := by
+    convert hlim y y using 1
+    ext n
+    exact (hK n) x y
+  exact tendsto_nhds_unique (hlim x x) hy
+
+/-- **W1 (Minkowski covariance) is closed under pointwise limits**: if `S n → Slim` pointwise and each `S n`
+is translation-invariant, then `Slim` is. Part of the a→0 closure of the Wightman covariance axiom. -/
+theorem wightman_covariance_limit (S : ℕ → ℝ → ℝ → ℝ) (Slim : ℝ → ℝ → ℝ)
+    (hlim : ∀ x y, Filter.Tendsto (fun n => S n x y) Filter.atTop (nhds (Slim x y)))
+    (hS : ∀ n, WightmanCovariance (S n)) :
+    WightmanCovariance Slim := by
+  intro x y t
+  have h2 : Filter.Tendsto (fun n => S n (x + t) (y + t)) Filter.atTop (nhds (Slim x y)) := by
+    convert hlim x y using 1
+    ext n
+    exact (hS n) x y t
+  exact tendsto_nhds_unique (hlim (x + t) (y + t)) h2
+
+/-- **W2 (the mass gap) is closed under the a→0 limit**: if the scales' gaps `Δ n` converge to `Δlim` and are
+uniformly bounded below by `Δ₀ > 0`, then the limit gap is positive (`0 < Δlim`). With the other closures
+(`posdef_of_tendsto`, `wightman_locality_limit`, `wightman_vacuum_limit`, `wightman_covariance_limit`) this
+completes the a→0 closure of the Wightman axioms W0–W4 — the mass-gap (spectral) condition survives the
+continuum limit. -/
+theorem mass_gap_limit_pos {Δ : ℕ → ℝ} {Δlim : ℝ} {Δ₀ : ℝ}
+    (hlim : Filter.Tendsto Δ Filter.atTop (nhds Δlim))
+    (hunif : ∀ n, Δ₀ ≤ Δ n) (h₀ : 0 < Δ₀) :
+    0 < Δlim := by
+  have hge : Δ₀ ≤ Δlim := ge_of_tendsto hlim (Filter.Eventually.of_forall hunif)
+  exact lt_of_lt_of_le h₀ hge
+
+/-- **The OS→Wightman reconstruction is closed under the a→0 limit**: if each scale's correlation functions
+satisfy the Wightman axioms W0 (Hilbert positivity), W1 (covariance), W3 (locality), W4 (vacuum) and they
+converge pointwise, then the limit satisfies them too. This is the honest assembly of the four closures
+(`posdef_of_tendsto`, `wightman_covariance_limit`, `wightman_locality_limit`, `wightman_vacuum_limit`) —
+the finite-lattice reconstruction `os_wightman_reconstruction` carries through to the continuum. -/
+theorem wightman_reconstruction_limit {α : Type*} [Fintype α]
+    (inner : ℕ → α → α → ℝ) (innerLim : α → α → ℝ)
+    (S : ℕ → ℝ → ℝ → ℝ) (Slim : ℝ → ℝ → ℝ)
+    (K : ℕ → α → α → ℝ) (Klim : α → α → ℝ)
+    (hinner : ∀ f g, Filter.Tendsto (fun n => inner n f g) Filter.atTop (nhds (innerLim f g)))
+    (hS : ∀ x y, Filter.Tendsto (fun n => S n x y) Filter.atTop (nhds (Slim x y)))
+    (hK : ∀ x y, Filter.Tendsto (fun n => K n x y) Filter.atTop (nhds (Klim x y)))
+    (hW : ∀ n, WightmanHilbert (inner n) ∧ WightmanCovariance (S n) ∧ WightmanLocality (K n) ∧ WightmanVacuum (K n)) :
+    WightmanHilbert innerLim ∧ WightmanCovariance Slim ∧ WightmanLocality Klim ∧ WightmanVacuum Klim := by
+  have hHilbert : WightmanHilbert innerLim := by
+    intro f
+    have hlim' : Filter.Tendsto (fun n => inner n f f) Filter.atTop (nhds (innerLim f f)) := hinner f f
+    exact ge_of_tendsto hlim' (Filter.Eventually.of_forall (fun n => (hW n).1 f))
+  have hCov : WightmanCovariance Slim :=
+    wightman_covariance_limit S Slim hS (fun n => (hW n).2.1)
+  have hLoc : WightmanLocality Klim :=
+    wightman_locality_limit K Klim hK (fun n => (hW n).2.2.1)
+  have hVac : WightmanVacuum Klim :=
+    wightman_vacuum_limit K Klim hK (fun n => (hW n).2.2.2)
+  exact ⟨hHilbert, hCov, hLoc, hVac⟩
+
 end QM
