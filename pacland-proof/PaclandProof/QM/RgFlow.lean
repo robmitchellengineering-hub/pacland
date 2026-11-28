@@ -325,4 +325,23 @@ theorem wilson_product_expansion {ι : Type u} [DecidableEq ι] (a : ι → ℝ)
       intro A hA
       simp
 
+/-- **The running-coupling activity vanishes in the continuum limit**: `Tendsto (fun β => e^(−cβ)) atTop (nhds 0)`
+for `c > 0` — the small-field activity `ρ = e^(−cβ)` that the cluster expansion controls shrinks to `0` as
+`β → ∞` (the `a → 0` limit). This is the foundational fact of the a→0 continuum passage: at the running-coupling
+scale the cluster expansion converges with activity → 0, so the small-field region is asymptotically exact. -/
+theorem running_coupling_activity_tendsto_zero (c : ℝ) (hc : 0 < c) :
+    Filter.Tendsto (fun β : ℝ => Real.exp (-(c * β))) Filter.atTop (nhds 0) := by
+  have hlin : Filter.Tendsto (fun β : ℝ => -(c * β)) Filter.atTop Filter.atBot := by
+    rw [Filter.tendsto_atBot]
+    intro b
+    refine Filter.eventually_atTop.2 ⟨max 0 ((-b) / c), ?_⟩
+    intro β hβ
+    have hβ' : max 0 ((-b) / c) ≤ β := hβ
+    have hβ0 : 0 ≤ β := le_trans (le_max_left 0 ((-b) / c)) hβ'
+    have hbc : (-b) / c ≤ β := le_trans (le_max_right 0 ((-b) / c)) hβ'
+    have hcmul : c * ((-b) / c) ≤ c * β := mul_le_mul_of_nonneg_left hbc (le_of_lt hc)
+    have hcb : c * ((-b) / c) = -b := by field_simp [ne_of_gt hc]
+    nlinarith
+  exact Real.tendsto_exp_atBot.comp hlin
+
 end QM
