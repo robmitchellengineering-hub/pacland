@@ -1056,4 +1056,12 @@ theorem su2_sq_scalar_weyl :
   field_simp [Real.pi_ne_zero]
   ring
 
+/-- **The S² area factor**: `∫₀^π sin θ dθ = 2` — the θ₂-direction normalization in the S³ spherical-coordinate
+round measure `dV = (2/π)·sin²θ₁·sin θ₂ dθ₁ dθ₂ dφ`. -/
+theorem integral_sin_eq_two : ∫ θ in (0 : ℝ)..Real.pi, Real.sin θ = 2 := by
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le (le_of_lt Real.pi_pos) (by continuity)
+    (fun θ _ => (Real.hasDerivAt_cos θ).neg)]
+  rw [Real.cos_pi, Real.cos_zero]
+  norm_num
+
 
