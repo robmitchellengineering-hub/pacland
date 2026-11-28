@@ -1391,4 +1391,56 @@ theorem bessel_chu_vandermonde_I0I2 (n : ℕ) :
     show ((n + 2).factorial : ℝ) ≠ 0 by exact_mod_cast (Nat.factorial_ne_zero (n + 2))]
   ring_nf
 
+/-- **The `I₀I₂` product formula**: `I₀(x)·I₂(x) = Σₙ (x/2)^{2n+2}·(2n+2)!/(n!²(n+2)!²)` — the Cauchy product
+of the `I₀` and `I₂` series, with the inner sum the Chu–Vandermonde identity `bessel_chu_vandermonde_I0I2`. -/
+theorem besselI_zero_mul_two_eq_series (x : ℝ) (hx : 0 ≤ x) :
+    besselI 0 x * besselI 2 x = ∑' n : ℕ, (x / 2) ^ (2 * n + 2) *
+      ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) ^ 2 * ((n + 2).factorial : ℝ) ^ 2) := by
+  let a : ℕ → ℝ := fun l => (x / 2) ^ (2 * l) / ((l.factorial : ℝ) ^ 2)
+  let b : ℕ → ℝ := fun m => (x / 2) ^ (2 * m + 2) / ((m.factorial : ℝ) * (m + 2).factorial)
+  have hb0 : besselI 0 x = ∑' l, a l := by
+    dsimp [besselI, a]
+  have hb2 : besselI 2 x = ∑' m, b m := by
+    dsimp [besselI, b]
+  have ha : Summable a := by
+    dsimp [a]
+    simpa [sq] using besselI_summable_of_nonneg 0 hx
+  have hb : Summable b := by
+    dsimp [b]
+    simpa using besselI_summable_of_nonneg 2 hx
+  have hfg : Summable (fun z : ℕ × ℕ => a z.1 * b z.2) := ha.mul hb
+  have hcauchy := ha.tsum_mul_tsum_eq_tsum_sum_antidiagonal hb hfg
+  rw [hb0, hb2, hcauchy]
+  apply tsum_congr
+  intro n
+  have hanti : (∑ kl ∈ Finset.Nat.antidiagonal n, a kl.1 * b kl.2) =
+      (x / 2) ^ (2 * n + 2) * ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) ^ 2 * ((n + 2).factorial : ℝ) ^ 2) := by
+    dsimp [a, b]
+    have hfactor : ∀ kl ∈ Finset.Nat.antidiagonal n,
+        (x / 2) ^ (2 * kl.1) / ((kl.1.factorial : ℝ) ^ 2) *
+          ((x / 2) ^ (2 * kl.2 + 2) / ((kl.2.factorial : ℝ) * (kl.2 + 2).factorial)) =
+        (x / 2) ^ (2 * n + 2) / ((kl.1.factorial : ℝ) ^ 2 * (kl.2.factorial : ℝ) * (kl.2 + 2).factorial) := by
+      intro kl hkl
+      have hsum : kl.1 + kl.2 = n := (Finset.Nat.mem_antidiagonal.mp hkl).2.symm
+      have hpow : 2 * kl.1 + (2 * kl.2 + 2) = 2 * n + 2 := by omega
+      rw [mul_div_mul_comm, ← pow_add]
+      rw [hpow]
+      ring_nf
+    calc
+      (∑ kl ∈ Finset.Nat.antidiagonal n, (x / 2) ^ (2 * kl.1) / ((kl.1.factorial : ℝ) ^ 2) *
+          ((x / 2) ^ (2 * kl.2 + 2) / ((kl.2.factorial : ℝ) * (kl.2 + 2).factorial)))
+        = ∑ kl ∈ Finset.Nat.antidiagonal n, (x / 2) ^ (2 * n + 2) / ((kl.1.factorial : ℝ) ^ 2 * (kl.2.factorial : ℝ) * (kl.2 + 2).factorial) := by
+            exact Finset.sum_congr rfl (fun kl hkl => hfactor kl hkl)
+      _ = (x / 2) ^ (2 * n + 2) * (∑ kl ∈ Finset.Nat.antidiagonal n, 1 / ((kl.1.factorial : ℝ) ^ 2 * (kl.2.factorial : ℝ) * (kl.2 + 2).factorial)) := by
+            rw [← Finset.sum_mul]; simp_rw [← div_eq_mul_inv]; rw [Finset.mul_sum]; ring_nf
+      _ = (x / 2) ^ (2 * n + 2) * ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) ^ 2 * ((n + 2).factorial : ℝ) ^ 2) := by
+            congr 1
+            rw [← bessel_chu_vandermonde_I0I2 n]
+            rw [Finset.sum_antidiagonal_eq_sum_range_succ (fun i j => (1 : ℝ) / ((i.factorial : ℝ) ^ 2 * (j.factorial : ℝ) * (j + 2).factorial))]
+            refine Finset.sum_congr rfl (fun i hi => ?_)
+            rw [Finset.mem_range_succ_iff] at hi
+            congr 1
+            ring_nf
+  rw [hanti]
+
 end QM
