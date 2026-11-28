@@ -1046,4 +1046,14 @@ theorem integral_cos_mul_sin_zero : ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ * 
   rw [Real.sin_pi, Real.sin_zero]
   ring
 
+/-- **The scalar part of the pseudoreality**: `(2/π)·∫₀^π (cos²θ − sin²θ)·sin²θ dθ = −1/2` — the Weyl integral of
+the quaternion square's scalar coefficient `x₀²−|x⃗|² = cos²θ−sin²θ = cos(2θ)`. This is the scalar coefficient of
+`∫ V² dV = −I/2` (the trace-zero part integrates to zero via the odd moments). -/
+theorem su2_sq_scalar_weyl :
+    (2 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, ((Real.cos θ)^2 - (Real.sin θ)^2) * (Real.sin θ)^2 = -(1 / 2) := by
+  rw [intervalIntegral.integral_congr (fun θ _ => by rw [Real.cos_sq_sub_sin_sq])]
+  rw [su2_cos_two_moment]
+  field_simp [Real.pi_ne_zero]
+  ring
+
 
