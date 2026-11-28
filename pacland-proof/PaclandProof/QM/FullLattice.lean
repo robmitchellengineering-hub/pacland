@@ -500,6 +500,10 @@ theorem su2_pauli_sq (x : Fin 3 → ℝ) :
 theorem complex_I_sq : Complex.I ^ 2 = -1 := by
   rw [pow_two, Complex.I_mul_I]
 
+/-- **The Pauli tracelessness**: `Tr(x⃗·σ⃗) = 0`. The trace-zero half of the quaternion square's decomposition. -/
+theorem su2_pauli_trace_zero (x : Fin 3 → ℝ) : Matrix.trace (su2PauliVec x) = 0 := by
+  simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Matrix.trace, Fin.sum_univ_two, smul_eq_mul]
+
 /-- The SU(2) quaternion form `x₀·I + i·(x₁σ₁ + x₂σ₂ + x₃σ₃)` (a general traceless-Hermitian-perturbed unitary). -/
 def su2Quaternion (x₀ : ℝ) (x : Fin 3 → ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (x₀ : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) + Complex.I • su2PauliVec x
@@ -519,5 +523,18 @@ theorem su2_quaternion_sq (x₀ : ℝ) (x : Fin 3 → ℝ) :
   <;> ring_nf
   <;> simp [complex_I_sq]
   <;> ring
+
+/-- **The quaternion trace**: `Tr(V²) = 2(x₀² − |x⃗|²)` — the trace of the quaternion square (the scalar part's
+trace, the trace-zero part vanishing). On `S³` (`x₀² + |x⃗|² = 1`) this is `2(2x₀² − 1)`, matching the Weyl
+`Tr(V²) = 2cos(2θ)` with `x₀ = cos θ`. -/
+theorem su2_quaternion_sq_trace (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    Matrix.trace (su2Quaternion x₀ x ^ 2) =
+      (2 : ℂ) * ((x₀ ^ 2 - (x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2) : ℝ) : ℂ) := by
+  rw [su2_quaternion_sq]
+  rw [Matrix.trace_add, Matrix.trace_smul]
+  simp [su2_pauli_trace_zero, Matrix.trace_one, smul_eq_mul]
+  ring
+
+
 
 end QM
