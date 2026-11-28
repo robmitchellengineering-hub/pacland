@@ -1921,4 +1921,25 @@ theorem running_coupling_ratio_tendsto_one :
     simp [heatKernelMassGap]
   simpa [hid] using hsub
 
+/-- **The leading-term lower bound** `β/2 ≤ I₁(β)` for `β ≥ 0`: the first series term of `I₁(β) =
+Σ (β/2)^{2k+1}/(k!(k+1)!)` is `β/2`, with the rest nonnegative. This is the partition-function lower bound:
+the SU(2) Weyl integral `∫ e^(β·cos θ)·sin²θ = π·I₁(β)/β ≥ π/2`, so the block-spin average's normalization
+is uniformly bounded below. -/
+theorem besselI_one_ge_half_mul (β : ℝ) (hβ : 0 ≤ β) :
+    β / 2 ≤ besselI 1 β := by
+  have hsum : Summable (fun k : ℕ => (β / 2) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial)) :=
+    besselI_summable_of_nonneg 1 hβ
+  have hsplit := hsum.tsum_eq_add_tsum_ite (0 : ℕ)
+  have ha0 : (fun k : ℕ => (β / 2) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial)) 0 = β / 2 := by
+    norm_num
+    ring
+  have hnonneg : 0 ≤ (∑' k : ℕ, (if k = (0 : ℕ) then 0 else (β / 2) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial))) := by
+    apply tsum_nonneg
+    intro k
+    by_cases h : k = 0
+    · simp [h]
+    · positivity
+  rw [besselI, hsplit, ha0]
+  exact le_add_of_nonneg_right hnonneg
+
 end QM
