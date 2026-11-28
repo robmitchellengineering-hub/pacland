@@ -496,4 +496,28 @@ theorem su2_pauli_sq (x : Fin 3 → ℝ) :
   <;> ring_nf
   <;> norm_num [pow_two, Complex.I_mul_I]
 
+/-- `Complex.I ^ 2 = −1` (via `pow_two` + `Complex.I_mul_I`). -/
+theorem complex_I_sq : Complex.I ^ 2 = -1 := by
+  rw [pow_two, Complex.I_mul_I]
+
+/-- The SU(2) quaternion form `x₀·I + i·(x₁σ₁ + x₂σ₂ + x₃σ₃)` (a general traceless-Hermitian-perturbed unitary). -/
+def su2Quaternion (x₀ : ℝ) (x : Fin 3 → ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  (x₀ : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) + Complex.I • su2PauliVec x
+
+/-- **The SU(2) quaternion square**: `V² = (x₀² − |x⃗|²)·I + 2ix₀·(x⃗·σ⃗)`. Uses the Pauli algebra
+`(x⃗·σ⃗)² = |x⃗|²·I` (`su2_pauli_sq`) and `I² = −1`. This is the scalar-plus-trace-zero split that makes
+`∫ V² dV = −I/2` once the S³ moments `∫ x₀² = 1/4`, `∫ x₀xᵢ = 0` are supplied. -/
+theorem su2_quaternion_sq (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    su2Quaternion x₀ x ^ 2 = ((x₀ ^ 2 - (x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2) : ℝ) : ℂ) •
+      (1 : Matrix (Fin 2) (Fin 2) ℂ) + ((2 * x₀ : ℝ) : ℂ) • Complex.I • su2PauliVec x := by
+  unfold su2Quaternion
+  have hXsq := su2_pauli_sq x
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul_apply, Fin.sum_univ_two, smul_eq_mul, su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3,
+      pow_two, Complex.I_mul_I, hXsq]
+  <;> ring_nf
+  <;> simp [complex_I_sq]
+  <;> ring
+
 end QM
