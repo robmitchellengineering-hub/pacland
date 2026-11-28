@@ -1338,4 +1338,57 @@ theorem besselI_one_sq_eq_series (x : ℝ) (hx : 0 ≤ x) :
             ring_nf
   rw [hanti]
 
+/-- **The Chu–Vandermonde convolution for `I₀I₂`** (binomial form): `Σᵢ C(n,i)·C(n+2,i) = C(2n+2,n)`.
+Vandermonde `add_choose_eq n (n+2) (n+2)` plus the symmetry `C(n+2,n+2−i) = C(n+2,i)`. -/
+theorem bessel_binomial_convolution_I0I2 (n : ℕ) :
+    (∑ i in Finset.range (n + 1), n.choose i * (n + 2).choose i) = (2 * n + 2).choose n := by
+  have hV : (2 * n + 2).choose (n + 2) =
+      ∑ ij in Finset.Nat.antidiagonal (n + 2), n.choose ij.1 * (n + 2).choose ij.2 :=
+    Nat.add_choose_eq n (n + 2) (n + 2)
+  rw [← hV]
+  rw [Nat.choose_symm_add]
+  rw [Finset.sum_antidiagonal_eq_sum_range_succ_mk]
+  refine Finset.sum_congr rfl (fun i hi => ?_)
+  have hi' : i ≤ n + 2 := by
+    rw [Finset.mem_range_succ_iff] at hi
+    omega
+  rw [Nat.choose_symm_add]
+
+/-- **The Chu–Vandermonde for `I₀I₂` in factorial form**: `Σᵢ 1/(i!²(n−i)!(n−i+2)!) = (2n+2)!/(n!²(n+2)!²)`. -/
+theorem bessel_chu_vandermonde_I0I2 (n : ℕ) :
+    (∑ i in Finset.range (n + 1),
+      (1 : ℝ) / ((i.factorial : ℝ) ^ 2 * ((n - i).factorial : ℝ) * ((n - i + 2).factorial : ℝ))) =
+      ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) ^ 2 * ((n + 2).factorial : ℝ) ^ 2) := by
+  have hbin := bessel_binomial_convolution_I0I2 n
+  have hcast : ((∑ i in Finset.range (n + 1), n.choose i * (n + 2).choose i : ℕ) : ℝ) =
+      ((2 * n + 2).choose n : ℝ) := by exact_mod_cast hbin
+  have hterm : ∀ i ∈ Finset.range (n + 1),
+      ((n.choose i * (n + 2).choose i : ℕ) : ℝ) =
+        (n.factorial : ℝ) * ((n + 2).factorial : ℝ) / ((i.factorial : ℝ) ^ 2 * ((n - i).factorial : ℝ) * ((n - i + 2).factorial : ℝ)) := by
+    intro i hi
+    have hi' : i ≤ n := by
+      rw [Finset.mem_range] at hi
+      omega
+    have hi2 : i ≤ n + 2 := by omega
+    have hci : (n.choose i : ℝ) = (n.factorial : ℝ) / ((i.factorial : ℝ) * ((n - i).factorial : ℝ)) := by
+      have h := Nat.choose_eq_factorial_div_factorial (n := n) (k := i) hi'
+      exact_mod_cast h
+    have hci2 : ((n + 2).choose i : ℝ) = ((n + 2).factorial : ℝ) / ((i.factorial : ℝ) * ((n + 2 - i).factorial : ℝ)) := by
+      have h := Nat.choose_eq_factorial_div_factorial (n := n + 2) (k := i) hi2
+      exact_mod_cast h
+    rw [Nat.cast_mul, hci, hci2]
+    have hsub : n + 2 - i = n - i + 2 := by omega
+    rw [hsub]
+    ring_nf
+  have hrhs : ((2 * n + 2).choose n : ℝ) = ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) * ((n + 2).factorial : ℝ)) := by
+    have h := Nat.choose_eq_factorial_div_factorial (n := 2 * n + 2) (k := n) (by omega)
+    exact_mod_cast h
+  rw [hcast, hrhs] at hbin
+  rw [← hbin]
+  rw [Finset.sum_congr rfl hterm]
+  rw [Finset.sum_div]
+  field_simp [show (n.factorial : ℝ) ≠ 0 by exact_mod_cast (Nat.factorial_ne_zero n),
+    show ((n + 2).factorial : ℝ) ≠ 0 by exact_mod_cast (Nat.factorial_ne_zero (n + 2))]
+  ring_nf
+
 end QM
