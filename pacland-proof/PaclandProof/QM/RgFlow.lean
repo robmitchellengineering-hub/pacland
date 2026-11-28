@@ -372,4 +372,21 @@ theorem cluster_weight_majorant_tendsto_zero :
       (by norm_num : ((1 : ℝ) - 0) ^ 2 ≠ 0)
   simpa using hcont.tendsto
 
+/-- **The small-field cutoff vanishes in the continuum limit**: `Tendsto (fun β => e^(−cβ/2)/√β) atTop (nhds 0)`.
+The small-field region `βθ² ≤ e^(−cβ)`, i.e. `|θ| ≤ e^(−cβ/2)/√β` (`small_field_cutoff`), shrinks to the trivial
+connection `θ = 0` as `β → ∞`: the radius `e^(−cβ/2)/√β → 0`. So the cluster expansion's domain contracts to a
+point in the continuum limit, while the large-field region carries the nontrivial mass-gap structure. -/
+theorem small_field_cutoff_tendsto_zero (c : ℝ) (hc : 0 < c) :
+    Filter.Tendsto (fun β : ℝ => Real.exp (-(c * β) / 2) / Real.sqrt β) Filter.atTop (nhds 0) := by
+  have hexp : Filter.Tendsto (fun β : ℝ => Real.exp (-(c * β) / 2)) Filter.atTop (nhds 0) := by
+    have h : Filter.Tendsto (fun β : ℝ => Real.exp (-((c / 2) * β))) Filter.atTop (nhds 0) :=
+      running_coupling_activity_tendsto_zero (c / 2) (by positivity)
+    simpa [mul_comm, mul_left_comm, mul_assoc, div_eq_mul_inv] using h
+  have hsqrt : Filter.Tendsto (fun β : ℝ => Real.sqrt β) Filter.atTop Filter.atTop :=
+    Real.tendsto_sqrt_atTop
+  have hinv : Filter.Tendsto (fun β : ℝ => (Real.sqrt β)⁻¹) Filter.atTop (nhds 0) :=
+    tendsto_inv_atTop_zero.comp hsqrt
+  have hmul := hexp.mul hinv
+  simpa [div_eq_mul_inv] using hmul
+
 end QM
