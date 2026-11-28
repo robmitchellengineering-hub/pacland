@@ -413,4 +413,37 @@ theorem su2_trace_identity (U V : Matrix (Fin 2) (Fin 2) ℂ) (hdet : U.det = 1)
   rw [su2_adjugate_eq_trace_sub U]
   simp [Matrix.trace_sub, Matrix.trace_smul, sub_mul, Matrix.one_mul, smul_eq_mul]
 
+/-- **The SU(2) Schur lemma** (the fundamental rep is irreducible): a 2×2 matrix that commutes with the Pauli
+generators `σ₃ = diag(1,−1)` and `σ₁ = [[0,1],[1,0]]` is a scalar multiple of the identity. This is the matrix-level
+lift that turns the scalar Weyl moments (`∫ Tr(V²) = −1`, `∫ Tr(U₂) = 0`) into `∫ V² dV = −I/2` and `∫ U₂ dU₂ = 0`. -/
+theorem su2_central_matrix_eq_scalar (M : Matrix (Fin 2) (Fin 2) ℂ)
+    (hσ₃ : M * !![(1 : ℂ), 0; 0, -1] = !![(1 : ℂ), 0; 0, -1] * M)
+    (hσ₁ : M * !![0, (1 : ℂ); 1, 0] = !![0, (1 : ℂ); 1, 0] * M) :
+    ∃ c : ℂ, M = c • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
+  let c : ℂ := M 0 0
+  refine ⟨c, ?_⟩
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [c, smul_eq_mul, Matrix.one_apply_eq, Matrix.mul_apply, Fin.sum_univ_two]
+  · -- M 0 1 = 0
+    have h := congr_fun (congr_fun hσ₃ 0) 1
+    simp [Matrix.mul_apply, Fin.sum_univ_two] at h
+    apply Complex.ext <;> simp
+    · have hre : -(M 0 1).re = (M 0 1).re := by simpa using congrArg Complex.re h
+      nlinarith [hre]
+    · have him : -(M 0 1).im = (M 0 1).im := by simpa using congrArg Complex.im h
+      nlinarith [him]
+  · -- M 1 0 = 0
+    have h := congr_fun (congr_fun hσ₃ 1) 0
+    simp [Matrix.mul_apply, Fin.sum_univ_two] at h
+    apply Complex.ext <;> simp
+    · have hre : (M 1 0).re = -(M 1 0).re := by simpa using congrArg Complex.re h
+      nlinarith [hre]
+    · have him : (M 1 0).im = -(M 1 0).im := by simpa using congrArg Complex.im h
+      nlinarith [him]
+  · -- M 1 1 = M 0 0
+    have h := congr_fun (congr_fun hσ₁ 0) 1
+    simp [Matrix.mul_apply, Fin.sum_univ_two] at h
+    exact h.symm
+
 end QM
