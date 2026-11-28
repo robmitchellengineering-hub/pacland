@@ -1609,4 +1609,71 @@ theorem besselI_two_le_three_div_22 : besselI 2 1 ≤ (3 : ℝ) / 22 := by
         exact hg.mul_left ((1 : ℝ) / 8)
       exact this)) (by rw [hgeom])
 
+/-- **The seed lower bound**: `9/16 ≤ I₁(1)` — the first two terms of `I₁(1)` are `1/2 + 1/16 = 9/16`, with the
+rest nonnegative. Combined with `I₂(1) ≤ 3/22`, this gives `u = I₂/I₁ ≤ 8/33`, hence `3u + 4u² + u³ < 1`. -/
+theorem besselI_one_ge_nine_div_sixteen : (9 : ℝ) / 16 ≤ besselI 1 1 := by
+  have hsum : Summable (fun k : ℕ => (1 / 2 : ℝ) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial)) :=
+    besselI_summable_of_nonneg 1 (by norm_num)
+  have hsplit := hsum.tsum_eq_add_tsum_ite (0 : ℕ)
+  have ha0 : (fun k : ℕ => (1 / 2 : ℝ) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial)) 0 = (1 / 2 : ℝ) := by norm_num
+  have htail_nonneg : 0 ≤ (∑' k : ℕ, (if k = (0 : ℕ) then 0 else (1 / 2 : ℝ) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial))) := by
+    apply tsum_nonneg
+    intro k
+    by_cases h : k = 0
+    · simp [h]
+    · positivity
+  rw [besselI, hsplit, ha0]
+  have hle : (1 / 16 : ℝ) ≤ (∑' k : ℕ, (if k = (0 : ℕ) then 0 else (1 / 2 : ℝ) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial))) := by
+    -- the k=1 term is 1/16, and the rest >= 0
+    have hsum_tail : Summable (fun k : ℕ => (if k = (0 : ℕ) then 0 else (1 / 2 : ℝ) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial))) := by
+      simpa using hsum.subtype (fun k => k ≠ 0)
+    have hsplit2 := hsum_tail.tsum_eq_add_tsum_ite (1 : ℕ)
+    have ha1 : (fun k : ℕ => (if k = (0 : ℕ) then 0 else (1 / 2 : ℝ) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial))) 1 = (1 / 16 : ℝ) := by
+      norm_num
+    have hrest_nonneg : 0 ≤ (∑' k : ℕ, (if k = (1 : ℕ) then 0 else (if k = (0 : ℕ) then 0 else (1 / 2 : ℝ) ^ (2 * k + 1) / ((k.factorial : ℝ) * (k + 1).factorial)))) := by
+      apply tsum_nonneg
+      intro k
+      by_cases h : k = 1
+      · simp [h]
+      · by_cases h0 : k = 0
+        · simp [h0]
+        · positivity
+    rw [hsplit2, ha1]
+    linarith
+  nlinarith [hle, htail_nonneg]
+
+/-- **The sharp-bound seed at `x = 1`**: `0 < I₁²(I₀+I₂) − 2I₀²I₂` (the sharp-bound difference `D(1) > 0`).
+Via the recurrence `I₀ = I₂ + 2I₁`, this is `2I₁³(1 − 3u − 4u² − u³)` with `u = I₂/I₁`; the bounds
+`I₂ ≤ 3/22` and `I₁ ≥ 9/16` give `u ≤ 8/33`, and `3u + 4u² + u³ ≤ 35096/35937 < 1`. This is the seed
+`Φ(1) < Φ⁺(1)` for the no-crossing route on the cubic nullcline. -/
+theorem besselI_sharp_seed :
+    0 < besselI 1 1 ^ 2 * (besselI 0 1 + besselI 2 1) - 2 * besselI 0 1 ^ 2 * besselI 2 1 := by
+  have hI1pos : 0 < besselI 1 1 := besselI_pos (by norm_num : 0 < (1 : ℝ))
+  have hrec : besselI 0 1 - besselI 2 1 = (2 : ℝ) * besselI 1 1 := by
+    simpa using bessel_recurrence (x := 1) (by norm_num : 0 < (1 : ℝ))
+  have hI0 : besselI 0 1 = besselI 2 1 + 2 * besselI 1 1 := by linarith
+  have hI2le : besselI 2 1 ≤ (3 : ℝ) / 22 := besselI_two_le_three_div_22
+  have hI1ge : (9 : ℝ) / 16 ≤ besselI 1 1 := besselI_one_ge_nine_div_sixteen
+  have hu : besselI 2 1 / besselI 1 1 ≤ (8 : ℝ) / 33 := by
+    -- I2/I1 <= (3/22)/(9/16) = 8/33
+    have hI1le : (9 : ℝ) / 16 ≤ besselI 1 1 := hI1ge
+    have hden : 0 < besselI 1 1 := hI1pos
+    rw [div_le_div_iff₀ hden (by norm_num : 0 < (9 : ℝ) / 16)]
+    field_simp
+    nlinarith [hI2le, hI1ge]
+  have hpoly : 3 * (8 : ℝ) / 33 + 4 * ((8 : ℝ) / 33) ^ 2 + ((8 : ℝ) / 33) ^ 3 < 1 := by norm_num
+  have hu_poly : 3 * (besselI 2 1 / besselI 1 1) + 4 * (besselI 2 1 / besselI 1 1) ^ 2 + (besselI 2 1 / besselI 1 1) ^ 3 < 1 := by
+    have hnonneg : 0 ≤ besselI 2 1 / besselI 1 1 := div_nonneg (le_of_lt (besselI_pos (by norm_num : 0 < (1 : ℝ)))) (le_of_lt hI1pos)
+    nlinarith [hu, hpoly, hnonneg]
+  -- D(1) = 2 I1^3 (1 - 3u - 4u^2 - u^3)
+  have hD : besselI 1 1 ^ 2 * (besselI 0 1 + besselI 2 1) - 2 * besselI 0 1 ^ 2 * besselI 2 1 =
+      2 * besselI 1 1 ^ 3 * (1 - 3 * (besselI 2 1 / besselI 1 1) - 4 * (besselI 2 1 / besselI 1 1) ^ 2 - (besselI 2 1 / besselI 1 1) ^ 3) := by
+    rw [hI0]
+    field_simp [ne_of_gt hI1pos]
+    ring_nf
+  rw [hD]
+  have hfactor : 0 < 1 - 3 * (besselI 2 1 / besselI 1 1) - 4 * (besselI 2 1 / besselI 1 1) ^ 2 - (besselI 2 1 / besselI 1 1) ^ 3 := by
+    nlinarith [hu_poly]
+  positivity
+
 end QM
