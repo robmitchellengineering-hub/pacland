@@ -1286,4 +1286,36 @@ theorem su2_weyl_measure_normalized : (2 / Real.pi) * (∫ θ in 0..Real.pi, (Re
   rw [hsq]
   field_simp [ne_of_gt Real.pi_pos]
 
+/-- **The block-spin average (the RG step's renormalised density) is bounded**: `∫₀^π e^(β·cos(θ₁+θ₂))·sin²θ₂ dθ₂
+≤ e^|β|·(π/2)`. Pointwise `e^(β·cos) ≤ e^|β|` (since `|cos| ≤ 1`), so the integral is bounded by `e^|β|` times the
+Weyl normalization `∫ sin² = π/2` (`su2_character_orthogonality_diag`). This is the density control the multiscale
+RG step needs: the block-spin average of the SU(2) weight is controlled uniformly by the coupling. -/
+theorem blockSpin_average_bound (β θ₁ : ℝ) :
+    ∫ θ₂ in (0 : ℝ)..Real.pi, Real.exp (β * Real.cos (θ₁ + θ₂)) * (Real.sin θ₂)^2 ≤ Real.exp |β| * (Real.pi / 2) := by
+  have hle : ∀ θ₂, Real.exp (β * Real.cos (θ₁ + θ₂)) ≤ Real.exp |β| := by
+    intro θ₂
+    refine Real.exp_le_exp.mpr ?_
+    have hcos : |Real.cos (θ₁ + θ₂)| ≤ 1 := Real.abs_cos_le_one (θ₁ + θ₂)
+    have hmul : |β * Real.cos (θ₁ + θ₂)| = |β| * |Real.cos (θ₁ + θ₂)| := abs_mul β (Real.cos (θ₁ + θ₂))
+    have hb : |β| * |Real.cos (θ₁ + θ₂)| ≤ |β| * 1 := mul_le_mul_of_nonneg_left hcos (abs_nonneg β)
+    have hle_abs : |β * Real.cos (θ₁ + θ₂)| ≤ |β| := by simpa [hmul] using hb
+    exact le_trans (le_abs_self (β * Real.cos (θ₁ + θ₂))) hle_abs
+  have hmono : ∫ θ₂ in (0 : ℝ)..Real.pi, Real.exp (β * Real.cos (θ₁ + θ₂)) * (Real.sin θ₂)^2
+      ≤ ∫ θ₂ in (0 : ℝ)..Real.pi, Real.exp |β| * (Real.sin θ₂)^2 := by
+    have hcont_f : Continuous (fun θ₂ : ℝ => Real.exp (β * Real.cos (θ₁ + θ₂)) * (Real.sin θ₂)^2) := by continuity
+    have hcont_g : Continuous (fun θ₂ : ℝ => Real.exp |β| * (Real.sin θ₂)^2) := by continuity
+    exact intervalIntegral.integral_mono (a := (0 : ℝ)) (b := Real.pi) (μ := MeasureTheory.volume)
+      (f := fun θ₂ : ℝ => Real.exp (β * Real.cos (θ₁ + θ₂)) * (Real.sin θ₂)^2)
+      (g := fun θ₂ : ℝ => Real.exp |β| * (Real.sin θ₂)^2)
+      (le_of_lt Real.pi_pos)
+      (hcont_f.intervalIntegrable 0 Real.pi)
+      (hcont_g.intervalIntegrable 0 Real.pi)
+      (fun θ₂ => mul_le_mul_of_nonneg_right (hle θ₂) (sq_nonneg (Real.sin θ₂)))
+  have hconst : ∫ θ₂ in (0 : ℝ)..Real.pi, Real.exp |β| * (Real.sin θ₂)^2 = Real.exp |β| * (Real.pi / 2) := by
+    rw [intervalIntegral.integral_const_mul]
+    have hsin : ∫ θ₂ in (0 : ℝ)..Real.pi, (Real.sin θ₂)^2 = Real.pi / 2 := by
+      simpa using su2_character_orthogonality_diag (n := 0)
+    rw [hsin]
+  rwa [hconst] at hmono
+
 end QM
