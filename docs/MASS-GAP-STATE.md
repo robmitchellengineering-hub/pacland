@@ -252,3 +252,26 @@ estimate — is now proved, kernel-checked (full `lake build PaclandProof` green
 **Honest remaining (unchanged):** the connected-components clustering (the subset sum → polymer sum bijection),
 the small/large-field region decomposition of the SU(2) measure, the `a → 0` continuum limit, the
 OS→Wightman reconstruction on ℝ⁴, and the gap-survival theorem. Those are the open Clay existence half.
+
+
+## UPDATE (2026-11-27, open-Clay arc) — the a→0 scale analysis + gap-survival (6 rungs)
+
+The first concrete progress on the open Clay *existence* half — the `a → 0` limit + 't Hooft cutoff-independence
+— is proved, kernel-checked (full `lake build PaclandProof` green, no `sorry`/`admit`/`axiom`), all in
+`BesselIntegral.lean`:
+
+- **Scale analysis**: `heat_kernel_gap_tendsto_zero` (bare gap `1 − I₁/I₀ → 0`), `naive_scale_ratio_lower_bound`
+  (`gap/e^(−cβ) ≥ e^(cβ)/(4β+1)` — the naive ratio diverges), `physical_mass_scale_bounds`
+  (**`1/5 ≤ β·(1 − I₁/I₀) ≤ 1/2`** for `β ≥ 1`), `physical_mass_lower_bound_tendsto` (`β/(4β+1) → 1/4`).
+- **Gap-survival `Δ_phys > 0`**: `physical_mass_scale_bounds` gives the physical mass `β·(1 − I₁/I₀) ≥ 1/5 > 0`
+  uniformly — the gap does NOT close in the `a → 0` limit. The physical mass lives on the `1/β` scale (not the
+  bare gap `→ 0`, not the running-coupling `e^(−cβ) → ∞`).
+- **Tools**: `bessel_ratio_ge_x_div_x_add_three` (`x/(x+3) ≤ I₁/I₀`, the seed `s(1) ≤ 3/4`) and
+  `no_crossing_barrier_from` (the restart no-crossing, for barriers with a pole at 0).
+
+**Honest remaining (the sharp cutoff-independence + the a→0 construction):** the sharp `β·gap → 1/4` (full
+'t Hooft cutoff-independence) needs the second-order Bessel asymptotics `1 − I₁/I₀ = 1/(2x) + 1/(8x²) + O(x⁻³)`.
+Both first-order routes were checked and ruled out: the no-crossing barrier has `f′(h) = (4C²+1)/16 > 0` at
+`x = 1` for every `C`; the monotonicity route `f′ = 1 − x(1−r²)` is circular. The sharp value needs a *different*
+argument (Simpson–Spector two-sided bound, or a direct second-order differential inequality). The `a → 0`
+correlation-function limit is the open construction beyond it.
