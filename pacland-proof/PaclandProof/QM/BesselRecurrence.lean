@@ -1015,4 +1015,20 @@ theorem su2_cos_sq_weyl_moment :
   · exact (by continuity : Continuous (fun _ : ℝ => (1 : ℝ))).intervalIntegrable 0 Real.pi
   · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (4 * θ))).intervalIntegrable 0 Real.pi
 
+/-- **The full-period cosine integral**: `∫₀^{2π} cos φ dφ = 0` (the φ-integration primitive for the S³ odd
+moment `∫ x₀xᵢ = 0`, which kills the trace-zero part of the quaternion square). -/
+theorem integral_cos_full_period_zero : ∫ φ in (0 : ℝ)..(2 * Real.pi), Real.cos φ = 0 := by
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le (by nlinarith [Real.pi_pos]) (by continuity)
+    (fun φ _ => Real.hasDerivAt_sin φ)]
+  rw [Real.sin_periodic 1]
+  ring
+
+/-- **The full-period sine integral**: `∫₀^{2π} sin φ dφ = 0` (the φ-integration primitive for the S³ odd
+moment `∫ x₀xᵢ = 0`). -/
+theorem integral_sin_full_period_zero : ∫ φ in (0 : ℝ)..(2 * Real.pi), Real.sin φ = 0 := by
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le (by nlinarith [Real.pi_pos]) (by continuity)
+    (fun φ _ => (Real.hasDerivAt_cos φ).neg)]
+  rw [Real.cos_periodic 1]
+  ring
+
 
