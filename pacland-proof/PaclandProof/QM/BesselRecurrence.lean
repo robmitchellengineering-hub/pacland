@@ -467,4 +467,100 @@ theorem integral_cos_succ_mul_cos_two_shift (n : ℕ) (θ₂ : ℝ) :
   · exact (by continuity : Continuous (fun θ₁ : ℝ => Real.cos ((n + 1 : ℝ) * θ₁) * Real.cos ((n + 1 : ℝ) * θ₂) * Real.cos (2 * θ₁))).intervalIntegrable 0 Real.pi
   · exact (by continuity : Continuous (fun θ₁ : ℝ => Real.sin ((n + 1 : ℝ) * θ₁) * Real.sin ((n + 1 : ℝ) * θ₂) * Real.cos (2 * θ₁))).intervalIntegrable 0 Real.pi
 
+/-- **The general Bessel factorial identity**: `1/(k!(k+n)!) − 1/((k−1)!(k+n+1)!) = (n+1)/(k!(k+n+1)!)`. The
+coefficient identity behind the general recurrence `Iₙ − Iₙ₊₂ = 2(n+1)Iₙ₊₁/x`. -/
+theorem bessel_factorial_identity_general (k n : ℕ) (hk : 1 ≤ k) :
+    1 / ((k.factorial : ℝ) * (k + n).factorial) - 1 / (((k - 1).factorial : ℝ) * (k + n + 1).factorial)
+      = (n + 1 : ℝ) / ((k.factorial : ℝ) * (k + n + 1).factorial) := by
+  have hkfac : (k.factorial : ℝ) = k * (k - 1).factorial := by
+    norm_num [Nat.factorial_succ]
+  have hknn : ((k + n + 1).factorial : ℝ) = (k + n + 1) * (k + n).factorial := by
+    norm_num [Nat.factorial_succ]
+  have hden : (k.factorial : ℝ) * (k + n + 1).factorial ≠ 0 := by positivity
+  have hden2 : ((k - 1).factorial : ℝ) * (k + n + 1).factorial ≠ 0 := by positivity
+  field_simp [hden, hden2]
+  rw [hkfac, hknn]
+  nlinarith [show (0 : ℝ) < (k - 1).factorial by positivity, show (0 : ℝ) < (k + n).factorial by positivity]
+
+/-- **The general Bessel recurrence**: `Iₙ(x) − Iₙ₊₂(x) = (2(n+1)/x)·Iₙ₊₁(x)` for `x > 0`. The general
+`I_{ν−1} − I_{ν+1} = (2ν/x)I_ν` at `ν = n+1`, via the coefficient identity `bessel_factorial_identity_general`.
+This is the key identity for the SU(2) Weyl character formula. -/
+theorem bessel_recurrence_general {n : ℕ} {x : ℝ} (hx : 0 < x) :
+    besselI n x - besselI (n + 2) x = (2 * (n + 1 : ℝ) / x) * besselI (n + 1) x := by
+  have hxne : x ≠ 0 := ne_of_gt hx
+  let a : ℕ → ℝ := fun k => (x / 2) ^ (2 * k + n) / ((k.factorial : ℝ) * (k + n).factorial)
+  let b : ℕ → ℝ := fun k => (x / 2) ^ (2 * k + n + 2) / ((k.factorial : ℝ) * (k + n + 2).factorial)
+  have hIn : besselI n x = ∑' k, a k := by dsimp [besselI, a]
+  have hIn2 : besselI (n + 2) x = ∑' k, b k := by dsimp [besselI, b]
+  have ha : Summable a := by dsimp [a]; simpa using besselI_summable_of_nonneg n (le_of_lt hx)
+  have hb : Summable b := by dsimp [b]; simpa using besselI_summable_of_nonneg (n + 2) (le_of_lt hx)
+  rw [hIn, hIn2, ← tsum_sub]
+  · -- the difference telescopes: a_k − b_k re-indexed
+    have hreindex : (∑' k : ℕ, b k) = (∑' k : ℕ, (x / 2) ^ (2 * k + n) / (((k - 1).factorial : ℝ) * (k + n + 1).factorial)) := by
+      -- shift b by 1: b_k = c_{k+1} where c_j = (x/2)^{2j+n}/((j−1)!(j+n+1)!)
+      have hshift : (∑' k : ℕ, b k) = (∑' k : ℕ, (fun j : ℕ => (x / 2) ^ (2 * j + n) / (((j - 1).factorial : ℝ) * (j + n + 1).factorial)) (k + 1)) := by
+        apply tsum_congr
+        intro k
+        dsimp [b]
+        congr 1
+        · rw [show 2 * (k + 1) + n = 2 * k + n + 2 by ring]
+        · congr 1 <;> ring
+      rw [hshift]
+      -- re-index: sum over k of c_{k+1} = sum over j of c_j (with c_0 = 0)
+      have hsum : (∑' k : ℕ, (fun j : ℕ => (x / 2) ^ (2 * j + n) / (((j - 1).factorial : ℝ) * (j + n + 1).factorial)) (k + 1))
+          = (∑' k : ℕ, (if k = 0 then 0 else (x / 2) ^ (2 * k + n) / (((k - 1).factorial : ℝ) * (k + n + 1).factorial))) := by
+        rw [← tsum_eq_add_tsum_ite (b := fun k : ℕ => (x / 2) ^ (2 * k + n) / (((k - 1).factorial : ℝ) * (k + n + 1).factorial)) (0 : ℕ)]
+        · apply tsum_congr
+          intro k
+          by_cases hk : k = 0
+          · subst k; norm_num
+          · simp [hk]
+        · -- summable of the shifted sequence
+          exact hb.comp_injective (Nat.succ_injective)
+      rw [hsum]
+      -- the k=0 term of the if is 0, so the sum over k is the sum over k≥1 of c_k
+      have hif0 : (fun k : ℕ => if k = 0 then 0 else (x / 2) ^ (2 * k + n) / (((k - 1).factorial : ℝ) * (k + n + 1).factorial)) 0 = 0 := by simp
+      -- ∑' (if k=0 then 0 else c_k) = ∑' c_k (where c_0 is the if, but it equals 0 anyway)
+      rfl
+    -- now: ∑' a_k − ∑' b_k = ∑' (a_k − c_k)
+    rw [hreindex]
+    have hsumsub : (∑' k : ℕ, a k) - (∑' k : ℕ, (x / 2) ^ (2 * k + n) / (((k - 1).factorial : ℝ) * (k + n + 1).factorial))
+        = ∑' k : ℕ, (a k - (x / 2) ^ (2 * k + n) / (((k - 1).factorial : ℝ) * (k + n + 1).factorial)) := by
+      rw [← tsum_sub]
+      rfl
+      -- summable of the shifted sequence
+      · exact hb.comp_injective (Nat.succ_injective)
+    rw [hsumsub]
+    -- a_k − c_k = (2(n+1)/x)·(x/2)^{2k+n+1}/(k!(k+n+1)!)
+    have hterm : ∀ k, a k - (x / 2) ^ (2 * k + n) / (((k - 1).factorial : ℝ) * (k + n + 1).factorial)
+        = (2 * (n + 1 : ℝ) / x) * ((x / 2) ^ (2 * k + n + 1) / ((k.factorial : ℝ) * (k + n + 1).factorial)) := by
+      intro k
+      dsimp [a]
+      by_cases hk : k = 0
+      · subst k
+        norm_num
+        ring
+      · have hfac := bessel_factorial_identity_general k n (by omega : 1 ≤ k)
+        -- a_k − c_k = (x/2)^{2k+n}·(1/(k!(k+n)!) − 1/((k−1)!(k+n+1)!))
+        have hpow : (x / 2) ^ (2 * k + n) / ((k.factorial : ℝ) * (k + n).factorial)
+            - (x / 2) ^ (2 * k + n) / (((k - 1).factorial : ℝ) * (k + n + 1).factorial)
+            = (x / 2) ^ (2 * k + n) * ((n + 1 : ℝ) / ((k.factorial : ℝ) * (k + n + 1).factorial)) := by
+          rw [← div_sub_div_same]
+          rw [hfac]
+        rw [hpow]
+        -- (x/2)^{2k+n}·((n+1)/(k!(k+n+1)!)) = (2(n+1)/x)·(x/2)^{2k+n+1}/(k!(k+n+1)!)
+        field_simp [hxne]
+        rw [show (x / 2) ^ (2 * k + n + 1) = (x / 2) * (x / 2) ^ (2 * k + n) by rw [pow_succ]]
+        ring
+    simp_rw [hterm]
+    -- (2(n+1)/x)·Σ (x/2)^{2k+n+1}/(k!(k+n+1)!) = (2(n+1)/x)·I_{n+1}
+    rw [← tsum_mul_left]
+    have hIn1 : (∑' k : ℕ, (x / 2) ^ (2 * k + n + 1) / ((k.factorial : ℝ) * (k + n + 1).factorial)) = besselI (n + 1) x := by
+      dsimp [besselI]
+      congr 1
+      ext k
+      congr 1 <;> ring
+    rw [hIn1]
+  · exact ha.sub hb
+
 
