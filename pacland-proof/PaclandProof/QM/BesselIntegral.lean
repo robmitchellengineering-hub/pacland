@@ -1047,4 +1047,18 @@ theorem physical_mass_scale_bounds (β : ℝ) (hβ : 1 ≤ β) :
       linarith
     exact le_trans hmul hup
 
+/-- **The physical-mass lower bound converges to `1/4`**: `β/(4β+1) → 1/4` as `β → ∞`. Combined with
+`physical_mass_scale_bounds` (`β/(4β+1) ≤ β·heatKernelMassGap β`), this shows the physical mass is at least
+`1/4` in the limit — the sharp value the 't Hooft cutoff-independence predicts for `β·(1 − I₁/I₀)`. -/
+theorem physical_mass_lower_bound_tendsto :
+    Filter.Tendsto (fun β : ℝ => β / (4 * β + 1)) Filter.atTop (nhds (1 / 4 : ℝ)) := by
+  have hrewrite : (fun β : ℝ => β / (4 * β + 1)) = (fun β => (4 + β⁻¹)⁻¹) := by
+    funext β
+    field_simp [by nlinarith : (4 * β + 1 : ℝ) ≠ 0]
+    ring
+  rw [hrewrite]
+  have h1 : Filter.Tendsto (fun β : ℝ => 4 + β⁻¹) Filter.atTop (nhds (4 : ℝ)) :=
+    tendsto_const_nhds.add tendsto_inv_atTop_zero
+  exact (continuousAt_inv₀ (by norm_num : (4 : ℝ) ≠ 0)).tendsto.comp h1
+
 end QM
