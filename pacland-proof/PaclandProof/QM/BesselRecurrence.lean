@@ -1380,4 +1380,33 @@ theorem su2_direction_moment_x1_sq :
   field_simp [Real.pi_ne_zero]
   ring
 
+/-- **The off-diagonal direction moments `∫ x₁x₂ = ∫ x₁x₃ = ∫ x₂x₃ = 0`**: the full-period cos/sin φ kills the
+cross-coordinate products. The off-diagonal half of `∫xᵢxⱼ = δᵢⱼ/4`. -/
+theorem su2_direction_moment_x1x2_zero :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Real.sin θ₁)^4 * Real.cos θ₂ * (Real.sin θ₂)^2 * Real.cos φ = 0 := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_congr (fun φ _ => by rw [integral_cos_full_period_zero]; simp)))]
+
+theorem su2_direction_moment_x1x3_zero :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Real.sin θ₁)^4 * Real.cos θ₂ * (Real.sin θ₂)^2 * Real.sin φ = 0 := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_congr (fun φ _ => by rw [integral_sin_full_period_zero]; simp)))]
+
+theorem su2_direction_moment_x2x3_zero :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Real.sin θ₁)^4 * (Real.sin θ₂)^3 * Real.cos φ * Real.sin φ = 0 := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_congr (fun φ _ => by
+      have h : ∫ φ in (0 : ℝ)..(2 * Real.pi), Real.cos φ * Real.sin φ = 0 := by
+        rw [intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le (by nlinarith [Real.pi_pos]) (by continuity)
+          (fun φ _ => by
+            have hsin : HasDerivAt (fun t : ℝ => (Real.sin t)^2 / 2) (Real.cos φ * Real.sin φ) φ := by
+              simpa [pow_two] using (Real.hasDerivAt_sin φ).mul (Real.hasDerivAt_sin φ) |>.const_mul (1 / 2)
+            exact hsin)]
+        rw [Real.sin_periodic 1, Real.sin_zero]
+        ring
+      rw [h]; simp)))]
+
 
