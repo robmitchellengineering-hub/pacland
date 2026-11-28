@@ -1783,4 +1783,54 @@ theorem sharp_cubic_nonpos (x : ℝ) (hx : 1 ≤ x) :
     no_crossing_barrier_from hf_cont hf_deriv hsign hfa
   exact hbar x hx
 
+/-- **The sharp upper bound on the gap**: `1 − I₁/I₀ ≤ 1/(2x) + 1/(2x²)` for `x ≥ 1` — the rational relaxation
+of the cubic `C(Φ) ≤ 0` (via `(2x²−x−1)Φ ≤ 2x²`). Gives `β·gap ≤ 1/4 + 1/(8β) → 1/4`. -/
+theorem sharp_gap_upper (x : ℝ) (hx : 1 ≤ x) :
+    1 - besselI 1 x / besselI 0 x ≤ 1 / (2 * x) + 1 / (2 * x ^ 2) := by
+  have hC := sharp_cubic_nonpos x hx
+  have hΦ : 1 ≤ besselI 0 x / besselI 1 x :=
+    le_of_lt (besselI1_lt_besselI0 (lt_of_lt_of_le (by norm_num : 0 < (1 : ℝ)) hx))
+  have hΦpos : 0 < besselI 0 x / besselI 1 x := lt_of_lt_of_le (by norm_num : 0 < (1 : ℝ)) hΦ
+  have htarget : (2 * x ^ 2 - x - 1) * (besselI 0 x / besselI 1 x) ≤ 2 * x ^ 2 := by
+    nlinarith [hC, hΦ, hx, sq_nonneg (besselI 0 x / besselI 1 x - 1)]
+  -- s = 1 - I1/I0 = 1 - 1/Φ <= 1/(2x) + 1/(2x^2)
+  have hs : 1 - besselI 1 x / besselI 0 x = (besselI 0 x / besselI 1 x - 1) / (besselI 0 x / besselI 1 x) := by
+    field_simp [ne_of_gt (besselI_pos (lt_of_lt_of_le (by norm_num : 0 < (1 : ℝ)) hx))]
+    ring
+  rw [hs]
+  -- (Φ-1)/Φ <= (x+1)/(2x^2)  <=>  (2x^2-x-1)Φ <= 2x^2
+  have hle : (besselI 0 x / besselI 1 x - 1) / (besselI 0 x / besselI 1 x) ≤ (x + 1) / (2 * x ^ 2) := by
+    have hden : 0 < 2 * x ^ 2 := by positivity
+    have hnum : (2 * x ^ 2 - x - 1) * (besselI 0 x / besselI 1 x) ≤ 2 * x ^ 2 := htarget
+    -- (Φ-1)/Φ <= (x+1)/(2x^2) <=> (2x^2-x-1)Φ <= 2x^2, via clearing denominators
+    rw [div_le_div_iff₀ hΦpos hden]
+    field_simp [ne_of_gt hΦpos]
+    nlinarith [htarget]
+  simpa using hle
+
+/-- **The sharp cutoff-independence**: `Tendsto (fun β => β·(1 − I₁(2β)/I₀(2β))) atTop (nhds (1/4))` — the physical
+mass converges to `1/4`. Squeeze between the lower `β/(4β+1)` (Amos, `heat_kernel_gap_poly`) and the upper
+`1/4 + 1/(8β)` (the sharp cubic `sharp_gap_upper`). -/
+theorem physical_mass_tendsto_sharp :
+    Filter.Tendsto (fun β : ℝ => β * heatKernelMassGap β) Filter.atTop (nhds (1 / 4 : ℝ)) := by
+  have hlower : ∀ β, 1 ≤ β → β / (4 * β + 1) ≤ β * heatKernelMassGap β := by
+    intro β hβ
+    have hpoly : 1 / (4 * β + 1) ≤ heatKernelMassGap β := heat_kernel_gap_poly β (by linarith)
+    exact mul_le_mul_of_nonneg_left hpoly (by linarith)
+  have hupper : ∀ β, 1 ≤ β → β * heatKernelMassGap β ≤ 1 / 4 + 1 / (8 * β) := by
+    intro β hβ
+    have hup : heatKernelMassGap β ≤ 1 / (2 * (2 * β)) + 1 / (2 * (2 * β) ^ 2) := by
+      simpa [heatKernelMassGap] using sharp_gap_upper (2 * β) (by linarith)
+    have hmul := mul_le_mul_of_nonneg_left hup (by linarith : 0 ≤ β)
+    -- β*(1/(4β) + 1/(8β^2)) = 1/4 + 1/(8β)
+    nlinarith [hmul]
+  have hlowtend : Filter.Tendsto (fun β : ℝ => β / (4 * β + 1)) Filter.atTop (nhds (1 / 4 : ℝ)) :=
+    physical_mass_lower_bound_tendsto
+  have huptend : Filter.Tendsto (fun β : ℝ => 1 / 4 + 1 / (8 * β)) Filter.atTop (nhds (1 / 4 : ℝ)) := by
+    simpa using (tendsto_const_nhds.add (tendsto_inv_atTop_zero.const_mul (1 / 8 : ℝ)))
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    (eventually_atTop.mpr ⟨1, fun β hβ => hlower β hβ⟩)
+    (eventually_atTop.mpr ⟨1, fun β hβ => hupper β hβ⟩)
+    hlowtend huptend
+
 end QM
