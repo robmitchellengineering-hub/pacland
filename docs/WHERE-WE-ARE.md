@@ -99,12 +99,15 @@ the Pauli algebra `(x⃗·σ⃗)² = |x⃗|²·I`, the quaternion square `V² = 
 `Tr(V²) = 2(x₀²−|x⃗|²)`, the S³ moment `(2/π)∫cos²θ·sin²θ = 1/4`, and the φ-integration primitives
 `∫₀^{2π}cos φ = ∫₀^{2π}sin φ = 0`.
 
-The matrix pseudoreality `∫ V² dV = −I/2` is a direct assembly: the odd moment `∫ x₀xᵢ = 0` (via the full-period
-φ-integrals) kills the `2ix₀(x⃗·σ⃗)` term, and `∫x₀² = 1/4` with `x₀²+|x⃗|² = 1` gives `(1/4−3/4)·I = −I/2`. The
-remaining step is the **S³ spherical-coordinate Fubini** (the round-measure Jacobian `dV = (2/π)sin²θ dθ·(S² measure)`)
-that ties the quaternion coordinates to the Weyl integration. Then the n=1 convolution `∫ χ₁(U₂A)χ₁(U₂B) dU₂ =
-χ₁(A⁻¹B)/2`, the effective-plaquette weight `e^(x′·Tr AB⁻¹)` (coupling advance `x′ = x²·(…)`), and the multiscale
-induction.
+**The SU(2) matrix pseudoreality is PROVED (77 rungs).** `∫∫∫ V²·sin²θ₁·sin θ₂ = −π²·I`, i.e. `∫ V² dV = −I/2`
+normalized. All four quaternion-square entries, their integrals (`−π²`, `−π²`, `0`, `0` via the φ/θ₂ odd moments and
+`integral_add_const_{sin,cos}_period`), and the `Matrix.ext` assembly. The block-spin RG's clean pseudoreality primitive.
+
+**Next (the goal's second objective):** the n=1 character convolution `∫ χ₁(U₂A)χ₁(U₂B) dU₂ = χ₁(A⁻¹B)/2`, via the
+trace identity `Tr(U₂A)Tr(U₂B) = Tr(U₂AU₂B) + Tr(A⁻¹B)` + the substitution `V = U₂A` (`∫Tr(U₂AU₂B) = Tr(−I/2·A⁻¹B)`).
+The remaining piece is the **Haar left-invariance** `∫ f(U₂A) dU₂ = ∫ f(V) dV` (the quaternion left-multiplication's
+isometry of the S³ round measure). Then the effective-plaquette weight `e^(x′·Tr AB⁻¹)` (coupling advance `x′ = x²·(…)`),
+and the multiscale induction.
 
 ## The next real step (the open Clay half)
 

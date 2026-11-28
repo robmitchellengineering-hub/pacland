@@ -537,4 +537,247 @@ theorem su2_quaternion_sq_trace (x₀ : ℝ) (x : Fin 3 → ℝ) :
 
 
 
+/-- **The S² direction normalization**: `cos²θ₂ + sin²θ₂·cos²φ + sin²θ₂·sin²φ = 1` — the unit-length condition
+of the direction vector `u = (cos θ₂, sin θ₂ cos φ, sin θ₂ sin φ)`, via `sin²+cos² = 1` twice. The key that makes
+`|x⃗|² = sin²θ₁` in the quaternion square's scalar coefficient. -/
+theorem su2_direction_norm (θ₂ φ : ℝ) :
+    (Real.cos θ₂)^2 + (Real.sin θ₂)^2 * (Real.cos φ)^2 + (Real.sin θ₂)^2 * (Real.sin φ)^2 = 1 := by
+  nlinarith [Real.sin_sq_add_cos_sq θ₂, Real.sin_sq_add_cos_sq φ]
+
+/-- **The S³ direction squared norm**: `|x⃗|² = sin²θ₁` for the quaternion coordinates `x⃗ = sin θ₁·u` (the unit
+direction `u`). Via `su2_direction_norm`. The key reduction in the quaternion square's scalar coefficient. -/
+theorem su2_sphere_norm_sq (θ₁ θ₂ φ : ℝ) :
+    (Real.sin θ₁ * Real.cos θ₂)^2 + (Real.sin θ₁ * Real.sin θ₂ * Real.cos φ)^2 + (Real.sin θ₁ * Real.sin θ₂ * Real.sin φ)^2 = (Real.sin θ₁)^2 := by
+  ring_nf
+  nlinarith [su2_direction_norm θ₂ φ]
+
+/-- The `(0,0)` entry of the Pauli vector: `(x⃗·σ⃗)₀₀ = x 2` (only σ₃ contributes to the diagonal). -/
+theorem su2_pauli_vec_entry_00 (x : Fin 3 → ℝ) : (su2PauliVec x) 0 0 = (x 2 : ℂ) := by
+  simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, smul_eq_mul]
+
+/-- The `(0,0)` entry of the quaternion square in GENERIC coordinates: `(V²)₀₀ = (x₀²−|x⃗|²) + 2i·x₀·x 2`.
+Avoids the spherical `![…]` coordinates entirely, so the entry extraction is clean. -/
+theorem su2_quaternion_sq_entry_00 (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    ((su2Quaternion x₀ x)^2) 0 0 =
+      ((x₀ ^ 2 - (x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2) : ℝ) : ℂ) + (2 * x₀ : ℂ) * Complex.I * (x 2 : ℂ) := by
+  have h := su2_quaternion_sq x₀ x
+  have h00 := congr_fun (congr_fun h 0) 0
+  rw [h00]
+  simp [Matrix.one_apply_eq, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2_pauli_vec_entry_00]
+  ring
+
+/-- The SU(2) quaternion in S³ spherical coordinates. -/
+noncomputable def su2SphereQuaternion (θ₁ θ₂ φ : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  su2Quaternion (Real.cos θ₁)
+    ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]
+
+/-- The `(0,0)` entry of the quaternion square in S³ coordinates: `(V²)₀₀ = (cos²θ₁−sin²θ₁) + 2i·cos θ₁·sin θ₁·sin θ₂·sin φ`. -/
+theorem su2_sphere_sq_entry_00 (θ₁ θ₂ φ : ℝ) :
+    ((su2SphereQuaternion θ₁ θ₂ φ)^2) 0 0 =
+      (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ)
+        + (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * ((Real.sin θ₂ * Real.sin φ : ℝ) : ℂ) := by
+  unfold su2SphereQuaternion
+  rw [su2_quaternion_sq_entry_00]
+  simp [su2_sphere_norm_sq θ₁ θ₂ φ]
+  ring
+
+/-- The Pauli-vector entries: `(x⃗·σ⃗)₁₁ = −x 2`, `(x⃗·σ⃗)₀₁ = x 0 − i·x 1`, `(x⃗·σ⃗)₁₀ = x 0 + i·x 1`. -/
+theorem su2_pauli_vec_entry_11 (x : Fin 3 → ℝ) : (su2PauliVec x) 1 1 = -(x 2 : ℂ) := by
+  simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, smul_eq_mul]
+
+theorem su2_pauli_vec_entry_01 (x : Fin 3 → ℝ) : (su2PauliVec x) 0 1 = (x 0 : ℂ) - Complex.I * (x 1 : ℂ) := by
+  simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, smul_eq_mul]
+  ring
+
+theorem su2_pauli_vec_entry_10 (x : Fin 3 → ℝ) : (su2PauliVec x) 1 0 = (x 0 : ℂ) + Complex.I * (x 1 : ℂ) := by
+  simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, smul_eq_mul]
+  ring
+
+/-- The quaternion square's `(1,1)` entry (generic): `(V²)₁₁ = (x₀²−|x⃗|²) − 2i·x₀·x 2`. -/
+theorem su2_quaternion_sq_entry_11 (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    ((su2Quaternion x₀ x)^2) 1 1 =
+      ((x₀ ^ 2 - (x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2) : ℝ) : ℂ) - (2 * x₀ : ℂ) * Complex.I * (x 2 : ℂ) := by
+  have h := su2_quaternion_sq x₀ x
+  have h11 := congr_fun (congr_fun h 1) 1
+  rw [h11]
+  simp [Matrix.one_apply_eq, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2_pauli_vec_entry_11]
+  ring
+
+/-- The quaternion square's `(0,1)` entry (generic): `(V²)₀₁ = 2i·x₀·(x 0 − i·x 1)`. -/
+theorem su2_quaternion_sq_entry_01 (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    ((su2Quaternion x₀ x)^2) 0 1 = (2 * x₀ : ℂ) * Complex.I * ((x 0 : ℂ) - Complex.I * (x 1 : ℂ)) := by
+  have h := su2_quaternion_sq x₀ x
+  have h01 := congr_fun (congr_fun h 0) 1
+  rw [h01]
+  simp [Matrix.one_apply_eq, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2_pauli_vec_entry_01]
+  ring
+
+/-- The quaternion square's `(1,0)` entry (generic): `(V²)₁₀ = 2i·x₀·(x 0 + i·x 1)`. -/
+theorem su2_quaternion_sq_entry_10 (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    ((su2Quaternion x₀ x)^2) 1 0 = (2 * x₀ : ℂ) * Complex.I * ((x 0 : ℂ) + Complex.I * (x 1 : ℂ)) := by
+  have h := su2_quaternion_sq x₀ x
+  have h10 := congr_fun (congr_fun h 1) 0
+  rw [h10]
+  simp [Matrix.one_apply_eq, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2_pauli_vec_entry_10]
+  ring
+
+/-- The quaternion square's `(1,1)` entry in S³ coordinates (symmetric to `(0,0)`, minus sign). -/
+theorem su2_sphere_sq_entry_11 (θ₁ θ₂ φ : ℝ) :
+    ((su2SphereQuaternion θ₁ θ₂ φ)^2) 1 1 =
+      (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) - (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * ((Real.sin θ₂ * Real.sin φ : ℝ) : ℂ) := by
+  unfold su2SphereQuaternion
+  rw [su2_quaternion_sq_entry_11]
+  simp [su2_sphere_norm_sq θ₁ θ₂ φ]
+  ring
+
+/-- The quaternion square's `(0,1)` entry in S³ coordinates: `2i·cos θ₁·sin θ₁·cos θ₂ + 2·cos θ₁·sin θ₁·sin θ₂·cos φ`. -/
+theorem su2_sphere_sq_entry_01 (θ₁ θ₂ φ : ℝ) :
+    ((su2SphereQuaternion θ₁ θ₂ φ)^2) 0 1 =
+      (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.cos θ₂ : ℝ) : ℂ)
+        + (2 : ℂ) * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.sin θ₂ * Real.cos φ : ℝ) : ℂ) := by
+  unfold su2SphereQuaternion
+  rw [su2_quaternion_sq_entry_01]
+  simp [Complex.ofReal_mul]
+  ring_nf
+  simp [complex_I_sq]
+
+/-- The quaternion square's `(1,0)` entry in S³ coordinates: `2i·cos θ₁·sin θ₁·cos θ₂ − 2·cos θ₁·sin θ₁·sin θ₂·cos φ`. -/
+theorem su2_sphere_sq_entry_10 (θ₁ θ₂ φ : ℝ) :
+    ((su2SphereQuaternion θ₁ θ₂ φ)^2) 1 0 =
+      (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.cos θ₂ : ℝ) : ℂ)
+        - (2 : ℂ) * (Real.cos θ₁ : ℂ) * ((Real.sin θ₁ * Real.sin θ₂ * Real.cos φ : ℝ) : ℂ) := by
+  unfold su2SphereQuaternion
+  rw [su2_quaternion_sq_entry_10]
+  simp [Complex.ofReal_mul]
+  ring_nf
+  simp [complex_I_sq]
+  ring
+
+/-- **The Pauli conjugation sum**: `Σᵢ σᵢ·B·σᵢ = 2·Tr(B)·I − B`. The key for the general matrix pseudoreality
+`∫ U₂BU₂ dU₂ = (B − Tr(B)I)/2`. -/
+theorem su2_pauli_conj_sum (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    su2Pauli1 * B * su2Pauli1 + su2Pauli2 * B * su2Pauli2 + su2Pauli3 * B * su2Pauli3
+      = (2 : ℂ) • Matrix.trace B • (1 : Matrix (Fin 2) (Fin 2) ℂ) - B := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [su2Pauli1, su2Pauli2, su2Pauli3, Matrix.mul_apply, Matrix.vecMul, Matrix.vecHead, Matrix.vecTail, Fin.sum_univ_two, Matrix.trace, smul_eq_mul, Matrix.one_apply_eq]
+  <;> ring_nf
+  <;> simp [complex_I_sq]
+  <;> ring
+
+/-- **The trace form of the quaternion conjugation**: `Tr(V·B·V) = (x₀²−|x⃗|²)·Tr(B) + 2i·x₀·Tr(X·B)` (via the trace
+cyclicity `Tr(V·B·V) = Tr(V²·B)` and `V² = (x₀²−|x⃗|²)·I + 2i·x₀·X`). The scalar route to the trace form
+`∫Tr(U₂BU₂) = −Tr(B)/2` of the general pseudoreality. -/
+theorem su2_quaternion_conj_trace (x₀ : ℝ) (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    Matrix.trace (su2Quaternion x₀ x * B * su2Quaternion x₀ x) =
+      (((x₀ ^ 2 - (x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2) : ℝ) : ℂ) * Matrix.trace B)
+        + (2 * x₀ : ℂ) * Complex.I * Matrix.trace (su2PauliVec x * B) := by
+  rw [Matrix.mul_assoc]
+  rw [Matrix.trace_mul_comm]
+  rw [Matrix.mul_assoc]
+  rw [← pow_two]
+  rw [su2_quaternion_sq]
+  rw [mul_add]
+  rw [Matrix.mul_smul, Matrix.mul_smul]
+  rw [Matrix.mul_one]
+  rw [Matrix.trace_add, Matrix.trace_smul, Matrix.trace_smul]
+  simp [Matrix.trace_one, smul_eq_mul]
+  rw [Matrix.trace_mul_comm]
+  ring
+
+/-- **The Pauli-vector trace linearity**: `Tr((x⃗·σ⃗)·B) = Σᵢ xᵢ·Tr(σᵢ·B)`. The scalar decomposition for the trace form
+`∫Tr(U₂BU₂) = −Tr(B)/2`. -/
+theorem su2_pauli_vec_trace_mul (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    Matrix.trace (su2PauliVec x * B) = (x 0 : ℂ) * Matrix.trace (su2Pauli1 * B) + (x 1 : ℂ) * Matrix.trace (su2Pauli2 * B) + (x 2 : ℂ) * Matrix.trace (su2Pauli3 * B) := by
+  unfold su2PauliVec
+  rw [add_mul, add_mul]
+  rw [Matrix.smul_mul, Matrix.smul_mul, Matrix.smul_mul]
+  rw [Matrix.trace_add, Matrix.trace_add, Matrix.trace_smul, Matrix.trace_smul, Matrix.trace_smul]
+  ring
+
+/-- **The Pauli-vector-times-matrix entry**: `((x⃗·σ⃗)·B)ᵢⱼ = Σₐ xₐ·(σₐ·B)ᵢⱼ` (the linearity, avoiding the `vecMul`
+notation). The clean decomposition for the `V·B·V` expansion. -/
+theorem su2_pauli_vec_mul_apply (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) :
+    (su2PauliVec x * B) i j = (x 0 : ℂ) * (su2Pauli1 * B) i j + (x 1 : ℂ) * (su2Pauli2 * B) i j + (x 2 : ℂ) * (su2Pauli3 * B) i j := by
+  unfold su2PauliVec
+  rw [add_mul, add_mul]
+  rw [Matrix.smul_mul, Matrix.smul_mul, Matrix.smul_mul]
+  rw [Matrix.add_apply, Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.smul_apply]
+  ring
+
+/-- **The matrix-times-Pauli-vector entry**: `(B·(x⃗·σ⃗))ᵢⱼ = Σₐ xₐ·(B·σₐ)ᵢⱼ`. The right-side linearity. -/
+theorem su2_pauli_vec_mul_apply_right (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) :
+    (B * su2PauliVec x) i j = (x 0 : ℂ) * (B * su2Pauli1) i j + (x 1 : ℂ) * (B * su2Pauli2) i j + (x 2 : ℂ) * (B * su2Pauli3) i j := by
+  unfold su2PauliVec
+  rw [mul_add, mul_add]
+  rw [Matrix.mul_smul, Matrix.mul_smul, Matrix.mul_smul]
+  rw [Matrix.add_apply, Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.smul_apply]
+  ring
+
+/-- **The generic quaternion conjugation**: `(c·1 + i·X)·B·(c·1 + i·X) = c²·B + i·c·(X·B + B·X) − X·B·X` for a
+generic matrix `X`. Entrywise, via `c·1 = c·δ` and `i·X` with `I² = −1`. -/
+theorem su2_conj_generic (c : ℂ) (X B : Matrix (Fin 2) (Fin 2) ℂ) :
+    (c • 1 + Complex.I • X) * B * (c • 1 + Complex.I • X) =
+      c ^ 2 • B + Complex.I • c • (X * B + B * X) - X * B * X := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, Matrix.one_apply_eq, Fin.sum_univ_two, complex_I_sq]
+  <;> ring_nf
+  <;> simp [complex_I_sq]
+  <;> ring
+
+/-- **The quaternion conjugation expansion**: `V·B·V = x₀²·B + i·x₀·(X·B + B·X) − X·B·X` where `X = x⃗·σ⃗`. The
+specialization of `su2_conj_generic`. -/
+theorem su2_quaternion_conj (x₀ : ℝ) (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    su2Quaternion x₀ x * B * su2Quaternion x₀ x =
+      (x₀ : ℂ) ^ 2 • B + Complex.I • (x₀ : ℂ) • (su2PauliVec x * B + B * su2PauliVec x) - su2PauliVec x * B * su2PauliVec x := by
+  unfold su2Quaternion
+  exact su2_conj_generic (x₀ : ℂ) (su2PauliVec x) B
+
+/-- **The quaternion determinant**: `det(x₀·I + i·(x⃗·σ⃗)) = x₀² + x₁² + x₂² + x₃²` (the quaternion norm squared). -/
+theorem su2_quaternion_det (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    (su2Quaternion x₀ x).det = (x₀ : ℂ)^2 + (x 0 : ℂ)^2 + (x 1 : ℂ)^2 + (x 2 : ℂ)^2 := by
+  simp [Matrix.det_fin_two, su2Quaternion, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, Complex.ofReal_mul, Complex.ofReal_add]
+  ring_nf
+  norm_num [complex_I_sq]
+
+/-- **The sphere quaternion has det = 1** (the SU(2) condition): `x₀² + |x⃗|² = cos²θ₁ + sin²θ₁ = 1`. -/
+theorem su2_sphere_det_one (θ₁ θ₂ φ : ℝ) : (su2SphereQuaternion θ₁ θ₂ φ).det = 1 := by
+  unfold su2SphereQuaternion
+  rw [su2_quaternion_det]
+  rw [show (![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] 0) = Real.sin θ₁ * Real.cos θ₂ by rfl]
+  rw [show (![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] 1) = Real.sin θ₁ * Real.sin θ₂ * Real.cos φ by rfl]
+  rw [show (![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ] 2) = Real.sin θ₁ * Real.sin θ₂ * Real.sin φ by rfl]
+  rw [← Complex.ofReal_pow, ← Complex.ofReal_pow, ← Complex.ofReal_pow, ← Complex.ofReal_pow]
+  rw [← Complex.ofReal_add, ← Complex.ofReal_add, ← Complex.ofReal_add]
+  rw [← Complex.ofReal_one]
+  rw [Complex.ofReal_inj]
+  nlinarith [su2_sphere_norm_sq θ₁ θ₂ φ, Real.sin_sq_add_cos_sq θ₁]
+
+/-- **The sphere inverse cancellation**: `V⁻¹·V = 1` for the SU(2) sphere quaternion (det = 1). -/
+theorem su2_sphere_inv_mul_self (θ₁ θ₂ φ : ℝ) :
+    (su2SphereQuaternion θ₁ θ₂ φ)⁻¹ * su2SphereQuaternion θ₁ θ₂ φ = 1 := by
+  rw [Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr (by rw [su2_sphere_det_one]; norm_num))]
+
+/-- **The conjugated inverse cancellation**: `(U₂A)⁻¹·(U₂B) = A⁻¹·B` (the `U₂⁻¹U₂ = 1` cancels). -/
+theorem su2_sphere_conj_inv (θ₁ θ₂ φ : ℝ) (A B : Matrix (Fin 2) (Fin 2) ℂ) :
+    (su2SphereQuaternion θ₁ θ₂ φ * A)⁻¹ * (su2SphereQuaternion θ₁ θ₂ φ * B) = A⁻¹ * B := by
+  rw [Matrix.mul_inv_rev]
+  rw [Matrix.mul_assoc A⁻¹ (su2SphereQuaternion θ₁ θ₂ φ)⁻¹ (su2SphereQuaternion θ₁ θ₂ φ * B)]
+  rw [← Matrix.mul_assoc (su2SphereQuaternion θ₁ θ₂ φ)⁻¹ (su2SphereQuaternion θ₁ θ₂ φ) B]
+  rw [su2_sphere_inv_mul_self θ₁ θ₂ φ]
+  rw [Matrix.one_mul]
+
+/-- **The pointwise convolution trace identity**: `Tr(U₂A)·Tr(U₂B) = Tr(U₂AU₂B) + Tr(A⁻¹B)` (via
+`su2_trace_identity` with `U = U₂A`, `V = U₂B`, det = 1). -/
+theorem su2_trace_conv_identity (θ₁ θ₂ φ : ℝ) (A B : Matrix (Fin 2) (Fin 2) ℂ) (hA : A.det = 1) :
+    Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A) * Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * B)
+      = Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A * su2SphereQuaternion θ₁ θ₂ φ * B) + Matrix.trace (A⁻¹ * B) := by
+  have hdet : (su2SphereQuaternion θ₁ θ₂ φ * A).det = 1 := by
+    rw [Matrix.det_mul, su2_sphere_det_one, hA]
+    ring
+  have h := su2_trace_identity (su2SphereQuaternion θ₁ θ₂ φ * A) (su2SphereQuaternion θ₁ θ₂ φ * B) hdet
+  rw [su2_sphere_conj_inv θ₁ θ₂ φ A B] at h
+  simpa [Matrix.mul_assoc] using h.symm
+
 end QM
