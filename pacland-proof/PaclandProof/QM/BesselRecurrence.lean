@@ -1119,4 +1119,55 @@ theorem su2_sq_scalar_nested :
     linarith]
   ring
 
+/-- **The trace-zero odd moment (u₁, nested)**: `∫∫∫ cos θ₁·sin θ₁·cos θ₂·sin²θ₁·sin θ₂ = 0` — the θ₂ odd moment
+kills the u₁ direction of the quaternion square's trace-zero part. -/
+theorem su2_odd_moment_u1_nested :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        Real.cos θ₁ * Real.sin θ₁ * Real.cos θ₂ * (Real.sin θ₁)^2 * Real.sin θ₂ = 0 := by
+  have hφ : ∀ θ₁ θ₂, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+      Real.cos θ₁ * Real.sin θ₁ * Real.cos θ₂ * (Real.sin θ₁)^2 * Real.sin θ₂
+        = Real.cos θ₁ * Real.sin θ₁ * Real.cos θ₂ * (Real.sin θ₁)^2 * Real.sin θ₂ * (2 * Real.pi) := by
+    intro θ₁ θ₂
+    rw [intervalIntegral.integral_const]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => hφ θ₁ θ₂))]
+  have hθ₂ : ∀ θ₁, ∫ θ₂ in (0 : ℝ)..Real.pi,
+      Real.cos θ₁ * Real.sin θ₁ * Real.cos θ₂ * (Real.sin θ₁)^2 * Real.sin θ₂ * (2 * Real.pi) = 0 := by
+    intro θ₁
+    rw [intervalIntegral.integral_const_mul]
+    rw [show ∫ θ₂ in (0 : ℝ)..Real.pi, Real.cos θ₂ * Real.sin θ₂ = 0 by exact integral_cos_mul_sin_zero]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => hθ₂ θ₁)]
+  simp
+
+/-- **The trace-zero odd moment (u₂, nested)**: `∫∫∫ cos θ₁·sin θ₁·sin θ₂·cos φ·sin²θ₁·sin θ₂ = 0` — the full-period
+cos φ kills the u₂ direction. -/
+theorem su2_odd_moment_u2_nested :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        Real.cos θ₁ * Real.sin θ₁ * Real.sin θ₂ * Real.cos φ * (Real.sin θ₁)^2 * Real.sin θ₂ = 0 := by
+  have hφ : ∀ θ₁ θ₂, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+      Real.cos θ₁ * Real.sin θ₁ * Real.sin θ₂ * Real.cos φ * (Real.sin θ₁)^2 * Real.sin θ₂
+        = Real.cos θ₁ * Real.sin θ₁ * (Real.sin θ₂)^2 * (Real.sin θ₁)^2 * ∫ φ in (0 : ℝ)..(2 * Real.pi), Real.cos φ := by
+    intro θ₁ θ₂
+    rw [intervalIntegral.integral_const_mul]
+    ring_nf
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => hφ θ₁ θ₂))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => by rw [integral_cos_full_period_zero]; simp))]
+  simp
+
+/-- **The trace-zero odd moment (u₃, nested)**: `∫∫∫ cos θ₁·sin θ₁·sin θ₂·sin φ·sin²θ₁·sin θ₂ = 0` — the full-period
+sin φ kills the u₃ direction. -/
+theorem su2_odd_moment_u3_nested :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        Real.cos θ₁ * Real.sin θ₁ * Real.sin θ₂ * Real.sin φ * (Real.sin θ₁)^2 * Real.sin θ₂ = 0 := by
+  have hφ : ∀ θ₁ θ₂, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+      Real.cos θ₁ * Real.sin θ₁ * Real.sin θ₂ * Real.sin φ * (Real.sin θ₁)^2 * Real.sin θ₂
+        = Real.cos θ₁ * Real.sin θ₁ * (Real.sin θ₂)^2 * (Real.sin θ₁)^2 * ∫ φ in (0 : ℝ)..(2 * Real.pi), Real.sin φ := by
+    intro θ₁ θ₂
+    rw [intervalIntegral.integral_const_mul]
+    ring_nf
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => hφ θ₁ θ₂))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => by rw [integral_sin_full_period_zero]; simp))]
+  simp
+
 
