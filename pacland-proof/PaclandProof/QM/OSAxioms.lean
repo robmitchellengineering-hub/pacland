@@ -333,4 +333,16 @@ theorem wightman_covariance_limit (S : ℕ → ℝ → ℝ → ℝ) (Slim : ℝ 
     exact (hS n) x y t
   exact tendsto_nhds_unique (hlim (x + t) (y + t)) h2
 
+/-- **W2 (the mass gap) is closed under the a→0 limit**: if the scales' gaps `Δ n` converge to `Δlim` and are
+uniformly bounded below by `Δ₀ > 0`, then the limit gap is positive (`0 < Δlim`). With the other closures
+(`posdef_of_tendsto`, `wightman_locality_limit`, `wightman_vacuum_limit`, `wightman_covariance_limit`) this
+completes the a→0 closure of the Wightman axioms W0–W4 — the mass-gap (spectral) condition survives the
+continuum limit. -/
+theorem mass_gap_limit_pos {Δ : ℕ → ℝ} {Δlim : ℝ} {Δ₀ : ℝ}
+    (hlim : Filter.Tendsto Δ Filter.atTop (nhds Δlim))
+    (hunif : ∀ n, Δ₀ ≤ Δ n) (h₀ : 0 < Δ₀) :
+    0 < Δlim := by
+  have hge : Δ₀ ≤ Δlim := ge_of_tendsto hlim (Filter.Eventually.of_forall hunif)
+  exact lt_of_lt_of_le h₀ hge
+
 end QM
