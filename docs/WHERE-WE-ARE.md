@@ -88,8 +88,16 @@ Haar-trivial (constant), so the coupling advance comes from the odd link in TWO 
 `su2_char_conv_one` (torus-diagonal n=1 convolution), `cos_phi_orthogonality` (the φ-integration primitive), and
 `su2_trace_identity` (Tr(UV) + Tr(U⁻¹V) = Tr(U)·Tr(V) for det U = 1, via `Matrix.inv_def` + the 2×2 adjugate
 `adj(U) = Tr(U)·I − U`). The trace identity is the key for the correct n=1 convolution
-`∫ χ₁(U₂A)χ₁(U₂B) dU₂ = χ₁(AB⁻¹)/2`. The remaining open step is the effective-plaquette weight
-`e^(x′·Tr AB⁻¹)` (the coupling advance `x′ = x²·(…)`) and the multiscale induction.
+`∫ χ₁(U₂A)χ₁(U₂B) dU₂ = χ₁(AB⁻¹)/2`. **The SU(2) matrix machinery is now complete except the measure (39 rungs).** Landed: the trace identity
+`Tr(UV)+Tr(U⁻¹V)=Tr(U)Tr(V)` (via `Matrix.inv_def` + the 2×2 adjugate), the scalar moments `∫ Tr(V²)=−1` and
+`∫ Tr(U₂)=0`, the **Schur lemma** `su2_central_matrix_eq_scalar` (a matrix commuting with σ₃, σ₁ is scalar), the
+trace conjugation invariance `Tr(U·C·U⁻¹)=Tr(C)`, the Schur-lemma lift `su2_central_matrix_trace_neg_one_eq_neg_half`
+(central + Tr=−1 ⟹ −I/2), and the dimension `Tr(I)=2`.
+
+The remaining step to the matrix pseudoreality `∫ V² dV = −I/2` / `∫ U₂ dU₂ = 0` is the **matrix-group Haar measure**
+(the normalized SU(2) measure `dU` on `specialUnitaryGroup (Fin 2) ℂ` with its conjugation invariance
+`∫ f(WUW⁻¹) dU = ∫ f(U) dU`). Then the n=1 convolution `∫ χ₁(U₂A)χ₁(U₂B) dU₂ = χ₁(A⁻¹B)/2`, the effective-plaquette
+weight `e^(x′·Tr AB⁻¹)` (coupling advance `x′ = x²·(…)`), and the multiscale induction.
 
 ## The next real step (the open Clay half)
 
