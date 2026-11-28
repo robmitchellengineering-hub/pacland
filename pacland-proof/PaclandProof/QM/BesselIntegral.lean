@@ -1892,4 +1892,19 @@ theorem rescaled_two_point_converges (t : ℝ) :
   have hexp := Real.continuous_exp.continuousAt.tendsto.comp hlin
   simpa [mul_assoc, neg_mul, mul_neg] using hexp
 
+/-- **The continuum mass gap is positive**: there is a positive mass `m` (namely `1/4`) such that the physical
+mass `β·(1 − I₁/I₀)` converges to it. This is the a→0 statement of the mass gap: the rescaled (physical) gap has
+a positive finite limit, so the continuum theory has a non-vanishing mass gap (the positive-existence half of the
+mass gap, assembled from `physical_mass_tendsto_sharp`). -/
+theorem continuum_mass_gap_pos :
+    ∃ m : ℝ, 0 < m ∧ Filter.Tendsto (fun β : ℝ => β * heatKernelMassGap β) Filter.atTop (nhds m) := by
+  refine ⟨1 / 4, by norm_num, ?_⟩
+  exact physical_mass_tendsto_sharp
+
+/-- **The continuum mass is the sharp value `1/4`** (the positive limit of the physical mass), as a pair:
+`0 < 1/4` and `Tendsto (fun β => β·gap) atTop (nhds (1/4))`. -/
+theorem continuum_mass_eq_quarter :
+    (0 < 1 / 4 : ℝ) ∧ Filter.Tendsto (fun β : ℝ => β * heatKernelMassGap β) Filter.atTop (nhds (1 / 4 : ℝ)) := by
+  exact ⟨by norm_num, physical_mass_tendsto_sharp⟩
+
 end QM
