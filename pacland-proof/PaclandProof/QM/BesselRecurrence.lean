@@ -309,4 +309,61 @@ theorem integral_sin_nat {n : ℕ} (hn : n ≠ 0) :
   field_simp [show (n : ℝ) ≠ 0 by exact_mod_cast hn]
   ring
 
-end QM
+/-- **The odd sine Weyl moment**: `∫₀^π sin((2m+1)θ)·sin²θ dθ = −4/((2m+1)(2m+3)(2m−1))` for `m ≥ 1`.
+Building block of the block-spin average's character convolution: `sin² = (1 − cos 2θ)/2` and the product-to-sum
+`sin·cos 2θ = (sin((2m+3)θ) + sin((2m−1)θ))/2` reduce it to the basic sine integrals (`integral_sin_nat`). -/
+theorem su2_sin_odd_moment {m : ℕ} (hm : 1 ≤ m) :
+    ∫ θ in (0 : ℝ)..Real.pi, Real.sin ((2 * m + 1 : ℝ) * θ) * (Real.sin θ)^2
+      = -4 / ((2 * m + 1 : ℝ) * (2 * m + 3) * (2 * m - 1)) := by
+  have hsin2 : ∀ θ : ℝ, (Real.sin θ)^2 = (1 - Real.cos (2 * θ)) / 2 := by
+    intro θ
+    rw [Real.sin_sq_eq_half_sub]
+    ring_nf
+  have hcongr : (fun θ : ℝ => Real.sin ((2 * m + 1 : ℝ) * θ) * (Real.sin θ)^2)
+      = fun θ : ℝ => (Real.sin ((2 * m + 1 : ℝ) * θ) - Real.sin ((2 * m + 1 : ℝ) * θ) * Real.cos (2 * θ)) / 2 := by
+    funext θ
+    rw [hsin2 θ]
+    ring
+  have hsin1 : ∫ θ in (0 : ℝ)..Real.pi, Real.sin ((2 * m + 1 : ℝ) * θ) = 2 / (2 * m + 1 : ℝ) := by
+    have h := integral_sin_nat (n := 2 * m + 1) (by omega)
+    have hneg : (-1 : ℝ) ^ (2 * m + 1) = -1 := by
+      exact neg_one_pow_eq_neg_one_iff.mpr (by omega : Odd (2 * m + 1))
+    simpa [hneg] using h
+  have hsincos : ∫ θ in (0 : ℝ)..Real.pi, Real.sin ((2 * m + 1 : ℝ) * θ) * Real.cos (2 * θ)
+      = 1 / (2 * m + 3 : ℝ) + 1 / (2 * m - 1 : ℝ) := by
+    have hprod : ∀ θ : ℝ, Real.sin ((2 * m + 1 : ℝ) * θ) * Real.cos (2 * θ)
+        = (Real.sin ((2 * m + 3 : ℝ) * θ) + Real.sin ((2 * m - 1 : ℝ) * θ)) / 2 := by
+      intro θ
+      have hsum : Real.sin ((2 * m + 1 : ℝ) * θ + 2 * θ) + Real.sin ((2 * m + 1 : ℝ) * θ - 2 * θ)
+          = 2 * (Real.sin ((2 * m + 1 : ℝ) * θ) * Real.cos (2 * θ)) := by
+        nlinarith [Real.sin_add ((2 * m + 1 : ℝ) * θ) (2 * θ), Real.sin_sub ((2 * m + 1 : ℝ) * θ) (2 * θ)]
+      have harg1 : (2 * m + 1 : ℝ) * θ + 2 * θ = (2 * m + 3 : ℝ) * θ := by ring
+      have harg2 : (2 * m + 1 : ℝ) * θ - 2 * θ = (2 * m - 1 : ℝ) * θ := by ring
+      rw [harg1, harg2] at hsum
+      nlinarith [hsum]
+    have h3 : ∫ θ in (0 : ℝ)..Real.pi, Real.sin ((2 * m + 3 : ℝ) * θ) = 2 / (2 * m + 3 : ℝ) := by
+      have h := integral_sin_nat (n := 2 * m + 3) (by omega)
+      have hneg : (-1 : ℝ) ^ (2 * m + 3) = -1 := by
+        exact neg_one_pow_eq_neg_one_iff.mpr (by omega : Odd (2 * m + 3))
+      simpa [hneg] using h
+    have h1 : ∫ θ in (0 : ℝ)..Real.pi, Real.sin ((2 * m - 1 : ℝ) * θ) = 2 / (2 * m - 1 : ℝ) := by
+      have h := integral_sin_nat (n := 2 * m - 1) (by omega : 2 * m - 1 ≠ 0)
+      have hneg : (-1 : ℝ) ^ (2 * m - 1) = -1 := by
+        exact neg_one_pow_eq_neg_one_iff.mpr (by omega : Odd (2 * m - 1))
+      simpa [hneg] using h
+    rw [intervalIntegral.integral_congr (fun θ _ => hprod θ)]
+    rw [intervalIntegral.integral_div]
+    rw [intervalIntegral.integral_add]
+    · rw [h3, h1]
+      ring
+    · exact (by continuity : Continuous (fun θ : ℝ => Real.sin ((2 * m + 3 : ℝ) * θ))).intervalIntegrable 0 Real.pi
+    · exact (by continuity : Continuous (fun θ : ℝ => Real.sin ((2 * m - 1 : ℝ) * θ))).intervalIntegrable 0 Real.pi
+  rw [hcongr]
+  rw [intervalIntegral.integral_div]
+  rw [intervalIntegral.integral_sub]
+  · rw [hsin1, hsincos]
+    field_simp [show (2 * m + 1 : ℝ) ≠ 0 by positivity, show (2 * m + 3 : ℝ) ≠ 0 by positivity, show (2 * m - 1 : ℝ) ≠ 0 by nlinarith [hm]]
+    ring
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.sin ((2 * m + 1 : ℝ) * θ))).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.sin ((2 * m + 1 : ℝ) * θ) * Real.cos (2 * θ))).intervalIntegrable 0 Real.pi
+
