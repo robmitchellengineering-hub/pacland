@@ -1676,4 +1676,55 @@ theorem besselI_sharp_seed :
     nlinarith [hu_poly]
   positivity
 
+/-- **The no-crossing sign**: for `Φ ≥ 1` and `C(Φ) = xΦ³ − 2Φ² − xΦ + 1 ≥ 0`, the total derivative
+`dC/dx = (3xΦ² − 4Φ − x)Φ′ + (Φ³ − Φ)` is negative. Certificate: with `x₀ = (2Φ²−1)/(Φ(Φ²−1))` (the `C = 0`
+lower bound on `x`), `−x·dC/dx = A(x−x₀)² + (2Ax₀−B)(x−x₀) + 1/Φ²` where `A = (Φ²−1)(3Φ²−1)`,
+`B = 2Φ(4Φ²−3)`, and `2Ax₀ − B = 2(2Φ²(Φ²−1)+1)/Φ > 0`, so every term is nonnegative and the constant is
+`> 0`. Hence `dC/dx < 0` on the region `C ≥ 0`. -/
+theorem sharp_cubic_no_crossing_sign {x Φ : ℝ} (hx : 0 < x) (hΦ : 1 ≤ Φ)
+    (hC : 0 ≤ x * Φ ^ 3 - 2 * Φ ^ 2 - x * Φ + 1) :
+    (3 * x * Φ ^ 2 - 4 * Φ - x) * (1 + Φ / x - Φ ^ 2) + (Φ ^ 3 - Φ) < 0 := by
+  have hΦpos : 0 < Φ := lt_of_lt_of_le (by norm_num : 0 < (1 : ℝ)) hΦ
+  have hΦsq : 0 < Φ ^ 2 - 1 := by nlinarith [sq_lt_sq (show 1 < Φ by nlinarith)]
+  have h3 : 0 < 3 * Φ ^ 2 - 1 := by nlinarith
+  -- dC/dx * x = -[x^2(Φ^2-1)(3Φ^2-1) - 2Φx(4Φ^2-3) + 4Φ^2]
+  have hxlower : (2 : ℝ) * Φ ^ 2 - 1 ≤ x * Φ * (Φ ^ 2 - 1) := by nlinarith [hC]
+  -- the Taylor certificate: -num = A(x-x0)^2 + (2Ax0-B)(x-x0) + 1/Φ^2
+  have hcert : 0 < x ^ 2 * (Φ ^ 2 - 1) * (3 * Φ ^ 2 - 1) - 2 * Φ * x * (4 * Φ ^ 2 - 3) + 4 * Φ ^ 2 := by
+    -- = A(x-x0)^2 + (2Ax0-B)(x-x0) + 1/Φ^2, all nonneg with constant > 0
+    -- substitute: use nlinarith with hxlower and the identities
+    have hmono : 0 < 2 * ((Φ ^ 2 - 1) * (3 * Φ ^ 2 - 1)) * ((2 * Φ ^ 2 - 1) / (Φ * (Φ ^ 2 - 1))) - 2 * Φ * (4 * Φ ^ 2 - 3) := by
+      field_simp [hΦpos, ne_of_gt hΦsq]
+      nlinarith [hΦ, sq_nonneg Φ]
+    have hnonneg : 0 ≤ x * Φ * (Φ ^ 2 - 1) - (2 * Φ ^ 2 - 1) := by nlinarith [hxlower]
+    -- rewrite -num in terms of the Taylor pieces
+    have hrewrite : x ^ 2 * (Φ ^ 2 - 1) * (3 * Φ ^ 2 - 1) - 2 * Φ * x * (4 * Φ ^ 2 - 3) + 4 * Φ ^ 2 =
+        1 / Φ ^ 2 + (2 * ((Φ ^ 2 - 1) * (3 * Φ ^ 2 - 1)) * ((2 * Φ ^ 2 - 1) / (Φ * (Φ ^ 2 - 1))) - 2 * Φ * (4 * Φ ^ 2 - 3)) *
+          (x - (2 * Φ ^ 2 - 1) / (Φ * (Φ ^ 2 - 1))) + ((Φ ^ 2 - 1) * (3 * Φ ^ 2 - 1)) * (x - (2 * Φ ^ 2 - 1) / (Φ * (Φ ^ 2 - 1))) ^ 2 := by
+      field_simp [hΦpos, ne_of_gt hΦsq]
+      ring
+    rw [hrewrite]
+    have hxdiff : 0 ≤ x - (2 * Φ ^ 2 - 1) / (Φ * (Φ ^ 2 - 1)) := by
+      -- from x >= x0
+      rw [← le_div_iff₀]
+      · field_simp [hΦpos, ne_of_gt hΦsq]; nlinarith [hxlower]
+      · positivity
+    have hterm2 : 0 ≤ (2 * ((Φ ^ 2 - 1) * (3 * Φ ^ 2 - 1)) * ((2 * Φ ^ 2 - 1) / (Φ * (Φ ^ 2 - 1))) - 2 * Φ * (4 * Φ ^ 2 - 3)) * (x - (2 * Φ ^ 2 - 1) / (Φ * (Φ ^ 2 - 1))) :=
+      mul_nonneg (le_of_lt hmono) hxdiff
+    have hterm3 : 0 ≤ ((Φ ^ 2 - 1) * (3 * Φ ^ 2 - 1)) * (x - (2 * Φ ^ 2 - 1) / (Φ * (Φ ^ 2 - 1))) ^ 2 :=
+      mul_nonneg (mul_nonneg (le_of_lt hΦsq) (le_of_lt h3)) (sq_nonneg _)
+    have hconst : 0 < 1 / Φ ^ 2 := one_div_pos.mpr (sq_pos_of_ne_zero (ne_of_gt hΦpos))
+    nlinarith [hterm2, hterm3, hconst]
+  -- dC/dx = -num/x < 0
+  have hnum : (3 * x * Φ ^ 2 - 4 * Φ - x) * (1 + Φ / x - Φ ^ 2) + (Φ ^ 3 - Φ) =
+      -(x ^ 2 * (Φ ^ 2 - 1) * (3 * Φ ^ 2 - 1) - 2 * Φ * x * (4 * Φ ^ 2 - 3) + 4 * Φ ^ 2) / x := by
+    field_simp [ne_of_gt hx]
+    ring
+  rw [hnum]
+  have hneg : -(x ^ 2 * (Φ ^ 2 - 1) * (3 * Φ ^ 2 - 1) - 2 * Φ * x * (4 * Φ ^ 2 - 3) + 4 * Φ ^ 2) / x < 0 := by
+    have hnumpos := hcert
+    rw [div_neg_eq_neg_div]
+    exact div_neg_of_neg_of_pos (neg_neg_of_pos hnumpos) hx
+  exact hneg
+
 end QM
