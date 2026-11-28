@@ -1409,4 +1409,45 @@ theorem su2_direction_moment_x2x3_zero :
         ring
       rw [h]; simp)))]
 
+/-- **The trace form of the general pseudoreality (unnormalized)**: `∫∫∫ Tr(V·B·V)·sin²θ₁·sin θ₂ = −π²·Tr(B)`.
+The scalar coefficient `−π²·Tr(B)` (`su2_sq_scalar_nested`) plus the odd `2i·x₀·Tr(X·B)` terms (`0` via the direction
+moments). Normalized by `(1/(2π²))` this is `∫Tr(U₂BU₂) dU₂ = −Tr(B)/2`. -/
+theorem su2_trace_conj_integral (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * B * su2SphereQuaternion θ₁ θ₂ φ) * (Real.sin θ₁)^2 * Real.sin θ₂
+      = -(Real.pi ^ 2 : ℂ) * Matrix.trace B := by
+  have hpoint : ∀ θ₁ θ₂ φ, Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * B * su2SphereQuaternion θ₁ θ₂ φ) * (Real.sin θ₁)^2 * Real.sin θ₂
+      = (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) * Matrix.trace B * (Real.sin θ₁)^2 * Real.sin θ₂
+        + (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * ((Real.cos θ₂ : ℂ) * Matrix.trace (su2Pauli1 * B) + (Real.sin θ₂ * Real.cos φ : ℝ) * Matrix.trace (su2Pauli2 * B) + (Real.sin θ₂ * Real.sin φ : ℝ) * Matrix.trace (su2Pauli3 * B)) * (Real.sin θ₁)^2 * Real.sin θ₂ := by
+    intro θ₁ θ₂ φ
+    unfold su2SphereQuaternion
+    rw [su2_quaternion_conj_trace]
+    rw [su2_pauli_vec_trace_mul]
+    rw [su2_sphere_norm_sq θ₁ θ₂ φ]
+    ring_nf
+    simp [Complex.ofReal_mul, Complex.ofReal_add]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => intervalIntegral.integral_congr (fun φ _ => hpoint θ₁ θ₂ φ)))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_add))]
+  · -- scalar + odd at the φ level
+    rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+      intervalIntegral.integral_const_mul))]
+    rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_add)]
+    · rw [intervalIntegral.integral_add]
+      · congr 1
+        · exact su2_sq_scalar_nested
+        · -- 2i·cos·sin·(cos θ₂·Tr(σ₁·B) + sin θ₂ cos φ·Tr(σ₂·B) + sin θ₂ sin φ·Tr(σ₃·B))·sin²θ₁ sin θ₂ = 0
+          rw [show (fun θ₁ => ∫ θ₂, ∫ φ, (2:ℂ)·I·(cos:ℂ)·(sin:ℂ)·((cos θ₂:ℂ)·Tr(σ₁·B) + (sin θ₂ cos φ:ℝ)·Tr(σ₂·B) + (sin θ₂ sin φ:ℝ)·Tr(σ₃·B))·(sin θ₁)^2·sin θ₂) = fun θ₁ => (2:ℂ)·I·Tr(σ₁·B)·(cos θ₁:ℂ)·(sin θ₁:ℂ)·(sin θ₁)^2·∫ θ₂, ∫ φ, cos θ₂·sin θ₂ + (2:ℂ)·I·Tr(σ₂·B)·(cos θ₁:ℂ)·(sin θ₁:ℂ)·(sin θ₁)^2·∫ θ₂, ∫ φ, (sin θ₂)^2·cos φ + (2:ℂ)·I·Tr(σ₃·B)·(cos θ₁:ℂ)·(sin θ₁:ℂ)·(sin θ₁)^2·∫ θ₂, ∫ φ, (sin θ₂)^2·sin φ by
+            funext θ₁; congr 1; funext θ₂; congr 1; funext φ; ring_nf]
+          rw [show (fun θ₁ => (2:ℂ)·I·Tr(σ₁·B)·(cos θ₁:ℂ)·(sin θ₁:ℂ)·(sin θ₁)^2·∫ θ₂, ∫ φ, cos θ₂·sin θ₂ + (2:ℂ)·I·Tr(σ₂·B)·(cos θ₁:ℂ)·(sin θ₁:ℂ)·(sin θ₁)^2·∫ θ₂, ∫ φ, (sin θ₂)^2·cos φ + (2:ℂ)·I·Tr(σ₃·B)·(cos θ₁:ℂ)·(sin θ₁:ℂ)·(sin θ₁)^2·∫ θ₂, ∫ φ, (sin θ₂)^2·sin φ) = fun θ₁ => 0 by
+            funext θ₁; rw [su2_direction_moment_u1]; rw [su2_direction_moment_u2]; rw [su2_direction_moment_u3]; ring]
+          simp
+      · exact (by continuity : Continuous (fun θ₁ : ℝ => (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) * Matrix.trace B * (Real.sin θ₁)^2)).intervalIntegrable 0 Real.pi
+      · exact (by continuity : Continuous (fun θ₁ : ℝ => (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * (Real.sin θ₁)^2)).intervalIntegrable 0 Real.pi
+    · exact (by continuity : Continuous (fun θ₂ : ℝ => (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) * Matrix.trace B * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+    · exact (by continuity : Continuous (fun θ₂ : ℝ => (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * ((Real.cos θ₂ : ℂ) * Matrix.trace (su2Pauli1 * B)) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ₂ : ℝ => (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) * Matrix.trace B * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ₂ : ℝ => (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * ((Real.cos θ₂ : ℂ) * Matrix.trace (su2Pauli1 * B) + (Real.sin θ₂ * Real.cos φ : ℝ) * Matrix.trace (su2Pauli2 * B) + (Real.sin θ₂ * Real.sin φ : ℝ) * Matrix.trace (su2Pauli3 * B)) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
+
 

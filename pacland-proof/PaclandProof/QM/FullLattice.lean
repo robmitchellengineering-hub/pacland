@@ -685,4 +685,14 @@ theorem su2_quaternion_conj_trace (x₀ : ℝ) (x : Fin 3 → ℝ) (B : Matrix (
   rw [Matrix.trace_mul_comm]
   ring
 
+/-- **The Pauli-vector trace linearity**: `Tr((x⃗·σ⃗)·B) = Σᵢ xᵢ·Tr(σᵢ·B)`. The scalar decomposition for the trace form
+`∫Tr(U₂BU₂) = −Tr(B)/2`. -/
+theorem su2_pauli_vec_trace_mul (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    Matrix.trace (su2PauliVec x * B) = (x 0 : ℂ) * Matrix.trace (su2Pauli1 * B) + (x 1 : ℂ) * Matrix.trace (su2Pauli2 * B) + (x 2 : ℂ) * Matrix.trace (su2Pauli3 * B) := by
+  unfold su2PauliVec
+  rw [add_mul, add_mul]
+  rw [Matrix.smul_mul, Matrix.smul_mul, Matrix.smul_mul]
+  rw [Matrix.trace_add, Matrix.trace_add, Matrix.trace_smul, Matrix.trace_smul, Matrix.trace_smul]
+  ring
+
 end QM
