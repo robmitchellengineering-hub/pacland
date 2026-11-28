@@ -1443,4 +1443,41 @@ theorem besselI_zero_mul_two_eq_series (x : ℝ) (hx : 0 ≤ x) :
             ring_nf
   rw [hanti]
 
+/-- **The Turán series**: `I₁(x)² − I₀(x)I₂(x) = Σₙ (x/2)^{2n+2}·2(2n+1)!/(n!²(n+2)!²)` — the difference of
+the two product formulas `besselI_one_sq_eq_series` and `besselI_zero_mul_two_eq_series`, with every
+coefficient manifestly positive. This is the positive ingredient in `E = I₀(I₁²−I₀I₂) − I₁³/x`. -/
+theorem besselI_turan_series (x : ℝ) (hx : 0 ≤ x) :
+    besselI 1 x ^ 2 - besselI 0 x * besselI 2 x =
+      ∑' n : ℕ, (x / 2) ^ (2 * n + 2) * (2 * ((2 * n + 1).factorial : ℝ)) /
+        ((n.factorial : ℝ) ^ 2 * ((n + 2).factorial : ℝ) ^ 2) := by
+  rw [besselI_one_sq_eq_series x hx, besselI_zero_mul_two_eq_series x hx]
+  have h1 : Summable (fun n : ℕ => (x / 2) ^ (2 * n + 2) *
+      ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) * ((n + 2).factorial : ℝ) * ((n + 1).factorial : ℝ) ^ 2)) := by
+    rw [← besselI_one_sq_eq_series x hx]
+    exact (besselI 1 x ^ 2).summable_iff.mpr (by simp)
+  have h2 : Summable (fun n : ℕ => (x / 2) ^ (2 * n + 2) *
+      ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) ^ 2 * ((n + 2).factorial : ℝ) ^ 2)) := by
+    rw [← besselI_zero_mul_two_eq_series x hx]
+    exact (besselI 0 x * besselI 2 x).summable_iff.mpr (by simp)
+  rw [← tsum_sub]
+  · apply tsum_congr
+    intro n
+    -- coefficient difference = 2(2n+1)!/(n!^2 (n+2)!^2)
+    have hdiff : (x / 2) ^ (2 * n + 2) *
+        ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) * ((n + 2).factorial : ℝ) * ((n + 1).factorial : ℝ) ^ 2) -
+        (x / 2) ^ (2 * n + 2) * ((2 * n + 2).factorial : ℝ) / ((n.factorial : ℝ) ^ 2 * ((n + 2).factorial : ℝ) ^ 2) =
+      (x / 2) ^ (2 * n + 2) * (2 * ((2 * n + 1).factorial : ℝ)) /
+        ((n.factorial : ℝ) ^ 2 * ((n + 2).factorial : ℝ) ^ 2) := by
+      have hfac : ((n + 1).factorial : ℝ) = (n + 1) * (n.factorial : ℝ) := by
+        norm_num [Nat.factorial_succ]
+      have hfac2 : ((2 * n + 2).factorial : ℝ) = (2 * n + 2) * ((2 * n + 1).factorial : ℝ) := by
+        norm_num [Nat.factorial_succ]
+      have h2n : (2 * n + 2 : ℝ) = 2 * (n + 1) := by ring
+      rw [hfac, hfac2]
+      field_simp [show (n.factorial : ℝ) ≠ 0 by exact_mod_cast (Nat.factorial_ne_zero n),
+        show ((n + 2).factorial : ℝ) ≠ 0 by exact_mod_cast (Nat.factorial_ne_zero (n + 2))]
+      ring_nf
+    rw [hdiff]
+  · exact h1.sub h2
+
 end QM
