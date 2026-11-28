@@ -280,4 +280,33 @@ theorem su2_cos_two_moment :
   · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (2 * θ))).intervalIntegrable 0 Real.pi
   · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (2 * θ) ^ 2)).intervalIntegrable 0 Real.pi
 
+/-- **The basic sine integral**: `∫₀^π sin(n·θ) dθ = (1 − (−1)ⁿ)/n` for `n ≠ 0`. The antiderivative of
+`sin(n·θ)` is `−cos(n·θ)/n` (the chain rule), so the FTC gives `(cos 0 − cos(nπ))/n = (1 − (−1)ⁿ)/n`.
+Building block for the odd sine Weyl moments. -/
+theorem integral_sin_nat {n : ℕ} (hn : n ≠ 0) :
+    ∫ θ in (0 : ℝ)..Real.pi, Real.sin ((n : ℝ) * θ) = (1 - (-1 : ℝ) ^ n) / n := by
+  let f : ℝ → ℝ := fun t => -Real.cos ((n : ℝ) * t) / (n : ℝ)
+  have hderiv : ∀ θ : ℝ, HasDerivAt f (Real.sin ((n : ℝ) * θ)) θ := by
+    intro θ
+    have hcos : HasDerivAt (fun t : ℝ => Real.cos ((n : ℝ) * t)) (-((n : ℝ) * Real.sin ((n : ℝ) * θ))) θ := by
+      simpa [mul_comm] using (Real.hasDerivAt_cos ((n : ℝ) * θ)).comp θ (hasDerivAt_const_mul (n : ℝ) θ (hasDerivAt_id θ))
+    have hneg := hcos.const_mul (-(1 / (n : ℝ)))
+    convert hneg using 1
+    · ext t
+      dsimp [f]
+      ring
+    · ring_nf
+      rw [show (n : ℝ) ≠ 0 by exact_mod_cast hn]
+      ring
+  have hcont : ContinuousOn f (Set.Icc (0 : ℝ) Real.pi) := by
+    exact (by continuity : Continuous f).continuousOn
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le (le_of_lt Real.pi_pos) hcont (fun θ hθ => hderiv θ)]
+  dsimp [f]
+  have hcos0 : Real.cos ((n : ℝ) * 0) = 1 := by norm_num
+  have hcospi : Real.cos ((n : ℝ) * Real.pi) = (-1 : ℝ) ^ n := by
+    rw [Real.cos_nat_mul_pi]
+  rw [hcos0, hcospi]
+  field_simp [show (n : ℝ) ≠ 0 by exact_mod_cast hn]
+  ring
+
 end QM
