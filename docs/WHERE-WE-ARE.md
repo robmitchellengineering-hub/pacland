@@ -6,9 +6,9 @@ work, so we do not re-derive or over-claim.
 ## The one-liner
 
 > The **lattice mass gap is proved** (sharp `A = 1/2`), the **gap survives** the continuum limit
-> (`Δ_phys > 0`), and the **sharp value `β·gap → 1/4` is reduced to one verified-true irreducible
-> inequality** — but the **continuum existence on ℝ⁴ is open**, and that sharp cubic is a standalone
-> hard result, not yet kernel-checked.
+> (`Δ_phys > 0`), and the **sharp cutoff-independence `β·gap → 1/4` is PROVED** (the irreducible cubic
+> `C(Φ) = xΦ³ − 2Φ² − xΦ + 1 ≤ 0` is now a kernel-checked theorem). The **continuum existence on ℝ⁴
+> is open** — that is the remaining Clay half.
 
 ## The Clay problem is NOT solved
 
@@ -29,18 +29,17 @@ the open half. Do not claim otherwise.
    formulas `I₁²`/`I₀I₂`, Turán series + inequality, `I₂′` derivative, and the double-ratio
    cubic-nullcline ODE `W′ = 2x·C(Φ)/(Φ²(Φx−2)²)`.
 
-## What is reduced but NOT proved
+## What is PROVED (the sharp bound, 2026-11-28)
 
-The sharp `β·gap → 1/4` (full 't Hooft cutoff-independence) reduces to the single irreducible
-inequality
+The sharp `β·gap → 1/4` is now **proved kernel-checked** (no `sorry`). The single inequality
+`C(Φ) = xΦ³ − 2Φ² − xΦ + 1 ≤ 0` (Φ = I₀/I₁) is closed by a **no-crossing on the cubic nullcline**:
 
-> `C(Φ) = xΦ³ − 2Φ² − xΦ + 1 < 0`  ⟺  `2I₀²I₂ < I₁²(I₀+I₂)`  ⟺  `I₀(I₁²−I₀I₂) > I₁³/x`
-
-This is the second-order **Simpson–Spector / Segura** Bessel bound. It is **verified true**
-(coefficients nonnegative through order 22) but resists ~18 routes (no-crossing, `x·s` monotonicity,
-coefficient closed-form, monotonicity-in-`r`, factorization, rational relaxation, continued fraction,
-leading-term, two termwise-matchings, pointwise recurrence, double-ratio ODE, Bakry–Émery curvature —
-the last restates the Riccati rather than discharging it).
+- **seed** `besselI_sharp_seed` — `C(Φ(1)) < 0`, from `I₂(1) ≤ 3/22` and `I₁(1) ≥ 9/16` (series bounds).
+- **sign** `sharp_cubic_no_crossing_sign` — `dC/dx < 0` on `C ≥ 0`, via a Taylor certificate at
+  `x₀ = (2Φ²−1)/(Φ(Φ²−1))`.
+- **assembly** `sharp_cubic_nonpos` — `no_crossing_barrier_from` forces `C(Φ) ≤ 0` for `x ≥ 1`.
+- **convergence** `physical_mass_tendsto_sharp` — `Tendsto (fun β => β·heatKernelMassGap β) atTop (nhds 1/4)`,
+  the squeeze between `β/(4β+1)` (Amos) and `1/4 + 1/(8β)` (the sharp cubic, via `sharp_gap_upper`).
 
 ## What is genuinely open (not attempted)
 
@@ -50,8 +49,9 @@ the last restates the Riccati rather than discharging it).
   double-ratio *monotonicity* lemma, or total-positivity/Pólya-frequency, or the `K`-Bessel
   Wronskian route).
 
-## The next real step (if resuming)
+## The next real step (the open Clay half)
 
-Transcribe the Simpson–Spector double-ratio **monotonicity** proof (we already have the ODE
-`bessel_double_ratio_deriv`; the missing piece is the monotonicity argument that discharges
-`C(Φ) < 0`), or move to the `a → 0` correlation-function limit.
+The mass-gap side is now complete: lattice gap (sharp `A = 1/2`), gap-survival `Δ_phys > 0`, and the
+sharp cutoff-independence `β·gap → 1/4`. The remaining Clay work is the **continuum existence on ℝ⁴**:
+the `a → 0` correlation-function limit (small/large-field region decomposition / Balaban RG, a→0 with
+asymptotic freedom, OS→Wightman reconstruction).
