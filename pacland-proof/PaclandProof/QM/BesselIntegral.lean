@@ -1480,4 +1480,25 @@ theorem besselI_turan_series (x : ℝ) (hx : 0 ≤ x) :
     rw [hdiff]
   · exact h1.sub h2
 
+/-- **The Turán inequality**: `I₁(x)² > I₀(x)I₂(x)` for `x > 0` — the positivity of the Turán series
+`besselI_turan_series` (every coefficient positive, the leading term being `x²/8`). This is the positive
+ingredient `T = I₁²−I₀I₂` in the sharp bound `E = I₀T − I₁³/x`. -/
+theorem besselI_turan_pos (x : ℝ) (hx : 0 < x) :
+    0 < besselI 1 x ^ 2 - besselI 0 x * besselI 2 x := by
+  rw [besselI_turan_series x (le_of_lt hx)]
+  have hlead : 0 < (x / 2) ^ (2 * 0 + 2) * (2 * ((2 * 0 + 1).factorial : ℝ)) /
+      ((0.factorial : ℝ) ^ 2 * ((0 + 2).factorial : ℝ) ^ 2) := by
+    norm_num
+    have hx2 : 0 < (x / 2) ^ 2 := sq_pos_of_ne_zero (div_ne_zero (ne_of_gt hx) (by norm_num))
+    positivity
+  have hnonneg : ∀ n : ℕ, 0 ≤ (x / 2) ^ (2 * n + 2) * (2 * ((2 * n + 1).factorial : ℝ)) /
+      ((n.factorial : ℝ) ^ 2 * ((n + 2).factorial : ℝ) ^ 2) := by
+    intro n
+    positivity
+  have hsum : Summable (fun n : ℕ => (x / 2) ^ (2 * n + 2) * (2 * ((2 * n + 1).factorial : ℝ)) /
+      ((n.factorial : ℝ) ^ 2 * ((n + 2).factorial : ℝ) ^ 2)) := by
+    rw [← besselI_turan_series x (le_of_lt hx)]
+    exact (besselI 1 x ^ 2 - besselI 0 x * besselI 2 x).summable_iff.mpr (by simp)
+  exact tsum_pos hnonneg hsum hlead
+
 end QM
