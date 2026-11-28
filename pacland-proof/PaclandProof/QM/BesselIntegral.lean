@@ -990,4 +990,21 @@ theorem su2_mayer_series_converges (β : ℝ) (hβ : 0 < β) (activity : ℕ →
       (fun n => by simpa [Real.norm_eq_abs] using hφ n)
   exact ⟨∑' n, activity n, hsum.hasSum.tendsto_sum_nat⟩
 
+/-- **The bare lattice gap vanishes in the continuum limit**: `1 − I₁(2β)/I₀(2β) → 0` as `β → ∞`.
+This is the expected physics — the *bare* lattice gap is not the physical mass; the physical mass is the
+RG-invariant scale (the 't Hooft cutoff-independence), a *different* scale from the bare gap. Squeeze:
+`0 ≤ heatKernelMassGap β ≤ (1/2)/β` (via `heat_kernel_spectral_gap` and `bessel_activity_le_one_div_beta (2β)`),
+and both bounds tend to 0. -/
+theorem heat_kernel_gap_tendsto_zero :
+    Filter.Tendsto (fun β : ℝ => heatKernelMassGap β) Filter.atTop (nhds 0) := by
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds ?_ ?_ ?_
+  · simpa using (tendsto_inv_atTop_zero.const_mul (1 / 2 : ℝ))
+  · filter_upwards [eventually_atTop.mpr ⟨1, by intro β hβ; linarith⟩] with β hβ
+    exact le_of_lt (heat_kernel_spectral_gap β hβ)
+  · filter_upwards [eventually_atTop.mpr ⟨1, by intro β hβ; linarith⟩] with β hβ
+    calc
+      heatKernelMassGap β ≤ 1 / (2 * β) := by
+        simpa [heatKernelMassGap] using bessel_activity_le_one_div_beta (2 * β) (by positivity : 0 < 2 * β)
+      _ = (1 / 2) / β := by field_simp [hβ.ne']
+
 end QM
