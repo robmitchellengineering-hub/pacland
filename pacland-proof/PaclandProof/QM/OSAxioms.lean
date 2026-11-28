@@ -345,4 +345,30 @@ theorem mass_gap_limit_pos {Δ : ℕ → ℝ} {Δlim : ℝ} {Δ₀ : ℝ}
   have hge : Δ₀ ≤ Δlim := ge_of_tendsto hlim (Filter.Eventually.of_forall hunif)
   exact lt_of_lt_of_le h₀ hge
 
+/-- **The OS→Wightman reconstruction is closed under the a→0 limit**: if each scale's correlation functions
+satisfy the Wightman axioms W0 (Hilbert positivity), W1 (covariance), W3 (locality), W4 (vacuum) and they
+converge pointwise, then the limit satisfies them too. This is the honest assembly of the four closures
+(`posdef_of_tendsto`, `wightman_covariance_limit`, `wightman_locality_limit`, `wightman_vacuum_limit`) —
+the finite-lattice reconstruction `os_wightman_reconstruction` carries through to the continuum. -/
+theorem wightman_reconstruction_limit {α : Type*} [Fintype α]
+    (inner : ℕ → α → α → ℝ) (innerLim : α → α → ℝ)
+    (S : ℕ → ℝ → ℝ → ℝ) (Slim : ℝ → ℝ → ℝ)
+    (K : ℕ → α → α → ℝ) (Klim : α → α → ℝ)
+    (hinner : ∀ f g, Filter.Tendsto (fun n => inner n f g) Filter.atTop (nhds (innerLim f g)))
+    (hS : ∀ x y, Filter.Tendsto (fun n => S n x y) Filter.atTop (nhds (Slim x y)))
+    (hK : ∀ x y, Filter.Tendsto (fun n => K n x y) Filter.atTop (nhds (Klim x y)))
+    (hW : ∀ n, WightmanHilbert (inner n) ∧ WightmanCovariance (S n) ∧ WightmanLocality (K n) ∧ WightmanVacuum (K n)) :
+    WightmanHilbert innerLim ∧ WightmanCovariance Slim ∧ WightmanLocality Klim ∧ WightmanVacuum Klim := by
+  have hHilbert : WightmanHilbert innerLim := by
+    intro f
+    have hlim' : Filter.Tendsto (fun n => inner n f f) Filter.atTop (nhds (innerLim f f)) := hinner f f
+    exact ge_of_tendsto hlim' (Filter.Eventually.of_forall (fun n => (hW n).1 f))
+  have hCov : WightmanCovariance Slim :=
+    wightman_covariance_limit S Slim hS (fun n => (hW n).2.1)
+  have hLoc : WightmanLocality Klim :=
+    wightman_locality_limit K Klim hK (fun n => (hW n).2.2.1)
+  have hVac : WightmanVacuum Klim :=
+    wightman_vacuum_limit K Klim hK (fun n => (hW n).2.2.2)
+  exact ⟨hHilbert, hCov, hLoc, hVac⟩
+
 end QM
