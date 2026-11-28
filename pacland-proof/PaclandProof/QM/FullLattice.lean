@@ -537,4 +537,18 @@ theorem su2_quaternion_sq_trace (x₀ : ℝ) (x : Fin 3 → ℝ) :
 
 
 
+/-- **The S² direction normalization**: `cos²θ₂ + sin²θ₂·cos²φ + sin²θ₂·sin²φ = 1` — the unit-length condition
+of the direction vector `u = (cos θ₂, sin θ₂ cos φ, sin θ₂ sin φ)`, via `sin²+cos² = 1` twice. The key that makes
+`|x⃗|² = sin²θ₁` in the quaternion square's scalar coefficient. -/
+theorem su2_direction_norm (θ₂ φ : ℝ) :
+    (Real.cos θ₂)^2 + (Real.sin θ₂)^2 * (Real.cos φ)^2 + (Real.sin θ₂)^2 * (Real.sin φ)^2 = 1 := by
+  nlinarith [Real.sin_sq_add_cos_sq θ₂, Real.sin_sq_add_cos_sq φ]
+
+/-- **The S³ direction squared norm**: `|x⃗|² = sin²θ₁` for the quaternion coordinates `x⃗ = sin θ₁·u` (the unit
+direction `u`). Via `su2_direction_norm`. The key reduction in the quaternion square's scalar coefficient. -/
+theorem su2_sphere_norm_sq (θ₁ θ₂ φ : ℝ) :
+    (Real.sin θ₁ * Real.cos θ₂)^2 + (Real.sin θ₁ * Real.sin θ₂ * Real.cos φ)^2 + (Real.sin θ₁ * Real.sin θ₂ * Real.sin φ)^2 = (Real.sin θ₁)^2 := by
+  ring_nf
+  nlinarith [su2_direction_norm θ₂ φ]
+
 end QM
