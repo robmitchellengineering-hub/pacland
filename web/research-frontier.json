@@ -279,7 +279,9 @@
     "heat_kernel_gap_exp_bound",
     "heat_kernel_spectral_gap",
     "heat_kernel_radius_contraction",
-    "heat_kernel_mass_gap_uniform"
+    "heat_kernel_mass_gap_uniform",
+    "su2_sphere_sq_integral",
+    "su2_char_conv_n1"
   ],
   "to_establish": "The remaining piece is the continuum reconstruction: discharge the existence + spectral-convergence hypotheses of `continuum_mass_gap` / `clay_mass_gap_of_bounded_antitone_uniform` (the OS→Wightman reconstruction, scaffolded in OSAxioms.lean). The lattice half is now proved — animals bound, block-spin contraction, the hΘ measure↔kernel connection, and the heat-kernel spectral identification λ₁ = I₁/I₀.",
   "equivalence_collapse": {
