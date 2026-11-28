@@ -81,8 +81,15 @@ gauge measure (Balaban's multiscale RG) and the a→0 convergence of the FULL ga
 Jacobi–Anger moment (`besselI_eq_integral_general`), the general recurrence (`bessel_recurrence_general`), the
 Weyl character coefficient (`weyl_character_coefficient`), and the termwise differentiation
 (`hasDerivAt_tsum` + `besselI_mul_succ_summable`). This is the symmetric (class-function) character expansion of
-the SU(2) heat kernel — the block-spin RG step's clean coupling-advance identity. The remaining open step is the
-block-spin average's coupling advance (the SU(2) convolution theorem) and the multiscale induction.
+the SU(2) heat kernel — the block-spin RG step's clean coupling-advance identity.
+
+**Two-plaquette block-spin primitives + the trace identity (32 rungs).** The single-link block-spin average is
+Haar-trivial (constant), so the coupling advance comes from the odd link in TWO plaquettes. Landed:
+`su2_char_conv_one` (torus-diagonal n=1 convolution), `cos_phi_orthogonality` (the φ-integration primitive), and
+`su2_trace_identity` (Tr(UV) + Tr(U⁻¹V) = Tr(U)·Tr(V) for det U = 1, via `Matrix.inv_def` + the 2×2 adjugate
+`adj(U) = Tr(U)·I − U`). The trace identity is the key for the correct n=1 convolution
+`∫ χ₁(U₂A)χ₁(U₂B) dU₂ = χ₁(AB⁻¹)/2`. The remaining open step is the effective-plaquette weight
+`e^(x′·Tr AB⁻¹)` (the coupling advance `x′ = x²·(…)`) and the multiscale induction.
 
 ## The next real step (the open Clay half)
 
