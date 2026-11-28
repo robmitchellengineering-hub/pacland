@@ -1676,4 +1676,42 @@ theorem su2_conj_integral (B : Matrix (Fin 2) (Fin 2) ℂ) :
       fin_cases i <;> fin_cases j <;> simp [Matrix.sub_apply, Matrix.smul_apply, Matrix.trace, Matrix.one_apply_eq]
       <;> ring
 
+/-- `∫₀^π cos (2·θ) = 0` (half-period). -/
+theorem integral_cos_two_half_period_zero : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (2 * θ) = 0 := by
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le (le_of_lt Real.pi_pos) (by continuity)
+    (fun θ _ => by
+      have h : HasDerivAt (fun t : ℝ => Real.sin (2 * t) / 2) (Real.cos (2 * θ)) θ := by
+        simpa using ((Real.hasDerivAt_sin (2 * θ)).comp θ (hasDerivAt_const_mul 2 θ (hasDerivAt_id θ))).const_mul (1 / 2)
+      simpa [one_div] using h)]
+  rw [show Real.sin (2 * Real.pi) = 0 by simpa using (Real.sin_periodic 1 0)]
+  rw [Real.sin_zero]
+  ring
+
+/-- `∫₀^π sin²θ = π/2`. -/
+theorem integral_sin_sq_half : ∫ θ in (0 : ℝ)..Real.pi, (Real.sin θ)^2 = Real.pi / 2 := by
+  rw [intervalIntegral.integral_congr (fun θ _ => by rw [Real.sin_sq]; ring)]
+  rw [intervalIntegral.integral_sub]
+  · rw [intervalIntegral.integral_const]
+    rw [intervalIntegral.integral_const_mul]
+    rw [integral_cos_two_half_period_zero]
+    ring
+  · exact (by continuity : Continuous (fun θ : ℝ => (1 : ℝ) / 2)).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (2 * θ) / 2)).intervalIntegrable 0 Real.pi
+
+/-- **The S³ volume**: `∫∫∫ sin²θ₁·sin θ₂ = 2π²`. -/
+theorem su2_volume_nested :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Real.sin θ₁)^2 * Real.sin θ₂ = 2 * Real.pi ^ 2 := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_const))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => by ring))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_const_mul)]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => by
+    rw [intervalIntegral.integral_const_mul]
+    rw [integral_sin_eq_two]
+    ring)]
+  rw [intervalIntegral.integral_const_mul]
+  rw [integral_sin_sq_half]
+  ring
+
 
