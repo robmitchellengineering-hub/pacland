@@ -759,4 +759,25 @@ theorem su2_sphere_inv_mul_self (θ₁ θ₂ φ : ℝ) :
     (su2SphereQuaternion θ₁ θ₂ φ)⁻¹ * su2SphereQuaternion θ₁ θ₂ φ = 1 := by
   rw [Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr (by rw [su2_sphere_det_one]; norm_num))]
 
+/-- **The conjugated inverse cancellation**: `(U₂A)⁻¹·(U₂B) = A⁻¹·B` (the `U₂⁻¹U₂ = 1` cancels). -/
+theorem su2_sphere_conj_inv (θ₁ θ₂ φ : ℝ) (A B : Matrix (Fin 2) (Fin 2) ℂ) :
+    (su2SphereQuaternion θ₁ θ₂ φ * A)⁻¹ * (su2SphereQuaternion θ₁ θ₂ φ * B) = A⁻¹ * B := by
+  rw [Matrix.mul_inv_rev]
+  rw [Matrix.mul_assoc A⁻¹ (su2SphereQuaternion θ₁ θ₂ φ)⁻¹ (su2SphereQuaternion θ₁ θ₂ φ * B)]
+  rw [← Matrix.mul_assoc (su2SphereQuaternion θ₁ θ₂ φ)⁻¹ (su2SphereQuaternion θ₁ θ₂ φ) B]
+  rw [su2_sphere_inv_mul_self θ₁ θ₂ φ]
+  rw [Matrix.one_mul]
+
+/-- **The pointwise convolution trace identity**: `Tr(U₂A)·Tr(U₂B) = Tr(U₂AU₂B) + Tr(A⁻¹B)` (via
+`su2_trace_identity` with `U = U₂A`, `V = U₂B`, det = 1). -/
+theorem su2_trace_conv_identity (θ₁ θ₂ φ : ℝ) (A B : Matrix (Fin 2) (Fin 2) ℂ) (hA : A.det = 1) :
+    Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A) * Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * B)
+      = Matrix.trace (su2SphereQuaternion θ₁ θ₂ φ * A * su2SphereQuaternion θ₁ θ₂ φ * B) + Matrix.trace (A⁻¹ * B) := by
+  have hdet : (su2SphereQuaternion θ₁ θ₂ φ * A).det = 1 := by
+    rw [Matrix.det_mul, su2_sphere_det_one, hA]
+    ring
+  have h := su2_trace_identity (su2SphereQuaternion θ₁ θ₂ φ * A) (su2SphereQuaternion θ₁ θ₂ φ * B) hdet
+  rw [su2_sphere_conj_inv θ₁ θ₂ φ A B] at h
+  simpa [Matrix.mul_assoc] using h.symm
+
 end QM
