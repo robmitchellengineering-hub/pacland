@@ -491,7 +491,7 @@ CATALOG: dict[str, dict] = {    "chsh": {
         "falsifier": "subsequential-limit ambiguity (uniqueness of the infinite-volume limit NOT proved); no continuum probability measure; no mass gap",
         "oracle": ["external Lean (OpenAI repo, not imported into pacland)"],
         "verdict": "FREE",
-        "tier": "reference",
+        "tier": "conditional",
         "why": "supplies (part of) the hconv input to continuum_mass_gap — but only SUBSEQUENTIALLY (uniqueness of the infinite-volume limit not proved), so it does not by itself feed the carry-through. The mass gap is explicitly NOT claimed. Provisional Gross-committee judgment only; no journal peer review, no Clay ruling. Not imported into pacland (separate Mathlib, incompatible tower).",
     },
 
