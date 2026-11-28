@@ -446,4 +446,14 @@ theorem su2_central_matrix_eq_scalar (M : Matrix (Fin 2) (Fin 2) ℂ)
     simp [Matrix.mul_apply, Fin.sum_univ_two] at h
     exact h.symm
 
+/-- **The trace conjugation invariance**: `Tr(U·C·U⁻¹) = Tr(C)` for `det U = 1` — the trace cyclicity plus
+`U⁻¹·U = I`. This is the pointwise trace half of the Haar invariance that feeds the Schur lemma (making
+`∫ V² dV` central, hence scalar). -/
+theorem su2_trace_conj_invariant (U C : Matrix (Fin 2) (Fin 2) ℂ) (hU : U.det = 1) :
+    Matrix.trace (U * C * U⁻¹) = Matrix.trace C := by
+  rw [Matrix.trace_mul_comm]
+  rw [← Matrix.mul_assoc]
+  rw [Matrix.nonsing_inv_mul U (by simpa [hU] using (isUnit_one : IsUnit (1 : ℂ)))]
+  simp
+
 end QM
