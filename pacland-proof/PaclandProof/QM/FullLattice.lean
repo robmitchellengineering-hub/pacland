@@ -456,4 +456,20 @@ theorem su2_trace_conj_invariant (U C : Matrix (Fin 2) (Fin 2) ℂ) (hU : U.det 
   rw [Matrix.nonsing_inv_mul U (by simpa [hU] using (isUnit_one : IsUnit (1 : ℂ)))]
   simp
 
+/-- **The Schur lemma applied to the pseudoreality**: a central 2×2 matrix with `Tr M = −1` equals `−I/2`.
+Combines `su2_central_matrix_eq_scalar` (`M = c·I`) with `Tr(c·I) = 2c = −1`. This is the matrix-level lift that
+turns the scalar `∫ Tr(V²) = −1` into `∫ V² dV = −I/2` (once the Haar invariance makes `∫ V² dV` central). -/
+theorem su2_central_matrix_trace_neg_one_eq_neg_half (M : Matrix (Fin 2) (Fin 2) ℂ)
+    (hσ₃ : M * !![(1 : ℂ), 0; 0, -1] = !![(1 : ℂ), 0; 0, -1] * M)
+    (hσ₁ : M * !![0, (1 : ℂ); 1, 0] = !![0, (1 : ℂ); 1, 0] * M)
+    (htrace : Matrix.trace M = -1) :
+    M = -(1 / 2 : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
+  rcases su2_central_matrix_eq_scalar M hσ₃ hσ₁ with ⟨c, hc⟩
+  rw [hc] at htrace
+  have h2c : c * 2 = -1 := by
+    simpa [Matrix.trace_smul, Matrix.trace_one] using htrace
+  have hc_eq : c = -(1 / 2 : ℂ) := by
+    linear_combination (1 / 2 : ℂ) * h2c
+  rw [hc, hc_eq]
+
 end QM
