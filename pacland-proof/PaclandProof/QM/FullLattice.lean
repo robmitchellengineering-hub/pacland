@@ -551,4 +551,8 @@ theorem su2_sphere_norm_sq (θ₁ θ₂ φ : ℝ) :
   ring_nf
   nlinarith [su2_direction_norm θ₂ φ]
 
+/-- The `(0,0)` entry of the Pauli vector: `(x⃗·σ⃗)₀₀ = x 2` (only σ₃ contributes to the diagonal). -/
+theorem su2_pauli_vec_entry_00 (x : Fin 3 → ℝ) : (su2PauliVec x) 0 0 = (x 2 : ℂ) := by
+  simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, smul_eq_mul]
+
 end QM
