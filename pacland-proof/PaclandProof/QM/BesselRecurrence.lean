@@ -1450,4 +1450,26 @@ theorem su2_trace_conj_integral (B : Matrix (Fin 2) (Fin 2) ℂ) :
   · exact (by continuity : Continuous (fun θ₂ : ℝ => (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ) * Matrix.trace B * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
   · exact (by continuity : Continuous (fun θ₂ : ℝ => (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * ((Real.cos θ₂ : ℂ) * Matrix.trace (su2Pauli1 * B) + (Real.sin θ₂ * Real.cos φ : ℝ) * Matrix.trace (su2Pauli2 * B) + (Real.sin θ₂ * Real.sin φ : ℝ) * Matrix.trace (su2Pauli3 * B)) * (Real.sin θ₁)^2 * Real.sin θ₂)).intervalIntegrable 0 Real.pi
 
+/-- **The unnormalized `∫x₀²` nested moment**: `∫∫∫ cos²θ₁·sin²θ₁·sin θ₂ = π²/2` (the φ factor `2π`, the θ₂ factor
+`2`, the θ₁ factor `π/8`). The scalar coefficient for the general pseudoreality `∫U₂BU₂ = (B−Tr(B)I)/2`. -/
+theorem su2_x0_sq_nested :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Real.cos θ₁)^2 * (Real.sin θ₁)^2 * Real.sin θ₂ = Real.pi ^ 2 / 2 := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_const_mul))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_const))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => by ring))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => by
+    rw [intervalIntegral.integral_const_mul]
+    rw [integral_sin_eq_two]
+    ring)]
+  rw [intervalIntegral.integral_const_mul]
+  rw [show ∫ θ₁ in (0 : ℝ)..Real.pi, (Real.cos θ₁)^2 * (Real.sin θ₁)^2 = Real.pi / 8 by
+    have h := su2_cos_sq_weyl_moment
+    field_simp at h
+    linarith]
+  field_simp [Real.pi_ne_zero]
+  ring
+
 
