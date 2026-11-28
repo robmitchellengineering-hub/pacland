@@ -472,4 +472,9 @@ theorem su2_central_matrix_trace_neg_one_eq_neg_half (M : Matrix (Fin 2) (Fin 2)
     linear_combination (1 / 2 : ℂ) * h2c
   rw [hc, hc_eq]
 
+/-- **The SU(2) fundamental dimension**: `Tr(I) = 2`. The normalization constant of the Schur-lemma lift
+(`Tr(c·I) = 2c`). -/
+theorem su2_trace_one : Matrix.trace (1 : Matrix (Fin 2) (Fin 2) ℂ) = 2 := by
+  simp [Matrix.trace, Fin.sum_univ_two]
+
 end QM
