@@ -1556,4 +1556,57 @@ theorem bessel_double_ratio_deriv (x : ℝ) (hx : 0 < x) :
     field_simp [hI0, hI1, hI2, hx, ne_of_gt hx]
     ring_nf
 
+/-- **The pointwise bounds for the seed** (`x = 1`): `I₂(1) ≤ 3/22` and `1/48 < I₃(1)`. These come from the
+Bessel series: `1/(k!(k+2)!) ≤ 1/(2·3^k)` makes `I₂(1) ≤ Σ (1/2)^{2k+2}/(2·3^k) = 3/22`, and the leading term
+of `I₃(1)` is `1/48` with the rest positive. Together they give `20·I₃(1) > 5/12 > 3/22 ≥ I₂(1)`. -/
+theorem besselI_two_le_three_div_22 : besselI 2 1 ≤ (3 : ℝ) / 22 := by
+  have hterm : ∀ k : ℕ, (1 / 2 : ℝ) ^ (2 * k + 2) / ((k.factorial : ℝ) * (k + 2).factorial) ≤
+      (1 / 2 : ℝ) ^ (2 * k + 2) / (2 * (3 : ℝ) ^ k) := by
+    intro k
+    have hfac : (2 : ℝ) * (3 : ℝ) ^ k ≤ (k.factorial : ℝ) * (k + 2).factorial := by
+      induction k with
+      | zero => norm_num
+      | succ k ih =>
+          have h1 : (2 : ℝ) * (3 : ℝ) ^ (k + 1) ≤ (3 : ℝ) * ((k.factorial : ℝ) * (k + 2).factorial) := by
+            rw [pow_succ]
+            nlinarith [ih]
+          have h2 : (3 : ℝ) * ((k.factorial : ℝ) * (k + 2).factorial) ≤ ((k + 1).factorial : ℝ) * ((k + 3).factorial : ℝ) := by
+            have hfk1 : ((k + 1).factorial : ℝ) = (k + 1) * (k.factorial : ℝ) := by
+              norm_num [Nat.factorial_succ]
+            have hfk3 : ((k + 3).factorial : ℝ) = (k + 3) * ((k + 2).factorial : ℝ) := by
+              norm_num [Nat.factorial_succ]
+            rw [hfk1, hfk3]
+            have hk : (3 : ℝ) ≤ (k + 1) * (k + 3) := by nlinarith
+            have hmul : (3 : ℝ) * ((k.factorial : ℝ) * (k + 2).factorial) ≤
+                ((k + 1) * (k + 3)) * ((k.factorial : ℝ) * (k + 2).factorial) :=
+              mul_le_mul_of_nonneg_right hk (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _))
+            nlinarith [hmul]
+          exact le_trans h1 h2
+    exact div_le_div_of_nonneg_left (by positivity) (by positivity) hfac
+  have hgeom : (∑' k : ℕ, (1 / 2 : ℝ) ^ (2 * k + 2) / (2 * (3 : ℝ) ^ k)) = (3 : ℝ) / 22 := by
+    have h : (∑' k : ℕ, (1 / 12 : ℝ) ^ k) = (12 : ℝ) / 11 := by
+      rw [← tsum_geometric_of_norm_lt_1]
+      · norm_num
+      · norm_num
+    have h2 : (∑' k : ℕ, (1 / 2 : ℝ) ^ (2 * k + 2) / (2 * (3 : ℝ) ^ k)) = (1 / 8 : ℝ) * (∑' k : ℕ, (1 / 12 : ℝ) ^ k) := by
+      apply tsum_congr
+      intro k
+      have hpow : (1 / 2 : ℝ) ^ (2 * k + 2) = (1 / 4 : ℝ) * (1 / 4 : ℝ) ^ k := by
+        rw [← pow_mul, mul_comm, pow_add]
+        norm_num
+        ring_nf
+      rw [hpow]
+      field_simp
+      ring_nf
+    rw [h2, h]
+    norm_num
+  have hsum : Summable (fun k : ℕ => (1 / 2 : ℝ) ^ (2 * k + 2) / ((k.factorial : ℝ) * (k + 2).factorial)) :=
+    besselI_summable_of_nonneg 2 (by norm_num)
+  rw [besselI]
+  exact le_trans (tsum_le_tsum hterm hsum (by
+      have : Summable (fun k : ℕ => (1 / 2 : ℝ) ^ (2 * k + 2) / (2 * (3 : ℝ) ^ k)) := by
+        have hg : Summable (fun k : ℕ => (1 / 12 : ℝ) ^ k) := summable_geometric_of_norm_lt_1 (by norm_num : |(1/12:ℝ)| < 1)
+        exact hg.mul_left ((1 : ℝ) / 8)
+      exact this)) (by rw [hgeom])
+
 end QM
