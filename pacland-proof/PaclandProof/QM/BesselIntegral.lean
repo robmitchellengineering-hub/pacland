@@ -1727,4 +1727,60 @@ theorem sharp_cubic_no_crossing_sign {x Φ : ℝ} (hx : 0 < x) (hΦ : 1 ≤ Φ)
     exact div_neg_of_neg_of_pos (neg_neg_of_pos hnumpos) hx
   exact hneg
 
+/-- **The sharp cubic holds**: `C(Φ) = xΦ³ − 2Φ² − xΦ + 1 ≤ 0` for `x ≥ 1` (Φ = I₀/I₁), the Simpson–Spector
+second-order bound. The no-crossing: `f(x) = C(Φ(x))` has `f(1) < 0` (the seed `besselI_sharp_seed`) and
+`f ≥ 0 ⟹ f′ < 0` (the sign `sharp_cubic_no_crossing_sign`), so `no_crossing_barrier_from` forces `f ≤ 0`. -/
+theorem sharp_cubic_nonpos (x : ℝ) (hx : 1 ≤ x) :
+    x * (besselI 0 x / besselI 1 x) ^ 3 - 2 * (besselI 0 x / besselI 1 x) ^ 2 - x * (besselI 0 x / besselI 1 x) + 1 ≤ 0 := by
+  let Φ : ℝ → ℝ := fun t => besselI 0 t / besselI 1 t
+  let f : ℝ → ℝ := fun t => t * Φ t ^ 3 - 2 * Φ t ^ 2 - t * Φ t + 1
+  have hf_cont : Continuous f := by
+    dsimp [f, Φ]
+    exact ((continuous_id.mul (bessel_ratio_continuous.pow 3)).sub ((bessel_ratio_continuous.pow 2).const_mul 2)).sub ((continuous_id.mul bessel_ratio_continuous).sub continuous_const)
+  have hf_deriv_explicit : ∀ x, 1 < x → HasDerivAt f
+      (Φ x ^ 3 - Φ x + (3 * x * Φ x ^ 2 - 4 * Φ x - x) * (1 + Φ x / x - Φ x ^ 2)) x := by
+    intro x hx1
+    have hΦ : HasDerivAt Φ (1 + Φ x / x - Φ x ^ 2) x := bessel_ratio_inv_hasDerivAt x (ne_of_gt (lt_trans (by norm_num : 0 < (1 : ℝ)) hx1))
+    dsimp [f]
+    have hΦcu : HasDerivAt (fun t : ℝ => Φ t ^ 3) (3 * Φ x ^ 2 * (1 + Φ x / x - Φ x ^ 2)) x := by
+      simpa [pow_succ] using (hΦ.pow 2).mul hΦ
+    have hΦsq : HasDerivAt (fun t : ℝ => Φ t ^ 2) (2 * Φ x * (1 + Φ x / x - Φ x ^ 2)) x := by
+      simpa [pow_two] using hΦ.mul hΦ
+    have hxΦcu : HasDerivAt (fun t : ℝ => t * Φ t ^ 3) (Φ x ^ 3 + x * (3 * Φ x ^ 2 * (1 + Φ x / x - Φ x ^ 2))) x := by
+      exact (hasDerivAt_id x).mul hΦcu
+    have hxΦ : HasDerivAt (fun t : ℝ => t * Φ t) (Φ x + x * (1 + Φ x / x - Φ x ^ 2)) x := by
+      exact (hasDerivAt_id x).mul hΦ
+    have hfull := (hxΦcu.sub (hΦsq.const_mul 2)).sub (hxΦ.sub (hasDerivAt_const 1 1))
+    convert hfull using 1
+    ring_nf
+  have hf_deriv : ∀ x, 1 < x → HasDerivAt f (deriv f x) x := fun x hx1 =>
+    (hf_deriv_explicit x hx1).congr_deriv (hf_deriv_explicit x hx1).deriv.symm
+  have hsign : ∀ x, 1 < x → 0 ≤ f x → deriv f x < 0 := by
+    intro x hx1 hfnonneg
+    have hΦge : 1 ≤ Φ x := by
+      dsimp [Φ]
+      exact le_of_lt (besselI1_lt_besselI0 (lt_trans (by norm_num : 0 < (1 : ℝ)) hx1))
+    have hdf : deriv f x = Φ x ^ 3 - Φ x + (3 * x * Φ x ^ 2 - 4 * Φ x - x) * (1 + Φ x / x - Φ x ^ 2) :=
+      (hf_deriv_explicit x hx1).deriv
+    rw [hdf]
+    exact sharp_cubic_no_crossing_sign (lt_trans (by norm_num : 0 < (1 : ℝ)) hx1) hΦge (by simpa [f, Φ] using hfnonneg)
+  have hfa : f 1 ≤ 0 := by
+    -- f(1) = C(Φ(1)) = -(D(1)) / (2 I1^3), and D(1) > 0 (besselI_sharp_seed)
+    dsimp [f, Φ]
+    have hrec : besselI 0 1 - besselI 2 1 = (2 : ℝ) * besselI 1 1 := by
+      simpa using bessel_recurrence (x := 1) (by norm_num : 0 < (1 : ℝ))
+    have hD : besselI 1 1 ^ 2 * (besselI 0 1 + besselI 2 1) - 2 * besselI 0 1 ^ 2 * besselI 2 1 =
+        -2 * (besselI 0 1 ^ 3 - 2 * besselI 0 1 ^ 2 * besselI 1 1 - besselI 0 1 * besselI 1 1 ^ 2 + besselI 1 1 ^ 3) := by
+      have hI2 : besselI 2 1 = besselI 0 1 - 2 * besselI 1 1 := by linarith
+      rw [hI2]
+      ring
+    have hseed : 0 < besselI 1 1 ^ 2 * (besselI 0 1 + besselI 2 1) - 2 * besselI 0 1 ^ 2 * besselI 2 1 := besselI_sharp_seed
+    rw [hD] at hseed
+    have hI1pos : 0 < besselI 1 1 := besselI_pos (by norm_num : 0 < (1 : ℝ))
+    field_simp [ne_of_gt hI1pos]
+    nlinarith [hseed]
+  have hbar : ∀ x, 1 ≤ x → f x ≤ 0 :=
+    no_crossing_barrier_from hf_cont hf_deriv hsign hfa
+  exact hbar x hx
+
 end QM
