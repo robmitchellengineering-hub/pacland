@@ -230,4 +230,14 @@ theorem su2_weyl_integral_heat_kernel (x : ℝ) (hx : 0 < x) :
   field_simp [ne_of_gt hx]
   ring
 
+/-- **The RG step's partition function is bounded below by `1`**: `1 ≤ 2·I₁(β)/β` for `β > 0`. The block-spin
+average at the trivial connection is `π·I₁(β)/β` (`su2_weyl_integral_heat_kernel`), and its normalization by the
+Weyl measure `π/2` gives the RG step's partition function `2·I₁(β)/β`, which is `≥ 1` by the leading-term bound
+`β/2 ≤ I₁(β)` (`besselI_one_ge_half_mul`). So the block-spin RG step does not shrink the measure below unit mass. -/
+theorem blockSpin_partition_ge_one (β : ℝ) (hβ : 0 < β) :
+    1 ≤ 2 * besselI 1 β / β := by
+  have hlb : β / 2 ≤ besselI 1 β := besselI_one_ge_half_mul β (le_of_lt hβ)
+  rw [le_div_iff₀ hβ]
+  nlinarith [hlb]
+
 end QM
