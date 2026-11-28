@@ -976,4 +976,13 @@ theorem su2_pseudoreality_scalar :
   field_simp [Real.pi_ne_zero]
   ring
 
+/-- **The trace form of the SU(2) pseudoreality**: `∫ Tr(V²) dV = −1` — the normalized Weyl integral of
+`Tr(V²) = 2cos(2θ)` is `(2/π)·2·∫₀^π cos(2θ)sin²θ = −1`. The scalar half of `∫ V² dV = −I/2` (the Schur lemma
+then gives the matrix form from this trace). -/
+theorem su2_trace_sq_weyl_eq_neg_one :
+    (2 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, (2 * Real.cos (2 * θ)) * (Real.sin θ)^2 = -1 := by
+  rw [su2_cos_two_moment]
+  field_simp [Real.pi_ne_zero]
+  ring
+
 
