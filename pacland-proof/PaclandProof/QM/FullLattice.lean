@@ -555,4 +555,30 @@ theorem su2_sphere_norm_sq (θ₁ θ₂ φ : ℝ) :
 theorem su2_pauli_vec_entry_00 (x : Fin 3 → ℝ) : (su2PauliVec x) 0 0 = (x 2 : ℂ) := by
   simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, Fin.sum_univ_two, smul_eq_mul]
 
+/-- The `(0,0)` entry of the quaternion square in GENERIC coordinates: `(V²)₀₀ = (x₀²−|x⃗|²) + 2i·x₀·x 2`.
+Avoids the spherical `![…]` coordinates entirely, so the entry extraction is clean. -/
+theorem su2_quaternion_sq_entry_00 (x₀ : ℝ) (x : Fin 3 → ℝ) :
+    ((su2Quaternion x₀ x)^2) 0 0 =
+      ((x₀ ^ 2 - (x 0 ^ 2 + x 1 ^ 2 + x 2 ^ 2) : ℝ) : ℂ) + (2 * x₀ : ℂ) * Complex.I * (x 2 : ℂ) := by
+  have h := su2_quaternion_sq x₀ x
+  have h00 := congr_fun (congr_fun h 0) 0
+  rw [h00]
+  simp [Matrix.one_apply_eq, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, su2_pauli_vec_entry_00]
+  ring
+
+/-- The SU(2) quaternion in S³ spherical coordinates. -/
+noncomputable def su2SphereQuaternion (θ₁ θ₂ φ : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  su2Quaternion (Real.cos θ₁)
+    ![Real.sin θ₁ * Real.cos θ₂, Real.sin θ₁ * Real.sin θ₂ * Real.cos φ, Real.sin θ₁ * Real.sin θ₂ * Real.sin φ]
+
+/-- The `(0,0)` entry of the quaternion square in S³ coordinates: `(V²)₀₀ = (cos²θ₁−sin²θ₁) + 2i·cos θ₁·sin θ₁·sin θ₂·sin φ`. -/
+theorem su2_sphere_sq_entry_00 (θ₁ θ₂ φ : ℝ) :
+    ((su2SphereQuaternion θ₁ θ₂ φ)^2) 0 0 =
+      (((Real.cos θ₁)^2 - (Real.sin θ₁)^2 : ℝ) : ℂ)
+        + (2 : ℂ) * Complex.I * (Real.cos θ₁ : ℂ) * (Real.sin θ₁ : ℂ) * ((Real.sin θ₂ * Real.sin φ : ℝ) : ℂ) := by
+  unfold su2SphereQuaternion
+  rw [su2_quaternion_sq_entry_00]
+  simp [su2_sphere_norm_sq θ₁ θ₂ φ]
+  ring
+
 end QM
