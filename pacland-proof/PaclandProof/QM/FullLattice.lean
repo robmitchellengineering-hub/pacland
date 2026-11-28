@@ -477,4 +477,23 @@ theorem su2_central_matrix_trace_neg_one_eq_neg_half (M : Matrix (Fin 2) (Fin 2)
 theorem su2_trace_one : Matrix.trace (1 : Matrix (Fin 2) (Fin 2) ℂ) = 2 := by
   simp [Matrix.trace, Fin.sum_univ_two]
 
+/-- The three Pauli matrices (Hermitian, traceless, `σᵢσⱼ + σⱼσᵢ = 2δᵢⱼI`). -/
+def su2Pauli1 : Matrix (Fin 2) (Fin 2) ℂ := !![0, 1; 1, 0]
+def su2Pauli2 : Matrix (Fin 2) (Fin 2) ℂ := !![0, -Complex.I; Complex.I, 0]
+def su2Pauli3 : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, -1]
+
+/-- The traceless Hermitian combination `x₁σ₁ + x₂σ₂ + x₃σ₃` (the Lie-algebra element). -/
+def su2PauliVec (x : Fin 3 → ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  (x 0 : ℂ) • su2Pauli1 + (x 1 : ℂ) • su2Pauli2 + (x 2 : ℂ) • su2Pauli3
+
+/-- **The Pauli algebra square**: `(x⃗·σ⃗)² = |x⃗|²·I` — the key that makes the SU(2) quaternion square a scalar
+plus a trace-zero part (hence `∫ V² dV = −I/2`). -/
+theorem su2_pauli_sq (x : Fin 3 → ℝ) :
+    su2PauliVec x ^ 2 = ((x 0) ^ 2 + (x 1) ^ 2 + (x 2) ^ 2 : ℝ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [su2PauliVec, su2Pauli1, su2Pauli2, su2Pauli3, smul_eq_mul, Matrix.mul_apply, Fin.sum_univ_two, pow_two]
+  <;> ring_nf
+  <;> norm_num [pow_two, Complex.I_mul_I]
+
 end QM
