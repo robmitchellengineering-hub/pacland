@@ -300,3 +300,20 @@ order 22). The Turán sub-term has the clean positive closed form
 theorem. The NEW argument is found and verified; the kernel-checked proof (route 4) is a large mechanical
 Chu–Vandermonde formalization, unwritten. Gap-survival Δ_phys > 0 (the key deliverable) remains proved
 (`physical_mass_scale_bounds`, previous goal).
+
+## UPDATE (sharp-cutoff goal, rounds 24–32) — the coefficient-wise proof is 9 rungs in
+
+The NEW argument (positivity-of-coefficients) is now **mostly formalized**. Kernel-checked (all green,
+no sorry) in BesselIntegral.lean:
+- `bessel_ratio_inv_hasDerivAt` — the Φ = I₀/I₁ Riccati.
+- `bessel_binomial_convolution`, `bessel_chu_vandermonde_real` — the I₁² Chu–Vandermonde (binomial + factorial).
+- `bessel_binomial_convolution_I0I2`, `bessel_chu_vandermonde_I0I2` — the I₀I₂ Chu–Vandermonde.
+- `bessel_turan_weighted_sum` — the reduction identity I₀(I₁²−I₀I₂) + I₂(I₀²−I₁²) = 2I₁³/x.
+- `besselI_one_sq_eq_series`, `besselI_zero_mul_two_eq_series` — the product formulas (I₁², I₀I₂).
+- `besselI_turan_series` — the Turán series (all coefficients positive).
+- `besselI_turan_pos` — the Turán inequality I₁² > I₀I₂.
+
+**The single remaining step** = the sharp comparison `E = I₀(I₁²−I₀I₂) − I₁³/x > 0`, equivalently the
+irreducible cubic `r³ − xr² − 2r + x < 0` (r = I₁/I₀). Verified true (coefficients all-nonneg through order 22),
+but its coefficient has no clean closed form; the pointwise Riccati derivative g′ is a messy quartic with no
+clean sign. This is the genuinely-hard core (the second-order Simpson–Spector/Segura bound). NOT proved.
