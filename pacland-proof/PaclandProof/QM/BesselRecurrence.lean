@@ -966,4 +966,14 @@ theorem cos_phi_orthogonality (φ_A φ_B : ℝ) :
   · exact (by continuity : Continuous (fun _ : ℝ => Real.cos (φ_A - φ_B))).intervalIntegrable 0 (2 * Real.pi)
   · exact (by continuity : Continuous (fun φ : ℝ => Real.cos (2 * φ - φ_A - φ_B))).intervalIntegrable 0 (2 * Real.pi)
 
+/-- **The SU(2) pseudoreality scalar**: `(2/π)·∫₀^π cos(2θ)·sin²θ dθ = −1/2`. This is the coefficient of the
+SU(2) identity `∫ V² dV = −I/2` (the fundamental rep's pseudoreality), since `Tr(V²) = 2cos(2θ)` and
+`∫ Tr(V²) dV = (2/π)∫ 2cos(2θ)sin²θ = −1`. The key ingredient for the n=1 character convolution
+`∫ χ₁(U₂A)χ₁(U₂B) dU₂ = χ₁(A⁻¹B)/2`. -/
+theorem su2_pseudoreality_scalar :
+    (2 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.cos (2 * θ) * (Real.sin θ)^2 = -(1 / 2) := by
+  rw [su2_cos_two_moment]
+  field_simp [Real.pi_ne_zero]
+  ring
+
 
