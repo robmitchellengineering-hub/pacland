@@ -705,4 +705,13 @@ theorem su2_pauli_vec_mul_apply (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) 
   rw [Matrix.add_apply, Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.smul_apply]
   ring
 
+/-- **The matrix-times-Pauli-vector entry**: `(B·(x⃗·σ⃗))ᵢⱼ = Σₐ xₐ·(B·σₐ)ᵢⱼ`. The right-side linearity. -/
+theorem su2_pauli_vec_mul_apply_right (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) :
+    (B * su2PauliVec x) i j = (x 0 : ℂ) * (B * su2Pauli1) i j + (x 1 : ℂ) * (B * su2Pauli2) i j + (x 2 : ℂ) * (B * su2Pauli3) i j := by
+  unfold su2PauliVec
+  rw [mul_add, mul_add]
+  rw [Matrix.mul_smul, Matrix.mul_smul, Matrix.mul_smul]
+  rw [Matrix.add_apply, Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.smul_apply]
+  ring
+
 end QM
