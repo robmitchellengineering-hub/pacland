@@ -1507,4 +1507,102 @@ theorem su2_odd_conj_matrix (B : Matrix (Fin 2) (Fin 2) ℂ) :
   <;> rw [su2_odd_moment_u3_nested]
   <;> ring
 
+/-- `∫₀^{2π} cos (2·φ) = 0` (full-period). -/
+theorem integral_cos_two_full_period_zero : ∫ φ in (0 : ℝ)..(2 * Real.pi), Real.cos (2 * φ) = 0 := by
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le (by nlinarith [Real.pi_pos]) (by continuity)
+    (fun φ _ => by
+      have h : HasDerivAt (fun t : ℝ => Real.sin (2 * t) / 2) (Real.cos (2 * φ)) φ := by
+        simpa using ((Real.hasDerivAt_sin (2 * φ)).comp φ (hasDerivAt_const_mul 2 φ (hasDerivAt_id φ))).const_mul (1 / 2)
+      simpa [one_div] using h)]
+  rw [Real.sin_periodic 2, Real.sin_zero]
+  ring
+
+/-- `∫₀^π sin³θ = 4/3` (via `sin³ = sin·(1−cos²)`). -/
+theorem integral_sin_cube : ∫ θ in (0 : ℝ)..Real.pi, (Real.sin θ)^3 = 4 / 3 := by
+  rw [intervalIntegral.integral_congr (fun θ _ => by
+    rw [show (Real.sin θ)^3 = Real.sin θ * (Real.sin θ)^2 by ring]
+    rw [Real.sin_sq]
+    ring)]
+  rw [intervalIntegral.integral_sub]
+  · rw [integral_sin_eq_two, integral_cos_sq_sin]
+    norm_num
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.sin θ)).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.sin θ * (Real.cos θ)^2)).intervalIntegrable 0 Real.pi
+
+/-- `∫₀^{2π} cos²φ = π` (via `cos² = (1 + cos 2φ)/2`). -/
+theorem integral_cos_sq_full : ∫ φ in (0 : ℝ)..(2 * Real.pi), (Real.cos φ)^2 = Real.pi := by
+  rw [intervalIntegral.integral_congr (fun φ _ => by rw [Real.cos_sq]; ring)]
+  rw [intervalIntegral.integral_add]
+  · rw [intervalIntegral.integral_const]
+    rw [intervalIntegral.integral_const_mul]
+    rw [integral_cos_two_full_period_zero]
+    ring
+  · exact (by continuity : Continuous (fun φ : ℝ => (1 : ℝ) / 2)).intervalIntegrable 0 (2 * Real.pi)
+  · exact (by continuity : Continuous (fun φ : ℝ => Real.cos (2 * φ) / 2)).intervalIntegrable 0 (2 * Real.pi)
+
+/-- `∫₀^{2π} sin²φ = π` (via `sin² = (1 − cos 2φ)/2`). -/
+theorem integral_sin_sq_full : ∫ φ in (0 : ℝ)..(2 * Real.pi), (Real.sin φ)^2 = Real.pi := by
+  rw [intervalIntegral.integral_congr (fun φ _ => by rw [Real.sin_sq]; ring)]
+  rw [intervalIntegral.integral_sub]
+  · rw [intervalIntegral.integral_const]
+    rw [intervalIntegral.integral_const_mul]
+    rw [integral_cos_two_full_period_zero]
+    ring
+  · exact (by continuity : Continuous (fun φ : ℝ => (1 : ℝ) / 2)).intervalIntegrable 0 (2 * Real.pi)
+  · exact (by continuity : Continuous (fun φ : ℝ => Real.cos (2 * φ) / 2)).intervalIntegrable 0 (2 * Real.pi)
+
+/-- **The unnormalized diagonal direction moments**: `∫∫∫ x₁²·sin²θ₁·sin θ₂ = π²/2` (the θ₁·θ₂·φ product). -/
+theorem su2_direction_moment_x1_sq_unnorm :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Real.sin θ₁)^4 * (Real.cos θ₂)^2 * Real.sin θ₂ = Real.pi ^ 2 / 2 := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_const))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => by ring))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_const_mul))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => by ring))]
+  rw [intervalIntegral.integral_const_mul]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => by
+    rw [intervalIntegral.integral_const_mul]
+    rw [integral_sin_eq_two]
+    ring)]
+  rw [intervalIntegral.integral_const_mul]
+  rw [integral_cos_sq_sin, integral_sin_four]
+  norm_num [Real.pi_pos]
+  ring
+
+/-- **The unnormalized diagonal direction moment**: `∫∫∫ x₂²·sin²θ₁·sin θ₂ = π²/2`. -/
+theorem su2_direction_moment_x2_sq_unnorm :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Real.sin θ₁)^4 * (Real.sin θ₂)^3 * (Real.cos φ)^2 = Real.pi ^ 2 / 2 := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_const_mul))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => by ring))]
+  rw [intervalIntegral.integral_const_mul]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => by
+    rw [intervalIntegral.integral_const_mul]
+    rw [integral_sin_cube]
+    ring)]
+  rw [intervalIntegral.integral_const_mul]
+  rw [integral_sin_four, integral_cos_sq_full]
+  norm_num [Real.pi_pos]
+  ring
+
+/-- **The unnormalized diagonal direction moment**: `∫∫∫ x₃²·sin²θ₁·sin θ₂ = π²/2`. -/
+theorem su2_direction_moment_x3_sq_unnorm :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        (Real.sin θ₁)^4 * (Real.sin θ₂)^3 * (Real.sin φ)^2 = Real.pi ^ 2 / 2 := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_const_mul))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => by ring))]
+  rw [intervalIntegral.integral_const_mul]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => by
+    rw [intervalIntegral.integral_const_mul]
+    rw [integral_sin_cube]
+    ring)]
+  rw [intervalIntegral.integral_const_mul]
+  rw [integral_sin_four, integral_sin_sq_full]
+  norm_num [Real.pi_pos]
+  ring
+
 
