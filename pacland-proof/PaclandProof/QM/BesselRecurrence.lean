@@ -240,4 +240,44 @@ theorem blockSpin_partition_ge_one (β : ℝ) (hβ : 0 < β) :
   rw [le_div_iff₀ hβ]
   nlinarith [hlb]
 
+/-- **The `cos(2θ)` Weyl moment**: `∫₀^π cos(2θ)·sin²θ dθ = −π/4`. Building block of the block-spin average's
+character convolution: `sin²θ = (1 − cos 2θ)/2` makes the moment `(1/2)(∫ cos 2θ − ∫ cos² 2θ) = (1/2)(0 − π/2)`. -/
+theorem su2_cos_two_moment :
+    ∫ θ in (0 : ℝ)..Real.pi, Real.cos (2 * θ) * (Real.sin θ)^2 = -(Real.pi / 4) := by
+  have hsin2 : ∀ θ : ℝ, (Real.sin θ)^2 = (1 - Real.cos (2 * θ)) / 2 := by
+    intro θ
+    rw [Real.sin_sq_eq_half_sub]
+    ring_nf
+  have hcongr : (fun θ : ℝ => Real.cos (2 * θ) * (Real.sin θ)^2)
+      = fun θ : ℝ => (Real.cos (2 * θ) - Real.cos (2 * θ) ^ 2) / 2 := by
+    funext θ
+    rw [hsin2 θ]
+    ring
+  have hcos2 : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (2 * θ) = 0 := by
+    rw [intervalIntegral.integral_congr (fun θ _ => by rw [show 2 * θ = ((2 : ℕ) : ℝ) * θ by norm_num])]
+    exact integral_cos_of_ne_zero (by norm_num : (2 : ℕ) ≠ 0)
+  have hcos2sq : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (2 * θ) ^ 2 = Real.pi / 2 := by
+    have hcos2sq_form : ∀ θ : ℝ, Real.cos (2 * θ) ^ 2 = (1 + Real.cos (4 * θ)) / 2 := by
+      intro θ
+      rw [Real.cos_sq_eq_half_add]
+      ring_nf
+    rw [intervalIntegral.integral_congr (fun θ _ => hcos2sq_form θ)]
+    rw [intervalIntegral.integral_div]
+    rw [intervalIntegral.integral_add]
+    · rw [intervalIntegral.integral_const]
+      have hcos4 : ∫ θ in (0 : ℝ)..Real.pi, Real.cos (4 * θ) = 0 := by
+        rw [intervalIntegral.integral_congr (fun θ _ => by rw [show 4 * θ = ((4 : ℕ) : ℝ) * θ by norm_num])]
+        exact integral_cos_of_ne_zero (by norm_num : (4 : ℕ) ≠ 0)
+      rw [hcos4]
+      norm_num
+    · exact (by continuity : Continuous (fun _ : ℝ => (1 : ℝ))).intervalIntegrable 0 Real.pi
+    · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (4 * θ))).intervalIntegrable 0 Real.pi
+  rw [hcongr]
+  rw [intervalIntegral.integral_div]
+  rw [intervalIntegral.integral_sub]
+  · rw [hcos2, hcos2sq]
+    norm_num
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (2 * θ))).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.cos (2 * θ) ^ 2)).intervalIntegrable 0 Real.pi
+
 end QM
