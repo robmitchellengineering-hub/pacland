@@ -985,4 +985,12 @@ theorem su2_trace_sq_weyl_eq_neg_one :
   field_simp [Real.pi_ne_zero]
   ring
 
+/-- **The scalar `∫ Tr(U₂) = 0`** (the `∫ U₂ dU₂ = 0` orthogonality's trace form): `(2/π)·∫₀^π cos θ·sin²θ = 0`.
+`Tr(U₂) = 2cos θ`, and the `cos θ` Weyl moment vanishes (`su2_cos_moment_ne_two n=1`). The scalar half of the
+Haar orthogonality `∫ U₂ dU₂ = 0` (the Schur lemma then gives the matrix form). -/
+theorem su2_trace_weyl_eq_zero :
+    (2 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ * (Real.sin θ)^2 = 0 := by
+  rw [su2_cos_moment_ne_two (n := 1) (by norm_num) (by norm_num)]
+  norm_num
+
 
