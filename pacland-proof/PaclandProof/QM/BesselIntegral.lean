@@ -1878,4 +1878,18 @@ theorem physical_correlation_length_diverges (c : ℝ) (hc : 0 < c) :
     simpa [mul_comm, mul_assoc, mul_left_comm] using hprod
   exact tendsto_atTop_mono' Filter.atTop (Filter.eventually_atTop.mpr ⟨1, fun β hβ => hlower β hβ⟩) htend
 
+/-- **The rescaled two-point function converges pointwise**: `Tendsto (fun β => e^(−(β·gap)·t)) atTop
+(nhds (e^(−t/4)))` — the lattice correlation `e^(−(β·gap)·t)` at physical time `t` (the lattice gap rescaled by
+`β`) converges to the continuum two-point function `e^(−t/4)` with mass `1/4`. This is the a→0 convergence of
+the rescaled Schwinger function's exponential part, the concrete assembly of `physical_mass_tendsto_sharp`. -/
+theorem rescaled_two_point_converges (t : ℝ) :
+    Filter.Tendsto (fun β : ℝ => Real.exp (-(β * heatKernelMassGap β * t))) Filter.atTop
+      (nhds (Real.exp (-(1 / 4 : ℝ) * t))) := by
+  have hm : Filter.Tendsto (fun β : ℝ => β * heatKernelMassGap β) Filter.atTop (nhds (1 / 4 : ℝ)) :=
+    physical_mass_tendsto_sharp
+  have hlin : Filter.Tendsto (fun β : ℝ => (β * heatKernelMassGap β) * (-t)) Filter.atTop (nhds ((1 / 4 : ℝ) * (-t))) :=
+    hm.const_mul (-t)
+  have hexp := Real.continuous_exp.continuousAt.tendsto.comp hlin
+  simpa [mul_assoc, neg_mul, mul_neg] using hexp
+
 end QM
