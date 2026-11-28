@@ -1084,4 +1084,39 @@ theorem su2_direction_moment_u3 : ∫ φ in (0 : ℝ)..(2 * Real.pi), ∫ θ in 
   rw [intervalIntegral.integral_congr (fun φ _ => by rw [integral_sin_full_period_zero]; norm_num)]
   simp
 
+/-- **The scalar part of the pseudoreality (nested)**: `∫₀^π∫₀^π∫₀^{2π} (cos²θ₁−sin²θ₁)·sin²θ₁·sin θ₂ dθ₁ dθ₂ dφ = −π²`.
+The θ₁ Weyl moment `−π/4` (`su2_sq_scalar_weyl`) × the θ₂ factor `2` (`integral_sin_eq_two`) × the φ factor `2π`.
+The scalar coefficient of the unnormalized matrix pseudoreality `∫ V² = −π²·I` (normalized: `−I/2`). -/
+theorem su2_sq_scalar_nested :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        ((Real.cos θ₁)^2 - (Real.sin θ₁)^2) * (Real.sin θ₁)^2 * Real.sin θ₂ = -Real.pi ^ 2 := by
+  -- the φ-integral is constant: ∫_0^{2π} dφ = 2π
+  have hφ : ∀ θ₁ θ₂, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+      ((Real.cos θ₁)^2 - (Real.sin θ₁)^2) * (Real.sin θ₁)^2 * Real.sin θ₂
+        = ((Real.cos θ₁)^2 - (Real.sin θ₁)^2) * (Real.sin θ₁)^2 * Real.sin θ₂ * (2 * Real.pi) := by
+    intro θ₁ θ₂
+    rw [intervalIntegral.integral_const_mul]
+    rw [intervalIntegral.integral_const]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ => hφ θ₁ θ₂))]
+  -- ∫ θ₂, (cos²−sin²)sin² sin θ₂ · 2π = (cos²−sin²)sin² · 2π · 2
+  have hθ₂ : ∀ θ₁, ∫ θ₂ in (0 : ℝ)..Real.pi,
+      ((Real.cos θ₁)^2 - (Real.sin θ₁)^2) * (Real.sin θ₁)^2 * Real.sin θ₂ * (2 * Real.pi)
+        = ((Real.cos θ₁)^2 - (Real.sin θ₁)^2) * (Real.sin θ₁)^2 * (4 * Real.pi) := by
+    intro θ₁
+    rw [intervalIntegral.integral_const_mul]
+    rw [intervalIntegral.integral_const_mul]
+    rw [integral_sin_eq_two]
+    ring
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => hθ₂ θ₁)]
+  -- ∫ θ₁, (cos²−sin²)sin² · 4π = 4π · (−π/4) = −π²
+  rw [intervalIntegral.integral_const_mul]
+  rw [show ∫ θ₁ in (0 : ℝ)..Real.pi, ((Real.cos θ₁)^2 - (Real.sin θ₁)^2) * (Real.sin θ₁)^2 = -(Real.pi / 4) by
+    -- (2/π)∫ = −1/2, so ∫ = −π/4
+    have h := su2_sq_scalar_weyl
+    -- h : (2/π) · ∫ = −1/2
+    field_simp at h
+    linarith]
+  ring
+
 
