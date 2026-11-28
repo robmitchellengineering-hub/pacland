@@ -706,4 +706,47 @@ theorem besselI_eq_integral_general {n : ℕ} (x : ℝ) (hx : 0 ≤ x) (hn : 1 �
   have hπ : Real.pi ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   rw [hmain]
   field_simp [hπ]
+/-- **The SU(2) Weyl character coefficient**: `(2/π)·∫₀^π e^(x·cos θ)·sin θ·sin((n+1)θ) dθ = 2(n+1)·Iₙ₊₁(x)/x`.
+The coefficient `cₙ` of the Weyl character formula `e^(x·cos θ)·sin θ = Σ cₙ·sin((n+1)θ)`: `sin θ·sin((n+1)θ) =
+(cos(nθ) − cos((n+2)θ))/2` + the general Jacobi–Anger moment (`besselI_eq_integral_general`) give `cₙ = Iₙ − Iₙ₊₂`,
+and `bessel_recurrence_general` turns this into `2(n+1)Iₙ₊₁/x`. This is the clean coupling-advance identity. -/
+theorem weyl_character_coefficient {n : ℕ} (x : ℝ) (hx : 0 < x) (hn : 1 ≤ n) :
+    (2 / Real.pi) * ∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.sin θ * Real.sin ((n + 1 : ℝ) * θ)
+      = 2 * (n + 1 : ℝ) * besselI (n + 1) x / x := by
+  have hprod : ∀ θ : ℝ, Real.sin θ * Real.sin ((n + 1 : ℝ) * θ)
+      = (Real.cos ((n : ℝ) * θ) - Real.cos ((n + 2 : ℝ) * θ)) / 2 := by
+    intro θ
+    have hsub : Real.cos (θ - (n + 1 : ℝ) * θ) - Real.cos (θ + (n + 1 : ℝ) * θ)
+        = 2 * (Real.sin θ * Real.sin ((n + 1 : ℝ) * θ)) := by
+      nlinarith [Real.cos_sub θ ((n + 1 : ℝ) * θ), Real.cos_add θ ((n + 1 : ℝ) * θ)]
+    have harg1 : θ - (n + 1 : ℝ) * θ = -((n : ℝ) * θ) := by ring
+    have harg2 : θ + (n + 1 : ℝ) * θ = (n + 2 : ℝ) * θ := by ring
+    rw [harg1, harg2] at hsub
+    rw [Real.cos_neg ((n : ℝ) * θ)] at hsub
+    nlinarith [hsub]
+  have hcongr : (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.sin θ * Real.sin ((n + 1 : ℝ) * θ))
+      = fun θ : ℝ => (Real.exp (x * Real.cos θ) * Real.cos ((n : ℝ) * θ) - Real.exp (x * Real.cos θ) * Real.cos ((n + 2 : ℝ) * θ)) / 2 := by
+    funext θ
+    rw [hprod θ]
+    ring
+  have hIn : ∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.cos ((n : ℝ) * θ) = Real.pi * besselI n x := by
+    have h := besselI_eq_integral_general (n := n) x (le_of_lt hx) hn
+    have hπ : Real.pi ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+    field_simp [hπ] at h
+    exact h.symm
+  have hIn2 : ∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.cos ((n + 2 : ℝ) * θ) = Real.pi * besselI (n + 2) x := by
+    have h := besselI_eq_integral_general (n := n + 2) x (le_of_lt hx) (by omega)
+    have hπ : Real.pi ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+    field_simp [hπ] at h
+    exact h.symm
+  rw [hcongr]
+  rw [intervalIntegral.integral_div, intervalIntegral.integral_sub]
+  · rw [hIn, hIn2]
+    have hrec := bessel_recurrence_general (n := n) (x := x) hx
+    rw [hrec]
+    field_simp [ne_of_gt hx]
+    ring
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.cos ((n : ℝ) * θ))).intervalIntegrable 0 Real.pi
+  · exact (by continuity : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.cos ((n + 2 : ℝ) * θ))).intervalIntegrable 0 Real.pi
+
 
