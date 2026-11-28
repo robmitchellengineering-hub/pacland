@@ -1472,4 +1472,15 @@ theorem su2_x0_sq_nested :
   field_simp [Real.pi_ne_zero]
   ring
 
+/-- **The scalar coefficient matrix integral**: `∫∫∫ x₀²·B·sin²θ₁·sin θ₂ = (π²/2)·B` (pull the constant matrix `B`
+out, use `su2_x0_sq_nested`). -/
+theorem su2_x0_sq_matrix (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    ∫ θ₁ in (0 : ℝ)..Real.pi, ∫ θ₂ in (0 : ℝ)..Real.pi, ∫ φ in (0 : ℝ)..(2 * Real.pi),
+        ((Real.cos θ₁)^2 * (Real.sin θ₁)^2 * Real.sin θ₂) • B = (Real.pi ^ 2 / 2) • B := by
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_congr (fun θ₂ _ =>
+    intervalIntegral.integral_const_mul))]
+  rw [intervalIntegral.integral_congr (fun θ₁ _ => intervalIntegral.integral_const_mul)]
+  rw [intervalIntegral.integral_const_mul]
+  rw [su2_x0_sq_nested]
+
 
