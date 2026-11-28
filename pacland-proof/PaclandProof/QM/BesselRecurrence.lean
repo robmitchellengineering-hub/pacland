@@ -1031,4 +1031,19 @@ theorem integral_sin_full_period_zero : ∫ φ in (0 : ℝ)..(2 * Real.pi), Real
   rw [Real.cos_periodic 1]
   ring
 
+/-- **The θ₂ odd moment**: `∫₀^π cos θ·sin θ dθ = 0` (the odd-function FTC `[sin²θ/2]₀^π`). The θ₂-direction
+primitive for the S³ odd moment `∫ x₀xᵢ = 0` (which kills the trace-zero part `2ix₀(x⃗·σ⃗)` of the quaternion
+square). -/
+theorem integral_cos_mul_sin_zero : ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ * Real.sin θ = 0 := by
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le (le_of_lt Real.pi_pos) (by continuity)
+    (fun θ _ => by
+      -- d/dθ (sin²θ/2) = cos θ · sin θ
+      have h : HasDerivAt (fun t : ℝ => (Real.sin t)^2 / 2) (Real.cos θ * Real.sin θ) θ := by
+        have hsin : HasDerivAt (fun t : ℝ => (Real.sin t)^2) (2 * Real.sin θ * Real.cos θ) θ := by
+          simpa [pow_two] using (Real.hasDerivAt_sin θ).mul (Real.hasDerivAt_sin θ)
+        simpa [pow_two, mul_assoc, mul_comm, mul_left_comm] using hsin.const_mul (1 / 2)
+      exact h)]
+  rw [Real.sin_pi, Real.sin_zero]
+  ring
+
 
