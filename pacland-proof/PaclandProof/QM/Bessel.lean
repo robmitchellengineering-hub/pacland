@@ -1275,4 +1275,15 @@ theorem heat_kernel_spectral_identification (β : ℝ) (hβ : 0 < β) :
   have hpos : 0 < besselI 0 (2 * β) := besselI_pos (by positivity : 0 < 2 * β)
   field_simp [hpos.ne']
 
+/-- **The SU(2) Weyl (Haar) measure is normalized**: `(2/π)·∫₀^π sin²θ dθ = 1`. This is the class-function form
+of the SU(2) Haar measure `dμ = (2/π) sin²θ dθ` on `[0, π]` — the `n = 0` case of `su2_character_orthogonality_diag`
+(`∫₀^π sin²θ = π/2`). The normalization is the foundation of the measure-theoretic small/large-field region
+decomposition: the total mass is 1, so the small-field and large-field regions partition the gauge group. -/
+theorem su2_weyl_measure_normalized : (2 / Real.pi) * (∫ θ in 0..Real.pi, (Real.sin θ) ^ 2) = 1 := by
+  have hdiag := su2_character_orthogonality_diag (n := 0)
+  have hsq : ∫ θ in 0..Real.pi, (Real.sin θ) ^ 2 = Real.pi / 2 := by
+    simpa using hdiag
+  rw [hsq]
+  field_simp [ne_of_gt Real.pi_pos]
+
 end QM
