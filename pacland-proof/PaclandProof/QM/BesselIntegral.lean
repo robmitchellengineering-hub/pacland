@@ -1007,4 +1007,20 @@ theorem heat_kernel_gap_tendsto_zero :
         simpa [heatKernelMassGap] using bessel_activity_le_one_div_beta (2 * β) (by positivity : 0 < 2 * β)
       _ = (1 / 2) / β := by field_simp [hβ.ne']
 
+/-- **The naive scale-matching ratio grows exponentially**: the bare lattice gap divided by the
+running-coupling scale `e^(−cβ)` is bounded below by `e^(cβ)/(4β+1)` (via `heat_kernel_gap_poly`
+`1/(4β+1) ≤ gap`). So the ratio is **not** the constant the `tHooftRenormalizable` placeholder demands —
+the bare gap and the running-coupling scale live on *different* scales, and the physical mass must come
+from the correct RG scale-matching, not from `gap / e^(−cβ)`. -/
+theorem naive_scale_ratio_lower_bound (β c : ℝ) (hc : 0 < c) (hβ : 0 < β) :
+    Real.exp (c * β) / (4 * β + 1) ≤ heatKernelMassGap β / Real.exp (-(c * β)) := by
+  have hpoly : 1 / (4 * β + 1) ≤ heatKernelMassGap β := heat_kernel_gap_poly β hβ
+  have hle : (1 / (4 * β + 1)) / Real.exp (-(c * β)) ≤ heatKernelMassGap β / Real.exp (-(c * β)) :=
+    div_le_div_of_nonneg_left hpoly (Real.exp_pos _).le
+  have hid : (1 / (4 * β + 1)) / Real.exp (-(c * β)) = Real.exp (c * β) / (4 * β + 1) := by
+    rw [div_eq_mul_inv, div_eq_mul_inv]
+    rw [Real.exp_neg]
+    field_simp [Real.exp_pos (c * β).ne']
+  rwa [← hid]
+
 end QM
