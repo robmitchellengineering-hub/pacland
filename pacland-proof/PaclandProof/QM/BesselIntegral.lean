@@ -1121,4 +1121,72 @@ theorem bessel_ratio_ge_x_div_x_add_three (x : ℝ) (hx : 0 ≤ x) :
   have : x ≤ (x + 3) * (besselI 1 x / besselI 0 x) := by nlinarith [hfx]
   exact (le_div_iff₀ hx3).2 (by simpa [mul_comm] using this)
 
+/-- **The restart no-crossing barrier**: same as `no_crossing_barrier` but starting at `a` with the seed
+`f a ≤ 0` (not `f 0 = 0`), for barriers that have a pole at `0`. If `f a ≤ 0`, `f` is differentiable on
+`(a, ∞)`, and `f ≥ 0 ⟹ deriv f < 0` there, then `f ≤ 0` on `[a, ∞)`. -/
+theorem no_crossing_barrier_from {a : ℝ} {f : ℝ → ℝ} (hf_cont : Continuous f)
+    (hf_deriv : ∀ x, a < x → HasDerivAt f (deriv f x) x)
+    (hsign : ∀ x, a < x → 0 ≤ f x → deriv f x < 0)
+    (hfa : f a ≤ 0) : ∀ x, a ≤ x → f x ≤ 0 := by
+  intro x₀ hx₀
+  by_contra h
+  have hpos : 0 < f x₀ := lt_of_not_ge h
+  have hax : a < x₀ := by
+    by_contra hz
+    have : x₀ = a := by linarith
+    subst x₀
+    linarith [hfa, hpos]
+  let S : Set ℝ := {y : ℝ | y ∈ Set.Icc a x₀ ∧ f y = 0}
+  have hS_closed : IsClosed S := by
+    have hz : IsClosed ({y : ℝ | f y = 0}) := isClosed_singleton.preimage hf_cont
+    exact (isClosed_Icc (a := a) (b := x₀)).inter hz
+  have hS_compact : IsCompact S := isCompact_Icc.of_isClosed_subset hS_closed (by
+    intro y hy
+    exact hy.1)
+  have hS_ne : S.Nonempty := by
+    have hcont_ax : ContinuousOn f (Set.Icc a x₀) := hf_cont.continuousOn.mono (Set.subset_univ _)
+    rcases intermediate_value_Icc (le_of_lt hax) hcont_ax ⟨hfa, le_of_lt hpos⟩ with ⟨c, hcIcc, hc0⟩
+    exact ⟨c, ⟨hcIcc, hc0⟩⟩
+  rcases hS_compact.exists_isMaxOn hS_ne (f := fun y : ℝ => y) continuous_id.continuousOn with ⟨c, hcS, hcmax⟩
+  have hfc : f c = 0 := hcS.2
+  have hca : a ≤ c := (Set.mem_Icc.mp hcS.1).1
+  have hcx : c ≤ x₀ := (Set.mem_Icc.mp hcS.1).2
+  have hc_lt_x : c < x₀ := by
+    by_contra h
+    have : x₀ = c := by linarith
+    subst x₀
+    rw [hfc] at hpos
+    linarith
+  have hfpos : ∀ y ∈ Set.Ioo c x₀, 0 < f y := by
+    intro y hy
+    have hyc : c < y := (Set.mem_Ioo.mp hy).1
+    have hyx : y < x₀ := (Set.mem_Ioo.mp hy).2
+    by_contra hneg
+    have hle : f y ≤ 0 := le_of_not_gt hneg
+    by_cases hy0 : f y = 0
+    · have yS : y ∈ S := by
+        refine ⟨?_, hy0⟩
+        exact ⟨le_trans hca (le_of_lt hyc), le_of_lt hyx⟩
+      have hyle : y ≤ c := hcmax yS
+      linarith
+    · have hneg' : f y < 0 := lt_of_le_of_ne hle hy0
+      have hcont : ContinuousOn f (Set.Icc y x₀) := hf_cont.continuousOn.mono (Set.subset_univ _)
+      have hivt := intermediate_value_Icc (le_of_lt hyx) hcont
+      have h0mem : (0 : ℝ) ∈ Set.Icc (f y) (f x₀) := ⟨le_of_lt hneg', le_of_lt hpos⟩
+      rcases hivt h0mem with ⟨z, hzIcc, hz0⟩
+      have hz_gt_c : c < z := lt_of_lt_of_le hyc hzIcc.1
+      have hzS : z ∈ S := by
+        refine ⟨?_, hz0⟩
+        exact ⟨le_trans hca (le_of_lt hz_gt_c), hzIcc.2⟩
+      have hz_le_c : z ≤ c := hcmax hzS
+      linarith
+  have hanti : StrictAntiOn f (Set.Icc c x₀) := by
+    refine strictAntiOn_of_deriv_neg (convex_Icc c x₀) (hf_cont.continuousOn) ?_
+    intro y hy
+    rw [interior_Icc] at hy
+    exact hsign y (lt_of_le_of_lt hca hy.1) (le_of_lt (hfpos y hy))
+  have hlt : f x₀ < f c := hanti ⟨le_rfl, hcx⟩ ⟨hcx, le_rfl⟩ hc_lt_x
+  rw [hfc] at hlt
+  linarith
+
 end QM
