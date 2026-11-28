@@ -293,4 +293,44 @@ theorem wightman_limit_stable {α : Type*} {inner : ℕ → α → α → ℝ} {
   intro f
   have hlim' : Tendsto (fun n => inner n f f) atTop (nhds (innerLim f f)) := hlim f f
   exact ge_of_tendsto hlim' (Filter.Eventually.of_forall (fun n => hW n f))
+/-- **W3 (locality) is closed under pointwise limits**: if `S n → Slim` pointwise and each `S n` is symmetric,
+then `Slim` is symmetric. With `posdef_of_tendsto` (the Hilbert closure) this is the a→0 closure of the Wightman
+locality axiom. -/
+theorem wightman_locality_limit {α : Type*} (S : ℕ → α → α → ℝ) (Slim : α → α → ℝ)
+    (hlim : ∀ x y, Filter.Tendsto (fun n => S n x y) Filter.atTop (nhds (Slim x y)))
+    (hS : ∀ n, WightmanLocality (S n)) :
+    WightmanLocality Slim := by
+  intro x y
+  have h2 : Filter.Tendsto (fun n => S n x y) Filter.atTop (nhds (Slim y x)) := by
+    convert hlim y x using 1
+    ext n
+    exact (hS n) x y
+  exact tendsto_nhds_unique (hlim x y) h2
+
+/-- **W4 (unique vacuum) is closed under pointwise limits**: if `K n → Klim` pointwise and each `K n` has a
+constant diagonal, then `Klim` does. Part of the a→0 closure of the Wightman vacuum axiom. -/
+theorem wightman_vacuum_limit {α : Type*} (K : ℕ → α → α → ℝ) (Klim : α → α → ℝ)
+    (hlim : ∀ x y, Filter.Tendsto (fun n => K n x y) Filter.atTop (nhds (Klim x y)))
+    (hK : ∀ n, WightmanVacuum (K n)) :
+    WightmanVacuum Klim := by
+  intro x y
+  have hy : Filter.Tendsto (fun n => K n x x) Filter.atTop (nhds (Klim y y)) := by
+    convert hlim y y using 1
+    ext n
+    exact (hK n) x y
+  exact tendsto_nhds_unique (hlim x x) hy
+
+/-- **W1 (Minkowski covariance) is closed under pointwise limits**: if `S n → Slim` pointwise and each `S n`
+is translation-invariant, then `Slim` is. Part of the a→0 closure of the Wightman covariance axiom. -/
+theorem wightman_covariance_limit (S : ℕ → ℝ → ℝ → ℝ) (Slim : ℝ → ℝ → ℝ)
+    (hlim : ∀ x y, Filter.Tendsto (fun n => S n x y) Filter.atTop (nhds (Slim x y)))
+    (hS : ∀ n, WightmanCovariance (S n)) :
+    WightmanCovariance Slim := by
+  intro x y t
+  have h2 : Filter.Tendsto (fun n => S n (x + t) (y + t)) Filter.atTop (nhds (Slim x y)) := by
+    convert hlim x y using 1
+    ext n
+    exact (hS n) x y t
+  exact tendsto_nhds_unique (hlim (x + t) (y + t)) h2
+
 end QM
