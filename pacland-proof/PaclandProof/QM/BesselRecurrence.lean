@@ -1064,4 +1064,24 @@ theorem integral_sin_eq_two : ∫ θ in (0 : ℝ)..Real.pi, Real.sin θ = 2 := b
   rw [Real.cos_pi, Real.cos_zero]
   norm_num
 
+/-- **The S² direction moment `∫ u₁ = 0`**: the u₁ = cos θ₂ direction function integrates to zero over S² (the
+θ₂ odd moment `∫ cos θ·sin θ = 0`, times the φ-period). The primitive for the S³ odd moment `∫ x₀xᵢ = 0`. -/
+theorem su2_direction_moment_u1 : ∫ φ in (0 : ℝ)..(2 * Real.pi), ∫ θ in (0 : ℝ)..Real.pi, Real.cos θ * Real.sin θ = 0 := by
+  rw [intervalIntegral.integral_congr (fun φ _ => integral_cos_mul_sin_zero)]
+  simp
+
+/-- **The S² direction moment `∫ u₂ = 0`**: the u₂ = sin θ₂·cos φ direction function integrates to zero (the
+full-period cos φ). The primitive for the S³ odd moment `∫ x₀xᵢ = 0`. -/
+theorem su2_direction_moment_u2 : ∫ φ in (0 : ℝ)..(2 * Real.pi), ∫ θ in (0 : ℝ)..Real.pi, (Real.sin θ)^2 * Real.cos φ = 0 := by
+  rw [intervalIntegral.integral_congr (fun φ _ => by rw [intervalIntegral.integral_const_mul]; simp)]
+  rw [intervalIntegral.integral_congr (fun φ _ => by rw [integral_cos_full_period_zero]; norm_num)]
+  simp
+
+/-- **The S² direction moment `∫ u₃ = 0`**: the u₃ = sin θ₂·sin φ direction function integrates to zero (the
+full-period sin φ). The primitive for the S³ odd moment `∫ x₀xᵢ = 0`. -/
+theorem su2_direction_moment_u3 : ∫ φ in (0 : ℝ)..(2 * Real.pi), ∫ θ in (0 : ℝ)..Real.pi, (Real.sin θ)^2 * Real.sin φ = 0 := by
+  rw [intervalIntegral.integral_congr (fun φ _ => by rw [intervalIntegral.integral_const_mul]; simp)]
+  rw [intervalIntegral.integral_congr (fun φ _ => by rw [integral_sin_full_period_zero]; norm_num)]
+  simp
+
 
