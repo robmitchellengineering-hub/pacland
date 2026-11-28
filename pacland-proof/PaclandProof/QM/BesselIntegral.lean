@@ -1189,4 +1189,19 @@ theorem no_crossing_barrier_from {a : ℝ} {f : ℝ → ℝ} (hf_cont : Continuo
   rw [hfc] at hlt
   linarith
 
+/-- **The Riccati equation for the reciprocal ratio `Φ = I₀/I₁`**: `Φ′ = 1 + Φ/x − Φ²` (Segura's
+difference-differential system, the inverse of the `I₁/I₀` Riccati). This is the equation whose nullcline
+`λ⁺ = (1/2 + √(1/4 + x²))/x` gives the sharp lower bound `Φ > λ⁺` (hence `s = 1 − I₁/I₀ ≥ 1 − x/λ⁺`). -/
+theorem bessel_ratio_inv_hasDerivAt (x : ℝ) (hx : 0 < x) :
+    HasDerivAt (fun t : ℝ => besselI 0 t / besselI 1 t)
+      (1 + (besselI 0 x / besselI 1 x) / x - (besselI 0 x / besselI 1 x)^2) x := by
+  have hI1 : besselI 1 x ≠ 0 := ne_of_gt (besselI_pos hx)
+  have hd0 : HasDerivAt (fun t : ℝ => besselI 0 t) (besselI 1 x) x := besselI0_hasDerivAt x
+  have hd1 : HasDerivAt (fun t : ℝ => besselI 1 t) (besselI 0 x - besselI 1 x / x) x := besselI1_hasDerivAt x hx
+  have hdiv := hd0.div hd1 hI1
+  change HasDerivAt (fun t : ℝ => besselI 0 t / besselI 1 t)
+    (1 + (besselI 0 x / besselI 1 x) / x - (besselI 0 x / besselI 1 x)^2) x at hdiv
+  convert hdiv using 1
+  ring_nf
+
 end QM
