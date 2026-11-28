@@ -1907,4 +1907,18 @@ theorem continuum_mass_eq_quarter :
     (0 < 1 / 4 : ℝ) ∧ Filter.Tendsto (fun β : ℝ => β * heatKernelMassGap β) Filter.atTop (nhds (1 / 4 : ℝ)) := by
   exact ⟨by norm_num, physical_mass_tendsto_sharp⟩
 
+/-- **The running-coupling ratio tends to `1`** (asymptotic freedom): `Tendsto (fun β => I₁(2β)/I₀(2β)) atTop
+(nhds 1)`. The RG contraction factor `I₁/I₀ = 1 − gap` tends to `1` as the bare gap `heatKernelMassGap → 0`
+(`heat_kernel_gap_tendsto_zero`) — the SU(2) running coupling flows to the weak-coupling fixed point in the
+continuum limit. This is the RG-fixed-point statement that feeds the coupling-advance induction. -/
+theorem running_coupling_ratio_tendsto_one :
+    Filter.Tendsto (fun β : ℝ => besselI 1 (2 * β) / besselI 0 (2 * β)) Filter.atTop (nhds 1) := by
+  have hgap := heat_kernel_gap_tendsto_zero
+  have hsub : Filter.Tendsto (fun β : ℝ => 1 - heatKernelMassGap β) Filter.atTop (nhds 1) := by
+    simpa using (tendsto_const_nhds.sub hgap)
+  have hid : ∀ β, 1 - heatKernelMassGap β = besselI 1 (2 * β) / besselI 0 (2 * β) := by
+    intro β
+    simp [heatKernelMassGap]
+  simpa [hid] using hsub
+
 end QM
