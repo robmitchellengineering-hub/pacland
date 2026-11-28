@@ -1223,4 +1223,46 @@ theorem bessel_binomial_convolution (k : ℕ) :
     exact hi
   rw [Nat.choose_symm_add]
 
+/-- **The Chu–Vandermonde identity in factorial form** (the kernel of the Bessel-square product formula):
+`Σᵢ 1/(i!(i+1)!(k−i)!(k−i+1)!) = (2k+2)!/(k!(k+2)!(k+1)!²)`. Follows from `bessel_binomial_convolution`
+(the binomial form) by the factorial–choose conversion `choose_eq_factorial_div_factorial`. -/
+theorem bessel_chu_vandermonde_real (k : ℕ) :
+    (∑ i in Finset.range (k + 1),
+      (1 : ℝ) / ((i.factorial : ℝ) * ((i + 1).factorial : ℝ) * ((k - i).factorial : ℝ) * ((k - i + 1).factorial : ℝ))) =
+      ((2 * k + 2).factorial : ℝ) / ((k.factorial : ℝ) * ((k + 2).factorial : ℝ) * ((k + 1).factorial : ℝ) ^ 2) := by
+  have hbin := bessel_binomial_convolution k
+  have hcast : ((∑ i in Finset.range (k + 1), (k + 1).choose i * (k + 1).choose (i + 1) : ℕ) : ℝ) =
+      ((2 * k + 2).choose (k + 2) : ℝ) := by exact_mod_cast hbin
+  -- convert the sum side: each term C(k+1,i)C(k+1,i+1) = (k+1)!^2/(i!(i+1)!(k-i)!(k-i+1)!)
+  have hterm : ∀ i ∈ Finset.range (k + 1),
+      (((k + 1).choose i * (k + 1).choose (i + 1) : ℕ) : ℝ) =
+        ((k + 1).factorial : ℝ) ^ 2 / ((i.factorial : ℝ) * ((i + 1).factorial : ℝ) * ((k - i).factorial : ℝ) * ((k - i + 1).factorial : ℝ)) := by
+    intro i hi
+    have hi' : i ≤ k + 1 := by
+      rw [Finset.mem_range] at hi
+      omega
+    have hi1 : i + 1 ≤ k + 1 := by omega
+    have hci : ((k + 1).choose i : ℝ) = ((k + 1).factorial : ℝ) / ((i.factorial : ℝ) * ((k + 1 - i).factorial : ℝ)) := by
+      have h := Nat.choose_eq_factorial_div_factorial (n := k + 1) (k := i) hi'
+      exact_mod_cast h
+    have hci1 : ((k + 1).choose (i + 1) : ℝ) = ((k + 1).factorial : ℝ) / (((i + 1).factorial : ℝ) * ((k + 1 - (i + 1)).factorial : ℝ)) := by
+      have h := Nat.choose_eq_factorial_div_factorial (n := k + 1) (k := i + 1) hi1
+      exact_mod_cast h
+    rw [Nat.cast_mul, hci, hci1]
+    have hsub : k + 1 - i = k - i + 1 := by omega
+    have hsub2 : k + 1 - (i + 1) = k - i := by omega
+    rw [hsub, hsub2]
+    ring_nf
+  -- convert the RHS: C(2k+2,k+2) = (2k+2)!/(k!(k+2)!)
+  have hrhs : ((2 * k + 2).choose (k + 2) : ℝ) = ((2 * k + 2).factorial : ℝ) / ((k.factorial : ℝ) * ((k + 2).factorial : ℝ)) := by
+    have h := Nat.choose_eq_factorial_div_factorial (n := 2 * k + 2) (k := k + 2) (by omega)
+    exact_mod_cast h
+  rw [hcast, hrhs] at hbin
+  -- now rearrange: multiply both sides by (k+1)!^2
+  rw [← hbin]
+  rw [Finset.sum_congr rfl hterm]
+  rw [Finset.sum_div]
+  field_simp [show ((k + 1).factorial : ℝ) ≠ 0 by exact_mod_cast (Nat.factorial_ne_zero (k + 1))]
+  ring_nf
+
 end QM
