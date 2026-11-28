@@ -653,4 +653,16 @@ theorem su2_sphere_sq_entry_10 (θ₁ θ₂ φ : ℝ) :
   simp [complex_I_sq]
   ring
 
+/-- **The Pauli conjugation sum**: `Σᵢ σᵢ·B·σᵢ = 2·Tr(B)·I − B`. The key for the general matrix pseudoreality
+`∫ U₂BU₂ dU₂ = (B − Tr(B)I)/2`. -/
+theorem su2_pauli_conj_sum (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    su2Pauli1 * B * su2Pauli1 + su2Pauli2 * B * su2Pauli2 + su2Pauli3 * B * su2Pauli3
+      = (2 : ℂ) • Matrix.trace B • (1 : Matrix (Fin 2) (Fin 2) ℂ) - B := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [su2Pauli1, su2Pauli2, su2Pauli3, Matrix.mul_apply, Matrix.vecMul, Matrix.vecHead, Matrix.vecTail, Fin.sum_univ_two, Matrix.trace, smul_eq_mul, Matrix.one_apply_eq]
+  <;> ring_nf
+  <;> simp [complex_I_sq]
+  <;> ring
+
 end QM
