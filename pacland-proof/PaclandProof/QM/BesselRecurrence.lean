@@ -192,4 +192,42 @@ lemma besselI1_lt_besselI0_of_le_two {β : ℝ} (hβ : 0 < β) (hβle : β ≤ 2
     linarith
   linarith
 
+/-- **The SU(2) Weyl integral of the heat kernel**: `∫₀^π e^(x·cos θ)·sin²θ dθ = π·I₁(x)/x` (for `x > 0`).
+This is the RG step's core identity — the block-spin average of the SU(2) weight at the trivial connection.
+Derivation: `sin²θ = (1 − cos 2θ)/2`, so the integral is `(1/2)(∫ e^(x·cos) − ∫ e^(x·cos)·cos 2θ) =
+(1/2)(π·I₀ − π·I₂)` (`integral_exp_cos_eq_pi_mul_besselI_zero`, `besselI_two_eq_integral`), and the recurrence
+`I₀ − I₂ = 2I₁/x` gives `π·I₁/x`. -/
+theorem su2_weyl_integral_heat_kernel (x : ℝ) (hx : 0 < x) :
+    ∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * (Real.sin θ)^2 = Real.pi * besselI 1 x / x := by
+  have hx' : 0 ≤ x := le_of_lt hx
+  have hI0 := integral_exp_cos_eq_pi_mul_besselI_zero x hx'
+  have hI2 := besselI_two_eq_integral x hx'
+  have hI2int : ∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * Real.cos (2 * θ) = Real.pi * besselI 2 x := by
+    have h := congrArg (fun t : ℝ => Real.pi * t) hI2
+    field_simp [ne_of_gt Real.pi_pos] at h
+    exact h.symm
+  have hsin2 : ∀ θ : ℝ, (Real.sin θ)^2 = (1 - Real.cos (2 * θ)) / 2 := by
+    intro θ
+    rw [Real.sin_sq_eq_half_sub]
+    ring_nf
+  have hmain : ∫ θ in (0 : ℝ)..Real.pi, Real.exp (x * Real.cos θ) * (Real.sin θ)^2
+      = (Real.pi * besselI 0 x - Real.pi * besselI 2 x) / 2 := by
+    have hcongr : (fun θ : ℝ => Real.exp (x * Real.cos θ) * (Real.sin θ)^2)
+        = fun θ : ℝ => (Real.exp (x * Real.cos θ) - Real.exp (x * Real.cos θ) * Real.cos (2 * θ)) / 2 := by
+      funext θ
+      rw [hsin2 θ]
+      ring
+    rw [hcongr]
+    rw [intervalIntegral.integral_div]
+    rw [intervalIntegral.integral_sub]
+    · rw [hI0, hI2int]
+    · exact (by continuity : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ))).intervalIntegrable 0 Real.pi
+    · exact (by continuity : Continuous (fun θ : ℝ => Real.exp (x * Real.cos θ) * Real.cos (2 * θ))).intervalIntegrable 0 Real.pi
+  rw [hmain]
+  have hfactor : (Real.pi * besselI 0 x - Real.pi * besselI 2 x) / 2 = Real.pi * (besselI 0 x - besselI 2 x) / 2 := by ring
+  rw [hfactor]
+  rw [bessel_recurrence hx]
+  field_simp [ne_of_gt hx]
+  ring
+
 end QM
