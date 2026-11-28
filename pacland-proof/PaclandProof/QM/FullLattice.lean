@@ -714,4 +714,24 @@ theorem su2_pauli_vec_mul_apply_right (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (F
   rw [Matrix.add_apply, Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.smul_apply]
   ring
 
+/-- **The generic quaternion conjugation**: `(c·1 + i·X)·B·(c·1 + i·X) = c²·B + i·c·(X·B + B·X) − X·B·X` for a
+generic matrix `X`. Entrywise, via `c·1 = c·δ` and `i·X` with `I² = −1`. -/
+theorem su2_conj_generic (c : ℂ) (X B : Matrix (Fin 2) (Fin 2) ℂ) :
+    (c • 1 + Complex.I • X) * B * (c • 1 + Complex.I • X) =
+      c ^ 2 • B + Complex.I • c • (X * B + B * X) - X * B * X := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, Matrix.one_apply_eq, Fin.sum_univ_two, complex_I_sq]
+  <;> ring_nf
+  <;> simp [complex_I_sq]
+  <;> ring
+
+/-- **The quaternion conjugation expansion**: `V·B·V = x₀²·B + i·x₀·(X·B + B·X) − X·B·X` where `X = x⃗·σ⃗`. The
+specialization of `su2_conj_generic`. -/
+theorem su2_quaternion_conj (x₀ : ℝ) (x : Fin 3 → ℝ) (B : Matrix (Fin 2) (Fin 2) ℂ) :
+    su2Quaternion x₀ x * B * su2Quaternion x₀ x =
+      (x₀ : ℂ) ^ 2 • B + Complex.I • (x₀ : ℂ) • (su2PauliVec x * B + B * su2PauliVec x) - su2PauliVec x * B * su2PauliVec x := by
+  unfold su2Quaternion
+  exact su2_conj_generic (x₀ : ℂ) (su2PauliVec x) B
+
 end QM
