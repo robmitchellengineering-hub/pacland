@@ -94,10 +94,17 @@ Haar-trivial (constant), so the coupling advance comes from the odd link in TWO 
 trace conjugation invariance `Tr(U·C·U⁻¹)=Tr(C)`, the Schur-lemma lift `su2_central_matrix_trace_neg_one_eq_neg_half`
 (central + Tr=−1 ⟹ −I/2), and the dimension `Tr(I)=2`.
 
-The remaining step to the matrix pseudoreality `∫ V² dV = −I/2` / `∫ U₂ dU₂ = 0` is the **matrix-group Haar measure**
-(the normalized SU(2) measure `dU` on `specialUnitaryGroup (Fin 2) ℂ` with its conjugation invariance
-`∫ f(WUW⁻¹) dU = ∫ f(U) dU`). Then the n=1 convolution `∫ χ₁(U₂A)χ₁(U₂B) dU₂ = χ₁(A⁻¹B)/2`, the effective-plaquette
-weight `e^(x′·Tr AB⁻¹)` (coupling advance `x′ = x²·(…)`), and the multiscale induction.
+**The quaternion route to the matrix pseudoreality is fully assembled except the S³ Fubini (46 rungs).** Landed:
+the Pauli algebra `(x⃗·σ⃗)² = |x⃗|²·I`, the quaternion square `V² = (x₀²−|x⃗|²)·I + 2ix₀(x⃗·σ⃗)`, its trace
+`Tr(V²) = 2(x₀²−|x⃗|²)`, the S³ moment `(2/π)∫cos²θ·sin²θ = 1/4`, and the φ-integration primitives
+`∫₀^{2π}cos φ = ∫₀^{2π}sin φ = 0`.
+
+The matrix pseudoreality `∫ V² dV = −I/2` is a direct assembly: the odd moment `∫ x₀xᵢ = 0` (via the full-period
+φ-integrals) kills the `2ix₀(x⃗·σ⃗)` term, and `∫x₀² = 1/4` with `x₀²+|x⃗|² = 1` gives `(1/4−3/4)·I = −I/2`. The
+remaining step is the **S³ spherical-coordinate Fubini** (the round-measure Jacobian `dV = (2/π)sin²θ dθ·(S² measure)`)
+that ties the quaternion coordinates to the Weyl integration. Then the n=1 convolution `∫ χ₁(U₂A)χ₁(U₂B) dU₂ =
+χ₁(A⁻¹B)/2`, the effective-plaquette weight `e^(x′·Tr AB⁻¹)` (coupling advance `x′ = x²·(…)`), and the multiscale
+induction.
 
 ## The next real step (the open Clay half)
 
