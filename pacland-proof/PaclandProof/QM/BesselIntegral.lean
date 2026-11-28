@@ -1833,4 +1833,49 @@ theorem physical_mass_tendsto_sharp :
     (eventually_atTop.mpr ⟨1, fun β hβ => hupper β hβ⟩)
     hlowtend huptend
 
+/-- **The physical correlation length diverges in the continuum limit**: `Tendsto (fun β => e^(cβ)/gap) atTop
+atTop`. The lattice correlation length `1/gap ~ 4β` is finite, but in *physical* units (rescaled by the
+running-coupling scale `e^(cβ)`) it diverges — the physical content of the `a → 0` limit. The lower bound
+`1/gap ≥ 2β` (the concentration `bessel_activity_le_one_div_beta`) makes `e^(cβ)/gap ≥ 2β·e^(cβ) → atTop`. -/
+theorem physical_correlation_length_diverges (c : ℝ) (hc : 0 < c) :
+    Filter.Tendsto (fun β : ℝ => Real.exp (c * β) / heatKernelMassGap β) Filter.atTop Filter.atTop := by
+  have hlower : ∀ β, 1 ≤ β → 2 * β * Real.exp (c * β) ≤ Real.exp (c * β) / heatKernelMassGap β := by
+    intro β hβ
+    have hgap : heatKernelMassGap β ≤ 1 / (2 * β) := by
+      simpa [heatKernelMassGap] using bessel_activity_le_one_div_beta (2 * β) (by positivity)
+    have hgpos : 0 < heatKernelMassGap β := by
+      have hle : 1 / (4 * β + 1) ≤ heatKernelMassGap β := heat_kernel_gap_poly β (by linarith)
+      exact lt_of_lt_of_le (by positivity) hle
+    have hrec : 2 * β ≤ 1 / heatKernelMassGap β := by
+      rw [le_div_iff₀ hgpos]
+      nlinarith [hgap]
+    have hnonneg : 0 ≤ Real.exp (c * β) := (Real.exp_pos _).le
+    calc
+      2 * β * Real.exp (c * β) ≤ (1 / heatKernelMassGap β) * Real.exp (c * β) := mul_le_mul_of_nonneg_right hrec hnonneg
+      _ = Real.exp (c * β) / heatKernelMassGap β := by rw [mul_comm, ← div_eq_mul_inv]
+  have htend : Filter.Tendsto (fun β : ℝ => 2 * β * Real.exp (c * β)) Filter.atTop Filter.atTop := by
+    have hpos : Filter.Tendsto (fun β : ℝ => c * β) Filter.atTop Filter.atTop := by
+      rw [Filter.tendsto_atTop]
+      intro b
+      refine Filter.eventually_atTop.2 ⟨max 0 (b / c), ?_⟩
+      intro β hβ
+      have hβ' : max 0 (b / c) ≤ β := hβ
+      have hbc : b / c ≤ β := le_trans (le_max_right 0 (b / c)) hβ'
+      have hcmul : c * (b / c) ≤ c * β := mul_le_mul_of_nonneg_left hbc (le_of_lt hc)
+      have hcb : c * (b / c) = b := by field_simp [ne_of_gt hc]
+      nlinarith
+    have hexp : Filter.Tendsto (fun β : ℝ => Real.exp (c * β)) Filter.atTop Filter.atTop :=
+      Real.tendsto_exp_atTop.comp hpos
+    have htwo : Filter.Tendsto (fun β : ℝ => 2 * β) Filter.atTop Filter.atTop := by
+      rw [Filter.tendsto_atTop]
+      intro b
+      refine Filter.eventually_atTop.2 ⟨max 0 (b / 2), ?_⟩
+      intro β hβ
+      have hβ' : max 0 (b / 2) ≤ β := hβ
+      nlinarith
+    have hprod : Filter.Tendsto (fun β : ℝ => Real.exp (c * β) * (2 * β)) Filter.atTop Filter.atTop :=
+      hexp.atTop_mul_atTop htwo
+    simpa [mul_comm, mul_assoc, mul_left_comm] using hprod
+  exact tendsto_atTop_mono' Filter.atTop (Filter.eventually_atTop.mpr ⟨1, fun β hβ => hlower β hβ⟩) htend
+
 end QM
