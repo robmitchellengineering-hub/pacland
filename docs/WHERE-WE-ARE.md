@@ -76,6 +76,14 @@ The DEEP open core that remains: the measure-theoretic small/large-field REGION 
 gauge measure (Balaban's multiscale RG) and the a→0 convergence of the FULL gauge-invariant Schwinger functions
 (not just the mass-gap envelope or the reconstruction scaffold). These are the genuinely-hard existence steps.
 
+**Character theory is now complete (29 rungs).** The full SU(2) Weyl character formula
+`e^(x·cos θ)·sin θ = Σₙ 2(n+1)Iₙ₊₁(x)/x · sin((n+1)θ)` is proved (`weyl_character_formula`), via the general
+Jacobi–Anger moment (`besselI_eq_integral_general`), the general recurrence (`bessel_recurrence_general`), the
+Weyl character coefficient (`weyl_character_coefficient`), and the termwise differentiation
+(`hasDerivAt_tsum` + `besselI_mul_succ_summable`). This is the symmetric (class-function) character expansion of
+the SU(2) heat kernel — the block-spin RG step's clean coupling-advance identity. The remaining open step is the
+block-spin average's coupling advance (the SU(2) convolution theorem) and the multiscale induction.
+
 ## The next real step (the open Clay half)
 
 The mass-gap side is now complete: lattice gap (sharp `A = 1/2`), gap-survival `Δ_phys > 0`, and the
